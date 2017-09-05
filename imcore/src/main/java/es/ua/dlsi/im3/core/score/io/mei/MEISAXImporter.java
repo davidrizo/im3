@@ -241,7 +241,8 @@ public class MEISAXImporter extends XMLSAXImporter {
 	private Integer tupletNumBase;
 	private ArrayList<Atom> tupletElements;
 	private String tupletXMLID;
-	private ArrayList<SimpleMultiMeasureRest> pendingMeasureRestsToSetDuration;
+	private ArrayList<SimpleMeasureRest> pendingMeasureRestsToSetDuration;
+    private ArrayList<SimpleMultiMeasureRest> pendingMultiMeasureRestsToSetDuration;
 	private Measure currentMeasure;
     private KernImporter kernImporter; // used for importing <harm>
 
@@ -260,22 +261,27 @@ public class MEISAXImporter extends XMLSAXImporter {
 		lastMeasureEndTime = Time.TIME_ZERO;
 	}
 	
-	private String getLayerCode() throws ImportException {
+	/*private String getLayerCode() throws ImportException {
 		if (lastStaff == null) {
 			throw new ImportException("lastStaff=null");
 		}
 		if (lastVoice == null) {
 			throw new ImportException("lastVoice=null");
 		}
-		//String code = lastStaff==null?"_":lastStaff.hashCode() + "_" + lastVoice.hashCode();
-		String code = lastStaff.hashCode() + "_" + lastVoice.hashCode();
-		return code;
-	}
+		return getLayerCode(lastStaff, lastVoice);
+	}*/
+
+    private String getLayerCode(Staff staff, ScoreLayer voice) throws ImportException {
+        //String code = lastStaff==null?"_":lastStaff.hashCode() + "_" + lastVoice.hashCode();
+        String code = staff.hashCode() + "_" + voice.hashCode();
+        return code;
+    }
+
 	private Time getCurrentTime() throws ImportException {
 		if (lastVoice == null) { // e.g. staffDef where no time is defined yet
 			return Time.TIME_ZERO; 
 		}
-		String code = getLayerCode();
+		String code = getLayerCode(lastStaff, lastVoice);
 		Time time = currentTime.get(code);
 		if (time == null) {
 			currentTime.put(code, Time.TIME_ZERO);
@@ -286,13 +292,20 @@ public class MEISAXImporter extends XMLSAXImporter {
 	}
 	
 	private void setCurrentTime(Time time) throws ImportException {
-		String code = getLayerCode();
-		currentTime.put(code, time);
+        setCurrentTime(lastStaff, lastVoice, time);
+		//String code = getLayerCode();
+		////currentTime.put(code, time);
 		maximumVoicesTime = Time.max(time, maximumVoicesTime);
-	}
-	
+    }
+
+    private void setCurrentTime(Staff staff, ScoreLayer voice, Time time) throws ImportException {
+        String code = getLayerCode(staff, voice);
+        currentTime.put(code, time);
+        maximumVoicesTime = Time.max(time, maximumVoicesTime);
+    }
+
 	private void updateCurrentTime() throws ImportException, IM3Exception {
-		setCurrentTime(lastVoice.getDuration());
+        setCurrentTime(lastVoice.getDuration());
 	}
 	
 	private void setXMLID(String xmlid, IUniqueIDObject object) throws IM3Exception {
@@ -305,7 +318,7 @@ public class MEISAXImporter extends XMLSAXImporter {
 		
 		if (tupletElements == null) { //TODO Tuplet dentro de tuplet
 			lastVoice.add(atom); // sets the time
-			//lastChord.setTime(getCurrentTime());
+            //lastChord.setTime(getCurrentTime());
 			elementStaff.addCoreSymbol(atom); // if note it will be inserted as staff change in other place
 			//lastChord.setStaff(lastStaff); in addCoreSymbol
 			if (atom instanceof SingleFigureAtom && !(atom instanceof SimpleMultiMeasureRest)) {
@@ -465,8 +478,9 @@ public class MEISAXImporter extends XMLSAXImporter {
 					//lastMeasureXMLID = xmlid;
 					//lastMeasureNumber = number;
 					pendingMeasureRestsToSetDuration = null;
+					pendingMultiMeasureRestsToSetDuration = null;
 					currentMeasure = ImportFactories.processMeasure(song, lastMeasureEndTime, number);
-					xmlIDs.put(xmlid, currentMeasure);
+                    xmlIDs.put(xmlid, currentMeasure);
 					if (lastMeasureEndTime.isZero()) {
 						maximumVoicesTime = Time.TIME_ZERO; // for mixed mensural and modern
 					}
@@ -698,10 +712,10 @@ public class MEISAXImporter extends XMLSAXImporter {
 						Integer num = Integer.parseInt(getAttribute(attributesMap, "num"));
 
 						SimpleMultiMeasureRest multiMeasureRest = new SimpleMultiMeasureRest(Figures.WHOLE, Figures.NO_DURATION.getDuration(), num);
-                        if (pendingMeasureRestsToSetDuration == null) {
-						    pendingMeasureRestsToSetDuration = new ArrayList<>();
+						if (pendingMultiMeasureRestsToSetDuration == null) {
+                            pendingMultiMeasureRestsToSetDuration = new ArrayList<>();
                         }
-                        pendingMeasureRestsToSetDuration.add(multiMeasureRest);
+                        pendingMultiMeasureRestsToSetDuration.add(multiMeasureRest);
 
 
 						//rest.setTime(getCurrentTime());
@@ -1293,44 +1307,94 @@ public class MEISAXImporter extends XMLSAXImporter {
 				}
 				break; 				
 			case "measure":
-				if (pendingMeasureRestsToSetDuration != null) {
-					Time measureDuration = null; 
-					for (SimpleMultiMeasureRest mrest : pendingMeasureRestsToSetDuration) {
-					    int nmeasures = mrest.getNumMeasures();
-					    if (nmeasures > 0) {
-                            System.err.println("TO-DO!!!!!!!!!! CREAR VARIOS COMPASES PARA MultiREST");
+			    //TODO Check there are not any notes or rests
+                if (pendingMeasureRestsToSetDuration != null && !pendingMeasureRestsToSetDuration.isEmpty()
+                && pendingMultiMeasureRestsToSetDuration != null && !pendingMultiMeasureRestsToSetDuration.isEmpty()) {
+                    throw new ImportException("Cannot create both multimeasure rests and measure rests");
+                }
+
+				if (pendingMeasureRestsToSetDuration != null && !pendingMeasureRestsToSetDuration.isEmpty()) {
+                    Time measureDuration = null;
+                    for (SimpleMeasureRest mrest : pendingMeasureRestsToSetDuration) {
+                        if (measureDuration == null) {
+                            if (!currentMeasure.getTime().isZero() || !(mrest instanceof SimpleMeasureRest)) { // avoid first bar for anacrusis (not for multimeasure rests)
+                                TimeSignature ts = mrest.getStaff().getRunningTimeSignatureAt(mrest);
+                                if (ts == null) {
+                                    throw new ImportException("Cannot infer the measure duration without time signatures at element " + mrest);
+                                }
+                                if (ts instanceof ITimeSignatureWithDuration) {
+                                    measureDuration = ((ITimeSignatureWithDuration) ts).getMeasureDuration();
+                                    currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
+                                } else {
+                                    throw new ImportException("Cannot infer the measure duration with a time signature without duration (" + ts + ") at element " + mrest);
+                                }
+                            } else {
+                                if (maximumVoicesTime.isZero()) {
+                                    throw new ImportException("Cannot infer the measure duration for mRest or multiRest " + mrest);
+                                }
+                                measureDuration = maximumVoicesTime.substract(currentMeasure.getTime());
+                                currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
+                            }
+                            mrest.setDuration(measureDuration);
+                            lastVoice = mrest.getLayer();
+                            setCurrentTime(mrest.getOffset());
                         }
-						if (measureDuration == null) {
-							if (!currentMeasure.getTime().isZero() || !(mrest instanceof SimpleMeasureRest)) { // avoid first bar for anacrusis (not for multimeasure rests)
-								TimeSignature ts = mrest.getStaff().getRunningTimeSignatureAt(mrest);
-								if (ts == null) {
-									throw new ImportException("Cannot infer the measure duration without time signatures at element " + mrest);
-								}
-								if (ts instanceof ITimeSignatureWithDuration) {
-									measureDuration =  ((ITimeSignatureWithDuration)ts).getMeasureDuration().multiply(nmeasures);
-									currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
-								} else {
-									throw new ImportException("Cannot infer the measure duration with a time signature without duration (" + ts + ") at element " + mrest);
-								}
-							} else {
-								if (maximumVoicesTime.isZero()) {
-									throw new ImportException("Cannot infer the measure duration for mRest or multiRest " + mrest);
-								}
-								measureDuration = maximumVoicesTime.substract(currentMeasure.getTime()).multiply(nmeasures);
-								currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
-							}
-							mrest.setDuration(measureDuration);
-							lastVoice = mrest.getLayer();
-							setCurrentTime(mrest.getOffset());
-						}
-					}
+                    }
+                } else if (pendingMultiMeasureRestsToSetDuration != null && !pendingMultiMeasureRestsToSetDuration.isEmpty()) {
+                    // ckeck all num are the same
+                    Integer num = null;
+
+                    for (SimpleMultiMeasureRest mm : pendingMultiMeasureRestsToSetDuration) {
+                        if (num == null) {
+                            num = mm.getNumMeasures();
+                        } else if (num != mm.getNumMeasures()) {
+                            throw new ImportException("Two multimeasure rests have different num: " + num + " and " + mm.getNumMeasures());
+                        }
+                    }
+
+                    SimpleMultiMeasureRest firstMrest = pendingMultiMeasureRestsToSetDuration.get(0);
+                    TimeSignature ts = firstMrest.getStaff().getRunningTimeSignatureAt(firstMrest);
+                    if (ts == null) {
+                        throw new ImportException("Cannot infer the measure duration without time signatures at element " + firstMrest);
+                    }
+                    if (ts instanceof ITimeSignatureWithDuration) {
+                        Time measureDuration = ((ITimeSignatureWithDuration) ts).getMeasureDuration();
+
+                        currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
+
+                        Time time = currentMeasure.getEndTime();
+                        Integer nmeasure = currentMeasure.getNumber();
+                        // create the number of measures (but the current one)
+                        for (int i=0; i<num-1; i++) {
+                            Measure measure;
+                            if (nmeasure != null) {
+                                measure = new Measure(song, nmeasure++);
+                            } else {
+                                measure = new Measure(song);
+                            }
+                            song.addMeasure(time, measure);
+                            time =time.add(measureDuration);
+                            measure.setEndTime(time);
+                            currentMeasure = measure;
+
+                        }
+
+                        for (SimpleMultiMeasureRest mm : pendingMultiMeasureRestsToSetDuration) {
+                            mm.setDuration(measureDuration.multiply(num));
+                            setCurrentTime(mm.getStaff(), mm.getLayer(), mm.getOffset());
+                        }
+                    } else {
+                        throw new ImportException("Cannot infer the measure duration with a time signature without duration (" + ts + ") at element " + firstMrest);
+                    }
+
 				} else {
 					currentMeasure.setEndTime(maximumVoicesTime);
 				}
-				//lastMeasureEndTime = maximumVoicesTime;
+
+                //lastMeasureEndTime = maximumVoicesTime;
 				lastMeasureEndTime = currentMeasure.getEndTime();
-				maximumVoicesTime = lastMeasureEndTime; 
-				//currentMeasure.setEndTime(maximumVoicesTime);
+				maximumVoicesTime = lastMeasureEndTime;
+                //currentMeasure.setEndTime(maximumVoicesTime);
 				//updateTimesGivenMeasure(measure);
 				break;
 			}

@@ -56,6 +56,7 @@ public class MEISongExporter implements ISongExporter {
     public static final String HARM_TYPE_KEY = "key";
     public static final String HARM_TYPE_DEGREE = "degree";
     public static final String HARM_TYPE_TONAL_FUNCTION = "tonalFunction";
+    private int skipMeasures;
 
 	/*FRACCIONES class ConnectorWithLayer {
 		Connector<?,?> connector;
@@ -482,116 +483,122 @@ public class MEISongExporter implements ISongExporter {
 			TimeSignature lastTimeSignature = null;
 			boolean firstMeasure = true;
 			Harm lastHarm = null;
+            skipMeasures = 0; // used for multimeasure rests
 			for (Measure bar : bars) {
-				//TODO xmlid
-				boolean processScoreDef = false;
-				
-				//boolean differentKeysInStaves = false;
-				Key barKey = null;
-				try {
-					barKey = song.getUniqueKeyWithOnset(bar.getTime());
-				} catch (IM3Exception e) {
-					//differentKeysInStaves = true;
-					throw new IM3Exception("Unsupported MEI exporting of staves with different concert pitch (sounded, not written) keys", e);
-				}
-				
-				if (lastKey == null || barKey != null && !barKey.equals(lastKey)) {
-					processScoreDef = true;
-				}
-				TimeSignature barTimeSignature = null;
-				try {
-					barTimeSignature = song.getUniqueMeterWithOnset(bar.getTime());
-				} catch (IM3Exception e) {
-					// when multimeter music
-				}
-				if (lastTimeSignature == null || barTimeSignature != null && !barTimeSignature.equals(lastTimeSignature)) {
-					processScoreDef = true;
-				}
-				
-				if (processScoreDef) {
-					ArrayList<String> params = new ArrayList<>();
-					processScoreDef(params, barTimeSignature, barKey, null);	
-					if (!params.isEmpty()) {
-						XMLExporterHelper.startEnd(sb, tabs, "scoreDef", params);
-					}
-				} 
-				
-				//TODO metcon is also used to express incomplete or exceeding duration measures (see chor001.krn and .mei)
-				if (song.isAnacrusis() && firstMeasure) {
-				    if (bar.getNumber() != null) {
-                        XMLExporterHelper.start(sb, tabs, "measure", "n",
-                                Integer.toString(bar.getNumber()), "xml:id",
-                                generateID(bar, false),  "metcon", "false");
-                    } else {
-                        XMLExporterHelper.start(sb, tabs, "measure",  "xml:id",
-                                generateID(bar, false),  "metcon", "false");
-
-                    }
-				} else {
-                    if (bar.getNumber() != null) {
-                        XMLExporterHelper.start(sb, tabs, "measure", "n",
-                                Integer.toString(bar.getNumber()), "xml:id",
-                                generateID(bar, false));
-                    } else {
-                        XMLExporterHelper.start(sb, tabs, "measure", "xml:id",
-                                generateID(bar, false));
-                    }
-				}
-				firstMeasure = false;
-	
-				//FRACCIONES barConnectors = new ArrayList<>();
-				
-				//SymbolsInStavesAndLayers symbolsInBar = new SymbolsInStavesAndLayers();
-				for (Staff staff: song.getStaves()) {
-					if (!(staff instanceof AnalysisStaff) && staff.getNotationType() == NotationType.eModern) { // && bar.contains(staff)) {
-						XMLExporterHelper.start(sb, tabs+1, "staff", "n", getNumber(staff));
-						for (ScoreLayer layer: staff.getLayers()) {
-							XMLExporterHelper.start(sb, tabs+2, "layer", "n", getNumber(layer));
-							processBarLayer(tabs+3, bar, staff, layer); //TODO que no salga si en la capa no hay nada
-							XMLExporterHelper.end(sb, tabs+2, "layer");
-						}
-						processBar(tabs+2, bar, staff);
-						XMLExporterHelper.end(sb, tabs+1, "staff");
-					} 
-				}
-
-				List<Harm> harms = song.getHarmsWithOnsetWithin(bar);
-				if (harms != null) {
-                    for (Harm harm : harms) {
-                        if (lastHarmKey == null) {
-                            lastHarmKey = song.getUniqueKeyActiveAtTime(harm.getTime());
-                        }
-                        if (harmExporter == null) {
-                            harmExporter = new HarmExporter();
-                        }
-                        String tstamp = generateTStamp(bar, harm.getTime());
-
-                        if (useHarmTypes) {
-                            if (!harm.getKey().equals(lastHarmKey)) {
-                                XMLExporterHelper.startEndTextContentSingleLine(sb, tabs + 1, "harm", harm.getKey().getAbbreviationString(), "tstamp", tstamp, "type", HARM_TYPE_KEY);
-                            }
-                            XMLExporterHelper.startEndTextContentSingleLine(sb, tabs + 1, "harm", harmExporter.exportHarm(harm), "tstamp", tstamp, "type", HARM_TYPE_DEGREE);
-                            if (harm.getTonalFunction() != null) {
-                                XMLExporterHelper.startEndTextContentSingleLine(sb, tabs + 1, "harm", harm.getTonalFunction().getAbbr(), "tstamp", tstamp, "type", HARM_TYPE_TONAL_FUNCTION);
-                            }
-                            lastHarmKey = harm.getKey();
-                        } else {
-                            // export just degree
-                            XMLExporterHelper.startEndTextContentSingleLine(sb, tabs + 1, "harm", harmExporter.exportHarm(harm), "tstamp", tstamp);
-                        }
-                    }
+			    if (skipMeasures > 0) {
+                    skipMeasures --;
                 }
-				
-				// connectors
-				// all of theses should already be inserter for (Connector connector: song.getConnectors()) {
-				
-				/*FRACCIONES  for (ConnectorWithLayer connector: barConnectors) {
-					generateConnector(tabs, bar, connector.getConnector(), connector.getLayer().getStaff(), connector.getLayer());
-				}*/
-				
-				XMLExporterHelper.end(sb, tabs, "measure");
-				lastKey = barKey;
-				lastTimeSignature = barTimeSignature;
+                if (skipMeasures == 0) {
+                    //TODO xmlid
+                    boolean processScoreDef = false;
+
+                    //boolean differentKeysInStaves = false;
+                    Key barKey = null;
+                    try {
+                        barKey = song.getUniqueKeyWithOnset(bar.getTime());
+                    } catch (IM3Exception e) {
+                        //differentKeysInStaves = true;
+                        throw new IM3Exception("Unsupported MEI exporting of staves with different concert pitch (sounded, not written) keys", e);
+                    }
+
+                    if (lastKey == null || barKey != null && !barKey.equals(lastKey)) {
+                        processScoreDef = true;
+                    }
+                    TimeSignature barTimeSignature = null;
+                    try {
+                        barTimeSignature = song.getUniqueMeterWithOnset(bar.getTime());
+                    } catch (IM3Exception e) {
+                        // when multimeter music
+                    }
+                    if (lastTimeSignature == null || barTimeSignature != null && !barTimeSignature.equals(lastTimeSignature)) {
+                        processScoreDef = true;
+                    }
+
+                    if (processScoreDef) {
+                        ArrayList<String> params = new ArrayList<>();
+                        processScoreDef(params, barTimeSignature, barKey, null);
+                        if (!params.isEmpty()) {
+                            XMLExporterHelper.startEnd(sb, tabs, "scoreDef", params);
+                        }
+                    }
+
+                    //TODO metcon is also used to express incomplete or exceeding duration measures (see chor001.krn and .mei)
+                    if (song.isAnacrusis() && firstMeasure) {
+                        if (bar.getNumber() != null) {
+                            XMLExporterHelper.start(sb, tabs, "measure", "n",
+                                    Integer.toString(bar.getNumber()), "xml:id",
+                                    generateID(bar, false), "metcon", "false");
+                        } else {
+                            XMLExporterHelper.start(sb, tabs, "measure", "xml:id",
+                                    generateID(bar, false), "metcon", "false");
+
+                        }
+                    } else {
+                        if (bar.getNumber() != null) {
+                            XMLExporterHelper.start(sb, tabs, "measure", "n",
+                                    Integer.toString(bar.getNumber()), "xml:id",
+                                    generateID(bar, false));
+                        } else {
+                            XMLExporterHelper.start(sb, tabs, "measure", "xml:id",
+                                    generateID(bar, false));
+                        }
+                    }
+                    firstMeasure = false;
+
+                    //FRACCIONES barConnectors = new ArrayList<>();
+
+                    //SymbolsInStavesAndLayers symbolsInBar = new SymbolsInStavesAndLayers();
+                    for (Staff staff : song.getStaves()) {
+                        if (!(staff instanceof AnalysisStaff) && staff.getNotationType() == NotationType.eModern) { // && bar.contains(staff)) {
+                            XMLExporterHelper.start(sb, tabs + 1, "staff", "n", getNumber(staff));
+                            for (ScoreLayer layer : staff.getLayers()) {
+                                XMLExporterHelper.start(sb, tabs + 2, "layer", "n", getNumber(layer));
+                                processBarLayer(tabs + 3, bar, staff, layer); //TODO que no salga si en la capa no hay nada
+                                XMLExporterHelper.end(sb, tabs + 2, "layer");
+                            }
+                            processBar(tabs + 2, bar, staff);
+                            XMLExporterHelper.end(sb, tabs + 1, "staff");
+                        }
+                    }
+
+                    List<Harm> harms = song.getHarmsWithOnsetWithin(bar);
+                    if (harms != null) {
+                        for (Harm harm : harms) {
+                            if (lastHarmKey == null) {
+                                lastHarmKey = song.getUniqueKeyActiveAtTime(harm.getTime());
+                            }
+                            if (harmExporter == null) {
+                                harmExporter = new HarmExporter();
+                            }
+                            String tstamp = generateTStamp(bar, harm.getTime());
+
+                            if (useHarmTypes) {
+                                if (!harm.getKey().equals(lastHarmKey)) {
+                                    XMLExporterHelper.startEndTextContentSingleLine(sb, tabs + 1, "harm", harm.getKey().getAbbreviationString(), "tstamp", tstamp, "type", HARM_TYPE_KEY);
+                                }
+                                XMLExporterHelper.startEndTextContentSingleLine(sb, tabs + 1, "harm", harmExporter.exportHarm(harm), "tstamp", tstamp, "type", HARM_TYPE_DEGREE);
+                                if (harm.getTonalFunction() != null) {
+                                    XMLExporterHelper.startEndTextContentSingleLine(sb, tabs + 1, "harm", harm.getTonalFunction().getAbbr(), "tstamp", tstamp, "type", HARM_TYPE_TONAL_FUNCTION);
+                                }
+                                lastHarmKey = harm.getKey();
+                            } else {
+                                // export just degree
+                                XMLExporterHelper.startEndTextContentSingleLine(sb, tabs + 1, "harm", harmExporter.exportHarm(harm), "tstamp", tstamp);
+                            }
+                        }
+                    }
+
+                    // connectors
+                    // all of theses should already be inserter for (Connector connector: song.getConnectors()) {
+
+                    /*FRACCIONES  for (ConnectorWithLayer connector: barConnectors) {
+                        generateConnector(tabs, bar, connector.getConnector(), connector.getLayer().getStaff(), connector.getLayer());
+                    }*/
+
+                    XMLExporterHelper.end(sb, tabs, "measure");
+                    lastKey = barKey;
+                    lastTimeSignature = barTimeSignature;
+                }
 			}
 		}
 	}
@@ -898,9 +905,10 @@ public class MEISongExporter implements ISongExporter {
 				XMLExporterHelper.startEnd(sb, tabs, "mRest", params);
 			} else if (atom instanceof SimpleMultiMeasureRest) {
                 SimpleMultiMeasureRest mrest = (SimpleMultiMeasureRest) atom; //TODO ID
-				    params.add("num");
-				    params.add(Integer.toString(mrest.getNumMeasures()));
-					XMLExporterHelper.startEnd(sb, tabs, "multiRest", params);
+                params.add("num");
+				params.add(Integer.toString(mrest.getNumMeasures()));
+				XMLExporterHelper.startEnd(sb, tabs, "multiRest", params);
+                skipMeasures = mrest.getNumMeasures();
 			} else {
 				SingleFigureAtom sfatom = (SingleFigureAtom) atom;
 				fillDurationParams(sfatom.getAtomFigure(), params);

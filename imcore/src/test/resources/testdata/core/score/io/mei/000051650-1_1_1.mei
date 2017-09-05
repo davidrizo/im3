@@ -1,43 +1,70 @@
-<?xml version="1.0"?>
-<pages>
-    <page xml:id="page-0000000140663214">
-        <system xml:id="system-0000000123967498" system.leftmar="0" system.rightmar="0">
-            <section xml:id="section-0000000755389931" />
-            <measure xml:id="measure-0000001523336779" right="single">
-                <staff xml:id="staff-0000002062732900" n="1">
-                    <layer xml:id="layer-0000001832708911" n="1">
-                        <note xml:id="note-0000000980718256" dur="2" oct="3" pname="c" />
-                        <note xml:id="note-0000000994737867" dur="2" oct="3" pname="g" />
-                        <note xml:id="note-0000000399138774" dur="4" oct="3" pname="c" />
-                        <note xml:id="note-0000001733945037" dur="4" oct="3" pname="e" />
-                        <note xml:id="note-0000001061147069" dur="2" oct="3" pname="d" />
-                    </layer>
-                </staff>
-            </measure>
-            <measure xml:id="measure-0000000753474295" right="single">
-                <staff xml:id="staff-0000001994583995" n="1">
-                    <layer xml:id="layer-0000001038899425" n="1">
-                        <note xml:id="note-0000001740585865" dur="2" oct="2" pname="g" />
-                        <note xml:id="note-0000001004393621" dur="2" oct="2" pname="a" />
-                        <note xml:id="note-0000001622122727" dur="4" oct="2" pname="b" />
-                        <note xml:id="note-0000000711774024" dur="4" oct="3" pname="d" />
-                        <note xml:id="note-0000001302107578" dur="4" oct="2" pname="g" />
-                        <note xml:id="note-0000001663700516" dur="4" oct="2" pname="a" />
-                    </layer>
-                </staff>
-            </measure>
-            <measure xml:id="measure-0000000015643042" right="single">
-                <staff xml:id="staff-0000001577488472" n="1">
-                    <layer xml:id="layer-0000000444424252" n="1">
-                        <note xml:id="note-0000000490279098" dur="2" oct="3" pname="d" />
-                        <note xml:id="note-0000000226046547" dur="2" oct="3" pname="e" />
-                        <note xml:id="note-0000000265743886" dur="4" oct="2" pname="a" />
-                        <note xml:id="note-0000001738989889" dur="2" oct="2" pname="a" />
-                        <note xml:id="note-0000002098112400" dur="4" oct="2" pname="a" />
-                    </layer>
-                </staff>
-            </measure>
-            <boundaryEnd xml:id="bdend-0000001392956488" startid="section-0000000755389931" type="section" />
-        </system>
-    </page>
-</pages>
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="4.0.0">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title />
+            </titleStmt>
+            <pubStmt>
+                <date>2017-08-29 20:03:30</date>
+            </pubStmt>
+        </fileDesc>
+        <encodingDesc>
+            <projectDesc>
+                <p>Encoded with Verovio version 2.0.0-dev-cba6710</p>
+            </projectDesc>
+        </encodingDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <score>
+                    <scoreDef xml:id="scoredef-0000000199007833" key.sig="3f" meter.count="3" meter.unit="4">
+                        <staffGrp xml:id="staffgrp-0000001068250547">
+                            <staffDef xml:id="staffdef-0000001123654509" clef.shape="G" clef.line="2" n="1" lines="5" />
+                        </staffGrp>
+                    </scoreDef>
+                    <section xml:id="section-0000000400712905">
+                        <measure xml:id="measure-0000000438350162" right="single">
+                            <staff xml:id="staff-0000000273077343" n="1">
+                                <layer xml:id="layer-0000001169297743" n="1">
+                                    <note xml:id="note-0000000764312904" dur="4" oct="5" pname="b" />
+                                    <beam xml:id="beam-0000001806978980">
+                                        <note xml:id="note-0000001707284821" dur="8" oct="5" pname="e" />
+                                        <note xml:id="note-0000000181980986" dur="8" oct="5" pname="b" />
+                                        <note xml:id="note-0000000537718374" dur="8" oct="6" pname="c" />
+                                        <note xml:id="note-0000000821525242" dur="8" oct="5" pname="b" />
+                                    </beam>
+                                </layer>
+                            </staff>
+                        </measure>
+                        <measure xml:id="measure-0000000507792647" right="single">
+                            <staff xml:id="staff-0000001202375731" n="1">
+                                <layer xml:id="layer-0000000037279341" n="1">
+                                    <beam xml:id="beam-0000000125788535">
+                                        <note xml:id="note-0000001636142910" dur="8" oct="5" pname="a" />
+                                        <note xml:id="note-0000001003999097" dur="8" oct="5" pname="a" />
+                                    </beam>
+                                    <rest xml:id="rest-0000001433808800" dur="16" />
+                                    <beam xml:id="beam-0000000369812614">
+                                        <note xml:id="note-0000001110498613" dur="16" oct="5" pname="a" />
+                                        <note xml:id="note-0000000622929080" dur="16" oct="5" pname="g" />
+                                        <note xml:id="note-0000000586268435" dur="16" oct="5" pname="a" />
+                                    </beam>
+                                    <beam xml:id="beam-0000000425321224">
+                                        <note xml:id="note-0000000758614609" dur="16" oct="5" pname="b" />
+                                        <note xml:id="note-0000001548234552" dur="16" oct="5" pname="a" />
+                                        <note xml:id="note-0000000118764765" dur="16" oct="5" pname="g" />
+                                        <note xml:id="note-0000001067097292" dur="16" oct="5" pname="a" />
+                                    </beam>
+                                </layer>
+                            </staff>
+                        </measure>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>

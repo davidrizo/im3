@@ -262,7 +262,15 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 	 * atoms in a tuplet. Use with care
 	 */
 	public void setDuration(Fraction duration) {
-		this.duration = new Time(duration);		
+		this.duration = new Time(duration);
 	}
+	/**
+	 * The duration is usually set from the figure(s) in the atom, but it may be different in the case of the
+	 * atoms in a tuplet. Use with care
+	 */
+	public void setDuration(Time duration) {
+		this.duration = duration;
+	}
+
 }
 

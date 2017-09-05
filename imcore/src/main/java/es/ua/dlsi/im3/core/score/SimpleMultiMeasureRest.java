@@ -22,16 +22,9 @@ public class SimpleMultiMeasureRest extends SimpleRest {
 
 	@Override
 	public String toString() {
-		return super.toString() + ", measure rest";
+		return super.toString() + " " + numMeasures + " measures rest";
 	}
 
-	/**
-	 * Used by MusicXML importer
-	 * @param duration
-	 */
-	public void setDuration(Time duration) throws IM3Exception {
-		super.setDuration(duration.getExactTime());		
-	}
 	public void setFigure(Figures figure) {
 		this.atomFigure.setFigure(figure);
 	}

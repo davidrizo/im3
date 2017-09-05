@@ -46,10 +46,8 @@ public class MEIImporterTest {
         MEISongImporter importer = new MEISongImporter();
         ScoreSong song = importer.importSong(f3);
         assertEquals(1, song.getStaves().size());
-        //assertEquals(15, song.getMeaureCount()); //TODO cuando import
+        assertEquals(14, song.getMeaureCount());
         assertTrue(song.getStaves().get(0).getAtoms().get(0) instanceof SimpleMultiMeasureRest);
-
-
     }
 
 }
