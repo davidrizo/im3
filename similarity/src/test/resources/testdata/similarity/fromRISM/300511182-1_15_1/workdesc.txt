@@ -1,0 +1,9 @@
+Using font  Bravura
+RISM ID:  300511182
+Incipit:  1.15.1
+Author:  Mielczewski, Marcin
+Title:  Masses
+@clef:  C-1
+@keysig: 
+@timesig:  c/
+@data:  4.'G8G2A4B''DD8xCC4.D4C'BA{8BA}2A4xGA

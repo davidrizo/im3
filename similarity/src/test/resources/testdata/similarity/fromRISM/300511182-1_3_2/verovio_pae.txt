@@ -1,0 +1,8 @@
+@start:300511182-1_3_2
+@clef:F-4
+@keysig:
+@key:
+@timesig:c/
+@data:,2CG4CE2D/,,2GA4B,D,,GA/2,DE4,,A2A4A/
+@end:300511182-1_3_2
+

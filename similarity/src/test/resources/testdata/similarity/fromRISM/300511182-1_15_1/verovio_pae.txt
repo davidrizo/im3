@@ -1,0 +1,8 @@
+@start:300511182-1_15_1
+@clef:C-1
+@keysig:
+@key:
+@timesig:c/
+@data:4.'G8G2A4B''DD8xCC4.D4C'BA{8BA}2A4xGA
+@end:300511182-1_15_1
+

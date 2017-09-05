@@ -1,0 +1,685 @@
+package es.ua.dlsi.im3.core.score.io;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
+
+import es.ua.dlsi.im3.core.score.*;
+import org.apache.commons.lang3.math.Fraction;
+import org.junit.Before;
+import org.junit.Test;
+
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
+import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
+import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
+import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
+import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureProporcionMenor;
+import es.ua.dlsi.im3.core.io.ImportException;
+
+/**
+ * MusicXML and MEI common tests
+ * @author drizo
+ */
+public class XMLExporterImporterTest {
+	boolean testExportImport = true;
+
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	private ScoreSong importMEI(File file) throws ImportException {
+		MEISongImporter importer = new MEISongImporter();
+		ScoreSong song = importer.importSong(file);
+		return song;
+	}
+	
+	private ScoreSong importMusicXML(File file) throws ImportException {
+		MusicXMLImporter importer = new MusicXMLImporter();
+		ScoreSong song = importer.importSong(file);
+		return song;
+	}
+	
+	private void doTest(Function<ScoreSong, Void> validationFunction, ScoreSong song) throws Exception {		
+		validationFunction.apply(song);
+		MEISongExporter exporter = new MEISongExporter();
+		//File file = File.createTempFile("export", "mei");
+		File file = TestFileUtils.createTempFile("aa.mei");
+		exporter.exportSong(file, song);
+
+		if (testExportImport) {
+			ScoreSong importedSong = importMEI(file);
+			validationFunction.apply(importedSong);
+		}
+	}
+		
+	// ------------------------------------------------------------------------------------------
+	private static Void assertSimple1(ScoreSong song) {
+		try {
+			assertEquals("Parts", 1, song.getParts().size());
+			assertEquals("Staves", 1, song.getStaves().size());
+			assertEquals("Voices", 1, song.getStaves().get(0).getLayers().size());
+			List<ITimedElementInStaff> coreSymbols = song.getStaves().get(0).getCoreSymbolsOrdered();
+			assertEquals("Symbols in staff", 9, coreSymbols.size());
+			Staff firstStaff = song.getStaves().get(0);
+			assertEquals("KeySignatures", 1, firstStaff.getKeySignatures().size());
+			assertEquals("Key", Accidentals.SHARP, firstStaff.getKeySignatureWithOnset(Time.TIME_ZERO).getAccidental());
+			assertEquals("Key notes", 2, firstStaff.getKeySignatureWithOnset(Time.TIME_ZERO).getInstrumentKey().getAlteredNoteNames().length);
+			assertEquals("Meters", 1, firstStaff.getTimeSignatures().size());
+			TimeSignature ts = firstStaff.getTimeSignatureWithOnset(Time.TIME_ZERO);
+			assertEquals("Meter num", 4, ((FractionalTimeSignature)ts).getNumerator());
+			assertEquals("Meter den", 4, ((FractionalTimeSignature)ts).getDenominator());
+			assertEquals("Measures", 2, song.getMeaureCount());
+			List<AtomFigure> atomFigures = song.getParts().get(0).getUniqueVoice().getAtomFigures();		
+			Figures [] expectedFigs = {Figures.WHOLE, Figures.QUARTER, Figures.QUARTER, Figures.EIGHTH,
+					Figures.EIGHTH, Figures.QUARTER};
+			assertEquals("Num figures", expectedFigs.length, atomFigures.size());
+					
+			for (int i=0; i<expectedFigs.length; i++) {
+				assertEquals("Figure #" + i, expectedFigs[i], atomFigures.get(i).getFigure());
+			}
+	
+			PitchClasses [] expectedPitchClasses = {PitchClasses.G, PitchClasses.F_SHARP, PitchClasses.G_SHARP,
+					PitchClasses.A
+			};
+			int [] expectedOctaves = {4,4,4,5};
+			List<AtomPitch> atomPitches = song.getParts().get(0).getUniqueVoice().getAtomPitches();
+			assertEquals(expectedPitchClasses.length, atomPitches.size());
+			for (int i=0; i<expectedPitchClasses.length; i++) {
+				assertEquals(expectedPitchClasses[i].getPitchClass(), atomPitches.get(i).getScientificPitch().getPitchClass());
+				assertEquals("Pitch #i=" + i, expectedOctaves[i], atomPitches.get(i).getScientificPitch().getOctave());
+			}
+			
+			//assertTrue(atomFigures.get(2).isRest());
+			//assertTrue(atomFigures.get(4).isRest());
+			
+			assertEquals("Measures", 2, song.getNumMeasures());
+			
+			
+		} catch (Throwable t) {
+			t.printStackTrace();
+			fail(t.toString());
+		}
+		return null;
+	}
+	
+
+	@Test
+	public void testSingle1() throws Exception {
+		doTest(XMLExporterImporterTest::assertSimple1, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple1.xml")));
+		doTest(XMLExporterImporterTest::assertSimple1, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple1.mei")));
+	}
+	
+	// ------------------------------------------------------------------------------------------
+
+	// this song contains a different time signature at the same staff in different staves 
+	private static Void assertMensural1(ScoreSong song) {
+		try {
+			List<Staff> staves = song.getStaves(); 
+			assertEquals("Staves", 3, staves.size());
+			assertEquals("triplum", staves.get(0).getName());
+			assertEquals("motetus", staves.get(1).getName());
+			assertEquals("tenor", staves.get(2).getName());
+			
+			Time lastMeterChangeTime = null;
+			for (Staff staff: staves) {
+				assertEquals("Time signature changes at " + staff.getName(), 3, staff.getTimeSignatures().size());
+				TimeSignature lastTS = null;
+				for (Iterator<TimeSignature> iterator = staff.getTimeSignatures().iterator(); 
+						iterator.hasNext();) {
+					lastTS = iterator.next();
+				}
+				assertTrue(lastTS instanceof TimeSignatureMensural);
+				TimeSignatureMensural tsm = (TimeSignatureMensural) lastTS;
+				assertEquals(Perfection.perfectum, tsm.getModusMinor());
+				assertEquals(Perfection.perfectum, tsm.getProlatio());
+				assertEquals(Perfection.perfectum, tsm.getTempus());
+				if (lastMeterChangeTime == null) {
+					lastMeterChangeTime = lastTS.getTime(); 
+				} else {
+					assertEquals("Last meter time at " + staff.getName(), lastMeterChangeTime, lastTS.getTime());
+				}
+				
+			}
+			
+			//assertEquals("Time signatures", 3, song.getMeters().size());
+			/*List<ISymbolInLayer> tenorSymbols = staves.get(2).getNotationSymbolsOrdered();
+			
+			Class<?>[] expectedClasses = {
+					ClefG2OttavaBassa.class, KeySignature.class, TimeSignature.class,
+					SimpleNote.class, Barline.class, 
+					SimpleNote.class, Barline.class, 
+					SimpleNote.class, Barline.class, 
+					SimpleRest.class, Barline.class, 
+					TimeSignature.class,
+					SimpleNote.class, Barline.class, 
+					SimpleNote.class, Barline.class, 
+					SimpleNote.class, Barline.class, 
+					SimpleNote.class, Barline.class, 
+					SimpleRest.class, Barline.class,
+					SimpleRest.class, Barline.class,
+					TimeSignature.class,
+					SimpleNote.class, Barline.class					
+			};
+			for (int i=0; i<expectedClasses.length; i++) {
+				assertEquals("Class #" + i, expectedClasses[i], tenorSymbols.get(i).getClass());
+			}*/
+			
+			/*assertEquals("Tenor Clef", ClefG2OttavaBassa.class, tenorSymbols.get(0).getClass());
+			assertEquals("Tenor First (empty) Key Signature", KeySignature.class, tenorSymbols.get(1).getClass());
+			//TODO Qué tipo de time signature
+			assertEquals("Tenor First Time Signature", TimeSignature.class, tenorSymbols.get(2).getClass());
+			for (int i=3; i<=5; i++) {
+				assertEquals("Tenor Notes (3-5)", SimpleNote.class, tenorSymbols.get(i).getClass());
+				assertEquals("Tenor notes figure", Figures.LONGA, ((SimpleNote)tenorSymbols.get(i)).getAtomFigure().getFigure());
+			}
+			assertEquals("Tenor Rest 6", SimpleRest.class, tenorSymbols.get(6).getClass());
+			assertEquals("Tenor Rest figure", Figures.LONGA, ((SimpleRest)tenorSymbols.get(6)).getAtomFigure().getFigure());
+			for (int i=7; i<=10; i++) {
+				assertEquals("Tenor Notes (7-10)", SimpleNote.class, tenorSymbols.get(i).getClass());
+				assertEquals("Tenor notes figure", Figures.LONGA, ((SimpleNote)tenorSymbols.get(i)).getAtomFigure().getFigure());
+			}
+			for (int i=11; i<=12; i++) {
+				assertEquals("Tenor Rest (11-12)", SimpleRest.class, tenorSymbols.get(i).getClass());
+				assertEquals("Tenor Rest figure", Figures.LONGA, ((SimpleRest)tenorSymbols.get(i)).getAtomFigure().getFigure());				
+			}
+			//TODO Qué tipo de time signature
+			assertEquals("Tenor Time Signature Change", TimeSignature.class, tenorSymbols.get(13).getClass());
+			
+			assertEquals("Tenor Note 14", SimpleNote.class, tenorSymbols.get(14).getClass());
+			assertEquals("Tenor notes figure", Figures.LONGA, ((SimpleNote)tenorSymbols.get(14)).getAtomFigure().getFigure());
+			
+			assertEquals("Tenor symbols (with barlines)", 25, tenorSymbols.size());*/
+		} catch (Throwable t) {
+			t.printStackTrace();
+			fail(t.getMessage());
+		}
+		return null;
+	}
+	@Test
+	public void testMensural1() throws Exception {
+		doTest(XMLExporterImporterTest::assertMensural1, importMEI(TestFileUtils.getFile("/testdata/core/score/io/garisonMEI.mei")));
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// this song contains a different time signature at the same staff in different staves 
+	private static Void assertSpanishMensuralWithTransduction1(ScoreSong song) {
+		try {
+			List<Staff> staves = song.getStaves(); 
+			assertEquals("Staves", 2, staves.size());
+			assertEquals("Mensural meter", TimeSignatureProporcionMenor.class, staves.get(0).getTimeSignatureWithOnset(Time.TIME_ZERO).getClass());
+			assertEquals("Mondern meter numerator", 3, ((FractionalTimeSignature)staves.get(1).getTimeSignatureWithOnset(Time.TIME_ZERO)).getNumerator());
+			assertEquals("Mondern meter denominator", 2, ((FractionalTimeSignature)staves.get(1).getTimeSignatureWithOnset(Time.TIME_ZERO)).getDenominator());
+			
+			/*for (Staff staff: staves) {
+				System.out.println("STAFF " + staff.getNumberIdentifier());
+				assertEquals("Num layers", 1, staff.getLayers().size());
+				// first atom is a rest
+				for (int i=0; i<staff.getLayers().get(0).size(); i++) {
+					Atom atom = staff.getLayers().get(0).getAtom(i);
+					System.out.println(staff.getName() + " " + i  + ", time " + atom.getTime() + " " +  atom);
+				}				
+			}*/
+			assertEquals("Num atoms at modern staff", 19, staves.get(1).getLayers().get(0).size());
+			assertEquals("Num pitch onsets at modern staff ", 16, staves.get(1).getLayers().get(0).getPlayedNotes().size());
+			
+			assertEquals("Modern bars", 7, song.getMeaureCount());
+			
+			//ArrayList<AtomPitch> pitchesStaff1 = staves.get(0).getLayers().get(0).getOnsetPitches();
+			//ArrayList<AtomPitch> pitchesStaff2 = staves.get(1).getLayers().get(0).getOnsetPitches();
+			/*for (int i=0; i<16; i++) {
+				System.out.println(pitchesStaff1.get(i).getTime());
+				System.out.println(pitchesStaff2.get(i).getTime());
+				System.out.println("---");
+				//assertEquals("Onset of pitch #" +i, pitchesStaff1.get(i).getTime(), pitchesStaff2.get(i).getTime());
+			}*/
+		} catch (Throwable t) {
+			t.printStackTrace();
+			fail(t.getMessage());
+		}
+		return null;
+	}	
+	@Test
+	public void testSpanishMensural1() throws Exception {
+		doTest(XMLExporterImporterTest::assertSpanishMensuralWithTransduction1, importMEI(TestFileUtils.getFile("/testdata/core/score/io/nodiviertanllantoninyo.mei")));
+	}
+	// ------------------------------------------------------------------------------------------
+	private static Void assertCrossStaff(ScoreSong song) {
+		try {
+			assertEquals(2, song.getStaves().size());
+			assertEquals(NoteNames.G, song.getStaves().get(0).getClefAtTime(Time.TIME_ZERO).getNote());
+			assertEquals(NoteNames.F, song.getStaves().get(1).getClefAtTime(Time.TIME_ZERO).getNote());
+			assertEquals(3, song.getStaves().get(0).getAtoms().size());
+			assertEquals(2, song.getStaves().get(0).getAtomPitches().size());
+			assertEquals(1, song.getStaves().get(1).getAtomPitches().size());
+			// MEI encodes a mRest, musicXML not, don't check atoms but atom pitches 
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		return null;
+	}
+	@Test
+	public void testCrossStaff() throws Exception {
+		doTest(XMLExporterImporterTest::assertCrossStaff, importMEI(TestFileUtils.getFile("/testdata/core/score/io/cross-staff.mei")));
+		doTest(XMLExporterImporterTest::assertCrossStaff, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/cross-staff.xml")));
+	}
+	
+	// ------------------------------------------------------------------------------------------	
+	private static Void assertCrossStaffMultilayer(ScoreSong song) {
+		try {
+			assertEquals(2, song.getStaves().size());
+			assertEquals(5, song.getStaves().get(0).getAtoms().size());
+			assertEquals(3, song.getStaves().get(0).getAtomPitches().size());
+			assertEquals(4, song.getStaves().get(1).getAtoms().size());
+			assertEquals(2, song.getStaves().get(1).getAtomPitches().size());
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		return null;
+	}
+	@Test
+	public void testCrossStaffMultilayer() throws Exception {
+		doTest(XMLExporterImporterTest::assertCrossStaffMultilayer, importMEI(TestFileUtils.getFile("/testdata/core/score/io/cross-staff-multilayer.mei")));
+		doTest(XMLExporterImporterTest::assertCrossStaffMultilayer, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/cross-staff-multilayer.xml")));
+	}
+	
+	// ------------------------------------------------------------------------------------------	
+	private static Void assertMultipleTies(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			ScoreLayer uniqueVoice = song.getParts().get(0).getUniqueVoice();
+			assertEquals(5, uniqueVoice.size());
+			assertNull(uniqueVoice.getAtom(0).getAtomPitches());
+			assertNull(uniqueVoice.getAtom(1).getAtomPitches());
+			assertEquals(3, uniqueVoice.getAtom(2).getAtomPitches().size());
+			assertEquals(3, uniqueVoice.getAtom(3).getAtomPitches().size());
+			assertEquals(2, uniqueVoice.getAtom(4).getAtomPitches().size());
+			List<PlayedScoreNote> pn = uniqueVoice.getPlayedNotes();
+			assertEquals(4, pn.size());
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void testMultipleTies() throws Exception {
+		doTest(XMLExporterImporterTest::assertMultipleTies, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multiple_ties.mei")));
+		doTest(XMLExporterImporterTest::assertMultipleTies, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multiple_ties.xml")));
+	}
+	
+	// ------------------------------------------------------------------------------------------
+	private static Void assertpartially_tied_chord_two_measures(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(5, song.getParts().get(0).getUniqueVoice().size());
+			assertEquals(3, song.getParts().get(0).getUniqueVoice().getAtom(2).getAtomPitches().size());
+			assertEquals(3, song.getParts().get(0).getUniqueVoice().getAtom(3).getAtomPitches().size());
+			assertEquals(4, song.getParts().get(0).getUniqueVoice().getPlayedNotes().size());
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void testpartially_tied_chord_two_measures() throws Exception {
+		doTest(XMLExporterImporterTest::assertpartially_tied_chord_two_measures, importMEI(TestFileUtils.getFile("/testdata/core/score/io/partially_tied_chord_two_measures.mei")));
+		doTest(XMLExporterImporterTest::assertpartially_tied_chord_two_measures, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/partially_tied_chord_two_measures.xml")));
+	}
+	
+	// ------------------------------------------------------------------------------------------
+	private static Void assertsimple_chord(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(1, song.getParts().get(0).getUniqueVoice().size());
+			assertEquals(3, song.getParts().get(0).getUniqueVoice().getAtom(0).getAtomPitches().size());
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void testsimple_chord() throws Exception {
+		doTest(XMLExporterImporterTest::assertsimple_chord, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_chord.mei")));
+		doTest(XMLExporterImporterTest::assertsimple_chord, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_chord.xml")));
+	}
+	
+	// ------------------------------------------------------------------------------------------
+	private static Void assertsimple_tied_chord_same_measure(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(2, song.getParts().get(0).getUniqueVoice().size());
+			List<PlayedScoreNote> pn = song.getParts().get(0).getUniqueVoice().getPlayedNotes();
+			assertEquals(3, pn.size());
+			for (int i=0; i<3; i++) {
+				assertEquals(4, pn.get(i).getDuration().getComputedTime(), 0.001);
+				assertEquals(0, pn.get(i).getOnset().getComputedTime(), 0.001);
+			}
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void simple_tied_chord_same_measure() throws Exception {
+		doTest(XMLExporterImporterTest::assertsimple_tied_chord_same_measure, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_tied_chord_same_measure.xml")));
+		doTest(XMLExporterImporterTest::assertsimple_tied_chord_same_measure, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_tied_chord_same_measure.mei")));
+	}
+	
+	// ------------------------------------------------------------------------------------------
+	private static Void assertsimple_tied_chord_two_measures(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(4, song.getParts().get(0).getUniqueVoice().size()); // rests and chords
+			List<PlayedScoreNote> pn = song.getParts().get(0).getUniqueVoice().getPlayedNotes();
+			assertEquals(3, pn.size());
+			for (int i=0; i<3; i++) {
+				assertEquals(5, pn.get(i).getDuration().getComputedTime(), 0.001);
+				assertEquals(3, pn.get(i).getOnset().getComputedTime(), 0.001);
+			}
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}			
+		return null;
+	}
+	
+	@Test
+	public void simple_tied_chord_two_measures() throws Exception {
+		doTest(XMLExporterImporterTest::assertsimple_tied_chord_two_measures, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_tied_chord_two_measures.mei")));
+		doTest(XMLExporterImporterTest::assertsimple_tied_chord_two_measures, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_tied_chord_two_measures.xml")));
+	}
+
+	// ------------------------------------------------------------------------------------------
+	private static Void assertsimple_tuplet(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(2, song.getParts().get(0).getUniqueVoice().size()); // rest and tuplet 
+			assertEquals(3, song.getParts().get(0).getUniqueVoice().getAtomPitches().size());
+			assertEquals(4, song.getParts().get(0).getUniqueVoice().getAtomFigures().size()); // rest and tuplet
+			
+			assertEquals(new Time(3,1), song.getParts().get(0).getUniqueVoice().getAtom(0).getDuration());
+			assertEquals(new Time(1,1), song.getParts().get(0).getUniqueVoice().getAtom(1).getDuration());
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		return null;
+	}
+	@Test
+	public void simple_tuplet() throws Exception {
+		doTest(XMLExporterImporterTest::assertsimple_tuplet, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_tuplet.mei")));
+		doTest(XMLExporterImporterTest::assertsimple_tuplet, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_tuplet.xml")));
+	}
+	
+	// ------------------------------------------------------------------------------------------
+	private static Void assertTwoNotesTriplet(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(2, song.getParts().get(0).getUniqueVoice().size()); // rest and triplet  
+			assertEquals(2, song.getParts().get(0).getUniqueVoice().getAtomPitches().size());
+			assertEquals(3, song.getParts().get(0).getUniqueVoice().getAtomFigures().size()); // including rest 
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		return null;
+	}
+	@Test
+	public void twoNotesTriplet() throws Exception {
+		doTest(XMLExporterImporterTest::assertTwoNotesTriplet, importMEI(TestFileUtils.getFile("/testdata/core/score/io/two_notes_tuplet.mei")));
+		doTest(XMLExporterImporterTest::assertTwoNotesTriplet, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/two_notes_tuplet.xml")));
+	}	
+	// ------------------------------------------------------------------------------------------
+	private static Void asserttuplet_rest_chord_tied(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			ScoreLayer voice = song.getParts().get(0).getUniqueVoice();
+			assertEquals(3, voice.size());  
+			assertEquals(5, song.getParts().get(0).getUniqueVoice().getAtomPitches().size());
+			assertEquals(5, song.getParts().get(0).getUniqueVoice().getAtomFigures().size());
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		return null;
+	}
+	@Test
+	public void tuplet_rest_chord_tied() throws Exception {
+		doTest(XMLExporterImporterTest::asserttuplet_rest_chord_tied, importMEI(TestFileUtils.getFile("/testdata/core/score/io/tuplet_rest_chord_tied.mei")));
+		doTest(XMLExporterImporterTest::asserttuplet_rest_chord_tied, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/tuplet_rest_chord_tied.xml")));
+	}
+
+	// ------------------------------------------------------------------------------------------
+	private static Void asserSimpleTie(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(2, song.getParts().get(0).getUniqueVoice().size());
+			assertTrue("Tied to next", song.getParts().get(0).getUniqueVoice().getAtom(0).getAtomPitches().get(0).isTiedToNext());
+			assertTrue("Tied from previous", song.getParts().get(0).getUniqueVoice().getAtom(1).getAtomPitches().get(0).isTiedFromPrevious());
+			List<PlayedScoreNote> pn = song.getParts().get(0).getUniqueVoice().getPlayedNotes();
+			assertEquals(1, pn.size());
+			assertEquals(8, pn.get(0).getDuration().getComputedTime(), 0.001);
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void simpleTie() throws Exception {
+		doTest(XMLExporterImporterTest::asserSimpleTie, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_tie.mei")));
+		doTest(XMLExporterImporterTest::asserSimpleTie, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_tie.xml")));
+	}
+
+	// ------------------------------------------------------------------------------------------
+	private static Void asserTwoTies(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(3, song.getParts().get(0).getUniqueVoice().size());
+			List<PlayedScoreNote> pn = song.getParts().get(0).getUniqueVoice().getPlayedNotes();
+			assertEquals(1, pn.size());
+			assertEquals(12, pn.get(0).getDuration().getComputedTime(), 0.001);
+		} catch (IM3Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void twoTies() throws Exception {
+		doTest(XMLExporterImporterTest::asserTwoTies, importMEI(TestFileUtils.getFile("/testdata/core/score/io/two_ties.mei")));
+		doTest(XMLExporterImporterTest::asserTwoTies, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/two_ties.xml")));
+	}
+	
+	// ------------------------------------------------------------------------------------------
+	private static Void assertMeterChange(ScoreSong song) {
+		try {
+			assertEquals(4, song.getStaves().size());
+			for (Staff staff: song.getStaves()) {
+				assertEquals(3, staff.getTimeSignatures().size());
+				assertTrue(staff.getTimeSignatureWithOnset(Time.TIME_ZERO) instanceof TimeSignatureCommonTime);				
+				assertEquals(3, ((FractionalTimeSignature)staff.getTimeSignatureWithOnset(new Time(Fraction.getFraction(4,1)))).getNumerator());
+				assertEquals(4, ((FractionalTimeSignature)staff.getTimeSignatureWithOnset(new Time(Fraction.getFraction(4,1)))).getDenominator());
+				assertEquals(6, ((FractionalTimeSignature)staff.getTimeSignatureWithOnset(new Time(Fraction.getFraction(10,1)))).getNumerator());
+				assertEquals(8, ((FractionalTimeSignature)staff.getTimeSignatureWithOnset(new Time(Fraction.getFraction(10,1)))).getDenominator());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	// It also evaluates whole measure rests (mrest in MEI)
+	@Test
+	public void meterChange() throws Exception {
+		doTest(XMLExporterImporterTest::assertMeterChange, importMEI(TestFileUtils.getFile("/testdata/core/score/io/meter_change.mei")));
+		doTest(XMLExporterImporterTest::assertMeterChange, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/meter_change.xml")));
+	}	
+	
+	// ------------------------------------------------------------------------------------------
+	private static Void assertKeyChange(ScoreSong song) {
+		try {
+			assertEquals(3, song.getStaves().size());
+			for (Staff staff: song.getStaves()) {
+				assertEquals(5, staff.getKeySignatures().size());
+				assertEquals(0, staff.getKeySignatureWithOnset(Time.TIME_ZERO).getAccidentals().size());				
+				assertEquals(KeysEnum.GM.getKey(), staff.getKeySignatureWithOnset(new Time(4, 1)).getInstrumentKey());
+				assertEquals(KeysEnum.Em.getKey(), staff.getKeySignatureWithOnset(new Time(13, 1)).getInstrumentKey());
+				assertEquals(KeysEnum.EbM.getKey(), staff.getKeySignatureWithOnset(new Time(23, 1)).getInstrumentKey());
+				
+				Time t = new Time(23,1).add(new Time(9,2).multiply(3));
+				assertEquals(KeysEnum.Dm.getKey(), staff.getKeySignatureWithOnset(t).getInstrumentKey());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void keyChange() throws Exception {
+		doTest(XMLExporterImporterTest::assertKeyChange, importMEI(TestFileUtils.getFile("/testdata/core/score/io/key_changes.mei")));
+		// it uses mRest
+		doTest(XMLExporterImporterTest::assertKeyChange, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/key_changes.xml")));
+		// it does not use mRest
+		doTest(XMLExporterImporterTest::assertKeyChange, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/key_changes_musescore.xml")));
+	}		
+
+	// ------------------------------------------------------------------------------------------
+	private static Void assertTransposingInstruments(ScoreSong song) {
+		try {
+			assertEquals(3, song.getStaves().size());
+			assertEquals(0, song.getUniqueKeyWithOnset(Time.TIME_ZERO).getFifths());
+			assertEquals(1, song.getUniqueKeyWithOnset(new Time(8,1)).getFifths());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void transposingInstruments() throws Exception {
+		System.err.println("Pendiente TEST cambios tonalidad en medio con transposing instruments respuesta MEI-L");
+		/*doTest(XMLExporterImporterTest::assertTransposingInstruments, importMEI(TestFileUtils.getFile("/testdata/score/io/transposing_instruments.mei")));
+		doTest(XMLExporterImporterTest::assertTransposingInstruments, importMusicXML(TestFileUtils.getFile("/testdata/score/io/transposing_instruments.xml")));*/
+	}			
+	
+	// ------------------------------------------------------------------------------------------
+	private static Void assertAnacrusis(ScoreSong song) {
+		try {
+			assertEquals(1, song.getParts().size());
+			assertEquals(1, song.getStaves().size());
+			assertTrue(song.isAnacrusis());
+			assertEquals(new Time(3, 1), song.getAnacrusisOffset());
+			assertEquals(2, song.getMeaureCount());
+			ArrayList<Measure> measures = song.getMeasuresSortedAsArray();
+			assertEquals(Time.TIME_ZERO, measures.get(0).getTime());
+			assertEquals(new Time(1, 1), measures.get(1).getTime());
+			assertEquals(2, song.getParts().get(0).size());
+			List<Atom> atoms = song.getPart(0).getAtomsSortedByTime();
+			assertEquals(2, atoms.size());
+			assertEquals(Time.TIME_ZERO, atoms.get(0).getTime());
+			assertEquals(new Time(1, 1), atoms.get(1).getTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		
+		return null;
+	}
+	@Test
+	public void anacrusis() throws Exception {
+		doTest(XMLExporterImporterTest::assertAnacrusis, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_anacrusis.mei")));
+		doTest(XMLExporterImporterTest::assertAnacrusis, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_anacrusis.xml")));
+	}			
+
+	// ------------------------------------------------------------------------------------------
+	private static Void assertAnacrusisStaves(ScoreSong song) {
+		try {
+			assertEquals(4, song.getStaves().size());
+			assertTrue(song.isAnacrusis());
+			assertEquals(new Time(3, 1), song.getAnacrusisOffset());
+			assertEquals(2, song.getMeaureCount());
+			ArrayList<Measure> measures = song.getMeasuresSortedAsArray();
+			assertEquals(Time.TIME_ZERO, measures.get(0).getTime());
+			assertEquals(new Time(1, 1), measures.get(1).getTime());
+			assertTrue(song.getStaves().get(0).getAtoms().get(0) instanceof SimpleRest);
+			assertTrue(song.getStaves().get(0).getAtoms().get(1) instanceof SimpleTuplet);
+			assertEquals(Time.TIME_ZERO, song.getStaves().get(0).getAtoms().get(0).getTime());
+			assertEquals(new Time(1,1), song.getStaves().get(0).getAtoms().get(1).getTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		return null;
+	}
+	@Test
+	public void anacrusisStaves() throws Exception {
+		doTest(XMLExporterImporterTest::assertAnacrusisStaves, importMEI(TestFileUtils.getFile("/testdata/core/score/io/anacrusis_staves.mei")));
+		doTest(XMLExporterImporterTest::assertAnacrusisStaves, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/anacrusis_staves.xml")));
+	}
+	
+	// ------------------------------------------------------------------------------------------
+	/*private static Void assertMultimeasureRest(ScoreSong song) {
+		try {
+			assertEquals(3, song.getStaves().size());
+			for (Staff staff: song.getStaves()) {
+				System.out.println(staff.getAtoms());
+				assertEquals(3, staff.getAtoms().size());
+				SimpleMultiMeasureRest smr = (SimpleMultiMeasureRest) staff.getAtoms().get(1);
+				assertEquals(2, smr.getNumMeasures());
+				assertEquals(8.0, smr.getQuarterRatioDuration(), 0.001);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}		
+		return null;
+	}
+	@Test
+	public void multimeasureRest() throws Exception {
+		doTest(XMLExporterImporterTest::assertMultimeasureRest, importMEI(TestFileUtils.getFile("/testdata/score/io/multimeasure_rest.mei")));
+		doTest(XMLExporterImporterTest::assertMultimeasureRest, importMusicXML(TestFileUtils.getFile("/testdata/score/io/multimeasure_rest.xml")));
+	}	*/
+	
+	//TODO Grace notes, slurs, tuplet dentro de tuplet
+	// tuplet con elementos en distintos staves, tuplet con acordes con notas en distintos staves
+	// tuplet: negra_puntillo + corchea?: https://i.stack.imgur.com/OLiOH.png
+	// test staff.getAtomPitch ....
+	// test mrest vacíos - ver mrest en MEI guidelines
+	// two dots (e.g. 9/8)
+	// multiple measure rest
+
+	// partial measures (repetitions in the middle of the measure)
+	//TODO puntillo_stacatto.xml -- lleva multimeasure rest
+	//https://github.com/cuthbertLab/musicxmlTestSuite/blob/master/xmlFiles/02d-Rests-Multimeasure-TimeSignatures.xml
+	
+	// ScoreGap
+}

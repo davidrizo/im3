@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<pages>
+    <page xml:id="page-0000000452135105">
+        <system xml:id="system-0000001510044364" system.leftmar="0" system.rightmar="0">
+            <section xml:id="section-0000000285178659" />
+            <measure xml:id="measure-0000000065485901" right="invis">
+                <staff xml:id="staff-0000001961705356" n="1">
+                    <layer xml:id="layer-0000000391426584" n="1">
+                        <note xml:id="note-0000000964186527" dots="1" dur="4" oct="4" pname="g" />
+                        <note xml:id="note-0000000171359027" dur="8" oct="4" pname="g" />
+                        <note xml:id="note-0000000255596162" dur="2" oct="4" pname="a" />
+                        <note xml:id="note-0000000837400734" dur="4" oct="4" pname="b" />
+                        <note xml:id="note-0000001733797547" dur="4" oct="5" pname="d" />
+                        <note xml:id="note-0000000729766286" dur="4" oct="5" pname="d" />
+                        <note xml:id="note-0000000902860785" dur="8" oct="5" pname="c">
+                            <accid xml:id="accid-0000000261763793" accid="s" />
+                        </note>
+                        <note xml:id="note-0000001417559895" dur="8" oct="5" pname="c" />
+                        <note xml:id="note-0000000745575447" dots="1" dur="4" oct="5" pname="d" />
+                        <note xml:id="note-0000000319457484" dur="4" oct="5" pname="c" />
+                        <note xml:id="note-0000000412816088" dur="4" oct="4" pname="b" />
+                        <note xml:id="note-0000001827811206" dur="4" oct="4" pname="a" />
+                        <beam xml:id="beam-0000000387692073">
+                            <note xml:id="note-0000000269368907" dur="8" oct="4" pname="b" />
+                            <note xml:id="note-0000000475285913" dur="8" oct="4" pname="a" />
+                        </beam>
+                        <note xml:id="note-0000001638656598" dur="2" oct="4" pname="a" />
+                        <note xml:id="note-0000001571153458" dur="4" oct="4" pname="g">
+                            <accid xml:id="accid-0000000917245094" accid="s" />
+                        </note>
+                        <note xml:id="note-0000001500676692" dur="4" oct="4" pname="a" />
+                    </layer>
+                </staff>
+            </measure>
+            <boundaryEnd xml:id="bdend-0000001654721542" startid="section-0000000285178659" type="section" />
+        </system>
+    </page>
+</pages>

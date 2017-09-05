@@ -1,0 +1,9 @@
+Using font  Leipzig
+RISM ID:  300511182
+Incipit:  1.3.2
+Author:  Mielczewski, Marcin
+Title:  Masses
+@clef:  F-4
+@keysig: 
+@timesig:  c/
+@data:  ,2CG4CE2D/,,2GA4B,D,,GA/2,DE4,,A2A4A/

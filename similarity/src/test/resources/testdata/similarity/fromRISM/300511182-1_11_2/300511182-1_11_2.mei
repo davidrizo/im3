@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<pages>
+    <page xml:id="page-0000001364529041">
+        <system xml:id="system-0000001948552052" system.leftmar="0" system.rightmar="0">
+            <section xml:id="section-0000001022028490" />
+            <measure xml:id="measure-0000002134384208" right="single">
+                <staff xml:id="staff-0000001658622724" n="1">
+                    <layer xml:id="layer-0000000362546897" n="1">
+                        <note xml:id="note-0000000914591340" dur="1" oct="3" pname="d" />
+                        <note xml:id="note-0000001996189801" dur="breve" oct="3" pname="g" />
+                        <note xml:id="note-0000001972451973" dur="1" oct="3" pname="e" />
+                    </layer>
+                </staff>
+            </measure>
+            <measure xml:id="measure-0000001604265334" right="single">
+                <staff xml:id="staff-0000000295251472" n="1">
+                    <layer xml:id="layer-0000000847122557" n="1">
+                        <note xml:id="note-0000001919719536" dur="breve" oct="3" pname="f" />
+                        <note xml:id="note-0000000931929024" dur="1" oct="3" pname="d" />
+                        <note xml:id="note-0000001332868797" dots="1" dur="1" oct="3" pname="e" />
+                        <note xml:id="note-0000001123949322" dur="2" oct="3" pname="e" />
+                        <note xml:id="note-0000000950095842" dur="1" oct="3" pname="e" />
+                    </layer>
+                </staff>
+            </measure>
+            <measure xml:id="measure-0000001247041923" right="invis">
+                <staff xml:id="staff-0000001719901049" n="1">
+                    <layer xml:id="layer-0000000475618817" n="1">
+                        <rest xml:id="rest-0000000791323185" dur="2" />
+                        <note xml:id="note-0000000402544424" dur="1" oct="3" pname="c" />
+                        <note xml:id="note-0000000990646118" dur="1" oct="2" pname="g" />
+                    </layer>
+                </staff>
+            </measure>
+            <boundaryEnd xml:id="bdend-0000000684491738" startid="section-0000001022028490" type="section" />
+        </system>
+    </page>
+</pages>

@@ -1,0 +1,445 @@
+package es.ua.dlsi.im3.core.score;
+
+import java.util.*;
+
+import org.apache.commons.lang3.math.Fraction;
+
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
+
+/**
+ * This layer may contain atoms that belong to other staff
+ * @author drizo
+ */
+public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
+	String ID;
+	int number;
+	/**
+	 * Cannot be null
+	 */
+	ScorePart part;
+	/**
+	 * It may be null
+	 */
+	Staff staff;
+	
+	/**
+	 * This is the main list of elements
+	 */
+	List<Atom> atoms;
+
+	/**
+	 * They can only be created by a part, this is why this is just package visible
+	 * @param part
+	 * @param number
+	 */
+	ScoreLayer(ScorePart part, int number) {
+		this.part = part;
+		this.number = number; //TODO Comprobar que es un número único
+		atoms = new ArrayList<>();
+	}
+
+	public void setStaff(Staff staff) {
+		this.staff = staff;
+	}
+
+	/**
+	 * It updates the onsets from the atom fromAtom (not included) to the end of
+	 * the list of atoms
+	 * 
+	 * @param fromAtom
+	 * @throws IM3Exception
+	 */
+	private void updateOnsets(Atom fromAtom) throws IM3Exception {
+		int index = atoms.indexOf(fromAtom);
+		if (index < 0) {
+			throw new IM3Exception("Cannot find referenced atom");
+		}
+		// correct onset times
+		updateOnsets(index);
+	}
+
+	/**
+	 * It updates the onsets from the atom fromAtom (not included) to the end of
+	 * the list of atoms
+	 * 
+	 * @throws IM3Exception
+	 */
+	private void updateOnsets(int fromAtomIndex) throws IM3Exception {
+		// correct onset times
+		Atom lastAtom = atoms.get(fromAtomIndex);
+		for (int i = fromAtomIndex + 1; i < atoms.size(); i++) {
+			atoms.get(i).setTime(lastAtom.getOffset());
+		}
+	}
+
+	public void add(Atom atom) {
+		try {
+			atom.setTime(getDuration());
+			atom.setLayer(this);
+		} catch (IM3Exception e) {
+			throw new IM3RuntimeException("The onset should have been set for all atoms in a voice");
+		}
+		atoms.add(atom);
+	}
+	
+	//TODO añadir con huecos, he quitado el VoiceGap
+	public void add(Time time, Atom atom) {
+		atom.setTime(time);
+		atoms.add(atom);
+	}
+
+	
+	// TODO Test unitario
+	public void addAfter(Atom referenceAtom, Atom newAtom) throws IM3Exception {
+		int index = atoms.indexOf(referenceAtom);
+		if (index < 0) {
+			throw new IM3Exception("Cannot find referenced atom");
+		}
+		atoms.add(index + 1, newAtom);
+
+		// correct onset times
+		updateOnsets(index + 1);
+	}
+
+	// TODO Test unitario
+	public void addBefore(Atom referenceAtom, Atom newAtom) throws IM3Exception {
+		int index = atoms.indexOf(referenceAtom);
+		if (index < 0) {
+			throw new IM3Exception("Cannot find referenced atom");
+		}
+		atoms.add(index, newAtom);
+
+		// correct onset times
+		updateOnsets(index);
+	}
+	
+	public void remove(Atom atom) throws IM3Exception {
+		int index = atoms.indexOf(atom);
+		if (index < 0) {
+			throw new IM3Exception("Cannot find referenced atom");
+		}
+		atoms.remove(index);
+		if (atoms.size() > index) { // if not last
+			updateOnsets(index);	
+		}
+	}
+
+	
+	
+
+	/**
+	 * Sequence of ordered notes (first time, next pitch) that should be played
+	 * @return
+	 * @throws IM3Exception 
+	 */
+	public List<PlayedScoreNote> getPlayedNotes() throws IM3Exception {
+		ArrayList<PlayedScoreNote> result = new ArrayList<>();
+		
+		for (Atom atom : atoms) {
+			List<PlayedScoreNote> pn = atom.computePlayedNotes();
+			if (pn != null) {
+				result.addAll(pn);
+			}
+		}
+		Collections.sort(result);
+		return result;
+	}
+	/**
+	 * Sequence of (non necessarily ordered) onset and continuation pitches 
+	 * @return
+	 */
+	public ArrayList<AtomPitch> getAtomPitches() {
+		ArrayList<AtomPitch> result = new ArrayList<>();
+		for (Atom atom : atoms) {
+			List<AtomPitch> atomPitches = atom.getAtomPitches();
+			if (atomPitches != null) {
+				for (AtomPitch atomPitch: atomPitches) {
+					if (atomPitch.getStaff() == staff) { // no staff change
+						result.add(atomPitch);
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	
+	/**
+	 * Sequence of figures with their absolute onset times
+	 * 
+	 * @return
+	 */
+	public List<AtomFigure> getAtomFigures() {
+		ArrayList<AtomFigure> result = new ArrayList<>();
+
+		for (Atom atom : atoms) {
+			result.addAll(atom.getAtomFigures());
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @return Num of atoms
+	 */
+	public int size() {
+		return atoms.size();
+	}
+
+	public Atom getAtom(int index) {
+		return atoms.get(index);
+	}
+
+	public Time getDuration() throws IM3Exception {
+		/*
+		 * Fraction duration = Fraction.ZERO; for (Atom atom: atoms) { duration
+		 * = duration.add(atom.getExactDuration()); } return new Time(duration);
+		 */
+		if (atoms.isEmpty()) {
+			return new Time(Fraction.ZERO);
+		} else {
+			return atoms.get(atoms.size() - 1).getOffset();
+		}
+	}
+
+	public void onAtomDurationChanged(Atom atom) throws IM3Exception {
+		updateOnsets(atom);
+
+	}
+
+	// ----------------------------------------------------------------------
+	// ----------------------- General information
+	// --------------------------------
+	// ----------------------------------------------------------------------
+
+	@Override
+	public String toString() {
+		return "ScoreLayer [number=" + number + "]";
+	}
+
+	public ScorePart getPart() {
+		return part;
+	}
+
+	/**
+	 * package visibility for reordering in ScorePart
+	 *
+	 * @param i
+	 */
+	void setNumber(int i) {
+		this.number = i;
+	}
+
+	public int getNumber() {
+		return this.number;
+	}
+
+	/**
+	 * It does not contain atoms (notes, chords...)
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty() {
+		return atoms.isEmpty();
+	}
+
+	@Override
+	public int compareTo(ScoreLayer o) {
+		if (this.getPart() != o.getPart()) {
+			return this.getPart().getNumber() - o.getPart().getNumber();
+		} else {
+			return this.number - o.number;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 43 * hash + this.number;
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ScoreLayer other = (ScoreLayer) obj;
+        return this.number == other.number;
+    }
+
+	public TreeSet<ScientificPitch> getScientificPitches() {
+		TreeSet<ScientificPitch> result = new TreeSet<>();
+		List<AtomPitch> pitchSeq = getAtomPitches();
+		for (AtomPitch atomPitch : pitchSeq) {
+			result.add(atomPitch.getScientificPitch());
+		}
+		return result;
+	}
+
+	//TODO Todos los métodos de bajo (within onset ...) son extremadamente ineficientes
+	// Debemos usar los RangeTree .... del im2
+	/*FRACCIONES public final List<AtomPitch> getAtomPitchesWithOnsetWithin(Measure bar) throws IM3Exception {
+		return getAtomPitchesWithOnsetWithin(bar.getTime(), bar.getEndTime());
+	}*/
+
+	/*FRACCIONES public final List<AtomFigure> getAtomFiguresWithOnsetWithin(Measure bar) throws IM3Exception {
+		return getAtomFiguresWithOnsetWithin(bar.getTime(), bar.getEndTime());
+	}*/
+
+	/**
+	 * 
+	 * @param fromTime Included
+	 * @param toTime Not included
+	 * @return
+	 * @throws IM3Exception 
+	 */
+	public List<AtomFigure> getAtomFiguresWithOnsetWithin(Time fromTime, Time toTime)  {
+		ArrayList<AtomFigure> result = new ArrayList<>();
+		List<AtomFigure> figureSeq = getAtomFigures();
+		for (AtomFigure atomFigure : figureSeq) {
+			if (atomFigure.getTime().isContainedIn(fromTime, toTime)) {
+				result.add(atomFigure);
+			} 
+		}
+		return result;
+	}
+
+
+	public List<Atom> getAtomsWithOnsetWithin(Measure bar) throws IM3Exception {
+		return getAtomsWithOnsetWithin(bar.getTime(), bar.getEndTime());
+	}
+
+	
+
+	/**
+	 * 
+	 * @param fromTime Included
+	 * @param toTime Not included
+	 * @return
+	 * @throws IM3Exception 
+	 */	
+	public List<Atom> getAtomsWithOnsetWithin(Time fromTime, Time toTime) {
+		ArrayList<Atom> result = new ArrayList<>();
+		for (Atom atom : atoms) {
+			if (atom.getTime().isContainedIn(fromTime, toTime)) {
+				result.add(atom);
+			} 
+		}
+		return result;
+	}
+
+	//TODO Debemos asegurar que no hay dos atom con el mismo onset
+
+	/**
+     * It does not include subatoms
+	 * @param time
+	 * @return
+	 */
+	public Atom getAtomWithOnset(Time time) {
+		for (Atom atom : atoms) {
+			if (atom.getTime().equals(time)) {
+				return atom;
+			}
+		}
+		return null;
+	}
+
+    /**
+     * It includes subatoms
+     * @param time
+     * @return
+     */
+	public Atom getAtomExpandedWithOnset(Time time) {
+        for (Atom atom : atoms) {
+            List<Atom> sa = atom.getAtoms();
+            for (Atom a: sa) {
+                if (a.getTime().equals(time)) {
+                    return a;
+                }
+            }
+        }
+        return null;
+    }
+
+	public List<Atom> getAtoms() {
+	    return atoms;
+	}
+
+	public TreeSet<Atom> getAtomsSortedByTime() {
+		TreeSet<Atom> result = new TreeSet<>(new Comparator<Atom>() {
+			@Override
+			public int compare(Atom o1, Atom o2) {
+				int diff = o1.getTime().compareTo(o2.getTime());
+				if (diff == 0) {
+					return o1.compareTo(o2);
+				} else {
+					return diff;
+				}
+			}
+		});
+		result.addAll(getAtoms());
+		return result;
+	}
+
+
+	public Atom getLastAtom() throws IM3Exception {
+		if (atoms.isEmpty()) {
+			throw new IM3Exception("There are no atoms");
+		}
+		return atoms.get(atoms.size()-1);
+	}
+
+
+	
+	@Override
+	public String __getID() {
+		return ID;
+	}
+
+	@Override
+	public void __setID(String id) {
+		this.ID = id;
+		
+	}
+
+	@Override
+	public String __getIDPrefix() {
+		return "V";
+	}
+
+	public Staff getStaff() {
+		return staff;
+	}
+
+    public TreeSet<AtomPitch> getAtomPitchesSortedByTime() {
+		TreeSet<AtomPitch> result = new TreeSet<>(new Comparator<AtomPitch>() {
+			@Override
+			public int compare(AtomPitch o1, AtomPitch o2) {
+				int diff = o1.getTime().compareTo(o2.getTime());
+				if (diff == 0) {
+					return o1.getScientificPitch().compareTo(o2.getScientificPitch());
+				} else {
+					return diff;
+				}
+			}
+		});
+		result.addAll(getAtomPitches());
+		return result;
+    }
+
+    //TODO Hacer una estructura externa auxiliar para hacer estos cálculos - mantenerlos en un treeset
+    public AtomPitch getAtomPitchesWithOnset(Time time) {
+	    List<AtomPitch> atomPitches = this.getAtomPitches(); //TODO Esto está haciendo el mismo cálculo muchas veces
+        for (AtomPitch ap: atomPitches) {
+            if (ap.getTime().equals(time)) {
+                return ap;
+            }
+        }
+	    return null;
+    }
+}

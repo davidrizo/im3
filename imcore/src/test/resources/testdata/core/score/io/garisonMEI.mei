@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" xmlns:xlink="http://www.w3.org/1999/xlink" meiversion="2013">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title>Douce/Garison</title>
+                <composer>Philippe de Vitry</composer>
+                <respStmt>
+                    <persName/>
+                </respStmt>
+            </titleStmt>
+            <pubStmt>
+                <availability>
+                    <useRestrict>Copyright © </useRestrict>
+                </availability>
+            </pubStmt>
+        </fileDesc>
+        <encodingDesc>
+            <appInfo>
+                <application version="7" xml:id="sibelius7">
+                    <name>Sibelius</name>
+                </application>
+            </appInfo>
+        </encodingDesc>
+        <workDesc>
+            <work>
+                <titleStmt>
+                    <title>Douce/Garison</title>
+                    <respStmt>
+                        <persName role="composer">Philippe de Vitry</persName>
+                    </respStmt>
+                </titleStmt>
+            </work>
+        </workDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <score>
+                    <scoreDef>
+                        <staffGrp>
+                            <staffGrp n="1" symbol="bracket">
+                                <staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="triplum" lines="5" n="1" xml:id="sd1" modusminor="3" tempus="3" prolatio="3"/>
+                                <staffDef clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="motetus" lines="5" n="2" xml:id="sd2" modusminor="3"
+                                    tempus="3" prolatio="3"/>
+                                <staffDef clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="tenor" lines="5" n="3" xml:id="sd3" modusminor="3"
+                                    tempus="3" prolatio="3"/>
+                            </staffGrp>
+                        </staffGrp>
+                    </scoreDef>
+                    <section>
+                        <staff n="1">
+                            <layer n="1">
+                                <note dur="semibrevis" oct="4" pname="c" xml:id="p1ccd4n0v1b1s1"/>
+                                <note dur="semibrevis" oct="3" pname="a" xml:id="p1cad3n1024v1b1s1"/>
+                                <note dur="semibrevis" oct="3" pname="b" xml:id="p1cbd3n2048v1b1s1"/>
+                                <!-- imperfectio -->
+                                <note dur="brevis" oct="4" pname="c" xml:id="p1ccd4n3072v1b1s1" num="3" numbase="2"/>
+                                <note dur="semibrevis" oct="4" pname="d" xml:id="p1cdd4n5120v1b1s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="f" xml:id="p1cfd4n6144v1b1s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="e" xml:id="p1ced4n6826v1b1s1"/>
+                                <note dur="semibrevis" oct="4" pname="f" xml:id="p1cfd4n7168v1b1s1"/>
+                                <note dur="semibrevis" oct="4" pname="g" xml:id="p1cgd4n8192v1b1s1"/>
+                                <barLine/> 
+                                <!-- bar 2 -->
+                                <!-- imperfectio -->
+                                <note dur="longa" oct="4" pname="a" xml:id="p1cad4n0v1b2s1" num="3" numbase="2"/>
+                                <rest dur="brevis" xml:id="p1r6144v1b2s1"/>
+                                <barLine/>
+                                <!-- bar 3 -->
+                                <!-- imperfectio -->
+                                <note dur="brevis" oct="4" pname="g" xml:id="p1cgd4n0v1b3s1" num="3" numbase="2"/>
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n2048v1b3s1"/>
+                                <note dur="brevis" oct="4" pname="g" xml:id="p1cgd4n3072v1b3s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="g" xml:id="p1cgd4n6144v1b3s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="g" xml:id="p1cgd4n6826v1b3s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n7168v1b3s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="g" xml:id="p1cgd4n7850v1b3s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="f" xml:id="p1cfd4n8192v1b3s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="g" xml:id="p1cgd4n8874v1b3s1"/>
+                                <barLine/>
+                                <!-- bar 4 -->
+                                <!-- imperfectio -->
+                                <note dur="brevis" oct="4" pname="a" xml:id="p1cad4n0v1b4s1" num="3" numbase="2"/>
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n2048v1b4s1"/>
+                                <note dur="semibrevis" oct="4" pname="b" xml:id="p1cbd4n3072v1b4s1">
+                                    <accid accid="f"/>
+                                </note>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n4096v1b4s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="b" xml:id="p1cbd4n4778v1b4s1">
+                                    <accid accid="f"/>
+                                </note>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n5120v1b4s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="g" xml:id="p1cgd4n5802v1b4s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="f" xml:id="p1cfd4n6144v1b4s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="g" xml:id="p1cgd4n6826v1b4s1"/>
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n7168v1b4s1"/>
+                                <note dur="semibrevis" oct="4" pname="f" xml:id="p1cfd4n8192v1b4s1"/>
+                                <barLine/>
+                                <!-- bar 5 -->
+                                <mensur modusminor="2" tempus="2" prolatio="3"/>
+                                <note dur="brevis" oct="4" pname="g" xml:id="p1cgd4n0v1b5s1"/>
+                                <note dur="semibrevis" oct="4" pname="g" xml:id="p1cgd4n2048v1b5s1"/>
+                                <note dur="semibrevis" oct="4" pname="f" xml:id="p1cfd4n3072v1b5s1"/>
+                                <barLine/>
+                                <note dur="brevis" oct="4" pname="e" xml:id="p1ced4n4096v1b5s1"/>
+                                <rest dur="brevis" xml:id="p1r6144v1b5s1"/>
+                                <barLine/>
+                                <note dur="longa" oct="4" pname="f" stem.mod="1slash" xml:id="p1cfd4n8192v1b5s1"/>
+                                <barLine/>
+                                <note dur="longa" oct="4" pname="g" xml:id="p1cgd4n0v1b6s1"/>
+                                <barLine/>
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n4096v1b6s1"/>
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n5120v1b6s1"/>
+                                <note dur="brevis" oct="4" pname="b" xml:id="p1cbd4n6144v1b6s1">
+                                    <accid accid="f"/>
+                                </note>
+                                <barLine/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n8192v1b6s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="g" xml:id="p1cgd4n8874v1b6s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n9216v1b6s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="g" xml:id="p1cgd4n9898v1b6s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="e" xml:id="p1ced4n10240v1b6s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="f" xml:id="p1cfd4n10922v1b6s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="g" xml:id="p1cgd4n11264v1b6s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="e" xml:id="p1ced4n11946v1b6s1"/>
+                                <barLine/>
+                                <mensur modusminor="3" tempus="3" prolatio="3"/>
+                                <note dur="brevis" oct="4" pname="f" xml:id="p1cfd4n0v1b7s1"/>
+                                <note dur="minima" oct="4" pname="a" xml:id="p1cad4n3072v1b7s1"/>
+                                <note dur="minima" oct="4" pname="g" xml:id="p1cgd4n3413v1b7s1"/>
+                                <note dur="minima" oct="4" pname="a" xml:id="p1cad4n3754v1b7s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="b" xml:id="p1cbd4n4096v1b7s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="a" xml:id="p1cad4n4778v1b7s1"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="b" xml:id="p1cbd4n5120v1b7s1" num="3" numbase="2"/>
+                                <note dur="minima" oct="4" pname="a" xml:id="p1cad4n5802v1b7s1"/>
+                                <!-- imperfectio -->
+                                <note dur="brevis" oct="4" pname="g" xml:id="p1cgd4n6144v1b7s1" num="3" numbase="2"/>
+                                <note dur="semibrevis" oct="4" pname="a" xml:id="p1cad4n8192v1b7s1"/>
+                                <barLine/>
+                            </layer>
+                        </staff>
+                        <staff n="2">
+                            <layer n="1">
+                                <!-- imperfectio -->
+                                <note dur="longa" oct="4" pname="f" xml:id="p1cfd4n0v1b1s2" num="3" numbase="2"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="d" xml:id="p1cdd4n6144v1b1s2" num="3" numbase="2"/>
+                                    <note dur="minima" oct="4" pname="e" xml:id="p1ced4n6826v1b1s2"/>
+                                <note dur="semibrevis" oct="4" pname="f" xml:id="p1cfd4n7168v1b1s2"/>
+                                <note dur="semibrevis" oct="4" pname="d" xml:id="p1cdd4n8192v1b1s2"/>
+                                <barLine/>
+                                <!-- imperfectio -->
+                                <note dur="longa" oct="4" pname="e" xml:id="p1ced4n0v1b2s2" num="3" numbase="2"/>
+                                <note dur="semibrevis" oct="4" pname="f" xml:id="p1cfd4n6144v1b2s2"/>
+                                <note dur="semibrevis" oct="4" pname="e" xml:id="p1ced4n7168v1b2s2"/>
+                                <note dur="semibrevis" oct="4" pname="d" xml:id="p1cdd4n8192v1b2s2"/>
+                                <barLine/>
+                                <!-- imperfectio -->
+                                <note dur="longa" oct="4" pname="c" xml:id="p1ccd4n0v1b3s2" num="3" numbase="2"/>
+                                <!-- imperfectio -->
+                                <note dur="semibrevis" oct="4" pname="c" xml:id="p1ccd4n6144v1b3s2" num="3" numbase="2"/>
+                                    <note dur="minima" oct="4" pname="d" xml:id="p1cdd4n6826v1b3s2"/>
+                                <note dur="semibrevis" oct="4" pname="e" xml:id="p1ced4n7168v1b3s2"/>
+                                <note dur="semibrevis" oct="4" pname="c" xml:id="p1ccd4n8192v1b3s2"/>
+                                <barLine/>
+                                <note dur="brevis" oct="4" pname="d" xml:id="p1cdd4n0v1b4s2"/>
+                                <note dur="brevis" oct="3" pname="b" xml:id="p1cbd3n3072v1b4s2"/>
+                                <note dur="brevis" oct="3" pname="a" xml:id="p1cad3n6144v1b4s2"/>
+                                <barLine/>
+                                <!-- drizo - different meter in two staves !! -->
+                                <mensur modusminor="3" tempus="2" prolatio="3"/>
+                                <!-- imperfectio -->
+                                <!-- Laurent error? -->
+                                <!--<note dur="longa" oct="3" pname="g" xml:id="p1cgd3n0v1b5s2" num="3" numbase="2"/>-->
+                                <note dur="longa" oct="3" pname="g" xml:id="p1cgd3n0v1b5s2"/>
+                                <rest dur="brevis" xml:id="p1r4096v1b5s2"/>
+                                <note dur="brevis" oct="3" pname="a" xml:id="p1cad3n6144v1b5s2"/>
+                                <!-- alteration -->
+                                <!-- Laurent error? -->
+                                <!--<note dur="brevis" oct="3" pname="b" xml:id="p1cbd3n8192v1b5s2" num="1" numbase="2">-->
+                                <note dur="brevis" oct="3" pname="b" xml:id="p1cbd3n8192v1b5s2">
+                                    <accid accid="f"/>
+                                </note>
+                                <barLine/>
+                                <note dur="longa" oct="4" pname="c" xml:id="p1ccd4n0v1b6s2"/>
+                                <note dur="brevis" oct="3" pname="b" xml:id="p1cbd3n6144v1b6s2">
+                                    <accid accid="f"/>
+                                </note>
+                                <note dur="brevis" oct="3" pname="a" xml:id="p1cad3n8192v1b6s2"/>
+                                <note dur="brevis" oct="3" pname="g" xml:id="p1cgd3n10240v1b6s2"/>
+                                <barLine/>
+                                <mensur modusminor="3" tempus="3" prolatio="3"/>
+                                <!-- imperfectio -->
+                                <note dur="longa" oct="3" pname="f" xml:id="p1cfd3n0v1b7s2" num="3" numbase="2"/>
+                                <rest dur="brevis" xml:id="p1r6144v1b7s2"/>
+                                <barLine/>
+                            </layer>
+                        </staff>
+                        <staff n="3">
+                            <layer n="1">
+                                <note  dur="longa" oct="3" pname="f" xml:id="p1cfd3n0v1b1s3"/>
+                                <barLine/>
+                                <note dur="longa" oct="3" pname="a" xml:id="p1cad3n0v1b2s3"/>
+                                <barLine/>
+                                <note dur="longa" oct="4" pname="c" xml:id="p1ccd4n0v1b3s3"/>
+                                <barLine/>
+                                <rest dur="longa" xml:id="p1ccd4r0v1b3s3"/>
+                                <barLine/>
+                                <mensur modusminor="2" tempus="2" prolatio="3"/>
+                                <note dur="longa" oct="4" pname="d" xml:id="p1cdd4n0v1b5s3"/>
+                                <barLine/>
+                                <note dur="longa" oct="4" pname="e" xml:id="p1ced4n4096v1b5s3"/>
+                                <barLine/>
+                                <note dur="longa" oct="4" pname="d" xml:id="p1cdd4n8192v1b5s3"/>
+                                <barLine/>
+                                <note dur="longa" oct="4" pname="c" xml:id="p1ccd4n0v1b6s3"/>
+                                <barLine/>
+                                <rest dur="longa" xml:id="p1r4096v1b6s3"/>
+                                <barLine/>
+                                <rest dur="longa" xml:id="p1r8192v1b6s3"/>
+                                <barLine/>
+                                <mensur modusminor="3" tempus="3" prolatio="3"/>
+                                <note  dur="longa" oct="4" pname="c" xml:id="p1ccd4n0v1b7s3"/>
+                                <barLine/>
+                            </layer>
+                        </staff>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>
