@@ -1,10 +1,10 @@
-package es.ua.dlsi.im3.languagemodel.sequences;
+package es.ua.dlsi.im3.midrepresentations.sequences;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.AtomPitch;
 import es.ua.dlsi.im3.core.score.NoteNames;
 import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.languagemodel.IMidLevelRepresentationEncoder;
+import es.ua.dlsi.im3.midrepresentations.IMidLevelRepresentationEncoder;
 
 import java.util.ArrayList;
 import java.util.List;

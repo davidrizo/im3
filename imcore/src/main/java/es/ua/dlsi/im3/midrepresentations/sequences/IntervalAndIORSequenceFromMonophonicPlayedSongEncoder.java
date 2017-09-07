@@ -1,9 +1,9 @@
-package es.ua.dlsi.im3.languagemodel.sequences;
+package es.ua.dlsi.im3.midrepresentations.sequences;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.played.*;
-import es.ua.dlsi.im3.languagemodel.IMidLevelRepresentationEncoder;
+import es.ua.dlsi.im3.midrepresentations.IMidLevelRepresentationEncoder;
 
 import java.util.ArrayList;
 import java.util.List;

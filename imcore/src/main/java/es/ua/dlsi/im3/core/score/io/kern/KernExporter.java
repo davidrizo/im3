@@ -451,10 +451,10 @@ public class KernExporter {
                 case SEMIBREVE:
                     car = 'v';
                     break;
-                case MINIMA:
+                case MINIM:
                     car = 'M';
                     break;
-                case SEMINIMA:
+                case SEMIMINIM:
                     car = 'm';
                     break;
                 case FUSA:

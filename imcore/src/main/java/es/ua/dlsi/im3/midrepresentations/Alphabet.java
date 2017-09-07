@@ -1,10 +1,9 @@
-package es.ua.dlsi.im3.languagemodel;
+package es.ua.dlsi.im3.midrepresentations;
 
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 public class Alphabet<AphabetElementType> {

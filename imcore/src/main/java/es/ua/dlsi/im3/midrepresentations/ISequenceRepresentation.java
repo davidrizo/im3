@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 David Rizo Valero
+ * Copyright (C) 2015 David Rizo Valero
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,32 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.ua.dlsi.im3.midrepresentations;
 
-package es.ua.dlsi.im3.core.score.meters;
 
-import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
-import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
+import java.util.List;
 
 /**
  *
  * @author drizo
+ * @param <ItemType> Type of each of the items in the sequence
  */
-public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
-
-    public TimeSignatureProporcionMenor() throws IM3Exception {
-    		super(Perfection.perfectum, Perfection.perfectum);
-    }
-
-    @Override
-    public String toString() {
-    		return "CZ";
-    }
-
-	@Override
-	public boolean equals(Object other) {
-		return other instanceof TimeSignatureProporcionMenor;
-	}
-    
-    
+public interface ISequenceRepresentation<ItemType> extends IMidLevelRepresentation {
+    public int size();
+    public List<ItemType> getItems();
 }

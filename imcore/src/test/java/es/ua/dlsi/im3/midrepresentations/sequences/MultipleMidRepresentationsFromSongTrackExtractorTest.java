@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.languagemodel.sequences;
+package es.ua.dlsi.im3.midrepresentations.sequences;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.played.PlayedSong;

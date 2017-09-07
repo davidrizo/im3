@@ -28,10 +28,10 @@ import es.ua.dlsi.im3.core.score.clefs.ClefG2QuindicesimaAlta;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2QuindicesimaBassa;
 import es.ua.dlsi.im3.core.score.clefs.ClefPercussion;
 import es.ua.dlsi.im3.core.score.clefs.ClefTab;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
-import es.ua.dlsi.im3.core.score.meters.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.io.ImportException;
 
 /**

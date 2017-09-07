@@ -156,8 +156,8 @@ public class MEISAXImporter extends XMLSAXImporter {
 		FIGURES.put("longa", Figures.LONGA);
 		FIGURES.put("brevis", Figures.BREVE);
 		FIGURES.put("semibrevis", Figures.SEMIBREVE);
-		FIGURES.put("minima", Figures.MINIMA);
-		FIGURES.put("semiminima", Figures.SEMINIMA);
+		FIGURES.put("minima", Figures.MINIM);
+		FIGURES.put("semiminima", Figures.SEMIMINIM);
 		FIGURES.put("fusa", Figures.FUSA);
 		FIGURES.put("long", Figures.QUADRUPLE_WHOLE);
 		FIGURES.put("breve", Figures.DOUBLE_WHOLE);
@@ -944,7 +944,6 @@ public class MEISAXImporter extends XMLSAXImporter {
 			throw new ImportException("Invalid mensural meter perfection specification: " + number + ", should be null, 2, or 3");
 		}
 	}
-	
 
 	/*FRACCIONES private StemDirection parseStemDir(String stemDir) throws ImportException {
 		if (stemDir == null) {

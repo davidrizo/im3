@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import org.apache.commons.lang3.math.Fraction;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,6 @@ import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
-import es.ua.dlsi.im3.core.score.meters.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.io.ImportException;
 
 /**

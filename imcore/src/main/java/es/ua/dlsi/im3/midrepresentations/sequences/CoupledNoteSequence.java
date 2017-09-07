@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.languagemodel.sequences;
+package es.ua.dlsi.im3.midrepresentations.sequences;
 
 import java.util.List;
 

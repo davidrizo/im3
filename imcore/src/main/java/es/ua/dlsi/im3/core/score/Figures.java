@@ -21,8 +21,8 @@ public enum Figures {
 	LONGA (16, 1, -1, NotationType.eMensural),
 	BREVE (8, 1, 0, NotationType.eMensural),
 	SEMIBREVE (4, 1, 1, NotationType.eMensural),
-	MINIMA (1, 1, 2, NotationType.eMensural),
-	SEMINIMA (1, 2, 4, NotationType.eMensural),
+	MINIM(1, 1, 2, NotationType.eMensural),
+	SEMIMINIM(1, 2, 4, NotationType.eMensural),
 	FUSA (1, 4, 8, NotationType.eMensural),
 	SEMIFUSA (1, 8, 16, NotationType.eMensural),
 	NO_DURATION (0,1,0, NotationType.eModern);

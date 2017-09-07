@@ -1,6 +1,6 @@
-package es.ua.dlsi.im3.languagemodel.sequences;
+package es.ua.dlsi.im3.midrepresentations.sequences;
 
-import es.ua.dlsi.im3.languagemodel.ISequenceRepresentation;
+import es.ua.dlsi.im3.midrepresentations.ISequenceRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.metadata.PersonRoles;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.ISongExporter;
@@ -22,10 +21,10 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.io.kern.HarmExporter;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
-import es.ua.dlsi.im3.core.score.meters.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.metadata.Person;
@@ -394,7 +393,11 @@ public class MEISongExporter implements ISongExporter {
 					processScoreDef(params, staffTS, staffKS.getInstrumentKey(), staffKS.getTranspositionInterval());
 					//XMLExporterHelper.startEnd(sb, tabs, "scoreDef", scoreDefParams);
 				} 
-				
+
+				if (staff.getNotationType() == NotationType.eMensural) {
+				    params.add("notationtype");
+                    params.add("mensural");
+                }
 				XMLExporterHelper.startEnd(sb, tabs+1, "staffDef", params);
 			}
 		}
@@ -833,8 +836,8 @@ public class MEISongExporter implements ISongExporter {
 			case LONGA: return "longa"; 
 			case BREVE: return "brevis";
 			case SEMIBREVE: return "semibrevis";
-			case MINIMA: return "minima";
-			case SEMINIMA: return "semiminima";
+			case MINIM: return "minima";
+			case SEMIMINIM: return "semiminima";
 			case FUSA: return "fusa";
 			case SEMIFUSA: return "semifusa";
 			case QUADRUPLE_WHOLE: return "long";
