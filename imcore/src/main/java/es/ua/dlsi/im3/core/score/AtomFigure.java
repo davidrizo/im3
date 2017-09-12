@@ -242,11 +242,20 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	}
 
 	/**
-	 * Package visibility - used by SimpleMeasureRest
+	 * Note this method does not change the duration of the figure
 	 * @param dots
 	 */
-    void setDots(int dots) {
-        this.dots = dots;
+    public void setDots(int dots) {
+    	this.dots = dots;
     }
 
+    //TODO Test unitario
+
+    /**
+     * This method adds a dot and changes the duration of the figure
+     */
+    public void addDot() {
+        this.dots++;
+        duration = duration.add(duration.divide(2));
+    }
 }
