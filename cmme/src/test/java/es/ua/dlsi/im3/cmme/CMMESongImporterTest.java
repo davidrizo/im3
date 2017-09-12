@@ -46,11 +46,17 @@ public class CMMESongImporterTest {
 
         List<Atom> cantusAtoms = scoreSong.getParts().get(0).getAtomsSortedByTime();
         assertTrue("First event in cantus", cantusAtoms.get(0) instanceof SimpleRest);
-        assertEquals("Duration of first cantus event", new Time(8, 1), cantusAtoms.get(0).getDuration());
+        assertEquals("Duration of first cantus event", new Time(4, 1), cantusAtoms.get(0).getDuration());
 
         assertTrue("Second event in cantus", cantusAtoms.get(1) instanceof SimpleNote);
-        assertEquals("Duration of second cantus event", new Time(4, 1), cantusAtoms.get(1).getDuration());
+        assertEquals("Duration of second cantus event", new Time(2, 1), cantusAtoms.get(1).getDuration());
         assertEquals("Pitch of second cantus event", new ScientificPitch(PitchClasses.A, 4), ((SimpleNote)cantusAtoms.get(1)).getPitch());
+
+        assertTrue("11th event in cantus", cantusAtoms.get(10) instanceof SimpleNote);
+        assertEquals("Duration of second cantus event", new Time(3, 2), cantusAtoms.get(10).getDuration());
+        assertEquals("Pitch of second cantus event", new ScientificPitch(PitchClasses.C, 4), ((SimpleNote)cantusAtoms.get(10)).getPitch());
+        assertEquals("Dots of 11th event in cantus", 1, ((SimpleNote) cantusAtoms.get(10)).getAtomFigure().getDots());
+
 
         MEISongExporter meiSongExporter = new MEISongExporter();
         meiSongExporter.exportSong(new File("/tmp/cmme.mei"), scoreSong);

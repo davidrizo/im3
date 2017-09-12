@@ -12,6 +12,7 @@ import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
+import org.apache.commons.lang3.math.Fraction;
 import org.cmme.DataStruct.*;
 import org.cmme.DataStruct.Clef;
 
@@ -23,6 +24,7 @@ public class CMMESongImporter implements IScoreSongImporter {
     private ScoreSong scoreSong;
     private HashMap<Integer, Staff> staves;
     private HashMap<Integer, ScoreLayer> layers;
+    private SingleFigureAtom lastFigureAtom;
 
     @Override
     public ScoreSong importSong(File file) throws ImportException {
@@ -106,6 +108,7 @@ public class CMMESongImporter implements IScoreSongImporter {
     }
 
     private void importVoice(VoiceEventListData voice, Staff staff, ScoreLayer layer) throws ImportException, IM3Exception {
+        lastFigureAtom = null;
         if (voice.getEvents() != null) {
             for (Event event : voice.getEvents()) {
                 switch (event.geteventtype()) {
@@ -244,9 +247,12 @@ public class CMMESongImporter implements IScoreSongImporter {
         System.out.println("Pending: " + event.toString());
     }
 
-    private void importDot(Staff staff, ScoreLayer layer, DotEvent event) {
-        System.out.println("TODO DOTS: ");
-        event.prettyprint();
+    private void importDot(Staff staff, ScoreLayer layer, DotEvent event) throws ImportException {
+        if (lastFigureAtom == null) {
+            throw new ImportException("There is not a previous note or rest to add the dot");
+        }
+        // use set dots to avoid increasing the duration that is already specified in the note/length element
+        lastFigureAtom.getAtomFigure().setDots(lastFigureAtom.getAtomFigure().getDots()+1);
     }
 
     private Figures convertFigure(int noteType) throws ImportException {
@@ -265,10 +271,10 @@ public class CMMESongImporter implements IScoreSongImporter {
                 figure = Figures.SEMIBREVE;
                 break;
             case NoteEvent.NT_Minima:
-                figure = Figures.MINIMA;
+                figure = Figures.MINIM;
                 break;
             case NoteEvent.NT_Semiminima:
-                figure = Figures.SEMINIMA;
+                figure = Figures.SEMIMINIM;
                 break;
             case NoteEvent.NT_Fusa:
                 figure = Figures.FUSA;
@@ -286,6 +292,11 @@ public class CMMESongImporter implements IScoreSongImporter {
         SimpleRest rest = new SimpleRest(figure, 0);
         rest.setStaff(staff);
         layer.add(rest);
+        lastFigureAtom = rest;
+    }
+
+    private Fraction proportionToFraction(Proportion proportion) {
+        return Fraction.getFraction(proportion.i1, proportion.i2);
     }
 
     private void importNote(Staff staff, ScoreLayer layer, NoteEvent event) throws ImportException, IM3Exception {
@@ -293,11 +304,22 @@ public class CMMESongImporter implements IScoreSongImporter {
         NoteNames noteName = NoteNames.noteFromName(Character.toUpperCase(event.getPitch().noteletter));
         int octave = event.getPitch().octave;
         ScientificPitch pitch = new ScientificPitch(new PitchClass(noteName), octave);
+
         // TODO Stem
         // TODO Accidentals (originales y editoriales - ModernAccidental?)
         SimpleNote note = new SimpleNote(figure, 0, pitch);
+        Proportion proportion = event.getLength();
+        Fraction actualDuration = proportionToFraction(proportion);
+        Fraction expectedDurationGivenFigure = figure.getDuration();
+
+        if (!actualDuration.equals(expectedDurationGivenFigure)) {
+            note.setDuration(actualDuration);
+        }
+
+
         note.setStaff(staff);
         layer.add(note);
+        lastFigureAtom = note;
     }
 
     private void importMensuration(Staff staff, ScoreLayer layer, MensEvent event) throws IM3Exception {
