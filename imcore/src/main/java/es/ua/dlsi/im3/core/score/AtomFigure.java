@@ -49,7 +49,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	 * Package visibility, use  Atom.addFigure
 	 * Used tipically by tuplets
 	 * @param figure
-	 * @param dots2
+	 * @param dots
 	 * @param alteredDuration
 	 */
 	AtomFigure(Atom atom, Figures figure, int dots, Fraction alteredDuration) {
