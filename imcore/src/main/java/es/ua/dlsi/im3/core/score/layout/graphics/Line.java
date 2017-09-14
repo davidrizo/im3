@@ -1,6 +1,10 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
+import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+
+import java.io.IOException;
 
 public class Line extends Shape {
     private static final double DEFAULT_THICKNESS = 1;
@@ -46,6 +50,19 @@ public class Line extends Shape {
                 "stroke", "black" //TODO Constants
         );
         //TODO Stroke and width
+
+    }
+
+    @Override
+    public void generatePDF(PDPageContentStream contents) throws ExportException {
+        try {
+            contents.setStrokingColor(0, 0, 0);
+            contents.moveTo((float)startX, (float)startY);
+            contents.lineTo((float)endX, (float)endY);
+            contents.stroke();
+        } catch (IOException e) {
+            throw new ExportException(e);
+        }
 
     }
 }

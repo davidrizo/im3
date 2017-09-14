@@ -1,5 +1,8 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
+import es.ua.dlsi.im3.core.io.ExportException;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+
 /**
  *
  * @author drizo
@@ -101,5 +104,10 @@ public class Arc extends Shape {
     @Override
     public void generateSVG(StringBuilder sb, int tabs) {
         sb.append("TO-DO ARCS!!!!"); //TODO
+    }
+
+    @Override
+    public void generatePDF(PDPageContentStream contents) throws ExportException {
+        //TODO
     }
 }

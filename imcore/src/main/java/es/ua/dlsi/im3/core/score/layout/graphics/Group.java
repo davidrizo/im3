@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
+import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,5 +33,13 @@ public class Group extends GraphicsElement {
         }
         XMLExporterHelper.end(sb, tabs, "g"); //TODO ID
 
+    }
+
+    @Override
+    public void generatePDF(PDPageContentStream contents) throws ExportException {
+        //TODO ¿cómo se hace un grupo?
+        for (GraphicsElement child: children) {
+            child.generatePDF(contents);
+        }
     }
 }
