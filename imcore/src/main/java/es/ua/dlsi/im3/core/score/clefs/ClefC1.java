@@ -34,5 +34,4 @@ public class ClefC1 extends Clef {
     public Clef clone() {
     		return new ClefC1();
     }
-    
 }

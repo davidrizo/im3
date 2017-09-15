@@ -1,15 +1,16 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.io.ExportException;
-import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
+import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
-
 public class LineTest {
+    // simply test it does not crash
     @Test
     public void testGenerateSVG() throws ExportException, IM3Exception {
         Canvas canvas = new Canvas(500, 700);
@@ -19,10 +20,11 @@ public class LineTest {
         canvas.add(line2);
 
         SVGExporter exporter = new SVGExporter();
-        System.out.println(exporter.exportCanvas(canvas));
+        System.out.println(exporter.exportLayout(canvas));
 
         PDFExporter pdfExporter = new PDFExporter();
-        pdfExporter.exportCanvas(new File("/tmp/a.pdf"), canvas);
+        File file = TestFileUtils.createTempFile("lines.pdf");
+        pdfExporter.exportLayout(file, canvas);
     }
 
 

@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
-import es.ua.dlsi.im3.core.score.io.IXMLSAXImporterExtension;
+import es.ua.dlsi.im3.core.io.IXMLSAXImporterExtension;
 import es.ua.dlsi.im3.core.io.ImportException;
 
 /**
@@ -13,10 +13,10 @@ import es.ua.dlsi.im3.core.io.ImportException;
  *
  */
 public class MEISongImporter implements IScoreSongImporter {
-	private MEISAXImporter importer;
+	private MEISAXScoreSongImporter importer;
 
 	public MEISongImporter() {
-		importer = new MEISAXImporter();
+		importer = new MEISAXScoreSongImporter();
 	}
 	@Override
 	public ScoreSong importSong(File file) throws ImportException {

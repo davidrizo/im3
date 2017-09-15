@@ -2,9 +2,12 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -26,20 +29,20 @@ public class Group extends GraphicsElement {
     }
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs) {
+    public void generateSVG(StringBuilder sb, int tabs, LayoutFont layoutFont, HashSet<Glyph> usedGlyphs) throws ExportException {
         XMLExporterHelper.start(sb, tabs, "g"); //TODO ID
         for (GraphicsElement child: children) {
-            child.generateSVG(sb, tabs+1);
+            child.generateSVG(sb, tabs+1, layoutFont, usedGlyphs);
         }
         XMLExporterHelper.end(sb, tabs, "g"); //TODO ID
 
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents) throws ExportException {
+    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont) throws ExportException {
         //TODO ¿cómo se hace un grupo?
         for (GraphicsElement child: children) {
-            child.generatePDF(contents);
+            child.generatePDF(contents, layoutFont);
         }
     }
 }

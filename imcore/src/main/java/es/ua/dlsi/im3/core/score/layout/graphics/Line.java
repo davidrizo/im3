@@ -2,9 +2,13 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.io.IOException;
+import java.util.HashSet;
 
 public class Line extends Shape {
     private static final double DEFAULT_THICKNESS = 1;
@@ -41,7 +45,7 @@ public class Line extends Shape {
 
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs) {
+    public void generateSVG(StringBuilder sb, int tabs, LayoutFont layoutFont, HashSet<Glyph> usedGlyphs) {
         XMLExporterHelper.startEnd(sb, tabs, "line",
                 "x1", Double.toString(startX),
                 "y1", Double.toString(startY),
@@ -54,7 +58,7 @@ public class Line extends Shape {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents) throws ExportException {
+    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont) throws ExportException {
         try {
             contents.setStrokingColor(0, 0, 0);
             contents.moveTo((float)startX, (float)startY);

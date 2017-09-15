@@ -11,17 +11,21 @@ import java.util.List;
  * @author drizo
  */
 public class Canvas {
-    private double height;
-    private double width;
+    private int height;
+    private int width;
     private List<GraphicsElement> elementList;
 
-    public Canvas(double width, double height) {
+    /**
+     * @param width Pixels
+     * @param height Pixels
+     */
+    public Canvas(int width, int height) {
         this.width = width;
         this.height = height;
         elementList = new ArrayList<>();
     }
 
-    public void add(Shape shape) throws IM3Exception {
+    public void add(GraphicsElement shape) throws IM3Exception {
         if (shape.getCanvas() != null) {
             throw new IM3Exception("The shape " + shape + " is already contained in a canvas");
         }
@@ -29,11 +33,11 @@ public class Canvas {
         elementList.add(shape);
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return width;
     }
 

@@ -3,11 +3,13 @@
  */
 package es.ua.dlsi.im3.core.io;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 /**
  * Raised in the process of import a song
  * @author david
  */
-public class ExportException extends Exception {
+public class ExportException extends IM3Exception {
 	/**
 	 * 
 	 */

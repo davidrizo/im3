@@ -1,7 +1,11 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+
+import java.util.HashSet;
 
 /**
  *
@@ -101,13 +105,14 @@ public class Arc extends Shape {
     }
 
 
+
     @Override
-    public void generateSVG(StringBuilder sb, int tabs) {
-        sb.append("TO-DO ARCS!!!!"); //TODO
+    public void generateSVG(StringBuilder sb, int tabs, LayoutFont layoutFont, HashSet<Glyph> usedGlyphs) throws ExportException {
+
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents) throws ExportException {
-        //TODO
+    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont) throws ExportException {
+
     }
 }
