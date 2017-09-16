@@ -42,4 +42,26 @@ public class ScoreSongImporter {
         }
     }
 
+    public ScoreSong importSong(NotationType notationType, File file, String extension) throws ImportException {
+        if (!file.exists()) {
+            throw new ImportException("Input file '" + file.getAbsolutePath() + "' does not exist");
+        }
+        switch (extension) {
+            case "xml":
+                if (notationType == NotationType.eModern) {
+                    MusicXMLImporter musicXMLImporter = new MusicXMLImporter();
+                    return musicXMLImporter.importSong(file);
+                } else {
+                    throw new ImportException("Unsupported extension: " + extension + " with notation type: " + notationType);
+                }
+            case "mei":
+                MEISongImporter meiImporter = new MEISongImporter();
+                return meiImporter.importSong(file);
+            case "krn":
+                KernImporter kernImporter = new KernImporter();
+                return kernImporter.importSong(file);
+            default:
+                throw new ImportException("Unsupported file type: " + extension);
+        }
+    }
 }

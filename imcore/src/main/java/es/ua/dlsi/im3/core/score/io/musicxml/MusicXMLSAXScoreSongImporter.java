@@ -1271,8 +1271,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			return Accidentals.FLAT;
 		case "natural":
 			return Accidentals.NATURAL;
+		case "sharp-sharp":
 		case "double-sharp":
 			return Accidentals.DOUBLE_SHARP;
+		case "flat-flat":
 		case "double-flat":
 			return Accidentals.DOUBLE_FLAT;
 		case "triple-flat":
