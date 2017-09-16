@@ -26,6 +26,9 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
  */
 public abstract class Clef implements INotationTypeDependant, ITimedElementInStaff {
 	NoteNames note;
+    /**
+     * Bottom line is 1, in a pentagram, top line is 5
+     */
 	int line;
 	Time time;
 	Staff staff;
@@ -61,6 +64,10 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 		return note;
 	}
 
+    /**
+     * Bottom line is 1, in a pentagram, top line is 5
+     * @return
+     */
 	public int getLine() {
 		return line;
 	}

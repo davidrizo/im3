@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.clefs.ClefPercussion;
@@ -7,13 +8,25 @@ import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
 public class LayoutClef extends CoreSymbol {
-    Clef clef;
-    Pictogram pictogram;
+    private final LayoutStaff layoutStaff;
+    private final Clef clef;
+    private final Pictogram pictogram;
 
-    public LayoutClef(Clef clef) {
+    public LayoutClef(Clef clef, LayoutStaff layoutStaff)  {
         this.clef = clef;
-        pictogram = new Pictogram(getUnicode()); 
+        this.layoutStaff = layoutStaff;
+        pictogram = new Pictogram(getUnicode());
     }
+
+    /**
+     * Compute the y value, the x is given by the layout algorithm
+     * @return
+     */
+    public void computeLayout() throws IM3Exception {
+        double y = layoutStaff.getYAtLine(clef.getLine());
+        pictogram.setY(y);
+    }
+
 
     private String getUnicode() {
         switch (clef.getNote()) {
@@ -61,6 +74,6 @@ public class LayoutClef extends CoreSymbol {
 
     @Override
     public GraphicsElement getGraphics() {
-        return pictogram;
+       return pictogram;
     }
 }

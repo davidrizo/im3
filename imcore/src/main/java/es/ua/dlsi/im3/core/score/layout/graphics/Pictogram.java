@@ -18,7 +18,11 @@ public class Pictogram extends GraphicsElement {
     /**
      * SMuFL (or similar) name of the pictogram (e.g. gClef)
      */
-    String codepoint;
+    private String codepoint;
+
+    private double x;
+
+    private double y;
 
     public Pictogram(String codepoint) {
         this.codepoint = codepoint;
@@ -26,6 +30,22 @@ public class Pictogram extends GraphicsElement {
 
     public String getCodepoint() {
         return codepoint;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 
     @Override
@@ -40,9 +60,9 @@ public class Pictogram extends GraphicsElement {
                 "xlink:href", "#" + glyph.getEscapedUnicode(),
                 "height", SIZE,
                 "width", SIZE,
-                "x", "20px",
-                "y", "12px"
-        ); //TODO resto <use xlink:href="#E93C" x="12178" y="1850" height="720px" width="720px" />
+                "x", x + "px",
+                "y", y + "px"
+        );
 
         usedGlyphs.add(glyph);
     }

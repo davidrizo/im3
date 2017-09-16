@@ -64,10 +64,12 @@ public class SVGExporter implements IGraphicsExporter {
 
         XMLExporterHelper.start(sbContent, 1, "svg", "viewBox", "0 0 " + canvas.getWidth() + " " + canvas.getHeight()); //TODO ¿Qué valor poner - antes tenía *EM
 
+        XMLExporterHelper.start(sbContent, 2, "g", "class", "page", "transform", "translate(30, 30)"); //TODO Configurar márgen
         for (GraphicsElement element: canvas.getElements()) {
-            element.generateSVG(sbContent, 2, bravura, usedGlyphs);
+            element.generateSVG(sbContent, 3, bravura, usedGlyphs);
         }
 
+        XMLExporterHelper.end(sbContent, 2, "g");
         XMLExporterHelper.end(sbContent, 1, "svg");
 
         fillDefinitions(sb, 1, usedGlyphs);

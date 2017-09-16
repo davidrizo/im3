@@ -36,10 +36,15 @@ public class HorizontalLayout extends ScoreLayout {
             // add contents of staff
             List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
             for (ITimedElementInStaff symbol: symbols) {
-                CoreSymbol coreSymbol = createLayout(symbol);
-                layoutStaff.add(coreSymbol);
+                CoreSymbol coreSymbol = createLayout(symbol, layoutStaff);
+                if (coreSymbol != null) {
+                    layoutStaff.add(coreSymbol);
+                    coreSymbol.setX(symbol.getTime().getComputedTime()); // TODO algoritmo espaciado x de LayoutEngine .... - ahora cojo el tiempo
+
+                    //TODO Ver si esto es mejor aquí o después
+                    coreSymbol.computeLayout();
+                }
             }
-            // TODO espaciado ....
         }
     }
 
@@ -48,12 +53,12 @@ public class HorizontalLayout extends ScoreLayout {
         return new Canvas[] {canvas};
     }
 
-    CoreSymbol createLayout(ITimedElementInStaff symbol) throws IM3Exception {
+    CoreSymbol createLayout(ITimedElementInStaff symbol, LayoutStaff layoutStaff) throws IM3Exception {
         CoreSymbol coreSymbol = null;
 
         //TODO Revisar patrón de diseño - quitar switch
         if (symbol instanceof Clef) {
-            coreSymbol = createClef((Clef) symbol);
+            coreSymbol = createClef((Clef) symbol, layoutStaff);
         } else {
             System.err.println("TO-DO: Unsupported symbol type: " + symbol.getClass());
         }
@@ -61,8 +66,8 @@ public class HorizontalLayout extends ScoreLayout {
         return coreSymbol;
     }
 
-    private CoreSymbol createClef(Clef clef) {
-        LayoutClef layoutClef = new LayoutClef(clef);
+    private CoreSymbol createClef(Clef clef, LayoutStaff layoutStaff) throws IM3Exception {
+        LayoutClef layoutClef = new LayoutClef(clef, layoutStaff);
 
         return layoutClef;
     }

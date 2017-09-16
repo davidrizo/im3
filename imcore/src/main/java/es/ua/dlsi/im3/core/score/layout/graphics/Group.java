@@ -23,6 +23,9 @@ public class Group extends GraphicsElement {
     public void add(GraphicsElement element) {
         this.children.add(element);
     }
+    public void add(int index, GraphicsElement element) {
+        this.children.add(index, element);
+    }
 
     public List<GraphicsElement> getChildren() {
         return children;

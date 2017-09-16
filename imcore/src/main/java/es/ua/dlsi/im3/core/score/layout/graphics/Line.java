@@ -67,6 +67,53 @@ public class Line extends Shape {
         } catch (IOException e) {
             throw new ExportException(e);
         }
+    }
 
+    public double getStartX() {
+        return startX;
+    }
+
+    public void setStartX(double startX) {
+        this.startX = startX;
+    }
+
+    public double getStartY() {
+        return startY;
+    }
+
+    public void setStartY(double startY) {
+        this.startY = startY;
+    }
+
+    public double getEndX() {
+        return endX;
+    }
+
+    public void setEndX(double endX) {
+        this.endX = endX;
+    }
+
+    public double getEndY() {
+        return endY;
+    }
+
+    public void setEndY(double endY) {
+        this.endY = endY;
+    }
+
+    public double getThickness() {
+        return thickness;
+    }
+
+    public void setThickness(double thickness) {
+        this.thickness = thickness;
+    }
+
+    public StrokeType getStrokeType() {
+        return strokeType;
+    }
+
+    public void setStrokeType(StrokeType strokeType) {
+        this.strokeType = strokeType;
     }
 }
