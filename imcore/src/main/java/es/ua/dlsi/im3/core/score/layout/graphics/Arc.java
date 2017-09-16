@@ -3,7 +3,9 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.util.HashSet;
 
@@ -112,7 +114,7 @@ public class Arc extends Shape {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont) throws ExportException {
+    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
 
     }
 }

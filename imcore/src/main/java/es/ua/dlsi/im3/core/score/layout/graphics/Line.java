@@ -2,10 +2,11 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
-import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -58,11 +59,11 @@ public class Line extends Shape {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont) throws ExportException {
+    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
         try {
             contents.setStrokingColor(0, 0, 0);
-            contents.moveTo((float)startX, (float)startY);
-            contents.lineTo((float)endX, (float)endY);
+            contents.moveTo(getPFDCoordinateX(page, startX), getPFDCoordinateY(page, startY));
+            contents.lineTo(getPFDCoordinateX(page, endX), getPFDCoordinateY(page,endY));
             contents.stroke();
         } catch (IOException e) {
             throw new ExportException(e);

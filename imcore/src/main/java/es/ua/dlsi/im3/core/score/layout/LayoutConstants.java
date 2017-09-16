@@ -14,4 +14,8 @@ public class LayoutConstants {
      * Defined as SMuFL
      */
     public static final double SPACE_HEIGHT = EM/4;
+    // TODO: 16/9/17  ¿Debe ser igual a EM?
+    public static final float FONT_SIZE = (float) EM;
+    public static final float PDF_LEFT_MARGIN = 20;
+    public static final float PDF_TOP_MARGIN = 40;
 }

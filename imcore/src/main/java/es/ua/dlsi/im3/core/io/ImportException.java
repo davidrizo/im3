@@ -3,12 +3,14 @@
  */
 package es.ua.dlsi.im3.core.io;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 /**
  * Raised in the process of import a song
  *
  * @author david
  */
-public class ImportException extends Exception {
+public class ImportException extends IM3Exception {
 
     /**
      *
@@ -33,9 +35,6 @@ public class ImportException extends Exception {
 	super(msg);
     }
 
-    public ImportException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-	super(message, cause, enableSuppression, writableStackTrace);
-    }
 
     public ImportException(String message, Throwable cause) {
 	super(message, cause);

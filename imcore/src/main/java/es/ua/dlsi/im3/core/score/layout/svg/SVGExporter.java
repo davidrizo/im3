@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import es.ua.dlsi.im3.core.score.layout.FontFactory;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
@@ -17,11 +18,11 @@ import java.util.HashSet;
 
 //TODO Constantes
 public class SVGExporter implements IGraphicsExporter {
-    //TODO ver cómo cargar una fuente u otra - ver PDFExporter
-    /**
-     * Do not load until required
-     */
-    private static LayoutFont bravura = null;
+    private LayoutFont bravura;
+
+    public SVGExporter() {
+        bravura = FontFactory.getInstance().getBravuraFont();
+    }
 
     //TODO Cargar fuente .... sólo de lo que necesitamos
     private void fillDefinitions(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) {
