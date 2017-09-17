@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
@@ -25,9 +26,16 @@ public class Group extends GraphicsElement {
     }
 
     public void add(GraphicsElement element) {
+        if (element == null) {
+            throw new IM3RuntimeException("Cannot add a null element");
+        }
         this.children.add(element);
     }
     public void add(int index, GraphicsElement element) {
+        if (element == null) {
+            throw new IM3RuntimeException("Cannot add a null element");
+        }
+
         this.children.add(index, element);
     }
 

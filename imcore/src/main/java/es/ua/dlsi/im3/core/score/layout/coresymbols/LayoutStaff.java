@@ -1,7 +1,9 @@
-package es.ua.dlsi.im3.core.score.layout;
+package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
@@ -23,7 +25,7 @@ public class LayoutStaff extends NotationSymbol {
         group = new Group();
         for (int i=0; i<staff.getLineCount(); i++) {
             //double y = LayoutConstants.STAFF_TOP_MARGIN + i*LayoutConstants.SPACE_HEIGHT;
-            double y = i*LayoutConstants.SPACE_HEIGHT;
+            double y = i* LayoutConstants.SPACE_HEIGHT;
             //Line line = new Line(LayoutConstants.STAFF_LEFT_MARGIN, y, width-LayoutConstants.STAFF_RIGHT_MARGIN, y); //TODO márgenes arriba abajo
             Line line = new Line(0, y, width, y); //TODO márgenes arriba abajo - quizás mejor en el grupo en el que están on en la página
             lines.add(0, line);
@@ -42,10 +44,14 @@ public class LayoutStaff extends NotationSymbol {
 
     public void add(NotationSymbol symbol) {
         if (symbol != null) {
-            notationSymbols.add(symbol);
-            group.add(symbol.getGraphics());
+            if (symbol.getGraphics() == null) {
+                System.err.println("TO-DO EXCEPCION symbol null para " + symbol.getClass());
+            } else {
+                notationSymbols.add(symbol);
+                group.add(symbol.getGraphics());
+            }
         } else {
-            System.err.println("TO-DO EXCEPCION");
+            System.err.println("TO-DO EXCEPCION symbol null");
         }
     }
 

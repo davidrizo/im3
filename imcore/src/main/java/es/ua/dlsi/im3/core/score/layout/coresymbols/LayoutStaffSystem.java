@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.core.score.layout;
+package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import java.util.List;
 

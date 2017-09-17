@@ -1,19 +1,18 @@
-package es.ua.dlsi.im3.core.score.layout;
+package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.clefs.ClefPercussion;
+import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
-public class LayoutClef extends CoreSymbol {
-    private final LayoutStaff layoutStaff;
-    private final Clef clef;
+public class LayoutClef extends LayoutSymbolInStaff<Clef> {
     private final Pictogram pictogram;
 
-    public LayoutClef(Clef clef, LayoutStaff layoutStaff)  {
-        this.clef = clef;
+    public LayoutClef(LayoutStaff layoutStaff, Clef clef)  {
+        super(layoutStaff, clef);
         this.layoutStaff = layoutStaff;
         pictogram = new Pictogram(getUnicode());
     }
@@ -23,15 +22,15 @@ public class LayoutClef extends CoreSymbol {
      * @return
      */
     public void computeLayout() throws IM3Exception {
-        double y = layoutStaff.getYAtLine(clef.getLine());
+        double y = layoutStaff.getYAtLine(coreSymbol.getLine());
         pictogram.setY(y);
     }
 
 
     private String getUnicode() {
-        switch (clef.getNote()) {
+        switch (coreSymbol.getNote()) {
             case F:
-                switch (clef.getOctaveChange()) {
+                switch (coreSymbol.getOctaveChange()) {
                     case -2:
                         return "fClef15mb";
                     case -1:
@@ -43,10 +42,10 @@ public class LayoutClef extends CoreSymbol {
                     case 2:
                         return "fClef15ma";
                     default:
-                        throw new IM3RuntimeException("Unsupported octave change for clef " + clef);
+                        throw new IM3RuntimeException("Unsupported octave change for clef " + coreSymbol);
                 }
             case G:
-                switch (clef.getOctaveChange()) {
+                switch (coreSymbol.getOctaveChange()) {
                     case -2:
                         return "gClef15mb";
                     case -1:
@@ -58,16 +57,16 @@ public class LayoutClef extends CoreSymbol {
                     case 2:
                         return "gClef15ma";
                     default:
-                        throw new IM3RuntimeException("Unsupported octave change for clef " + clef);
+                        throw new IM3RuntimeException("Unsupported octave change for clef " + coreSymbol);
                 }
             case C:
                 return "cClef";
             default:
-                if (clef instanceof ClefPercussion) {
+                if (coreSymbol instanceof ClefPercussion) {
                     return "unpitchedPercussionClef1";
                 }
 
-                throw new IM3RuntimeException("Unsupported clef note: " + clef.getNote());
+                throw new IM3RuntimeException("Unsupported clef note: " + coreSymbol.getNote());
         }
 
     }

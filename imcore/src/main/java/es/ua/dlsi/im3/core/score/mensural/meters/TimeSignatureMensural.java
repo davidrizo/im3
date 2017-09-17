@@ -1,12 +1,13 @@
 package es.ua.dlsi.im3.core.score.mensural.meters;
 
+import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 import org.apache.commons.lang3.math.Fraction;
 
 import es.ua.dlsi.im3.core.score.Figures;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.TimeSignature;
 
-public class TimeSignatureMensural extends TimeSignature {
+public class TimeSignatureMensural extends SignTimeSignature {
 
 	/**
 	 * Or maximarum

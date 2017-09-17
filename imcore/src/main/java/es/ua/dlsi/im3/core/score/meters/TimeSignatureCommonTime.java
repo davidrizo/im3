@@ -27,7 +27,7 @@ import es.ua.dlsi.im3.core.score.TimeSignature;
  *
  * @author drizo
  */
-public class TimeSignatureCommonTime extends TimeSignature implements ITimeSignatureWithDuration {
+public class TimeSignatureCommonTime extends SignTimeSignature implements ITimeSignatureWithDuration {
 
     public TimeSignatureCommonTime(NotationType notationType) {
     		super(notationType);

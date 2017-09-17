@@ -1,10 +1,9 @@
 package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Clef;
-import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
-import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutClef;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 
 import java.util.ArrayList;
@@ -15,12 +14,14 @@ import java.util.List;
  */
 public class HorizontalLayout extends ScoreLayout {
     List<LayoutStaff> staves; //TODO systems
+    LayoutSymbolFactory layoutSymbolFactory;
     /**
      * Everything is arranged in a single canvas
      */
     Canvas canvas;
     public HorizontalLayout(ScoreSong song) {
         super(song);
+        layoutSymbolFactory = new LayoutSymbolFactory();
         canvas = new Canvas(2000, 700); //TODO ¿qué valor ponemos? ¿Lo vamos cambiando conforme metamos cosas?
     }
 
@@ -36,13 +37,14 @@ public class HorizontalLayout extends ScoreLayout {
             // add contents of staff
             List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
             for (ITimedElementInStaff symbol: symbols) {
-                CoreSymbol coreSymbol = createLayout(symbol, layoutStaff);
-                if (coreSymbol != null) {
-                    layoutStaff.add(coreSymbol);
-                    coreSymbol.setX(symbol.getTime().getComputedTime()); // TODO algoritmo espaciado x de LayoutEngine .... - ahora cojo el tiempo
+                LayoutSymbolInStaff layoutSymbolInStaff = layoutSymbolFactory.createCoreSymbol(layoutStaff, symbol);
+                        //createLayout(symbol, layoutStaff);
+                if (layoutSymbolInStaff != null) {
+                    layoutStaff.add(layoutSymbolInStaff);
+                    layoutSymbolInStaff.setX(symbol.getTime().getComputedTime()); // TODO algoritmo espaciado x de LayoutEngine .... - ahora cojo el tiempo
 
                     //TODO Ver si esto es mejor aquí o después
-                    coreSymbol.computeLayout();
+                    layoutSymbolInStaff.computeLayout();
                 }
             }
         }
@@ -53,22 +55,18 @@ public class HorizontalLayout extends ScoreLayout {
         return new Canvas[] {canvas};
     }
 
-    CoreSymbol createLayout(ITimedElementInStaff symbol, LayoutStaff layoutStaff) throws IM3Exception {
-        CoreSymbol coreSymbol = null;
+    /*LayoutSymbolInStaff createLayout(ITimedElementInStaff symbol, LayoutStaff layoutStaff) throws IM3Exception {
+        LayoutSymbolInStaff layoutSymbolInStaff = null;
 
         //TODO Revisar patrón de diseño - quitar switch
         if (symbol instanceof Clef) {
-            coreSymbol = createClef((Clef) symbol, layoutStaff);
+            layoutSymbolInStaff = createClef((Clef) symbol, layoutStaff);
+        } else if (symbol instanceof KeySignature) {
+            layoutSymbolInStaff = createKeySignature((Clef) symbol, layoutStaff);
         } else {
             System.err.println("TO-DO: Unsupported symbol type: " + symbol.getClass());
         }
 
-        return coreSymbol;
-    }
-
-    private CoreSymbol createClef(Clef clef, LayoutStaff layoutStaff) throws IM3Exception {
-        LayoutClef layoutClef = new LayoutClef(clef, layoutStaff);
-
-        return layoutClef;
-    }
+        return layoutSymbolInStaff;
+    }*/
 }

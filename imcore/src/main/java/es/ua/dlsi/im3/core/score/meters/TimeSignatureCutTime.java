@@ -27,7 +27,7 @@ import es.ua.dlsi.im3.core.score.TimeSignature;
  *
  * @author drizo
  */
-public class TimeSignatureCutTime extends TimeSignature implements ITimeSignatureWithDuration {
+public class TimeSignatureCutTime extends SignTimeSignature implements ITimeSignatureWithDuration {
 
     public TimeSignatureCutTime(NotationType notationType) {
     		super(notationType);

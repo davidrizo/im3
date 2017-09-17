@@ -125,7 +125,7 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 	abstract Staff getBottomStaff() throws IM3Exception;
 
 	// 2014 marzo public abstract void addBarline(Barline barline);
-	// public abstract List<CoreSymbol> getCoreSymbols();
+	// public abstract List<LayoutSymbolInStaff> getCoreSymbols();
 	// abstract void computeOnsets();
 	abstract List<Staff> getContainedStaves();
 
