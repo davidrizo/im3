@@ -4,35 +4,29 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.layout.FontFactory;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.IGraphicsExporter;
-import org.apache.fontbox.ttf.OTFParser;
-import org.apache.fontbox.ttf.OpenTypeFont;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.encoding.Encoding;
-import org.apache.pdfbox.pdmodel.font.encoding.StandardEncoding;
-import org.apache.pdfbox.pdmodel.font.encoding.SymbolEncoding;
 import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
 
-import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class PDFExporter implements IGraphicsExporter {
-    private LayoutFont bravura;
-    PDFont bravuraMusicFont;
-    PDFont bravuraTextFont;
+    private LayoutFont layoutFont;
+    PDFont musicFont;
+    PDFont textFont;
 
-    public PDFExporter() {
-        bravura = FontFactory.getInstance().getBravuraFont();
+    public PDFExporter(LayoutFonts font) {
+        layoutFont = FontFactory.getInstance().getFont(font);
     }
 
     private void generatePDF(PDDocument document, Canvas canvas) throws ExportException {
@@ -46,7 +40,7 @@ public class PDFExporter implements IGraphicsExporter {
             //contents.concatenate2CTM(new AffineTransform(1, 0, 0, -1, xtl, ytl));
 
             for (GraphicsElement element : canvas.getElements()) {
-                element.generatePDF(contents, bravura, bravuraMusicFont, bravuraTextFont, page);
+                element.generatePDF(contents, layoutFont, musicFont, textFont, page);
             }
             contents.close();
         } catch (IOException e) {
@@ -96,9 +90,9 @@ public class PDFExporter implements IGraphicsExporter {
     private PDDocument createDocument() throws ExportException {
         PDDocument document = new PDDocument();
         try {
-            bravuraMusicFont = PDType0Font.load(document, bravura.getOTFMusicFont(), false);
-            //bravuraMusicFont = PDTrueTypeFont.load(document, bravura.getOTFMusicFont(), StandardEncoding.INSTANCE); //TODO BuiltInEncoding??
-            bravuraTextFont = PDTrueTypeFont.load(document, bravura.getOTFMusicFont(), WinAnsiEncoding.INSTANCE);
+            musicFont = PDType0Font.load(document, layoutFont.getOTFMusicFont(), false);
+            //musicFont = PDTrueTypeFont.load(document, layoutFont.getOTFMusicFont(), StandardEncoding.INSTANCE);
+            textFont = PDTrueTypeFont.load(document, layoutFont.getOTFMusicFont(), WinAnsiEncoding.INSTANCE); //TODO ¿ñ?
         } catch (IOException e) {
             throw new ExportException(e);
         }

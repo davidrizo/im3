@@ -5,28 +5,26 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.FontFactory;
-import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.*;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 //TODO Constantes
 public class SVGExporter implements IGraphicsExporter {
-    private LayoutFont bravura;
+    private LayoutFont layoutFont;
 
-    public SVGExporter() {
-        bravura = FontFactory.getInstance().getBravuraFont();
+    public SVGExporter(LayoutFonts font) {
+        layoutFont = FontFactory.getInstance().getFont(font);
     }
 
     //TODO Cargar fuente .... sólo de lo que necesitamos
     private void fillDefinitions(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) {
-        String viewbox = "0 0 " + bravura.getSVGFont().getUnitsPerEM() + " " + bravura.getSVGFont().getUnitsPerEM();
+        String viewbox = "0 0 " + layoutFont.getSVGFont().getUnitsPerEM() + " " + layoutFont.getSVGFont().getUnitsPerEM();
 
         XMLExporterHelper.start(sb, tabs, "defs");
         for (Glyph glyph: usedGlyphs) {
@@ -67,7 +65,7 @@ public class SVGExporter implements IGraphicsExporter {
 
         XMLExporterHelper.start(sbContent, 2, "g", "class", "page", "transform", "translate(30, 30)"); //TODO Configurar márgen
         for (GraphicsElement element: canvas.getElements()) {
-            element.generateSVG(sbContent, 3, bravura, usedGlyphs);
+            element.generateSVG(sbContent, 3, layoutFont, usedGlyphs);
         }
 
         XMLExporterHelper.end(sbContent, 2, "g");
@@ -85,10 +83,10 @@ public class SVGExporter implements IGraphicsExporter {
      * @throws ImportException
      */
     synchronized LayoutFont initFont() throws ImportException, IM3Exception {
-        if (bravura == null) {
-            bravura = new BravuraFont();
+        if (layoutFont == null) {
+            layoutFont = new BravuraFont();
         }
-        return bravura;
+        return layoutFont;
     }
 
     @Override

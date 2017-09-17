@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import org.junit.Test;
@@ -19,10 +20,10 @@ public class LineTest {
         canvas.add(line);
         canvas.add(line2);
 
-        SVGExporter exporter = new SVGExporter();
+        SVGExporter exporter = new SVGExporter(LayoutFonts.bravura);
         System.out.println(exporter.exportLayout(canvas));
 
-        PDFExporter pdfExporter = new PDFExporter();
+        PDFExporter pdfExporter = new PDFExporter(LayoutFonts.bravura);
         File file = TestFileUtils.createTempFile("lines.pdf");
         pdfExporter.exportLayout(file, canvas);
     }

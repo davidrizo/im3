@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
@@ -44,40 +45,64 @@ public class ScoreViewController {
         Menu fileMenu = new Menu("File");
         menuBar.getMenus().add(fileMenu);
 
-        MenuItem menuItemModern = new MenuItem("Open modern notation file");
-        fileMenu.getItems().add(menuItemModern);
-        menuItemModern.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem menuItemModernMusicXML = new MenuItem("Open MusicXML modern notation file");
+        fileMenu.getItems().add(menuItemModernMusicXML);
+        menuItemModernMusicXML.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                doOpenFile(NotationType.eModern,
-                        new Pair<String, String>("MusicXML", "xml"),
-                        new Pair<String, String>("MEI", "mei"));
+                doOpenFile(NotationType.eModern, false,
+                        "MusicXML", "xml");
             }
         });
 
-        MenuItem menuItemMensural = new MenuItem("Open mensural notation file");
+        MenuItem menuItemModernMEI = new MenuItem("Open MEI modern notation file");
+        fileMenu.getItems().add(menuItemModernMEI);
+        menuItemModernMEI.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                doOpenFile(NotationType.eModern, false,
+                        "MEI", "mei");
+            }
+        });
+
+        MenuItem menuItemMensural = new MenuItem("Open international mensural notation file");
         fileMenu.getItems().add(menuItemMensural);
         menuItemMensural.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                doOpenFile(NotationType.eMensural, new Pair<String, String>("MEI", "mei"));
+                doOpenFile(NotationType.eMensural, false, "MEI", "mei");
+            }
+        });
+
+        MenuItem menuItemHispanicMensural = new MenuItem("Open hispanic mensural notation file");
+        fileMenu.getItems().add(menuItemHispanicMensural);
+        menuItemHispanicMensural.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                doOpenFile(NotationType.eMensural,  true,"MEI", "mei");
             }
         });
 
         return menuBar;
     }
 
-    private void doOpenFile(NotationType notationType, Pair<String, String> ... fileTypes) {
+    private void doOpenFile(NotationType notationType, boolean useHispanicVariant, String fileTypeName, String fileExtension) {
         try {
             OpenSaveFileDialog dlg = new OpenSaveFileDialog();
-            File file = dlg.openFile("Open notation file", "MusicXML files", "xml");
+            File file = dlg.openFile("Open notation file", fileTypeName, fileExtension);
             //TODO MEI ....
             ScoreSongImporter importer = new ScoreSongImporter();
 
             String extension = FileUtils.getFileNameExtension(file.getName());
             ScoreSong song = importer.importSong(notationType, file, extension);
             // TODO: 17/9/17 Enlazar el modelo con el scoreSongView - usar ids como en JS
-            scoreSongView = new ScoreSongView(song);
+            LayoutFonts font;
+            if (useHispanicVariant) {
+                font = LayoutFonts.capitan;
+            } else {
+                font = LayoutFonts.bravura;
+            }
+            scoreSongView = new ScoreSongView(song, font);
             scrollMainPane.setContent(scoreSongView.getMainPanel());
         } catch (Exception e) {
             e.printStackTrace();

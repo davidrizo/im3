@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.layout.FontFactory;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
@@ -20,10 +21,10 @@ import javafx.scene.paint.Color;
 public class ScoreSongView {
     private final Canvas canvas;
     private final Pane mainPanel;
-    private final LayoutFont bravura;
+    private final LayoutFont layoutFont;
 
-    public ScoreSongView(ScoreSong scoreSong) throws IM3Exception {
-        bravura = FontFactory.getInstance().getBravuraFont();
+    public ScoreSongView(ScoreSong scoreSong, LayoutFonts font) throws IM3Exception {
+        layoutFont = FontFactory.getInstance().getFont(font);
         HorizontalLayout layout = new HorizontalLayout(scoreSong);
         layout.layout();
         canvas = layout.getCanvases()[0]; // it returns just one canvas
@@ -41,7 +42,7 @@ public class ScoreSongView {
 
     private void createNodes() throws GUIException {
         for (GraphicsElement element: canvas.getElements()) {
-            Node node = element.getJavaFXRoot(bravura);
+            Node node = element.getJavaFXRoot(layoutFont);
             if (node != null) {
                 mainPanel.getChildren().add(node);
             }
