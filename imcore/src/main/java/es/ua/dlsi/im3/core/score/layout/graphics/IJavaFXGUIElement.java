@@ -5,5 +5,5 @@ import es.ua.dlsi.im3.gui.javafx.GUIException;
 import javafx.scene.Node;
 
 public interface IJavaFXGUIElement {
-    public abstract Node getJavaFXRoot(LayoutFont layoutFont) throws GUIException;
+    public abstract Node getJavaFXRoot() throws GUIException;
 }

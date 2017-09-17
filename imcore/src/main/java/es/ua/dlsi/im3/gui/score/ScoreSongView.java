@@ -21,11 +21,10 @@ import javafx.scene.paint.Color;
 public class ScoreSongView {
     private final Canvas canvas;
     private final Pane mainPanel;
-    private final LayoutFont layoutFont;
+    private final HorizontalLayout layout;
 
     public ScoreSongView(ScoreSong scoreSong, LayoutFonts font) throws IM3Exception {
-        layoutFont = FontFactory.getInstance().getFont(font);
-        HorizontalLayout layout = new HorizontalLayout(scoreSong);
+        layout = new HorizontalLayout(scoreSong, font);
         layout.layout();
         canvas = layout.getCanvases()[0]; // it returns just one canvas
         mainPanel = new Pane();
@@ -42,7 +41,7 @@ public class ScoreSongView {
 
     private void createNodes() throws GUIException {
         for (GraphicsElement element: canvas.getElements()) {
-            Node node = element.getJavaFXRoot(layoutFont);
+            Node node = element.getJavaFXRoot();
             if (node != null) {
                 mainPanel.getChildren().add(node);
             }

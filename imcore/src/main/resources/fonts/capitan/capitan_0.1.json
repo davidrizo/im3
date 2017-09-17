@@ -1,11 +1,11 @@
 {
-    "mensuralCclef": {
+    "cClef": {
         "codepoint": "U+0061"
     },
     "gClef": {
         "codepoint": "U+0062"
     },
-    "mensuralFclef": {
+    "fClef": {
         "codepoint": "U+0063"
     },
     "mensuralFclefCompound": {
@@ -128,13 +128,13 @@
     "mensuralRestSemifusaWithStaff": {
         "codepoint": "U+1048"
     },
-    "flat" : {
+    "accidentalFlat" : {
 	"codepoint": "U+002D"
     },
-    "sharp" : {
+    "accidentalSharp" : {
 	"codepoint": "U+002B"
     },
-    "natural" : {
+    "accidentalNatural" : {
 	"codepoint": "U+003D"
     },
     "dot" : {

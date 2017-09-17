@@ -21,15 +21,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class PDFExporter implements IGraphicsExporter {
-    private LayoutFont layoutFont;
     PDFont musicFont;
     PDFont textFont;
 
-    public PDFExporter(LayoutFonts font) {
-        layoutFont = FontFactory.getInstance().getFont(font);
+    public PDFExporter() {
     }
 
-    private void generatePDF(PDDocument document, Canvas canvas) throws ExportException {
+    private void generatePDF(PDDocument document, Canvas canvas, LayoutFont layoutFont) throws ExportException {
         PDPage page = new PDPage();
         //page.setCropBox(new PDRectangle(30, 30, page.getCropBox().getWidth()-30, page.getCropBox().getHeight()-30));
         document.addPage(page);
@@ -40,7 +38,7 @@ public class PDFExporter implements IGraphicsExporter {
             //contents.concatenate2CTM(new AffineTransform(1, 0, 0, -1, xtl, ytl));
 
             for (GraphicsElement element : canvas.getElements()) {
-                element.generatePDF(contents, layoutFont, musicFont, textFont, page);
+                element.generatePDF(contents, musicFont, textFont, page);
             }
             contents.close();
         } catch (IOException e) {
@@ -49,12 +47,12 @@ public class PDFExporter implements IGraphicsExporter {
     }
     private void generatePDF(PDDocument document, ScoreLayout layout) throws ExportException {
         for (Canvas canvas: layout.getCanvases()) {
-            generatePDF(document, canvas);
+            generatePDF(document, canvas, layout.getLayoutFont());
         }
     }
     @Override
     public void exportLayout(OutputStream os, ScoreLayout layout) throws ExportException {
-        PDDocument document = createDocument();
+        PDDocument document = createDocument(layout.getLayoutFont());
         try {
             generatePDF(document, layout);
             document.save(os);
@@ -66,7 +64,7 @@ public class PDFExporter implements IGraphicsExporter {
 
     @Override
     public void exportLayout(File file, ScoreLayout layout) throws ExportException {
-        PDDocument document = createDocument();
+        PDDocument document = createDocument(layout.getLayoutFont());
         try {
             generatePDF(document, layout);
             document.save(file);
@@ -76,10 +74,10 @@ public class PDFExporter implements IGraphicsExporter {
         }
     }
 
-    public void exportLayout(File file, Canvas canvas) throws ExportException {
-        PDDocument document = createDocument();
+    public void exportLayout(File file, Canvas canvas, LayoutFont layoutFont) throws ExportException {
+        PDDocument document = createDocument(layoutFont);
         try {
-            generatePDF(document, canvas);
+            generatePDF(document, canvas, layoutFont);
             document.save(file);
             document.close();
         } catch (IOException e) {
@@ -87,7 +85,7 @@ public class PDFExporter implements IGraphicsExporter {
         }
     }
 
-    private PDDocument createDocument() throws ExportException {
+    private PDDocument createDocument(LayoutFont layoutFont) throws ExportException {
         PDDocument document = new PDDocument();
         try {
             musicFont = PDType0Font.load(document, layoutFont.getOTFMusicFont(), false);

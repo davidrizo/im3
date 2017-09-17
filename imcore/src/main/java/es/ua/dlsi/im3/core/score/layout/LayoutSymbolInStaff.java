@@ -2,9 +2,10 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
-import es.ua.dlsi.im3.core.score.layout.components.Component;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -37,7 +38,31 @@ public abstract class LayoutSymbolInStaff<CoreSymbolType extends ITimedElementIn
         this.x = x;
     }
 
+    /**
+     * It is invoked previous to the export to the view
+     * @throws IM3Exception
+     */
     public void computeLayout() throws IM3Exception {
-        // empty by default
+        computeLayoutOfComponents();
+    }
+
+    protected void computeLayoutOfComponents() throws IM3Exception {
+        if (components != null) {
+            for (Component component : components) {
+                component.computeLayout();
+            }
+        }
+    }
+
+    protected void addComponent(Component component) {
+        if (components == null) {
+            components = new ArrayList<>();
+        }
+
+        components.add(component);
+    }
+
+    public LayoutStaff getLayoutStaff() {
+        return layoutStaff;
     }
 }

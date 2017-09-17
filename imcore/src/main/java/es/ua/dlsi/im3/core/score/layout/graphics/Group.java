@@ -3,7 +3,6 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
-import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
 import javafx.scene.Node;
@@ -44,28 +43,28 @@ public class Group extends GraphicsElement {
     }
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs, LayoutFont layoutFont, HashSet<Glyph> usedGlyphs) throws ExportException {
+    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         XMLExporterHelper.start(sb, tabs, "g"); //TODO ID
         for (GraphicsElement child: children) {
-            child.generateSVG(sb, tabs+1, layoutFont, usedGlyphs);
+            child.generateSVG(sb, tabs+1, usedGlyphs);
         }
         XMLExporterHelper.end(sb, tabs, "g"); //TODO ID
 
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
+    public void generatePDF(PDPageContentStream contents, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
         //TODO ¿cómo se hace un grupo?
         for (GraphicsElement child: children) {
-            child.generatePDF(contents, layoutFont, musicFont, textFont, page);
+            child.generatePDF(contents, musicFont, textFont, page);
         }
     }
 
     @Override
-    public Node getJavaFXRoot(LayoutFont layoutFont) throws GUIException {
+    public Node getJavaFXRoot() throws GUIException {
         javafx.scene.Group group = new javafx.scene.Group();
         for (GraphicsElement child: children) {
-            Node node = child.getJavaFXRoot(layoutFont);
+            Node node = child.getJavaFXRoot();
             if (node != null) {
                 group.getChildren().add(node);
             }

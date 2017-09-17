@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
@@ -24,6 +25,11 @@ import java.util.HashSet;
  */
 public class Pictogram extends GraphicsElement {
     private static final String SIZE = LayoutConstants.EM + "px";
+    private final Glyph glyph;
+    /**
+     * Used to compute dimensions of the pictogram
+     */
+    private final SVGPath path;
     /**
      * SMuFL (or similar) name of the pictogram (e.g. gClef)
      */
@@ -33,8 +39,20 @@ public class Pictogram extends GraphicsElement {
 
     private double y;
 
-    public Pictogram(String codepoint) {
+    private double width;
+
+    LayoutFont layoutFont;
+
+    public Pictogram(LayoutFont layoutFont, String codepoint) throws IM3Exception {
         this.codepoint = codepoint;
+        this.layoutFont = layoutFont;
+        glyph = layoutFont.getGlyph(this);
+
+        path = new SVGPath();
+        path.setContent(glyph.getPath());
+        path.getTransforms().add(layoutFont.getJavaFXScale());
+        width = path.getLayoutBounds().getWidth() * layoutFont.getScaleX();
+
     }
 
     public String getCodepoint() {
@@ -57,19 +75,9 @@ public class Pictogram extends GraphicsElement {
         this.y = y;
     }
 
-    private Glyph getGlyph(LayoutFont layoutFont) throws ExportException {
-        Glyph glyph = null;
-        try {
-            glyph = layoutFont.getGlyph(this);
-        } catch (IM3Exception e) {
-            throw new ExportException(e);
-        }
-        return glyph;
-    }
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs, LayoutFont layoutFont, HashSet<Glyph> usedGlyphs) throws ExportException {
-        Glyph glyph = getGlyph(layoutFont);
+    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         XMLExporterHelper.startEnd(sb, tabs, "use",
                 "xlink:href", "#" + glyph.getEscapedUnicode(),
                 "height", SIZE,
@@ -82,8 +90,7 @@ public class Pictogram extends GraphicsElement {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contentStream, LayoutFont layoutFont, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
-        Glyph glyph = getGlyph(layoutFont);
+    public void generatePDF(PDPageContentStream contentStream, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
         try {
             contentStream.setFont(musicFont, LayoutConstants.FONT_SIZE);
             contentStream.beginText();
@@ -98,18 +105,13 @@ public class Pictogram extends GraphicsElement {
     }
 
     @Override
-    public Node getJavaFXRoot(LayoutFont layoutFont) throws GUIException {
-        SVGPath path = new SVGPath();
-        try {
-            Glyph glyph = getGlyph(layoutFont);
-            path.setContent(glyph.getPath());
-            path.getTransforms().add(layoutFont.getJavaFXScale());
-            path.setLayoutX(x);
-            path.setLayoutY(y);
-        } catch (ExportException e) {
-            throw new GUIException(e);
-        }
-
+    public Node getJavaFXRoot() throws GUIException {
+        path.setLayoutX(x);
+        path.setLayoutY(y);
         return path;
+    }
+
+    public double getWidth() {
+        return width;
     }
 }

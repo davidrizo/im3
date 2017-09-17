@@ -16,14 +16,11 @@ import java.util.HashSet;
 
 //TODO Constantes
 public class SVGExporter implements IGraphicsExporter {
-    private LayoutFont layoutFont;
-
-    public SVGExporter(LayoutFonts font) {
-        layoutFont = FontFactory.getInstance().getFont(font);
+    public SVGExporter() {
     }
 
     //TODO Cargar fuente .... sólo de lo que necesitamos
-    private void fillDefinitions(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) {
+    private void fillDefinitions(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs, LayoutFont layoutFont) {
         String viewbox = "0 0 " + layoutFont.getSVGFont().getUnitsPerEM() + " " + layoutFont.getSVGFont().getUnitsPerEM();
 
         XMLExporterHelper.start(sb, tabs, "defs");
@@ -39,13 +36,7 @@ public class SVGExporter implements IGraphicsExporter {
         XMLExporterHelper.end(sb, tabs, "defs");
     }
 
-    public String exportLayout(Canvas canvas) throws IM3Exception {
-        try {
-            initFont();
-        } catch (ImportException e) {
-            throw new ExportException(e);
-        }
-
+    public String exportLayout(Canvas canvas, LayoutFont layoutFont) throws IM3Exception {
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" standalone=\"no\"?>\n");
         XMLExporterHelper.start(sb, 0, "svg",
@@ -65,28 +56,17 @@ public class SVGExporter implements IGraphicsExporter {
 
         XMLExporterHelper.start(sbContent, 2, "g", "class", "page", "transform", "translate(30, 30)"); //TODO Configurar márgen
         for (GraphicsElement element: canvas.getElements()) {
-            element.generateSVG(sbContent, 3, layoutFont, usedGlyphs);
+            element.generateSVG(sbContent, 3, usedGlyphs);
         }
 
         XMLExporterHelper.end(sbContent, 2, "g");
         XMLExporterHelper.end(sbContent, 1, "svg");
 
-        fillDefinitions(sb, 1, usedGlyphs);
+        fillDefinitions(sb, 1, usedGlyphs, layoutFont);
 
         sb.append(sbContent);
         XMLExporterHelper.end(sb, 0, "svg");
         return sb.toString();
-    }
-
-    /**
-     * Package and return used for tests
-     * @throws ImportException
-     */
-    synchronized LayoutFont initFont() throws ImportException, IM3Exception {
-        if (layoutFont == null) {
-            layoutFont = new BravuraFont();
-        }
-        return layoutFont;
     }
 
     @Override
@@ -95,7 +75,7 @@ public class SVGExporter implements IGraphicsExporter {
             throw new ExportException("Cannot export " + layout.getCanvases().length + " canvases to SVG");
         }
         try (Writer w = new OutputStreamWriter(os, "UTF-8")) {
-            w.write(exportLayout(layout.getCanvases()[0]));
+            w.write(exportLayout(layout.getCanvases()[0], layout.getLayoutFont()));
         } // or w.close(); //close will auto-flush    }
         catch (Exception e) {
             throw new ExportException(e);
@@ -111,7 +91,7 @@ public class SVGExporter implements IGraphicsExporter {
             BufferedWriter out = null;
             try {
                 out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
-                out.write(exportLayout(layout.getCanvases()[0]));
+                out.write(exportLayout(layout.getCanvases()[0], layout.getLayoutFont()));
                 out.close();
             } catch (Exception e) {
                 throw new ExportException(e);

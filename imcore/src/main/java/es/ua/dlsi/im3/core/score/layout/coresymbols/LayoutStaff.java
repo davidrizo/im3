@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
+import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
@@ -13,14 +14,16 @@ import java.util.List;
 
 public class LayoutStaff extends NotationSymbol {
 	List<NotationSymbol> notationSymbols;
+	ScoreLayout scoreLayout;
     /**
      * Arranged bottom-up
      */
 	List<Line> lines;
 	Group group;
 
-    public LayoutStaff(double width, Staff staff) {
+    public LayoutStaff(ScoreLayout scoreLayout, double width, Staff staff) {
         lines = new ArrayList<>();
+        this.scoreLayout = scoreLayout;
         notationSymbols = new ArrayList<>();
         group = new Group();
         for (int i=0; i<staff.getLineCount(); i++) {
@@ -35,6 +38,10 @@ public class LayoutStaff extends NotationSymbol {
 
     public List<Line> getLines() {
         return lines;
+    }
+
+    public ScoreLayout getScoreLayout() {
+        return scoreLayout;
     }
 
     @Override

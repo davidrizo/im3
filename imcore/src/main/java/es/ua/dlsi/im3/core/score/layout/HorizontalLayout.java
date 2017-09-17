@@ -2,8 +2,8 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutClef;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 
 import java.util.ArrayList;
@@ -19,8 +19,8 @@ public class HorizontalLayout extends ScoreLayout {
      * Everything is arranged in a single canvas
      */
     Canvas canvas;
-    public HorizontalLayout(ScoreSong song) {
-        super(song);
+    public HorizontalLayout(ScoreSong song, LayoutFonts font) {
+        super(song, font);
         layoutSymbolFactory = new LayoutSymbolFactory();
         canvas = new Canvas(2000, 700); //TODO ¿qué valor ponemos? ¿Lo vamos cambiando conforme metamos cosas?
     }
@@ -30,7 +30,7 @@ public class HorizontalLayout extends ScoreLayout {
         //TODO scoreSong.getStaffSystems()
         staves = new ArrayList<>(); //TODO supongo que no habrá que rehacerlo siempre
         for (Staff staff: scoreSong.getStaves()) {
-            LayoutStaff layoutStaff = new LayoutStaff(canvas.getWidth(), staff);
+            LayoutStaff layoutStaff = new LayoutStaff(this, canvas.getWidth(), staff);
             staves.add(layoutStaff);
             canvas.add(layoutStaff.getGraphics());
 

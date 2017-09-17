@@ -2,7 +2,6 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
-import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import javafx.scene.Node;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -47,7 +46,7 @@ public class Line extends Shape {
 
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs, LayoutFont layoutFont, HashSet<Glyph> usedGlyphs) {
+    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) {
         XMLExporterHelper.startEnd(sb, tabs, "line",
                 "x1", Double.toString(startX),
                 "y1", Double.toString(startY),
@@ -60,7 +59,7 @@ public class Line extends Shape {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, LayoutFont layoutFont, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
+    public void generatePDF(PDPageContentStream contents, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
         try {
             contents.setStrokingColor(0, 0, 0);
             contents.moveTo(getPFDCoordinateX(page, startX), getPFDCoordinateY(page, startY));
@@ -120,7 +119,7 @@ public class Line extends Shape {
     }
 
     @Override
-    public Node getJavaFXRoot(LayoutFont layoutFont) {
+    public Node getJavaFXRoot() {
         return new javafx.scene.shape.Line(startX, startY, endX, endY); // TODO: 17/9/17 Grosor, color
     }
 }

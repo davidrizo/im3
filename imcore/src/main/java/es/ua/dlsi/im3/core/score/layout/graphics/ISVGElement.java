@@ -11,9 +11,8 @@ public interface ISVGElement {
      *
      * @param sb
      * @param tabs
-     * @param layoutFont
      * @param usedGlyphs All glyphs included should be added here
      * @throws ExportException
      */
-    void generateSVG(StringBuilder sb, int tabs, LayoutFont layoutFont, HashSet<Glyph> usedGlyphs) throws ExportException;
+    void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException;
 }

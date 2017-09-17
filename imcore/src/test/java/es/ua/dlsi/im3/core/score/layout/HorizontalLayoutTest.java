@@ -18,14 +18,14 @@ public class HorizontalLayoutTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/simple1.xml");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura);
         layout.layout();
 
-        SVGExporter svgExporter = new SVGExporter(LayoutFonts.bravura);
+        SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("simple.svg");
         svgExporter.exportLayout(svgFile, layout);
 
-        PDFExporter pdfExporter = new PDFExporter(LayoutFonts.bravura);
+        PDFExporter pdfExporter = new PDFExporter();
         File pdfFile = TestFileUtils.createTempFile("simple.pdf");
         pdfExporter.exportLayout(pdfFile, layout);
     }
@@ -36,14 +36,14 @@ public class HorizontalLayoutTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/nodiviertanllantoninyo.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan);
         layout.layout();
 
-        SVGExporter svgExporter = new SVGExporter(LayoutFonts.capitan);
+        SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("nodiviertanllantoninyo.svg");
         svgExporter.exportLayout(svgFile, layout);
 
-        PDFExporter pdfExporter = new PDFExporter(LayoutFonts.capitan);
+        PDFExporter pdfExporter = new PDFExporter();
         File pdfFile = TestFileUtils.createTempFile("nodiviertanllantoninyo.pdf");
         pdfExporter.exportLayout(pdfFile, layout);
 
