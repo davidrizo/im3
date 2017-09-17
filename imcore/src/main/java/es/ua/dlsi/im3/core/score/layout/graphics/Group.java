@@ -4,6 +4,8 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
+import es.ua.dlsi.im3.gui.javafx.GUIException;
+import javafx.scene.Node;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -49,5 +51,17 @@ public class Group extends GraphicsElement {
         for (GraphicsElement child: children) {
             child.generatePDF(contents, layoutFont, musicFont, textFont, page);
         }
+    }
+
+    @Override
+    public Node getJavaFXRoot(LayoutFont layoutFont) throws GUIException {
+        javafx.scene.Group group = new javafx.scene.Group();
+        for (GraphicsElement child: children) {
+            Node node = child.getJavaFXRoot(layoutFont);
+            if (node != null) {
+                group.getChildren().add(node);
+            }
+        }
+        return group;
     }
 }

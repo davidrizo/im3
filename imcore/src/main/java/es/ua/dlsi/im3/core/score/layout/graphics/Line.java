@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
+import javafx.scene.Node;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -116,5 +117,10 @@ public class Line extends Shape {
 
     public void setStrokeType(StrokeType strokeType) {
         this.strokeType = strokeType;
+    }
+
+    @Override
+    public Node getJavaFXRoot(LayoutFont layoutFont) {
+        return new javafx.scene.shape.Line(startX, startY, endX, endY); // TODO: 17/9/17 Grosor, color
     }
 }

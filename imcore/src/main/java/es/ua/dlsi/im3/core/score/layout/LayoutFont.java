@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGFont;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGFontImporter;
+import javafx.scene.transform.Scale;
 import org.apache.fontbox.ttf.OTFParser;
 import org.apache.fontbox.ttf.OpenTypeFont;
 
@@ -14,6 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class LayoutFont {
+    /**
+     * As field to be reused
+     */
+    private final Scale javaFXScale;
     OpenTypeFont otfMusicFont;
     OpenTypeFont otfTextFont;
     SVGFont svgFont;
@@ -39,6 +44,8 @@ public class LayoutFont {
         } catch (IOException e) {
             throw new ImportException(e);
         }
+
+        javaFXScale = new Scale(getScaleX(), getScaleY());
     }
 
 
@@ -58,4 +65,24 @@ public class LayoutFont {
     public OpenTypeFont getOtfTextFont() {
         return otfTextFont;
     }
+
+    public Scale getJavaFXScale() {
+        return javaFXScale;
+    }
+    /**
+     * Scale to default EM size 
+     * @return
+     */
+    public double getScaleX() {
+        return LayoutConstants.EM / svgFont.getUnitsPerEM();        
+    }
+
+    /**
+     * Scale to default EM size 
+     * @return
+     */
+    public double getScaleY() {
+        return -LayoutConstants.EM / svgFont.getUnitsPerEM(); // TODO: 17/9/17 El -1 es para Bravura sólo ?
+    }
+    
 }

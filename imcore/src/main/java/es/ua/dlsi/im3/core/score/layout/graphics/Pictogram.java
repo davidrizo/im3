@@ -6,6 +6,12 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
+import es.ua.dlsi.im3.gui.javafx.GUIException;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -91,4 +97,19 @@ public class Pictogram extends GraphicsElement {
         }
     }
 
+    @Override
+    public Node getJavaFXRoot(LayoutFont layoutFont) throws GUIException {
+        SVGPath path = new SVGPath();
+        try {
+            Glyph glyph = getGlyph(layoutFont);
+            path.setContent(glyph.getPath());
+            path.getTransforms().add(layoutFont.getJavaFXScale());
+            path.setLayoutX(x);
+            path.setLayoutY(y);
+        } catch (ExportException e) {
+            throw new GUIException(e);
+        }
+
+        return path;
+    }
 }
