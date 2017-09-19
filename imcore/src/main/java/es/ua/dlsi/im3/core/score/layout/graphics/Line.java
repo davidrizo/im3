@@ -122,4 +122,14 @@ public class Line extends Shape {
     public Node getJavaFXRoot() {
         return new javafx.scene.shape.Line(startX, startY, endX, endY); // TODO: 17/9/17 Grosor, color
     }
+
+    @Override
+    public double getWidth() {
+        return endX-startX;
+    }
+
+    @Override
+    public double getX() {
+        return startX;
+    }
 }

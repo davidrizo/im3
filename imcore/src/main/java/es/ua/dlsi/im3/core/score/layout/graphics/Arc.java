@@ -122,4 +122,14 @@ public class Arc extends Shape {
     public Node getJavaFXRoot() {
         return null;
     }
+
+    @Override
+    public double getWidth() {
+        return toX - fromX;
+    }
+
+    @Override
+    public double getX() {
+        return fromX;
+    }
 }

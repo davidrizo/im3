@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.CoreSymbolsOrderer;
@@ -19,6 +20,25 @@ public class Simultaneity implements Comparable<Simultaneity> {
     int order;
 
     /**
+     * Duration
+     */
+    Time timeSpan;
+
+    /**
+     * The maximum of the widths of the symbols
+     */
+    double maxWidth;
+
+    /**
+     * The minimum of the widths of the symbols
+     */
+    double minWidth;
+    /**
+     * The width of the simultaneity in the layout
+     */
+    private double layoutWidth;
+
+    /**
      * @param firstSymbol First inserted symbol. The simultaneity needs at least one symbol
      */
     public Simultaneity(LayoutSymbolInStaff firstSymbol) {
@@ -26,6 +46,7 @@ public class Simultaneity implements Comparable<Simultaneity> {
         this.order = CoreSymbolsOrderer.getInstance().getOrder(firstSymbol);
         symbols = new ArrayList<>();
         symbols.add(firstSymbol);
+        minWidth = maxWidth = firstSymbol.getWidth();
     }
 
     @Override
@@ -55,6 +76,8 @@ public class Simultaneity implements Comparable<Simultaneity> {
                     CoreSymbolsOrderer.getInstance().getOrder(symbol) + ")to the same simultaneity");
         }
 
+        maxWidth = Math.max(maxWidth, symbol.getWidth());
+        minWidth = Math.min(minWidth, symbol.getWidth());
         symbols.add(symbol);
     }
 
@@ -65,5 +88,59 @@ public class Simultaneity implements Comparable<Simultaneity> {
                 ", order=" + order +
                 ", symbols=" + symbols +
                 '}';
+    }
+
+    public Time getTimeSpan() {
+        return timeSpan;
+    }
+
+    public void setTimeSpan(Time timeSpan) {
+        this.timeSpan = timeSpan;
+    }
+
+    /**
+     * The minimum width the simultaneity needs for avoiding collisions
+     * @return
+     */
+    public double getMinimumWidth() {
+        return maxWidth; // it is not an error, it is maxWidth
+    }
+
+    public void setLayoutWidth(double width) {
+        this.layoutWidth = width;
+    }
+
+    public double getLayoutWidth() {
+        return layoutWidth;
+    }
+
+    /**
+     * The timeSpan will be the maximum of the duration of its elements
+     */
+    public void setTimeSpanFromElementsDuration() {
+        Time maxDur = Time.TIME_ZERO;
+        for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
+            maxDur = Time.max(maxDur, layoutSymbolInStaff.getDuration());
+        }
+        setTimeSpan(maxDur);
+    }
+
+    /**
+     * It sets the x of all elements to x
+     * @param x
+     */
+    public void setElementsX(double x) {
+        for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
+            layoutSymbolInStaff.setX(x);
+        }
+    }
+
+    /**
+     * It invokes the computeLayout of all elements
+     */
+    public void computeElementsLayout() throws IM3Exception {
+        for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
+            layoutSymbolInStaff.computeLayout();
+        }
     }
 }

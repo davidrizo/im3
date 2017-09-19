@@ -33,5 +33,7 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
     }
 
 
+    public abstract double getWidth();
 
+    public abstract double getX();
 }

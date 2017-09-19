@@ -53,11 +53,43 @@ public class HorizontalLayout extends ScoreLayout {
             }
         }
 
-        // FIXME: 19/9/17 remove
-        simultaneities.printDebug();
+        // TODO: 19/9/17 This is a very simple algorithm, that does not permit overlaps without collisions. It must be replaced by a serious one
+        /**
+         * Set the time between simultaneities and x position
+         */
+        double x = 0;
+        Simultaneity prevSimultaneity = null;
+        for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {
+            if (prevSimultaneity != null) {
+                prevSimultaneity.setTimeSpan(simultaneity.getTime().substract(prevSimultaneity.getTime()));
+                computeWidth(prevSimultaneity);
+                prevSimultaneity.setElementsX(x);
+                prevSimultaneity.computeElementsLayout();
+                x += prevSimultaneity.getLayoutWidth();
+            }
+
+            prevSimultaneity = simultaneity;
+        }
+
+        if (prevSimultaneity != null) {
+            prevSimultaneity.setTimeSpanFromElementsDuration();
+            computeWidth(prevSimultaneity);
+            prevSimultaneity.setElementsX(x);
+            prevSimultaneity.computeElementsLayout();
+        }
+
 
         //layoutSymbolInStaff.computeLayout();
 
+    }
+
+    private void computeWidth(Simultaneity prevSimultaneity) {
+        double timeToWidth = Math.log(prevSimultaneity.getTimeSpan().getComputedTime())*LayoutConstants.EM;
+        double layoutWidth = Math.max(prevSimultaneity.getMinimumWidth(), timeToWidth);
+        prevSimultaneity.setLayoutWidth(layoutWidth);
+        System.out.println("Width from time span " + prevSimultaneity.getTimeSpan().getComputedTime() + ", min " +
+                prevSimultaneity.getMinimumWidth() + " and timeToWidth  " +
+                timeToWidth + " = "  + layoutWidth);
     }
 
     @Override

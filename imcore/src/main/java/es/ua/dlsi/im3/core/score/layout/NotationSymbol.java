@@ -13,4 +13,13 @@ public abstract class NotationSymbol {
     boolean hidden;
 
     public abstract GraphicsElement getGraphics();
+
+    public double getWidth() {
+        GraphicsElement g = getGraphics();
+        if (g == null) {
+            return 0;
+        } else {
+            return g.getWidth();
+        }
+    }
 }

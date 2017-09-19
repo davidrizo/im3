@@ -71,4 +71,31 @@ public class Group extends GraphicsElement {
         }
         return group;
     }
+
+    @Override
+    public double getWidth() {
+        // TODO: 19/9/17 Maybe we could save this value and update it for each add and width change of an element
+        double fromX = Double.MAX_VALUE;
+        double toX = Double.MIN_VALUE;
+
+        for (GraphicsElement child: children) {
+            fromX = Math.min(fromX, child.getX());
+            toX = Math.max(toX, child.getX() + child.getWidth());
+        }
+
+        return toX - fromX;
+    }
+
+    @Override
+    public double getX() {
+        // TODO: 19/9/17 Maybe we could save this value and update it for each add and width change of an element
+        // We could also store relative coordinates of the grouped elements
+        double fromX = Double.MAX_VALUE;
+
+        for (GraphicsElement child: children) {
+            fromX = Math.min(fromX, child.getX());
+        }
+
+        return fromX;
+    }
 }

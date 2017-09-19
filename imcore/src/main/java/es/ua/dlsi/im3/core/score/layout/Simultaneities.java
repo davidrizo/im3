@@ -32,4 +32,8 @@ public class Simultaneities {
             System.out.println(s.toString());
         }
     }
+
+    public TreeSet<Simultaneity> getSimiltaneities() {
+        return simultaneities;
+    }
 }
