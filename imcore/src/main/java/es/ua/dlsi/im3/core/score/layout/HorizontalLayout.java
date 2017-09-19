@@ -27,8 +27,15 @@ public class HorizontalLayout extends ScoreLayout {
 
     @Override
     public void layout() throws IM3Exception {
+        // TODO: 19/9/17 En esta versión creamos todos los símbolos cada vez - habría que crear sólo los necesarios
+        canvas.clear();
+
         //TODO scoreSong.getStaffSystems()
         staves = new ArrayList<>(); //TODO supongo que no habrá que rehacerlo siempre
+
+        // first create symbols and simultaneities
+        Simultaneities simultaneities = new Simultaneities();
+
         for (Staff staff: scoreSong.getStaves()) {
             LayoutStaff layoutStaff = new LayoutStaff(this, canvas.getWidth(), staff);
             staves.add(layoutStaff);
@@ -41,13 +48,16 @@ public class HorizontalLayout extends ScoreLayout {
                         //createLayout(symbol, layoutStaff);
                 if (layoutSymbolInStaff != null) {
                     layoutStaff.add(layoutSymbolInStaff);
-                    layoutSymbolInStaff.setX(symbol.getTime().getComputedTime()); // TODO algoritmo espaciado x de LayoutEngine .... - ahora cojo el tiempo
-
-                    //TODO Ver si esto es mejor aquí o después
-                    layoutSymbolInStaff.computeLayout();
+                    simultaneities.add(layoutSymbolInStaff);
                 }
             }
         }
+
+        // FIXME: 19/9/17 remove
+        simultaneities.printDebug();
+
+        //layoutSymbolInStaff.computeLayout();
+
     }
 
     @Override

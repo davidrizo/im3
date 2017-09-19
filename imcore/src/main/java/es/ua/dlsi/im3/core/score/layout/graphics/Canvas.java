@@ -44,4 +44,8 @@ public class Canvas {
     public List<GraphicsElement> getElements() {
         return elementList;
     }
+
+    public void clear() {
+        elementList.clear();
+    }
 }
