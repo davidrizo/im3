@@ -28,12 +28,12 @@ public class Keys {
     private static ArrayList<Key> keys;
     private static void build() {
 	keys = new ArrayList<>();
-	/*for (NoteNames nn: NoteNames.values()) {
-	    if (nn != NoteNames.REST) {
+	/*for (DiatonicPitch nn: DiatonicPitch.values()) {
+	    if (nn != DiatonicPitch.REST) {
 		List<Accidentals> accs;
-		if (nn == NoteNames.C) {
+		if (nn == DiatonicPitch.C) {
 		    accs = Arrays.asList(Accidentals.NATURAL, Accidentals.SHARP);
-		} else if (nn == NoteNames.B) {
+		} else if (nn == DiatonicPitch.B) {
 		    accs = Arrays.asList(Accidentals.FLAT, Accidentals.NATURAL);
 		} else {
 		    accs = Arrays.asList(Accidentals.FLAT, Accidentals.NATURAL, Accidentals.SHARP);		

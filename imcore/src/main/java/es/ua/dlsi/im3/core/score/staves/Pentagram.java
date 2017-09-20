@@ -20,7 +20,7 @@ package es.ua.dlsi.im3.core.score.staves;
 import java.util.HashMap;
 
 import es.ua.dlsi.im3.core.score.Clef;
-import es.ua.dlsi.im3.core.score.NoteNames;
+import es.ua.dlsi.im3.core.score.DiatonicPitch;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.Staff;
 
@@ -30,7 +30,7 @@ import es.ua.dlsi.im3.core.score.Staff;
 public class Pentagram extends Staff {
 	// private static final int MAX_ADITIONAL_LINES = 7;
 	HashMap<Clef, Integer> clefBottomLineOctaves;
-	HashMap<Clef, NoteNames> clefBottomLineNoteNames;
+	HashMap<Clef, DiatonicPitch> clefBottomLineNoteNames;
 
 	/**
 	 * The staff must be added to the score song using ScoreSong.addStaff to be
@@ -64,11 +64,11 @@ public class Pentagram extends Staff {
 		return noteOrder - (clef.getLine() - 1) * 2;
 	}
 
-	private NoteNames getBottomLineNoteName(Clef clef) {
-		NoteNames res = clefBottomLineNoteNames.get(clef);
+	private DiatonicPitch getBottomLineNoteName(Clef clef) {
+		DiatonicPitch res = clefBottomLineNoteNames.get(clef);
 		if (res == null) {
 			int bottomLineNoteOrder = computeBottomLineNoteOrder(clef);
-			res = NoteNames.values()[bottomLineNoteOrder % 7];
+			res = DiatonicPitch.values()[bottomLineNoteOrder % 7];
 			clefBottomLineNoteNames.put(clef, res);
 		}
 

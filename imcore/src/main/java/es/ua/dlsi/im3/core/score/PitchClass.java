@@ -27,7 +27,7 @@ public class PitchClass implements Comparable<PitchClass> {
 	};
 
 	
-	NoteNames noteName;
+	DiatonicPitch noteName;
 	Accidentals accidental;
 	int semitonesFromC;
 	/**
@@ -39,13 +39,13 @@ public class PitchClass implements Comparable<PitchClass> {
 	/**
 	 * @return the noteName
 	 */
-	public final NoteNames getNoteName() {
+	public final DiatonicPitch getNoteName() {
 		return noteName;
 	}
 	/**
 	 * @param noteName the noteName to set
 	 */
-	public final void setNoteName(NoteNames noteName) {
+	public final void setNoteName(DiatonicPitch noteName) {
 		this.noteName = noteName;
 		computeSemitonesFromC();
 	}
@@ -76,12 +76,12 @@ public class PitchClass implements Comparable<PitchClass> {
 	 * @param noteName
 	 * @param accidental
 	 */
-	public PitchClass(NoteNames noteName, Accidentals accidental) {
+	public PitchClass(DiatonicPitch noteName, Accidentals accidental) {
 		super();
 		this.noteName = noteName;
 		setAccidental(accidental);
 	}
-	public PitchClass(NoteNames noteName) {
+	public PitchClass(DiatonicPitch noteName) {
 		this.noteName = noteName;
 		this.accidental = Accidentals.NATURAL;
 		computeSemitonesFromC();
@@ -144,7 +144,7 @@ public class PitchClass implements Comparable<PitchClass> {
         return noteName == other.noteName;
     }
 	public boolean isRest() {
-		return noteName == NoteNames.REST;
+		return noteName == DiatonicPitch.REST;
 	}
 	
 	public int getBase40Chroma() {

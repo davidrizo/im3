@@ -93,12 +93,12 @@ public class HarmonyImporter  {
         public void exitKeySpecification(harmonyParser.KeySpecificationContext ctx) {
             Logger.getLogger(HarmonyImporter.class.getName()).log(Level.FINEST, "Exit Key Specification {0}", ctx.getText());
 
-            NoteNames noteName;
+            DiatonicPitch noteName;
             Accidentals acc = null;
             Mode mode;
 
             try {
-                noteName = NoteNames.noteFromName(ctx.getChild(0).getText());
+                noteName = DiatonicPitch.noteFromName(ctx.getChild(0).getText());
             } catch (IM3Exception e) {
                 throw new GrammarParseRuntimeException(e);
             }

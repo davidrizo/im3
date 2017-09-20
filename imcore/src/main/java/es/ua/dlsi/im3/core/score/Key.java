@@ -29,8 +29,8 @@ public final class Key implements Comparable<Key> {
 	/**
 	 * Order of sharp alterations F, C, G, D, A, E, B
 	 */
-	public static final NoteNames KEY_SIGNATURE_STAFF_SHARPS[] = { NoteNames.F, NoteNames.C, NoteNames.G, NoteNames.D,
-			NoteNames.A, NoteNames.E, NoteNames.B };
+	public static final DiatonicPitch KEY_SIGNATURE_STAFF_SHARPS[] = { DiatonicPitch.F, DiatonicPitch.C, DiatonicPitch.G, DiatonicPitch.D,
+			DiatonicPitch.A, DiatonicPitch.E, DiatonicPitch.B };
 	/**
 	 * Key associated to a number of flats in the instrumentKey signature F, Bb, Eb, Ab,
 	 * Db, Gb, Cb
@@ -39,8 +39,8 @@ public final class Key implements Comparable<Key> {
 	/**
 	 * Order of sharp alterations B, E, A, D, G, C, F
 	 */
-	public static final NoteNames KEY_SIGNATURE_STAFF_FLATS[] = { NoteNames.B, NoteNames.E, NoteNames.A, NoteNames.D,
-			NoteNames.G, NoteNames.C, NoteNames.F }; // the inverse of
+	public static final DiatonicPitch KEY_SIGNATURE_STAFF_FLATS[] = { DiatonicPitch.B, DiatonicPitch.E, DiatonicPitch.A, DiatonicPitch.D,
+			DiatonicPitch.G, DiatonicPitch.C, DiatonicPitch.F }; // the inverse of
 														// KEY_SIGNATURE_STAFF_SHARPS
 	/**
 	 * Pitch class
@@ -473,7 +473,7 @@ public final class Key implements Comparable<Key> {
 	// TODO podríamos hacer una pequeña gramática
 	public static Key getKeyFromName(String tonality) throws IM3Exception {
 		String noteNameStr = tonality.substring(0, 1);
-		NoteNames noteName = NoteNames.valueOf(noteNameStr.toUpperCase());
+		DiatonicPitch noteName = DiatonicPitch.valueOf(noteNameStr.toUpperCase());
 		Mode mode;
 		if (noteNameStr.toLowerCase().equals(noteNameStr)) { // it is lowercase
 			mode = Mode.MINOR;
@@ -577,25 +577,25 @@ public final class Key implements Comparable<Key> {
 	/**
 	 * @return e.g. B, E or F, C etc... Empty array (not null) if none
 	 */
-	public NoteNames[] getAlteredNoteNames() {
+	public DiatonicPitch[] getAlteredNoteNames() {
 		if (this.fifths > 0) {
-			NoteNames[] result = new NoteNames[this.fifths];
+			DiatonicPitch[] result = new DiatonicPitch[this.fifths];
 			System.arraycopy(KEY_SIGNATURE_STAFF_SHARPS, 0, result, 0, this.fifths);
 			return result;
 		} else if (this.fifths < 0) {
-			NoteNames[] result = new NoteNames[-this.fifths];
+			DiatonicPitch[] result = new DiatonicPitch[-this.fifths];
 			System.arraycopy(KEY_SIGNATURE_STAFF_FLATS, 0, result, 0, -this.fifths);
 			return result;
 		} else {
-			return new NoteNames[] {};
+			return new DiatonicPitch[] {};
 		}
 	}
 
-	public TreeMap<NoteNames, PitchClass> getAlteredNoteNamesSet() {
-		NoteNames[] nn = getAlteredNoteNames();
-		TreeMap<NoteNames, PitchClass> ts = new TreeMap<>();
+	public TreeMap<DiatonicPitch, PitchClass> getAlteredNoteNamesSet() {
+		DiatonicPitch[] nn = getAlteredNoteNames();
+		TreeMap<DiatonicPitch, PitchClass> ts = new TreeMap<>();
 		Accidentals acc = getAccidental();
-		for (NoteNames nn1 : nn) {
+		for (DiatonicPitch nn1 : nn) {
 			ts.put(nn1, new PitchClass(nn1, acc));
 		}
 		return ts;
@@ -608,7 +608,7 @@ public final class Key implements Comparable<Key> {
 	 * @param noteName
 	 * @return
 	 */
-	public Accidentals getNoteNameKeySignatureAccidental(NoteNames noteName) {
+	public Accidentals getNoteNameKeySignatureAccidental(DiatonicPitch noteName) {
 		if (this.fifths > 0) {
 			for (int i = 0; i < this.fifths; i++) {
 				if (KEY_SIGNATURE_STAFF_SHARPS[i].equals(noteName)) {

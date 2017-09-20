@@ -1,14 +1,13 @@
-package es.ua.dlsi.im3.languagemodel.melodic.dl.unstable;
+package es.ua.dlsi.im3.midrepresentations.melodic.dl.unstable;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.io.ImportException;
-import es.ua.dlsi.im3.core.score.NoteNames;
+import es.ua.dlsi.im3.core.score.DiatonicPitch;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
-import es.ua.dlsi.im3.languagemodel.Alphabet;
-import es.ua.dlsi.im3.languagemodel.melodic.dl.unstable.LSTMDiatonicPitchSequenceModel;
-import es.ua.dlsi.im3.languagemodel.sequences.DiatonicPitchSequenceFromScoreSongEncoder;
-import es.ua.dlsi.im3.languagemodel.sequences.Sequence;
+import es.ua.dlsi.im3.midrepresentations.Alphabet;
+import es.ua.dlsi.im3.midrepresentations.sequences.DiatonicPitchSequenceFromScoreSongEncoder;
+import es.ua.dlsi.im3.midrepresentations.sequences.Sequence;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,14 +22,14 @@ public class LSTMDiatonicPitchSequenceModelTest {
     @Test
     public void testLearn() throws ImportException, IM3Exception {
         if (train) {
-            Alphabet<NoteNames> alphabet = new Alphabet<NoteNames>(NoteNames.values(), NoteNames.NONE);
+            Alphabet<DiatonicPitch> alphabet = new Alphabet<DiatonicPitch>(DiatonicPitch.values(), DiatonicPitch.NONE);
             LSTMDiatonicPitchSequenceModel model = new LSTMDiatonicPitchSequenceModel(alphabet, 1, 1);
 
             File file = TestFileUtils.getFile("/testdata/26.xml");
 
             MusicXMLImporter importer = new MusicXMLImporter();
 
-            List<Sequence<NoteNames>> sequences = new ArrayList<>();
+            List<Sequence<DiatonicPitch>> sequences = new ArrayList<>();
             DiatonicPitchSequenceFromScoreSongEncoder encoder = new DiatonicPitchSequenceFromScoreSongEncoder();
             sequences.add(encoder.encode(importer.importSong(file)));
 

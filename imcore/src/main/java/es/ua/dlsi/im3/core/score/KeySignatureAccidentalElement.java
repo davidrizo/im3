@@ -23,7 +23,7 @@ package es.ua.dlsi.im3.core.score;
  */
 public class KeySignatureAccidentalElement {
     int order;
-    NoteNames noteName;
+    DiatonicPitch noteName;
     int octave;
     Accidentals accidental;
 
@@ -34,7 +34,7 @@ public class KeySignatureAccidentalElement {
      * @param octaveRelativeToStartingOne
      * @param order From 1
      */
-    public KeySignatureAccidentalElement(KeySignature coreSymbol, NoteNames noteName, int octave, int order) {
+    public KeySignatureAccidentalElement(KeySignature coreSymbol, DiatonicPitch noteName, int octave, int order) {
     		this.accidental = coreSymbol.getAccidental();
 		this.octave = octave;
 		this.order = order;
@@ -53,7 +53,7 @@ public class KeySignatureAccidentalElement {
         return accidental;
     }
 
-    public NoteNames getNoteName() {
+    public DiatonicPitch getNoteName() {
         return noteName;
     }
 }

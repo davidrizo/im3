@@ -9,7 +9,6 @@ import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,12 +91,12 @@ public class PaecExporter implements ISongExporter {
 	// TODO ver lo de mensural
 	StringBuilder sb = new StringBuilder();
 	sb.append('%');
-	if (clef.getOctaveTransposition() == -1 && clef.getNote().equals(NoteNames.G)) {
+	if (clef.getOctaveTransposition() == -1 && clef.getNote().equals(DiatonicPitch.G)) {
 	    sb.append('g');
 	} else if (clef.getOctaveTransposition() != 0) {
 	    throw new ExportException("Only G2 ottava bassa clefs are allowed transposed clefs: " + clef.toString());
 	}	
-	if (!clef.getNote().equals(NoteNames.G) && !clef.getNote().equals(NoteNames.C) && !clef.getNote().equals(NoteNames.F)) {
+	if (!clef.getNote().equals(DiatonicPitch.G) && !clef.getNote().equals(DiatonicPitch.C) && !clef.getNote().equals(DiatonicPitch.F)) {
 	    throw new ExportException("Only C, G, F clefs are allowed: " + clef.toString());
 	}
 	sb.append(clef.getNote().name()); 
@@ -135,7 +134,7 @@ public class PaecExporter implements ISongExporter {
 
     private void exportKeySignature(Key ks) throws ExportException {
 	StringBuilder sb = new StringBuilder();
-	NoteNames[] alteredNotes = ks.getAlteredNoteNames();
+	DiatonicPitch[] alteredNotes = ks.getAlteredNoteNames();
 	if (alteredNotes.length > 0) {
 	    sb.append('$');
 	    if (ks.getAccidental().equals(Accidentals.SHARP)) {
@@ -145,7 +144,7 @@ public class PaecExporter implements ISongExporter {
 	    } else {
 		throw new ExportException("Invalid accidental for key signature with altered notes: " + ks.getAccidental());
 	    }
-	    for (NoteNames noteName : alteredNotes) {
+	    for (DiatonicPitch noteName : alteredNotes) {
 		sb.append(noteName.name().toUpperCase());
 	    }
 	}

@@ -6,7 +6,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 @author drizo
 @date 05/06/2011
  **/
-public enum NoteNames {
+public enum DiatonicPitch {
 	C (0,0),
 	D (2,1),
 	E (4,2),
@@ -19,7 +19,7 @@ public enum NoteNames {
 	
 	private final int semitonesFromC;
 	private final int order; // from 0
-	NoteNames(int semitonesFromC, int order) {
+	DiatonicPitch(int semitonesFromC, int order) {
 		this.semitonesFromC = semitonesFromC;
 		this.order = order;
 	}
@@ -40,8 +40,8 @@ public enum NoteNames {
      * Without rest or none
      * @return
      */
-	public static NoteNames[] getJustNoteNames() {
-        return new NoteNames[] {C,D,E,F,G,A,B};
+	public static DiatonicPitch[] getJustNoteNames() {
+        return new DiatonicPitch[] {C,D,E,F,G,A,B};
     }
 
 	/**
@@ -56,8 +56,8 @@ public enum NoteNames {
 	 * @return
 	 * @throws IM3Exception 
 	 */
-	public static NoteNames noteFromOrder(int order) throws IM3Exception {
-		for (NoteNames nn : NoteNames.values()) {
+	public static DiatonicPitch noteFromOrder(int order) throws IM3Exception {
+		for (DiatonicPitch nn : DiatonicPitch.values()) {
 			if (nn != REST && nn != NONE && nn.getOrder() == order) {
 				return nn;
 			}
@@ -65,8 +65,8 @@ public enum NoteNames {
 		throw new IM3Exception("Order " + order + " not found among the orders in note names");
 	}
 	
-	public static NoteNames noteFromName(String name) throws IM3Exception {
-		for (NoteNames acc : NoteNames.values()) {
+	public static DiatonicPitch noteFromName(String name) throws IM3Exception {
+		for (DiatonicPitch acc : DiatonicPitch.values()) {
 			if (acc.name().equals(name)) {
 				return acc;
 			}
@@ -75,7 +75,7 @@ public enum NoteNames {
 		throw new IM3Exception("Cannot find an NoteName for " + name);
 	}
 
-    public static NoteNames noteFromName(char c) throws IM3Exception {
+    public static DiatonicPitch noteFromName(char c) throws IM3Exception {
         return noteFromName(Character.toString(c));
     }
 }

@@ -1,11 +1,11 @@
 package es.ua.dlsi.im3.similarity;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.NoteNames;
+import es.ua.dlsi.im3.core.score.DiatonicPitch;
 import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.languagemodel.sequences.DiatonicPitchSequence;
-import es.ua.dlsi.im3.languagemodel.sequences.DiatonicPitchSequenceFromScoreSongEncoder;
-import es.ua.dlsi.im3.languagemodel.sequences.Sequence;
+import es.ua.dlsi.im3.midrepresentations.sequences.DiatonicPitchSequence;
+import es.ua.dlsi.im3.midrepresentations.sequences.DiatonicPitchSequenceFromScoreSongEncoder;
+import es.ua.dlsi.im3.midrepresentations.sequences.Sequence;
 import es.ua.dlsi.im3.similarity.strings.ISymbolComparer;
 import es.ua.dlsi.im3.similarity.strings.StringEditDistance;
 
@@ -32,19 +32,19 @@ public class SearchSubsequenceInScoreSongs {
         }
     }
 
-    class NoteNamesComparer implements ISymbolComparer<NoteNames> {
+    class NoteNamesComparer implements ISymbolComparer<DiatonicPitch> {
         @Override
-        public double computeInsertCost(NoteNames a) throws IM3Exception {
+        public double computeInsertCost(DiatonicPitch a) throws IM3Exception {
             return 1;
         }
 
         @Override
-        public double computeDeleteCost(NoteNames a) throws IM3Exception {
+        public double computeDeleteCost(DiatonicPitch a) throws IM3Exception {
             return 1;
         }
 
         @Override
-        public double computeSymbolDistance(NoteNames a, NoteNames b) throws IM3Exception {
+        public double computeSymbolDistance(DiatonicPitch a, DiatonicPitch b) throws IM3Exception {
             if (a.equals(b)) {
                 return 0;
             } else {
@@ -60,11 +60,11 @@ public class SearchSubsequenceInScoreSongs {
      * @param query
      * @return
      */
-    public List<Match<ScoreSong>> searchSubsequence(NoteNames [] query) throws IM3Exception {
+    public List<Match<ScoreSong>> searchSubsequence(DiatonicPitch[] query) throws IM3Exception {
         ArrayList<Match<ScoreSong>> result = new ArrayList<>();
-        StringEditDistance<NoteNames, NoteNamesComparer> editDistance = new StringEditDistance(new NoteNamesComparer());
+        StringEditDistance<DiatonicPitch, NoteNamesComparer> editDistance = new StringEditDistance(new NoteNamesComparer());
 
-        Sequence<NoteNames> squery = new Sequence<>("Query", query);
+        Sequence<DiatonicPitch> squery = new Sequence<>("Query", query);
         for (int i=0; i<sequences.size(); i++) {
             double distance = editDistance.distance(squery, sequences.get(i));
             result.add(new Match<>(songs.get(i), distance));

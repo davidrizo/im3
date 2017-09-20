@@ -2,17 +2,14 @@ package es.ua.dlsi.im3.similarity;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.io.ImportException;
-import es.ua.dlsi.im3.core.score.NoteNames;
+import es.ua.dlsi.im3.core.score.DiatonicPitch;
 import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.io.mei.MEISAXImporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by drizo on 19/7/17.
@@ -38,7 +35,7 @@ public class SearchSubsequenceInScoreSongsTest {
     @Test
     public void searchSubsequence() throws Exception {
         SearchSubsequenceInScoreSongs searchSubsequenceInScoreSongs = new SearchSubsequenceInScoreSongs(createSongCollection());
-        NoteNames [] query = {NoteNames.G, NoteNames.A, NoteNames.B};
+        DiatonicPitch[] query = {DiatonicPitch.G, DiatonicPitch.A, DiatonicPitch.B};
         List<Match<ScoreSong>> result = searchSubsequenceInScoreSongs.searchSubsequence(query);
 
         System.out.println(result);

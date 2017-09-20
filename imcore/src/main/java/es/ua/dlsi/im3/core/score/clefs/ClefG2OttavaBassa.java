@@ -18,7 +18,7 @@
 package es.ua.dlsi.im3.core.score.clefs;
 
 import es.ua.dlsi.im3.core.score.Clef;
-import es.ua.dlsi.im3.core.score.NoteNames;
+import es.ua.dlsi.im3.core.score.DiatonicPitch;
 
 /**
  *
@@ -27,8 +27,8 @@ import es.ua.dlsi.im3.core.score.NoteNames;
 public class ClefG2OttavaBassa extends Clef {
    
     public ClefG2OttavaBassa() {
-	//super(NoteNames.G, 2, 3, 5, 4);
-    		super(NoteNames.G, 2, 3, 5, 4, -1);
+	//super(DiatonicPitch.G, 2, 3, 5, 4);
+    		super(DiatonicPitch.G, 2, 3, 5, 4, -1);
     }
     @Override
     public Clef clone() {

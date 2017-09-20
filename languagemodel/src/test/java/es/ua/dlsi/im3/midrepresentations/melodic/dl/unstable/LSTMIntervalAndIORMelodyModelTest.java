@@ -1,11 +1,10 @@
-package es.ua.dlsi.im3.languagemodel.melodic.dl.unstable;
+package es.ua.dlsi.im3.midrepresentations.melodic.dl.unstable;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.played.PlayedSong;
 import es.ua.dlsi.im3.core.played.io.MidiSongImporter;
-import es.ua.dlsi.im3.languagemodel.melodic.dl.unstable.LSTMIntervalAndIORMelodyModel;
-import es.ua.dlsi.im3.languagemodel.sequences.CoupledNoteSequence;
-import es.ua.dlsi.im3.languagemodel.sequences.IntervalAndIORSequenceFromMonophonicPlayedSongEncoder;
+import es.ua.dlsi.im3.midrepresentations.sequences.CoupledNoteSequence;
+import es.ua.dlsi.im3.midrepresentations.sequences.IntervalAndIORSequenceFromMonophonicPlayedSongEncoder;
 import org.junit.Test;
 
 import java.io.File;

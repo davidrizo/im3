@@ -1,8 +1,8 @@
-package es.ua.dlsi.im3.languagemodel.melodic.dl.unstable;
+package es.ua.dlsi.im3.midrepresentations.melodic.dl.unstable;
 
-import es.ua.dlsi.im3.languagemodel.Alphabet;
-import es.ua.dlsi.im3.languagemodel.melodic.IMelodicModel;
-import es.ua.dlsi.im3.languagemodel.sequences.Sequence;
+import es.ua.dlsi.im3.midrepresentations.Alphabet;
+import es.ua.dlsi.im3.midrepresentations.melodic.IMelodicModel;
+import es.ua.dlsi.im3.midrepresentations.sequences.Sequence;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;

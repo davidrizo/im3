@@ -25,8 +25,6 @@ import java.util.TreeMap;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.adt.IndexedMap;
-import javafx.geometry.Pos;
 
 /**
  * It is just a visual holder for elements. The note, chord and rest sequences are stored in ScoreLayer,
@@ -464,8 +462,8 @@ public abstract class Staff extends VerticalScoreDivision {
 	 *         is D in G2 clef
 	 * @throws IM3Exception
 	 */
-	public PositionInStaff computeLineSpacePitch(Clef clef, NoteNames noteName, int octave) throws IM3Exception {
-		NoteNames bottomClefNoteName = clef.getBottomLineDiatonicPitch();
+	public PositionInStaff computeLineSpacePitch(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
+		DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
 		int bottomClefOctave = clef.getBottomLineOctave();
 
 		int noteOrder = noteName.getOrder() + octave * 7;
@@ -477,7 +475,7 @@ public abstract class Staff extends VerticalScoreDivision {
 	// ----------------------------------------------------------------------
 	// ----------------------- Accidental processing-------------------------
 	// ----------------------------------------------------------------------
-	/*FRACCIONES private Accidentals computeRequiredAccidental(TreeMap<NoteNames, PitchClass> alteredSet, PitchClass pc) {
+	/*FRACCIONES private Accidentals computeRequiredAccidental(TreeMap<DiatonicPitch, PitchClass> alteredSet, PitchClass pc) {
 		// needs accidental?
 		Accidentals requiredAccidental = null;
 		PitchClass pcInKey = alteredSet.get(pc.getNoteName());
@@ -510,8 +508,8 @@ public abstract class Staff extends VerticalScoreDivision {
 	 */
 	/*FRACCIONES public void createNoteAccidentals(Time fromTime, Time toTime) throws IM3Exception {
 		List<ISymbolInLayer> symbols = getNotationSymbolsOrdered(fromTime, toTime);
-		TreeMap<NoteNames, ScientificPitch> alteredNoteNamesInBar = new TreeMap<>();
-		TreeMap<NoteNames, PitchClass> alteredNoteNamesInKeySignature = new TreeMap<>();
+		TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar = new TreeMap<>();
+		TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature = new TreeMap<>();
 		KeySignature currentKeySignature = null; // getRunningKeySignatureAt(fromTime);
 
 		// alteredNoteNamesInKeySignature =
@@ -536,8 +534,8 @@ public abstract class Staff extends VerticalScoreDivision {
 
 	}
 
-	void computeRequiredAccidentalsForPitch(TreeMap<NoteNames, ScientificPitch> alteredNoteNamesInBar,
-			TreeMap<NoteNames, PitchClass> alteredNoteNamesInKeySignature, NotePitchSymbolElement ps)
+	void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar,
+			TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature, NotePitchSymbolElement ps)
 			throws NotationException {
 		ScientificPitch pc = ps.getScorePitch().getPitch();
 		if (!alteredNoteNamesInBar.containsValue(pc)) { // if not previously

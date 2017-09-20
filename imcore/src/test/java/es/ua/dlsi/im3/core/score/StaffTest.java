@@ -12,9 +12,9 @@ public class StaffTest {
         ClefG2 g2 = new ClefG2();
         ScoreSong song = new ScoreSong();
         Pentagram pentagram = new Pentagram(song, "1", 1);
-        assertEquals("E4 in ClefG2", PossitionsInStaff.LINE_1, pentagram.computeLineSpacePitch(g2, NoteNames.E, 4));
-        assertEquals("F5 in ClefG2", PossitionsInStaff.LINE_5, pentagram.computeLineSpacePitch(g2, NoteNames.F, 5));
-        assertEquals("C5 in ClefG2", PossitionsInStaff.SPACE_3, pentagram.computeLineSpacePitch(g2, NoteNames.C, 5));
+        assertEquals("E4 in ClefG2", PossitionsInStaff.LINE_1, pentagram.computeLineSpacePitch(g2, DiatonicPitch.E, 4));
+        assertEquals("F5 in ClefG2", PossitionsInStaff.LINE_5, pentagram.computeLineSpacePitch(g2, DiatonicPitch.F, 5));
+        assertEquals("C5 in ClefG2", PossitionsInStaff.SPACE_3, pentagram.computeLineSpacePitch(g2, DiatonicPitch.C, 5));
     }
 
 }

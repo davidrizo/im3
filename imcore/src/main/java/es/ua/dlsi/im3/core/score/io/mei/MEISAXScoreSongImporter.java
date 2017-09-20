@@ -553,7 +553,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					String oct = getOptionalAttribute(attributesMap, "oct");
 					String pname = getOptionalAttribute(attributesMap, "pname");
 					
-					PitchClass pc = new PitchClass(NoteNames.valueOf(pname.toUpperCase()));
+					PitchClass pc = new PitchClass(DiatonicPitch.valueOf(pname.toUpperCase()));
 					Accidentals writtenAccidental = null;
 					
 					if (accidGes != null) {

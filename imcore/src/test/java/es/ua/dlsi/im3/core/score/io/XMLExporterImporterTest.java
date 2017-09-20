@@ -258,8 +258,8 @@ public class XMLExporterImporterTest {
 	private static Void assertCrossStaff(ScoreSong song) {
 		try {
 			assertEquals(2, song.getStaves().size());
-			assertEquals(NoteNames.G, song.getStaves().get(0).getClefAtTime(Time.TIME_ZERO).getNote());
-			assertEquals(NoteNames.F, song.getStaves().get(1).getClefAtTime(Time.TIME_ZERO).getNote());
+			assertEquals(DiatonicPitch.G, song.getStaves().get(0).getClefAtTime(Time.TIME_ZERO).getNote());
+			assertEquals(DiatonicPitch.F, song.getStaves().get(1).getClefAtTime(Time.TIME_ZERO).getNote());
 			assertEquals(3, song.getStaves().get(0).getAtoms().size());
 			assertEquals(2, song.getStaves().get(0).getAtomPitches().size());
 			assertEquals(1, song.getStaves().get(1).getAtomPitches().size());

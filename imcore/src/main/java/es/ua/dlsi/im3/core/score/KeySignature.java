@@ -89,7 +89,7 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 
 	private void init()  {
 		this.accidental = instrumentKey.getAccidental();
-		NoteNames[] alteredNoteNames = instrumentKey.getAlteredNoteNames();
+		DiatonicPitch[] alteredNoteNames = instrumentKey.getAlteredNoteNames();
 		accidentals = new ArrayList<>();
 
 		if (alteredNoteNames.length != 0) {
@@ -99,7 +99,7 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 			boolean nextUp = (accidental == Accidentals.SHARP);
 			int i = 1;
 
-			for (NoteNames nn : alteredNoteNames) {
+			for (DiatonicPitch nn : alteredNoteNames) {
 				int noteOrder = nn.getOrder() + octave * 7;
 				if (i > 1) {
 					if (nextUp) {

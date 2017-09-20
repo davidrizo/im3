@@ -10,7 +10,6 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class LayoutStaff extends NotationSymbol {
@@ -88,7 +87,7 @@ public class LayoutStaff extends NotationSymbol {
      * @return
      * @throws IM3Exception
      */
-    public double computeYPositionForPitchWithoutClefOctaveChange(Time time, NoteNames noteName, int octave) throws IM3Exception {
+    public double computeYPositionForPitchWithoutClefOctaveChange(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
         Clef clef = staff.getRunningClefAt(time);
         return computeYPositionForPitch(clef, noteName, octave + clef.getOctaveChange());
     }
@@ -101,7 +100,7 @@ public class LayoutStaff extends NotationSymbol {
      * @return
      * @throws IM3Exception
      */
-    public double computeYPositionForPitch(Clef clef, NoteNames noteName, int octave) throws IM3Exception {
+    public double computeYPositionForPitch(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
         PositionInStaff positionInStaff = staff.computeLineSpacePitch(clef, noteName, octave);
         return computeYPositionForLinespace(positionInStaff);
     }

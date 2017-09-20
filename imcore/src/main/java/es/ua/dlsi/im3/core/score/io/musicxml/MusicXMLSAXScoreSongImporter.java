@@ -111,7 +111,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private Time lastDuration;
 	//AMStaffPlaceHolder currentStaffPlaceHolder;
 	private Integer lastOctave;
-	private NoteNames lastNoteName;
+	private DiatonicPitch lastNoteName;
 	private String keyMode;
 	private Integer keyFifiths;
 	private String meterBeats;
@@ -595,7 +595,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				lastStaffLines = Integer.parseInt(content);
 				break;
 			case "step":
-				lastNoteName = NoteNames.noteFromName(content);
+				lastNoteName = DiatonicPitch.noteFromName(content);
 				break;
 			case "alter":
 				lastAccidental = Accidentals.alterToAccidentals(Integer.parseInt(content));

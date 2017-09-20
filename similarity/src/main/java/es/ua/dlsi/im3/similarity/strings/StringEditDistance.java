@@ -1,7 +1,7 @@
 package es.ua.dlsi.im3.similarity.strings;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.languagemodel.sequences.Sequence;
+import es.ua.dlsi.im3.midrepresentations.sequences.Sequence;
 
 import java.util.ArrayList;
 

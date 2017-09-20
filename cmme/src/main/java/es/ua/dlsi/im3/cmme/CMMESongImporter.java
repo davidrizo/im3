@@ -301,7 +301,7 @@ public class CMMESongImporter implements IScoreSongImporter {
 
     private void importNote(Staff staff, ScoreLayer layer, NoteEvent event) throws ImportException, IM3Exception {
         Figures figure = convertFigure(event.getnotetype());
-        NoteNames noteName = NoteNames.noteFromName(Character.toUpperCase(event.getPitch().noteletter));
+        DiatonicPitch noteName = DiatonicPitch.noteFromName(Character.toUpperCase(event.getPitch().noteletter));
         int octave = event.getPitch().octave;
         ScientificPitch pitch = new ScientificPitch(new PitchClass(noteName), octave);
 

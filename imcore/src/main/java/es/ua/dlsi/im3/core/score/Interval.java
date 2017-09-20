@@ -567,11 +567,11 @@ public class Interval implements Comparable<Interval> {
 	 */
 	/*
 	 * 2014 public PitchClass computePitchClassFrom(PitchClass from) throws
-	 * IM3Exception { NoteNames dest; Accidentals acc; int octaveOffset = 0; int
+	 * IM3Exception { DiatonicPitch dest; Accidentals acc; int octaveOffset = 0; int
 	 * diffsemitones;
 	 * 
 	 * switch (direction) { case EQUAL: case ASCENDING: dest =
-	 * NoteNames.noteFromOrder((from.getNoteName().getOrder() + (this.getName()
+	 * DiatonicPitch.noteFromOrder((from.getNoteName().getOrder() + (this.getName()
 	 * - 1)) % 7); // -1 because unison = 1 if (dest.getOrder() <
 	 * from.getNoteName().getOrder()) { octaveOffset = 12; }
 	 * 
@@ -579,7 +579,7 @@ public class Interval implements Comparable<Interval> {
 	 * from.getSemitonesFromC(); acc =
 	 * Accidentals.accidentalForAlter((this.semitones - diffsemitones) % 12);
 	 * return new PitchClass(dest, acc); case DESCENDING: dest =
-	 * NoteNames.noteFromOrder((7 + from.getNoteName().getOrder() -
+	 * DiatonicPitch.noteFromOrder((7 + from.getNoteName().getOrder() -
 	 * (this.getName() -1)) % 7); if (dest.getOrder() >
 	 * from.getNoteName().getOrder()) { octaveOffset = -12; }
 	 * 
@@ -599,10 +599,10 @@ public class Interval implements Comparable<Interval> {
 	 */
 	/*
 	 * 2014 public ScientificPitch computeScientificPitchFrom(ScientificPitch
-	 * from) throws IM3Exception { NoteNames dest; Accidentals acc; int
+	 * from) throws IM3Exception { DiatonicPitch dest; Accidentals acc; int
 	 * octaveOffset = 0; int diffsemitones; int octave = from.getOctave();
 	 * switch (direction) { case EQUAL: case ASCENDING: dest =
-	 * NoteNames.noteFromOrder((from.getPitchClass().getNoteName().getOrder() +
+	 * DiatonicPitch.noteFromOrder((from.getPitchClass().getNoteName().getOrder() +
 	 * (this.getName() - 1)) % 7); // -1 because unison = 1 if (dest.getOrder()
 	 * < from.getPitchClass().getNoteName().getOrder()) { octaveOffset = 12;
 	 * octave+=1; }
@@ -611,7 +611,7 @@ public class Interval implements Comparable<Interval> {
 	 * from.getPitchClass().getSemitonesFromC(); acc =
 	 * Accidentals.accidentalForAlter((this.semitones - diffsemitones) % 12);
 	 * return new ScientificPitch(new PitchClass(dest, acc), octave); case
-	 * DESCENDING: dest = NoteNames.noteFromOrder((7 +
+	 * DESCENDING: dest = DiatonicPitch.noteFromOrder((7 +
 	 * from.getPitchClass().getNoteName().getOrder() - (this.getName() -1)) %
 	 * 7); if (dest.getOrder() > from.getPitchClass().getNoteName().getOrder())
 	 * { octaveOffset = -12; octave-=1; }

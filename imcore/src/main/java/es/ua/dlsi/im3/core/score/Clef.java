@@ -25,7 +25,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
  * @author drizo
  */
 public abstract class Clef implements INotationTypeDependant, ITimedElementInStaff {
-	NoteNames note;
+	DiatonicPitch note;
     /**
      * Bottom line is 1, in a pentagram, top line is 5
      */
@@ -46,19 +46,19 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
     /**
      * Staff bottom line (1) diatonic pitch. We save it for avoiding its recomputing each time it is needed
      */
-	private NoteNames bottomLineDiatonicPitch;
+	private DiatonicPitch bottomLineDiatonicPitch;
     /**
      * Staff bottom line (1) pitch octave. We save it for avoiding its recomputing each time it is needed
      */
     private int bottomLineOctave;
 
-	public Clef(NoteNames note, int line, int noteOctave, int sharpKeySignatureStartingOctave,
-			int flatKeySignatureStartingOctave) {
+	public Clef(DiatonicPitch note, int line, int noteOctave, int sharpKeySignatureStartingOctave,
+                int flatKeySignatureStartingOctave) {
 		this (note, line, noteOctave, sharpKeySignatureStartingOctave, flatKeySignatureStartingOctave, 0);
 	}
 
-	public Clef(NoteNames note, int line, int noteOctave, int sharpKeySignatureStartingOctave,
-			int flatKeySignatureStartingOctave, int octaveChange) {
+	public Clef(DiatonicPitch note, int line, int noteOctave, int sharpKeySignatureStartingOctave,
+                int flatKeySignatureStartingOctave, int octaveChange) {
 		this.time = new Time();
 		this.octaveChange = octaveChange;
 		this.note = note;
@@ -72,12 +72,12 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
         // compute staff bottom line diatonic pitch
         int noteOrder = note.getOrder() + noteOctave * 7;
         int bottomLineNoteOrder = noteOrder - (line - 1) * 2;
-        this.bottomLineDiatonicPitch = NoteNames.values()[bottomLineNoteOrder % 7];
+        this.bottomLineDiatonicPitch = DiatonicPitch.values()[bottomLineNoteOrder % 7];
         this.bottomLineOctave = bottomLineNoteOrder / 7;
     }
 
 
-	public NoteNames getNote() {
+	public DiatonicPitch getNote() {
 		return note;
 	}
 
@@ -167,7 +167,7 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 
 	public abstract Clef clone();
 
-	public NoteNames getBottomLineDiatonicPitch() {
+	public DiatonicPitch getBottomLineDiatonicPitch() {
 		return bottomLineDiatonicPitch;
 	}
 

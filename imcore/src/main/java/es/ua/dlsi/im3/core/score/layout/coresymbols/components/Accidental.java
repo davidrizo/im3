@@ -3,7 +3,7 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols.components;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Accidentals;
-import es.ua.dlsi.im3.core.score.NoteNames;
+import es.ua.dlsi.im3.core.score.DiatonicPitch;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutKeySignature;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class Accidental extends Component<LayoutKeySignature> {
     int order;
-    NoteNames noteName;
+    DiatonicPitch noteName;
     int octave;
     Pictogram pictogram;
     Accidentals accidental;
@@ -37,7 +37,7 @@ public class Accidental extends Component<LayoutKeySignature> {
 
     }
 
-    public Accidental(LayoutFont layoutFont, LayoutKeySignature parent, Accidentals accidental, int order, NoteNames noteName, int octave) throws IM3Exception {
+    public Accidental(LayoutFont layoutFont, LayoutKeySignature parent, Accidentals accidental, int order, DiatonicPitch noteName, int octave) throws IM3Exception {
         super(parent);
         this.accidental = accidental;
         this.order = order;

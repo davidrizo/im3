@@ -40,7 +40,7 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
 		computeBase40();
 	}
 	
-	public ScientificPitch(NoteNames noteName, Accidentals accidental, Integer octave) {
+	public ScientificPitch(DiatonicPitch noteName, Accidentals accidental, Integer octave) {
 		this(new PitchClass(noteName, accidental), octave);
 	}
 

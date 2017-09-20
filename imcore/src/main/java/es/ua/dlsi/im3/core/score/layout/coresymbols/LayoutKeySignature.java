@@ -26,11 +26,11 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
         int previousNoteOrder = 0;
 
         Accidentals accidental = coreSymbol.getAccidental();
-        NoteNames[] alteredNoteNames = coreSymbol.getInstrumentKey().getAlteredNoteNames();
+        DiatonicPitch[] alteredNoteNames = coreSymbol.getInstrumentKey().getAlteredNoteNames();
         boolean nextUp = (accidental == Accidentals.SHARP);
         int i = 1;
 
-        for (NoteNames nn : alteredNoteNames) {
+        for (DiatonicPitch nn : alteredNoteNames) {
             int noteOrder = nn.getOrder() + octave * 7;
             if (i > 1) {
                 if (nextUp) {

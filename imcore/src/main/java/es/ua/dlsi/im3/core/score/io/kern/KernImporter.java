@@ -15,7 +15,6 @@ import es.ua.dlsi.im3.core.io.antlr.GrammarParseRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.io.antlr.ParseError;
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -599,11 +597,11 @@ public class KernImporter implements IScoreSongImporter {
                 if (ctx.keysignatureNote().isEmpty()) {
                     ks = new Key(PitchClasses.C.getPitchClass(), Mode.UNKNOWN); // mode
                 } else {
-                    NoteNames nn = NoteNames.valueOf(ctx.keysignatureNote().get(0).noteNameLowerCase().getText().toUpperCase());
-                    if (nn == NoteNames.F) {
+                    DiatonicPitch nn = DiatonicPitch.valueOf(ctx.keysignatureNote().get(0).noteNameLowerCase().getText().toUpperCase());
+                    if (nn == DiatonicPitch.F) {
                         // sharps
                         ks = new Key(ctx.keysignatureNote().size(), Mode.UNKNOWN.name());
-                    } else if (nn == NoteNames.B) {
+                    } else if (nn == DiatonicPitch.B) {
                         // flats
                         ks = new Key(-ctx.keysignatureNote().size(), Mode.UNKNOWN.name());
                     } else {
@@ -711,7 +709,7 @@ public class KernImporter implements IScoreSongImporter {
         public void exitKeyChange(kernParser.KeyChangeContext ctx) {
             try {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Key change {0}", ctx.getText());
-                NoteNames nn = NoteNames.valueOf(keyString.toUpperCase());
+                DiatonicPitch nn = DiatonicPitch.valueOf(keyString.toUpperCase());
                 PitchClass pc;
                 if (ctx.keyAccidental() != null) {
                     Accidentals acc = null;
@@ -964,7 +962,7 @@ public class KernImporter implements IScoreSongImporter {
             int octave = 4 + octaveModif;
 
             // check all letters are equal
-            NoteNames nn = NoteNames.valueOf(noteName);
+            DiatonicPitch nn = DiatonicPitch.valueOf(noteName);
 
             Accidentals acc = Accidentals.NATURAL;
             if (ctx.alteration() !=
