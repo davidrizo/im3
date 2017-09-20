@@ -87,9 +87,9 @@ public class HorizontalLayout extends ScoreLayout {
         double timeToWidth = Math.log(prevSimultaneity.getTimeSpan().getComputedTime())*LayoutConstants.EM;
         double layoutWidth = Math.max(prevSimultaneity.getMinimumWidth(), timeToWidth);
         prevSimultaneity.setLayoutWidth(layoutWidth);
-        System.out.println("Width from time span " + prevSimultaneity.getTimeSpan().getComputedTime() + ", min " +
+        /*System.out.println("Width from time span " + prevSimultaneity.getTimeSpan().getComputedTime() + ", min " +
                 prevSimultaneity.getMinimumWidth() + " and timeToWidth  " +
-                timeToWidth + " = "  + layoutWidth);
+                timeToWidth + " = "  + layoutWidth);*/
     }
 
     @Override

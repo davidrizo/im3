@@ -26,6 +26,7 @@ import java.util.TreeMap;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.IndexedMap;
+import javafx.geometry.Pos;
 
 /**
  * It is just a visual holder for elements. The note, chord and rest sequences are stored in ScoreLayer,
@@ -184,15 +185,16 @@ public abstract class Staff extends VerticalScoreDivision {
 		return ledgerLines.get(snr.getTime());
 	}
 
-	public void addNecessaryLedgerLinesFor(AtomFigure snr, int lineSpace) throws IM3Exception {
-		int nLedgerLines = computeNumberLedgerLinesNeeded(lineSpace);
+	public void addNecessaryLedgerLinesFor(AtomFigure snr, PositionInStaff positionInStaff) throws IM3Exception {
+		int nLedgerLines = computeNumberLedgerLinesNeeded(positionInStaff);
 		if (nLedgerLines != 0) {
 			addLedgerLines(snr, nLedgerLines > 0 ? nLedgerLines : -nLedgerLines,
 					nLedgerLines > 0 ? PositionAboveBelow.BELOW : PositionAboveBelow.ABOVE);
 		}
 	}
 
-	private int computeNumberLedgerLinesNeeded(int lineSpace) {
+	private int computeNumberLedgerLinesNeeded(PositionInStaff positionInStaff) {
+		int lineSpace = positionInStaff.getLineSpace();
 		if (lineSpace < 0) {
 			return -lineSpace / 2;
 		} else if (lineSpace > (lines - 1) * 2) {
@@ -427,14 +429,6 @@ public abstract class Staff extends VerticalScoreDivision {
 		return symbols;
 	}
 
-	/**
-	 *
-	 * @param fromTime
-	 *            inclusive
-	 * @param toTime
-	 *            exclusive
-	 * @return
-	 */
 	public List<ITimedElementInStaff> getCoreSymbolsOrdered() {
 		ArrayList<ITimedElementInStaff> symbols = new ArrayList<>(coreSymbols);
 		SymbolsOrderer.sortList(symbols);
@@ -459,6 +453,25 @@ public abstract class Staff extends VerticalScoreDivision {
 	public void addCoreSymbol(ITimedElementInStaff e) throws IM3Exception {
 		e.setStaff(this);
 		this.coreSymbols.add(e);
+	}
+
+	/**
+	 *
+	 * @param clef
+	 * @param noteName
+	 * @param octave
+	 * @return 0 = bottom line (i.e. E in G2 clef), 1 is F in F in G2 clef, -1
+	 *         is D in G2 clef
+	 * @throws IM3Exception
+	 */
+	public PositionInStaff computeLineSpacePitch(Clef clef, NoteNames noteName, int octave) throws IM3Exception {
+		NoteNames bottomClefNoteName = clef.getBottomLineDiatonicPitch();
+		int bottomClefOctave = clef.getBottomLineOctave();
+
+		int noteOrder = noteName.getOrder() + octave * 7;
+		int bottomLinePitchOrder = bottomClefNoteName.getOrder() + bottomClefOctave * 7;
+		int result = noteOrder - bottomLinePitchOrder;
+		return new PositionInStaff(result);
 	}
 
 	// ----------------------------------------------------------------------
@@ -489,9 +502,9 @@ public abstract class Staff extends VerticalScoreDivision {
 	 * Browse from left to right and set the required accidentals for each note
 	 * depending on the current instrumentKey signature and previous accidentals
 	 *
-	 * @param fromTime
+	 * param fromTime
 	 *            inclusive
-	 * @param toTime
+	 * param toTime
 	 *            exclusive
 	 * @return
 	 */
@@ -638,7 +651,8 @@ public abstract class Staff extends VerticalScoreDivision {
 		}
 		return result;
 	}
-	
+
+
 
 	
 	/*public Collection<? extends ISymbolInLayer> getSymbolsOrderdInTime() {

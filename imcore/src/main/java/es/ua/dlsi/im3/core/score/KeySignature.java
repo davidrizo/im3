@@ -51,7 +51,6 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 	 * it will be not the printed instrumentKey signature, but normally the instrumentKey common to all staves (see instrumentKey attribute)
 	 */
 	private Key concertPitchKey;
-	private int startingOctave;
 
 	public KeySignature(NotationType notationType, Key key){
 		this.notationType = notationType;
@@ -177,11 +176,6 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 			return "Key signature with " + this.accidentals.size() + " " + this.accidental.getAbbrName() + " and key " + instrumentKey.toString() + transposition;
 		}
 	}
-
-	int getStartingOctave() {
-		return startingOctave;
-	}
-
 	@Override
 	public Time getTime() {
 		return time;

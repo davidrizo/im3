@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
-import es.ua.dlsi.im3.core.score.layout.LayoutTimeSignature;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutSymbolWithDuration;
 
 import java.util.HashMap;

@@ -1,10 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Accidentals;
-import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
-import es.ua.dlsi.im3.core.score.KeySignature;
-import es.ua.dlsi.im3.core.score.NoteNames;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
@@ -13,7 +10,6 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 
 public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
     Group group;
-
     public LayoutKeySignature(LayoutStaff layoutStaff, KeySignature coreSymbol) throws IM3Exception {
         super(layoutStaff, coreSymbol);
         group = new Group();
@@ -54,6 +50,15 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
             addComponent(p);
             group.add(p.getGraphics());
             i++;
+        }
+    }
+
+    public int getStartingOctave() {
+        if (coreSymbol.getAccidental().equals(Accidentals.NATURAL)) {
+            return 0;
+        } else {
+            Clef clef = layoutStaff.getStaff().getClefAtTime(getTime());
+            return clef.getStartingOctave(coreSymbol.getAccidental());
         }
     }
 }

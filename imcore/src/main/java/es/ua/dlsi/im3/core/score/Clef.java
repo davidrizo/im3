@@ -43,6 +43,14 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 	 */
 	private final int octaveChange;
 	private NotationType notationType;
+    /**
+     * Staff bottom line (1) diatonic pitch. We save it for avoiding its recomputing each time it is needed
+     */
+	private NoteNames bottomLineDiatonicPitch;
+    /**
+     * Staff bottom line (1) pitch octave. We save it for avoiding its recomputing each time it is needed
+     */
+    private int bottomLineOctave;
 
 	public Clef(NoteNames note, int line, int noteOctave, int sharpKeySignatureStartingOctave,
 			int flatKeySignatureStartingOctave) {
@@ -58,7 +66,16 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 		this.noteOctave = noteOctave; // clef.getOctaveTransposition();
 		this.sharpKeySignatureStartingOctave = sharpKeySignatureStartingOctave;
 		this.flatKeySignatureStartingOctave = flatKeySignatureStartingOctave;
-	}
+
+		// 	private int computeBottomLineNoteOrder(Clef clef) {
+
+        // compute staff bottom line diatonic pitch
+        int noteOrder = note.getOrder() + noteOctave * 7;
+        int bottomLineNoteOrder = noteOrder - (line - 1) * 2;
+        this.bottomLineDiatonicPitch = NoteNames.values()[bottomLineNoteOrder % 7];
+        this.bottomLineOctave = bottomLineNoteOrder / 7;
+    }
+
 
 	public NoteNames getNote() {
 		return note;
@@ -108,7 +125,7 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 		return "Clef{" + "note=" + note + ", line=" + line + ", noteOctave=" + noteOctave + '}';
 	}
 
-	int getStartingOctave(Accidentals accidental) {
+	public int getStartingOctave(Accidentals accidental) {
 		if (accidental == Accidentals.SHARP) {
 			return sharpKeySignatureStartingOctave;
 		} else if (accidental == Accidentals.FLAT) {
@@ -149,4 +166,12 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 	}
 
 	public abstract Clef clone();
+
+	public NoteNames getBottomLineDiatonicPitch() {
+		return bottomLineDiatonicPitch;
+	}
+
+    public int getBottomLineOctave() {
+        return bottomLineOctave;
+    }
 }

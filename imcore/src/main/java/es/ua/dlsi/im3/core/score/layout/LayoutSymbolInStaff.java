@@ -78,4 +78,8 @@ public abstract class LayoutSymbolInStaff<CoreSymbolType extends ITimedElementIn
     public Time getTime() {
         return coreSymbol.getTime();
     }
+
+    public CoreSymbolType getCoreSymbol() {
+        return coreSymbol;
+    }
 }

@@ -65,7 +65,8 @@ public class Accidental extends Component<LayoutKeySignature> {
     public void computeLayout() throws IM3Exception {
         double width = pictogram.getWidth();
         this.relativeX = (order-1)*width;
-        this.relativeY = 0; // parent.getLayoutStaff().computeYPositionForPitchInSymbolWithoutClefOctaveChange(getOwner(), noteName, getOwner().getStartingOctave() + octave));
+        int oct = parent.getStartingOctave() + octave;
+        this.relativeY = parent.getLayoutStaff().computeYPositionForPitchWithoutClefOctaveChange(parent.getTime(), noteName, oct);
 
         pictogram.setX(parent.getX() + relativeX);
         pictogram.setY(relativeY); // parent has not a Y coordinate
