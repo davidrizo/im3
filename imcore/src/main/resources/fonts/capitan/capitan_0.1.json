@@ -137,7 +137,7 @@
     "accidentalNatural" : {
 	"codepoint": "U+003D"
     },
-    "dot" : {
+    "augmentationDot" : {
 	"codepoint": "U+002E"
     },
     "barline" : {

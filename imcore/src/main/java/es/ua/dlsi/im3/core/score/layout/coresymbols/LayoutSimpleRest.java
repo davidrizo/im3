@@ -32,6 +32,7 @@ public class LayoutSimpleRest extends LayoutSymbolWithDuration<SimpleRest> {
         // TODO Existen hasta la 1024th
 
         //TODO Mensural
+        UNICODES.put(Figures.MINIM, "mensuralRestMinima");
     }
 
     

@@ -30,6 +30,10 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
         // TODO Existen hasta la 1024th
 
         //TODO Mensural
+        // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
+        UNICODES.put(Figures.SEMIBREVE, "mensuralWhiteSemibrevis");
+        UNICODES.put(Figures.MINIM, "mensuralWhiteMinima");
+        UNICODES.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima");
     }
 
     GraphicsElement root;
