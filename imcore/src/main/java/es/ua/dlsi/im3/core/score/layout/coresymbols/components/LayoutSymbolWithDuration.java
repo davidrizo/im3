@@ -8,4 +8,6 @@ public abstract class LayoutSymbolWithDuration<CoreSymbolType extends ITimedElem
     public LayoutSymbolWithDuration(LayoutStaff layoutStaff, CoreSymbolType coreSymbol) {
         super(layoutStaff, coreSymbol);
     }
+
+
 }

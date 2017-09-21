@@ -10,7 +10,12 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 
-public class LayoutKeySignature extends CompoundLayoutSymbol<KeySignature> {
+import java.util.ArrayList;
+
+public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
+    Group group;
+    ArrayList<Accidental> accidentals;
+
     public LayoutKeySignature(LayoutStaff layoutStaff, KeySignature coreSymbol) throws IM3Exception {
         super(layoutStaff, coreSymbol);
         createAccidentals(layoutStaff.getScoreLayout().getLayoutFont());
@@ -22,6 +27,8 @@ public class LayoutKeySignature extends CompoundLayoutSymbol<KeySignature> {
     }
 
     private void createAccidentals(LayoutFont layoutFont) throws IM3Exception {
+        group = new Group();
+        accidentals = new ArrayList<>();
         int octave = 0;
         int previousNoteOrder = 0;
 
@@ -56,6 +63,11 @@ public class LayoutKeySignature extends CompoundLayoutSymbol<KeySignature> {
             addComponent(p);
             i++;
         }
+    }
+
+    private void addComponent(Accidental p) {
+        accidentals.add(p);
+        group.add(p.getGraphics());
     }
 
     public int getStartingOctave() {

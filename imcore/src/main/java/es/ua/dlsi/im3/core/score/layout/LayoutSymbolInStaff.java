@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
+import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +49,5 @@ public abstract class LayoutSymbolInStaff<CoreSymbolType extends ITimedElementIn
     public CoreSymbolType getCoreSymbol() {
         return coreSymbol;
     }
-
 
 }

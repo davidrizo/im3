@@ -4,40 +4,45 @@ import org.apache.commons.lang3.math.Fraction;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
-public enum Figures {	
-	MAX_FIGURE (Integer.MAX_VALUE, 1, Integer.MAX_VALUE, NotationType.eModern), // used the same way Integer.MAX_VALUE
-	QUADRUPLE_WHOLE (16,1,-1, NotationType.eModern),
-	DOUBLE_WHOLE (8,1,0, NotationType.eModern),
-	WHOLE (4,1,1, NotationType.eModern),
-	HALF (2,1,2, NotationType.eModern),
-	QUARTER (1,1,4,NotationType.eModern),
-	EIGHTH (1,2,8, NotationType.eModern),
-	SIXTEENTH (1, 4, 16, NotationType.eModern),
-	THIRTY_SECOND (1, 8, 32, NotationType.eModern),
-	SIXTY_FOURTH (1, 16, 64,NotationType.eModern),
-	HUNDRED_TWENTY_EIGHTH (1, 32, 128, NotationType.eModern),
-	TWO_HUNDRED_FIFTY_SIX (1, 64, 256, NotationType.eModern),
-	MAXIMA (16, 1, -2, NotationType.eMensural),
-	LONGA (8, 1, -1, NotationType.eMensural),
-	BREVE (4, 1, 0, NotationType.eMensural),
-	SEMIBREVE (2, 1, 1, NotationType.eMensural),
-	MINIM(1, 1, 2, NotationType.eMensural),
-	SEMIMINIM(1, 2, 4, NotationType.eMensural),
-	FUSA (1, 4, 8, NotationType.eMensural),
-	SEMIFUSA (1, 8, 16, NotationType.eMensural),
-	NO_DURATION (0,1,0, NotationType.eModern);
+public enum Figures {
+	MAX_FIGURE (Integer.MAX_VALUE, 1, Integer.MAX_VALUE, NotationType.eModern, false, 0), // used the same way Integer.MAX_VALUE
+	QUADRUPLE_WHOLE (16,1,-1, NotationType.eModern, false, 0),
+	DOUBLE_WHOLE (8,1,0, NotationType.eModern, false, 0),
+	WHOLE (4,1,1, NotationType.eModern, false, 0),
+	HALF (2,1,2, NotationType.eModern, false, 0),
+	QUARTER (1,1,4,NotationType.eModern, true, 0),
+	EIGHTH (1,2,8, NotationType.eModern, true, 1),
+	SIXTEENTH (1, 4, 16, NotationType.eModern, true, 2),
+	THIRTY_SECOND (1, 8, 32, NotationType.eModern, true, 3),
+	SIXTY_FOURTH (1, 16, 64,NotationType.eModern, true, 4),
+	HUNDRED_TWENTY_EIGHTH (1, 32, 128, NotationType.eModern, true, 5),
+	TWO_HUNDRED_FIFTY_SIX (1, 64, 256, NotationType.eModern, true, 6),
+	MAXIMA (16, 1, -2, NotationType.eMensural, false, 0),
+	LONGA (8, 1, -1, NotationType.eMensural, false, 0),
+	BREVE (4, 1, 0, NotationType.eMensural, false, 0),
+	SEMIBREVE (2, 1, 1, NotationType.eMensural, false, 0),
+	MINIM(1, 1, 2, NotationType.eMensural, true, 0),
+	SEMIMINIM(1, 2, 4, NotationType.eMensural, true, 0),
+	FUSA (1, 4, 8, NotationType.eMensural, true, 1),
+	SEMIFUSA (1, 8, 16, NotationType.eMensural, true, 2),
+	NO_DURATION (0,1,0, NotationType.eModern, false, 0);
 	
-	Fraction duration;
+	final Fraction duration;
 	/**
 	 * Classical interpretation (the one used in denominators of meters)
 	 */
-	int meterUnit;
-	NotationType notationType;
+    final int meterUnit;
+    final NotationType notationType;
+
+    final boolean usesStem;
+    final int numFlags;
 	
-	Figures(int quarters, int quarterSubdivisions, int meterUnit, NotationType notationType) {
+	Figures(int quarters, int quarterSubdivisions, int meterUnit, NotationType notationType, boolean usesStem, int flags) {
 		duration = Fraction.getFraction(quarters, quarterSubdivisions);
 		this.meterUnit = meterUnit;
 		this.notationType = notationType;
+		this.usesStem = usesStem;
+		this.numFlags = flags;
 	}
 
 	public Fraction getDuration() {
@@ -51,6 +56,15 @@ public enum Figures {
 	public final NotationType getNotationType() {
 		return notationType;
 	}
+
+	public boolean usesFlag() {
+		return numFlags > 0;
+
+	}
+	public boolean usesStem() {
+		return usesStem;
+	}
+
 
 	/**
 	 * Compute the duration of the figure using dots

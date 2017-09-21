@@ -20,4 +20,8 @@ public class LayoutConstants {
     public static final float PDF_TOP_MARGIN = 40;
     public static final double TOP_MARGIN = PDF_TOP_MARGIN;
     public static final double STAFF_SEPARATION = EM*2;
+    /**
+     * Separation between the head and the dot
+     */
+    public static final double DOT_SEPARATION = EM/2;
 }
