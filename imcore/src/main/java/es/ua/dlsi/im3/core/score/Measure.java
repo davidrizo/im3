@@ -12,6 +12,9 @@ import es.ua.dlsi.im3.core.IM3Exception;
  *
  */
 public class Measure implements Comparable<Measure>, ITimedElement, IUniqueIDObject {
+    boolean repeatBackwards; //TODO
+    boolean repeatForward;//TODO
+
 	/**
 	 * Measure number
 	 */
@@ -21,7 +24,6 @@ public class Measure implements Comparable<Measure>, ITimedElement, IUniqueIDObj
 	private String ID;
 	private Time endTime;
 	private Time duration;
-	
 	//private final HashSet<VerticalScoreDivision> stavesAndGroups;
 
 	/**
@@ -34,9 +36,6 @@ public class Measure implements Comparable<Measure>, ITimedElement, IUniqueIDObj
 		//stavesAndGroups = new HashSet<>();
 	}
 
-	/**
-	 * @param imeasureNumber
-	 */
 	public Measure(ScoreSong song) {
 		this.song = song;
 		this.time = new Time();
@@ -279,14 +278,4 @@ public class Measure implements Comparable<Measure>, ITimedElement, IUniqueIDObj
 	public boolean isEndTimeSet() {
 		return endTime != null;
 	}
-
-
-	/*@Override
-	protected Barline createNotation(NotationType notationType, Staff staff) throws IM3Exception {
-		Barline bl = new Barline(this, staff);
-		bl.setTime(this.getEndTime());
-		return bl;
-	}*/
-
-	
 }

@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Barline;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.TimeSignatureNumber;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;

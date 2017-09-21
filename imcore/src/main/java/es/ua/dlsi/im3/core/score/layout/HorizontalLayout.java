@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutBarline;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
@@ -56,6 +57,14 @@ public class HorizontalLayout extends ScoreLayout {
                     layoutStaff.add(layoutSymbolInStaff);
                     simultaneities.add(layoutSymbolInStaff);
                 }
+            }
+
+            // create barlines
+            // TODO: 21/9/17 Deberíamos poder crear barlines de system
+            for (Measure measure: scoreSong.getMeasures()) {
+                LayoutBarline barline = new LayoutBarline(layoutStaff, measure.getEndTime());
+                layoutStaff.add(barline);
+                simultaneities.add(barline);
             }
         }
 

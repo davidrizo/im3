@@ -20,6 +20,7 @@ package es.ua.dlsi.im3.core.score;
 import java.util.Comparator;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 
 /**
  *
@@ -42,7 +43,11 @@ public interface ITimedElement {
 			int diff;
 			diff = o1.getTime().compareTo(o2.getTime());
 			if (diff == 0) {
-				diff = StaffPositionComparator.compare(o1, o2);
+				try {
+					diff = SymbolsOrderer.compareClasses(o1, o2);
+				} catch (IM3Exception e) {
+					throw new IM3RuntimeException(e);
+				}
 				if (diff == 0) {
 					diff = o1.hashCode() - o2.hashCode();
 				}

@@ -18,7 +18,6 @@ package es.ua.dlsi.im3.core.score;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.TreeMap;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
@@ -27,7 +26,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  *
  * @author drizo
  */
-public abstract class VerticalScoreDivision implements Comparable<VerticalScoreDivision>, IUniqueIDObject, INotationTypeDependant  {
+public abstract class VerticalScoreDivision implements Comparable<VerticalScoreDivision>, IUniqueIDObject, INotationTypeDependant {
 	String ID;
 	/**
 	 * Using a hierarchical notation: e.g. 1.3.2
@@ -39,16 +38,9 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 	 */
 	private int numberIdentifier;
 
-	String name; 
+	String name;
 	private final ScoreSong notationSong;
 	private NotationType notationType;
-	
-	/**
-	 * Bar lines are stored just here. If stored in a staff group, they will cross all staves in the group. 
-	 * If stored in a staff will be local to the staff
-	 */
-	protected TreeMap<Time, Barline> barLines;
-
 
 	public VerticalScoreDivision(ScoreSong notationSong, String hierarchicalOrder, int numberIdentifier) {
 		this.notationSong = notationSong;
@@ -60,8 +52,8 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 	// ----------------------- General information
 	// --------------------------------
 	// ----------------------------------------------------------------------
-	
-	
+
+
 	public int getNumberIdentifier() {
 		return numberIdentifier;
 	}
@@ -106,8 +98,8 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 			return false;
 		}
 		final VerticalScoreDivision other = (VerticalScoreDivision) obj;
-        return Objects.equals(this.hierarchicalOrder, other.hierarchicalOrder);
-    }
+		return Objects.equals(this.hierarchicalOrder, other.hierarchicalOrder);
+	}
 
 	@Override
 	public int compareTo(VerticalScoreDivision o) {
@@ -146,10 +138,6 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 	public void __setID(String id) {
 		this.ID = id;
 	}
-
-
-	public void addBarline(Barline ts) throws IM3Exception {
-		this.barLines.put(ts.getTime(), ts);
-	}
-	
 }
+
+

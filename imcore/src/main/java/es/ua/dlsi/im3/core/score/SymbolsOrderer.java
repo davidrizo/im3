@@ -31,9 +31,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
  */
 public class SymbolsOrderer {
 	private static int getClassOrder(ITimedElement o) {
-		if (o instanceof Barline) {
-			return 1;
-		} else if (o instanceof Clef) {
+		if (o instanceof Clef) {
 			return 2;
 		} else if (o instanceof KeySignature) {
 			return 3;
@@ -50,7 +48,7 @@ public class SymbolsOrderer {
 	// order them, the order of classes will be:
 	// first clefs, next instrumentKey signature, then time signature, finally sounding
 	// symbols
-	private static int compareClasses(ITimedElement o1, ITimedElement o2) throws IM3Exception {
+	static int compareClasses(ITimedElement o1, ITimedElement o2) throws IM3Exception {
 		int order1 = getClassOrder(o1);
 		int order2 = getClassOrder(o2);
 

@@ -107,7 +107,6 @@ public abstract class Staff extends VerticalScoreDivision {
 		this.clefs = new TreeMap<>();
 		this.timeSignatures = new TreeMap<>();
 		this.keySignatures = new TreeMap<>();
-		this.barLines = new TreeMap<>();
 	}
 
 	// ----------------------------------------------------------------------
@@ -229,10 +228,6 @@ public abstract class Staff extends VerticalScoreDivision {
 		return this.keySignatures.values();
 	}
 
-	public Collection<Barline> getBarlines() {
-		return this.barLines.values();
-	}
-
 	/**
 	 * @param time
 	 * @return null if none
@@ -255,18 +250,6 @@ public abstract class Staff extends VerticalScoreDivision {
 	 */
 	public KeySignature getKeySignatureWithOnset(Time time) {
 		return this.keySignatures.get(time);
-	}
-
-	/**
-	 * @param time
-	 * @return null if none
-	 */
-	public Barline getBarlineAtTime(Time time) {
-		return this.barLines.get(time);
-	}
-
-	public NavigableMap<Time, Barline> getBarlinesAfter(Time time) {
-		return this.barLines.tailMap(time, false);
 	}
 
 	public TimeSignature getRunningTimeSignatureAt(ITimedElement symbol) throws IM3Exception {
