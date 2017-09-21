@@ -4,9 +4,10 @@ import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.SimpleRest;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutSymbolWithDuration;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
-public class LayoutSimpleRest extends LayoutSymbolInStaff<SimpleRest> {
+public class LayoutSimpleRest extends LayoutSymbolWithDuration<SimpleRest> {
     SimpleRest rest;
 
     public LayoutSimpleRest(LayoutStaff layoutStaff, SimpleRest coreSymbol) {

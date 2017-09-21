@@ -1,18 +1,30 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Barline;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.TimeSignatureNumber;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
+import es.ua.dlsi.im3.core.score.layout.graphics.Group;
+import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 
 public class LayoutFractionalTimeSignature extends LayoutTimeSignature<FractionalTimeSignature> {
-    Barline barline;
+    TimeSignatureNumber numerator;
+    TimeSignatureNumber denominator;
 
-    public LayoutFractionalTimeSignature(LayoutStaff layoutStaff, FractionalTimeSignature coreSymbol) {
+    public LayoutFractionalTimeSignature(LayoutStaff layoutStaff, FractionalTimeSignature coreSymbol) throws IM3Exception {
         super(layoutStaff, coreSymbol);
-    }
+        if (layoutStaff.getLines().size() != 5) {
+            throw new IM3Exception("TO-DO: unimplemented non pentagrams"); // TODO: 20/9/17 TODO Que se calcule sin ir a la línea
+        }
+        //TODO Igual que Barline - que valga para percusión
+        Coordinate numeratorPosition = new Coordinate(position.getX(), layoutStaff.getYAtLine(2));
+        numerator = new TimeSignatureNumber(layoutStaff.getScoreLayout().getLayoutFont(), this, coreSymbol.getNumerator(), numeratorPosition);
+        addComponent(numerator);
 
-    @Override
-    public GraphicsElement getGraphics() {
-        return null;
+        Coordinate denominatorPosition  = new Coordinate(position.getX(), layoutStaff.getYAtLine(4));
+        denominator = new TimeSignatureNumber(layoutStaff.getScoreLayout().getLayoutFont(), this, coreSymbol.getDenominator(), denominatorPosition);
+        addComponent(denominator);
     }
 }

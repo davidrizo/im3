@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.core.score.DiatonicPitch;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutKeySignature;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -17,14 +18,7 @@ public class Accidental extends Component<LayoutKeySignature> {
     int octave;
     Pictogram pictogram;
     Accidentals accidental;
-    /**
-     * Relative to its parent
-     */
-    double relativeX;
-    /**
-     * Relative to its parent
-     */
-    double relativeY;
+    Coordinate position;
 
     static HashMap<Accidentals, String> unicodes = new HashMap<>();
     {
@@ -37,14 +31,14 @@ public class Accidental extends Component<LayoutKeySignature> {
 
     }
 
-    public Accidental(LayoutFont layoutFont, LayoutKeySignature parent, Accidentals accidental, int order, DiatonicPitch noteName, int octave) throws IM3Exception {
-        super(parent);
+    public Accidental(LayoutFont layoutFont, LayoutKeySignature parent, Accidentals accidental, int order, DiatonicPitch noteName, int octave, Coordinate position) throws IM3Exception {
+        super(parent, position);
         this.accidental = accidental;
         this.order = order;
         this.noteName = noteName;
         this.octave = octave;
 
-        pictogram = new Pictogram(layoutFont, getUnicode());
+        pictogram = new Pictogram(layoutFont, getUnicode(), position);
     }
 
     private String getUnicode() {
@@ -59,16 +53,5 @@ public class Accidental extends Component<LayoutKeySignature> {
     @Override
     public GraphicsElement getGraphics() {
         return pictogram;
-    }
-
-    @Override
-    public void computeLayout() throws IM3Exception {
-        double width = pictogram.getWidth();
-        this.relativeX = (order-1)*width;
-        int oct = parent.getStartingOctave() + octave;
-        this.relativeY = parent.getLayoutStaff().computeYPositionForPitchWithoutClefOctaveChange(parent.getTime(), noteName, oct);
-
-        pictogram.setX(parent.getX() + relativeX);
-        pictogram.setY(relativeY); // parent has not a Y coordinate
     }
 }

@@ -2,6 +2,8 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import javafx.scene.Node;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -16,22 +18,19 @@ public class Line extends Shape {
     private static final StrokeType DEFAULT_STROKE_TYPE = StrokeType.eSolid;
     private static final String LINE = "rect"; //TODO
 
-    double startX;
-    double startY;
-    double endX;
-    double endY;
+    Coordinate from;
+    Coordinate to;
+
     double thickness;
     private StrokeType strokeType;
 
-    public Line(double startX, double startY, double endX, double endY) {
-        this(startX, startY, endX, endY, DEFAULT_THICKNESS, DEFAULT_STROKE_TYPE);
+    public Line(Coordinate from, Coordinate to) {
+        this(from, to, DEFAULT_THICKNESS, DEFAULT_STROKE_TYPE);
     }
 
-    public Line(double startX, double startY, double endX, double endY, double thickness, StrokeType strokeType) {
-        this.startX = startX;
-        this.startY = startY;
-        this.endX = endX;
-        this.endY = endY;
+    public Line(Coordinate from, Coordinate to, double thickness, StrokeType strokeType) {
+        this.from = from;
+        this.to = to;
         this.thickness = thickness;
         this.strokeType = strokeType;
 
@@ -48,10 +47,10 @@ public class Line extends Shape {
     @Override
     public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) {
         XMLExporterHelper.startEnd(sb, tabs, "line",
-                "x1", Double.toString(startX),
-                "y1", Double.toString(startY),
-                "x2", Double.toString(endX),
-                "y2", Double.toString(endY),
+                "x1", Double.toString(from.getAbsoluteX()),
+                "y1", Double.toString(from.getAbsoluteY()),
+                "x2", Double.toString(to.getAbsoluteX()),
+                "y2", Double.toString(to.getAbsoluteY()),
                 "stroke", "black" //TODO Constants
         );
         //TODO Stroke and width
@@ -62,44 +61,12 @@ public class Line extends Shape {
     public void generatePDF(PDPageContentStream contents, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
         try {
             contents.setStrokingColor(0, 0, 0);
-            contents.moveTo(getPFDCoordinateX(page, startX), getPFDCoordinateY(page, startY));
-            contents.lineTo(getPFDCoordinateX(page, endX), getPFDCoordinateY(page,endY));
+            contents.moveTo(getPFDCoordinateX(page, from.getAbsoluteX()), getPFDCoordinateY(page, from.getAbsoluteY()));
+            contents.lineTo(getPFDCoordinateX(page, to.getAbsoluteX()), getPFDCoordinateY(page, to.getAbsoluteY()));
             contents.stroke();
         } catch (IOException e) {
             throw new ExportException(e);
         }
-    }
-
-    public double getStartX() {
-        return startX;
-    }
-
-    public void setStartX(double startX) {
-        this.startX = startX;
-    }
-
-    public double getStartY() {
-        return startY;
-    }
-
-    public void setStartY(double startY) {
-        this.startY = startY;
-    }
-
-    public double getEndX() {
-        return endX;
-    }
-
-    public void setEndX(double endX) {
-        this.endX = endX;
-    }
-
-    public double getEndY() {
-        return endY;
-    }
-
-    public void setEndY(double endY) {
-        this.endY = endY;
     }
 
     public double getThickness() {
@@ -120,16 +87,32 @@ public class Line extends Shape {
 
     @Override
     public Node getJavaFXRoot() {
-        return new javafx.scene.shape.Line(startX, startY, endX, endY); // TODO: 17/9/17 Grosor, color
+        return new javafx.scene.shape.Line(from.getAbsoluteX(), from.getAbsoluteY(), to.getAbsoluteX(), to.getAbsoluteY()); // TODO: 17/9/17 Grosor, color
     }
 
     @Override
     public double getWidth() {
-        return endX-startX;
+        return to.getAbsoluteX() - from.getAbsoluteX();
     }
 
     @Override
-    public double getX() {
-        return startX;
+    public Coordinate getPosition() {
+        return from;
+    }
+
+    public Coordinate getFrom() {
+        return from;
+    }
+
+    public void setFrom(Coordinate from) {
+        this.from = from;
+    }
+
+    public Coordinate getTo() {
+        return to;
+    }
+
+    public void setTo(Coordinate to) {
+        this.to = to;
     }
 }

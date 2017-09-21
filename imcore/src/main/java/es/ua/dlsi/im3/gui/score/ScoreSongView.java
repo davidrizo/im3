@@ -2,13 +2,12 @@ package es.ua.dlsi.im3.gui.score;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.layout.FontFactory;
-import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
-import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
@@ -23,8 +22,13 @@ public class ScoreSongView {
     private final Pane mainPanel;
     private final HorizontalLayout layout;
 
-    public ScoreSongView(ScoreSong scoreSong, LayoutFonts font) throws IM3Exception {
-        layout = new HorizontalLayout(scoreSong, font);
+    public ScoreSongView(ScoreSong scoreSong, LayoutFonts font, ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) throws IM3Exception {
+        // TODO: 21/9/17 Uso coordinates ahora porque más adelante deberíamos poder poner varios canvases en la misma pantalla
+        Coordinate topLeft = new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0));
+        Coordinate bottomRight = new Coordinate(new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
+        // TODO: 21/9/17 Cuando cambie width o height hay que recalcular todo
+
+        layout = new HorizontalLayout(scoreSong, font, topLeft, bottomRight);
         layout.layout();
         canvas = layout.getCanvases()[0]; // it returns just one canvas
         mainPanel = new Pane();

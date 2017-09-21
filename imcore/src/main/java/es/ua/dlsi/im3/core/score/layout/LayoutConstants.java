@@ -18,4 +18,6 @@ public class LayoutConstants {
     public static final float FONT_SIZE = (float) EM;
     public static final float PDF_LEFT_MARGIN = 20;
     public static final float PDF_TOP_MARGIN = 40;
+    public static final double TOP_MARGIN = PDF_TOP_MARGIN;
+    public static final double STAFF_SEPARATION = EM*2;
 }

@@ -10,16 +10,27 @@ import java.util.Collection;
  * @author drizo
  */
 public abstract class NotationSymbol {
-    boolean hidden;
+    protected boolean hidden;
+    protected Coordinate position;
 
     public abstract GraphicsElement getGraphics();
 
+    public Coordinate getPosition() {
+        return position;
+    }
+    /**
+     * @return
+     */
     public double getWidth() {
-        GraphicsElement g = getGraphics();
-        if (g == null) {
+        GraphicsElement gr = getGraphics();
+        if (gr == null) {
             return 0;
         } else {
-            return g.getWidth();
+            return gr.getWidth();
         }
+    }
+
+    public void setX(double x) {
+        position.getX().setDisplacement(x);
     }
 }

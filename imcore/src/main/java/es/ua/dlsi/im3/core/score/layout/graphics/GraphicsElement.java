@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
@@ -16,6 +17,7 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
     private Canvas canvas;
     //TODO AÑADIR ID
 
+
     public Canvas getCanvas() {
         return canvas;
     }
@@ -24,16 +26,31 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
         this.canvas = canvas;
     }
 
+    /**
+     * Helper method used by children
+     * @param page
+     * @param x
+     * @return
+     */
     protected float getPFDCoordinateX(PDPage page, double x) {
         return LayoutConstants.PDF_LEFT_MARGIN + (float) x + page.getCropBox().getLowerLeftX();
     }
 
+    /**
+     * Helper method used by children
+     * @param page
+     * @param y
+     * @return
+     */
     protected float getPFDCoordinateY(PDPage page, double y) {
         return -LayoutConstants.PDF_TOP_MARGIN -(float) y + page.getCropBox().getUpperRightY();
     }
 
 
+    /**
+     * It cannot be based on the x position because the layout algorithm depends on it. It must be based on the physical width
+     */
     public abstract double getWidth();
 
-    public abstract double getX();
+    public abstract Coordinate getPosition();
 }

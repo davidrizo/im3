@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import javafx.scene.Node;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -14,6 +15,7 @@ import java.util.HashSet;
  * @author drizo
  */
 public class Arc extends Shape {
+    // TODO: 21/9/17 Usar Coordinates para los 3 puntos
     double fromX;
     double fromY;
 
@@ -29,22 +31,6 @@ public class Arc extends Shape {
     double thicknessAtCenter;
 
     public Arc() {
-    }
-
-    public double getFromX() {
-	return fromX;
-    }
-
-    public double getFromY() {
-	return fromY;
-    }
-
-    public double getToX() {
-	return toX;
-    }
-
-    public double getToY() {
-	return toY;
     }
 
     public double getMiddlePointX() {
@@ -129,7 +115,7 @@ public class Arc extends Shape {
     }
 
     @Override
-    public double getX() {
-        return fromX;
+    public Coordinate getPosition() {
+        return null;
     }
 }

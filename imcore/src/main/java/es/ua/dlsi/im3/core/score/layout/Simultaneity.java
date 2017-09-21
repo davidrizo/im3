@@ -125,22 +125,9 @@ public class Simultaneity implements Comparable<Simultaneity> {
         setTimeSpan(maxDur);
     }
 
-    /**
-     * It sets the x of all elements to x
-     * @param x
-     */
-    public void setElementsX(double x) {
+    public void setX(double x) {
         for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
             layoutSymbolInStaff.setX(x);
-        }
-    }
-
-    /**
-     * It invokes the computeLayout of all elements
-     */
-    public void computeElementsLayout() throws IM3Exception {
-        for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
-            layoutSymbolInStaff.computeLayout();
         }
     }
 }

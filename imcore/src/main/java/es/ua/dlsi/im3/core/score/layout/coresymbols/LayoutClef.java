@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.clefs.ClefPercussion;
+import es.ua.dlsi.im3.core.score.io.paec.PaecStringExport;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -15,17 +16,10 @@ public class LayoutClef extends LayoutSymbolInStaff<Clef> {
     public LayoutClef(LayoutStaff layoutStaff, Clef clef) throws IM3Exception {
         super(layoutStaff, clef);
         this.layoutStaff = layoutStaff;
-        pictogram = new Pictogram(layoutStaff.getScoreLayout().getLayoutFont(), getUnicode());
-    }
 
-    /**
-     * Compute the y value, the x is given by the layout algorithm
-     * @return
-     */
-    @Override
-    public void computeLayout() throws IM3Exception {
-        double y = layoutStaff.getYAtLine(coreSymbol.getLine());
-        pictogram.setY(y);
+        position.setY(layoutStaff.getYAtLine(coreSymbol.getLine()));
+        pictogram = new Pictogram(layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), position);
+
     }
 
 

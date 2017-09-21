@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
 import javafx.scene.Node;
@@ -72,6 +73,7 @@ public class Group extends GraphicsElement {
         return group;
     }
 
+
     @Override
     public double getWidth() {
         // TODO: 19/9/17 Maybe we could save this value and update it for each add and width change of an element
@@ -79,14 +81,33 @@ public class Group extends GraphicsElement {
         double toX = Double.MIN_VALUE;
 
         for (GraphicsElement child: children) {
-            fromX = Math.min(fromX, child.getX());
-            toX = Math.max(toX, child.getX() + child.getWidth());
+            double childX = child.getPosition().getAbsoluteX();
+            fromX = Math.min(fromX, child.getPosition().getAbsoluteX());
+            toX = Math.max(toX, childX + child.getWidth());
         }
 
         return toX - fromX;
     }
 
     @Override
+    public Coordinate getPosition() {
+        Coordinate leftTop = null;
+
+        for (GraphicsElement child: children) {
+            if (leftTop == null) {
+                leftTop = child.getPosition();
+            } else {
+                leftTop = Coordinate.min(leftTop, child.getPosition());
+            }
+        }
+
+        if (leftTop == null) {
+            throw new IM3RuntimeException("Empty group, cannot compute position");
+        }
+        return leftTop;
+    }
+
+    /*@Override
     public double getX() {
         // TODO: 19/9/17 Maybe we could save this value and update it for each add and width change of an element
         // We could also store relative coordinates of the grouped elements
@@ -97,5 +118,5 @@ public class Group extends GraphicsElement {
         }
 
         return fromX;
-    }
+    }*/
 }

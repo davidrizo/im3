@@ -2,9 +2,7 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
-import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
-import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
+import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
@@ -13,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LayoutStaff extends NotationSymbol {
+    private final Coordinate rightTop;
     Staff staff;
 	List<NotationSymbol> notationSymbols;
 	ScoreLayout scoreLayout;
@@ -23,17 +22,21 @@ public class LayoutStaff extends NotationSymbol {
 	List<Line> lines;
 	Group group;
 
-    public LayoutStaff(ScoreLayout scoreLayout, double width, Staff staff) {
+    public LayoutStaff(ScoreLayout scoreLayout, Coordinate leftTop, Coordinate rightTop, Staff staff) {
         lines = new ArrayList<>();
         this.staff = staff;
         this.scoreLayout = scoreLayout;
+        this.position = leftTop;
+        this.rightTop = rightTop;
         notationSymbols = new ArrayList<>();
         group = new Group();
         for (int i=0; i<staff.getLineCount(); i++) {
             //double y = LayoutConstants.STAFF_TOP_MARGIN + i*LayoutConstants.SPACE_HEIGHT;
             double y = i* LayoutConstants.SPACE_HEIGHT;
             //Line line = new Line(LayoutConstants.STAFF_LEFT_MARGIN, y, width-LayoutConstants.STAFF_RIGHT_MARGIN, y); //TODO márgenes arriba abajo
-            Line line = new Line(0, y, width, y); //TODO márgenes arriba abajo - quizás mejor en el grupo en el que están on en la página
+            Coordinate from = new Coordinate(leftTop.getX(), new CoordinateComponent(leftTop.getY(), y));
+            Coordinate to = new Coordinate(rightTop.getX(), new CoordinateComponent(leftTop.getY(), y));
+            Line line = new Line(from, to); //TODO márgenes arriba abajo - quizás mejor en el grupo en el que están on en la página
             lines.add(0, line);
             group.add(0, line);
         }
@@ -71,11 +74,11 @@ public class LayoutStaff extends NotationSymbol {
      * @return
      * @throws IM3Exception
      */
-    public double getYAtLine(int line) throws IM3Exception {
+    public CoordinateComponent getYAtLine(int line) throws IM3Exception {
         if (line < 1 || line > lines.size()) {
             throw new IM3Exception("Invalid line " + line + ", there are " + lines.size() + " lines");
         }
-        return lines.get(line-1).getStartY();
+        return lines.get(line-1).getFrom().getY();
     }
 
     /**
@@ -87,7 +90,7 @@ public class LayoutStaff extends NotationSymbol {
      * @return
      * @throws IM3Exception
      */
-    public double computeYPositionForPitchWithoutClefOctaveChange(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
+    public CoordinateComponent computeYPositionForPitchWithoutClefOctaveChange(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
         Clef clef = staff.getRunningClefAt(time);
         return computeYPositionForPitch(clef, noteName, octave + clef.getOctaveChange());
     }
@@ -100,15 +103,14 @@ public class LayoutStaff extends NotationSymbol {
      * @return
      * @throws IM3Exception
      */
-    public double computeYPositionForPitch(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
+    public CoordinateComponent computeYPositionForPitch(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
         PositionInStaff positionInStaff = staff.computeLineSpacePitch(clef, noteName, octave);
         return computeYPositionForLinespace(positionInStaff);
     }
 
-    public double computeYPositionForLinespace(PositionInStaff positionInStaff) throws IM3Exception {
-        double heightDifference = lines.get(0).getStartY() - (LayoutConstants.SPACE_HEIGHT * ((double)positionInStaff.getLineSpace()) / 2.0);
-                //(double) linespace) / 2.0; // result
-        return heightDifference;
+    public CoordinateComponent computeYPositionForLinespace(PositionInStaff positionInStaff) throws IM3Exception {
+        double heightDifference = -(LayoutConstants.SPACE_HEIGHT * ((double)positionInStaff.getLineSpace()) / 2.0);
+        return new CoordinateComponent(lines.get(0).getFrom().getY(), heightDifference);
     }
 
     public Staff getStaff() {

@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
@@ -35,17 +36,16 @@ public class Pictogram extends GraphicsElement {
      */
     private String codepoint;
 
-    private double x;
-
-    private double y;
+    Coordinate position;
 
     private double width;
 
     LayoutFont layoutFont;
 
-    public Pictogram(LayoutFont layoutFont, String codepoint) throws IM3Exception {
+    public Pictogram(LayoutFont layoutFont, String codepoint, Coordinate position) throws IM3Exception {
         this.codepoint = codepoint;
         this.layoutFont = layoutFont;
+        this.position = position;
         glyph = layoutFont.getGlyph(this);
 
         path = new SVGPath();
@@ -59,31 +59,14 @@ public class Pictogram extends GraphicsElement {
         return codepoint;
     }
 
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-
     @Override
     public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         XMLExporterHelper.startEnd(sb, tabs, "use",
                 "xlink:href", "#" + glyph.getEscapedUnicode(),
                 "height", SIZE,
                 "width", SIZE,
-                "x", x + "px",
-                "y", y + "px"
+                "x", position.getAbsoluteX() + "px",
+                "y", position.getAbsoluteY() + "px"
         );
 
         usedGlyphs.add(glyph);
@@ -94,7 +77,7 @@ public class Pictogram extends GraphicsElement {
         try {
             contentStream.setFont(musicFont, LayoutConstants.FONT_SIZE);
             contentStream.beginText();
-            contentStream.newLineAtOffset(getPFDCoordinateX(page, x), getPFDCoordinateY(page, y));
+            contentStream.newLineAtOffset(getPFDCoordinateX(page, position.getAbsoluteX()), getPFDCoordinateY(page, position.getAbsoluteY()));
             contentStream.showText(glyph.getUnicode());
             contentStream.endText();
 
@@ -106,12 +89,20 @@ public class Pictogram extends GraphicsElement {
 
     @Override
     public Node getJavaFXRoot() throws GUIException {
-        path.setLayoutX(x);
-        path.setLayoutY(y);
+        path.setLayoutX(position.getAbsoluteX());
+        path.setLayoutY(position.getAbsoluteY());
         return path;
     }
 
+    @Override
     public double getWidth() {
         return width;
     }
+
+    @Override
+    public Coordinate getPosition() {
+        return position;
+    }
+
+
 }

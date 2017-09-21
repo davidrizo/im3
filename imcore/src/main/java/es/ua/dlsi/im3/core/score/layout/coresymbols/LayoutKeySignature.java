@@ -2,17 +2,17 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 
-public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
-    Group group;
+public class LayoutKeySignature extends CompoundLayoutSymbol<KeySignature> {
     public LayoutKeySignature(LayoutStaff layoutStaff, KeySignature coreSymbol) throws IM3Exception {
         super(layoutStaff, coreSymbol);
-        group = new Group();
         createAccidentals(layoutStaff.getScoreLayout().getLayoutFont());
     }
 
@@ -29,7 +29,8 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
         DiatonicPitch[] alteredNoteNames = coreSymbol.getInstrumentKey().getAlteredNoteNames();
         boolean nextUp = (accidental == Accidentals.SHARP);
         int i = 1;
-
+        double nextRelativeXPosition = 0;
+        int oct = getStartingOctave() + octave;
         for (DiatonicPitch nn : alteredNoteNames) {
             int noteOrder = nn.getOrder() + octave * 7;
             if (i > 1) {
@@ -46,9 +47,13 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
             previousNoteOrder = nn.getOrder() + octave * 7;
             nextUp = !nextUp;
 
-            Accidental p = new Accidental(layoutFont, this, accidental, i, nn, octave);
+            CoordinateComponent x = new CoordinateComponent(position.getX(), nextRelativeXPosition);
+            CoordinateComponent y = layoutStaff.computeYPositionForPitchWithoutClefOctaveChange(getTime(), nn, oct);
+            Coordinate position = new Coordinate(x, y);
+
+            Accidental p = new Accidental(layoutFont, this, accidental, i, nn, octave, position);
+            nextRelativeXPosition += p.getWidth();
             addComponent(p);
-            group.add(p.getGraphics());
             i++;
         }
     }

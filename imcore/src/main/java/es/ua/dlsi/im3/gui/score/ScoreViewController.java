@@ -102,7 +102,7 @@ public class ScoreViewController {
             } else {
                 font = LayoutFonts.bravura;
             }
-            scoreSongView = new ScoreSongView(song, font);
+            scoreSongView = new ScoreSongView(song, font, stage.widthProperty(), stage.heightProperty());
             scrollMainPane.setContent(scoreSongView.getMainPanel());
         } catch (Exception e) {
             e.printStackTrace();

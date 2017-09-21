@@ -19,10 +19,10 @@ public class HorizontalLayout extends ScoreLayout {
      * Everything is arranged in a single canvas
      */
     Canvas canvas;
-    public HorizontalLayout(ScoreSong song, LayoutFonts font) {
+    public HorizontalLayout(ScoreSong song, LayoutFonts font, Coordinate leftTop, Coordinate bottomRight) {
         super(song, font);
         layoutSymbolFactory = new LayoutSymbolFactory();
-        canvas = new Canvas(2000, 700); //TODO ¿qué valor ponemos? ¿Lo vamos cambiando conforme metamos cosas?
+        canvas = new Canvas(leftTop, bottomRight);
     }
 
     @Override
@@ -36,8 +36,14 @@ public class HorizontalLayout extends ScoreLayout {
         // first create symbols and simultaneities
         Simultaneities simultaneities = new Simultaneities();
 
+        double nextY = LayoutConstants.TOP_MARGIN;
         for (Staff staff: scoreSong.getStaves()) {
-            LayoutStaff layoutStaff = new LayoutStaff(this, canvas.getWidth(), staff);
+            CoordinateComponent y = new CoordinateComponent(canvas.getLeftTop().getY(), nextY);
+            nextY += LayoutConstants.STAFF_SEPARATION;
+            Coordinate leftTop = new Coordinate(canvas.getLeftTop().getX(), y);
+            Coordinate rightTop = new Coordinate(canvas.getBottomRight().getX(), y);
+
+            LayoutStaff layoutStaff = new LayoutStaff(this, leftTop, rightTop, staff);
             staves.add(layoutStaff);
             canvas.add(layoutStaff.getGraphics());
 
@@ -63,8 +69,7 @@ public class HorizontalLayout extends ScoreLayout {
             if (prevSimultaneity != null) {
                 prevSimultaneity.setTimeSpan(simultaneity.getTime().substract(prevSimultaneity.getTime()));
                 computeWidth(prevSimultaneity);
-                prevSimultaneity.setElementsX(x);
-                prevSimultaneity.computeElementsLayout();
+                prevSimultaneity.setX(x);
                 x += prevSimultaneity.getLayoutWidth();
             }
 
@@ -74,8 +79,7 @@ public class HorizontalLayout extends ScoreLayout {
         if (prevSimultaneity != null) {
             prevSimultaneity.setTimeSpanFromElementsDuration();
             computeWidth(prevSimultaneity);
-            prevSimultaneity.setElementsX(x);
-            prevSimultaneity.computeElementsLayout();
+            prevSimultaneity.setX(x);
         }
 
 

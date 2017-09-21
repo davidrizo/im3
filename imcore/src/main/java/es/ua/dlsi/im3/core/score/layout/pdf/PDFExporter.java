@@ -46,6 +46,7 @@ public class PDFExporter implements IGraphicsExporter {
         }
     }
     private void generatePDF(PDDocument document, ScoreLayout layout) throws ExportException {
+        // TODO: 21/9/17 ¿Hacer que quepa en una página o escalamos...? 
         for (Canvas canvas: layout.getCanvases()) {
             generatePDF(document, canvas, layout.getLayoutFont());
         }

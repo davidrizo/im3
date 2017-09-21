@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
+import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,47 +21,12 @@ import java.util.Collection;
 public abstract class LayoutSymbolInStaff<CoreSymbolType extends ITimedElementInStaff> extends NotationSymbol {
     protected CoreSymbolType coreSymbol;
     protected LayoutStaff layoutStaff;
-    protected Collection<Component> components;
-    /**
-     * This value is computed by the layout algorithm
-     */
-    private double x;
 
     public LayoutSymbolInStaff(LayoutStaff layoutStaff, CoreSymbolType coreSymbol) {
         this.coreSymbol = coreSymbol;
         this.layoutStaff = layoutStaff;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    /**
-     * It is invoked previous to the export to the view
-     * @throws IM3Exception
-     */
-    public void computeLayout() throws IM3Exception {
-        computeLayoutOfComponents();
-    }
-
-    protected void computeLayoutOfComponents() throws IM3Exception {
-        if (components != null) {
-            for (Component component : components) {
-                component.computeLayout();
-            }
-        }
-    }
-
-    protected void addComponent(Component component) {
-        if (components == null) {
-            components = new ArrayList<>();
-        }
-
-        components.add(component);
+        // Initial value - it will be changed using the displacement of the Coordinate position
+        this.position = new Coordinate(new CoordinateComponent(layoutStaff.getPosition().getX()), new CoordinateComponent(layoutStaff.getPosition().getY()));
     }
 
     public LayoutStaff getLayoutStaff() {
@@ -82,4 +48,6 @@ public abstract class LayoutSymbolInStaff<CoreSymbolType extends ITimedElementIn
     public CoreSymbolType getCoreSymbol() {
         return coreSymbol;
     }
+
+
 }
