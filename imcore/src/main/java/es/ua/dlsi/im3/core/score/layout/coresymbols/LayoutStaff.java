@@ -3,18 +3,28 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.*;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LedgerLines;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class LayoutStaff extends NotationSymbol {
     private final Coordinate rightTop;
     Staff staff;
 	List<NotationSymbol> notationSymbols;
 	ScoreLayout scoreLayout;
+
+    /**
+     *
+     * The key corresponds to the time it is set, the value is the set of ledger
+     * lines
+     */
+    protected TreeMap<Time, LedgerLines> ledgerLines;
+    //TODO protected TreeMap<Long, Fermate> fermate;
 
     /**
      * Arranged bottom-up
@@ -24,6 +34,7 @@ public class LayoutStaff extends NotationSymbol {
 
     public LayoutStaff(ScoreLayout scoreLayout, Coordinate leftTop, Coordinate rightTop, Staff staff) {
         lines = new ArrayList<>();
+        ledgerLines = new TreeMap<>();
         this.staff = staff;
         this.scoreLayout = scoreLayout;
         this.position = leftTop;
@@ -55,6 +66,15 @@ public class LayoutStaff extends NotationSymbol {
         return group;
     }
 
+
+    public Line getTopLine() {
+        return lines.get(lines.size()-1);
+    }
+
+    public Line getBottomLine() {
+        return lines.get(0);
+    }
+
     public void add(NotationSymbol symbol) {
         if (symbol != null) {
             if (symbol.getGraphics() == null) {
@@ -81,6 +101,11 @@ public class LayoutStaff extends NotationSymbol {
         return lines.get(line-1).getFrom().getY();
     }
 
+    public CoordinateComponent getYAtCenterLine() {
+        return lines.get(lines.size()/2).getFrom().getY();
+    }
+
+
     /**
      * It returns the y position for a given diatonic pitch at a given time (for taking into account the clef changes)
      * without taking into account the octave change. Used usually for key signatures
@@ -97,6 +122,19 @@ public class LayoutStaff extends NotationSymbol {
 
     /**
      * It returns the y position for a given diatonic pitch at a given time (for taking into account the clef changes)
+     * @param time
+     * @param noteName
+     * @param octave
+     * @return
+     * @throws IM3Exception
+     */
+    public CoordinateComponent computeYPositionForPitch(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
+        Clef clef = staff.getRunningClefAt(time);
+        return computeYPositionForPitch(clef, noteName, octave);
+    }
+
+    /**
+     * It returns the y position for a given diatonic pitch at a given time (for taking into account the clef changes)
      * @param clef
      * @param noteName
      * @param octave
@@ -104,11 +142,16 @@ public class LayoutStaff extends NotationSymbol {
      * @throws IM3Exception
      */
     public CoordinateComponent computeYPositionForPitch(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
-        PositionInStaff positionInStaff = staff.computeLineSpacePitch(clef, noteName, octave);
-        return computeYPositionForLinespace(positionInStaff);
+        PositionInStaff positionInStaff = staff.computePositionInStaff(clef, noteName, octave);
+        return computeYPosition(positionInStaff);
     }
 
-    public CoordinateComponent computeYPositionForLinespace(PositionInStaff positionInStaff) throws IM3Exception {
+    public PositionInStaff computePositionInStaff(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
+        Clef clef = staff.getRunningClefAt(time);
+        return staff.computePositionInStaff(clef, noteName, octave);
+    }
+
+    public CoordinateComponent computeYPosition(PositionInStaff positionInStaff) throws IM3Exception {
         double heightDifference = -(LayoutConstants.SPACE_HEIGHT * ((double)positionInStaff.getLineSpace()) / 2.0);
         return new CoordinateComponent(lines.get(0).getFrom().getY(), heightDifference);
     }
@@ -116,4 +159,36 @@ public class LayoutStaff extends NotationSymbol {
     public Staff getStaff() {
         return staff;
     }
+
+    public TreeMap<Time, LedgerLines> getLedgerLines() {
+        return ledgerLines;
+    }
+
+    public LedgerLines getLedgerLineOrNullFor(Time time) throws IM3Exception {
+        return ledgerLines.get(time);
+    }
+
+    public void addNecessaryLedgerLinesFor(Time time, PositionInStaff positionInStaff, Coordinate noteHeadsPosition, double noteHeadWidth) throws IM3Exception {
+        int nLedgerLines = staff.computeNumberLedgerLinesNeeded(positionInStaff);
+        if (nLedgerLines != 0) {
+            addLedgerLines(time, nLedgerLines > 0 ? nLedgerLines : -nLedgerLines,
+                    nLedgerLines > 0 ? PositionAboveBelow.BELOW : PositionAboveBelow.ABOVE,
+                    noteHeadsPosition, noteHeadWidth);
+        }
+    }
+
+    public void addLedgerLines(Time time, int numberOfLines, PositionAboveBelow positionAboveBelow, Coordinate noteHeadsPosition, double noteHeadWidth) throws IM3Exception {
+        if (numberOfLines != 0) {
+            LedgerLines ll = this.ledgerLines.get(time);
+            if (ll == null) {
+                LedgerLines object = new LedgerLines(this, noteHeadsPosition, noteHeadWidth, positionAboveBelow, numberOfLines);
+                ledgerLines.put(time, object);
+                group.add(object.getGraphics());
+                //this.addMark(object);
+            } else {
+                ll.ensure(numberOfLines, positionAboveBelow);
+            }
+        }
+    }
+
 }

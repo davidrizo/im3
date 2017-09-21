@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutSymbolWithDuration;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -37,7 +38,11 @@ public class LayoutSimpleRest extends LayoutSymbolWithDuration<SimpleRest> {
 
     public LayoutSimpleRest(LayoutStaff layoutStaff, SimpleRest coreSymbol) throws IM3Exception {
         super(layoutStaff, coreSymbol);
-        pictogram = new Pictogram(layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), position);        
+        Coordinate restPosition = new Coordinate(
+            position.getX(),
+            layoutStaff.getYAtCenterLine()
+        );
+        pictogram = new Pictogram(layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), restPosition);
     }
 
     @Override

@@ -9,13 +9,13 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
-public class Dot extends Component<LayoutSingleFigureAtom> {
+public class Dot extends Component<NotePitch> {
     Pictogram pictogram;
     /**
      * @param parent
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
      */
-    public Dot(LayoutFont layoutFont, LayoutSingleFigureAtom parent, Coordinate position) throws IM3Exception {
+    public Dot(LayoutFont layoutFont, NotePitch parent, Coordinate position) throws IM3Exception {
         super(parent, position);
         pictogram = new Pictogram(layoutFont, "augmentationDot", position);
     }

@@ -58,7 +58,7 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
             CoordinateComponent y = layoutStaff.computeYPositionForPitchWithoutClefOctaveChange(getTime(), nn, oct);
             Coordinate position = new Coordinate(x, y);
 
-            Accidental p = new Accidental(layoutFont, this, accidental, i, nn, octave, position);
+            Accidental p = new Accidental(layoutFont, this, accidental, nn, octave, position);
             nextRelativeXPosition += p.getWidth();
             addComponent(p);
             i++;

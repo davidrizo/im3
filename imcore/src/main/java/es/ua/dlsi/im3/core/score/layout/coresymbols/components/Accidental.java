@@ -6,14 +6,14 @@ import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.core.score.DiatonicPitch;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutKeySignature;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
 import java.util.HashMap;
 
-public class Accidental extends Component<LayoutKeySignature> {
-    int order;
+public class Accidental<ParentType extends NotationSymbol> extends Component<ParentType> {
     DiatonicPitch noteName;
     int octave;
     Pictogram pictogram;
@@ -31,10 +31,9 @@ public class Accidental extends Component<LayoutKeySignature> {
 
     }
 
-    public Accidental(LayoutFont layoutFont, LayoutKeySignature parent, Accidentals accidental, int order, DiatonicPitch noteName, int octave, Coordinate position) throws IM3Exception {
+    public Accidental(LayoutFont layoutFont, ParentType parent, Accidentals accidental, DiatonicPitch noteName, int octave, Coordinate position) throws IM3Exception {
         super(parent, position);
         this.accidental = accidental;
-        this.order = order;
         this.noteName = noteName;
         this.octave = octave;
 

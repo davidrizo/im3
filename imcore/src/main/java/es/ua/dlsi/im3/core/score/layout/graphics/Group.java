@@ -82,11 +82,11 @@ public class Group extends GraphicsElement {
 
         for (GraphicsElement child: children) {
             double childX = child.getPosition().getAbsoluteX();
-            fromX = Math.min(fromX, child.getPosition().getAbsoluteX());
+            fromX = Math.min(fromX, childX);
             toX = Math.max(toX, childX + child.getWidth());
         }
 
-        return toX - fromX;
+        return (toX - fromX);
     }
 
     @Override

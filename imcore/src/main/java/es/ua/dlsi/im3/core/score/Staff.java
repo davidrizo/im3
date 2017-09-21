@@ -61,11 +61,6 @@ public abstract class Staff extends VerticalScoreDivision {
 	 */
 	ArrayList<ITimedElementInStaff> coreSymbols;
 
-	/**
-	 * The instrumentKey corresponds to the time it is set, the value is the set of ledger
-	 * lines
-	 */
-	protected TreeMap<Time, LedgerLines> ledgerLines;
 	protected TreeMap<Time, Fermate> fermate;
 	
 	/**
@@ -98,7 +93,6 @@ public abstract class Staff extends VerticalScoreDivision {
 			int nlines) {
 		super(song, hierarchicalOrder, numberIdentifier);
 		init(nlines);
-		ledgerLines = new TreeMap<>();
 		fermate = new TreeMap<>();
 		this.marks = new ArrayList<>();
 		this.attachments = new ArrayList<>();
@@ -175,23 +169,8 @@ public abstract class Staff extends VerticalScoreDivision {
 		return this.lines;
 	}
 
-	public TreeMap<Time, LedgerLines> getLedgerLines() {
-		return ledgerLines;
-	}
 
-	public LedgerLines getLedgerLineOrNullFor(AtomFigure snr) throws IM3Exception {
-		return ledgerLines.get(snr.getTime());
-	}
-
-	public void addNecessaryLedgerLinesFor(AtomFigure snr, PositionInStaff positionInStaff) throws IM3Exception {
-		int nLedgerLines = computeNumberLedgerLinesNeeded(positionInStaff);
-		if (nLedgerLines != 0) {
-			addLedgerLines(snr, nLedgerLines > 0 ? nLedgerLines : -nLedgerLines,
-					nLedgerLines > 0 ? PositionAboveBelow.BELOW : PositionAboveBelow.ABOVE);
-		}
-	}
-
-	private int computeNumberLedgerLinesNeeded(PositionInStaff positionInStaff) {
+	public int computeNumberLedgerLinesNeeded(PositionInStaff positionInStaff) {
 		int lineSpace = positionInStaff.getLineSpace();
 		if (lineSpace < 0) {
 			return -lineSpace / 2;
@@ -199,19 +178,6 @@ public abstract class Staff extends VerticalScoreDivision {
 			return -(lineSpace - (lines - 1) * 2) / 2;
 		} else {
 			return 0;
-		}
-	}
-
-	public void addLedgerLines(AtomFigure snr, int numberOfLines, PositionAboveBelow position) throws IM3Exception {
-		if (numberOfLines != 0) {
-			LedgerLines ll = this.ledgerLines.get(snr.getTime());
-			if (ll == null) {
-				LedgerLines object = new LedgerLines(this, snr, numberOfLines, position);
-				ledgerLines.put(snr.getTime(), object);
-				this.addMark(object);
-			} else {
-				ll.addScoreNonRest(snr, numberOfLines, position);
-			}
 		}
 	}
 
@@ -462,7 +428,7 @@ public abstract class Staff extends VerticalScoreDivision {
 	 *         is D in G2 clef
 	 * @throws IM3Exception
 	 */
-	public PositionInStaff computeLineSpacePitch(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
+	public PositionInStaff computePositionInStaff(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
 		DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
 		int bottomClefOctave = clef.getBottomLineOctave();
 

@@ -798,8 +798,6 @@ public class MEISongExporter implements ISongExporter {
 	private String generateTextForStaffMark(StaffMark staffMark) {
 		if (staffMark instanceof DynamicMark) {
 			return ((DynamicMark)staffMark).getText();
-		} else if (!(staffMark instanceof LedgerLines)) {
-			throw new UnsupportedOperationException("TO-DO: text for dynamics for class " + staffMark.getClass());
 		} else {
 			return null;
 		}

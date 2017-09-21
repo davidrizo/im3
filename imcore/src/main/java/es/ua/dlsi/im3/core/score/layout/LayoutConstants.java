@@ -21,7 +21,15 @@ public class LayoutConstants {
     public static final double TOP_MARGIN = PDF_TOP_MARGIN;
     public static final double STAFF_SEPARATION = EM*2;
     /**
-     * Separation between the head and the dot
+     * Separation between the note head and the dot
      */
-    public static final double DOT_SEPARATION = EM/2;
+    public static final double DOT_SEPARATION = EM/4;
+    /**
+     * Separation between the accidental and the note head
+     */
+    public static final double ACCIDENTAL_HEAD_SEPARATION = EM/8;
+    /**
+     * The extra to be added to the head size
+     */
+    public static final double LEDGER_LINE_EXCESS_OVER_NOTE_HEAD = EM/16;
 }
