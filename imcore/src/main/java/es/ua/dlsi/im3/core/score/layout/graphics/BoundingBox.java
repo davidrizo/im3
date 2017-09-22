@@ -17,6 +17,14 @@ public class BoundingBox {
         return rightEnd;
     }
 
+    public void setLeftEnd(double leftEnd) {
+        this.leftEnd = leftEnd;
+    }
+
+    public void setRightEnd(double rightEnd) {
+        this.rightEnd = rightEnd;
+    }
+
     public double getWidth() {
         return rightEnd - leftEnd;
     }

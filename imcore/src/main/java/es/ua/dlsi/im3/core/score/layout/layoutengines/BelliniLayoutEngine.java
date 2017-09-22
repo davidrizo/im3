@@ -1,10 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.layoutengines;
 
 import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.ILayoutEngine;
-import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
-import es.ua.dlsi.im3.core.score.layout.Simultaneities;
-import es.ua.dlsi.im3.core.score.layout.Simultaneity;
+import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 import org.apache.commons.math3.util.MathUtils;
 
@@ -73,6 +70,10 @@ public class BelliniLayoutEngine implements ILayoutEngine {
         double x = 0;
         for (Simultaneity s: simultaneities.getSimiltaneities()) {
             BoundingBox boundingBox = s.computeBoundingBox();
+            if (s.getTimeSpan().isZero()) { // add margins
+                boundingBox.setLeftEnd(boundingBox.getLeftEnd()-LayoutConstants.NON_DURATION_SYMBOLS_LATERIAl_INSET);
+                boundingBox.setRightEnd(boundingBox.getRightEnd()+LayoutConstants.NON_DURATION_SYMBOLS_LATERIAl_INSET);
+            }
             x += -(boundingBox.getLeftEnd());
             s.setX(x);
             x += (s.getLayoutWidth() + boundingBox.getRightEnd());

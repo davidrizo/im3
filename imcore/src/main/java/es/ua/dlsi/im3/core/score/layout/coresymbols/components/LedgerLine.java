@@ -22,7 +22,8 @@ public class LedgerLine extends Component<LedgerLines> {
                 new CoordinateComponent(position.getY()));
 
         Coordinate to = new Coordinate(
-                new CoordinateComponent(position.getX(), noteHeadWidth+LayoutConstants.LEDGER_LINE_EXCESS_OVER_NOTE_HEAD),
+                // FIXME: 22/9/17 /2 a piñón
+                new CoordinateComponent(position.getX(), noteHeadWidth/2+LayoutConstants.LEDGER_LINE_EXCESS_OVER_NOTE_HEAD),
                 new CoordinateComponent(position.getY()));
 
 

@@ -31,6 +31,14 @@ public class LayoutConstants {
     /**
      * The extra to be added to the head size
      */
-    public static final double LEDGER_LINE_EXCESS_OVER_NOTE_HEAD = EM/16;
+    public static final double LEDGER_LINE_EXCESS_OVER_NOTE_HEAD = EM/8;
+    /**
+     * Number of spaces the stem spans
+     */
     public static final double STEM_SPACES = 3.5;
+
+    /**
+     * The margin at left and right (the value is used for both sides)
+     */
+    public static final double NON_DURATION_SYMBOLS_LATERIAl_INSET = EM/8;
 }
