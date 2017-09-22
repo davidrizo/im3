@@ -51,7 +51,7 @@ public class LedgerLines extends Component<LayoutStaff> {
                 CoordinateComponent y;
                 if (positionAboveBelow == PositionAboveBelow.ABOVE) {
                     y = new CoordinateComponent(parent.getTopLine().getPosition().getY(), -(nline + 1) * LayoutConstants.SPACE_HEIGHT);
-                } else if (positionAboveBelow == PositionAboveBelow.ABOVE) {
+                } else if (positionAboveBelow == PositionAboveBelow.BELOW) {
                     y = new CoordinateComponent(parent.getBottomLine().getPosition().getY(), (nline + 1)* LayoutConstants.SPACE_HEIGHT);
                 } else {
                     throw new IM3RuntimeException("Invalid position: " + positionAboveBelow);
