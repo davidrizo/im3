@@ -52,6 +52,26 @@ public class HorizontalLayoutTest {
         pdfExporter.exportLayout(pdfFile, layout);
     }
 
+    // Just test it does not crash
+    @Test
+    public void layout2StavesNonVerticallyAligned() throws Exception {
+        MusicXMLImporter importer = new MusicXMLImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/layout/two_staves_non_homophonic.xml");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0)),
+                new Coordinate(new CoordinateComponent(1280), new CoordinateComponent(700)));
+        layout.layout();
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("two_staves_non_homophonic.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("two_staves_non_homophonic.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+    }
+
 
     // Just test it does not crash
     @Test

@@ -79,8 +79,10 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
             dots = new ArrayList<>();
             for (int d = 0; d < ndots; d++) {
                 CoordinateComponent dotX = new CoordinateComponent(position.getX(), LayoutConstants.DOT_SEPARATION);
-                // TODO: 21/9/17 Cuando el puntillo caiga en una línea se suba al espacio, ponerlo en yDisplacement
                 double yDisplacement = 0;
+                if (positionInStaff.laysOnLine()) {
+                    yDisplacement = -LayoutConstants.SPACE_HEIGHT / 2;
+                }
                 CoordinateComponent dotY = new CoordinateComponent(noteHeadPosition.getY(), yDisplacement);
 
                 Coordinate dotPosition = new Coordinate(dotX, dotY);

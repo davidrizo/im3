@@ -23,7 +23,7 @@ public class LayoutConstants {
     /**
      * Separation between the note head and the dot
      */
-    public static final double DOT_SEPARATION = EM/4;
+    public static final double DOT_SEPARATION = EM/2;
     /**
      * Separation between the accidental and the note head
      */

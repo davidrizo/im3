@@ -44,4 +44,8 @@ public class PositionInStaff {
                 "lineSpace=" + lineSpace +
                 '}';
     }
+
+    public boolean laysOnLine() {
+        return lineSpace % 2 == 0;
+    }
 }
