@@ -29,7 +29,6 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
     private void createAccidentals(LayoutFont layoutFont) throws IM3Exception {
         group = new Group();
         accidentals = new ArrayList<>();
-        int octave = 0;
         int previousNoteOrder = 0;
 
         Accidentals accidental = coreSymbol.getAccidental();
@@ -37,7 +36,7 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
         boolean nextUp = (accidental == Accidentals.SHARP);
         int i = 1;
         double nextRelativeXPosition = 0;
-        int oct = getStartingOctave() + octave;
+        int octave = getStartingOctave();
         for (DiatonicPitch nn : alteredNoteNames) {
             int noteOrder = nn.getOrder() + octave * 7;
             if (i > 1) {
@@ -55,7 +54,7 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
             nextUp = !nextUp;
 
             CoordinateComponent x = new CoordinateComponent(position.getX(), nextRelativeXPosition);
-            CoordinateComponent y = layoutStaff.computeYPositionForPitchWithoutClefOctaveChange(getTime(), nn, oct);
+            CoordinateComponent y = layoutStaff.computeYPositionForPitchWithoutClefOctaveChange(getTime(), nn, octave);
             Coordinate position = new Coordinate(x, y);
 
             Accidental p = new Accidental(layoutFont, this, accidental, nn, octave, position);
