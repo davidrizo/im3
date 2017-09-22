@@ -28,7 +28,7 @@ public class SimpleTuplet extends CompoundAtom {
 	/**
 	 * @param pitches If a rest is required, use null in its position //TODO Probar esto
 	 */
-	public SimpleTuplet(int cardinality, int inSpaceOfAtoms, Figures eachFigure, ScientificPitch ...pitches) {
+	public SimpleTuplet(int cardinality, int inSpaceOfAtoms, Figures eachFigure, ScientificPitch ...pitches) throws IM3Exception {
 		this.cardinality = cardinality;
 		this.inSpaceOfAtoms = inSpaceOfAtoms;
 		
@@ -62,7 +62,7 @@ public class SimpleTuplet extends CompoundAtom {
 	 * @param eachFigure
 	 * @param chordPitches pitches[i] represents a chord, pitches[i][j] is the j_th pitch in i_th
 	 */
-	public SimpleTuplet(int cardinality, int inSpaceOfAtoms, Figures eachFigure, ScientificPitch [] ... chordPitches) {
+	public SimpleTuplet(int cardinality, int inSpaceOfAtoms, Figures eachFigure, ScientificPitch [] ... chordPitches) throws IM3Exception {
 		this.cardinality = cardinality;
 		this.inSpaceOfAtoms = inSpaceOfAtoms;
 		wholeDuration = eachFigure.getDuration().multiplyBy(Fraction.getFraction(inSpaceOfAtoms, 1)); 

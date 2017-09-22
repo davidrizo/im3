@@ -71,6 +71,7 @@ public class HorizontalLayout extends ScoreLayout {
             }
 
             layoutStaff.createNoteAccidentals(Time.TIME_ZERO, Time.TIME_MAX);
+            //layoutStaff.createBeaming();
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
         }
@@ -81,7 +82,7 @@ public class HorizontalLayout extends ScoreLayout {
 
     private void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
         // Replace for a factory if required
-        Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT, // TODO: 22/9/17 Quizás esto debería ser cosa del FontLayout 
+        Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT, // TODO: 22/9/17 Quizás esto debería ser cosa del FontLayout
                 new Coordinate(new CoordinateComponent(0),
                 new CoordinateComponent(0)
         ));

@@ -101,4 +101,7 @@ public enum Figures {
 		throw new IM3Exception("Cannot find a figure with meter unit " + meterUnit + " and notation type " + notationType);
 	}
 
+    public int getNumFlags() {
+        return numFlags;
+    }
 }

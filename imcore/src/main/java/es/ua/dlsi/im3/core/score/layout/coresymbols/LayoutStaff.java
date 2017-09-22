@@ -256,5 +256,4 @@ public class LayoutStaff extends NotationSymbol {
         }
         return requiredAccidental;
     }
-
 }
