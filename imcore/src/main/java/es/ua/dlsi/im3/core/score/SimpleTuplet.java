@@ -57,10 +57,10 @@ public class SimpleTuplet extends CompoundAtom {
 
 	/**
 	 * 
-	 * @param inSpaceOf
-	 * @param inSpaceOfDots
+	 * @param cardinality
+	 * @param inSpaceOfAtoms
 	 * @param eachFigure
-	 * @param pitches pitches[i] represents a chord, pitches[i][j] is the j_th pitch in i_th
+	 * @param chordPitches pitches[i] represents a chord, pitches[i][j] is the j_th pitch in i_th
 	 */
 	public SimpleTuplet(int cardinality, int inSpaceOfAtoms, Figures eachFigure, ScientificPitch [] ... chordPitches) {
 		this.cardinality = cardinality;
