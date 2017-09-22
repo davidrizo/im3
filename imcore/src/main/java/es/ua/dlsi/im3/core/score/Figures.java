@@ -9,7 +9,7 @@ public enum Figures {
 	QUADRUPLE_WHOLE (16,1,-1, NotationType.eModern, false, 0),
 	DOUBLE_WHOLE (8,1,0, NotationType.eModern, false, 0),
 	WHOLE (4,1,1, NotationType.eModern, false, 0),
-	HALF (2,1,2, NotationType.eModern, false, 0),
+	HALF (2,1,2, NotationType.eModern, true, 0),
 	QUARTER (1,1,4,NotationType.eModern, true, 0),
 	EIGHTH (1,2,8, NotationType.eModern, true, 1),
 	SIXTEENTH (1, 4, 16, NotationType.eModern, true, 2),
@@ -21,11 +21,11 @@ public enum Figures {
 	LONGA (8, 1, -1, NotationType.eMensural, false, 0),
 	BREVE (4, 1, 0, NotationType.eMensural, false, 0),
 	SEMIBREVE (2, 1, 1, NotationType.eMensural, false, 0),
-	MINIM(1, 1, 2, NotationType.eMensural, true, 0),
-	SEMIMINIM(1, 2, 4, NotationType.eMensural, true, 0),
-	FUSA (1, 4, 8, NotationType.eMensural, true, 1),
-	SEMIFUSA (1, 8, 16, NotationType.eMensural, true, 2),
-	NO_DURATION (0,1,0, NotationType.eModern, false, 0);
+	MINIM(1, 1, 2, NotationType.eMensural, false, 0),
+	SEMIMINIM(1, 2, 4, NotationType.eMensural, false, 0),
+	FUSA (1, 4, 8, NotationType.eMensural, false, 1),
+	SEMIFUSA (1, 8, 16, NotationType.eMensural, false, 2),
+	NO_DURATION (0,1,0, NotationType.eModern, false, 0); // TODO: 22/9/17 Que tenga plica o no depende de la tipografía? 
 	
 	final Fraction duration;
 	/**
