@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.CoreSymbolsOrderer;
+import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,5 +130,22 @@ public class Simultaneity implements Comparable<Simultaneity> {
         for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
             layoutSymbolInStaff.setX(x);
         }
+    }
+
+    public List<LayoutSymbolInStaff> getSymbols() {
+        return symbols;
+    }
+
+    public BoundingBox computeBoundingBox() {
+        double maxLeftDisplacement = Double.MAX_VALUE;
+        double maxRightDisplacement = Double.MIN_VALUE;
+
+        for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
+            BoundingBox childBB = layoutSymbolInStaff.computeBoundingBox();
+            maxLeftDisplacement = Math.min(maxLeftDisplacement, childBB.getLeftEnd());
+            maxRightDisplacement = Math.max(maxLeftDisplacement, childBB.getRightEnd());
+        }
+
+        return new BoundingBox(maxLeftDisplacement, maxRightDisplacement);
     }
 }

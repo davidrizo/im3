@@ -51,4 +51,13 @@ public class CoordinateComponent {
             return reference.getAbsoluteValue() + displacement;
         }
     }
+
+    public double getAccumulatedDisplacement() {
+        if (reference == null) {
+            return displacement;
+        } else {
+            // TODO: 22/9/17 Ver cómo hacer para que no se repita tantas veces su cálculo ¿propiedad dirty?
+            return reference.getAccumulatedDisplacement() + displacement;
+        }
+    }
 }

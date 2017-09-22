@@ -4,8 +4,11 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutBarline;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
+import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
+import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,40 +72,19 @@ public class HorizontalLayout extends ScoreLayout {
         }
 
         // TODO: 19/9/17 This is a very simple algorithm, that does not permit overlaps without collisions. It must be replaced by a serious one
-        /**
-         * Set the time between simultaneities and x position
-         */
-        double x = 0;
-        Simultaneity prevSimultaneity = null;
-        for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {
-            if (prevSimultaneity != null) {
-                prevSimultaneity.setTimeSpan(simultaneity.getTime().substract(prevSimultaneity.getTime()));
-                computeWidth(prevSimultaneity);
-                prevSimultaneity.setX(x);
-                x += prevSimultaneity.getLayoutWidth();
-            }
 
-            prevSimultaneity = simultaneity;
-        }
-
-        if (prevSimultaneity != null) {
-            prevSimultaneity.setTimeSpanFromElementsDuration();
-            computeWidth(prevSimultaneity);
-            prevSimultaneity.setX(x);
-        }
-
-
-        //layoutSymbolInStaff.computeLayout();
-
+        doHorizontalLayout(simultaneities);
     }
 
-    private void computeWidth(Simultaneity prevSimultaneity) {
-        double timeToWidth = Math.log(prevSimultaneity.getTimeSpan().getComputedTime())*LayoutConstants.EM;
-        double layoutWidth = Math.max(prevSimultaneity.getMinimumWidth(), timeToWidth);
-        prevSimultaneity.setLayoutWidth(layoutWidth);
-        /*System.out.println("Width from time span " + prevSimultaneity.getTimeSpan().getComputedTime() + ", min " +
-                prevSimultaneity.getMinimumWidth() + " and timeToWidth  " +
-                timeToWidth + " = "  + layoutWidth);*/
+    private void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
+        // Replace for a factory if required
+        Pictogram noteHead = new Pictogram(getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT,
+                new Coordinate(new CoordinateComponent(0),
+                new CoordinateComponent(0)
+        ));
+        double noteHeadWidth = noteHead.getWidth();
+        ILayoutEngine layoutEngine = new BelliniLayoutEngine(2, 2, noteHeadWidth); // TODO: 22/9/17 ¿qué valor ponemos?
+        layoutEngine.doHorizontalLayout(simultaneities);
     }
 
     @Override

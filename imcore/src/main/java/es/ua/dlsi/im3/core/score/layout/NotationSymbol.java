@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
 import java.util.ArrayList;
@@ -33,4 +34,14 @@ public abstract class NotationSymbol {
     public void setX(double x) {
         position.getX().setDisplacement(x);
     }
+
+    /**
+     * The space between the x of the symbol and its left end
+     * @return
+     */
+    public BoundingBox computeBoundingBox() {
+        return getGraphics().computeBoundingBox();
+    }
+
+
 }

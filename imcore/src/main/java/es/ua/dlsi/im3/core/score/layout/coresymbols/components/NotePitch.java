@@ -36,6 +36,11 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
         UNICODES.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima");
     }
 
+    /**
+     * Used by the layout engines
+     */
+    public static String NOTE_HEAD_WIDTH_CODEPOINT = "noteheadBlack";
+
     GraphicsElement root;
 
     ArrayList<Dot> dots;

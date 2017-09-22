@@ -53,4 +53,20 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
     public abstract double getWidth();
 
     public abstract Coordinate getPosition();
+
+
+    /**
+     * The space between the x of the symbol and its left end
+     * @return
+     */
+    public BoundingBox computeBoundingBox() {
+        double displacement = getPosition().getX().getDisplacement();
+        BoundingBox boundingBox;
+        if (displacement < 0) {
+            boundingBox = new BoundingBox(displacement, getWidth());
+        } else {
+            boundingBox = new BoundingBox(0, displacement+getWidth());
+        }
+        return boundingBox;
+    }
 }
