@@ -65,6 +65,9 @@
     "mensuralWhiteSemibrevis": {
         "codepoint": "U+0074"
     },
+    "noteheadBlack": {
+      "codepoint": "U+0075"
+    },
     "mensuralWhiteMinima": {
         "codepoint": "U+0075"
     },
