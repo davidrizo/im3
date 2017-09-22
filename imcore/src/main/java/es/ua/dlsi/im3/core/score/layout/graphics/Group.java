@@ -95,17 +95,21 @@ public class Group extends GraphicsElement {
      * @return
      */
     public BoundingBox computeBoundingBox() {
-        // TODO: 19/9/17 Maybe we could save this value and update it for each add and width change of an element
-        double maxLeftDisplacement = Double.MAX_VALUE;
-        double maxRightDisplacement = Double.MIN_VALUE;
+        if (children.isEmpty()) {
+            return new BoundingBox(0, 0);
+        } else {
+            // TODO: 19/9/17 Maybe we could save this value and update it for each add and width change of an element
+            double maxLeftDisplacement = Double.MAX_VALUE;
+            double maxRightDisplacement = Double.MIN_VALUE;
 
-        for (GraphicsElement child: children) {
-            BoundingBox childBB = child.computeBoundingBox();
-            maxLeftDisplacement = Math.min(maxLeftDisplacement, childBB.getLeftEnd());
-            maxRightDisplacement = Math.max(maxLeftDisplacement, childBB.getRightEnd());
+            for (GraphicsElement child : children) {
+                BoundingBox childBB = child.computeBoundingBox();
+                maxLeftDisplacement = Math.min(maxLeftDisplacement, childBB.getLeftEnd());
+                maxRightDisplacement = Math.max(maxLeftDisplacement, childBB.getRightEnd());
+            }
+
+            return new BoundingBox(maxLeftDisplacement, maxRightDisplacement);
         }
-
-        return new BoundingBox(maxLeftDisplacement, maxRightDisplacement);
     }
 
     @Override
