@@ -21,11 +21,11 @@ public class LayoutFractionalTimeSignature extends LayoutTimeSignature<Fractiona
         group = new Group();
 
         //TODO Igual que Barline - que valga para percusión
-        Coordinate numeratorPosition = new Coordinate(position.getX(), layoutStaff.getYAtLine(2));
+        Coordinate numeratorPosition = new Coordinate(position.getX(), layoutStaff.getYAtLine(4));
         numerator = new TimeSignatureNumber(layoutStaff.getScoreLayout().getLayoutFont(), this, coreSymbol.getNumerator(), numeratorPosition);
         addComponent(numerator);
 
-        Coordinate denominatorPosition  = new Coordinate(position.getX(), layoutStaff.getYAtLine(4));
+        Coordinate denominatorPosition  = new Coordinate(position.getX(), layoutStaff.getYAtLine(2));
         denominator = new TimeSignatureNumber(layoutStaff.getScoreLayout().getLayoutFont(), this, coreSymbol.getDenominator(), denominatorPosition);
         addComponent(denominator);
     }
