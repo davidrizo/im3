@@ -25,7 +25,7 @@ public enum Figures {
 	SEMIMINIM(1, 2, 4, NotationType.eMensural, false, 0),
 	FUSA (1, 4, 8, NotationType.eMensural, false, 1),
 	SEMIFUSA (1, 8, 16, NotationType.eMensural, false, 2),
-	NO_DURATION (0,1,0, NotationType.eModern, false, 0); // TODO: 22/9/17 Que tenga plica o no depende de la tipografía? 
+	NO_DURATION (0,1,0, NotationType.eModern, false, 0); // TODO: 22/9/17 Que tenga plica o no depende de la tipografía?
 	
 	final Fraction duration;
 	/**

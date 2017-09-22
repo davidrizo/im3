@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSymbolInStaffComparator;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -19,7 +20,7 @@ import java.util.Collection;
  *
  * @author drizo
  */
-public abstract class LayoutSymbolInStaff<CoreSymbolType extends ITimedElementInStaff> extends NotationSymbol {
+public abstract class LayoutSymbolInStaff<CoreSymbolType extends ITimedElementInStaff> extends NotationSymbol implements Comparable<LayoutSymbolInStaff> {
     protected CoreSymbolType coreSymbol;
     protected LayoutStaff layoutStaff;
 
@@ -50,4 +51,8 @@ public abstract class LayoutSymbolInStaff<CoreSymbolType extends ITimedElementIn
         return coreSymbol;
     }
 
+    @Override
+    public int compareTo(LayoutSymbolInStaff o) {
+        return LayoutSymbolInStaffComparator.getInstance().compare(this, o);
+    }
 }

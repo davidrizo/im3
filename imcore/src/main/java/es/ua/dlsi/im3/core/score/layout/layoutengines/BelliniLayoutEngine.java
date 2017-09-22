@@ -76,7 +76,9 @@ public class BelliniLayoutEngine implements ILayoutEngine {
             }
             x += -(boundingBox.getLeftEnd());
             s.setX(x);
+            //System.out.println(boundingBox + ", width " + s.getLayoutWidth() + ", \t"+s.toString());
             x += (s.getLayoutWidth() + boundingBox.getRightEnd());
+            //System.out.println("\tx=" + x);
         }
     }
 

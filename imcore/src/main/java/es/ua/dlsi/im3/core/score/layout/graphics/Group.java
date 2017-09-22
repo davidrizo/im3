@@ -21,7 +21,8 @@ import java.util.List;
 public class Group extends GraphicsElement {
     List<GraphicsElement> children;
 
-    public Group() {
+    public Group(String id) {
+        super(id);
         this.children = new ArrayList<>();
     }
 
@@ -35,9 +36,13 @@ public class Group extends GraphicsElement {
         if (element == null) {
             throw new IM3RuntimeException("Cannot add a null element");
         }
-
         this.children.add(index, element);
     }
+
+    public void remove(GraphicsElement element) {
+        this.children.remove(element);
+    }
+
 
     public List<GraphicsElement> getChildren() {
         return children;

@@ -20,6 +20,7 @@ package es.ua.dlsi.im3.core.score;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
@@ -33,6 +34,10 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 	private Accidentals accidental;
     NotationType notationType;
 	private Staff staff;
+	/**
+	 * Used in layout algorithms
+	 */
+	TreeMap<DiatonicPitch, PitchClass> alteredDiatonicPitchSet;
 	/**
 	 * This is the instrumentKey shown in the staff, i.e., written pitch key. For a transposing instrument it will be different from
 	 * the other keys. E.g. in a piano instrumentKey = concertPitchKey, e.g. C Major, for a Trumpet in Bb, 
@@ -122,6 +127,13 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 				i++;
 			}
 		}
+
+        alteredDiatonicPitchSet = new TreeMap<>();
+        Accidentals acc = getAccidental();
+        for (DiatonicPitch nn1 : alteredNoteNames) {
+            alteredDiatonicPitchSet.put(nn1, new PitchClass(nn1, acc));
+        }
+
 	}
 
 	/**
@@ -223,4 +235,8 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 	public void setTime(Time time) {
 		this.time = time;
 	}
+
+    public TreeMap<DiatonicPitch, PitchClass> getAlteredDiatonicPitchSet() {
+        return alteredDiatonicPitchSet;
+    }
 }

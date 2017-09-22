@@ -30,7 +30,8 @@ public class Arc extends Shape {
     
     double thicknessAtCenter;
 
-    public Arc() {
+    public Arc(String ID) {
+        super(ID);
     }
 
     public double getMiddlePointX() {

@@ -11,4 +11,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
  * for documentation to create new SVG shapes
  */
 public abstract class Shape extends GraphicsElement {
+    public Shape(String ID) {
+        super(ID);
+    }
 }

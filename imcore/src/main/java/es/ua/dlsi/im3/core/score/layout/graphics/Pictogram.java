@@ -42,7 +42,8 @@ public class Pictogram extends GraphicsElement {
 
     LayoutFont layoutFont;
 
-    public Pictogram(LayoutFont layoutFont, String codepoint, Coordinate position) throws IM3Exception {
+    public Pictogram(String ID, LayoutFont layoutFont, String codepoint, Coordinate position) throws IM3Exception {
+        super(ID);
         this.codepoint = codepoint;
         this.layoutFont = layoutFont;
         this.position = position;

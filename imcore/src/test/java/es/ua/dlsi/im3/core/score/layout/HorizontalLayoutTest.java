@@ -34,6 +34,27 @@ public class HorizontalLayoutTest {
 
     // Just test it does not crash
     @Test
+    public void layout2StavesVerticallyAligned() throws Exception {
+        MusicXMLImporter importer = new MusicXMLImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/layout/two_staves_homophonic_vertical_aligned.xml");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0)),
+                new Coordinate(new CoordinateComponent(960), new CoordinateComponent(700)));
+        layout.layout();
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("two_staves_homophonic_vertical_aligned.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("two_staves_homophonic_vertical_aligned.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+    }
+
+
+    // Just test it does not crash
+    @Test
     public void layoutCapitan() throws Exception {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/nodiviertanllantoninyo_mensural_only.mei");

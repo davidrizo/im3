@@ -69,16 +69,19 @@ public class HorizontalLayout extends ScoreLayout {
                 layoutStaff.add(barline);
                 simultaneities.add(barline);
             }
+
+            layoutStaff.createNoteAccidentals(Time.TIME_ZERO, Time.TIME_MAX);
+            //System.out.println("Staff " + staff.getNumberIdentifier());
+            //simultaneities.printDebug();
         }
 
-        // TODO: 19/9/17 This is a very simple algorithm, that does not permit overlaps without collisions. It must be replaced by a serious one
 
         doHorizontalLayout(simultaneities);
     }
 
     private void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
         // Replace for a factory if required
-        Pictogram noteHead = new Pictogram(getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT,
+        Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT, // TODO: 22/9/17 Quizás esto debería ser cosa del FontLayout 
                 new Coordinate(new CoordinateComponent(0),
                 new CoordinateComponent(0)
         ));

@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
+import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 
@@ -27,7 +28,7 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
     }
 
     private void createAccidentals(LayoutFont layoutFont) throws IM3Exception {
-        group = new Group();
+        group = new Group("KEYSIG-"); //TODO IDS
         accidentals = new ArrayList<>();
         int previousNoteOrder = 0;
 

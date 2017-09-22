@@ -18,7 +18,7 @@ public class LayoutFractionalTimeSignature extends LayoutTimeSignature<Fractiona
         if (layoutStaff.getLines().size() != 5) {
             throw new IM3Exception("TO-DO: unimplemented non pentagrams"); // TODO: 20/9/17 TODO Que se calcule sin ir a la línea
         }
-        group = new Group();
+        group = new Group("FRAC_TIME_SIG");//TODO IDS
 
         //TODO Igual que Barline - que valga para percusión
         Coordinate numeratorPosition = new Coordinate(position.getX(), layoutStaff.getYAtLine(4));

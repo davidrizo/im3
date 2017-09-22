@@ -25,7 +25,7 @@ public class LayoutSignTimeSignature extends LayoutTimeSignature<SignTimeSignatu
     public LayoutSignTimeSignature(LayoutStaff layoutStaff, SignTimeSignature coreSymbol) throws IM3Exception {
         super(layoutStaff, coreSymbol);
         position.setY(layoutStaff.getYAtLine(3));
-        pictogram = new Pictogram(layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), position);
+        pictogram = new Pictogram("TS-", layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), position);//TODO IDS
 
     }
 

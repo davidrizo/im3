@@ -15,7 +15,7 @@ public class TimeSignatureNumber extends Component<LayoutTimeSignature> {
     public TimeSignatureNumber(LayoutFont layoutFont, LayoutTimeSignature parent, int number, Coordinate position) throws IM3Exception {
         super(parent, position);
         this.number = number;
-        pictogram = new Pictogram(layoutFont, "timeSig" + number, position);
+        pictogram = new Pictogram("TS-NUM-",layoutFont, "timeSig" + number, position);//TODO IDS
     }
 
     @Override

@@ -43,7 +43,7 @@ public class LayoutSimpleRest extends LayoutSymbolWithDuration<SimpleRest> {
             position.getX(),
             layoutStaff.getYAtCenterLine()
         );
-        pictogram = new Pictogram(layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), restPosition);
+        pictogram = new Pictogram("REST-", layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), restPosition);//TODO IDS
     }
 
     @Override

@@ -18,7 +18,7 @@ public class LayoutClef extends LayoutSymbolInStaff<Clef> {
         this.layoutStaff = layoutStaff;
 
         position.setY(layoutStaff.getYAtLine(coreSymbol.getLine()));
-        pictogram = new Pictogram(layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), position);
+        pictogram = new Pictogram("CLEF-", layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), position);//TODO IDS
 
     }
 

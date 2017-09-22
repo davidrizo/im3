@@ -24,11 +24,13 @@ public class Line extends Shape {
     double thickness;
     private StrokeType strokeType;
 
-    public Line(Coordinate from, Coordinate to) {
-        this(from, to, DEFAULT_THICKNESS, DEFAULT_STROKE_TYPE);
+    public Line(String ID, Coordinate from, Coordinate to) {
+        this(ID, from, to, DEFAULT_THICKNESS, DEFAULT_STROKE_TYPE);
     }
 
-    public Line(Coordinate from, Coordinate to, double thickness, StrokeType strokeType) {
+
+    public Line(String ID, Coordinate from, Coordinate to, double thickness, StrokeType strokeType) {
+        super(ID);
         this.from = from;
         this.to = to;
         this.thickness = thickness;

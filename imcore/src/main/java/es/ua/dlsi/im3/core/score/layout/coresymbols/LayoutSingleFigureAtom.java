@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.core.score.AtomPitch;
 import es.ua.dlsi.im3.core.score.SingleFigureAtom;
 import es.ua.dlsi.im3.core.score.Time;
@@ -15,10 +16,11 @@ import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigureAtom> {
     Group group;
-    ArrayList<NotePitch> heads;
+    ArrayList<NotePitch> notePitches;
     Stem stem;
     Flag flag;
 
@@ -26,9 +28,9 @@ public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigur
         super(layoutStaff, coreSymbol);
 
         LayoutFont layoutFont = layoutStaff.getScoreLayout().getLayoutFont();
-        group = new Group();
+        group = new Group("SINGLE_FIG_"); //TODO IDS
 
-        heads = new ArrayList<>();
+        notePitches = new ArrayList<>();
 
         boolean stemUp = true; // FIXME: 22/9/17 step up or down depending on beams
 
@@ -36,6 +38,7 @@ public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigur
         CoordinateComponent stemYPosition = null;
         for (AtomPitch atomPitch: coreSymbol.getAtomPitches()) {
             NotePitch notePitch = new NotePitch(layoutFont, this, atomPitch, position);
+            notePitches.add(notePitch);
             group.add(notePitch.getGraphics());
 
             // FIXME: 22/9/17 Esto funciona cuando es una nota, en acordes?
@@ -47,6 +50,8 @@ public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigur
 
             layoutStaff.addNecessaryLedgerLinesFor(atomPitch.getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getWidth() );
         }
+
+
 
         if (coreSymbol.getAtomFigure().getFigure().usesStem()) {
             Coordinate stemPosition = new Coordinate(
@@ -71,9 +76,7 @@ public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigur
             stemXDisplacement -
         }*/
 
-
     }
-    // TODO: 21/9/17 FLAGS
 
 
     @Override
@@ -86,4 +89,7 @@ public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigur
         return coreSymbol.getDuration();
     }
 
+    public List<NotePitch> getNotePitches() {
+        return notePitches;
+    }
 }

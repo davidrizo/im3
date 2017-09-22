@@ -37,7 +37,7 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
         this.noteName = noteName;
         this.octave = octave;
 
-        pictogram = new Pictogram(layoutFont, getUnicode(), position);
+        pictogram = new Pictogram("ACC", layoutFont, getUnicode(), position); //TODO IDS
     }
 
     private String getUnicode() {
@@ -52,5 +52,9 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
     @Override
     public GraphicsElement getGraphics() {
         return pictogram;
+    }
+
+    public Accidentals getAccidental() {
+        return accidental;
     }
 }

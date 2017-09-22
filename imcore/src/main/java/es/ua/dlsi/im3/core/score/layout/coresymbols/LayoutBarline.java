@@ -18,7 +18,7 @@ public class LayoutBarline extends LayoutSymbolInStaff {
         Coordinate from = new Coordinate(position.getX(), layoutStaff.getYAtLine(1));
         Coordinate to = new Coordinate(position.getX(), layoutStaff.getYAtLine(5));
 
-        line = new Line(from, to);
+        line = new Line("BARLINE-", from, to);//TODO IDS
     }
 
     @Override

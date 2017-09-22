@@ -1,9 +1,8 @@
 package es.ua.dlsi.im3.core.score.layout;
 
-import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.CoreSymbolsOrderer;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSymbolInStaffComparator;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class Simultaneity implements Comparable<Simultaneity> {
      */
     public Simultaneity(LayoutSymbolInStaff firstSymbol) {
         this.time = firstSymbol.getTime();
-        this.order = CoreSymbolsOrderer.getInstance().getOrder(firstSymbol);
+        this.order = LayoutSymbolInStaffComparator.getInstance().getOrder(firstSymbol);
         symbols = new ArrayList<>();
         symbols.add(firstSymbol);
         minWidth = maxWidth = firstSymbol.getWidth();
@@ -72,9 +71,9 @@ public class Simultaneity implements Comparable<Simultaneity> {
      * @param symbol
      */
     void add(LayoutSymbolInStaff symbol) {
-        if (CoreSymbolsOrderer.getInstance().getOrder(symbol) != order) {
+        if (LayoutSymbolInStaffComparator.getInstance().getOrder(symbol) != order) {
             throw new IM3RuntimeException("Cannot add different order symbols ( "+ order + " and " +
-                    CoreSymbolsOrderer.getInstance().getOrder(symbol) + ")to the same simultaneity");
+                    LayoutSymbolInStaffComparator.getInstance().getOrder(symbol) + ") to the same simultaneity");
         }
 
         maxWidth = Math.max(maxWidth, symbol.getWidth());
@@ -147,5 +146,23 @@ public class Simultaneity implements Comparable<Simultaneity> {
         }
 
         return new BoundingBox(maxLeftDisplacement, maxRightDisplacement);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Simultaneity that = (Simultaneity) o;
+
+        if (order != that.order) return false;
+        return time.equals(that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = time.hashCode();
+        result = 31 * result + order;
+        return result;
     }
 }

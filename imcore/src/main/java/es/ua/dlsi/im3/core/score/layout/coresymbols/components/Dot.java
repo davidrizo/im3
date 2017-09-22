@@ -17,7 +17,7 @@ public class Dot extends Component<NotePitch> {
      */
     public Dot(LayoutFont layoutFont, NotePitch parent, Coordinate position) throws IM3Exception {
         super(parent, position);
-        pictogram = new Pictogram(layoutFont, "augmentationDot", position);
+        pictogram = new Pictogram("DOT-", layoutFont, "augmentationDot", position);//TODO IDS
     }
 
     @Override

@@ -27,7 +27,7 @@ public class LedgerLine extends Component<LedgerLines> {
                 new CoordinateComponent(position.getY()));
 
 
-        line = new Line(from, to);
+        line = new Line("LEDGER-LINE-", from, to); //TODO IDS
     }
 
 

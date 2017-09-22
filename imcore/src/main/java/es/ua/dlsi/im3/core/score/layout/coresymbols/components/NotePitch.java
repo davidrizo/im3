@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols.components;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 public class NotePitch extends Component<LayoutSingleFigureAtom> {
     private static final HashMap<Figures, String> UNICODES = new HashMap<>();
     private final Pictogram noteHeadPictogram;
+    private final ScientificPitch scientificPitch;
 
     {
         UNICODES.put(Figures.DOUBLE_WHOLE, "noteheadDoubleWhole");
@@ -43,13 +45,13 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
      */
     public static String NOTE_HEAD_WIDTH_CODEPOINT = "noteheadBlack";
 
-    GraphicsElement root;
+    private Group root;
 
-    ArrayList<Dot> dots;
+    private ArrayList<Dot> dots;
 
-    Accidental accidental;
+    private Accidental accidental;
 
-    PositionInStaff positionInStaff;
+    private PositionInStaff positionInStaff;
     /**
      * @param parent
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
@@ -57,11 +59,12 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
     public NotePitch(LayoutFont layoutFont, LayoutSingleFigureAtom parent, AtomPitch pitch, Coordinate position) throws IM3Exception {
         super(parent, position);
 
-        ScientificPitch scientificPitch =  pitch.getScientificPitch();
-        int ndots = pitch.getAtomFigure().getDots();
-        Accidentals alteration = pitch.getScientificPitch().getPitchClass().getAccidental();
-        // TODO: 21/9/17 Cálculo de si debe pintar la alteración, si no hay que poner accidental a null
+        root = new Group("NOTE-HEAD-G-"); //TODO IDS
 
+        scientificPitch =  pitch.getScientificPitch();
+        int ndots = pitch.getAtomFigure().getDots();
+
+        // accidentals are computed after all elements are drawn
         positionInStaff = parent.getLayoutStaff().computePositionInStaff(pitch.getTime(), scientificPitch.getPitchClass().getNoteName(), scientificPitch.getOctave());
         CoordinateComponent noteHeadY = parent.getLayoutStaff().computeYPosition(positionInStaff);
 
@@ -69,42 +72,23 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
                 new CoordinateComponent(position.getX()),
                 noteHeadY
         );
-        noteHeadPictogram = new Pictogram(layoutFont, getUnicode(), noteHeadPosition);
-        //TODO coordinate.getX().setDisplacement(-pictogram.getWidth());
+        noteHeadPictogram = new Pictogram("NOTE-HEAD-", layoutFont, getUnicode(), noteHeadPosition); //TODO IDS
+        root.getChildren().add(noteHeadPictogram);
 
+        if (ndots > 0) {
+            dots = new ArrayList<>();
+            for (int d = 0; d < ndots; d++) {
+                CoordinateComponent dotX = new CoordinateComponent(position.getX(), LayoutConstants.DOT_SEPARATION);
+                // TODO: 21/9/17 Cuando el puntillo caiga en una línea se suba al espacio, ponerlo en yDisplacement
+                double yDisplacement = 0;
+                CoordinateComponent dotY = new CoordinateComponent(noteHeadPosition.getY(), yDisplacement);
 
-        if (ndots > 0 || alteration != null) {
-            Group group = new Group();
-
-            if (alteration != null) {
-                Coordinate alterationPosition = new Coordinate(new CoordinateComponent(noteHeadPosition.getX()), noteHeadPosition.getY());
-                accidental = new Accidental(parent.getLayoutStaff().getScoreLayout().getLayoutFont(), this, alteration, scientificPitch.getPitchClass().getNoteName(), scientificPitch.getOctave(), alterationPosition);
-                alterationPosition.getX().setDisplacement(-accidental.getWidth() - LayoutConstants.ACCIDENTAL_HEAD_SEPARATION);
-                group.add(accidental.getGraphics());
+                Coordinate dotPosition = new Coordinate(dotX, dotY);
+                Dot dot = new Dot(parent.getLayoutStaff().getScoreLayout().getLayoutFont(), this, new Coordinate(dotX, dotY));
+                dots.add(dot);
+                root.add(dot.getGraphics());
             }
-
-            group.add(noteHeadPictogram);
-
-            if (ndots > 0) {
-                dots = new ArrayList<>();
-                for (int d = 0; d < ndots; d++) {
-                    CoordinateComponent dotX = new CoordinateComponent(position.getX(), LayoutConstants.DOT_SEPARATION);
-                    // TODO: 21/9/17 Cuando el puntillo caiga en una línea se suba al espacio, ponerlo en yDisplacement
-                    double yDisplacement = 0;
-                    CoordinateComponent dotY = new CoordinateComponent(noteHeadPosition.getY(), yDisplacement);
-
-                    Coordinate dotPosition = new Coordinate(dotX, dotY);
-                    Dot dot = new Dot(parent.getLayoutStaff().getScoreLayout().getLayoutFont(), this, new Coordinate(dotX, dotY));
-                    dots.add(dot);
-                    group.add(dot.getGraphics());
-                }
-            }
-
-            root = group;
-        } else {
-            root = noteHeadPictogram;
         }
-
     }
 
     private String getUnicode() throws IM3Exception {
@@ -130,5 +114,28 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
 
     public Coordinate getNoteHeadPosition() {
         return noteHeadPictogram.getPosition();
+    }
+
+    public ScientificPitch getScientificPitch() {
+        return scientificPitch;
+    }
+
+    public Accidental getAccidental() {
+        return accidental;
+    }
+
+    public void removeAccidental() {
+        if (accidental == null) {
+            throw new IM3RuntimeException("The note pitch didn't have an accidental");
+        }
+        root.remove(accidental.getGraphics());
+        accidental = null;
+    }
+
+    public void addAccidental(Accidentals alteration) throws IM3Exception {
+        Coordinate alterationPosition = new Coordinate(new CoordinateComponent(noteHeadPictogram.getPosition().getX()), noteHeadPictogram.getPosition().getY());
+        accidental = new Accidental(parent.getLayoutStaff().getScoreLayout().getLayoutFont(), this, alteration, scientificPitch.getPitchClass().getNoteName(), scientificPitch.getOctave(), alterationPosition);
+        alterationPosition.getX().setDisplacement(-accidental.getWidth() - LayoutConstants.ACCIDENTAL_HEAD_SEPARATION);
+        root.add(0, accidental.getGraphics());
     }
 }

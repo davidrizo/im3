@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import es.ua.dlsi.im3.core.IM3Exception;
@@ -420,98 +419,6 @@ public abstract class Staff extends VerticalScoreDivision {
 		int result = noteOrder - bottomLinePitchOrder;
 		return new PositionInStaff(result);
 	}
-
-	// ----------------------------------------------------------------------
-	// ----------------------- Accidental processing-------------------------
-	// ----------------------------------------------------------------------
-	/*FRACCIONES private Accidentals computeRequiredAccidental(TreeMap<DiatonicPitch, PitchClass> alteredSet, PitchClass pc) {
-		// needs accidental?
-		Accidentals requiredAccidental = null;
-		PitchClass pcInKey = alteredSet.get(pc.getNoteName());
-		if (pcInKey != null) { // altered note name in instrumentKey signature
-			if (!pc.equals(pcInKey)) { // alteration not valid for this pitch
-										// class
-				if (pc.getAccidental() == null || pc.getAccidental() == Accidentals.NATURAL) {
-					requiredAccidental = Accidentals.NATURAL;
-				} else {
-					requiredAccidental = pc.getAccidental(); // either flat or
-																// sharp
-				}
-			}
-		} else if (pc.getAccidental() != null && pc.getAccidental() != Accidentals.NATURAL) {
-			requiredAccidental = pc.getAccidental(); // either flat or sharp
-		}
-		return requiredAccidental;
-	}*/
-
-	/**
-	 *
-	 * Browse from left to right and set the required accidentals for each note
-	 * depending on the current instrumentKey signature and previous accidentals
-	 *
-	 * param fromTime
-	 *            inclusive
-	 * param toTime
-	 *            exclusive
-	 * @return
-	 */
-	/*FRACCIONES public void createNoteAccidentals(Time fromTime, Time toTime) throws IM3Exception {
-		List<ISymbolInLayer> symbols = getNotationSymbolsOrdered(fromTime, toTime);
-		TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar = new TreeMap<>();
-		TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature = new TreeMap<>();
-		KeySignature currentKeySignature = null; // getRunningKeySignatureAt(fromTime);
-
-		// alteredNoteNamesInKeySignature =
-		// currentKeySignature.getScoreElement().getAlteredNoteNamesSet();
-
-		for (ISymbolInLayer symbol : symbols) {
-			if (symbol instanceof Barline) {
-				alteredNoteNamesInBar.clear();
-			} else if (symbol instanceof KeySignature) {
-				currentKeySignature = (KeySignature) symbol;
-				alteredNoteNamesInKeySignature = currentKeySignature.getScoreElement().getAlteredNoteNamesSet();
-			} else if (symbol instanceof ScoreNote) {
-				NotePitchSymbolElement ps = ((ScoreNote) symbol).getPitchSymbol();
-				computeRequiredAccidentalsForPitch(alteredNoteNamesInBar, alteredNoteNamesInKeySignature, ps);
-			} else if (symbol instanceof ScoreChord) {
-				TreeSet<NotePitchSymbolElement> spitches = ((ScoreChord) symbol).getScorePitchElements();
-				for (NotePitchSymbolElement ps : spitches) {
-					computeRequiredAccidentalsForPitch(alteredNoteNamesInBar, alteredNoteNamesInKeySignature, ps);
-				}
-			}
-		}
-
-	}
-
-	void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar,
-			TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature, NotePitchSymbolElement ps)
-			throws NotationException {
-		ScientificPitch pc = ps.getScorePitch().getPitch();
-		if (!alteredNoteNamesInBar.containsValue(pc)) { // if not previously
-														// altered
-			Accidentals requiredAccidental = computeRequiredAccidental(alteredNoteNamesInKeySignature,
-					pc.getPitchClass());
-			if (requiredAccidental != null) {
-				if (ps.getAccidentalSymbol() != null
-						&& !ps.getAccidentalSymbol().getAccidental().equals(requiredAccidental)) {
-					ps.removeSymbolElement(ps.getAccidentalSymbol());
-				}
-				if (ps.getAccidentalSymbol() == null) {
-					alteredNoteNamesInBar.put(pc.getPitchClass().getNoteName(), pc);
-					ps.setAccidental(requiredAccidental);
-				} // else it is already the one we need
-			}
-		}
-	}*/
-
-	//TODO Speed up
-	/*FRACCIONES public Time getDuration() throws IM3Exception {
-		Time maxDur = Time.TIME_ZERO;
-		for (StaffLayer layer : layers.values()) {
-			maxDur = Time.max(maxDur, layer.getDuration());
-		}
-		return maxDur;
-	}*/
 
 	public abstract boolean isPitched();
 
