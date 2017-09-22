@@ -19,17 +19,26 @@ public class Stem extends Component<LayoutSingleFigureAtom> {
         Coordinate from = position;
         Coordinate to;
 
-        double yDisplacement = LayoutConstants.SPACE_HEIGHT * 3; // it takes 3 spaces
+        double yDisplacement = LayoutConstants.SPACE_HEIGHT * LayoutConstants.STEM_SPACES;
         if (stemUp) {
             yDisplacement *= -1;
         }
         to = new Coordinate(position.getX(), new CoordinateComponent(position.getY(), yDisplacement));
-        
+
         line = new Line(from, to);
+        if (stemUp) {
+            double xdisplacement = from.getX().getDisplacement()-1; // line.getWidth();// FIXME: 22/9/17 Based on line thickness
+            from.getX().setDisplacement(xdisplacement);
+            to.getX().setDisplacement(xdisplacement);
+        }
     }
 
     @Override
     public GraphicsElement getGraphics() {
         return line;
+    }
+
+    public Coordinate getLineEnd() {
+        return line.getTo();
     }
 }

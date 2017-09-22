@@ -32,4 +32,5 @@ public class LayoutConstants {
      * The extra to be added to the head size
      */
     public static final double LEDGER_LINE_EXCESS_OVER_NOTE_HEAD = EM/16;
+    public static final double STEM_SPACES = 3.5;
 }

@@ -16,6 +16,8 @@ import java.util.HashMap;
 
 public class NotePitch extends Component<LayoutSingleFigureAtom> {
     private static final HashMap<Figures, String> UNICODES = new HashMap<>();
+    private final Pictogram noteHeadPictogram;
+
     {
         UNICODES.put(Figures.DOUBLE_WHOLE, "noteheadDoubleWhole");
         UNICODES.put(Figures.WHOLE, "noteheadWhole");
@@ -67,7 +69,7 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
                 new CoordinateComponent(position.getX()),
                 noteHeadY
         );
-        Pictogram noteHeadPictogram = new Pictogram(layoutFont, getUnicode(), noteHeadPosition);
+        noteHeadPictogram = new Pictogram(layoutFont, getUnicode(), noteHeadPosition);
         //TODO coordinate.getX().setDisplacement(-pictogram.getWidth());
 
 
@@ -120,5 +122,13 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
 
     public PositionInStaff getPositionInStaff() {
         return positionInStaff;
+    }
+    
+    public double getNoteHeadWidth() {
+        return noteHeadPictogram.getWidth();
+    }
+
+    public Coordinate getNoteHeadPosition() {
+        return noteHeadPictogram.getPosition();
     }
 }
