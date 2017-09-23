@@ -199,7 +199,7 @@ public class SongTrack {
 		// @ TODO METER CHANGES AND METER != 4
 
 		
-		long gridDuration = (long) (playedSong.getResolution() * figure.getDuration().doubleValue());
+		long gridDuration = (long) (playedSong.getResolution() * figure.getDuration().getComputedTime());
 		// System.out.println(figure + ", gd=" + gridDuration);
 		long gridCenter = gridDuration / 2;
 		// System.out.println("GD:" + gridDuration);

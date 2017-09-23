@@ -186,8 +186,8 @@ public class KernImporterTest {
 
     @Test
     public void testGuideExample2_2() throws Exception {
-        doTest(KernImporterTest::assertGuideExample2_2, importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/guide02-example2-2.krn")));
         doTest(KernImporterTest::assertGuideExample2_2, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/kern/guide02-example2-2.xml")));
+        doTest(KernImporterTest::assertGuideExample2_2, importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/guide02-example2-2.krn")));
     }
 
     // ------------------------------------------------------------------------------------------

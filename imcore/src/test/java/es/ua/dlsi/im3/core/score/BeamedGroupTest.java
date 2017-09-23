@@ -29,7 +29,7 @@ public class BeamedGroupTest {
 
         eighth.addSubatom(sixteen);
 
-        assertEquals("Total duration", Figures.QUARTER.getDuration(), eighth.getDuration().getExactTime());
+        assertEquals("Total duration", Figures.QUARTER.getDuration(), eighth.getDuration());
 
         layer.add(eighth);
         ArrayList<AtomPitch> atomPitches = layer.getAtomPitches();

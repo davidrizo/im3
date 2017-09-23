@@ -19,12 +19,12 @@ public abstract class SingleFigureAtom extends Atom {
 	 * @param figure
 	 * @param dots
 	 */
-	SingleFigureAtom(Figures figure, int dots, Fraction alteredDuration) {
+	SingleFigureAtom(Figures figure, int dots, Time alteredDuration) {
 		atomFigure = new AtomFigure(this, figure, dots, alteredDuration);
 		addDuration(atomFigure.getDuration());
 	}
 	
-	public void setRelativeToAtomOnset(Fraction currentRelativeOnset) {
+	public void setRelativeToAtomOnset(Time currentRelativeOnset) {
 		atomFigure.setRelativeOnset(currentRelativeOnset);
 	}
 
@@ -45,7 +45,7 @@ public abstract class SingleFigureAtom extends Atom {
 		return Arrays.asList(this);
 	}
 
-	public void setRelativeOnset(Fraction relativeOnset) {
+	public void setRelativeOnset(Time relativeOnset) {
 		this.atomFigure.setRelativeOnset(relativeOnset);
 		
 	}
@@ -66,8 +66,8 @@ public abstract class SingleFigureAtom extends Atom {
     }
 
     @Override
-    public void setDuration(Fraction duration) {
+    public void setDuration(Time duration) {
         super.setDuration(duration);
-        this.atomFigure.setDuration(new Time(duration));
+        this.atomFigure.setDuration(duration);
     }
 }

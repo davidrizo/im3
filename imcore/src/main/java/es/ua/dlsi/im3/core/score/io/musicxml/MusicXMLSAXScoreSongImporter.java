@@ -756,7 +756,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 	private Figures getFigureFromDuration(Time duration) throws ImportException {
 		for (Figures fig: Figures.values()) {
-			if (fig.getNotationType() == NotationType.eModern && fig.getDuration().equals(duration.getExactTime())) {
+			if (fig.getNotationType() == NotationType.eModern && fig.getDuration().equals(duration)) {
 				return fig;
 			}
 		}
@@ -957,9 +957,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				}
 				SimpleMeasureRest mrest;
 				if (lastFigure != null) {
-					mrest = new SimpleMeasureRest(lastFigure, lastDuration.getExactTime());
+					mrest = new SimpleMeasureRest(lastFigure, lastDuration);
 				} else {
-					mrest = new SimpleMeasureRest(Figures.WHOLE, lastDuration.getExactTime());	
+					mrest = new SimpleMeasureRest(Figures.WHOLE, lastDuration);
 				}				
 				lastContainer.add(mrest);								
 			} else {
@@ -1013,7 +1013,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				lastAtomPitch.setTiedFromPrevious(oldNote.getAtomPitch().getTiedFromPrevious());
 				lastAtomPitch.setTiedToNext(oldNote.getAtomPitch().getTiedToNext());
 				if (lastTuplet != null) {
-					chord.setDuration(oldNote.getDuration().getExactTime());
+					chord.setDuration(oldNote.getDuration());
 					lastTuplet.addSubatom(chord);
 				} else {
 					lastContainer.add(chord);
@@ -1049,7 +1049,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		// handle tuplet
 		if (tupletActualNotes != null) { 
 			if (context != eContexts.eChord) { // the first note has done this job
-				tupletAccumulatedTime = tupletAccumulatedTime.add(new Time(lastFigure.getDuration()));
+				tupletAccumulatedTime = tupletAccumulatedTime.add(lastFigure.getDuration());
 				// could be optimized, but I think it is not necessary
 				Figures tupletFigure;
 				if (tupletNormalFigure == null) {
@@ -1059,7 +1059,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				}
 				
 				if (tupletExpectedDuration == null) { // first time
-					tupletExpectedDuration = new Time(tupletFigure.getDuration()).multiply(tupletActualNotes);
+					tupletExpectedDuration = tupletFigure.getDuration().multiply(tupletActualNotes);
 				}
 				
 				int diff = tupletExpectedDuration.compareTo(tupletAccumulatedTime);
@@ -1314,7 +1314,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			for (ITimedElementInStaff element: entry.getValue()) {
 				if (element instanceof Atom) {
 					Atom atom = (Atom) element;
-					if (atom.getDuration().getExactTime().equals(Figures.NO_DURATION.getDuration())) {
+					if (atom.getDuration().equals(Figures.NO_DURATION.getDuration())) {
 						if (countAtoms == 1) {
 							if (atom instanceof SimpleRest) {
 								SimpleRest rest = (SimpleRest) atom;
@@ -1370,18 +1370,14 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		
 		Time measureDuration = null;
 		for (SimpleMeasureRest measureRest: pendingMRestsToSetDuration) {
-			if (!currentMeasure.isEndTimeSet()) {
+            if (!currentMeasure.isEndTimeSet()) {
 				if (!currentMeasure.getTime().isZero()) { // avoid first bar for anacrusis
 					TimeSignature ts = measureRest.getStaff().getRunningTimeSignatureAt(measureRest);
 					if (ts == null) {
 						throw new ImportException("Cannot infer the measure duration without time signatures at element " + measureRest);
 					}
-					if (ts instanceof ITimeSignatureWithDuration) {
-						measureDuration =  ((ITimeSignatureWithDuration)ts).getMeasureDuration();
-						maxMeasureTime = currentMeasure.getTime().add(measureDuration);
-					} else {
-						throw new ImportException("Cannot infer the measure duration with a time signature without duration (" + ts + ") at element " + measureRest);
-					}						
+					measureDuration =  ts.getDuration();
+					maxMeasureTime = currentMeasure.getTime().add(measureDuration);
 				}
 				currentMeasure.setEndTime(maxMeasureTime);
 				if (currentMeasure.getDuration().getComputedTime() <= 0.0) {
@@ -1439,20 +1435,20 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				}
 			}				
 			// check anacrusis
-			if (ts instanceof ITimeSignatureWithDuration) { // if not, it cannot be an anacrusis
+			if (measures != null && !measures.isEmpty()) {
 				Time maxEndTime = Time.TIME_ZERO;
-				for (Atom atom: firstStaff.getAtomsWithOnsetWithin(measures.get(0))) {
+				for (Atom atom : firstStaff.getAtomsWithOnsetWithin(measures.get(0))) {
 					maxEndTime = Time.max(maxEndTime, atom.getOffset());
 				}
-				Time measureDuration = ((ITimeSignatureWithDuration)ts).getMeasureDuration();
-				int diff = maxEndTime.compareTo(measureDuration); 
+				Time measureDuration = ts.getDuration();
+				int diff = maxEndTime.compareTo(measureDuration);
 				if (diff < 0) {
 					song.setAnacrusisOffset(measureDuration.substract(maxEndTime));
 				} else if (diff > 0) {
 					throw new ImportException("Fist measure duration based on atom is " + maxEndTime + " and expected first measure duration based on time signature is " + measureDuration);
 				} // else normal measure
 			}
-				
+
 		}
 	}
 	

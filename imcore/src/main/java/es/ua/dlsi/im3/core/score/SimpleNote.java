@@ -26,7 +26,7 @@ public class SimpleNote extends SingleFigureAtom {
 	 * @param alteredDuration
 	 * @param pitch
 	 */
-	SimpleNote(Figures figure, int dots, Fraction alteredDuration, ScientificPitch pitch) {
+	SimpleNote(Figures figure, int dots, Time alteredDuration, ScientificPitch pitch) {
 		super(figure, dots, alteredDuration);
 		atomPitch = new AtomPitch(this.atomFigure, pitch);
 	}
@@ -40,7 +40,7 @@ public class SimpleNote extends SingleFigureAtom {
 
 	/**
 	 * Explicitly shown accidental
-	 * @param accidToAccidental
+	 * @param writtenExplicitAccidental
 	 * @throws IM3Exception 
 	 */
 	public void setWrittenExplicitAccidental(Accidentals writtenExplicitAccidental) throws IM3Exception {
@@ -49,7 +49,7 @@ public class SimpleNote extends SingleFigureAtom {
 
 	/**
 	 * Accidental that should be played
-	 * @param accidToAccidental
+	 * @param accidental
 	 * @throws IM3Exception 
 	 */
 	public void setAccidental(Accidentals accidental) throws IM3Exception {

@@ -8,7 +8,7 @@ public class SimpleMeasureRest extends SimpleRest {
 	 * 
 	 * @param measureDuration
 	 */
-	public SimpleMeasureRest(Figures figure, Fraction measureDuration) {
+	public SimpleMeasureRest(Figures figure, Time measureDuration) {
         super(figure, 0, measureDuration);
 	}
 

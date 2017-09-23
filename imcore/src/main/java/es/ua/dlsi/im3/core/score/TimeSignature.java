@@ -75,4 +75,11 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
 	public abstract boolean equals(Object other);
 
     public abstract boolean isCompound();
+
+    /**
+     * It returns the duration of a measure, i.e., the unit denoted by the figures denoted by the meter (mensural notation
+     * does not use measure)
+     * @return
+     */
+    public abstract Time getDuration();
 }

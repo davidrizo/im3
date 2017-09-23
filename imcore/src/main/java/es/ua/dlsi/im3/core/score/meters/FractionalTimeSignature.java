@@ -3,7 +3,6 @@ package es.ua.dlsi.im3.core.score.meters;
 import org.apache.commons.lang3.math.Fraction;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.ITimeSignatureWithDuration;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.TimeSignature;
@@ -17,7 +16,7 @@ import es.ua.dlsi.im3.core.score.TimeSignature;
  * @date 03/06/2011
  *
  */
-public class FractionalTimeSignature extends TimeSignature implements Comparable<FractionalTimeSignature>, ITimeSignatureWithDuration {
+public class FractionalTimeSignature extends TimeSignature implements Comparable<FractionalTimeSignature> {
 	private static final String SLASH = "/";
 
 	protected Fraction fraction;
@@ -198,7 +197,7 @@ public class FractionalTimeSignature extends TimeSignature implements Comparable
 	}
 
 	@Override
-	public Time getMeasureDuration() {
+	public Time getDuration() {
 		return duration;
 	}
 

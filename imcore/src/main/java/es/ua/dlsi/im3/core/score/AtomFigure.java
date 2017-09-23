@@ -41,7 +41,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		this.atom = atom;
 		this.figure = figure;
 		this.dots = dots;
-		duration = new Time(figure.getDurationWithDots(dots));
+		duration = figure.getDurationWithDots(dots);
 		onsetRelativeToAtom = new Time(Fraction.ZERO);
 	}
 	
@@ -52,7 +52,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	 * @param dots
 	 * @param alteredDuration
 	 */
-	AtomFigure(Atom atom, Figures figure, int dots, Fraction alteredDuration) {
+	AtomFigure(Atom atom, Figures figure, int dots, Time alteredDuration) {
 		if (atom == null) {
 			throw new IM3RuntimeException("Atom cannot be null");
 		}
@@ -60,7 +60,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		this.atom = atom;
 		this.figure = figure;
 		this.dots = dots;
-		this.duration = new Time(alteredDuration);
+		this.duration = alteredDuration;
 		onsetRelativeToAtom = new Time(Fraction.ZERO);
 	}
 	
@@ -116,8 +116,8 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		return duration.getExactTime();
 	}
 
-	public void setRelativeOnset(Fraction relativeOnset) {
-		this.onsetRelativeToAtom = new Time(relativeOnset);		
+	public void setRelativeOnset(Time relativeOnset) {
+		this.onsetRelativeToAtom = relativeOnset;
 	}
 	
 	//TODO Guardarla para que no haya que recalcularla siempre
@@ -232,7 +232,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	 */
 	void setFigure(Figures figure) {
 		this.figure = figure;
-		duration = new Time(figure.getDurationWithDots(dots));
+		duration = figure.getDurationWithDots(dots);
 		
 	}
 

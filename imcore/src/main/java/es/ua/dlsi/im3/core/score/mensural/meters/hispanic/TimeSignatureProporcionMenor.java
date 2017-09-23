@@ -18,6 +18,7 @@
 package es.ua.dlsi.im3.core.score.mensural.meters.hispanic;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 
@@ -40,6 +41,11 @@ public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
 	public boolean equals(Object other) {
 		return other instanceof TimeSignatureProporcionMenor;
 	}
-    
-    
+
+	@Override
+	public Time getDuration() {
+		return getSemibreveDuration();
+	}
+
+
 }

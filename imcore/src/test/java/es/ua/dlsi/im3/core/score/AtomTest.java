@@ -70,7 +70,7 @@ public class AtomTest {
 		
 		
 		for (int i=0; i<expectedDurations.size(); i++) {
-			assertEquals("Duration of " + voice.getAtom(i).getClass(), expectedDurations.get(i), voice.getAtom(i).getExactDuration());
+			assertEquals("Duration of " + voice.getAtom(i).getClass(), expectedDurations.get(i), voice.getAtom(i).getDuration().getExactTime());
 		}
 		
 		List<AtomPitch> pitches = voice.getAtomPitches();
@@ -105,7 +105,7 @@ public class AtomTest {
 				new ScientificPitch(PitchClasses.G, 3));
 		assertEquals(1, chord.getAtomFigures().size());
 		assertEquals(3, chord.getAtomPitches().size());
-		assertEquals(Figures.QUARTER.getDurationWithDots(1), chord.getDuration().getExactTime());
+		assertEquals(Figures.QUARTER.getDurationWithDots(1), chord.getDuration());
 	}
 	
 	@Test
@@ -134,7 +134,7 @@ public class AtomTest {
 				);
 		assertEquals(5, quintuplet.getAtomFigures().size());
 		assertEquals(5, quintuplet.getAtomPitches().size());
-		assertEquals(Figures.HALF.getDuration(), quintuplet.getDuration().getExactTime());
+		assertEquals(Figures.HALF.getDuration(), quintuplet.getDuration());
 	}
 	
 	@Test
@@ -147,7 +147,7 @@ public class AtomTest {
 		assertEquals(3, triplet.getAtomFigures().size());
 		assertEquals(6, triplet.getAtomPitches().size());
 		
-		assertEquals(Figures.QUARTER.getDuration(), triplet.getDuration().getExactTime());
+		assertEquals(Figures.QUARTER.getDuration(), triplet.getDuration());
 	}
 	
 	/**

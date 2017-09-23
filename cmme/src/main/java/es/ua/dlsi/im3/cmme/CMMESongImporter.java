@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
+import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensuralFactory;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
@@ -295,8 +296,8 @@ public class CMMESongImporter implements IScoreSongImporter {
         lastFigureAtom = rest;
     }
 
-    private Fraction proportionToFraction(Proportion proportion) {
-        return Fraction.getFraction(proportion.i1, proportion.i2);
+    private Time proportionToFraction(Proportion proportion) {
+        return new Time(Fraction.getFraction(proportion.i1, proportion.i2));
     }
 
     private void importNote(Staff staff, ScoreLayer layer, NoteEvent event) throws ImportException, IM3Exception {
@@ -309,8 +310,8 @@ public class CMMESongImporter implements IScoreSongImporter {
         // TODO Accidentals (originales y editoriales - ModernAccidental?)
         SimpleNote note = new SimpleNote(figure, 0, pitch);
         Proportion proportion = event.getLength();
-        Fraction actualDuration = proportionToFraction(proportion);
-        Fraction expectedDurationGivenFigure = figure.getDuration();
+        Time actualDuration = proportionToFraction(proportion);
+        Time expectedDurationGivenFigure = figure.getDuration();
 
         if (!actualDuration.equals(expectedDurationGivenFigure)) {
             note.setDuration(actualDuration);
@@ -339,7 +340,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         if (ts == null) {
             System.out.println("TO-DO COMPAS:");
             event.prettyprint();
-            ts = new TimeSignatureMensural(
+            ts = TimeSignatureMensuralFactory.getInstance().create(
                     Perfection.getPerfection(event.getMensInfo().modus_maior),
                     Perfection.getPerfection(event.getMensInfo().modus_minor),
                     Perfection.getPerfection(event.getMensInfo().tempus),

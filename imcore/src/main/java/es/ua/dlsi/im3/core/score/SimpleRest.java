@@ -22,7 +22,7 @@ public class SimpleRest extends SingleFigureAtom {
 	 * @param figure
 	 * @param dots
 	 */
-	SimpleRest(Figures figure, int dots, Fraction alteredDuration) {
+	SimpleRest(Figures figure, int dots, Time alteredDuration) {
 		super(figure, dots, alteredDuration);
 	}
 

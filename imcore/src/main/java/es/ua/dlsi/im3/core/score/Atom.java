@@ -87,10 +87,6 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 		return duration;
 	}
 	
-	public final Fraction getExactDuration() {
-		return duration.getExactTime();
-	}
-	
 	public double getQuarterRatioDuration() {
 		return this.duration.getComputedTime();
 	}
@@ -261,16 +257,8 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 	 * The duration is usually set from the figure(s) in the atom, but it may be different in the case of the
 	 * atoms in a tuplet. Use with care
 	 */
-	public void setDuration(Fraction duration) {
-		this.duration = new Time(duration);
-	}
-	/**
-	 * The duration is usually set from the figure(s) in the atom, but it may be different in the case of the
-	 * atoms in a tuplet. Use with care
-	 */
 	public void setDuration(Time duration) {
 		this.duration = duration;
 	}
-
 }
 

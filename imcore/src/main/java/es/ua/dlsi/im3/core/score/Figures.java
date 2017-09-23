@@ -27,7 +27,7 @@ public enum Figures {
 	SEMIFUSA (1, 8, 16, NotationType.eMensural, false, 2),
 	NO_DURATION (0,1,0, NotationType.eModern, false, 0); // TODO: 22/9/17 Que tenga plica o no depende de la tipografía?
 	
-	final Fraction duration;
+	final Time duration;
 	/**
 	 * Classical interpretation (the one used in denominators of meters)
 	 */
@@ -38,14 +38,14 @@ public enum Figures {
     final int numFlags;
 	
 	Figures(int quarters, int quarterSubdivisions, int meterUnit, NotationType notationType, boolean usesStem, int flags) {
-		duration = Fraction.getFraction(quarters, quarterSubdivisions);
+		duration = new Time(Fraction.getFraction(quarters, quarterSubdivisions));
 		this.meterUnit = meterUnit;
 		this.notationType = notationType;
 		this.usesStem = usesStem;
 		this.numFlags = flags;
 	}
 
-	public Fraction getDuration() {
+	public Time getDuration() {
 		return duration;
 	}
 
@@ -71,8 +71,8 @@ public enum Figures {
 	 * @param dots
 	 * @return
 	 */
-	public Fraction getDurationWithDots(int dots) {
-		Fraction sumDurations = duration;
+	public Time getDurationWithDots(int dots) {
+		Fraction sumDurations = duration.getExactTime();
 		Fraction lastDur = sumDurations;
 		
 		for (int i=0; i<dots; i++) {
@@ -80,10 +80,10 @@ public enum Figures {
 			sumDurations = sumDurations.add(lastDur);
 		}
 		
-		return sumDurations;		
+		return new Time(sumDurations);
 	}
 
-	public static Figures findDuration(Fraction duration, NotationType notationType) throws IM3Exception {
+	public static Figures findDuration(Time duration, NotationType notationType) throws IM3Exception {
 		for (Figures fig: Figures.values()) {
 			if (fig.notationType == notationType && fig.duration.equals(duration)) {
 				return fig;
@@ -101,7 +101,7 @@ public enum Figures {
 		throw new IM3Exception("Cannot find a figure with meter unit " + meterUnit + " and notation type " + notationType);
 	}
 
-    public int getNumFlags() {
-        return numFlags;
-    }
+	public int getNumFlags() {
+		return numFlags;
+	}
 }

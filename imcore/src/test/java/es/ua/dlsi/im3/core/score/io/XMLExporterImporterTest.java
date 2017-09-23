@@ -563,12 +563,13 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void keyChange() throws Exception {
-		doTest(XMLExporterImporterTest::assertKeyChange, importMEI(TestFileUtils.getFile("/testdata/core/score/io/key_changes.mei")));
-		// it uses mRest
-		doTest(XMLExporterImporterTest::assertKeyChange, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/key_changes.xml")));
 		// it does not use mRest
 		doTest(XMLExporterImporterTest::assertKeyChange, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/key_changes_musescore.xml")));
-	}		
+		// it uses mRest
+		doTest(XMLExporterImporterTest::assertKeyChange, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/key_changes.xml")));
+
+		doTest(XMLExporterImporterTest::assertKeyChange, importMEI(TestFileUtils.getFile("/testdata/core/score/io/key_changes.mei")));
+	}
 
 	// ------------------------------------------------------------------------------------------
 	private static Void assertTransposingInstruments(ScoreSong song) {

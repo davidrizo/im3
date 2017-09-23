@@ -29,6 +29,7 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.XMLSAXScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernImporter;
+import es.ua.dlsi.im3.core.score.mensural.meters.*;
 import org.apache.commons.lang3.math.Fraction;
 import org.xml.sax.SAXException;
 
@@ -43,8 +44,6 @@ import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkPianissimo;
 import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkPiano;
 import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkPianoPossible;
 import es.ua.dlsi.im3.core.score.io.ImportFactories;
-import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
-import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.score.staves.PercussionStaff;
 import es.ua.dlsi.im3.core.io.ImportException;
@@ -221,7 +220,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	HierarchicalIDGenerator hierarchicalIdGenerator;
 	private AtomPitch lastAtomPitch;
 	private HashMap<String, ScoreLayer> layers;
-	private Fraction figureDuration;
+	private Time figureDuration;
 	private String lastMeterCount;
 	private String lastMeterUnit;
 	private String lastMeterSym;
@@ -846,7 +845,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		if (lastTimeSignature instanceof TimeSignatureMensural) {
 			TimeSignatureMensural mmeter = (TimeSignatureMensural) lastTimeSignature;
 			figureDuration = mmeter.getDuration(currentAtomFigure.getFigure());
-			currentAtomFigure.setSpecialDuration(new Time(figureDuration));
+			currentAtomFigure.setSpecialDuration(figureDuration);
 		}
 		if (numBase != null || num != null) {
 			if (numBase == null || num == null) {
@@ -922,7 +921,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			Perfection modusMinor = convertMeiMensuralPerfectionNumber(modusminorStr);
 			Perfection tempus = convertMeiMensuralPerfectionNumber(tempusStr);
 			Perfection prolatio = convertMeiMensuralPerfectionNumber(prolatioStr);
-			TimeSignatureMensural meter = new TimeSignatureMensural(modusMaior, modusMinor, tempus, prolatio);
+			TimeSignatureMensural meter = TimeSignatureMensuralFactory.getInstance().create(modusMaior, modusMinor, tempus, prolatio);
 			meter.setStaff(lastStaff);
 			Time time = getCurrentTime();
 			meter.setTime(time); // if not set here, the equals does not work
@@ -932,8 +931,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			return null;
 		}
 	}
-	
-	private Perfection convertMeiMensuralPerfectionNumber(String number) throws ImportException {
+
+
+
+    private Perfection convertMeiMensuralPerfectionNumber(String number) throws ImportException {
 		if (number == null) {
 			return null;
 		} else if (number.equals("2")) {
@@ -1282,7 +1283,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				}				
 				Time wholeTupletDuration = wholeNonTupletDuration.divide(tupletNum).multiply(tupletNumBase);
 				
-				Figures eachFigure = Figures.findDuration(wholeTupletDuration.getExactTime().divideBy(Fraction.getFraction(tupletNumBase, 1)), NotationType.eModern); // no tuplets in non modern				
+				Figures eachFigure = Figures.findDuration(wholeTupletDuration.divideBy(Fraction.getFraction(tupletNumBase, 1)), NotationType.eModern); // no tuplets in non modern
 				
 				SimpleTuplet tuplet = new SimpleTuplet(tupletNum, tupletNumBase, eachFigure, tupletElements);
 				tupletElements = null;
@@ -1321,12 +1322,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                                 if (ts == null) {
                                     throw new ImportException("Cannot infer the measure duration without time signatures at element " + mrest);
                                 }
-                                if (ts instanceof ITimeSignatureWithDuration) {
-                                    measureDuration = ((ITimeSignatureWithDuration) ts).getMeasureDuration();
-                                    currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
-                                } else {
-                                    throw new ImportException("Cannot infer the measure duration with a time signature without duration (" + ts + ") at element " + mrest);
-                                }
+								measureDuration = ts.getDuration();
+								currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
                             } else {
                                 if (maximumVoicesTime.isZero()) {
                                     throw new ImportException("Cannot infer the measure duration for mRest or multiRest " + mrest);
@@ -1356,36 +1353,31 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     if (ts == null) {
                         throw new ImportException("Cannot infer the measure duration without time signatures at element " + firstMrest);
                     }
-                    if (ts instanceof ITimeSignatureWithDuration) {
-                        Time measureDuration = ((ITimeSignatureWithDuration) ts).getMeasureDuration();
+                    Time measureDuration = ts.getDuration();
 
-                        currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
+                    currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
 
-                        Time time = currentMeasure.getEndTime();
-                        Integer nmeasure = currentMeasure.getNumber();
-                        // create the number of measures (but the current one)
-                        for (int i=0; i<num-1; i++) {
-                            Measure measure;
-                            if (nmeasure != null) {
-                                measure = new Measure(song, nmeasure++);
-                            } else {
-                                measure = new Measure(song);
-                            }
-                            song.addMeasure(time, measure);
-                            time =time.add(measureDuration);
-                            measure.setEndTime(time);
-                            currentMeasure = measure;
-
+                    Time time = currentMeasure.getEndTime();
+                    Integer nmeasure = currentMeasure.getNumber();
+                    // create the number of measures (but the current one)
+                    for (int i=0; i<num-1; i++) {
+                        Measure measure;
+                        if (nmeasure != null) {
+                            measure = new Measure(song, nmeasure++);
+                        } else {
+                            measure = new Measure(song);
                         }
+                        song.addMeasure(time, measure);
+                        time =time.add(measureDuration);
+                        measure.setEndTime(time);
+                        currentMeasure = measure;
 
-                        for (SimpleMultiMeasureRest mm : pendingMultiMeasureRestsToSetDuration) {
-                            mm.setDuration(measureDuration.multiply(num));
-                            setCurrentTime(mm.getStaff(), mm.getLayer(), mm.getOffset());
-                        }
-                    } else {
-                        throw new ImportException("Cannot infer the measure duration with a time signature without duration (" + ts + ") at element " + firstMrest);
                     }
 
+                    for (SimpleMultiMeasureRest mm : pendingMultiMeasureRestsToSetDuration) {
+                        mm.setDuration(measureDuration.multiply(num));
+                        setCurrentTime(mm.getStaff(), mm.getLayer(), mm.getOffset());
+                    }
 				} else {
 					currentMeasure.setEndTime(maximumVoicesTime);
 				}
@@ -1441,17 +1433,17 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			}
 			
 			// check anacrusis
-			if (ts instanceof ITimeSignatureWithDuration) { // if not, it cannot be an anacrusis
+			if (measures != null && !measures.isEmpty()) {
 				Time maxEndTime = Time.TIME_ZERO;
-				for (Atom atom: staff.getAtomsWithOnsetWithin(measures.get(0))) {
+				for (Atom atom : staff.getAtomsWithOnsetWithin(measures.get(0))) {
 					maxEndTime = Time.max(maxEndTime, atom.getOffset());
 				}
-				Time measureDuration = ((ITimeSignatureWithDuration)ts).getMeasureDuration();
-				int diff = maxEndTime.compareTo(measureDuration); 
+				Time measureDuration = ts.getDuration();
+				int diff = maxEndTime.compareTo(measureDuration);
 				if (diff < 0) {
 					song.setAnacrusisOffset(measureDuration.substract(maxEndTime));
 				} //else if (diff > 0) { Not valid for multimeasure rests
-					//throw new ImportException("Fist measure duration based on atom is " + maxEndTime + " and expected first measure duration based on time signature is " + measureDuration);
+				//throw new ImportException("Fist measure duration based on atom is " + maxEndTime + " and expected first measure duration based on time signature is " + measureDuration);
 				//} // else normal measure
 			}
 		}

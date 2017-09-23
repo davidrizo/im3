@@ -1744,8 +1744,8 @@ public class KernImporter implements IScoreSongImporter {
                 }
             }
             // check anacrusis
-            if (ts instanceof ITimeSignatureWithDuration) { // if not, it cannot be an anacrusis
-                Time expectedMeasureDuration = ((ITimeSignatureWithDuration) ts).getMeasureDuration();
+            if (scoreSong.getNumMeasures() > 0) {
+                Time expectedMeasureDuration = ts.getDuration();
                 Measure fm = scoreSong.getFirstMeasure();
                 Time diff = expectedMeasureDuration.substract(fm.getDuration());
                 scoreSong.setAnacrusisOffset(diff);

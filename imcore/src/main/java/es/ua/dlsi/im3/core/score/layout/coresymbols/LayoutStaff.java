@@ -1,6 +1,5 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
-import com.sun.tools.corba.se.idl.constExpr.Not;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.*;

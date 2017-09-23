@@ -20,7 +20,7 @@ public class BeamedGroup extends CompoundAtom {
 
     Figures figure;
 
-    public BeamedGroup(Figures figure, boolean computedBeam, int beams) {
+    public BeamedGroup(Figures figure, boolean computedBeam) {
         this.computedBeam = computedBeam;
         this.figure = figure;
     }

@@ -14,7 +14,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  *
  */
 public class SimpleTuplet extends CompoundAtom {	
-	private Fraction wholeDuration;
+	private Time wholeDuration;
 	private Figures eachFigure;
 	/**
 	 * E.g. 3 in a triplet. Note that in a 8th triplet made of a quarter + eigth, tupletCardinality is 3, not 2
@@ -35,8 +35,8 @@ public class SimpleTuplet extends CompoundAtom {
 		wholeDuration = eachFigure.getDuration().multiplyBy(Fraction.getFraction(inSpaceOfAtoms, 1)); 
 		this.eachFigure = eachFigure;
 		
-		Fraction eachNoteDuration = wholeDuration.divideBy(Fraction.getFraction(cardinality, 1));
-		Fraction currentRelativeOnset = Fraction.ZERO;
+		Time eachNoteDuration = wholeDuration.divideBy(Fraction.getFraction(cardinality, 1));
+		Time currentRelativeOnset = Time.TIME_ZERO;
 		
 		for (ScientificPitch scientificPitch : pitches) {
 			SingleFigureAtom element;
@@ -50,7 +50,7 @@ public class SimpleTuplet extends CompoundAtom {
 			//element.setDuration(eachNoteDuration);
 			element.setDuration(computeDuration(element, eachNoteDuration, eachFigure));
 			addSubatom(element);
-			currentRelativeOnset = currentRelativeOnset.add(element.getExactDuration());
+			currentRelativeOnset = currentRelativeOnset.add(element.getDuration());
 		}
 
 	}
@@ -68,8 +68,8 @@ public class SimpleTuplet extends CompoundAtom {
 		wholeDuration = eachFigure.getDuration().multiplyBy(Fraction.getFraction(inSpaceOfAtoms, 1)); 
 		this.eachFigure = eachFigure;
 		
-		Fraction eachNoteDuration = wholeDuration.divideBy(Fraction.getFraction(cardinality, 1));
-		Fraction currentRelativeOnset = Fraction.ZERO;
+		Time eachNoteDuration = wholeDuration.divideBy(Fraction.getFraction(cardinality, 1));
+		Time currentRelativeOnset = Time.TIME_ZERO;
 		
 		for (ScientificPitch [] scientificPitches : chordPitches) {
 			SingleFigureAtom element;
@@ -85,18 +85,18 @@ public class SimpleTuplet extends CompoundAtom {
 			//element.setDuration(eachNoteDuration);
 			element.setDuration(computeDuration(element, eachNoteDuration, eachFigure));
 			addSubatom(element);
-			currentRelativeOnset = currentRelativeOnset.add(element.getExactDuration());
+			currentRelativeOnset = currentRelativeOnset.add(element.getDuration());
 		}		
 
 	}
 
-	private Fraction computeDuration(Atom element, Fraction eachNoteDuration, Figures baseFigure) {
+	private Time computeDuration(Atom element, Time eachNoteDuration, Figures baseFigure) {
 		if (!(element instanceof SingleFigureAtom)) {
 			throw new IM3RuntimeException("Unsupported nested tuplets or similar: " + element.getClass());
 		}
 		SingleFigureAtom sf = (SingleFigureAtom) element;
-		Fraction span = sf.getAtomFigure().getFigure().getDuration().divideBy(baseFigure.getDuration()); // e.g. a quarter note in a 8th triplet (quarter + 8th instead of 8th+8th8th)
-		Fraction result = eachNoteDuration.multiplyBy(span);
+		Time span = sf.getAtomFigure().getFigure().getDuration().divideBy(baseFigure.getDuration()); // e.g. a quarter note in a 8th triplet (quarter + 8th instead of 8th+8th8th)
+		Time result = eachNoteDuration.multiplyBy(span);
 		return result;
 	}
 
@@ -112,21 +112,21 @@ public class SimpleTuplet extends CompoundAtom {
 		this.inSpaceOfAtoms = inSpaceOfAtoms;
 		wholeDuration = eachFigure.getDuration().multiplyBy(Fraction.getFraction(inSpaceOfAtoms, 1)); 
 		this.eachFigure = eachFigure;
-		
-		Fraction eachNoteDuration = wholeDuration.divideBy(Fraction.getFraction(cardinality, 1));
-		Fraction currentRelativeOnset = Fraction.ZERO;
+
+		Time eachNoteDuration = wholeDuration.divideBy(Fraction.getFraction(cardinality, 1));
+		Time currentRelativeOnset = Time.TIME_ZERO;
 		for (Atom element : tupletElements) {
 			element.setParentAtom(this);
-			element.setTime(new Time(currentRelativeOnset));
+			element.setTime(currentRelativeOnset);
 			//element.setDuration(eachNoteDuration);
 			element.setDuration(computeDuration(element, eachNoteDuration, eachFigure));
 			addSubatom(element);
-			currentRelativeOnset = currentRelativeOnset.add(element.getExactDuration());
+			currentRelativeOnset = currentRelativeOnset.add(element.getDuration());
 		}
 
 	}
 
-	public final Fraction getWholeDuration() {
+	public final Time getWholeDuration() {
 		return wholeDuration;
 	}
 

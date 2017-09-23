@@ -280,7 +280,7 @@ public class KernExporter {
                     } else {
                         if (atom instanceof SimpleMeasureRest) {
                             SimpleMeasureRest mrest = (SimpleMeasureRest) atom;
-                            RhythmUtils.FigureAndDots fd = RhythmUtils.findRhythmForDuration(NotationType.eModern, mrest.getExactDuration());
+                            RhythmUtils.FigureAndDots fd = RhythmUtils.findRhythmForDuration(NotationType.eModern, mrest.getDuration());
                             String duration = generateDuration(fd.getFigure(), fd.getDots(), Fraction.ONE);
                             record.add(duration + "rr");
                         } else {

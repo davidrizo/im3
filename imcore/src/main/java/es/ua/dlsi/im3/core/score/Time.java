@@ -12,8 +12,8 @@ public class Time implements Comparable<Time> {
 	public static final Time TIME_ZERO = new Time(Fraction.ZERO);
 	public static final Time TIME_MAX = new Time(Fraction.getFraction(Integer.MAX_VALUE, 1));
 	
-	double computedTime;
-	Fraction exactTime;
+	final double computedTime;
+	final Fraction exactTime;
 	
 	public Time(Fraction exactTime) {
 		this.exactTime = exactTime.reduce();
@@ -69,7 +69,26 @@ public class Time implements Comparable<Time> {
 		return new Time(exactTime.multiplyBy(Fraction.getFraction(multiplier)));
 	}
 
-	
+    public Time multiplyBy(Time m) {
+        return new Time(this.exactTime.multiplyBy(m.exactTime));
+    }
+
+	public Time multiplyBy(Fraction fraction) {
+		return new Time(this.exactTime.multiplyBy(fraction));
+	}
+    public Time divideBy(Time d) {
+        return new Time(this.exactTime.divideBy(d.exactTime));
+    }
+
+    public Time divideBy(Fraction fraction) {
+        return new Time(this.exactTime.divideBy(fraction));
+    }
+    public Time add(Fraction fraction) {
+        return new Time(this.exactTime.add(fraction));
+    }
+    public Time substract(Fraction fraction) {
+        return new Time(this.exactTime.subtract(fraction));
+    }
 	
 	@Override
 	public int compareTo(Time o) {
@@ -93,6 +112,7 @@ public class Time implements Comparable<Time> {
 			return true;
 		if (obj == null)
 			return false;
+
 		if (getClass() != obj.getClass())
 			return false;
 		Time other = (Time) obj;
@@ -158,4 +178,7 @@ public class Time implements Comparable<Time> {
 	}
 
 
+    public int intValue() {
+	    return exactTime.intValue();
+    }
 }

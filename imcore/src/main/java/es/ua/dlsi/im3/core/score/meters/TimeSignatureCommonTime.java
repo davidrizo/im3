@@ -18,7 +18,6 @@
 package es.ua.dlsi.im3.core.score.meters;
 
 import es.ua.dlsi.im3.core.score.Figures;
-import es.ua.dlsi.im3.core.score.ITimeSignatureWithDuration;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.TimeSignature;
@@ -27,7 +26,7 @@ import es.ua.dlsi.im3.core.score.TimeSignature;
  *
  * @author drizo
  */
-public class TimeSignatureCommonTime extends SignTimeSignature implements ITimeSignatureWithDuration {
+public class TimeSignatureCommonTime extends SignTimeSignature {
 
     public TimeSignatureCommonTime(NotationType notationType) {
     		super(notationType);
@@ -39,8 +38,8 @@ public class TimeSignatureCommonTime extends SignTimeSignature implements ITimeS
     }
 
 	@Override
-	public Time getMeasureDuration() {
-		return new Time(Figures.WHOLE.getDuration());
+	public Time getDuration() {
+		return Figures.WHOLE.getDuration();
 	}
 
 	@Override

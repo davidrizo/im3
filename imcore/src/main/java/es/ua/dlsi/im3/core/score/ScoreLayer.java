@@ -442,4 +442,41 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
         }
 	    return null;
     }
+
+    /**
+     *
+     * It creates the beaming between eight or shorter notes that form groups
+     * See AutoBeaming in Renz, K. (2002). Algorithms and Data Structures for a
+     * Music Notation System based on G, 1–163.
+     */
+	/*public void createBeaming() throws IM3Exception {
+        Measure lastMeasure = null;
+        ArrayList<SingleFigureAtom> group = null;
+        SingleFigureAtom lastFigureAtom = null;
+        int lastNoteBeat = -1;
+        for (Atom atom: getAtomsSortedByTime()) {
+            if (atom instanceof SingleFigureAtom) {
+                SingleFigureAtom singleFigureAtom = (SingleFigureAtom) atom;
+                TimeSignature ts = staff.getRunningTimeSignatureAt(singleFigureAtom.getTime());
+                if (!(ts instanceof ITimeSignatureWithDuration)) {
+                    throw new IM3Exception("Cannot compute ")
+                }
+                int beat = ts.getIntegerBeat(singleFigureAtom.getTime());
+                Measure measure = staff.getScoreSong().getMeasureActiveAtTime(singleFigureAtom.getTime());
+                if (lastFigureAtom != null && lastMeasure == measure
+                        && lastFigureAtom.getFigure().equals(singleFigureAtom.getFigure()) && noteBeat == lastNoteBeat) {
+                    group.add(singleFigureAtom);
+                } else {
+                    constructBeamIfRequired(group);
+                    group = new ArrayList<>();
+                    group.add(singleFigureAtom);
+                    lastFigureAtom = singleFigureAtom;
+                    lastNoteBeat = noteBeat;
+                }
+                lastMeasure = measure;
+
+            }
+        }
+    }*/
+
 }

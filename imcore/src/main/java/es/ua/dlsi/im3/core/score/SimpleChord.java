@@ -26,11 +26,8 @@ public class SimpleChord extends SingleFigureAtom {
 
 	/**
 	 * Package visibility, used by tuplets and mensural
-	 * @param atom
-	 * @param figure
-	 * @param dots
 	 */
-	SimpleChord(Figures figure, int dots, Fraction alteredDuration, ScientificPitch ... pitches) {
+	SimpleChord(Figures figure, int dots, Time alteredDuration, ScientificPitch ... pitches) {
 		super(figure, dots, alteredDuration);
 		atomPitches = new ArrayList<>();
 		for (ScientificPitch scientificPitch : pitches) {

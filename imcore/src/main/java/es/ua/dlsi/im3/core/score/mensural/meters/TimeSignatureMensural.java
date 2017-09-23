@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.mensural.meters;
 
+import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 import org.apache.commons.lang3.math.Fraction;
 
@@ -7,7 +8,7 @@ import es.ua.dlsi.im3.core.score.Figures;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.TimeSignature;
 
-public class TimeSignatureMensural extends SignTimeSignature {
+public abstract class TimeSignatureMensural extends SignTimeSignature {
 
 	/**
 	 * Or maximarum
@@ -19,10 +20,10 @@ public class TimeSignatureMensural extends SignTimeSignature {
 	private Perfection modusMinor;
 	private Perfection prolatio;
 	private Perfection tempus;
-	Fraction maximaDuration;
-	Fraction longaDuration;
-	Fraction breveDuration;
-	Fraction semibreveDuration;
+	Time maximaDuration;
+    Time longaDuration;
+    Time breveDuration;
+    Time semibreveDuration;
 
 	public TimeSignatureMensural(Perfection tempus, Perfection prolatio) {
 		this(null, null, tempus, prolatio);
@@ -38,37 +39,40 @@ public class TimeSignatureMensural extends SignTimeSignature {
 	 * @param prolatio
 	 */
 	public TimeSignatureMensural(Perfection modusMaior, Perfection modusMinor, Perfection tempus, Perfection prolatio) {
-		super(NotationType.eMensural);
-		this.prolatio = prolatio;
+        super(NotationType.eMensural);
+        this.prolatio = prolatio;
+        this.tempus = tempus;
+        this.modusMinor = modusMinor;
+        this.modusMaior = modusMaior;
 
-		semibreveDuration = Figures.MINIM.getDuration().multiplyBy(Fraction.getFraction(
-		        prolatio == null? 2: prolatio.getDivisions(),
+        initDurations();
+    }
+
+    private void initDurations() {
+        semibreveDuration = Figures.MINIM.getDuration().multiplyBy(Fraction.getFraction(
+                prolatio == null? 2: prolatio.getDivisions(),
                 1)
         );
 
-        this.tempus = tempus;
         breveDuration = semibreveDuration.multiplyBy(Fraction.getFraction(
                 tempus == null? 2: tempus.getDivisions(),
                 1)
         );
 
 
-		this.modusMinor = modusMinor;
         longaDuration = breveDuration.multiplyBy(Fraction.getFraction(
                 modusMinor == null? 2: modusMinor.getDivisions(),
                 1)
         );
 
-		this.modusMaior = modusMaior;
         maximaDuration = longaDuration.multiplyBy(Fraction.getFraction(
                 modusMaior == null? 2: modusMaior.getDivisions(),
                 1)
         );
-	}
+    }
 
-	
 
-	public final Perfection getProlatio() {
+    public final Perfection getProlatio() {
 		return prolatio;
 	}
 
@@ -90,25 +94,25 @@ public class TimeSignatureMensural extends SignTimeSignature {
 
 
 
-	public final Fraction getMaximaDuration() {
+	public final Time getMaximaDuration() {
 		return maximaDuration;
 	}
 
 
 
-	public final Fraction getLongaDuration() {
+	public final Time getLongaDuration() {
 		return longaDuration;
 	}
 
 
 
-	public final Fraction getBreveDuration() {
+	public final Time getBreveDuration() {
 		return breveDuration;
 	}
 
 
 
-	public final Fraction getSemibreveDuration() {
+	public final Time getSemibreveDuration() {
 		return semibreveDuration;
 	}
 
@@ -157,11 +161,6 @@ public class TimeSignatureMensural extends SignTimeSignature {
 	}
 
 	@Override
-	public TimeSignatureMensural clone() {
-		return new TimeSignatureMensural(modusMaior, modusMinor, tempus, prolatio);
-	}
-
-	@Override
 	public String toString() {
 		return "MensuralMeter [modusMaior=" + modusMaior + ", modusMinor=" + modusMinor + ", prolatio=" + prolatio
 				+ ", tempus=" + tempus + ", maximaDuration=" + maximaDuration + ", longaDuration=" + longaDuration
@@ -169,8 +168,8 @@ public class TimeSignatureMensural extends SignTimeSignature {
 				time + "]";
 	}
 
-	public Fraction getDuration(Figures figure) {
-		Fraction duration;
+	public Time getDuration(Figures figure) {
+        Time duration;
 		switch (figure) {
 			case MAXIMA:
 				duration = maximaDuration;
@@ -196,4 +195,13 @@ public class TimeSignatureMensural extends SignTimeSignature {
 		return false;
 	}
 
+    public void setModusMaior(Perfection modusMaior) {
+	    this.modusMaior = modusMaior;
+	    initDurations();
+    }
+
+    public void setModusMinor(Perfection modusMinor) {
+	    this.modusMinor = modusMinor;
+	    initDurations();
+    }
 }

@@ -291,10 +291,9 @@ public class MelodicAnalyzerFeaturesExtractor {
      * if the onset is located between two beats. It starts from 0
      */
     public double getBeat(ScoreSong song, TimeSignature ts, Time onset) throws IM3Exception {
-        if (!(ts instanceof ITimeSignatureWithDuration)) {
-            throw new IM3Exception("Cannot get the beat of a time signature without duration");
+        if (song.getNumMeasures() == 0) {
+            throw new IM3Exception("The song has not measures, beat cannot be computed");
         }
-
         Measure measure = song.getMeasureActiveAtTime(onset);
         Time offset = (onset.substract(measure.getTime()));
         return offset.getComputedTime();
