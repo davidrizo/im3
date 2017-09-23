@@ -37,7 +37,11 @@ public class Time implements Comparable<Time> {
 		computedTime = this.exactTime.doubleValue(); 
 	}
 
-	public double getComputedTime() {
+    public Time(int numerator) {
+	    this(numerator, 1);
+    }
+
+    public double getComputedTime() {
 		return computedTime;
 	}
 	public Fraction getExactTime() {
@@ -89,7 +93,11 @@ public class Time implements Comparable<Time> {
     public Time substract(Fraction fraction) {
         return new Time(this.exactTime.subtract(fraction));
     }
-	
+    public double mod(Time d) {
+	    return computedTime % d.getComputedTime();
+    }
+
+
 	@Override
 	public int compareTo(Time o) {
 		if (o == null) {
@@ -181,4 +189,5 @@ public class Time implements Comparable<Time> {
     public int intValue() {
 	    return exactTime.intValue();
     }
+
 }

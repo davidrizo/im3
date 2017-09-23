@@ -17,6 +17,8 @@
 
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 /**
  *
  * @author drizo
@@ -82,4 +84,28 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
      * @return
      */
     public abstract Time getDuration();
-}
+
+    /**
+     * It returns the beat of an onset (e.g. 0,1,2,3 for 4/4 bars)
+     *
+     * @param onset
+     * @return Integer value if it starts in a beat, float value with decimals
+     * if the onset is located between two beats. It starts from 0
+     */
+    public int getIntegerBeat(Time onset) throws IM3Exception {
+        //return (int) Math.IEEEremainder(onset, getMeasureDuration(resolution));
+        //return (int) (onset  % getMeasureDuration(resolution));
+        return (int) getBeat(onset); //TODO Pruebas unitarias
+    }
+
+    /**
+     * It returns the beat of an onset
+     *
+     * @param onset
+     * @return Integer value if it starts in a beat, float value with decimals
+     * if the onset is located between two beats. It starts from 0
+     */
+    public double getBeat(Time onset) throws IM3Exception {
+        double offset = onset.substract(this.getTime()).mod(getDuration());
+        return offset;
+    }}

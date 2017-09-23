@@ -84,6 +84,9 @@ public enum Figures {
 	}
 
 	public static Figures findDuration(Time duration, NotationType notationType) throws IM3Exception {
+		if (notationType == null) {
+			throw new IM3Exception("Cannot search a duration if notationType is null");
+		}
 		for (Figures fig: Figures.values()) {
 			if (fig.notationType == notationType && fig.duration.equals(duration)) {
 				return fig;

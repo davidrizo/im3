@@ -69,7 +69,10 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 
 	@Override
 	public void setStaff(Staff staff) {
-		this.staff = staff;		
+	    if (this.staff != null) {
+	        this.staff.remove(this);
+        }
+		this.staff = staff;
 	}
 	
 	

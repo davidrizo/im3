@@ -449,7 +449,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
      * See AutoBeaming in Renz, K. (2002). Algorithms and Data Structures for a
      * Music Notation System based on G, 1–163.
      */
-	/*public void createBeaming() throws IM3Exception {
+	public void createBeaming() throws IM3Exception {
         Measure lastMeasure = null;
         ArrayList<SingleFigureAtom> group = null;
         SingleFigureAtom lastFigureAtom = null;
@@ -458,25 +458,42 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
             if (atom instanceof SingleFigureAtom) {
                 SingleFigureAtom singleFigureAtom = (SingleFigureAtom) atom;
                 TimeSignature ts = staff.getRunningTimeSignatureAt(singleFigureAtom.getTime());
-                if (!(ts instanceof ITimeSignatureWithDuration)) {
-                    throw new IM3Exception("Cannot compute ")
-                }
                 int beat = ts.getIntegerBeat(singleFigureAtom.getTime());
                 Measure measure = staff.getScoreSong().getMeasureActiveAtTime(singleFigureAtom.getTime());
-                if (lastFigureAtom != null && lastMeasure == measure
-                        && lastFigureAtom.getFigure().equals(singleFigureAtom.getFigure()) && noteBeat == lastNoteBeat) {
+                if (lastFigureAtom != null
+                        && lastMeasure == measure // same pointer
+                        && lastFigureAtom.getAtomFigure().getDuration().equals(singleFigureAtom.getAtomFigure().getDuration())
+                        && beat == lastNoteBeat) {
                     group.add(singleFigureAtom);
                 } else {
-                    constructBeamIfRequired(group);
+                    if (group != null) { // not first note
+                        constructBeamIfRequired(group);
+                    }
                     group = new ArrayList<>();
                     group.add(singleFigureAtom);
                     lastFigureAtom = singleFigureAtom;
-                    lastNoteBeat = noteBeat;
+                    lastNoteBeat = beat;
                 }
                 lastMeasure = measure;
 
             }
         }
-    }*/
+        if (group != null) {
+            constructBeamIfRequired(group);
+        }
+    }
+
+    private void constructBeamIfRequired(ArrayList<SingleFigureAtom> group) throws IM3Exception {
+	    if (group != null && group.size() > 1) {
+	        BeamedGroup beamedGroup = new BeamedGroup(group.get(0).getDuration(), staff.getNotationType(), true);
+	        for (SingleFigureAtom atom: group) {
+	            beamedGroup.addSubatom(atom);
+                remove(atom);
+            }
+
+            add(beamedGroup);
+
+        }
+    }
 
 }

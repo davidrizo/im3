@@ -844,7 +844,7 @@ public class ScoreSong {
 
 
 	/**
-	 * It adds the bar and updates automatically adds bar lines to the present
+	 * It adds the bar
 	 * staves
 	 * 
 	 * @param time

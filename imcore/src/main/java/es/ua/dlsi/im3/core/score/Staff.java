@@ -507,4 +507,9 @@ public abstract class Staff extends VerticalScoreDivision {
 	}
 
 
+    public void remove(ITimedElementInStaff element) {
+        if (coreSymbols.remove(element)) { // if not removed yet
+            element.setStaff(null);
+        }
+    }
 }
