@@ -42,11 +42,18 @@ public class MEISongExporter implements ISongExporter {
 	private HashMap<Staff, Clef> lastClef;
 	static DecimalFormat decimalFormat;
 	private HashMap<Measure, HashMap<Staff, ArrayList<StaffMark>>> marksPerBar;
+
 	private TimeSignature commonStartTimeSignature;
 	//private ArrayList<ConnectorWithLayer> barConnectors;
 	//private HashMap<Measure, HashMap<Staff, ArrayList<Attachment>>> attachmentsPerBar;
 	private KeySignature commonStartKeySignature;
     private HarmExporter harmExporter;
+
+    /**
+     * Accidentals in a previous note in the measure (key = diatonic pitch+ octave*7)
+     */
+    private HashMap<Integer, Accidentals> previousAccidentals;
+
     /**
      * If true, we add @type attribute to the harm element
      */
@@ -91,6 +98,11 @@ public class MEISongExporter implements ISongExporter {
 			ps.close();
 		}
 	}
+
+    private int generatePreviousAccidentalMapKey(DiatonicPitch noteName, int octave) {
+        return noteName.getOrder() + octave * 7;
+    }
+
 
 	protected void preprocess() throws IM3Exception {
 		marksPerBar = new HashMap<>();
@@ -555,6 +567,7 @@ public class MEISongExporter implements ISongExporter {
 
                     //SymbolsInStavesAndLayers symbolsInBar = new SymbolsInStavesAndLayers();
                     for (Staff staff : song.getStaves()) {
+                        previousAccidentals = new HashMap<>();
                         if (!(staff instanceof AnalysisStaff) && staff.getNotationType() == NotationType.eModern) { // && bar.contains(staff)) {
                             XMLExporterHelper.start(sb, tabs + 1, "staff", "n", getNumber(staff));
                             for (ScoreLayer layer : staff.getLayers()) {
@@ -702,6 +715,7 @@ public class MEISongExporter implements ISongExporter {
 	private void processSongWithoutBars(int tabs) throws ExportException, IM3Exception {
 		// order notes, key changes and meter changes, then process them		
 		for (int il=0; il<song.getStaves().size(); il++) {
+            previousAccidentals = new HashMap<>();
 			Staff staff = song.getStaves().get(il);
 			//TODO En processWithBars hemos preguntado por si el staff está entre los staves del bar
 			if (staff.getNotationType() == NotationType.eMensural) { 
@@ -956,7 +970,7 @@ public class MEISongExporter implements ISongExporter {
 		
 	}
 
-	private void processPitches(StringBuilder sb, int tabs, AtomFigure atomFigure, List<AtomPitch> atomPitches, ArrayList<String> params) throws ExportException {
+	private void processPitches(StringBuilder sb, int tabs, AtomFigure atomFigure, List<AtomPitch> atomPitches, ArrayList<String> params) throws IM3Exception {
 		if (atomPitches != null) {
 			boolean multiplePitches = atomPitches.size() > 1;
 			for (AtomPitch atomPitch: atomPitches) {
@@ -1017,7 +1031,7 @@ public class MEISongExporter implements ISongExporter {
 		}*/
 		
 	}
-	private void processPitchesParams(AtomPitch atomPitch, ArrayList<String> params, ScoreLayer layer) throws ExportException {
+	private void processPitchesParams(AtomPitch atomPitch, ArrayList<String> params, ScoreLayer layer) throws IM3Exception {
 		//TODO addConnectors(atomPitch.getAtomFigure(), layer);
 		
 		if (atomPitch.getStaffChange() != null) {
@@ -1030,7 +1044,42 @@ public class MEISongExporter implements ISongExporter {
 		params.add(scorePitch.getPitchClass().getNoteName().name().toLowerCase());
 		params.add("oct");
 		params.add(Integer.toString(scorePitch.getOctave()));
-		String accidGes = null;
+
+		int prevAccMapKey = generatePreviousAccidentalMapKey(
+		        scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave());
+
+		Accidentals pitchAccidental = scorePitch.getPitchClass().getAccidental();
+		Accidentals previousAccidental = previousAccidentals.get(prevAccMapKey);
+		if (previousAccidental == null) {
+            KeySignature ks = atomPitch.getStaff().getRunningKeySignatureAt(atomPitch.getTime());
+            previousAccidental = ks.getAccidentalOf(scorePitch.getPitchClass().getNoteName());
+        }
+
+        String accidGes = null;
+        if (atomPitch.getWrittenExplicitAccidental() != null) {
+            String accid = generateAccidental(atomPitch.getWrittenExplicitAccidental());
+            previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
+                    pitchAccidental);
+
+            params.add("accid.ges");
+            accidGes = generateAccidental(atomPitch.getWrittenExplicitAccidental());
+            params.add(accidGes);
+        }
+
+
+        if (previousAccidental != pitchAccidental ) {
+            String accid = generateAccidental(pitchAccidental);
+            previousAccidentals.put(prevAccMapKey, pitchAccidental);
+
+            if (accidGes == null || !accidGes.equals(accid)) { // if not explicitly written
+                params.add("accid");
+                params.add(accid);
+            }
+
+        }
+
+
+		/*String accidGes = null;
 		if (scorePitch.getPitchClass().getAccidental() != null &&
 				scorePitch.getPitchClass().getAccidental() != Accidentals.NATURAL
 				) {
@@ -1038,15 +1087,21 @@ public class MEISongExporter implements ISongExporter {
 			params.add("accid.ges");
 			accidGes = generateAccidental(scorePitch.getPitchClass().getAccidental());
 			params.add(accidGes);
-		}
+            previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
+                    scorePitch.getPitchClass().getAccidental());
+        }
 		
 		if (atomPitch.getWrittenExplicitAccidental() != null) {
 			String accid = generateAccidental(atomPitch.getWrittenExplicitAccidental());
+            previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
+                    scorePitch.getPitchClass().getAccidental());
+
 			if (accidGes == null || !accidGes.equals(accid)) {
                 params.add("accid");
                 params.add(accid);
             }
-		}
+		}*/
+
 		//TODO esto es con los acordes, con las notas estamos repitiendo lo mismo ? ¿Lo dejamos así?
 		if (atomPitch.isTiedToNext() && atomPitch.isTiedFromPrevious()) {
 			params.add("tie");
