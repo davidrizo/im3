@@ -287,4 +287,18 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
             return clef.getStartingOctave(accidental);
         }
     }
+
+    /**
+     *
+     * @param noteName
+     * @return null if the note is not among the altered notes in the key signature, or the accidental of the key signature
+     * if present
+     */
+    public Accidentals getAccidentalOf(DiatonicPitch noteName) {
+        if (this.alteredDiatonicPitchSet.containsKey(noteName)) {
+            return accidental;
+        } else {
+            return null;
+        }
+    }
 }

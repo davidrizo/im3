@@ -6,9 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 import es.ua.dlsi.im3.core.score.*;
@@ -675,7 +673,48 @@ public class XMLExporterImporterTest {
 
         //doTest(XMLExporterImporterTest::assertMultimeasureRest, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest.xml")));
 	}
-	
+
+    // ------------------------------------------------------------------------------------------
+    private static Void assertAccidentals(ScoreSong song) {
+        try {
+            assertEquals("Parts", 1, song.getParts().size());
+            assertEquals("Measures", 2, song.getNumMeasures());
+            ScorePart part = song.getParts().get(0);
+            assertEquals("Layers", 1, part.getLayers().size());
+            ScoreLayer layer = part.getUniqueVoice();
+            assertEquals(-3, song.getUniqueKeyWithOnset(Time.TIME_ZERO).getFifths());
+
+            assertEquals(9, layer.getAtomPitches().size());
+            TreeSet<AtomPitch> pitches = layer.getAtomPitchesSortedByTime();
+            List<PitchClasses> expectedPitchClasses = Arrays.asList(
+                    PitchClasses.A_FLAT, PitchClasses.B_FLAT, PitchClasses.C, PitchClasses.D,
+                    PitchClasses.B, PitchClasses.C_SHARP, PitchClasses.C_SHARP, PitchClasses.B_FLAT,PitchClasses.B_FLAT
+                    );
+
+            int i=0;
+            for (AtomPitch atomPitch: pitches) {
+                assertEquals("Pitch #" + i, expectedPitchClasses.get(i).getPitchClass(), atomPitch.getScientificPitch().getPitchClass());
+                i++;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+    @Test
+    public void accidentals() throws Exception {
+	    testExportImport = false;
+        // in this file the pitches in key signature have the accid explicitly encoded
+        //doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals.mei")));
+
+        // in this file the pitches in key signature do not have the accid explicitly encoded
+        doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals_non_explicit_accid.mei")));
+
+        //doTest(XMLExporterImporterTest::assertAccidentals, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/accidentals.xml")));
+    }
+
 	//TODO Grace notes, slurs, tuplet dentro de tuplet
 	// tuplet con elementos en distintos staves, tuplet con acordes con notas en distintos staves
 	// tuplet: negra_puntillo + corchea?: https://i.stack.imgur.com/OLiOH.png

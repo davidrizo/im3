@@ -212,7 +212,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     private TonalFunction pendingHarmTonalFunction;
     private Time pendingHarmKeyTime;
     private Time pendingHarmTonalFunctionTime;
-
+    /**
+     * Accidentals in a previous note in the measure (key = diatonic pitch+ octave*7)
+     */
+	private HashMap<Integer, Accidentals> previousAccidentals;
 
 
     private boolean inOssia = false;
@@ -251,6 +254,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		staffNumbers = new HashMap<>();
 		currentTies = new HashMap<>();
 		currentTime = new HashMap<>();
+        previousAccidentals = new HashMap<>();
 		xmlIDs = new HashMap<>();
 		pendingConnectors = new HashSet<>();
 		placeHolders = new HashMap<>();
@@ -470,7 +474,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					lastStaff.addTimeSignature(ts);
 					break;				
 				case "measure":
-					staffCount=0;			
+					staffCount=0;
+                    previousAccidentals = new HashMap<>();
 					number = getOptionalAttribute(attributesMap, "n");
 					xmlid = getOptionalAttribute(attributesMap, "xml:id");
 					//updateMeasure = true;
@@ -550,26 +555,45 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					String accidGes = getOptionalAttribute(attributesMap, "accid.ges");
 					accid = getOptionalAttribute(attributesMap, "accid");
 					String oct = getOptionalAttribute(attributesMap, "oct");
+					int octave = Integer.parseInt(oct);
 					String pname = getOptionalAttribute(attributesMap, "pname");
 					
 					PitchClass pc = new PitchClass(DiatonicPitch.valueOf(pname.toUpperCase()));
 					Accidentals writtenAccidental = null;
-					
-					if (accidGes != null) {
-						writtenAccidental = accidToAccidental(accidGes);
-						pc.setAccidental(writtenAccidental);
-					} 
-					
-					if (accid != null) {
-						Accidentals acc = accidToAccidental(accid);
-						if (writtenAccidental != null && acc != writtenAccidental) {
-							throw new ImportException("Written accidental (" + writtenAccidental + ") inconsistent with performed accidental (" + acc + ")");
-						}
-						pc.setAccidental(acc);						
-					}
-					
-					ScientificPitch sp = new ScientificPitch(pc, Integer.parseInt(oct));
-					
+
+					Time time = getCurrentTime(); //TODO ¿También cuando hay cambio de pentagrama?
+
+					int previousAccidentalMapKey = generatePreviousAccidentalMapKey(pc.getNoteName(), octave);
+                    Accidentals previousAccidental = previousAccidentals.get(previousAccidentalMapKey);
+                    if (previousAccidental == null) {
+                        try {
+                            KeySignature ks = elementStaff.getRunningKeySignatureAt(time);
+                            previousAccidental = ks.getAccidentalOf(pc.getNoteName());
+                        } catch (IM3Exception e) {
+                            //noop - for non key scores
+                        }
+                    }
+
+                    if (accid == null && accidGes == null && previousAccidental != null) {
+                        pc.setAccidental(previousAccidental); // TODO: 24/9/17 Diferenciar explicit e implicit. Igual en MEIExporter que aún lo exporta todo
+                    } else {
+                        if (accidGes != null) {
+                            writtenAccidental = accidToAccidental(accidGes);
+                            pc.setAccidental(writtenAccidental);
+                            previousAccidentals.put(previousAccidentalMapKey, writtenAccidental);
+                        }
+                        if (accid != null) {
+                            Accidentals acc = accidToAccidental(accid);
+                            if (writtenAccidental != null && acc != writtenAccidental) {
+                                throw new ImportException("Written accidental (" + writtenAccidental + ") inconsistent with performed accidental (" + acc + ")");
+                            }
+                            pc.setAccidental(acc);
+                            previousAccidentals.put(previousAccidentalMapKey, acc);
+                        }
+                    }
+                    ScientificPitch sp = new ScientificPitch(pc, octave);
+
+
 					//TODO
 					//currentNote.setStemDirection(parseStemDir(getOptionalAttribute(attributesMap, "stem.dir")));
 					//figure = getFigure(dur, attributesMap);
@@ -579,8 +603,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					} else {
 						figure = null;
 					}
-					
-					AtomFigure currentAtomFigure;
+
+                    //System.out.println("SP=" + sp);
+                    AtomFigure currentAtomFigure;
 					if (lastChord != null) {
 						currentAtomFigure = lastChord.getAtomFigure();
 						if (figure != null && (!currentAtomFigure.getFigure().equals(figure) || currentAtomFigure.getDots() != dots)) {
@@ -592,7 +617,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							lastAtomPitch.setStaffChange(elementStaff);
 							elementStaff.addCoreSymbol(lastAtomPitch);
 						}
-						lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
+						//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
 					} else {
 						if (figure == null) {
 							throw new ImportException("Cannot import note not in chord without dur");
@@ -607,7 +632,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						} else {
 							lastStaff.addCoreSymbol(currentNote);
 						}*/
-						lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
+						//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
 						addElementToVoiceStaffOrTuplet(currentNote, xmlid, attributesMap, elementStaff);
 						//currentNote.setTime(getCurrentTime());
 						//if (currentBeam != null) {
@@ -796,8 +821,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			throw new ImportException(e);
 		}
 	}
-	
-	/**
+
+    private int generatePreviousAccidentalMapKey(DiatonicPitch noteName, int octave) {
+        return noteName.getOrder() + octave * 7;
+    }
+
+
+    /**
 	 * 
 	 * @param staff If null it will be inserted to all staves
 	 * @param meterSym
@@ -1389,7 +1419,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				//updateTimesGivenMeasure(measure);
 				break;
 			}
-		} 
+		}
 	}
 	
 	/**
