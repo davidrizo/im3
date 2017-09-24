@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
@@ -53,16 +54,16 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
     /**
      * It cannot be based on the x position because the layout algorithm depends on it. It must be based on the physical width
      */
-    public abstract double getWidth();
+    public abstract double getWidth() throws IM3Exception;
 
-    public abstract Coordinate getPosition();
+    public abstract Coordinate getPosition() throws IM3Exception;
 
 
     /**
      * The space between the x of the symbol and its left end
      * @return
      */
-    public BoundingBox computeBoundingBox() {
+    public BoundingBox computeBoundingBox() throws IM3Exception {
         double displacement = getPosition().getX().getDisplacement();
         BoundingBox boundingBox;
         if (displacement < 0) {

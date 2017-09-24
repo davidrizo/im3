@@ -1,11 +1,13 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import javafx.scene.Node;
+import org.apache.commons.math3.analysis.function.Exp;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -47,14 +49,18 @@ public class Line extends Shape {
 
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) {
-        XMLExporterHelper.startEnd(sb, tabs, "line",
-                "x1", Double.toString(from.getAbsoluteX()),
-                "y1", Double.toString(from.getAbsoluteY()),
-                "x2", Double.toString(to.getAbsoluteX()),
-                "y2", Double.toString(to.getAbsoluteY()),
-                "stroke", "black" //TODO Constants
-        );
+    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
+        try {
+            XMLExporterHelper.startEnd(sb, tabs, "line",
+                    "x1", Double.toString(from.getAbsoluteX()),
+                    "y1", Double.toString(from.getAbsoluteY()),
+                    "x2", Double.toString(to.getAbsoluteX()),
+                    "y2", Double.toString(to.getAbsoluteY()),
+                    "stroke", "black" //TODO Constants
+            );
+        } catch (IM3Exception e) {
+            throw new ExportException(e);
+        }
         //TODO Stroke and width
 
     }
@@ -63,8 +69,12 @@ public class Line extends Shape {
     public void generatePDF(PDPageContentStream contents, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
         try {
             contents.setStrokingColor(0, 0, 0);
-            contents.moveTo(getPFDCoordinateX(page, from.getAbsoluteX()), getPFDCoordinateY(page, from.getAbsoluteY()));
-            contents.lineTo(getPFDCoordinateX(page, to.getAbsoluteX()), getPFDCoordinateY(page, to.getAbsoluteY()));
+            try {
+                contents.moveTo(getPFDCoordinateX(page, from.getAbsoluteX()), getPFDCoordinateY(page, from.getAbsoluteY()));
+                contents.lineTo(getPFDCoordinateX(page, to.getAbsoluteX()), getPFDCoordinateY(page, to.getAbsoluteY()));
+            } catch (IM3Exception e) {
+                throw new ExportException(e);
+            }
             contents.stroke();
         } catch (IOException e) {
             throw new ExportException(e);
@@ -88,8 +98,12 @@ public class Line extends Shape {
     }
 
     @Override
-    public Node getJavaFXRoot() {
-        return new javafx.scene.shape.Line(from.getAbsoluteX(), from.getAbsoluteY(), to.getAbsoluteX(), to.getAbsoluteY()); // TODO: 17/9/17 Grosor, color
+    public Node getJavaFXRoot() throws ExportException {
+        try {
+            return new javafx.scene.shape.Line(from.getAbsoluteX(), from.getAbsoluteY(), to.getAbsoluteX(), to.getAbsoluteY()); // TODO: 17/9/17 Grosor, color
+        } catch (IM3Exception e) {
+            throw new ExportException(e);
+        }
     }
 
     @Override

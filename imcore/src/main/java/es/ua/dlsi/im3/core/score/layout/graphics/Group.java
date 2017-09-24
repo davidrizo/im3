@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
@@ -70,7 +71,12 @@ public class Group extends GraphicsElement {
     public Node getJavaFXRoot() throws GUIException {
         javafx.scene.Group group = new javafx.scene.Group();
         for (GraphicsElement child: children) {
-            Node node = child.getJavaFXRoot();
+            Node node = null;
+            try {
+                node = child.getJavaFXRoot();
+            } catch (ExportException e) {
+                throw new GUIException(e);
+            }
             if (node != null) {
                 group.getChildren().add(node);
             }
@@ -80,7 +86,7 @@ public class Group extends GraphicsElement {
 
 
     @Override
-    public double getWidth() {
+    public double getWidth() throws IM3Exception {
         // TODO: 19/9/17 Maybe we could save this value and update it for each add and width change of an element
         /*double fromX = Double.MAX_VALUE;
         double toX = Double.MIN_VALUE;
@@ -99,7 +105,7 @@ public class Group extends GraphicsElement {
      * The space between the x of the symbol and its left end
      * @return
      */
-    public BoundingBox computeBoundingBox() {
+    public BoundingBox computeBoundingBox() throws IM3Exception {
         if (children.isEmpty()) {
             return new BoundingBox(0, 0);
         } else {
@@ -118,7 +124,7 @@ public class Group extends GraphicsElement {
     }
 
     @Override
-    public Coordinate getPosition() {
+    public Coordinate getPosition() throws IM3Exception {
         Coordinate leftTop = null;
 
         for (GraphicsElement child: children) {

@@ -4,22 +4,26 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.clefs.ClefPercussion;
-import es.ua.dlsi.im3.core.score.io.paec.PaecStringExport;
+import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
-import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
-public class LayoutClef extends LayoutSymbolInStaff<Clef> {
+public class LayoutCoreClef extends LayoutCoreSymbolInStaff<Clef> {
     private final Pictogram pictogram;
 
-    public LayoutClef(LayoutStaff layoutStaff, Clef clef) throws IM3Exception {
-        super(layoutStaff, clef);
-        this.layoutStaff = layoutStaff;
+    public LayoutCoreClef(LayoutFont layoutFont, Clef clef) throws IM3Exception {
+        super(layoutFont, clef);
 
-        position.setY(layoutStaff.getYAtLine(coreSymbol.getLine()));
-        pictogram = new Pictogram("CLEF-", layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), position);//TODO IDS
+        //position.setY(layoutStaff.getYAtLine(coreSymbol.getLine()));
+        pictogram = new Pictogram("CLEF-", layoutFont, getUnicode(), position);//TODO IDS
 
+    }
+
+    @Override
+    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
+        super.setLayoutStaff(layoutStaff);
+        position.setReferenceY(layoutStaff.getYAtLine(coreSymbol.getLine()));
     }
 
 

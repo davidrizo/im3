@@ -4,14 +4,13 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Figures;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSingleFigureAtom;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutTimeSignature;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
 import java.util.HashMap;
 
-public class Flag extends Component<LayoutSingleFigureAtom> {
+public class Flag extends Component<LayoutCoreSingleFigureAtom> {
     private static final HashMap<Figures, String> UNICODES_STEM_UP = new HashMap<>();
     {
         UNICODES_STEM_UP.put(Figures.EIGHTH, "flag8thUp");
@@ -35,7 +34,7 @@ public class Flag extends Component<LayoutSingleFigureAtom> {
 
     Pictogram pictogram;
 
-    public Flag(LayoutFont layoutFont, LayoutSingleFigureAtom parent, Figures figure, Coordinate position, boolean stemUp) throws IM3Exception {
+    public Flag(LayoutFont layoutFont, LayoutCoreSingleFigureAtom parent, Figures figure, Coordinate position, boolean stemUp) throws IM3Exception {
         super(parent, position);
 
         pictogram = new Pictogram("FLAG", layoutFont, getUnicode(stemUp, figure), position);//TODO IDS

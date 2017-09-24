@@ -1,9 +1,9 @@
 package es.ua.dlsi.im3.core.score.layout.layoutengines;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
-import org.apache.commons.math3.util.MathUtils;
 
 /**
  * Based on the paper:
@@ -29,7 +29,7 @@ public class BelliniLayoutEngine implements ILayoutEngine {
     }
 
     @Override
-    public void doHorizontalLayout(Simultaneities simultaneities) {
+    public void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
         Time m = computeMinFigureDuration(simultaneities); // TODO: 22/9/17 Paper suggests computing it different for each measure
         preprocess(simultaneities);
         doJustification(simultaneities, m);
@@ -58,7 +58,7 @@ public class BelliniLayoutEngine implements ILayoutEngine {
      * @param simultaneities
      * @param m Minimum duration
      */
-    private void doJustification(Simultaneities simultaneities, Time m) {
+    private void doJustification(Simultaneities simultaneities, Time m) throws IM3Exception {
         Time minDur = Time.min(m, new Time(1, 8)); // used in T(m,K), eq (3a)
         double log2MinM_8th = Math.log(minDur.getComputedTime()) / LOG2;
         for (Simultaneity s: simultaneities.getSimiltaneities()) {
@@ -105,7 +105,7 @@ public class BelliniLayoutEngine implements ILayoutEngine {
     private Time computeMinFigureDuration(Simultaneities simultaneities) {
         Time minimum = Time.TIME_MAX;
         for (Simultaneity s: simultaneities.getSimiltaneities()) {
-            for (LayoutSymbolInStaff ss: s.getSymbols()) {
+            for (LayoutCoreSymbol ss: s.getSymbols()) {
                 if (!ss.getDuration().isZero()) {
                     minimum = Time.min(minimum, ss.getDuration());
                 }

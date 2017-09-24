@@ -1,8 +1,10 @@
 package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutBarline;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
@@ -18,14 +20,13 @@ import java.util.List;
  */
 public class HorizontalLayout extends ScoreLayout {
     List<LayoutStaff> staves; //TODO systems
-    LayoutSymbolFactory layoutSymbolFactory;
+
     /**
      * Everything is arranged in a single canvas
      */
     Canvas canvas;
-    public HorizontalLayout(ScoreSong song, LayoutFonts font, Coordinate leftTop, Coordinate bottomRight) {
+    public HorizontalLayout(ScoreSong song, LayoutFonts font, Coordinate leftTop, Coordinate bottomRight) throws IM3Exception {
         super(song, font);
-        layoutSymbolFactory = new LayoutSymbolFactory();
         canvas = new Canvas(leftTop, bottomRight);
     }
 
@@ -36,9 +37,6 @@ public class HorizontalLayout extends ScoreLayout {
 
         //TODO scoreSong.getStaffSystems()
         staves = new ArrayList<>(); //TODO supongo que no habrá que rehacerlo siempre
-
-        // first create symbols and simultaneities
-        Simultaneities simultaneities = new Simultaneities();
 
         double nextY = LayoutConstants.TOP_MARGIN;
         for (Staff staff: scoreSong.getStaves()) {
@@ -51,23 +49,15 @@ public class HorizontalLayout extends ScoreLayout {
             staves.add(layoutStaff);
             canvas.add(layoutStaff.getGraphics());
 
-            // add contents of staff
-            List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
-            for (ITimedElementInStaff symbol: symbols) {
-                LayoutSymbolInStaff layoutSymbolInStaff = layoutSymbolFactory.createCoreSymbol(layoutStaff, symbol);
-                        //createLayout(symbol, layoutStaff);
-                if (layoutSymbolInStaff != null) {
-                    layoutStaff.add(layoutSymbolInStaff);
-                    simultaneities.add(layoutSymbolInStaff);
-                }
+            // add contents of layout staff, we have just one
+            List<LayoutCoreSymbolInStaff> layoutSymbolsInStaff = coreSymbols.get(staff);
+            if (layoutSymbolsInStaff == null) {
+                throw new IM3RuntimeException("There should not be null the layoutSymbolsInStaff, it is initialized in ScoreLayout");
             }
 
-            // create barlines
-            // TODO: 21/9/17 Deberíamos poder crear barlines de system
-            for (Measure measure: scoreSong.getMeasures()) {
-                LayoutBarline barline = new LayoutBarline(layoutStaff, measure.getEndTime());
-                layoutStaff.add(barline);
-                simultaneities.add(barline);
+            for (LayoutCoreSymbolInStaff coreSymbol: layoutSymbolsInStaff) {
+                coreSymbol.setLayoutStaff(layoutStaff);
+                layoutStaff.add(coreSymbol);
             }
 
             layoutStaff.createNoteAccidentals();
@@ -75,6 +65,12 @@ public class HorizontalLayout extends ScoreLayout {
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
         }
+        for (LayoutCoreBarline barline: barlines) {
+            //TODO IMPORTANT it is the same system now - it should be drawn for the different groups (piano....)
+            barline.setLayoutStaff(staves.get(0), staves.get(staves.size()-1));
+            canvas.getElements().add(barline.getGraphics());
+        }
+
 
 
         doHorizontalLayout(simultaneities);

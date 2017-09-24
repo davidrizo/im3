@@ -15,7 +15,7 @@ import java.util.*;
 public class LayoutStaff extends NotationSymbol {
     private final Coordinate rightTop;
     Staff staff;
-	TreeSet<LayoutSymbolInStaff> layoutSymbolsInStaff;
+	TreeSet<LayoutCoreSymbol> layoutSymbolsInStaff;
 	ScoreLayout scoreLayout;
 
     /**
@@ -39,7 +39,7 @@ public class LayoutStaff extends NotationSymbol {
         this.scoreLayout = scoreLayout;
         this.position = leftTop;
         this.rightTop = rightTop;
-        layoutSymbolsInStaff = new TreeSet<>(LayoutSymbolInStaffComparator.getInstance());
+        layoutSymbolsInStaff = new TreeSet<>(LayoutCoreSymbolComparator.getInstance());
         group = new Group("GROUP-STAFF-"+staff.__getID()); //TODO IDS
         for (int i=0; i<staff.getLineCount(); i++) {
             //double y = LayoutConstants.STAFF_TOP_MARGIN + i*LayoutConstants.SPACE_HEIGHT;
@@ -77,7 +77,7 @@ public class LayoutStaff extends NotationSymbol {
         return lines.get(0);
     }
 
-    public void add(LayoutSymbolInStaff symbol) {
+    public void add(LayoutCoreSymbol symbol) {
         if (symbol != null) {
             if (symbol.getGraphics() == null) {
                 System.err.println("TO-DO EXCEPCION symbol null para " + symbol.getClass());
@@ -196,9 +196,9 @@ public class LayoutStaff extends NotationSymbol {
     public void createNoteAccidentals() throws IM3Exception {
         HashMap<AtomPitch, Accidentals> requiredAccidentalsMap = staff.createNoteAccidentalsToShow();
 
-        for (LayoutSymbolInStaff symbol : this.layoutSymbolsInStaff) {
-            if (symbol instanceof LayoutSingleFigureAtom) {
-                LayoutSingleFigureAtom layoutSingleFigureAtom = (LayoutSingleFigureAtom) symbol;
+        for (LayoutCoreSymbol symbol : this.layoutSymbolsInStaff) {
+            if (symbol instanceof LayoutCoreSingleFigureAtom) {
+                LayoutCoreSingleFigureAtom layoutSingleFigureAtom = (LayoutCoreSingleFigureAtom) symbol;
                 for (NotePitch notePitch : layoutSingleFigureAtom.getNotePitches()) {
                     Accidentals requiredAccidental = requiredAccidentalsMap.get(notePitch.getAtomPitch());
                     Accidental psAccidental = notePitch.getAccidental();
@@ -222,15 +222,15 @@ public class LayoutStaff extends NotationSymbol {
         // alteredDiatonicPitchInKeySignature =
         // currentKeySignature.getScoreElement().getAlteredDiatonicPitchSet();
 
-        for (LayoutSymbolInStaff symbol : this.layoutSymbolsInStaff) {
-            if (symbol instanceof LayoutBarline) {
+        for (LayoutCoreSymbol symbol : this.layoutSymbolsInStaff) {
+            if (symbol instanceof LayoutCoreBarline) {
                 alteredDiatonicPitchInBar.clear();
-            } else if (symbol instanceof LayoutKeySignature) {
-                LayoutKeySignature lks = (LayoutKeySignature) symbol;
+            } else if (symbol instanceof LayoutCoreKeySignature) {
+                LayoutCoreKeySignature lks = (LayoutCoreKeySignature) symbol;
                 currentKeySignature = lks.getCoreSymbol();
                 alteredDiatonicPitchInKeySignature = currentKeySignature.getAlteredDiatonicPitchSet();
-            } else if (symbol instanceof LayoutSingleFigureAtom) {
-                LayoutSingleFigureAtom layoutSingleFigureAtom = (LayoutSingleFigureAtom) symbol;
+            } else if (symbol instanceof LayoutCoreSingleFigureAtom) {
+                LayoutCoreSingleFigureAtom layoutSingleFigureAtom = (LayoutCoreSingleFigureAtom) symbol;
                 for (NotePitch notePitch: layoutSingleFigureAtom.getNotePitches()) {
                     computeRequiredAccidentalsForPitch(alteredDiatonicPitchInBar, alteredDiatonicPitchInKeySignature, notePitch);
                 }

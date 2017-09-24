@@ -1,8 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout;
 
-import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
-import es.ua.dlsi.im3.core.score.layout.Simultaneity;
+import es.ua.dlsi.im3.core.IM3Exception;
 
 import java.util.*;
 
@@ -14,7 +12,7 @@ public class Simultaneities {
         simultaneities = new TreeSet<>();
     }
 
-    public void add(LayoutSymbolInStaff symbol) {
+    public void add(LayoutCoreSymbol symbol) throws IM3Exception {
         Simultaneity simultaneity = new Simultaneity(symbol);
         Simultaneity greatestEqualOrGreaterSimulaneity = simultaneities.ceiling(simultaneity);
 

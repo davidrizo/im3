@@ -268,7 +268,7 @@ public class ScoreSong {
 	// order them, the order of classes will be:
 	// first clefs, next instrumentKey signature, then time signature, finally sounding
 	// symbols
-	/*FRACTIONS private int compareClasses(LayoutSymbolInStaff o1, LayoutSymbolInStaff o2) {
+	/*FRACTIONS private int compareClasses(LayoutCoreSymbol o1, LayoutCoreSymbol o2) {
 		int order1 = getClassOrder(o1);
 		int order2 = getClassOrder(o2);
 
@@ -828,7 +828,7 @@ public class ScoreSong {
 
 		for (ScorePart part : parts) {
 			for (ScoreLayer voice : part.getVoices()) {
-				for (LayoutSymbolInStaff symbol : voice.getDurationalSymbolsAsSortedVector()) {
+				for (LayoutCoreSymbol symbol : voice.getDurationalSymbolsAsSortedVector()) {
 					symbol.createVisualElementsIfNeeded();
 				}
 			}

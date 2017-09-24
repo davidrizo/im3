@@ -3,11 +3,9 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols.components;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Accidentals;
-import es.ua.dlsi.im3.core.score.DiatonicPitch;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutKeySignature;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 

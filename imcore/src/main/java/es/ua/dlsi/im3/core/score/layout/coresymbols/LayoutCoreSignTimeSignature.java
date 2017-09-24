@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.TimeSignature;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
@@ -11,7 +12,7 @@ import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 
 import java.util.HashMap;
 
-public class LayoutSignTimeSignature extends LayoutTimeSignature<SignTimeSignature> {
+public class LayoutCoreSignTimeSignature extends LayoutCoreTimeSignature<SignTimeSignature> {
 
     private final Pictogram pictogram;
 
@@ -22,11 +23,16 @@ public class LayoutSignTimeSignature extends LayoutTimeSignature<SignTimeSignatu
         UNICODES.put(TimeSignatureProporcionMenor.class, "timeSigProporcionMenor"); // Note this is not SMuFL compliant
     }
 
-    public LayoutSignTimeSignature(LayoutStaff layoutStaff, SignTimeSignature coreSymbol) throws IM3Exception {
-        super(layoutStaff, coreSymbol);
-        position.setY(layoutStaff.getYAtLine(3));
-        pictogram = new Pictogram("TS-", layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), position);//TODO IDS
+    public LayoutCoreSignTimeSignature(LayoutFont layoutFont, SignTimeSignature coreSymbol) throws IM3Exception {
+        super(layoutFont, coreSymbol);
+        pictogram = new Pictogram("TS-", layoutFont, getUnicode(), position);//TODO IDS
 
+    }
+
+    @Override
+    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
+        super.setLayoutStaff(layoutStaff);
+        position.setReferenceY(layoutStaff.getYAtLine(3));
     }
 
     private String getUnicode() throws IM3Exception {

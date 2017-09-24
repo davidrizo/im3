@@ -3,18 +3,18 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols.components;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSingleFigureAtom;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 
-public class Stem extends Component<LayoutSingleFigureAtom> {
+public class Stem extends Component<LayoutCoreSingleFigureAtom> {
     Line line;
 
     /**
      * @param parent
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
      */
-    public Stem(LayoutSingleFigureAtom parent, Coordinate position, boolean stemUp) {
+    public Stem(LayoutCoreSingleFigureAtom parent, Coordinate position, boolean stemUp) {
         super(parent, position);
         Coordinate from = position;
         Coordinate to;
@@ -40,5 +40,9 @@ public class Stem extends Component<LayoutSingleFigureAtom> {
 
     public Coordinate getLineEnd() {
         return line.getTo();
+    }
+
+    public void setReferenceY(CoordinateComponent stemYPosition) {
+        position.setReferenceY(stemYPosition);
     }
 }

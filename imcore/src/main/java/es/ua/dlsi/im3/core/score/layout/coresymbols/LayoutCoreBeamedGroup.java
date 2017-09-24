@@ -1,15 +1,16 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.score.BeamedGroup;
-import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
+import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 
-public class LayoutBeamedGroup extends LayoutSymbolInStaff<BeamedGroup> {
+public class LayoutCoreBeamedGroup extends LayoutCoreSymbol<BeamedGroup> {
 
 
-    public LayoutBeamedGroup(LayoutStaff layoutStaff, BeamedGroup coreSymbol) {
-        super(layoutStaff, coreSymbol);
+    public LayoutCoreBeamedGroup(LayoutFont layoutFont, BeamedGroup coreSymbol) {
+        super(layoutFont, coreSymbol);
     }
 
     @Override

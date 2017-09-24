@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.core.score.AtomPitch;
 import es.ua.dlsi.im3.core.score.SingleFigureAtom;
 import es.ua.dlsi.im3.core.score.Time;
@@ -9,7 +8,7 @@ import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Flag;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutSymbolWithDuration;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutCoreSymbolWithDuration;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Stem;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -18,16 +17,15 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigureAtom> {
+public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom> {
     Group group;
     ArrayList<NotePitch> notePitches;
     Stem stem;
     Flag flag;
 
-    public LayoutSingleFigureAtom(LayoutStaff layoutStaff, SingleFigureAtom coreSymbol) throws IM3Exception {
-        super(layoutStaff, coreSymbol);
+    public LayoutCoreSingleFigureAtom(LayoutFont layoutFont, SingleFigureAtom coreSymbol) throws IM3Exception {
+        super(layoutFont, coreSymbol);
 
-        LayoutFont layoutFont = layoutStaff.getScoreLayout().getLayoutFont();
         group = new Group("SINGLE_FIG_"); //TODO IDS
 
         notePitches = new ArrayList<>();
@@ -46,17 +44,13 @@ public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigur
             if (stemUp) {
                 stemXDisplacement = notePitch.getNoteHeadWidth();
             }
-            stemYPosition = notePitch.getNoteHeadPosition().getY();
-
-            layoutStaff.addNecessaryLedgerLinesFor(atomPitch.getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getWidth() );
         }
-
 
 
         if (coreSymbol.getAtomFigure().getFigure().usesStem()) {
             Coordinate stemPosition = new Coordinate(
                     new CoordinateComponent(position.getX(), stemXDisplacement),
-                    stemYPosition
+                    null
             );
             stem = new Stem(this, stemPosition, stemUp);
             group.add(stem.getGraphics());
@@ -78,6 +72,23 @@ public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigur
 
     }
 
+    @Override
+    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
+        //TODO Para acordes
+        CoordinateComponent stemYPosition = null;
+        super.setLayoutStaff(layoutStaff);
+        for (NotePitch notePitch: notePitches) {
+            // TODO: 24/9/17 ¿Y si ya las tenía?
+            notePitch.setLayoutStaff(layoutStaff);
+            layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getWidth());
+            stemYPosition = notePitch.getNoteHeadPosition().getY();
+        }
+
+        if (stem != null) {
+            stem.setReferenceY(stemYPosition);
+        }
+
+    }
 
     @Override
     public GraphicsElement getGraphics() {

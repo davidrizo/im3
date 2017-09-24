@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
+
 /**
  * This represents the x or the y axis value of a coordinate.
  * Used to mantain relations between coordinates.
@@ -12,6 +14,12 @@ package es.ua.dlsi.im3.core.score.layout;
 public class CoordinateComponent {
     CoordinateComponent reference;
     double displacement;
+
+    public CoordinateComponent() {
+        this.reference = null;
+        displacement = 0;
+    }
+
 
     public CoordinateComponent(CoordinateComponent reference) {
         this.reference = reference;

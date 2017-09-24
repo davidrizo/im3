@@ -1,26 +1,25 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
-import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
-import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 
 import java.util.ArrayList;
 
-public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
+public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature> {
     Group group;
     ArrayList<Accidental> accidentals;
+    private PositionInStaff[] positionInStaffs;
 
-    public LayoutKeySignature(LayoutStaff layoutStaff, KeySignature coreSymbol) throws IM3Exception {
-        super(layoutStaff, coreSymbol);
-        createAccidentals(layoutStaff.getScoreLayout().getLayoutFont());
+    public LayoutCoreKeySignature(LayoutFont layoutFont, KeySignature coreSymbol) throws IM3Exception {
+        super(layoutFont, coreSymbol);
+        createAccidentals(layoutFont);
     }
 
     @Override
@@ -65,18 +64,30 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
             i++;
         }*/
 
-        PositionInStaff [] positionInStaffs = coreSymbol.computePositionsOfAccidentals();
+        positionInStaffs = coreSymbol.computePositionsOfAccidentals();
         if (positionInStaffs != null) {
             double nextRelativeXPosition = 0;
             for (int i=0; i<positionInStaffs.length; i++) {
                 CoordinateComponent x = new CoordinateComponent(position.getX(), nextRelativeXPosition);
-                CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
+                CoordinateComponent y = null;
                 Coordinate position = new Coordinate(x, y);
 
                 Accidental p = new Accidental(layoutFont, this, coreSymbol.getAccidental(), position);
                 nextRelativeXPosition += p.getWidth();
                 addComponent(p);
 
+            }
+        }
+    }
+
+    @Override
+    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
+        super.setLayoutStaff(layoutStaff);
+        if (positionInStaffs != null) {
+            double nextRelativeXPosition = 0;
+            for (int i=0; i<positionInStaffs.length; i++) {
+                CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
+                accidentals.get(i).getPosition().setReferenceY(y);
             }
         }
     }

@@ -11,8 +11,11 @@ public class PageLayout extends ScoreLayout {
      */
     Canvas [] canvases;
 
-    public PageLayout(ScoreSong song, LayoutFonts font) {
+    public PageLayout(ScoreSong song, LayoutFonts font) throws IM3Exception {
         super(song, font);
+
+        // TODO: 24/9/17 Ahora sólo lo pongo todo en una página y sólo hago caso de los system break. No hago ningún algoritmo de line breaking
+
     }
 
 

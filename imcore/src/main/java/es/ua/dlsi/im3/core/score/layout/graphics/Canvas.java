@@ -31,7 +31,7 @@ public class Canvas {
         elementList.add(shape);
     }
 
-    public double getHeight() {
+    public double getHeight() throws IM3Exception {
         return bottomRight.getAbsoluteY() - leftTop.getAbsoluteY();
     }
 

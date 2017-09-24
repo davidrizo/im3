@@ -1,8 +1,9 @@
 package es.ua.dlsi.im3.core.score.layout;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSymbolInStaffComparator;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolComparator;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class Simultaneity implements Comparable<Simultaneity> {
     Time time;
-    List<LayoutSymbolInStaff> symbols;
+    List<LayoutCoreSymbol> symbols;
     /**
      * Used to group different objects of the same time
      */
@@ -41,9 +42,9 @@ public class Simultaneity implements Comparable<Simultaneity> {
     /**
      * @param firstSymbol First inserted symbol. The simultaneity needs at least one symbol
      */
-    public Simultaneity(LayoutSymbolInStaff firstSymbol) {
+    public Simultaneity(LayoutCoreSymbol firstSymbol) throws IM3Exception {
         this.time = firstSymbol.getTime();
-        this.order = LayoutSymbolInStaffComparator.getInstance().getOrder(firstSymbol);
+        this.order = LayoutCoreSymbolComparator.getInstance().getOrder(firstSymbol);
         symbols = new ArrayList<>();
         symbols.add(firstSymbol);
         minWidth = maxWidth = firstSymbol.getWidth();
@@ -70,10 +71,10 @@ public class Simultaneity implements Comparable<Simultaneity> {
      * Package visibility. It is used by Simultaneities
      * @param symbol
      */
-    void add(LayoutSymbolInStaff symbol) {
-        if (LayoutSymbolInStaffComparator.getInstance().getOrder(symbol) != order) {
+    void add(LayoutCoreSymbol symbol) throws IM3Exception {
+        if (LayoutCoreSymbolComparator.getInstance().getOrder(symbol) != order) {
             throw new IM3RuntimeException("Cannot add different order symbols ( "+ order + " and " +
-                    LayoutSymbolInStaffComparator.getInstance().getOrder(symbol) + ") to the same simultaneity");
+                    LayoutCoreSymbolComparator.getInstance().getOrder(symbol) + ") to the same simultaneity");
         }
 
         maxWidth = Math.max(maxWidth, symbol.getWidth());
@@ -119,28 +120,28 @@ public class Simultaneity implements Comparable<Simultaneity> {
      */
     public void setTimeSpanFromElementsDuration() {
         Time maxDur = Time.TIME_ZERO;
-        for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
-            maxDur = Time.max(maxDur, layoutSymbolInStaff.getDuration());
+        for (LayoutCoreSymbol layoutCoreSymbol : symbols) {
+            maxDur = Time.max(maxDur, layoutCoreSymbol.getDuration());
         }
         setTimeSpan(maxDur);
     }
 
     public void setX(double x) {
-        for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
-            layoutSymbolInStaff.setX(x);
+        for (LayoutCoreSymbol layoutCoreSymbol : symbols) {
+            layoutCoreSymbol.setX(x);
         }
     }
 
-    public List<LayoutSymbolInStaff> getSymbols() {
+    public List<LayoutCoreSymbol> getSymbols() {
         return symbols;
     }
 
-    public BoundingBox computeBoundingBox() {
+    public BoundingBox computeBoundingBox() throws IM3Exception {
         double maxLeftDisplacement = Double.MAX_VALUE;
         double maxRightDisplacement = Double.MIN_VALUE;
 
-        for (LayoutSymbolInStaff layoutSymbolInStaff: symbols) {
-            BoundingBox childBB = layoutSymbolInStaff.computeBoundingBox();
+        for (LayoutCoreSymbol layoutCoreSymbol : symbols) {
+            BoundingBox childBB = layoutCoreSymbol.computeBoundingBox();
             maxLeftDisplacement = Math.min(maxLeftDisplacement, childBB.getLeftEnd());
             maxRightDisplacement = Math.max(maxLeftDisplacement, childBB.getRightEnd());
         }

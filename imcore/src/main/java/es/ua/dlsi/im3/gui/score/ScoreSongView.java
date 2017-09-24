@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.gui.score;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
@@ -48,7 +49,12 @@ public class ScoreSongView {
 
     private void createNodes() throws GUIException {
         for (GraphicsElement element: canvas.getElements()) {
-            Node node = element.getJavaFXRoot();
+            Node node = null;
+            try {
+                node = element.getJavaFXRoot();
+            } catch (ExportException e) {
+                throw new GUIException(e);
+            }
             if (node != null) {
                 // FIXME: 24/9/17 He puesto esto para probar, debe ir en PRIMUS
                 int width = 220;

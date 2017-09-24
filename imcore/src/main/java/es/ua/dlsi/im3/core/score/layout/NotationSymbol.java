@@ -22,7 +22,7 @@ public abstract class NotationSymbol {
     /**
      * @return
      */
-    public double getWidth() {
+    public double getWidth() throws IM3Exception {
         GraphicsElement gr = getGraphics();
         if (gr == null) {
             return 0;
@@ -39,7 +39,7 @@ public abstract class NotationSymbol {
      * The space between the x of the symbol and its left end
      * @return
      */
-    public BoundingBox computeBoundingBox() {
+    public BoundingBox computeBoundingBox() throws IM3Exception {
         return getGraphics().computeBoundingBox();
     }
 

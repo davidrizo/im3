@@ -20,6 +20,8 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A pictogram from a font in a SMuFL layout or similar
@@ -62,13 +64,18 @@ public class Pictogram extends GraphicsElement {
 
     @Override
     public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
-        XMLExporterHelper.startEnd(sb, tabs, "use",
-                "xlink:href", "#" + glyph.getEscapedUnicode(),
-                "height", SIZE,
-                "width", SIZE,
-                "x", position.getAbsoluteX() + "px",
-                "y", position.getAbsoluteY() + "px"
-        );
+        try {
+            XMLExporterHelper.startEnd(sb, tabs, "use",
+                    "xlink:href", "#" + glyph.getEscapedUnicode(),
+                    "height", SIZE,
+                    "width", SIZE,
+                    "x", position.getAbsoluteX() + "px",
+                    "y", position.getAbsoluteY() + "px"
+            );
+        } catch (IM3Exception e) {
+            Logger.getLogger(Pictogram.class.getName()).log(Level.WARNING, "Cannot generate SVG for pictogram with codepoint " + codepoint, e);
+            throw new ExportException(e);
+        }
 
         usedGlyphs.add(glyph);
     }
@@ -83,7 +90,7 @@ public class Pictogram extends GraphicsElement {
             contentStream.endText();
 
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ExportException(e);
         }
     }
@@ -91,7 +98,11 @@ public class Pictogram extends GraphicsElement {
     @Override
     public Node getJavaFXRoot() throws GUIException {
         path.setLayoutX(position.getAbsoluteX());
-        path.setLayoutY(position.getAbsoluteY());
+        try {
+            path.setLayoutY(position.getAbsoluteY());
+        } catch (IM3Exception e) {
+            throw new GUIException(e);
+        }
         return path;
     }
 

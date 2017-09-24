@@ -3,17 +3,14 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
-import es.ua.dlsi.im3.core.score.layout.LayoutSymbolInStaff;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutSymbolWithDuration;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutCoreSymbolWithDuration;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
-import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
-import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
-import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 
 import java.util.HashMap;
 
-public class LayoutSimpleRest extends LayoutSymbolWithDuration<SimpleRest> {
+public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRest> {
     private final Pictogram pictogram;
     SimpleRest rest;
 
@@ -37,13 +34,20 @@ public class LayoutSimpleRest extends LayoutSymbolWithDuration<SimpleRest> {
 
     
 
-    public LayoutSimpleRest(LayoutStaff layoutStaff, SimpleRest coreSymbol) throws IM3Exception {
-        super(layoutStaff, coreSymbol);
+    public LayoutCoreSimpleRest(LayoutFont layoutFont, SimpleRest coreSymbol) throws IM3Exception {
+        super(layoutFont, coreSymbol);
         Coordinate restPosition = new Coordinate(
             position.getX(),
-            layoutStaff.getYAtCenterLine()
+            null
         );
-        pictogram = new Pictogram("REST-", layoutStaff.getScoreLayout().getLayoutFont(), getUnicode(), restPosition);//TODO IDS
+        pictogram = new Pictogram("REST-", layoutFont, getUnicode(), restPosition);//TODO IDS
+    }
+
+    @Override
+    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
+        super.setLayoutStaff(layoutStaff);
+        position.setReferenceY(layoutStaff.getYAtCenterLine());
+        pictogram.getPosition().setReferenceY(position.getY());
     }
 
     @Override
