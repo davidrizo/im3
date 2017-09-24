@@ -1,0 +1,8 @@
+@start:000051650-1_1_1
+@clef:G-2
+@keysig:bBEA
+@key:
+@timesig:3/4
+@data:''4B8{EB'''C''B}/{AA}6-{AGA}{BAGA}/
+@end:000051650-1_1_1
+
