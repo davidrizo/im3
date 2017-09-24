@@ -1,23 +1,27 @@
 package es.ua.dlsi.im3.core.score;
 
 /**
- * Line or space in the staff.
+ * Line or space in the staff. Invariant
  * @author drizo
  */
 public class PositionInStaff {
     /**
      * 0 for bottom line, -1 for space under bottom line, 1 for space above bottom line
      */
-    int lineSpace;
+    final int lineSpace;
 
     public PositionInStaff(int lineSpace) {
         this.lineSpace = lineSpace;
     }
 
-    // TODO: Test unitario
     public int getLine() {
-        return this.lineSpace / 2;
+        return this.lineSpace / 2+1;
     }
+
+    public int getSpace() {
+        return (this.lineSpace-1) / 2+1;
+    }
+
 
     public int getLineSpace() {
         return lineSpace;
@@ -40,12 +44,38 @@ public class PositionInStaff {
 
     @Override
     public String toString() {
-        return "PositionInStaff{" +
-                "lineSpace=" + lineSpace +
-                '}';
+        if (lineSpace % 2 == 0) {
+            return "L" + getLine();
+        } else {
+            return "S" + getSpace();
+        }
     }
 
     public boolean laysOnLine() {
         return lineSpace % 2 == 0;
+    }
+
+    /**
+     * @param line 1 is bottom line, 2 is the 1st line from bottom, 0 is the bottom ledger line
+     * @return 0 for the bottom line, 2 for the 1st line from bottom, -1 for the bottom ledger line, etc.
+     */
+    public static PositionInStaff fromLine(int line) {
+        return new PositionInStaff((line-1)*2);
+    }
+
+    /**
+     * @param space 1 is bottom space, 2
+     */
+    public static PositionInStaff fromSpace(int space) {
+        return new PositionInStaff((space)*2-1);
+    }
+
+    /**
+     * Create a new PositionInStaff with the difference
+     * @param lineSpaceDifference
+     * @return
+     */
+    public PositionInStaff move(int lineSpaceDifference) {
+        return new PositionInStaff(lineSpace + lineSpaceDifference);
     }
 }
