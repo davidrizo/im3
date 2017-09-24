@@ -488,6 +488,9 @@ public class MEISongExporter implements ISongExporter {
 			Harm lastHarm = null;
             skipMeasures = 0; // used for multimeasure rests
 			for (Measure bar : bars) {
+				if (song.hasSystemBreak(bar.getTime())) { // TODO: 24/9/17 ¿Y si está en medio de un compás?
+                    XMLExporterHelper.startEnd(sb, tabs, "sb"); //TODO ID
+                }
 			    if (skipMeasures > 0) {
                     skipMeasures --;
                 }

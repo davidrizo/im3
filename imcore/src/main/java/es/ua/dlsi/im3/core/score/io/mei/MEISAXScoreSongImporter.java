@@ -489,6 +489,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						maximumVoicesTime = Time.TIME_ZERO; // for mixed mensural and modern
 					}
 					break;
+                case "sb":
+                    Time sbtime = getCurrentTime();
+                    if (!song.hasSystemBreak(sbtime )) { // it appears in different parts
+                        song.addSystemBreak(new SystemBreak(sbtime));
+                    }
+                    break;
 				case "barline":
 					//updateTimesGivenMeasure();
 					//TODO insertar el barline

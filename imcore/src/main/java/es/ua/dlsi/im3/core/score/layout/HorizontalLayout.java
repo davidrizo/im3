@@ -95,19 +95,4 @@ public class HorizontalLayout extends ScoreLayout {
     public Canvas[] getCanvases() {
         return new Canvas[] {canvas};
     }
-
-    /*LayoutSymbolInStaff createLayout(ITimedElementInStaff symbol, LayoutStaff layoutStaff) throws IM3Exception {
-        LayoutSymbolInStaff layoutSymbolInStaff = null;
-
-        //TODO Revisar patrón de diseño - quitar switch
-        if (symbol instanceof Clef) {
-            layoutSymbolInStaff = createClef((Clef) symbol, layoutStaff);
-        } else if (symbol instanceof KeySignature) {
-            layoutSymbolInStaff = createKeySignature((Clef) symbol, layoutStaff);
-        } else {
-            System.err.println("TO-DO: Unsupported symbol type: " + symbol.getClass());
-        }
-
-        return layoutSymbolInStaff;
-    }*/
 }

@@ -283,6 +283,12 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				//currentMeasureTime = getCurrentTime(getDefaultStaff(), getDefaultVoice());
 				measureElementsToInsert = new TreeMap<>();				
 				break;
+			case "print":
+			    String newSystem = getOptionalAttribute(attributes, "new-system");
+			    if (newSystem != null) {
+			        song.addSystemBreak(new SystemBreak(measureStartTime));
+                }
+				break;
 			case "direction":
 				currentNote = null;
 				//currentStaffPlaceHolder = new AMStaffPlaceHolder(currentScorePart.getElements().size(), currentTime);

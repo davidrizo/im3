@@ -705,14 +705,33 @@ public class XMLExporterImporterTest {
     }
     @Test
     public void accidentals() throws Exception {
-	    testExportImport = false;
         // in this file the pitches in key signature have the accid explicitly encoded
-        //doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals.mei")));
+        doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals.mei")));
 
         // in this file the pitches in key signature do not have the accid explicitly encoded
         doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals_non_explicit_accid.mei")));
 
-        //doTest(XMLExporterImporterTest::assertAccidentals, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/accidentals.xml")));
+        doTest(XMLExporterImporterTest::assertAccidentals, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/accidentals.xml")));
+    }
+
+    // ------------------------------------------------------------------------------------------
+    private static Void assertSystemBreaks(ScoreSong song) {
+        try {
+            ArrayList<Measure> measures = song.getMeasuresSortedAsArray();
+            assertEquals(11, measures.size());
+            assertEquals(2, song.getSystemBreaks().size());
+            assertTrue(song.hasSystemBreak(measures.get(2).getTime()));
+            assertTrue(song.hasSystemBreak(measures.get(7).getTime()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+    @Test
+    public void systemBreaks() throws Exception {
+        doTest(XMLExporterImporterTest::assertSystemBreaks, importMEI(TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.mei")));
+        doTest(XMLExporterImporterTest::assertSystemBreaks, importMusicXML(TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.xml")));
     }
 
 	//TODO Grace notes, slurs, tuplet dentro de tuplet
