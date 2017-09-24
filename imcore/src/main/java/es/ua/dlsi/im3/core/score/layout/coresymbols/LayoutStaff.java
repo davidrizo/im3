@@ -118,8 +118,9 @@ public class LayoutStaff extends NotationSymbol {
      * @throws IM3Exception
      */
     public CoordinateComponent computeYPositionForPitchWithoutClefOctaveChange(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
-        Clef clef = staff.getRunningClefAt(time);
-        return computeYPositionForPitch(clef, noteName, octave + clef.getOctaveChange());
+        PositionInStaff positionInStaff = staff.computePositionForPitchWithoutClefOctaveChange(time, noteName, octave);
+
+        return computeYPosition(positionInStaff);
     }
 
     /**
@@ -149,8 +150,7 @@ public class LayoutStaff extends NotationSymbol {
     }
 
     public PositionInStaff computePositionInStaff(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
-        Clef clef = staff.getRunningClefAt(time);
-        return staff.computePositionInStaff(clef, noteName, octave);
+        return staff.computePositionInStaff(time, noteName, octave);
     }
 
     public CoordinateComponent computeYPosition(PositionInStaff positionInStaff) throws IM3Exception {
@@ -193,7 +193,28 @@ public class LayoutStaff extends NotationSymbol {
         }
     }
 
-    public void createNoteAccidentals(Time timeZero, Time timeMax) throws IM3Exception {
+    public void createNoteAccidentals() throws IM3Exception {
+        HashMap<AtomPitch, Accidentals> requiredAccidentalsMap = staff.createNoteAccidentalsToShow();
+
+        for (LayoutSymbolInStaff symbol : this.layoutSymbolsInStaff) {
+            if (symbol instanceof LayoutSingleFigureAtom) {
+                LayoutSingleFigureAtom layoutSingleFigureAtom = (LayoutSingleFigureAtom) symbol;
+                for (NotePitch notePitch : layoutSingleFigureAtom.getNotePitches()) {
+                    Accidentals requiredAccidental = requiredAccidentalsMap.get(notePitch.getAtomPitch());
+                    Accidental psAccidental = notePitch.getAccidental();
+                    if (psAccidental != null && !psAccidental.getAccidental().equals(requiredAccidental)) {
+                        notePitch.removeAccidental();
+                        psAccidental = null;
+                    }
+                    if (psAccidental == null && requiredAccidental != null) {
+                        notePitch.addAccidental(requiredAccidental);
+                    } // else it is already the one we need
+                }
+            }
+        }
+    }
+
+    /*public void createNoteAccidentals(Time timeZero, Time timeMax) throws IM3Exception {
         TreeMap<DiatonicPitch, ScientificPitch> alteredDiatonicPitchInBar = new TreeMap<>();
         TreeMap<DiatonicPitch, PitchClass> alteredDiatonicPitchInKeySignature = new TreeMap<>();
         KeySignature currentKeySignature = null; // getRunningKeySignatureAt(fromTime);
@@ -254,5 +275,5 @@ public class LayoutStaff extends NotationSymbol {
             requiredAccidental = pc.getAccidental(); // either flat or sharp
         }
         return requiredAccidental;
-    }
+    }*/
 }

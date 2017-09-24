@@ -70,7 +70,7 @@ public class HorizontalLayout extends ScoreLayout {
                 simultaneities.add(barline);
             }
 
-            layoutStaff.createNoteAccidentals(Time.TIME_ZERO, Time.TIME_MAX);
+            layoutStaff.createNoteAccidentals();
             //layoutStaff.createBeaming();
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();

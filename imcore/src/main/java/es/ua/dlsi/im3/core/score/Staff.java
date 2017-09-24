@@ -16,14 +16,11 @@
  */
 package es.ua.dlsi.im3.core.score;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
 
 /**
  * It is just a visual holder for elements. The note, chord and rest sequences are stored in ScoreLayer,
@@ -398,8 +395,8 @@ public abstract class Staff extends VerticalScoreDivision {
 	
 	public void addCoreSymbol(ITimedElementInStaff e) throws IM3Exception {
 		e.setStaff(this);
-		this.coreSymbols.add(e);
-	}
+        this.coreSymbols.add(e);
+    }
 
 	/**
 	 *
@@ -419,6 +416,12 @@ public abstract class Staff extends VerticalScoreDivision {
 		int result = noteOrder - bottomLinePitchOrder;
 		return new PositionInStaff(result);
 	}
+
+    public PositionInStaff computePositionInStaff(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
+        Clef clef = getRunningClefAt(time);
+        return computePositionInStaff(clef, noteName, octave);
+
+    }
 
 	public abstract boolean isPitched();
 
@@ -512,4 +515,89 @@ public abstract class Staff extends VerticalScoreDivision {
             element.setStaff(null);
         }
     }
+
+    /**
+     * It tells the accidental that must be drawn for each note in the given range
+     * @return A map with each note and the accidental to be drawn
+     * @throws IM3Exception
+     */
+	public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow() throws IM3Exception {
+		TreeMap<DiatonicPitch, ScientificPitch> alteredDiatonicPitchInBar = new TreeMap<>();
+		TreeMap<DiatonicPitch, PitchClass> alteredDiatonicPitchInKeySignature = new TreeMap<>();
+        HashMap<AtomPitch, Accidentals> result = new HashMap<>();
+		KeySignature currentKeySignature = null; // getRunningKeySignatureAt(fromTime);
+        List<ITimedElementInStaff> symbols = this.getCoreSymbolsOrdered();
+        Measure lastMeasure = null;
+        for (ITimedElementInStaff symbol: symbols) {
+            Measure measure = null;
+            if (getScoreSong().hasMeasures()) {
+                measure = getScoreSong().getMeasureActiveAtTime(symbol.getTime());
+            }
+            if (lastMeasure != measure) {
+                alteredDiatonicPitchInBar.clear();
+                lastMeasure = measure;
+            }
+
+            if (symbol instanceof KeySignature) {
+                alteredDiatonicPitchInKeySignature = ((KeySignature)symbol).getAlteredDiatonicPitchSet();
+            } else if (symbol instanceof SingleFigureAtom) {
+                SingleFigureAtom singleFigureAtom = (SingleFigureAtom) symbol;
+                List<AtomPitch> atomPitches = singleFigureAtom.getAtomPitches();
+                if (atomPitches != null) {
+                    for (AtomPitch atomPitch : atomPitches) {
+                        computeRequiredAccidentalsForPitch(alteredDiatonicPitchInBar, alteredDiatonicPitchInKeySignature,
+                                result, atomPitch);
+                    }
+                }
+            }
+        }
+        return result;
+	}
+
+	void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar,
+											TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature,
+                                            HashMap<AtomPitch, Accidentals> result, AtomPitch ps) throws IM3Exception {
+		ScientificPitch pc = ps.getScientificPitch();
+		if (!alteredNoteNamesInBar.containsValue(pc)) { // if not previously altered
+			Accidentals requiredAccidental = computeRequiredAccidental(alteredNoteNamesInKeySignature,
+					pc.getPitchClass());
+
+            result.put(ps, requiredAccidental);
+		}
+	}
+
+	private Accidentals computeRequiredAccidental(TreeMap<DiatonicPitch, PitchClass> alteredSet, PitchClass pc) {
+		// needs accidental?
+		Accidentals requiredAccidental = null;
+		PitchClass pcInKey = alteredSet.get(pc.getNoteName());
+		if (pcInKey != null) { // altered note name in key signature
+			if (!pc.equals(pcInKey)) { // alteration not valid for this pitch
+				// class
+				if (pc.getAccidental() == null || pc.getAccidental() == Accidentals.NATURAL) {
+					requiredAccidental = Accidentals.NATURAL;
+				} else {
+					requiredAccidental = pc.getAccidental(); // either flat or
+					// sharp
+				}
+			}
+		} else if (pc.getAccidental() != null && pc.getAccidental() != Accidentals.NATURAL) {
+			requiredAccidental = pc.getAccidental(); // either flat or sharp
+		}
+		return requiredAccidental;
+	}
+
+    /**
+     * It returns the y position for a given diatonic pitch at a given time (for taking into account the clef changes)
+     * without taking into account the octave change. Used usually for key signatures
+     * @param time
+     * @param noteName
+     * @param octave
+     * @return
+     * @throws IM3Exception
+     */
+    public PositionInStaff computePositionForPitchWithoutClefOctaveChange(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
+        Clef clef = getRunningClefAt(time);
+        return computePositionInStaff(clef, noteName, octave + clef.getOctaveChange());
+    }
+
 }

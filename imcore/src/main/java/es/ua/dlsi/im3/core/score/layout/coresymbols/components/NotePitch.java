@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class NotePitch extends Component<LayoutSingleFigureAtom> {
     private static final HashMap<Figures, String> UNICODES = new HashMap<>();
     private final Pictogram noteHeadPictogram;
-    private final ScientificPitch scientificPitch;
+    private final AtomPitch atomPitch;
 
     {
         UNICODES.put(Figures.DOUBLE_WHOLE, "noteheadDoubleWhole");
@@ -59,9 +59,11 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
     public NotePitch(LayoutFont layoutFont, LayoutSingleFigureAtom parent, AtomPitch pitch, Coordinate position) throws IM3Exception {
         super(parent, position);
 
+        atomPitch = pitch;
+
         root = new Group("NOTE-HEAD-G-"); //TODO IDS
 
-        scientificPitch =  pitch.getScientificPitch();
+        ScientificPitch scientificPitch =  pitch.getScientificPitch();
         int ndots = pitch.getAtomFigure().getDots();
 
         // accidentals are computed after all elements are drawn
@@ -101,6 +103,10 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
         return unicode;
     }
 
+    public AtomPitch getAtomPitch() {
+        return atomPitch;
+    }
+
     @Override
     public GraphicsElement getGraphics() {
         return root;
@@ -119,7 +125,7 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
     }
 
     public ScientificPitch getScientificPitch() {
-        return scientificPitch;
+        return atomPitch.getScientificPitch();
     }
 
     public Accidental getAccidental() {
@@ -136,7 +142,7 @@ public class NotePitch extends Component<LayoutSingleFigureAtom> {
 
     public void addAccidental(Accidentals alteration) throws IM3Exception {
         Coordinate alterationPosition = new Coordinate(new CoordinateComponent(noteHeadPictogram.getPosition().getX()), noteHeadPictogram.getPosition().getY());
-        accidental = new Accidental(parent.getLayoutStaff().getScoreLayout().getLayoutFont(), this, alteration, scientificPitch.getPitchClass().getNoteName(), scientificPitch.getOctave(), alterationPosition);
+        accidental = new Accidental(parent.getLayoutStaff().getScoreLayout().getLayoutFont(), this, alteration, alterationPosition);
         alterationPosition.getX().setDisplacement(-accidental.getWidth() - LayoutConstants.ACCIDENTAL_HEAD_SEPARATION);
         root.add(0, accidental.getGraphics());
     }

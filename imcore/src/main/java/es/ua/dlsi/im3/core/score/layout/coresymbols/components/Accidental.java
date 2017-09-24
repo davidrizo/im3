@@ -14,8 +14,6 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import java.util.HashMap;
 
 public class Accidental<ParentType extends NotationSymbol> extends Component<ParentType> {
-    DiatonicPitch noteName;
-    int octave;
     Pictogram pictogram;
     Accidentals accidental;
     Coordinate position;
@@ -31,11 +29,9 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
 
     }
 
-    public Accidental(LayoutFont layoutFont, ParentType parent, Accidentals accidental, DiatonicPitch noteName, int octave, Coordinate position) throws IM3Exception {
+    public Accidental(LayoutFont layoutFont, ParentType parent, Accidentals accidental, Coordinate position) throws IM3Exception {
         super(parent, position);
         this.accidental = accidental;
-        this.noteName = noteName;
-        this.octave = octave;
 
         pictogram = new Pictogram("ACC", layoutFont, getUnicode(), position); //TODO IDS
     }

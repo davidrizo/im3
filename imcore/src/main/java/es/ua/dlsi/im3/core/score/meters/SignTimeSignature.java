@@ -10,4 +10,10 @@ public abstract class SignTimeSignature extends TimeSignature {
     public SignTimeSignature(NotationType notationType) {
         super(notationType);
     }
+
+    /**
+     * A kind of toString just for the sign
+     * @return
+     */
+    public abstract String getSignString();
 }

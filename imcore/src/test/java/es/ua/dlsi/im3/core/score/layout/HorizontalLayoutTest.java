@@ -1,15 +1,18 @@
 package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
+import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.junit.Test;
 
 import java.io.File;
+
+import static org.junit.Assert.assertEquals;
 
 public class HorizontalLayoutTest {
     // Just test it does not crash
@@ -93,7 +96,6 @@ public class HorizontalLayoutTest {
         pdfExporter.exportLayout(pdfFile, layout);
     }
 
-
     // Just test it does not crash
     // FIXME: 21/9/17 Commented until M
     /*@Test
@@ -117,5 +119,6 @@ public class HorizontalLayoutTest {
 
 
     }*/
+
 
 }

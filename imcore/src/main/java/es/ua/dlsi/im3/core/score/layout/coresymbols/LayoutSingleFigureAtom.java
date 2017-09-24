@@ -42,7 +42,7 @@ public class LayoutSingleFigureAtom extends LayoutSymbolWithDuration<SingleFigur
             group.add(notePitch.getGraphics());
 
             // FIXME: 22/9/17 Esto funciona cuando es una nota, en acordes?
-            stemUp = notePitch.getPositionInStaff().getLine() < 2;
+            stemUp = notePitch.getPositionInStaff().getLine() <= 2;
             if (stemUp) {
                 stemXDisplacement = notePitch.getNoteHeadWidth();
             }

@@ -23,6 +23,9 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
 
 
 /**
@@ -238,5 +241,50 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 
     public TreeMap<DiatonicPitch, PitchClass> getAlteredDiatonicPitchSet() {
         return alteredDiatonicPitchSet;
+    }
+
+    public PositionInStaff [] computePositionsOfAccidentals() throws IM3Exception {
+        PositionInStaff [] result;
+        int previousNoteOrder = 0;
+        DiatonicPitch[] alteredNoteNames = getInstrumentKey().getAlteredNoteNames();
+        if (alteredNoteNames == null) {
+            return null;
+        } else {
+            result = new PositionInStaff[alteredNoteNames.length];
+        }
+        boolean nextUp = (accidental == Accidentals.SHARP);
+        int i = 1;
+        double nextRelativeXPosition = 0;
+        int octave = getStartingOctave();
+        for (DiatonicPitch nn : alteredNoteNames) {
+            int noteOrder = nn.getOrder() + octave * 7;
+            if (i > 1) {
+                if (nextUp) {
+                    if (noteOrder < previousNoteOrder) {
+                        octave++;
+                    }
+                } else { // next down
+                    if (noteOrder > previousNoteOrder) {
+                        octave--;
+                    }
+                }
+            }
+            previousNoteOrder = nn.getOrder() + octave * 7;
+            nextUp = !nextUp;
+
+            PositionInStaff positionInStaff = staff.computePositionForPitchWithoutClefOctaveChange(time, nn, octave);
+            result[i-1] = positionInStaff;
+            i++;
+        }
+        return result;
+    }
+
+    private int getStartingOctave() {
+        if (accidental.equals(Accidentals.NATURAL)) {
+            return 0;
+        } else {
+            Clef clef = staff.getClefAtTime(getTime());
+            return clef.getStartingOctave(accidental);
+        }
     }
 }

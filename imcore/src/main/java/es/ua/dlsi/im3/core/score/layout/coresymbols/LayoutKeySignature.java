@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
@@ -30,8 +31,8 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
     private void createAccidentals(LayoutFont layoutFont) throws IM3Exception {
         group = new Group("KEYSIG-"); //TODO IDS
         accidentals = new ArrayList<>();
+        /*
         int previousNoteOrder = 0;
-
         Accidentals accidental = coreSymbol.getAccidental();
         DiatonicPitch[] alteredNoteNames = coreSymbol.getInstrumentKey().getAlteredNoteNames();
         boolean nextUp = (accidental == Accidentals.SHARP);
@@ -62,6 +63,21 @@ public class LayoutKeySignature extends LayoutSymbolInStaff<KeySignature> {
             nextRelativeXPosition += p.getWidth();
             addComponent(p);
             i++;
+        }*/
+
+        PositionInStaff [] positionInStaffs = coreSymbol.computePositionsOfAccidentals();
+        if (positionInStaffs != null) {
+            double nextRelativeXPosition = 0;
+            for (int i=0; i<positionInStaffs.length; i++) {
+                CoordinateComponent x = new CoordinateComponent(position.getX(), nextRelativeXPosition);
+                CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
+                Coordinate position = new Coordinate(x, y);
+
+                Accidental p = new Accidental(layoutFont, this, coreSymbol.getAccidental(), position);
+                nextRelativeXPosition += p.getWidth();
+                addComponent(p);
+
+            }
         }
     }
 

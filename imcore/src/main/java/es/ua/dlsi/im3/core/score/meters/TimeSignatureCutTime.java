@@ -32,7 +32,12 @@ public class TimeSignatureCutTime extends SignTimeSignature {
     		super(notationType);
     }
 
-    @Override
+	@Override
+	public String getSignString() {
+		return "C/";
+	}
+
+	@Override
     public String toString() {
     		return "C/";
     }

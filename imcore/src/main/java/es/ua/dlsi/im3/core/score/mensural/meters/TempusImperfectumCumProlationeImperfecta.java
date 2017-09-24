@@ -15,4 +15,9 @@ public class TempusImperfectumCumProlationeImperfecta extends TimeSignatureMensu
     public Time getDuration() {
         return getBreveDuration();
     }
+
+    @Override
+    public String getSignString() {
+        return "C";
+    }
 }

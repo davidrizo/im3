@@ -5,6 +5,8 @@ package es.ua.dlsi.im3.core.score;
  * @author drizo
  */
 public class PositionInStaff {
+    public static final String LINE_STR = "L";
+    public static final String SPACE_STR = "S";
     /**
      * 0 for bottom line, -1 for space under bottom line, 1 for space above bottom line
      */
@@ -45,9 +47,9 @@ public class PositionInStaff {
     @Override
     public String toString() {
         if (lineSpace % 2 == 0) {
-            return "L" + getLine();
+            return LINE_STR + getLine();
         } else {
-            return "S" + getSpace();
+            return SPACE_STR + getSpace();
         }
     }
 

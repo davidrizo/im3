@@ -48,4 +48,8 @@ public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
 	}
 
 
+	@Override
+	public String getSignString() {
+		return "C32";
+	}
 }

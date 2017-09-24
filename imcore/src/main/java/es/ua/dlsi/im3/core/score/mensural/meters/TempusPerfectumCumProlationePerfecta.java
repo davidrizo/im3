@@ -15,4 +15,9 @@ public class TempusPerfectumCumProlationePerfecta extends TimeSignatureMensural 
     public Time getDuration() {
         return getBreveDuration();
     }
+
+    @Override
+    public String getSignString() {
+        return "O·";
+    }
 }
