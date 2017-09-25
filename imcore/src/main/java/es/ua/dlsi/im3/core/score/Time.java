@@ -190,4 +190,7 @@ public class Time implements Comparable<Time> {
 	    return exactTime.intValue();
     }
 
+    public boolean isMaxValue() {
+		return exactTime.getNumerator() == Integer.MAX_VALUE;
+    }
 }

@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolComparator;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSystemBreak;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class Simultaneity implements Comparable<Simultaneity> {
      * The width of the simultaneity in the layout
      */
     private double layoutWidth;
+    private double x;
 
     /**
      * @param firstSymbol First inserted symbol. The simultaneity needs at least one symbol
@@ -127,6 +129,7 @@ public class Simultaneity implements Comparable<Simultaneity> {
     }
 
     public void setX(double x) {
+        this.x = x;
         for (LayoutCoreSymbol layoutCoreSymbol : symbols) {
             layoutCoreSymbol.setX(x);
         }
@@ -165,5 +168,19 @@ public class Simultaneity implements Comparable<Simultaneity> {
         int result = time.hashCode();
         result = 31 * result + order;
         return result;
+    }
+
+    public boolean isSystemBreak() {
+        boolean result = false;
+        for (LayoutCoreSymbol layoutCoreSymbol : symbols) {
+            if (layoutCoreSymbol instanceof LayoutSystemBreak) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public double getX() {
+        return x;
     }
 }

@@ -38,7 +38,9 @@ public class PDFExporter implements IGraphicsExporter {
             //contents.concatenate2CTM(new AffineTransform(1, 0, 0, -1, xtl, ytl));
 
             for (GraphicsElement element : canvas.getElements()) {
-                element.generatePDF(contents, musicFont, textFont, page);
+                if (!element.isHidden()) {
+                    element.generatePDF(contents, musicFont, textFont, page);
+                }
             }
             contents.close();
         } catch (IOException e) {

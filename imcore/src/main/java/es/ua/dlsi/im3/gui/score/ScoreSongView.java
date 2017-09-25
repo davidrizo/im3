@@ -28,13 +28,11 @@ public class ScoreSongView {
 
     public ScoreSongView(ScoreSong scoreSong, LayoutFonts font, ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) throws IM3Exception {
         // TODO: 21/9/17 Uso coordinates ahora porque más adelante deberíamos poder poner varios canvases en la misma pantalla
-        Coordinate topLeft = new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0));
-        Coordinate bottomRight = new Coordinate(new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
         // TODO: 21/9/17 Cuando cambie width o height hay que recalcular todo
 
-        layout = new HorizontalLayout(scoreSong, font, topLeft, bottomRight);
+        layout = new HorizontalLayout(scoreSong, font, new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
         layout.layout();
-        canvas = layout.getCanvases()[0]; // it returns just one canvas
+        canvas = layout.getCanvases().get(0); // it returns just one canvas
         mainPanel = new Pane();
         mainPanel.setPrefWidth(canvas.getWidth());
         mainPanel.setPrefHeight(canvas.getHeight());

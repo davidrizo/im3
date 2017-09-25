@@ -56,7 +56,9 @@ public class SVGExporter implements IGraphicsExporter {
 
         XMLExporterHelper.start(sbContent, 2, "g", "class", "page", "transform", "translate(30, 30)"); //TODO Configurar márgen
         for (GraphicsElement element: canvas.getElements()) {
-            element.generateSVG(sbContent, 3, usedGlyphs);
+            if (!element.isHidden()) {
+                element.generateSVG(sbContent, 3, usedGlyphs);
+            }
         }
 
         XMLExporterHelper.end(sbContent, 2, "g");
@@ -71,11 +73,11 @@ public class SVGExporter implements IGraphicsExporter {
 
     @Override
     public void exportLayout(OutputStream os, ScoreLayout layout) throws ExportException {
-        if (layout.getCanvases().length != 1) {
-            throw new ExportException("Cannot export " + layout.getCanvases().length + " canvases to SVG");
+        if (layout.getCanvases().size() != 1) {
+            throw new ExportException("Cannot export " + layout.getCanvases().size() + " canvases to SVG");
         }
         try (Writer w = new OutputStreamWriter(os, "UTF-8")) {
-            w.write(exportLayout(layout.getCanvases()[0], layout.getLayoutFont()));
+            w.write(exportLayout(layout.getCanvases().get(0), layout.getLayoutFont()));
         } // or w.close(); //close will auto-flush    }
         catch (Exception e) {
             throw new ExportException(e);
@@ -84,14 +86,14 @@ public class SVGExporter implements IGraphicsExporter {
 
         @Override
     public void exportLayout(File file, ScoreLayout layout)  throws ExportException {
-            if (layout.getCanvases().length != 1) {
-                throw new ExportException("Cannot export " + layout.getCanvases().length + " canvases to SVG");
+            if (layout.getCanvases().size() != 1) {
+                throw new ExportException("Cannot export " + layout.getCanvases().size() + " canvases to SVG");
             }
 
             BufferedWriter out = null;
             try {
                 out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
-                out.write(exportLayout(layout.getCanvases()[0], layout.getLayoutFont()));
+                out.write(exportLayout(layout.getCanvases().get(0), layout.getLayoutFont()));
                 out.close();
             } catch (Exception e) {
                 throw new ExportException(e);

@@ -16,10 +16,12 @@ import java.util.HashSet;
 // TODO: 18/9/17  Create a GraphicsDevice instead of implementing these interfaces
 public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement, ISVGElement {
     private Canvas canvas;
+    boolean hidden;
     private String ID;
 
     public GraphicsElement(String ID) {
         this.ID = ID;
+        hidden = false;
     }
 
     public Canvas getCanvas() {
@@ -76,5 +78,13 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
 
     public String getID() {
         return ID;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 }

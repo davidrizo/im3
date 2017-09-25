@@ -158,7 +158,7 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 	}
 
 	public void setStaff(Staff staff) {
-		this.staff = staff;		
+		this.staff = staff;
 	}
 
 	public final void setNotationType(NotationType notationType) {

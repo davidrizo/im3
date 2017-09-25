@@ -492,7 +492,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 case "sb":
                     Time sbtime = getCurrentTime();
                     if (!song.hasSystemBreak(sbtime )) { // it appears in different parts
-                        song.addSystemBreak(new SystemBreak(sbtime));
+                        song.addSystemBreak(new SystemBreak(sbtime, true));
                     }
                     break;
 				case "barline":

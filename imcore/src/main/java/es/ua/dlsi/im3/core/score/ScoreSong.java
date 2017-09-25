@@ -799,7 +799,7 @@ public class ScoreSong {
 		staffGroups.add(staffGroup);
 	}
 
-	public List<StaffGroup> getStaffSystems() {
+	public List<StaffGroup> getStaffGroups() {
 		return staffGroups;
 	}
 
@@ -822,7 +822,7 @@ public class ScoreSong {
 
 	public void createVisualElementsIfNeeded() throws IM3Exception {
 		throw new UnsupportedOperationException("FRACTIONS");
-		/*FRACTIONS for (StaffSystem staffGroup : this.getStaffSystems()) {
+		/*FRACTIONS for (StaffSystem staffGroup : this.getStaffGroups()) {
 			staffGroup.createVisualElementsIfNeeded();
 		}
 

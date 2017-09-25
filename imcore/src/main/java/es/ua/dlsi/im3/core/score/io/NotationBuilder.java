@@ -36,7 +36,7 @@ public class NotationBuilder {
 
 	public StaffGroup addSystem() {
 		StaffGroup result = new StaffGroup(song,
-				hierarchicalIDGenerator.nextStaffGroupHierarchicalOrder(null), song.getStaffSystems().size());
+				hierarchicalIDGenerator.nextStaffGroupHierarchicalOrder(null), song.getStaffGroups().size());
 		return result;
 	}
 
@@ -44,7 +44,7 @@ public class NotationBuilder {
 		StaffGroup s = systems.get(systemId);
 		if (s == null) {
 			s = new StaffGroup(song, hierarchicalIDGenerator.nextStaffGroupHierarchicalOrder(null),
-					song.getStaffSystems().size());
+					song.getStaffGroups().size());
 			systems.put(systemId, s);
 		}
 		return s;

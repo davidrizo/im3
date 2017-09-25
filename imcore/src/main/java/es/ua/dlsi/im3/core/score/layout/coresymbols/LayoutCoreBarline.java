@@ -30,11 +30,11 @@ public class LayoutCoreBarline extends LayoutCoreSymbol {
 
     /**
      * Both staves may be the same
-     * @param topStaff Top staff in the system
      * @param bottomStaff Top staff in the system
+     * @param topStaff Top staff in the system
      * @throws IM3Exception
      */
-    public void setLayoutStaff(LayoutStaff topStaff, LayoutStaff bottomStaff) throws IM3Exception {
+    public void setLayoutStaff(LayoutStaff bottomStaff, LayoutStaff topStaff) throws IM3Exception {
         // TODO: 21/9/17 Sólo vale para pentagramas - debe sobresalir igual con percusión
         from.setReferenceY(bottomStaff.getYAtLine(1));
         to.setReferenceY(topStaff.getYAtLine(5));

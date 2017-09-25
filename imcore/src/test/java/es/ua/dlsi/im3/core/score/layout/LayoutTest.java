@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
@@ -14,16 +15,15 @@ import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 
-public class HorizontalLayoutTest {
+public class LayoutTest {
     // Just test it does not crash
     @Test
-    public void layoutBravura() throws Exception {
+    public void horizontalLayoutBravura() throws Exception {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/simple1.xml");
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
-                new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0)),
-                new Coordinate(new CoordinateComponent(960), new CoordinateComponent(700)));
+                new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout();
 
         SVGExporter svgExporter = new SVGExporter();
@@ -35,15 +35,43 @@ public class HorizontalLayoutTest {
         pdfExporter.exportLayout(pdfFile, layout);
     }
 
+    private void systemBreaks(ScoreSong scoreSong, ScoreLayout layout, String name) throws IM3Exception {
+        layout.layout();
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile(name + ".svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile(name + ".pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+
+    }
+
+    @Test
+    public void layoutsBravura() throws Exception {
+        MusicXMLImporter importer = new MusicXMLImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.xml");
+        ScoreSong song = importer.importSong(file);
+        PageLayout pageLayout = new PageLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(1500), new CoordinateComponent(700));
+        systemBreaks(song, pageLayout, "manual_system_break_page");
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(1500), new CoordinateComponent(700));
+
+        systemBreaks(song, horizontalLayout, "manual_system_break_horizontal");
+    }
+
+
     // Just test it does not crash
     @Test
-    public void layout2StavesVerticallyAligned() throws Exception {
+    public void horizontalLayout2StavesVerticallyAligned() throws Exception {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/two_staves_homophonic_vertical_aligned.xml");
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
-                new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0)),
-                new Coordinate(new CoordinateComponent(960), new CoordinateComponent(700)));
+                new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout();
 
         SVGExporter svgExporter = new SVGExporter();
@@ -57,13 +85,12 @@ public class HorizontalLayoutTest {
 
     // Just test it does not crash
     @Test
-    public void layout2StavesNonVerticallyAligned() throws Exception {
+    public void horizontalLayout2StavesNonVerticallyAligned() throws Exception {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/two_staves_non_homophonic.xml");
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
-                new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0)),
-                new Coordinate(new CoordinateComponent(1280), new CoordinateComponent(700)));
+                new CoordinateComponent(1280), new CoordinateComponent(700));
         layout.layout();
 
         SVGExporter svgExporter = new SVGExporter();
@@ -78,13 +105,12 @@ public class HorizontalLayoutTest {
 
     // Just test it does not crash
     @Test
-    public void layoutCapitan() throws Exception {
+    public void horizontalLayoutCapitan() throws Exception {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/nodiviertanllantoninyo_mensural_only.mei");
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan,
-                new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0)),
-                new Coordinate(new CoordinateComponent(960), new CoordinateComponent(700)));
+                new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout();
 
         SVGExporter svgExporter = new SVGExporter();

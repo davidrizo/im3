@@ -193,8 +193,8 @@ public class LayoutStaff extends NotationSymbol {
         }
     }
 
-    public void createNoteAccidentals() throws IM3Exception {
-        HashMap<AtomPitch, Accidentals> requiredAccidentalsMap = staff.createNoteAccidentalsToShow();
+    public void createNoteAccidentals(Time from, Time to) throws IM3Exception {
+        HashMap<AtomPitch, Accidentals> requiredAccidentalsMap = staff.createNoteAccidentalsToShow(from, to);
 
         for (LayoutCoreSymbol symbol : this.layoutSymbolsInStaff) {
             if (symbol instanceof LayoutCoreSingleFigureAtom) {
@@ -212,6 +212,9 @@ public class LayoutStaff extends NotationSymbol {
                 }
             }
         }
+    }
+    public void createNoteAccidentals() throws IM3Exception {
+        createNoteAccidentals(Time.TIME_ZERO, Time.TIME_MAX);
     }
 
     /*public void createNoteAccidentals(Time timeZero, Time timeMax) throws IM3Exception {

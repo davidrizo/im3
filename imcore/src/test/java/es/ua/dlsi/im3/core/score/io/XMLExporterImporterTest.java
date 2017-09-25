@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.io;
 
+import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -257,6 +258,7 @@ public class XMLExporterImporterTest {
 		try {
 			assertEquals(2, song.getStaves().size());
 			assertEquals(DiatonicPitch.G, song.getStaves().get(0).getClefAtTime(Time.TIME_ZERO).getNote());
+            assertSame(song.getStaves().get(0), song.getStaves().get(0).getClefAtTime(Time.TIME_ZERO).getStaff());
 			assertEquals(DiatonicPitch.F, song.getStaves().get(1).getClefAtTime(Time.TIME_ZERO).getNote());
 			assertEquals(3, song.getStaves().get(0).getAtoms().size());
 			assertEquals(2, song.getStaves().get(0).getAtomPitches().size());

@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaffSystem;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
@@ -13,21 +14,22 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * All systems are arranged in a single line
  */
 public class HorizontalLayout extends ScoreLayout {
-    List<LayoutStaff> staves; //TODO systems
+    LayoutStaffSystem system;
 
     /**
      * Everything is arranged in a single canvas
      */
     Canvas canvas;
-    public HorizontalLayout(ScoreSong song, LayoutFonts font, Coordinate leftTop, Coordinate bottomRight) throws IM3Exception {
+    public HorizontalLayout(ScoreSong song, LayoutFonts font, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
         super(song, font);
-        canvas = new Canvas(leftTop, bottomRight);
+        canvas = new Canvas(width, height);
     }
 
     @Override
@@ -35,19 +37,20 @@ public class HorizontalLayout extends ScoreLayout {
         // TODO: 19/9/17 En esta versión creamos todos los símbolos cada vez - habría que crear sólo los necesarios
         canvas.clear();
 
-        //TODO scoreSong.getStaffSystems()
-        staves = new ArrayList<>(); //TODO supongo que no habrá que rehacerlo siempre
+        //scoreSong.getStaffGroups();
+        //TODO scoreSong.getStaffGroups()
+        system = new LayoutStaffSystem();
 
         double nextY = LayoutConstants.TOP_MARGIN;
         for (Staff staff: scoreSong.getStaves()) {
-            CoordinateComponent y = new CoordinateComponent(canvas.getLeftTop().getY(), nextY);
+            CoordinateComponent y = new CoordinateComponent(nextY);
             nextY += LayoutConstants.STAFF_SEPARATION;
-            Coordinate leftTop = new Coordinate(canvas.getLeftTop().getX(), y);
-            Coordinate rightTop = new Coordinate(canvas.getBottomRight().getX(), y);
+            Coordinate leftTop = new Coordinate(null, y);
+            Coordinate rightTop = new Coordinate(canvas.getWidthCoordinateComponent(), y);
 
             LayoutStaff layoutStaff = new LayoutStaff(this, leftTop, rightTop, staff);
-            staves.add(layoutStaff);
-            canvas.add(layoutStaff.getGraphics());
+            system.addLayoutStaff(0, layoutStaff);
+            canvas.add(layoutStaff.getGraphics());// TODO: 25/9/17 ¿Realmente hace falta el canvas? 
 
             // add contents of layout staff, we have just one
             List<LayoutCoreSymbolInStaff> layoutSymbolsInStaff = coreSymbols.get(staff);
@@ -67,28 +70,16 @@ public class HorizontalLayout extends ScoreLayout {
         }
         for (LayoutCoreBarline barline: barlines) {
             //TODO IMPORTANT it is the same system now - it should be drawn for the different groups (piano....)
-            barline.setLayoutStaff(staves.get(0), staves.get(staves.size()-1));
+            barline.setLayoutStaff(system.getBottomStaff(), system.getTopStaff());
             canvas.getElements().add(barline.getGraphics());
         }
-
-
-
         doHorizontalLayout(simultaneities);
-    }
 
-    private void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
-        // Replace for a factory if required
-        Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT, // TODO: 22/9/17 Quizás esto debería ser cosa del FontLayout
-                new Coordinate(new CoordinateComponent(0),
-                new CoordinateComponent(0)
-        ));
-        double noteHeadWidth = noteHead.getWidth();
-        ILayoutEngine layoutEngine = new BelliniLayoutEngine(2, 2, noteHeadWidth); // TODO: 22/9/17 ¿qué valor ponemos?
-        layoutEngine.doHorizontalLayout(simultaneities);
+
     }
 
     @Override
-    public Canvas[] getCanvases() {
-        return new Canvas[] {canvas};
+    public List<Canvas> getCanvases() {
+        return Arrays.asList(canvas);
     }
 }

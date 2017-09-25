@@ -319,6 +319,7 @@ public abstract class Staff extends VerticalScoreDivision {
 		
 		this.clefs.put(clef.getTime(), clef);
 		this.coreSymbols.add(clef);
+		clef.setStaff(this);
 	}
 
 	public void addTimeSignature(TimeSignature ts) throws IM3Exception {		
@@ -363,11 +364,13 @@ public abstract class Staff extends VerticalScoreDivision {
 	 */
 	public List<ITimedElementInStaff> getCoreSymbolsOrderedWithOnsets(Time fromTime, Time toTime) throws IM3Exception {
 		ArrayList<ITimedElementInStaff> symbols = new ArrayList<>();
-		for (ITimedElementInStaff cs: coreSymbols) { //TODO Speed up? 
-			if (fromTime.compareTo(cs.getTime()) >= 0 && cs.getTime().compareTo(toTime) < 0) {
-				symbols.add(cs);
-			}
-		}
+		if (!fromTime.isZero() || !toTime.isMaxValue()) { // to avoid doing the loop when all possible elements fit
+            for (ITimedElementInStaff cs : coreSymbols) { //TODO Speed up?
+                if (fromTime.compareTo(cs.getTime()) >= 0 && cs.getTime().compareTo(toTime) < 0) {
+                    symbols.add(cs);
+                }
+            }
+        }
 		SymbolsOrderer.sortList(symbols);
 		return symbols;
 	}
@@ -516,17 +519,26 @@ public abstract class Staff extends VerticalScoreDivision {
         }
     }
 
+	/**
+	 * It tells the accidental that must be drawn for each note in the given range
+	 * @return A map with each note and the accidental to be drawn
+	 * @throws IM3Exception
+	 */
+	public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow() throws IM3Exception {
+	    return createNoteAccidentalsToShow(Time.TIME_ZERO, Time.TIME_MAX);
+	}
+
     /**
      * It tells the accidental that must be drawn for each note in the given range
      * @return A map with each note and the accidental to be drawn
      * @throws IM3Exception
      */
-	public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow() throws IM3Exception {
+	public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow(Time fromTime, Time toTime) throws IM3Exception {
 		TreeMap<DiatonicPitch, ScientificPitch> alteredDiatonicPitchInBar = new TreeMap<>();
 		TreeMap<DiatonicPitch, PitchClass> alteredDiatonicPitchInKeySignature = new TreeMap<>();
         HashMap<AtomPitch, Accidentals> result = new HashMap<>();
 		KeySignature currentKeySignature = null; // getRunningKeySignatureAt(fromTime);
-        List<ITimedElementInStaff> symbols = this.getCoreSymbolsOrdered();
+        List<ITimedElementInStaff> symbols = this.getCoreSymbolsOrderedWithOnsets(fromTime, toTime);
         Measure lastMeasure = null;
         for (ITimedElementInStaff symbol: symbols) {
             Measure measure = null;
@@ -554,7 +566,7 @@ public abstract class Staff extends VerticalScoreDivision {
         return result;
 	}
 
-	void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar,
+    void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar,
 											TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature,
                                             HashMap<AtomPitch, Accidentals> result, AtomPitch ps) throws IM3Exception {
 		ScientificPitch pc = ps.getScientificPitch();

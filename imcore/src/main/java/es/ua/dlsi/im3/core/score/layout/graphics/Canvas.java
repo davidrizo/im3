@@ -3,23 +3,23 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: 21/9/17 ¿Mejor coordinate? 
 /**
  * @author drizo
  */
 public class Canvas {
-    private final Coordinate leftTop;
-    private final Coordinate bottomRight;
+    private final CoordinateComponent width;
+    private final CoordinateComponent height;
     private List<GraphicsElement> elementList;
 
-    public Canvas(Coordinate leftTop, Coordinate bottomRight) {
-        this.leftTop = leftTop;
-        this.bottomRight = bottomRight;
+    public Canvas(CoordinateComponent width, CoordinateComponent height) {
+        this.width = width;
+        this.height = height;
         elementList = new ArrayList<>();
     }
 
@@ -32,20 +32,13 @@ public class Canvas {
     }
 
     public double getHeight() throws IM3Exception {
-        return bottomRight.getAbsoluteY() - leftTop.getAbsoluteY();
+        return height.getAbsoluteValue();
     }
 
     public double getWidth() {
-        return bottomRight.getAbsoluteX() - leftTop.getAbsoluteX();
+        return width.getAbsoluteValue();
     }
 
-    public Coordinate getLeftTop() {
-        return leftTop;
-    }
-
-    public Coordinate getBottomRight() {
-        return bottomRight;
-    }
 
     public List<GraphicsElement> getElements() {
         return elementList;
@@ -53,5 +46,9 @@ public class Canvas {
 
     public void clear() {
         elementList.clear();
+    }
+
+    public CoordinateComponent getWidthCoordinateComponent() {
+        return width;
     }
 }

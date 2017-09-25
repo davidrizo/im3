@@ -2,14 +2,14 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
-import es.ua.dlsi.im3.core.score.Measure;
-import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolInStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
+import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
+import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +26,7 @@ public abstract class ScoreLayout {
     protected final LayoutFont layoutFont;
     protected final LayoutSymbolFactory layoutSymbolFactory;
     protected final Simultaneities simultaneities;
+    protected final double noteHeadWidth;
     protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbols;
     protected final List<LayoutCoreBarline> barlines;
 
@@ -35,6 +36,13 @@ public abstract class ScoreLayout {
         layoutSymbolFactory = new LayoutSymbolFactory();
         simultaneities = new Simultaneities();
         barlines = new ArrayList<>();
+
+        Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT, // TODO: 22/9/17 Quizás esto debería ser cosa del FontLayout
+                new Coordinate(new CoordinateComponent(0),
+                        new CoordinateComponent(0)
+                ));
+        noteHeadWidth = noteHead.getWidth();
+        
         createLayoutSymbols();
     }
 
@@ -70,11 +78,17 @@ public abstract class ScoreLayout {
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
         }
-
     }
 
+    protected void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
+        // Replace for a factory if required
+        ILayoutEngine layoutEngine = new BelliniLayoutEngine(2, 2, noteHeadWidth); // TODO: 22/9/17 ¿qué valor ponemos?
+        layoutEngine.doHorizontalLayout(simultaneities);
+    }
+
+
     public abstract void layout() throws IM3Exception;
-    public abstract Canvas[] getCanvases();
+    public abstract List<Canvas> getCanvases();
 
     public LayoutFont getLayoutFont() {
         return layoutFont;

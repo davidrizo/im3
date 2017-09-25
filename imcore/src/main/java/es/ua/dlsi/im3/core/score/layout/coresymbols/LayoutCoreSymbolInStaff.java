@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
+import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 
@@ -18,5 +19,9 @@ public abstract class LayoutCoreSymbolInStaff<CoreSymbolType extends ITimedEleme
 
     public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
         this.layoutStaff = layoutStaff;
+    }
+
+    public Staff getCoreStaff() {
+        return ((ITimedElementInStaff)coreSymbol).getStaff();
     }
 }

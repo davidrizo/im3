@@ -62,8 +62,7 @@ public class LayoutBeamedGroupTest {
 
     private void exportLayout(ScoreSong scoreSong, String name) throws IM3Exception {
         HorizontalLayout layout = new HorizontalLayout(scoreSong, LayoutFonts.bravura,
-                new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0)),
-                new Coordinate(new CoordinateComponent(960), new CoordinateComponent(700)));
+                new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout();
 
         SVGExporter svgExporter = new SVGExporter();

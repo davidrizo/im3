@@ -286,7 +286,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			case "print":
 			    String newSystem = getOptionalAttribute(attributes, "new-system");
 			    if (newSystem != null) {
-			        song.addSystemBreak(new SystemBreak(measureStartTime));
+			        song.addSystemBreak(new SystemBreak(measureStartTime, true));
                 }
 				break;
 			case "direction":
