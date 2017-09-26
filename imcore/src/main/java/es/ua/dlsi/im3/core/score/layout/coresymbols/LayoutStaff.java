@@ -196,11 +196,11 @@ public class LayoutStaff extends NotationSymbol {
 
     public void createNoteAccidentals(Time from, Time to) throws IM3Exception {
         HashMap<AtomPitch, Accidentals> requiredAccidentalsMap = staff.createNoteAccidentalsToShow(from, to);
-
         for (LayoutCoreSymbol symbol : this.layoutSymbolsInStaff) {
             if (symbol instanceof LayoutCoreSingleFigureAtom) {
                 LayoutCoreSingleFigureAtom layoutSingleFigureAtom = (LayoutCoreSingleFigureAtom) symbol;
                 for (NotePitch notePitch : layoutSingleFigureAtom.getNotePitches()) {
+                    //System.out.println(">>>" + notePitch.getAtomPitch().hashCode());
                     Accidentals requiredAccidental = requiredAccidentalsMap.get(notePitch.getAtomPitch());
                     Accidental psAccidental = notePitch.getAccidental();
                     if (psAccidental != null && !psAccidental.getAccidental().equals(requiredAccidental)) {

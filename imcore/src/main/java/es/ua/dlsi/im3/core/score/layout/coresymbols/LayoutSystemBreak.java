@@ -14,7 +14,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Line;
  * It draws a graphic to show where is the system break. By default it is hidden
  */
 public class LayoutSystemBreak extends LayoutCoreSymbol<SystemBreak> {
-    private Time DEFAULT_TIME_FOR_SPACE_COMPUTING = new Time(4); //TODO
+    //private Time DEFAULT_TIME_FOR_SPACE_COMPUTING = new Time(4); //TODO
     private final Coordinate from;
     private final Coordinate to;
     private Line line;
@@ -50,9 +50,8 @@ public class LayoutSystemBreak extends LayoutCoreSymbol<SystemBreak> {
 
     /**
      * Add a default duration to be able to fit the clef and key signature in the new line
-     * @return
      */
-    public Time getDuration() {
+    /*public Time getDuration() {
         return DEFAULT_TIME_FOR_SPACE_COMPUTING;
-    }
+    }*/
 }

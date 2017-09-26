@@ -29,6 +29,7 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.XMLSAXScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernImporter;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.meters.*;
 import org.apache.commons.lang3.math.Fraction;
 import org.xml.sax.SAXException;
@@ -495,9 +496,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         song.addSystemBreak(new SystemBreak(sbtime, true));
                     }
                     break;
-				case "barline":
+				case "barLine":
 					//updateTimesGivenMeasure();
-					//TODO insertar el barline
+					Time markTime = getCurrentTime();
+					MarkBarline barline = new MarkBarline(markTime);
+					lastStaff.addCoreSymbol(barline);
 					break;
 				case "staff":
 					/*if (updateMeasure) {

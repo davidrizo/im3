@@ -17,11 +17,11 @@
     "timeSigProporcionMayor": {
         "codepoint": "U+0066"
     },    
-    "timeSigCommonTime": {
-        "codepoint": "U+0080"
+    "timeSigCommon": {
+        "codepoint": "U+0049"
     },        
     "timeSigCutTime": {
-        "codepoint": "U+0081"
+        "codepoint": "U+004b"
     },    
     "calderonArriba": {
         "codepoint": "U+005B"

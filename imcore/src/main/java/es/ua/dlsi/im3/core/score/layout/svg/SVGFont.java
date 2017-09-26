@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.svg;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.HashMap;
 
@@ -50,7 +51,7 @@ public class SVGFont {
     public Glyph getGlyph(String unicode) throws IM3Exception {
         Glyph g = glyphs.get(unicode);
         if (g == null) {
-            throw new IM3Exception("Glyph with unicode " + unicode + " not found");
+            throw new IM3Exception("Glyph with unicode " + StringEscapeUtils.escapeJson(unicode) + " not found");
         }
         return g;
     }

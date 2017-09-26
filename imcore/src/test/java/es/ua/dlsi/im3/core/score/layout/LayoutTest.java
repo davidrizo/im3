@@ -54,11 +54,11 @@ public class LayoutTest {
         File file = TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.xml");
         ScoreSong song = importer.importSong(file);
         PageLayout pageLayout = new PageLayout(song, LayoutFonts.bravura,
-                new CoordinateComponent(1500), new CoordinateComponent(700));
+                new CoordinateComponent(1500), new CoordinateComponent(1000));
         systemBreaks(song, pageLayout, "manual_system_break_page");
 
         HorizontalLayout horizontalLayout = new HorizontalLayout(song, LayoutFonts.bravura,
-                new CoordinateComponent(1500), new CoordinateComponent(700));
+                new CoordinateComponent(1500), new CoordinateComponent(1000));
 
         systemBreaks(song, horizontalLayout, "manual_system_break_horizontal");
     }
@@ -121,6 +121,26 @@ public class LayoutTest {
         File pdfFile = TestFileUtils.createTempFile("nodiviertanllantoninyo_mensural_only.pdf");
         pdfExporter.exportLayout(pdfFile, layout);
     }
+
+    // Just test it does not crash
+    @Test
+    public void horizontalLayoutPatriarca() throws Exception {
+        MEISongImporter importer = new MEISongImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/layout/patriarca/16-1544_ES-VC_1-3-1_00003.mei");
+        ScoreSong song = importer.importSong(file);
+        PageLayout layout = new PageLayout(song, LayoutFonts.capitan,
+                new CoordinateComponent(2000), new CoordinateComponent(700));
+        layout.layout();
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("patriarca1.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("patriarca1.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+    }
+
 
     // Just test it does not crash
     // FIXME: 21/9/17 Commented until M

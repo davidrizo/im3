@@ -39,7 +39,8 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> {
         // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
         UNICODES.put(Figures.SEMIBREVE, "mensuralWhiteSemibrevis");
         UNICODES.put(Figures.MINIM, "mensuralWhiteMinima");
-        UNICODES.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima");
+        //UNICODES.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        UNICODES.put(Figures.SEMIMINIM, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
     }
 
     /**

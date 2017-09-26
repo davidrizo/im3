@@ -29,7 +29,9 @@ public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRes
         // TODO Existen hasta la 1024th
 
         //TODO Mensural
+        UNICODES.put(Figures.SEMIBREVE, "mensuralRestSemibrevis");
         UNICODES.put(Figures.MINIM, "mensuralRestMinima");
+        UNICODES.put(Figures.SEMIMINIM, "mensuralRestSemiminima");
     }
 
     

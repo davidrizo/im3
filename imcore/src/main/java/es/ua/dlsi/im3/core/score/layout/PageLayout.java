@@ -42,7 +42,7 @@ public class PageLayout extends ScoreLayout {
 
         // now locate the points where insert line and page breaks and create LayoutStaff
         //TODO Page breaks - ahora todo en un page
-        Page page = new Page(new CoordinateComponent(1000), new CoordinateComponent(1000)); //TOOD
+        Page page = new Page(new CoordinateComponent(width), new CoordinateComponent(height)); //TOOD
         pages.add(page);
         double layoutStaffStartingX = 0;
         double nextY = LayoutConstants.TOP_MARGIN;
@@ -55,7 +55,11 @@ public class PageLayout extends ScoreLayout {
                 //TODO Crear claves y key signatures
 
                 layoutStaffStartingX = simultaneity.getX();
+                if (lastSystem != null) {
+                    lastSystem.setEndingTime(simultaneity.getTime());
+                }
                 lastSystem = new LayoutStaffSystem();
+                lastSystem.setStartingTime(simultaneity.getTime());
                 lastSystem.setStartingX(layoutStaffStartingX);
                 page.addSystem(lastSystem);
 
@@ -81,6 +85,7 @@ public class PageLayout extends ScoreLayout {
                             layoutCoreClef.setSystem(lastSystem);
                             newSimultaneitiesToAdd.add(layoutCoreClef);
                             layoutCoreClef.setTime(time);
+                            layoutStaff.add(layoutCoreClef);
                         } // if not it will be inserted because it is explicit
 
                         KeySignature ks = staff.getKeySignatureWithOnset(time);
@@ -90,18 +95,55 @@ public class PageLayout extends ScoreLayout {
                             layoutCoreKs.setSystem(lastSystem);
                             layoutCoreKs.setTime(time);
                             newSimultaneitiesToAdd.add(layoutCoreKs);
+                            layoutStaff.add(layoutCoreKs);
                         } // if not it will be inserted because it is explicit
                     }
+
+                    // TODO: 26/9/17 NotePitch que esté en otro (changed) staff
+                    // add to staff
                 }
             }
 
             for (LayoutCoreSymbol coreSymbol: simultaneity.getSymbols()) {
                 coreSymbol.setSystem(lastSystem);
+
+                if (coreSymbol instanceof LayoutCoreSymbolInStaff) {
+                    LayoutCoreSymbolInStaff layoutCoreSymbolInStaff = (LayoutCoreSymbolInStaff) coreSymbol;
+                    Staff staff = layoutCoreSymbolInStaff.getCoreStaff();
+                    if (staff == null) {
+                        throw new IM3RuntimeException("This should not happen: " + layoutCoreSymbolInStaff + " has not a staff");
+                    }
+                    LayoutStaff layoutStaff = lastSystem.get(staff);
+                    if (layoutStaff == null) {
+                        throw new IM3RuntimeException("This should not happen: " + staff + " has not a layoutStaff in the system");
+                    }
+                    layoutStaff.add(layoutCoreSymbolInStaff);
+                } else {
+                    if (coreSymbol instanceof LayoutCoreBarline) {
+                        LayoutCoreBarline layoutCoreBarline = (LayoutCoreBarline) coreSymbol;
+                        layoutCoreBarline.setLayoutStaff(lastSystem.getBottomStaff(), lastSystem.getTopStaff());
+                    }
+                    //TODO Quizás mejor en el system
+                    page.getCanvas().add(coreSymbol.getGraphics());
+                }
+
             }
 
         }
+
+        if (lastSystem != null) {
+            lastSystem.setEndingTime(Time.TIME_MAX);
+        }
+
         for (LayoutCoreSymbol coreSymbol : newSimultaneitiesToAdd) {
             simultaneities.add(coreSymbol);
+        }
+
+        for (LayoutStaffSystem staffSystem: page.getSystemsInPage()) {
+            for (LayoutStaff layoutStaff: staffSystem.getStaves()) {
+                //layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+                layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+            }
         }
 
         doHorizontalLayout(simultaneities); // TODO: 26/9/17 ¿Y si cambia la anchura y hay que volver a bajar elementos de línea?
@@ -109,7 +151,7 @@ public class PageLayout extends ScoreLayout {
             for (LayoutCoreSymbol coreSymbol: simultaneity.getSymbols()) {
                 LayoutStaffSystem system = coreSymbol.getSystem();
                 coreSymbol.setX(simultaneity.getX() - system.getStartingX());
-                if (coreSymbol instanceof LayoutCoreSymbolInStaff) {
+                /*if (coreSymbol instanceof LayoutCoreSymbolInStaff) {
                     LayoutCoreSymbolInStaff layoutCoreSymbolInStaff = (LayoutCoreSymbolInStaff) coreSymbol;
                     Staff staff = layoutCoreSymbolInStaff.getCoreStaff();
                     if (staff == null) {
@@ -127,13 +169,9 @@ public class PageLayout extends ScoreLayout {
                     }
                     //TODO Quizás mejor en el system
                     page.getCanvas().add(coreSymbol.getGraphics());
-                }
+                }*/
 
             }
-
-            //TODO layoutStaff.createNoteAccidentals(simultaneity.getTime(), Time.TIME_MAX); //TODO Hacerlo después con los systems - pasándole inicio y fin - ahora lo recalcula varias veces
-
-
         }
     }
 

@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.score.Time;
 
 import java.util.*;
 
@@ -15,8 +16,28 @@ public class LayoutStaffSystem {
      */
     double startingX;
 
+    Time startingTime;
+
+    Time endingTime;
+
     public LayoutStaffSystem() {
         layoutStaves = new TreeMap<>();
+    }
+
+    public Time getStartingTime() {
+        return startingTime;
+    }
+
+    public void setStartingTime(Time startingTime) {
+        this.startingTime = startingTime;
+    }
+
+    public Time getEndingTime() {
+        return endingTime;
+    }
+
+    public void setEndingTime(Time endingTime) {
+        this.endingTime = endingTime;
     }
 
     /**

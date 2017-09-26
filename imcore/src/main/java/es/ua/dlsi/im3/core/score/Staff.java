@@ -363,16 +363,19 @@ public abstract class Staff extends VerticalScoreDivision {
 	 * @throws IM3Exception 
 	 */
 	public List<ITimedElementInStaff> getCoreSymbolsOrderedWithOnsets(Time fromTime, Time toTime) throws IM3Exception {
-		ArrayList<ITimedElementInStaff> symbols = new ArrayList<>();
 		if (!fromTime.isZero() || !toTime.isMaxValue()) { // to avoid doing the loop when all possible elements fit
+            ArrayList<ITimedElementInStaff> symbols = new ArrayList<>();
+
             for (ITimedElementInStaff cs : coreSymbols) { //TODO Speed up?
-                if (fromTime.compareTo(cs.getTime()) >= 0 && cs.getTime().compareTo(toTime) < 0) {
+                if (fromTime.compareTo(cs.getTime()) <= 0 && cs.getTime().compareTo(toTime) < 0) {
                     symbols.add(cs);
                 }
             }
+            SymbolsOrderer.sortList(symbols);
+            return symbols;
+        } else {
+            return getCoreSymbolsOrdered();
         }
-		SymbolsOrderer.sortList(symbols);
-		return symbols;
 	}
 
 	public List<ITimedElementInStaff> getCoreSymbolsOrdered() {
