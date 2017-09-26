@@ -2,10 +2,7 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Staff;
-import es.ua.dlsi.im3.core.score.SystemBreak;
-import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
@@ -50,52 +47,86 @@ public class PageLayout extends ScoreLayout {
         double layoutStaffStartingX = 0;
         double nextY = LayoutConstants.TOP_MARGIN;
         LayoutStaffSystem lastSystem = null;
-        HashMap<Staff, LayoutStaff> layoutStaves = null;
 
         //TODO Calcular por dónde partir, por donde no quepa - ahora sólo miro los system breaks manuales
+        ArrayList<LayoutCoreSymbol> newSimultaneitiesToAdd = new ArrayList<>(); // breaks, clefs, key signatures
         for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {
             if (lastSystem == null || simultaneity.isSystemBreak()) { // TODO que sea también porque no quepan
                 //TODO Crear claves y key signatures
 
                 layoutStaffStartingX = simultaneity.getX();
                 lastSystem = new LayoutStaffSystem();
+                lastSystem.setStartingX(layoutStaffStartingX);
                 page.addSystem(lastSystem);
 
                 nextY += LayoutConstants.SYSTEM_SEPARATION;
                 // TODO - si no cabe en página que se cree otra
 
-                layoutStaves = new HashMap<>();
                 for (Staff staff : scoreSong.getStaves()) {
                     CoordinateComponent y = new CoordinateComponent(nextY);
                     Coordinate staffLeftTopCoordinate = new Coordinate(null, y);
                     Coordinate staffRightTopCoordinate = new Coordinate(page.getCanvas().getWidthCoordinateComponent(), y);
                     LayoutStaff layoutStaff = new LayoutStaff(this, staffLeftTopCoordinate, staffRightTopCoordinate, staff);
-                    layoutStaves.put(staff, layoutStaff);
-                    lastSystem.addLayoutStaff(0, layoutStaff);
+                    lastSystem.addLayoutStaff(layoutStaff);
                     page.getCanvas().add(layoutStaff.getGraphics());// TODO: 25/9/17 ¿Realmente hace falta el canvas?
                     nextY += LayoutConstants.STAFF_SEPARATION;
+
+                    // in not first system, add clefs and key signatures
+                    if (page.getSystemsInPage().size() > 1) {
+                        Time time = simultaneity.getTime();
+                        Clef clef = staff.getClefAtTime(time);
+                        if (clef == null) {
+                            clef = staff.getRunningClefAt(time);
+                            LayoutCoreClef layoutCoreClef = new LayoutCoreClef(layoutFont, clef);
+                            layoutCoreClef.setSystem(lastSystem);
+                            newSimultaneitiesToAdd.add(layoutCoreClef);
+                            layoutCoreClef.setTime(time);
+                        } // if not it will be inserted because it is explicit
+
+                        KeySignature ks = staff.getKeySignatureWithOnset(time);
+                        if (ks == null) {
+                            ks = staff.getRunningKeySignatureAt(time);
+                            LayoutCoreKeySignature layoutCoreKs = new LayoutCoreKeySignature(layoutFont, ks);
+                            layoutCoreKs.setSystem(lastSystem);
+                            layoutCoreKs.setTime(time);
+                            newSimultaneitiesToAdd.add(layoutCoreKs);
+                        } // if not it will be inserted because it is explicit
+                    }
                 }
             }
 
             for (LayoutCoreSymbol coreSymbol: simultaneity.getSymbols()) {
-                coreSymbol.setX(simultaneity.getX() - layoutStaffStartingX);
+                coreSymbol.setSystem(lastSystem);
+            }
+
+        }
+        for (LayoutCoreSymbol coreSymbol : newSimultaneitiesToAdd) {
+            simultaneities.add(coreSymbol);
+        }
+
+        doHorizontalLayout(simultaneities); // TODO: 26/9/17 ¿Y si cambia la anchura y hay que volver a bajar elementos de línea?
+        for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {
+            for (LayoutCoreSymbol coreSymbol: simultaneity.getSymbols()) {
+                LayoutStaffSystem system = coreSymbol.getSystem();
+                coreSymbol.setX(simultaneity.getX() - system.getStartingX());
                 if (coreSymbol instanceof LayoutCoreSymbolInStaff) {
                     LayoutCoreSymbolInStaff layoutCoreSymbolInStaff = (LayoutCoreSymbolInStaff) coreSymbol;
                     Staff staff = layoutCoreSymbolInStaff.getCoreStaff();
                     if (staff == null) {
                         throw new IM3RuntimeException("This should not happen: " + layoutCoreSymbolInStaff + " has not a staff");
                     }
-                    LayoutStaff layoutStaff = layoutStaves.get(staff);
+                    LayoutStaff layoutStaff = system.get(staff);
                     if (layoutStaff == null) {
-                        throw new IM3RuntimeException("This should not happen: " + layoutCoreSymbolInStaff.getCoreStaff() + " has not a layout staff");
+                        throw new IM3RuntimeException("This should not happen: " + staff + " has not a layoutStaff in the system");
                     }
-                    ((LayoutCoreSymbolInStaff)coreSymbol).setLayoutStaff(layoutStaff);
-                    layoutStaff.add(coreSymbol);
-                    System.out.println("ADDING " + coreSymbol + " to " + layoutStaff);
-                    System.out.println("\tx=" + coreSymbol.getPosition().getAbsoluteX()+ ", y=" + coreSymbol.getPosition().getAbsoluteY());
+                    layoutStaff.add(layoutCoreSymbolInStaff);
                 } else {
-                    System.out.println("No es in staff " + coreSymbol);
-                    //TODO ¿Already in canvas? page.getCanvas().add(coreSymbol.getGraphics());
+                    if (coreSymbol instanceof LayoutCoreBarline) {
+                        LayoutCoreBarline layoutCoreBarline = (LayoutCoreBarline) coreSymbol;
+                        layoutCoreBarline.setLayoutStaff(system.getBottomStaff(), system.getTopStaff());
+                    }
+                    //TODO Quizás mejor en el system
+                    page.getCanvas().add(coreSymbol.getGraphics());
                 }
 
             }

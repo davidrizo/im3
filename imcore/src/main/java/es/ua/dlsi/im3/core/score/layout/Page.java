@@ -25,6 +25,9 @@ public class Page {
         for (LayoutStaff staff: system.getStaves()) {
             canvas.add(staff.getGraphics());
         }
+    }
 
+    public ArrayList<LayoutStaffSystem> getSystemsInPage() {
+        return systemsInPage;
     }
 }

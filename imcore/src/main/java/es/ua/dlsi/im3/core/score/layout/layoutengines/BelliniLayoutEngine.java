@@ -113,4 +113,14 @@ public class BelliniLayoutEngine implements ILayoutEngine {
         }
         return minimum;
     }
+
+    @Override
+    public void reset(Simultaneities simultaneities) {
+        for (Simultaneity s: simultaneities.getSimiltaneities()) {
+            for (LayoutCoreSymbol ss: s.getSymbols()) {
+                ss.setX(0);
+            }
+        }
+    }
+
 }

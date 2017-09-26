@@ -1,9 +1,11 @@
 package es.ua.dlsi.im3.core.score.layout;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ITimedElement;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolComparator;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaffSystem;
 
 /**
  * It represents the symbols that drive the rendering of the score.
@@ -14,6 +16,11 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolComparator;
 public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> extends NotationSymbol implements Comparable<LayoutCoreSymbol> {
     protected CoreSymbolType coreSymbol;
     protected LayoutFont layoutFont;
+    protected LayoutStaffSystem system;
+    /**
+     * If we want it to be drawn at other time
+     */
+    protected Time modifiedTime;
 
     /**
      * @param layoutFont
@@ -27,6 +34,22 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
     }
 
     /**
+     *
+     * @return
+     * @throws IM3Exception If not associated to a system
+     */
+    public LayoutStaffSystem getSystem() throws IM3Exception {
+        if (system == null) {
+            throw new IM3Exception("This symbol " + this + " is not associated to a system");
+        }
+        return system;
+    }
+
+    public void setSystem(LayoutStaffSystem system) {
+        this.system = system;
+    }
+
+    /**
      * The duration of the symbol that should be translated in a spacing
      * @return
      */
@@ -35,8 +58,17 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
     }
 
     public Time getTime() {
-        return coreSymbol.getTime();
+        if (modifiedTime == null) {
+            return coreSymbol.getTime();
+        } else {
+            return modifiedTime;
+        }
     }
+
+    public void setTime(Time time) {
+        this.modifiedTime = time;
+    }
+
 
     public CoreSymbolType getCoreSymbol() {
         return coreSymbol;

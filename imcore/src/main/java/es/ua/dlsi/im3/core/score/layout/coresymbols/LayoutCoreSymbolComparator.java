@@ -18,7 +18,8 @@ public class LayoutCoreSymbolComparator implements Comparator<LayoutCoreSymbol> 
         orders.put(LayoutCoreKeySignature.class, 1);
         orders.put(LayoutCoreTimeSignature.class, 2);
         orders.put(LayoutCoreBarline.class, 3);
-        orders.put(LayoutCoreSymbolWithDuration.class, 4);
+        orders.put(LayoutSystemBreak.class, 4);
+        orders.put(LayoutCoreSymbolWithDuration.class, 5);
     }
 
     private LayoutCoreSymbolComparator() {

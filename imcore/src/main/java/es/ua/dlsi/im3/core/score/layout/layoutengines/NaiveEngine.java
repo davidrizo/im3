@@ -1,9 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.layoutengines;
 
-import es.ua.dlsi.im3.core.score.layout.ILayoutEngine;
-import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
-import es.ua.dlsi.im3.core.score.layout.Simultaneities;
-import es.ua.dlsi.im3.core.score.layout.Simultaneity;
+import es.ua.dlsi.im3.core.score.layout.*;
 
 public class NaiveEngine implements ILayoutEngine {
     @Override
@@ -25,6 +22,15 @@ public class NaiveEngine implements ILayoutEngine {
             prevSimultaneity.setTimeSpanFromElementsDuration();
             computeWidth(prevSimultaneity);
             prevSimultaneity.setX(x);
+        }
+    }
+
+    @Override
+    public void reset(Simultaneities simultaneities) {
+        for (Simultaneity s: simultaneities.getSimiltaneities()) {
+            for (LayoutCoreSymbol ss: s.getSymbols()) {
+                ss.setX(0);
+            }
         }
     }
 

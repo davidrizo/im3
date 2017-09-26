@@ -1,35 +1,52 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
-import java.util.ArrayList;
-import java.util.List;
+import es.ua.dlsi.im3.core.score.Staff;
+
+import java.util.*;
 
 /**
  * A staff system arranged in a given layout
  */
 public class LayoutStaffSystem {
-    ArrayList<LayoutStaff> layoutStaves;
+    SortedMap<Staff, LayoutStaff> layoutStaves = null;
+
+    /**
+     * Used for page layout
+     */
+    double startingX;
 
     public LayoutStaffSystem() {
-        layoutStaves = new ArrayList<>();
+        layoutStaves = new TreeMap<>();
     }
 
     /**
-     * @param position    0 is bottom
      * @param layoutStaff
      */
-    public void addLayoutStaff(int position, LayoutStaff layoutStaff) {
-        layoutStaves.add(position, layoutStaff);
+    public void addLayoutStaff(LayoutStaff layoutStaff) {
+        layoutStaves.put(layoutStaff.getStaff(), layoutStaff);
     }
 
     public LayoutStaff getBottomStaff() {
-        return layoutStaves.get(0);
+        return layoutStaves.get(layoutStaves.lastKey());
     }
 
     public LayoutStaff getTopStaff() {
-        return layoutStaves.get(layoutStaves.size() - 1);
+        return layoutStaves.get(layoutStaves.firstKey());
     }
 
-    public List<LayoutStaff> getStaves() {
-        return layoutStaves;
+    public void setStartingX(double startingX) {
+        this.startingX = startingX;
+    }
+
+    public double getStartingX() {
+        return startingX;
+    }
+
+    public LayoutStaff get(Staff staff) {
+        return layoutStaves.get(staff);
+    }
+
+    public Collection<LayoutStaff> getStaves() {
+        return layoutStaves.values();
     }
 }

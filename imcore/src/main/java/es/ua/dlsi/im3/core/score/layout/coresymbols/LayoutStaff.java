@@ -15,7 +15,7 @@ import java.util.*;
 public class LayoutStaff extends NotationSymbol {
     private final Coordinate rightTop;
     Staff staff;
-	TreeSet<LayoutCoreSymbol> layoutSymbolsInStaff;
+	TreeSet<LayoutCoreSymbolInStaff> layoutSymbolsInStaff;
 	ScoreLayout scoreLayout;
 
     /**
@@ -77,16 +77,17 @@ public class LayoutStaff extends NotationSymbol {
         return lines.get(0);
     }
 
-    public void add(LayoutCoreSymbol symbol) {
+    public void add(LayoutCoreSymbolInStaff symbol) throws IM3Exception {
         if (symbol != null) {
             if (symbol.getGraphics() == null) {
-                System.err.println("TO-DO EXCEPCION symbol null para " + symbol.getClass());
+                throw new IM3Exception("The symbol " + symbol + " has not a graphics element associated");
             } else {
                 layoutSymbolsInStaff.add(symbol);
                 group.add(symbol.getGraphics());
+                symbol.setLayoutStaff(this);
             }
         } else {
-            System.err.println("TO-DO EXCEPCION symbol null");
+            throw new IM3Exception("The symbol is null");
         }
     }
 
