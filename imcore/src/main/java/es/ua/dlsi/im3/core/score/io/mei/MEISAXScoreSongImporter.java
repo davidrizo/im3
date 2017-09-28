@@ -409,6 +409,14 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 								);
 					}
 
+					String notationType = getOptionalAttribute(attributesMap, "notationtype");
+                    if (notationType != null) {
+						if (notationType.equals("mensural")) {
+							lastStaff.setNotationType(NotationType.eMensural);
+                        } else {
+							throw new ImportException("Unsupported notation type import: " + notationType);
+						}
+					}
 					String meterCount = getOptionalAttribute(attributesMap, "meter.count");
 					String meterUnit = getOptionalAttribute(attributesMap, "meter.unit");
 					String meterSym  = getOptionalAttribute(attributesMap, "meter.sym");	
@@ -934,7 +942,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		staff.setName(label);
 		staff.setOssia(inOssia);
 		song.addStaff(staff);
-		return staff;	
+        return staff;
 	}
 
 	private Staff findStaff(String number) throws ImportException {
@@ -1468,9 +1476,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		for (Staff staff: song.getStaves()) {
 			TimeSignature ts = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
 			if (ts instanceof TimeSignatureMensural) {
-				staff.setNotationType(NotationType.eMensural);
+				staff.changeEmptyNotationType(NotationType.eMensural);
 			} else {
-				staff.setNotationType(NotationType.eModern);
+				staff.changeEmptyNotationType(NotationType.eModern);
 			}
 			
 			// check anacrusis

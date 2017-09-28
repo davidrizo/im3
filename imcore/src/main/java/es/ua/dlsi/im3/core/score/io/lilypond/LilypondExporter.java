@@ -3,9 +3,7 @@ package es.ua.dlsi.im3.core.score.io.lilypond;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.clefs.ClefC1;
-import es.ua.dlsi.im3.core.score.clefs.ClefF4;
-import es.ua.dlsi.im3.core.score.clefs.ClefG2;
+import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.io.ISongExporter;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
@@ -136,7 +134,12 @@ public class LilypondExporter implements ISongExporter {
         StringBuilder sb = new StringBuilder();
 
         for (Staff staff: song.getStaves()) {
-            sb.append("\t\\new Staff \\with { \\consists \"Horizontal_bracket_engraver\" } {\n");
+            if (staff.getNotationType() == NotationType.eMensural) {
+                sb.append("\t\\new MensuralStaff {\n");
+            } else {
+                //sb.append("\t\\new Staff  \\with { \\consists \"Horizontal_bracket_engraver\" } {\n");
+                sb.append("\t\\new Staff {\n");
+            }
             exportStaff(staff, sb);
 
             sb.append("}\n"); // end staff
@@ -147,6 +150,7 @@ public class LilypondExporter implements ISongExporter {
 
     private void exportStaff(Staff staff, StringBuilder sb) throws ExportException {
         // TODO: 28/9/17 Clef, key and meter changes
+        // TODO: 28/9/17 System break with \break
         if (staff.getClefs().size() != 1) {
             throw new ExportException("Supported just 1 clef in the staff, there are: " + staff.getClefs().size());
         }
@@ -165,7 +169,9 @@ public class LilypondExporter implements ISongExporter {
         exportKeySignature(staff, staff.getKeySignatureWithOnset(Time.TIME_ZERO), sb);
         exportTimeSignature(staff, staff.getTimeSignatureWithOnset(Time.TIME_ZERO), sb);
 
+        sb.append("\\absolute {\n");
         generateStaff(staff, staff.getKeySignatureWithOnset(Time.TIME_ZERO).getInstrumentKey(), sb);
+        sb.append("}\n"); // end of absolute
     }
 
     private void exportTimeSignature(Staff staff, TimeSignature timeSignature, StringBuilder sb) throws ExportException {
@@ -173,11 +179,11 @@ public class LilypondExporter implements ISongExporter {
             FractionalTimeSignature fts = (FractionalTimeSignature) timeSignature;
             sb.append("\t\t\\time " + fts.getNumerator() + "/"
                     + fts.getDenominator() + "\n");
-        } /*TODO else if (timeSignature instanceof TimeSignatureCommonTime) {
-
+        } else if (timeSignature instanceof TimeSignatureCommonTime) {
+            sb.append("\t\t\\time 4/4");
         } else if (timeSignature instanceof TimeSignatureCutTime) {
-
-        } */else {
+            sb.append("\t\t\\time 2/2");
+        } else {
             throw new ExportException("Unsupported time signature: " + timeSignature.getClass());
         }
         sb.append('\n');
@@ -192,14 +198,34 @@ public class LilypondExporter implements ISongExporter {
 
     private void exportClef(Staff staff, Clef clef, StringBuilder sb) throws ExportException {
         sb.append("\t\t\\clef ");
-        if (clef instanceof ClefG2) {
-            sb.append("treble");
-        } else if (clef instanceof ClefF4) {
-            sb.append("bass");
-        } else if (clef instanceof ClefC1) {
-            sb.append("soprano");
+        if (staff.getNotationType() == NotationType.eMensural) {
+            if (clef instanceof ClefG2) {
+                sb.append("mensural-g");
+            } else if (clef instanceof ClefF4) {
+                sb.append("mensural-f");
+            } else if (clef instanceof ClefC1) {
+                sb.append("mensural-c1");
+            } else if (clef instanceof ClefC2) {
+                sb.append("mensural-c2");
+            } else if (clef instanceof ClefC3) {
+                sb.append("mensural-c3");
+            } else if (clef instanceof ClefC4) {
+                sb.append("mensural-c4");
+            } else if (clef instanceof ClefC5) {
+                sb.append("mensural-c5");
+            } else {
+                throw new ExportException("Unsupported clef: " + clef.getClass().getName());
+            }
         } else {
-            throw new ExportException("Unsupported clef: " + clef.getClass().getName());
+            if (clef instanceof ClefG2) {
+                sb.append("treble");
+            } else if (clef instanceof ClefF4) {
+                sb.append("bass");
+            } else if (clef instanceof ClefC1) {
+                sb.append("soprano");
+            } else {
+                throw new ExportException("Unsupported clef: " + clef.getClass().getName());
+            }
         }
         sb.append('\n');
     }
@@ -230,13 +256,42 @@ public class LilypondExporter implements ISongExporter {
         generateDuration(note.getAtomFigure(), sb);
     }
 
-    private void generateRest(SimpleRest rest, StringBuilder sb) {
+    private void generateRest(SimpleRest rest, StringBuilder sb) throws ExportException {
         sb.append('r');
         generateDuration(rest.getAtomFigure(), sb);
     }
 
-    private void generateDuration(AtomFigure atomFigure, StringBuilder sb) {
-        sb.append(atomFigure.getFigure().getMeterUnit());
+    private void generateDuration(AtomFigure atomFigure, StringBuilder sb) throws ExportException {
+        if (atomFigure.getFigure().getNotationType() == NotationType.eMensural) {
+            switch (atomFigure.getFigure()) {
+                case MAXIMA:
+                    sb.append("\\maxima");
+                    break;
+                case LONGA:
+                    sb.append("\\longa");
+                    break;
+                case BREVE:
+                    sb.append("\\breve");
+                    break;
+                case SEMIBREVE:
+                    sb.append("1");
+                    break;
+                case MINIM:
+                    sb.append("2");
+                    break;
+                case SEMIMINIM:
+                    sb.append("4"); // TODO: 28/9/17 Ver duraciones
+                    break;
+                case FUSA:
+                    sb.append("8"); // TODO: 28/9/17 Ver duraciones
+                    break;
+                default:
+                    throw new ExportException("Unsupported mensural figure: " + atomFigure.getFigure());
+            }
+        } else {
+            sb.append(atomFigure.getFigure().getMeterUnit());
+        }
+
         for (int i=0; i<atomFigure.getDots(); i++) {
             sb.append('.');
         }
@@ -249,10 +304,16 @@ public class LilypondExporter implements ISongExporter {
         // TODO: 28/9/17 Alteraciones necesarias sólo?
         switch (pitch.getPitchClass().getAccidental()) {
             case SHARP:
-                sb.append('#');
+                sb.append("is");
                 break;
             case FLAT:
-                sb.append('b');
+                sb.append("es");
+                break;
+            case DOUBLE_FLAT:
+                sb.append("eses");
+                break;
+            case DOUBLE_SHARP:
+                sb.append("isis");
                 break;
             case NATURAL:
                 // no-op

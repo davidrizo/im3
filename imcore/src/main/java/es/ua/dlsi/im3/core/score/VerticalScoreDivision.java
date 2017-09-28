@@ -66,6 +66,16 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 		this.notationType = notationType;
 	}
 
+	/**
+	 * Set notation type just if empty. This is a handy method for importers
+	 * @param eNotationType
+	 */
+	public final void changeEmptyNotationType(NotationType eNotationType) {
+		if (notationType == null) {
+			notationType = eNotationType;
+		}
+	}
+
 	public void setNumberIdentifier(int numberIdentifier) {
 		this.numberIdentifier = numberIdentifier;
 	}
