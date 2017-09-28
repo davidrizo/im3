@@ -41,6 +41,8 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> {
         UNICODES.put(Figures.MINIM, "mensuralWhiteMinima");
         //UNICODES.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
         UNICODES.put(Figures.SEMIMINIM, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
+        UNICODES.put(Figures.FUSA, "mensuralBlackSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
     }
 
     /**

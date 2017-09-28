@@ -124,12 +124,12 @@ public class LayoutTest {
 
     // Just test it does not crash
     @Test
-    public void horizontalLayoutPatriarca() throws Exception {
+    public void pagelLayoutPatriarca() throws Exception {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/patriarca/16-1544_ES-VC_1-3-1_00003.mei");
         ScoreSong song = importer.importSong(file);
         PageLayout layout = new PageLayout(song, LayoutFonts.capitan,
-                new CoordinateComponent(2000), new CoordinateComponent(700));
+                new CoordinateComponent(2000), new CoordinateComponent(1700));
         layout.layout();
 
         SVGExporter svgExporter = new SVGExporter();

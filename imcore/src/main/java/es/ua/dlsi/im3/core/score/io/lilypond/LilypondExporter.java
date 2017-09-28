@@ -1,0 +1,337 @@
+package es.ua.dlsi.im3.core.score.io.lilypond;
+
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.clefs.ClefC1;
+import es.ua.dlsi.im3.core.score.clefs.ClefF4;
+import es.ua.dlsi.im3.core.score.clefs.ClefG2;
+import es.ua.dlsi.im3.core.score.io.ISongExporter;
+import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.logging.Logger;
+
+public class LilypondExporter implements ISongExporter {
+    private static final int CENTRAL_OCTAVE = 3;
+    Logger logger = Logger.getLogger(LilypondExporter.class.getName());
+    private static final String [] NOTES = {
+            "c", "d", "e", "f", "g", "a", "b"};
+    /**
+     * Accidental names
+     */
+    private static final String [] ACCIDENTAL_NAMES = {"eses", "es", "", "is", "isis"};
+
+    private static final String [] MAP = {
+            "c", "c", "d", "d", "e", "f", "f", "g", "g", "a", "a", "b"};
+
+    // TODO Esto no tiene en cuenta la tonalidad - los bemoles se introducen con es
+    private static final String [] ACCIDENTALS = {"", "is", "", "is", "", "", "is", "", "is", "", "is", ""};
+    /**
+     * Sharp constant
+     */
+    public static final String SHARP = "is";
+    /**
+     * Flat constant
+     */
+    public static final String FLAT = "es";
+
+    private static final String [] KEY_SIGNATURE_NOTES = {"c", "cis", "d", "ees", "e", "f", "fis", "g", "aes", "a", "bes", "b"};
+    /**
+     * Any paper format preamble
+     */
+    private String paperPreamble = null;
+
+    private void printScoreStart(ScoreSong song, PrintStream out) {
+        if (paperPreamble != null) {
+            out.println(paperPreamble);
+        }
+        out.println("\\score {");
+    }
+
+    /**
+     * Encode/replace in latex the str source string
+     * Change all non-word characters [a-zA-Z_0-9] and nonspace and not / for a -
+     * @param str
+     * @return
+     */
+    public static final String encodeString(final String str) {
+        return str.replaceAll("[^a-zA-Z0-9\\/\\s]", "-");
+    }
+
+    private void printScoreEnd(ScoreSong song, PrintStream out) {
+        StringBuilder sb = new StringBuilder();
+        out.println("}");
+        if (song.getTitle() != null) {
+            //out.println("\\header { title = \"" + LatexUtils.encodeString(song.getTitle()) + "\"}");
+            sb.append("title = \"");
+            sb.append(encodeString(song.getTitle()));
+            sb.append("\"");
+        }
+        //TODo Subtitle, author
+        /*if (song.getSubtitle() != null) {
+            sb.append(" subtitle = \"");
+            sb.append(LatexUtils.encodeString(song.getSubtitle()));
+            sb.append("\"");
+        }
+        if (song.getAuthor() != null) {
+            sb.append(" composer = \"");
+            sb.append(LatexUtils.encodeString(song.getAuthor()));
+            sb.append("\"");
+        }*/
+
+        if (sb.length() > 0) {
+            sb.insert(0, " \\header { ");
+            sb.append("}");
+        }
+
+        out.print(sb);
+    }
+    /**
+     * To visualize the startGroup and stopGroup
+     * @param out
+     */
+    private void printScoreAnalisysBracketsEngraver(PrintStream out) {
+		/*out.println("\\paper {");
+		out.println("    \\context {");
+		out.println("       \\StaffContext \\consists \"Horizontal_bracket_engraver\"");
+		out.println("}}");*/
+        //out.println("\\layout { \\context { \\Staff \\consists \"Horizontal_bracket_engraver\"}} ");
+    }
+
+    @Override
+    public void exportSong(File file, ScoreSong song) throws ExportException {
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream(file));
+            out.println("#(set-default-paper-size \"a4\" 'landscape')");
+            out.println("\\version \"2.10.15\"");
+            printScoreStart(song, out);
+            out.println("<<" ); // if it is opened with {, when we have several staves it does not work well
+            out.println(exportLilypond(song));
+            out.println(">>");
+            printScoreAnalisysBracketsEngraver(out);
+            printScoreEnd(song,out);
+
+            out.close();
+
+        } catch (FileNotFoundException e) {
+            throw new ExportException(e);
+        } catch (IM3Exception e) {
+            throw new ExportException(e);
+        }
+    }
+
+    /**
+     * Export the song to the MusixTex code
+     * @param song
+     * @return
+     * @throws ExportException
+     */
+    public StringBuilder exportLilypond(ScoreSong song) throws ExportException {
+        StringBuilder sb = new StringBuilder();
+
+        for (Staff staff: song.getStaves()) {
+            sb.append("\t\\new Staff \\with { \\consists \"Horizontal_bracket_engraver\" } {\n");
+            exportStaff(staff, sb);
+
+            sb.append("}\n"); // end staff
+        }
+        //sb.append(">>\n");
+        return sb;
+    }
+
+    private void exportStaff(Staff staff, StringBuilder sb) throws ExportException {
+        // TODO: 28/9/17 Clef, key and meter changes
+        if (staff.getClefs().size() != 1) {
+            throw new ExportException("Supported just 1 clef in the staff, there are: " + staff.getClefs().size());
+        }
+        if (staff.getKeySignatures().size() != 1) {
+            throw new ExportException("Supported just 1 key signatures in the staff, there are: " + staff.getKeySignatures().size());
+        }
+        if (staff.getTimeSignatures().size() != 1) {
+            throw new ExportException("Supported just 1 time signatures in the staff, there are: " + staff.getTimeSignatures().size());
+        }
+
+        if (staff.getName() != null) {
+            sb.append("\\\t\tset Staff.instrument = \"" + staff.getName() + "\" \n");
+        }
+
+        exportClef(staff, staff.getClefAtTime(Time.TIME_ZERO), sb);
+        exportKeySignature(staff, staff.getKeySignatureWithOnset(Time.TIME_ZERO), sb);
+        exportTimeSignature(staff, staff.getTimeSignatureWithOnset(Time.TIME_ZERO), sb);
+
+        generateStaff(staff, staff.getKeySignatureWithOnset(Time.TIME_ZERO).getInstrumentKey(), sb);
+    }
+
+    private void exportTimeSignature(Staff staff, TimeSignature timeSignature, StringBuilder sb) throws ExportException {
+        if (timeSignature instanceof FractionalTimeSignature) {
+            FractionalTimeSignature fts = (FractionalTimeSignature) timeSignature;
+            sb.append("\t\t\\time " + fts.getNumerator() + "/"
+                    + fts.getDenominator() + "\n");
+        } /*TODO else if (timeSignature instanceof TimeSignatureCommonTime) {
+
+        } else if (timeSignature instanceof TimeSignatureCutTime) {
+
+        } */else {
+            throw new ExportException("Unsupported time signature: " + timeSignature.getClass());
+        }
+        sb.append('\n');
+    }
+
+    private void exportKeySignature(Staff staff, KeySignature keySignature, StringBuilder sb) {
+        Key key = keySignature.getInstrumentKey();
+        sb.append("\t\t\\key " + KEY_SIGNATURE_NOTES[key.getPitchClass().getSemitonesFromC()]
+                + " \\" + (key.getMode()==Mode.MAJOR?"major":"minor"));
+        sb.append('\n');
+    }
+
+    private void exportClef(Staff staff, Clef clef, StringBuilder sb) throws ExportException {
+        sb.append("\t\t\\clef ");
+        if (clef instanceof ClefG2) {
+            sb.append("treble");
+        } else if (clef instanceof ClefF4) {
+            sb.append("bass");
+        } else if (clef instanceof ClefC1) {
+            sb.append("soprano");
+        } else {
+            throw new ExportException("Unsupported clef: " + clef.getClass().getName());
+        }
+        sb.append('\n');
+    }
+
+    /**
+     * Generates the Lilypond code for an staff
+     */
+    private void generateStaff(Staff staff, Key lastKey, StringBuilder sb) throws ExportException {
+        if (staff.getLayers().size() != 1) {
+            throw new ExportException("Supported just 1 voice per staff, there are: " + staff.getLayers().size()); // TODO: 28/9/17
+        }
+
+        ScoreLayer voice = staff.getLayers().get(0);
+        for (Atom atom: voice.getAtomsSortedByTime()) {
+            if (atom instanceof SimpleRest) {
+                generateRest((SimpleRest) atom, sb);
+            } else if (atom instanceof SimpleNote) {
+                generateNote((SimpleNote) atom, lastKey, sb);
+            } else {
+                throw new ExportException("Unsupported " + atom.getClass().getName());
+            }
+            sb.append(' ');
+        }
+    }
+
+    private void generateNote(SimpleNote note, Key lastKey, StringBuilder sb) throws ExportException {
+        generateNoteName(note.getPitch(), sb);
+        generateDuration(note.getAtomFigure(), sb);
+    }
+
+    private void generateRest(SimpleRest rest, StringBuilder sb) {
+        sb.append('r');
+        generateDuration(rest.getAtomFigure(), sb);
+    }
+
+    private void generateDuration(AtomFigure atomFigure, StringBuilder sb) {
+        sb.append(atomFigure.getFigure().getMeterUnit());
+        for (int i=0; i<atomFigure.getDots(); i++) {
+            sb.append('.');
+        }
+    }
+
+
+
+    private void generateNoteName(ScientificPitch pitch, StringBuilder sb) throws ExportException {
+        sb.append(pitch.getPitchClass().getNoteName().name().toLowerCase());
+        // TODO: 28/9/17 Alteraciones necesarias sólo?
+        switch (pitch.getPitchClass().getAccidental()) {
+            case SHARP:
+                sb.append('#');
+                break;
+            case FLAT:
+                sb.append('b');
+                break;
+            case NATURAL:
+                // no-op
+                break;
+            default:
+                throw new ExportException("Unsupported accidental: " + pitch.getPitchClass().getAccidental());
+        }
+
+        int relativeOctave = pitch.getOctave() - CENTRAL_OCTAVE;
+        if (relativeOctave > 0) {
+            while (relativeOctave > 0) { // upper octaves
+                sb.append("'");
+                relativeOctave --;
+            }
+        } else {
+            while (relativeOctave < 0) { // lower octaves
+                sb.append(",");
+                relativeOctave ++;
+            }
+        }
+    }
+    /**
+     * Export for a PNG format using measure
+     * @param f
+     * @param fromMeasure
+     * @param toMeasure
+     * @param song
+     * @throws ExportException
+     */
+    /*public void exportSongForPNG(File outputFile, int fromMeasure, int toMeasure, Song song) throws ExportException {
+        int [] voiceNumbers = new int[song.getNumVoices()];
+        for (int i=0; i<voiceNumbers.length; i++) {
+            voiceNumbers[i] = i+1;
+        }
+
+        paperPreamble = "\\paper{\n"
+                +"indent=0\\mm\n"
+                +"oddFooterMarkup=##f\n"
+                +"oddHeaderMarkup=##f\n"
+                +"bookTitleMarkup = ##f\n"
+                +"scoreTitleMarkup = ##f\n"
+                + "}\n";
+        this.exportSong(outputFile, song, voiceNumbers, fromMeasure, toMeasure);
+
+    }*/
+
+    /**
+     * Create a lilypond file ready to generate an EPS with the command: lilypond -b png -dno-gs-load-fonts -dinclude-eps-fonts <file>
+     * @param outputFile
+     * @param song
+     * @throws ExportException
+     */
+    /*public void exportSongForPNG(File outputFile, Song song) throws ExportException {
+        paperPreamble = "\\paper{\n"
+                +"indent=0\\mm\n"
+                +"oddFooterMarkup=##f\n"
+                +"oddHeaderMarkup=##f\n"
+                +"bookTitleMarkup = ##f\n"
+                +"scoreTitleMarkup = ##f\n"
+                + "}\n";
+        this.exportSong(outputFile, song);
+    }    */
+
+    /**
+     * Create a lilypond file ready to generate an EPS with the command: lilypond -b eps -dno-gs-load-fonts -dinclude-eps-fonts <file>
+     * @param outputFile
+     * @param song
+     * @throws ExportException
+     */
+    /*public void exportSongForEPS(File outputFile, Song song) throws ExportException {
+        paperPreamble = "\\paper{\n"
+                +"indent=0\\mm\n"
+                +"line-width=120\\mm\n"
+                +"oddFooterMarkup=##f\n"
+                +"oddHeaderMarkup=##f\n"
+                +"bookTitleMarkup = ##f\n"
+                +"scoreTitleMarkup = ##f\n"
+                + "}\n";
+        this.exportSong(outputFile, song);
+    }
+ */
+}

@@ -124,7 +124,7 @@ public class PageLayout extends ScoreLayout {
                         layoutCoreBarline.setLayoutStaff(lastSystem.getBottomStaff(), lastSystem.getTopStaff());
                     }
                     //TODO Quizás mejor en el system
-                    page.getCanvas().add(coreSymbol.getGraphics());
+                   // page.getCanvas().add(coreSymbol.getGraphics());
                 }
 
             }

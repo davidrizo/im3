@@ -791,7 +791,6 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					staffNumber = getOptionalAttribute(attributesMap, "staff");
 					layerNumber = getOptionalAttribute(attributesMap, "layer");
 					pendingConnector = new PendingConnector();
-					pendingConnector.staff = findStaff(staffNumber);
 					pendingConnector.tag = element;
 					pendingConnector.measure = currentMeasure;
 					pendingConnector.layer = processLayer(layerNumber);
@@ -799,6 +798,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					pendingConnector.tstamp2 = getOptionalAttribute(attributesMap, "tstamp2");
 					pendingConnector.startid = getOptionalAttribute(attributesMap, "startid");
 					pendingConnector.endid = getOptionalAttribute(attributesMap, "endid");
+					if (staffNumber != null) {
+						pendingConnector.staff = findStaff(staffNumber);
+					}
 					if (element.equals("hairpin")) {
 						pendingConnector.content = getAttribute(attributesMap, "form");
 					}
