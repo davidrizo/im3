@@ -7,10 +7,7 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 public class PageLayout extends ScoreLayout {
     private final CoordinateComponent height;
@@ -47,23 +44,25 @@ public class PageLayout extends ScoreLayout {
         double layoutStaffStartingX = 0;
         double nextY = LayoutConstants.TOP_MARGIN;
         LayoutStaffSystem lastSystem = null;
+        Simultaneities lastLayoutSimultaneities = null;
 
         //TODO Calcular por dónde partir, por donde no quepa - ahora sólo miro los system breaks manuales
         ArrayList<LayoutCoreSymbol> newSimultaneitiesToAdd = new ArrayList<>(); // breaks, clefs, key signatures
         for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {
             if (lastSystem == null || simultaneity.isSystemBreak()) { // TODO que sea también porque no quepan
-                //TODO Crear claves y key signatures
-
                 layoutStaffStartingX = simultaneity.getX();
                 if (lastSystem != null) {
                     lastSystem.setEndingTime(simultaneity.getTime());
                 }
                 lastSystem = new LayoutStaffSystem();
+                lastLayoutSimultaneities = new Simultaneities();
                 lastSystem.setStartingTime(simultaneity.getTime());
                 lastSystem.setStartingX(layoutStaffStartingX);
                 page.addSystem(lastSystem);
 
-                nextY += LayoutConstants.SYSTEM_SEPARATION;
+                if (scoreSong.getStaves().size() > 1) {
+                    nextY += LayoutConstants.SYSTEM_SEPARATION;
+                } // if not do not need to separate more
                 // TODO - si no cabe en página que se cree otra
 
                 for (Staff staff : scoreSong.getStaves()) {
@@ -145,6 +144,8 @@ public class PageLayout extends ScoreLayout {
                 layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
             }
         }
+
+        //simultaneities.printDebug();
 
         doHorizontalLayout(simultaneities); // TODO: 26/9/17 ¿Y si cambia la anchura y hay que volver a bajar elementos de línea?
         for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {

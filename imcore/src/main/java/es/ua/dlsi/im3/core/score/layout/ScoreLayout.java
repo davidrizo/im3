@@ -82,7 +82,7 @@ public abstract class ScoreLayout {
 
     protected void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
         // Replace for a factory if required
-        ILayoutEngine layoutEngine = new BelliniLayoutEngine(2, 2, noteHeadWidth); // TODO: 22/9/17 ¿qué valor ponemos?
+        ILayoutEngine layoutEngine = new BelliniLayoutEngine(1, 1, noteHeadWidth/2); // TODO: 22/9/17 ¿qué valor ponemos?
         layoutEngine.reset(simultaneities);
         layoutEngine.doHorizontalLayout(simultaneities);
     }

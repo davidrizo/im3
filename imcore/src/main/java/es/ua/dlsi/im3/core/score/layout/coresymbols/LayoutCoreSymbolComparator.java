@@ -14,13 +14,13 @@ public class LayoutCoreSymbolComparator implements Comparator<LayoutCoreSymbol> 
     public static LayoutCoreSymbolComparator instance = null;
     HashMap<Class<? extends LayoutCoreSymbol>, Integer> orders = new HashMap<>();
     {
-        orders.put(LayoutCoreClef.class, 0);
-        orders.put(LayoutCoreKeySignature.class, 1);
-        orders.put(LayoutCoreTimeSignature.class, 2);
-        orders.put(LayoutCoreBarline.class, 3);
-        orders.put(LayoutCoreMarkBarline.class, 4);
-        orders.put(LayoutSystemBreak.class, 5);
-        orders.put(LayoutCoreSymbolWithDuration.class, 6);
+        orders.put(LayoutCoreBarline.class, 0);
+        orders.put(LayoutCoreMarkBarline.class, 0);
+        orders.put(LayoutSystemBreak.class, 1);
+        orders.put(LayoutCoreClef.class, 2);
+        orders.put(LayoutCoreKeySignature.class, 3);
+        orders.put(LayoutCoreTimeSignature.class, 4);
+        orders.put(LayoutCoreSymbolWithDuration.class, 5);
     }
 
     private LayoutCoreSymbolComparator() {

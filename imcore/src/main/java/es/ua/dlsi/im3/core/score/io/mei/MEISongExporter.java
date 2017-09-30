@@ -990,8 +990,28 @@ public class MEISongExporter implements ISongExporter {
 					fillDurationParams(atomFigure, noteParams);
 				}*/
 				processPitchesParams(atomPitch, noteParams, atomFigure.getLayer());
-				XMLExporterHelper.startEnd(sb, tabs+1, "note", noteParams);				
-			}
+
+                if (atomPitch.getLyrics() == null || atomPitch.getLyrics().isEmpty()) {
+                    XMLExporterHelper.startEnd(sb, tabs+1, "note", noteParams);
+                } else {
+				    XMLExporterHelper.start(sb, tabs+1, "note", noteParams);
+
+				    if (atomPitch.getLyrics() != null && !atomPitch.getLyrics().isEmpty()) {
+                        for (ScoreLyric scoreLyric : atomPitch.getLyrics().values()) {
+                            XMLExporterHelper.start(sb, tabs+2, "verse", "n", scoreLyric.getVerse().toString()); //TODO ID
+
+                            if (scoreLyric.getSyllabic() != null) {
+                                XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText(), "wordpos", syllabic2WordPos(scoreLyric.getSyllabic()));
+                            } else {
+                                XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText());    
+                            }
+
+                            XMLExporterHelper.end(sb, tabs+2, "verse");
+                        }
+                    }
+                    XMLExporterHelper.end(sb, tabs+1, "note");
+                }
+            }
 		}
 		/*if (atomPitches.getContinuationPitches() != null) {
 			for (AtomContinuationPitch atomContPitch: atomPitches.getContinuationPitches()) {
@@ -1007,6 +1027,19 @@ public class MEISongExporter implements ISongExporter {
 		}
 		addConnectors(atomPitches, atomPitches.getLayer()); //TODO*/ 
 	}
+
+    private String syllabic2WordPos(Syllabic syllabic) throws ExportException {
+	    switch (syllabic) {
+            case begin:
+                return "i";
+            case middle:
+                return "m";
+            case end:
+                return "t";
+            default:
+                throw new ExportException("Unsupported syllabic: " + syllabic);
+        }
+    }
 
 	/*FRACTIONS private void addNoteTies(AtomFigure note, ArrayList<String> params) {
 		//TODO esto es con los acordes, con las notas estamos repitiendo lo mismo (ver processPitchesParams)

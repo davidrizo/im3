@@ -27,13 +27,18 @@ public class ScoreLyric implements IIndexed {
     Integer verse;
     String text;
     AtomPitch owner;
+    Syllabic syllabic;
 
-    public ScoreLyric(Integer verse, AtomPitch owner, String content) {
+    public ScoreLyric(Integer verse, AtomPitch owner, String content, Syllabic syllabic) {
 	    this.owner = owner;
 	    this.verse = verse;
 	    this.text = content;
+	    this.syllabic = syllabic;
     }
 
+    public Syllabic getSyllabic() {
+        return syllabic;
+    }
 
     @Override
     public String toString() {
@@ -42,7 +47,6 @@ public class ScoreLyric implements IIndexed {
 
     @Override
     public int getIndex() {return this.verse;}
-
 
     public Integer getVerse() {
         return verse;
@@ -59,5 +63,17 @@ public class ScoreLyric implements IIndexed {
 
     public String getText() {
         return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setSyllabic(Syllabic syllabic) {
+        this.syllabic = syllabic;
+    }
+
+    public void setVerseNumber(Integer verseNumber) {
+        this.verse = verseNumber;
     }
 }

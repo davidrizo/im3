@@ -14,7 +14,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Line;
  * It draws a graphic to show where is the system break. By default it is hidden
  */
 public class LayoutSystemBreak extends LayoutCoreSymbol<SystemBreak> {
-    private Time DEFAULT_TIME_FOR_SPACE_COMPUTING = new Time(1);
+    private Time DEFAULT_TIME_FOR_SPACE_COMPUTING = new Time(1,1000); //TODO
     private final Coordinate from;
     private final Coordinate to;
     private Line line;

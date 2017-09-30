@@ -195,7 +195,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	Staff lastStaff;
 	ScoreLayer lastVoice;
 	SimpleNote currentNote;
-	private HashMap<String, AtomPitch> currentTies; // map code (stack + layer + note) - AtomPitch
+    private ScoreLyric lastVerse;
+    private HashMap<String, AtomPitch> currentTies; // map code (stack + layer + note) - AtomPitch
 	private String personRole;
 	int staffCount=0;
 	int layerCount=0;
@@ -826,20 +827,37 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     harmTime = decodeTStamp(currentMeasure, attributesMap);
                     harmType = getOptionalAttribute(attributesMap, "type");
                     break;
-				/*case "meter":
-					attributesMap = getAttributes(element, saxAttributes);
-					lastTimeSignature = new AMTimeSignature(originalPosition, time)
-					meter = lastTimeSignature.getMeter();*/
-					/*case "part":
-						attributes = getAttributes(element, saxAttributes);				
-						String label = getAttribute(attributes, "label");
-						break;*/
-				}			
+                case "verse":
+                    String verseNumberStr = getOptionalAttribute(attributesMap, "n");
+                    lastVerse = new ScoreLyric(verseNumberStr == null ? null : Integer.parseInt(verseNumberStr), lastAtomPitch, null, null);
+                    lastAtomPitch.addLyric(lastVerse);
+                    break;
+                case "syl":
+                    String sylType = getOptionalAttribute(attributesMap, "wordpos");
+                    if (sylType != null) {
+                        lastVerse.setSyllabic(wordpos2Syllabic(sylType));
+                    }
+                    break;
+				}
 			}
 		} catch (Exception e) {
 			throw new ImportException(e);
 		}
 	}
+
+    private Syllabic wordpos2Syllabic(String sylType) throws ImportException {
+        switch (sylType) {
+            case "i": // initial
+                return Syllabic.begin;
+            case "m": // middle
+                return Syllabic.middle;
+            case "t": // terminal
+                return Syllabic.end;
+            default:
+                throw new ImportException("Unknown syllabic type: " + sylType);
+
+        }
+    }
 
     private int generatePreviousAccidentalMapKey(DiatonicPitch noteName, int octave) {
         return noteName.getOrder() + octave * 7;
@@ -1192,29 +1210,32 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	public void handleElementContent(String currentElement, String content) throws ImportException {
 		try {
 			switch (currentElement) {
-				case "title": //TODO Gestionar esto bien (work, ....)  - lo único que es obligatorio es fileDesc
-					if (//song.getWork() != null && // it is inside a work 
-						"titleStmt".equals(getParentElement())) {
-						//song.getWork().setTitle(content);
-						song.addTitle(content);
-					}
-					break;
-				case "persName":
-					if (//song.getWork() != null && // it is inside a work 
-					"respStmt".equals(getParentElement()) && personRole != null) {
-						//song.getWork().addPerson(personRole, content);
-						song.addPerson(personRole, content);
-					}
-					break;
-				case "dynam":
-					addDynamics(lastStaff, content, dynamTime);
-					dynamTime = null;
-					break;
-				case "harm":
-					addHarm(content, harmTime);
-					harmTime = null;
-					break;
-				}
+                case "title": //TODO Gestionar esto bien (work, ....)  - lo único que es obligatorio es fileDesc
+                    if (//song.getWork() != null && // it is inside a work
+                            "titleStmt".equals(getParentElement())) {
+                        //song.getWork().setTitle(content);
+                        song.addTitle(content);
+                    }
+                    break;
+                case "persName":
+                    if (//song.getWork() != null && // it is inside a work
+                            "respStmt".equals(getParentElement()) && personRole != null) {
+                        //song.getWork().addPerson(personRole, content);
+                        song.addPerson(personRole, content);
+                    }
+                    break;
+                case "dynam":
+                    addDynamics(lastStaff, content, dynamTime);
+                    dynamTime = null;
+                    break;
+                case "harm":
+                    addHarm(content, harmTime);
+                    harmTime = null;
+                    break;
+                case "syl":
+                    lastVerse.setText(content);
+                    break;
+            }
 		} catch (IM3Exception e) {
 			throw new ImportException(e);
 		}

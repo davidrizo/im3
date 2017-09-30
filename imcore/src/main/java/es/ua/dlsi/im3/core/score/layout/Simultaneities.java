@@ -34,4 +34,5 @@ public class Simultaneities {
     public TreeSet<Simultaneity> getSimiltaneities() {
         return simultaneities;
     }
+
 }

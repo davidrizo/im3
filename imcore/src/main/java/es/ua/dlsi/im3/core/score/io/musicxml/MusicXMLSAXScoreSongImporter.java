@@ -81,6 +81,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	//AMBeam lastBeam;
 	HashMap<Integer, String> lastLyrics;
     private Integer lastLyricNumber;
+	private String lastSyllabic;
+
 	//Clef lastClef;
 	//AMHairpin currentHairpin;
 	HierarchicalIDGenerator hierarchicalIdGenerator;
@@ -496,6 +498,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				} else {
 				    lastLyricNumber = Integer.parseInt(lastLyricNumberStr);
                 }
+                lastSyllabic = null;
 				
 				break;
 				// unimplemented note.play
@@ -677,7 +680,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				}*/
 				break;
 			case "syllabic":
-				//lastLyrics.setSyllabic(content);
+				lastSyllabic = content;
 				break;
 			case "text":
 			    if (lastLyricNumber == null) {
@@ -987,7 +990,11 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
             if (lastLyrics != null) {
                 for (Entry<Integer, String> lyric: lastLyrics.entrySet()) {
-                    lastAtomPitch.addLyric(lyric.getKey(), lyric.getValue());
+                	Syllabic syllabic = null;
+                	if (lastSyllabic != null) {
+						syllabic = parseSyllabic(lastSyllabic);
+					}
+                    lastAtomPitch.addLyric(lyric.getKey(), lyric.getValue(), syllabic);
                 }
             }
 
@@ -1131,6 +1138,19 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 		
 		tupletActualNotes = null;
+	}
+
+	private Syllabic parseSyllabic(String syllabic) throws ImportException {
+		switch (syllabic) {
+			case "begin":
+				return Syllabic.begin;
+			case "middle":
+				return Syllabic.middle;
+			case "end":
+				return Syllabic.end;
+			default:
+				throw new ImportException("Unknown syllabic: " + syllabic);
+		}
 	}
 
 

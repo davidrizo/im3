@@ -2,7 +2,9 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.layout.Simultaneity;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -10,7 +12,6 @@ import java.util.*;
  */
 public class LayoutStaffSystem {
     SortedMap<Staff, LayoutStaff> layoutStaves = null;
-
     /**
      * Used for page layout
      */
@@ -69,5 +70,20 @@ public class LayoutStaffSystem {
 
     public Collection<LayoutStaff> getStaves() {
         return layoutStaves.values();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LayoutStaffSystem that = (LayoutStaffSystem) o;
+
+        return startingTime.equals(that.startingTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return startingTime.hashCode();
     }
 }

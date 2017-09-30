@@ -243,11 +243,24 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 		return lyrics;
 	}
 
-    public void addLyric(Integer ssl, String text) {
+    public void addLyric(Integer ssl, String text, Syllabic syllabic) {
         if (lyrics == null) {
             lyrics = new TreeMap<>();
         }
-        lyrics.put(ssl, new ScoreLyric(ssl, this, text));
+        lyrics.put(ssl, new ScoreLyric(ssl, this, text, syllabic));
     }
 
+	public void addLyric(ScoreLyric scoreLyric) {
+		if (lyrics == null) {
+			lyrics = new TreeMap<>();
+		}
+
+		Integer verseNumber = scoreLyric.getVerse();
+		if (verseNumber == null) {
+			verseNumber = lyrics.size() + 1;
+			scoreLyric.setVerseNumber(verseNumber);
+		}
+
+		lyrics.put(verseNumber, scoreLyric);
+	}
 }

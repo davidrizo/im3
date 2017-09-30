@@ -1,10 +1,7 @@
 package es.ua.dlsi.im3.core.score.io;
 
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.*;
@@ -735,6 +732,37 @@ public class XMLExporterImporterTest {
         doTest(XMLExporterImporterTest::assertSystemBreaks, importMEI(TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.mei")));
         doTest(XMLExporterImporterTest::assertSystemBreaks, importMusicXML(TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.xml")));
     }
+
+
+	// ------------------------------------------------------------------------------------------
+	private static Void assertMelisma(ScoreSong song) {
+		try {
+			assertEquals(1, song.getStaves().size());
+			List<AtomPitch> atomPitches = song.getStaves().get(0).getAtomPitches();
+			assertEquals(9, atomPitches.size());
+			assertNotNull("Has lyrics", atomPitches.get(0).getLyrics());
+            assertEquals(1, atomPitches.get(0).getLyrics().size());
+            assertEquals("Glo", atomPitches.get(0).getLyrics().firstEntry().getValue().getText());
+			assertEquals(Syllabic.begin, atomPitches.get(0).getLyrics().firstEntry().getValue().getSyllabic());
+			for (int i=1; i<7; i++) {
+				assertNull(atomPitches.get(i).getLyrics());
+			}
+			assertEquals("ri", atomPitches.get(7).getLyrics().firstEntry().getValue().getText());
+			assertEquals(Syllabic.middle, atomPitches.get(7).getLyrics().firstEntry().getValue().getSyllabic());
+			assertEquals("a", atomPitches.get(8).getLyrics().firstEntry().getValue().getText());
+			assertEquals(Syllabic.end, atomPitches.get(8).getLyrics().firstEntry().getValue().getSyllabic());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		return null;
+	}
+	@Test
+	public void melisma() throws Exception {
+		doTest(XMLExporterImporterTest::assertMelisma, importMEI(TestFileUtils.getFile("/testdata/core/score/io/melisma.mei")));
+		doTest(XMLExporterImporterTest::assertMelisma, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/melisma.xml")));
+	}
+
 
 	//TODO Grace notes, slurs, tuplet dentro de tuplet
 	// tuplet con elementos en distintos staves, tuplet con acordes con notas en distintos staves
