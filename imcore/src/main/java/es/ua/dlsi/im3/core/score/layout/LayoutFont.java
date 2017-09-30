@@ -7,6 +7,8 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGFont;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGFontImporter;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import org.apache.fontbox.ttf.OTFParser;
 import org.apache.fontbox.ttf.OpenTypeFont;
@@ -24,6 +26,9 @@ public class LayoutFont {
     SVGFont svgFont;
     //TODO Font para PDF
     JSONGlyphNamesReader mapping;
+    Font javaFXTextFont;
+    Text javaFXTextForSizes;
+    double textHeightInPixels;
 
     /**
      * @param otfMusicFontResource Typically a file with the font
@@ -46,6 +51,11 @@ public class LayoutFont {
         }
 
         javaFXScale = new Scale(getScaleX(), getScaleY());
+        javaFXTextFont = Font.loadFont(otfMusicFontResource, LayoutConstants.TEXT_FONT_SIZE);
+        javaFXTextForSizes = new Text(0, 0, "X");
+        javaFXTextForSizes.setFont(javaFXTextFont);
+        textHeightInPixels = javaFXTextForSizes.getBoundsInLocal().getHeight();
+
     }
 
 
@@ -84,5 +94,12 @@ public class LayoutFont {
     public double getScaleY() {
         return -LayoutConstants.EM / svgFont.getUnitsPerEM(); // TODO: 17/9/17 El -1 es para Bravura sólo ?
     }
-    
+
+    public Font getJavaFXTextFont() {
+        return javaFXTextFont;
+    }
+
+    public double getTextHeightInPixels() {
+        return textHeightInPixels;
+    }
 }

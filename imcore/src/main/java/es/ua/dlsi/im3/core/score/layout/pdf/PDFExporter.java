@@ -27,7 +27,7 @@ public class PDFExporter implements IGraphicsExporter {
     public PDFExporter() {
     }
 
-    private void generatePDF(PDDocument document, Canvas canvas, LayoutFont layoutFont) throws ExportException {
+    private void generatePDF(PDDocument document, Canvas canvas) throws ExportException {
         PDPage page = new PDPage();
         //page.setCropBox(new PDRectangle(30, 30, page.getCropBox().getWidth()-30, page.getCropBox().getHeight()-30));
         document.addPage(page);
@@ -50,7 +50,7 @@ public class PDFExporter implements IGraphicsExporter {
     private void generatePDF(PDDocument document, ScoreLayout layout) throws ExportException {
         // TODO: 21/9/17 ¿Hacer que quepa en una página o escalamos...?
         for (Canvas canvas: layout.getCanvases()) {
-            generatePDF(document, canvas, layout.getLayoutFont());
+            generatePDF(document, canvas);
         }
     }
     @Override
@@ -80,7 +80,7 @@ public class PDFExporter implements IGraphicsExporter {
     public void exportLayout(File file, Canvas canvas, LayoutFont layoutFont) throws ExportException {
         PDDocument document = createDocument(layoutFont);
         try {
-            generatePDF(document, canvas, layoutFont);
+            generatePDF(document, canvas);
             document.save(file);
             document.close();
         } catch (IOException e) {
@@ -93,7 +93,7 @@ public class PDFExporter implements IGraphicsExporter {
         try {
             musicFont = PDType0Font.load(document, layoutFont.getOTFMusicFont(), false);
             //musicFont = PDTrueTypeFont.load(document, layoutFont.getOTFMusicFont(), StandardEncoding.INSTANCE);
-            textFont = PDTrueTypeFont.load(document, layoutFont.getOTFMusicFont(), WinAnsiEncoding.INSTANCE); //TODO ¿ñ?
+            textFont = PDTrueTypeFont.load(document, layoutFont.getOtfTextFont(), WinAnsiEncoding.INSTANCE); //TODO ¿ñ?
         } catch (IOException e) {
             throw new ExportException(e);
         }

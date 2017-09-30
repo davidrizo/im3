@@ -108,6 +108,9 @@
         <voice>1</voice>
         <type>quarter</type>
         <stem>up</stem>
+        <lyric number="1">
+          <text>Hi</text>
+        </lyric>
         </note>
       <note>
         <rest/>
@@ -142,6 +145,9 @@
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <lyric number="1">
+          <text>Bye</text>
+        </lyric>
         </note>
       <barline location="right">
         <bar-style>light-heavy</bar-style>

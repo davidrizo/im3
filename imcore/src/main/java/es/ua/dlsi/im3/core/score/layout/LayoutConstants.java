@@ -42,4 +42,8 @@ public class LayoutConstants {
      * The margin at left and right (the value is used for both sides)
      */
     public static final double NON_DURATION_SYMBOLS_LATERIAl_INSET = EM/8;
+
+    public static final double TEXT_FONT_SIZE = EM/3;
+    public static final double SEPARATION_LYRICS_STAFF = EM;
+    public static final double LYRICS_VERSE_SEPARATION = TEXT_FONT_SIZE/2;
 }

@@ -32,6 +32,7 @@ public class LayoutStaff extends NotationSymbol {
 	List<Line> lines;
 	Group group;
 
+
     public LayoutStaff(ScoreLayout scoreLayout, Coordinate leftTop, Coordinate rightTop, Staff staff) {
         lines = new ArrayList<>();
         ledgerLines = new TreeMap<>();

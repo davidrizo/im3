@@ -8,7 +8,6 @@ import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Flag;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutCoreSymbolWithDuration;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Stem;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;

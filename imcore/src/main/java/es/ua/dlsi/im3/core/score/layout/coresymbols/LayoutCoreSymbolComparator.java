@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutCoreSymbolWithDuration;
 
 import java.util.Comparator;
 import java.util.HashMap;

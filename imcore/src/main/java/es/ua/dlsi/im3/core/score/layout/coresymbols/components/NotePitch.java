@@ -54,6 +54,8 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> {
 
     private ArrayList<Dot> dots;
 
+    private LayoutScoreLyric layoutScoreLyric;
+
     private Accidental accidental;
 
     private PositionInStaff positionInStaff;
@@ -91,6 +93,15 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> {
                 root.add(dot.getGraphics());
             }
         }
+
+        if (atomPitch.getLyrics() != null && !atomPitch.getLyrics().isEmpty()) {
+            CoordinateComponent lx = new CoordinateComponent(position.getX());
+            Coordinate lyricPos = new Coordinate(lx, null);
+
+            layoutScoreLyric = new LayoutScoreLyric(this, layoutFont, lyricPos);
+            lx.setDisplacement(-layoutScoreLyric.getWidth() / 2); // center
+            root.add(layoutScoreLyric.getGraphics());
+        }
     }
 
     public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
@@ -109,6 +120,9 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> {
         }
         if (accidental != null) {
             accidental.getPosition().setReferenceY(noteHeadPictogram.getPosition().getY());
+        }
+        if (layoutScoreLyric != null) {
+            layoutScoreLyric.getPosition().setReferenceY(layoutStaff.getBottomLine().getPosition().getY());
         }
     }
 
