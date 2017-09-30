@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.io.lilypond;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
@@ -13,8 +14,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
+//TODO Distintas voces dentro del staff
 public class LilypondExporter implements ISongExporter {
     private static final int CENTRAL_OCTAVE = 3;
     Logger logger = Logger.getLogger(LilypondExporter.class.getName());
@@ -44,6 +48,8 @@ public class LilypondExporter implements ISongExporter {
      * Any paper format preamble
      */
     private String paperPreamble = null;
+    private ArrayList<String> lastLyrics;
+    private ScoreLyric lastLyric;
 
     private void printScoreStart(ScoreSong song, PrintStream out) {
         if (paperPreamble != null) {
@@ -144,11 +150,32 @@ public class LilypondExporter implements ISongExporter {
 
             sb.append("}\n"); // end staff
         }
+        // lyrics
+        if (!lastLyrics.isEmpty()) {
+            sb.append("\t\t\\new Lyrics \\lyricsto \"v1\"{\n"); //TODO v1 --> voz
+            boolean first = true;
+            for (String l: lastLyrics) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(' ');
+                }
+                sb.append(l);
+            }
+            sb.append("\t\t}\n");
+        }
         //sb.append(">>\n");
         return sb;
     }
 
     private void exportStaff(Staff staff, StringBuilder sb) throws ExportException {
+        if (staff.getNotationType() == NotationType.eMensural) {
+            sb.append("\t\\new MensuralVoice  = \"v1\" {\n"); //TODO v1 --> voz
+        } else {
+            //sb.append("\t\\new Staff  \\with { \\consists \"Horizontal_bracket_engraver\" } {\n");
+            sb.append("\t\\new Voice = \"v1\" {\n");
+        }
+
         // TODO: 28/9/17 Clef, key and meter changes
         // TODO: 28/9/17 System break with \break
         if (staff.getClefs().size() != 1) {
@@ -172,6 +199,8 @@ public class LilypondExporter implements ISongExporter {
         sb.append("\\absolute {\n");
         generateStaff(staff, staff.getKeySignatureWithOnset(Time.TIME_ZERO).getInstrumentKey(), sb);
         sb.append("}\n"); // end of absolute
+        sb.append("}\n"); // end of voice
+
     }
 
     private void exportTimeSignature(Staff staff, TimeSignature timeSignature, StringBuilder sb) throws ExportException {
@@ -234,11 +263,9 @@ public class LilypondExporter implements ISongExporter {
      * Generates the Lilypond code for an staff
      */
     private void generateStaff(Staff staff, Key lastKey, StringBuilder sb) throws ExportException {
-        if (staff.getLayers().size() != 1) {
-            throw new ExportException("Supported just 1 voice per staff, there are: " + staff.getLayers().size()); // TODO: 28/9/17
-        }
-
         ScoreLayer voice = staff.getLayers().get(0);
+        lastLyrics = new ArrayList<>();
+        lastLyric = null;
         for (Atom atom: voice.getAtomsSortedByTime()) {
             if (atom instanceof SimpleRest) {
                 generateRest((SimpleRest) atom, sb);
@@ -254,6 +281,28 @@ public class LilypondExporter implements ISongExporter {
     private void generateNote(SimpleNote note, Key lastKey, StringBuilder sb) throws ExportException {
         generateNoteName(note.getPitch(), sb);
         generateDuration(note.getAtomFigure(), sb);
+        TreeMap<Integer, ScoreLyric> scoreLyrics = note.getAtomPitch().getLyrics();
+
+        String lyrics = null;
+        ScoreLyric lyric = null;
+        if (scoreLyrics != null && !scoreLyrics.isEmpty()) {
+            if (scoreLyrics.size() > 2) {
+                throw new ExportException("Unsupported more than one verse, there are:" + scoreLyrics.size());
+            }
+            lyric = scoreLyrics.firstEntry().getValue();
+            lyrics = lyric.getText();
+        }
+
+        if (lyrics != null) {
+            lastLyrics.add(lyrics);
+        } else if (lastLyric != null && (lastLyric.getSyllabic() == Syllabic.begin || lastLyric.getSyllabic() == Syllabic.middle)) {
+            lastLyrics.add("_");
+        }
+        
+        if (lyric != null) {
+            lastLyric = lyric;
+        }
+
     }
 
     private void generateRest(SimpleRest rest, StringBuilder sb) throws ExportException {
