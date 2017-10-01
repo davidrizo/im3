@@ -177,8 +177,8 @@ public class LayoutTest {
 
     @Test
     public void horizontalLayoutSimpleBeam() throws Exception {
-        MusicXMLImporter importer = new MusicXMLImporter();
-        File file = TestFileUtils.getFile("/testdata/core/score/io/simple_beam.xml");
+        MEISongImporter importer = new MEISongImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/io/simple_beam.mei");
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));

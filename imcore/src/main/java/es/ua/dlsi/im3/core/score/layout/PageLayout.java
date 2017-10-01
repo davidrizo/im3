@@ -186,6 +186,10 @@ public class PageLayout extends ScoreLayout {
             page.getCanvas().add(connector.getGraphics());
         }
 
+        for (LayoutBeamGroup beam: beams) {
+            page.getCanvas().add(beam.getGraphicsElement());
+        }
+
     }
 
     @Override

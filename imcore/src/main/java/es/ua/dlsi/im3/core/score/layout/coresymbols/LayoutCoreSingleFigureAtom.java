@@ -16,6 +16,9 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Not used for rests
+ */
 public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom> {
     private boolean stemUp;
     Group group;
@@ -106,5 +109,19 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
 
     public boolean isStemUp() {
         return stemUp;
+    }
+
+    public Coordinate getStemEnd() throws IM3Exception {
+        if (stem == null) {
+            throw new IM3Exception("The symbol does not have flag: " + this);
+        }
+        return stem.getLineEnd();
+    }
+
+    public void removeFlag() {
+        if (flag != null) {
+            group.remove(flag.getGraphics());
+            flag = null;
+        }
     }
 }

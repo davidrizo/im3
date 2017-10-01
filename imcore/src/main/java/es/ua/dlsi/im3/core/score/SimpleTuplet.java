@@ -69,7 +69,7 @@ public class SimpleTuplet extends CompoundAtom {
 		this.eachFigure = eachFigure;
 		
 		Time eachNoteDuration = wholeDuration.divideBy(Fraction.getFraction(cardinality, 1));
-		Time currentRelativeOnset = Time.TIME_ZERO;
+		//1-Oct Time currentRelativeOnset = Time.TIME_ZERO;
 		
 		for (ScientificPitch [] scientificPitches : chordPitches) {
 			SingleFigureAtom element;
@@ -81,11 +81,11 @@ public class SimpleTuplet extends CompoundAtom {
 				element = new SimpleChord(eachFigure, 0, eachNoteDuration, scientificPitches);
 			}
 			element.setParentAtom(this);
-			element.setRelativeOnset(currentRelativeOnset);
+			//1-Oct element.setRelativeOnset(currentRelativeOnset);
 			//element.setDuration(eachNoteDuration);
 			element.setDuration(computeDuration(element, eachNoteDuration, eachFigure));
 			addSubatom(element);
-			currentRelativeOnset = currentRelativeOnset.add(element.getDuration());
+			//1-Oct currentRelativeOnset = currentRelativeOnset.add(element.getDuration());
 		}		
 
 	}

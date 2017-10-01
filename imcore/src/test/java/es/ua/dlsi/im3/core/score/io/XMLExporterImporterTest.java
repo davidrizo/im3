@@ -774,6 +774,11 @@ public class XMLExporterImporterTest {
             assertEquals(BeamedGroup.class, atoms.get(1).getClass());
             assertEquals(4, atoms.get(1).getAtoms().size());
             assertEquals(SimpleRest.class, atoms.get(2).getClass());
+
+            List<ITimedElementInStaff> coreSymbolsInStaff = song.getStaves().get(0).getCoreSymbolsOrdered();
+            assertEquals(6, coreSymbolsInStaff.size());
+            assertEquals(BeamedGroup.class, coreSymbolsInStaff.get(3).getClass());
+            assertEquals(BeamedGroup.class, coreSymbolsInStaff.get(4).getClass());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());

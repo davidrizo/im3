@@ -78,6 +78,10 @@ public class HorizontalLayout extends ScoreLayout {
             canvas.add(connector.getGraphics());
         }
 
+        for (LayoutBeamGroup beam: beams) {
+            canvas.add(beam.getGraphicsElement());
+        }
+
     }
 
     @Override

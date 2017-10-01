@@ -249,7 +249,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private Measure currentMeasure;
     private KernImporter kernImporter; // used for importing <harm>
     private String beamedGroupXMLID;
-    private ArrayList<Atom> beamedGroupElements;
+    private ArrayList<SingleFigureAtom> beamedGroupElements;
 
 
 
@@ -328,7 +328,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		if (tupletElements != null) {
             tupletElements.add(atom);
         } else if (beamedGroupElements != null) {
-            beamedGroupElements.add(atom);
+		    if (!(atom instanceof SingleFigureAtom)) {
+		        throw new ImportException("Cannot put a " + atom.getClass() + " into a beamed group");
+            }
+            beamedGroupElements.add((SingleFigureAtom) atom);
         } else {
             lastVoice.add(atom); // sets the time
             //lastChord.setTime(getCurrentTime());
@@ -541,6 +544,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					tupletElements = new ArrayList<>();
 					break;
 				case "beam":
+                    beamedGroupXMLID = getOptionalAttribute(attributesMap, "xml:id");
 				    beamedGroupElements = new ArrayList<>();
 					break;
 				case "chord":
@@ -1346,7 +1350,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				break;
 			case "beam":
                 BeamedGroup beamedGroup = new BeamedGroup(false);
-                for (Atom atom: beamedGroupElements) {
+                for (SingleFigureAtom atom: beamedGroupElements) {
                     beamedGroup.addSubatom(atom);
                 }
                 beamedGroupElements = null;

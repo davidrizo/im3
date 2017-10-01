@@ -47,7 +47,6 @@ public abstract class SingleFigureAtom extends Atom {
 
 	public void setRelativeOnset(Time relativeOnset) {
 		this.atomFigure.setRelativeOnset(relativeOnset);
-		
 	}
 
 	@Override

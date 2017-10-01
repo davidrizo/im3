@@ -9,11 +9,20 @@ public class CompoundAtom extends Atom {
 	private List<Atom> subatoms;
 	
 	public CompoundAtom() {
-		subatoms = new ArrayList<>();
+	    subatoms = new ArrayList<>();
 	}
 	public void addSubatom(Atom subatom) throws IM3Exception {
 		this.subatoms.add(subatom);
 		subatom.setParentAtom(this);
+        //1-Oct
+        Time currentDuration = this.getDuration();
+        /*
+        for (AtomFigure atomFigure: subatom.getAtomFigures()) {
+            atomFigure.setRelativeOnset(currentDuration);
+        }*/
+        subatom.setTime(currentDuration);
+
+
 		addDuration(subatom.getDuration());
 	}
 	

@@ -45,6 +45,9 @@ public class Simultaneity implements Comparable<Simultaneity> {
      * @param firstSymbol First inserted symbol. The simultaneity needs at least one symbol
      */
     public Simultaneity(LayoutCoreSymbol firstSymbol) throws IM3Exception {
+        if (firstSymbol == null) {
+            throw new IM3Exception("The symbol cannot be null");
+        }
         this.time = firstSymbol.getTime();
         this.order = LayoutCoreSymbolComparator.getInstance().getOrder(firstSymbol);
         symbols = new ArrayList<>();
