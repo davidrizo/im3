@@ -156,6 +156,24 @@ public class LayoutTest {
 
     }
 
+    @Test
+    public void horizontalLayoutSimpleTie() throws Exception {
+        MusicXMLImporter importer = new MusicXMLImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/io/simple_tie.xml");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(960), new CoordinateComponent(700));
+        layout.layout();
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("simple_tie.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("simple_tie.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+    }
+
 
     // Just test it does not crash
     // FIXME: 21/9/17 Commented until M

@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Slur;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
@@ -29,6 +30,7 @@ public abstract class ScoreLayout {
     protected final double noteHeadWidth;
     protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbols;
     protected final List<LayoutCoreBarline> barlines;
+    protected final List<LayoutConnector> connectors;
 
     public ScoreLayout(ScoreSong song, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         this.scoreSong = song;
@@ -36,6 +38,7 @@ public abstract class ScoreLayout {
         layoutSymbolFactory = new LayoutSymbolFactory();
         simultaneities = new Simultaneities();
         barlines = new ArrayList<>();
+        connectors = new ArrayList<>();
 
         Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT, // TODO: 22/9/17 Quizás esto debería ser cosa del FontLayout
                 new Coordinate(new CoordinateComponent(0),
@@ -74,11 +77,18 @@ public abstract class ScoreLayout {
                 barlines.add(barline);
             }
 
+            createConnectors();
+            
             //layoutStaff.createBeaming();
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
         }
     }
+
+    /**
+     * This must be implemented in the different layout. A connector, e.g. a slur, could be split between staves
+     */
+    protected abstract void createConnectors() throws IM3Exception;
 
     protected void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
         // Replace for a factory if required
@@ -94,4 +104,10 @@ public abstract class ScoreLayout {
     public LayoutFont getLayoutFont() {
         return layoutFont;
     }
+
+    protected void addConnector(Slur connector) {
+        this.connectors.add(connector);
+    }
+
+
 }

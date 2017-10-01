@@ -21,6 +21,11 @@ public class PageLayout extends ScoreLayout {
     }
 
     @Override
+    protected void createConnectors() {
+        System.err.println("TO-DO CONNECTORS IN PAGE LAYOUT"); // TODO: 1/10/17 Connectors en Page Layout
+    }
+
+    @Override
     public void layout() throws IM3Exception {
         // TODO: 19/9/17 En esta versión creamos todos los símbolos cada vez - habría que crear sólo los necesarios
         //TODO scoreSong.getStaffGroups()
@@ -174,6 +179,8 @@ public class PageLayout extends ScoreLayout {
 
             }
         }
+
+        // TODO: 1/10/17 Add connectors to the canvas
     }
 
     @Override

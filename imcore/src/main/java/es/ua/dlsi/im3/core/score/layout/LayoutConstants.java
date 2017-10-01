@@ -46,4 +46,7 @@ public class LayoutConstants {
     public static final double TEXT_FONT_SIZE = EM/3;
     public static final double SEPARATION_LYRICS_STAFF = EM/8;
     public static final double LYRICS_VERSE_SEPARATION = TEXT_FONT_SIZE/2;
+
+    public static final double SLUR_HEIGHT = EM/3;
+    public static final double SEPARATION_NOTE_SLUR = EM/5;
 }

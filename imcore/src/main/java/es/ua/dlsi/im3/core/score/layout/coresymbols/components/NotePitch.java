@@ -3,10 +3,8 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols.components;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.layout.Coordinate;
-import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
-import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
-import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.*;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.IConnectableWithSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -16,7 +14,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class NotePitch extends Component<LayoutCoreSingleFigureAtom> {
+public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements IConnectableWithSlur {
     private static final HashMap<Figures, String> UNICODES = new HashMap<>();
     private final Pictogram noteHeadPictogram;
     private final AtomPitch atomPitch;
@@ -59,6 +57,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> {
     private Accidental accidental;
 
     private PositionInStaff positionInStaff;
+
     /**
      * @param parent
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
@@ -176,5 +175,30 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> {
         accidental = new Accidental(layoutFont, this, alteration, alterationPosition);
         alterationPosition.getX().setDisplacement(-accidental.getWidth() - LayoutConstants.ACCIDENTAL_HEAD_SEPARATION);
         root.add(0, accidental.getGraphics());
+    }
+
+    @Override
+    public Direction getDefaultSlurDirection() {
+        if (parent.isStemUp()) {
+            return Direction.down;
+        } else {
+            return Direction.up;
+        }
+    }
+
+    // TODO: 1/10/17 El enganche en la plica se hará con el LayoutCoreSingleFigureAtom, no aquí
+    @Override
+    public Coordinate getConnectionPoint(Direction direction) {
+        double xdiplacement = noteHeadPictogram.getWidth() / 2;
+
+        double ydisplacement;
+        if (direction == Direction.up) {
+            ydisplacement = -LayoutConstants.SEPARATION_NOTE_SLUR;
+        } else {
+            ydisplacement = LayoutConstants.SEPARATION_NOTE_SLUR;
+        }
+
+        return new Coordinate(new CoordinateComponent(getNoteHeadPosition().getX(), xdiplacement),
+                new CoordinateComponent(getNoteHeadPosition().getY(), ydisplacement));
     }
 }

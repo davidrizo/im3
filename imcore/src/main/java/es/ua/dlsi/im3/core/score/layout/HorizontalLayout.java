@@ -3,11 +3,9 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolInStaff;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaffSystem;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Slur;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
@@ -16,6 +14,7 @@ import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * All systems are arranged in a single line
@@ -30,6 +29,31 @@ public class HorizontalLayout extends ScoreLayout {
     public HorizontalLayout(ScoreSong song, LayoutFonts font, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
         super(song, font);
         canvas = new Canvas(width, height);
+    }
+
+    @Override
+    protected void createConnectors() throws IM3Exception {
+        NotePitch previousNotePitch = null;
+        for (Map.Entry<Staff, List<LayoutCoreSymbolInStaff>> entry: this.coreSymbols.entrySet()) {
+            for (LayoutCoreSymbolInStaff coreSymbolInStaff: entry.getValue()) {
+                if (coreSymbolInStaff instanceof LayoutCoreSingleFigureAtom) {
+                    LayoutCoreSingleFigureAtom lcsfa = (LayoutCoreSingleFigureAtom) coreSymbolInStaff;
+                    for (NotePitch notePitch: lcsfa.getNotePitches()) {
+                        if (notePitch.getAtomPitch().isTiedFromPrevious()) {
+                            if (notePitch.getAtomPitch().getTiedFromPrevious() != previousNotePitch.getAtomPitch()) {
+                                throw new IM3Exception("Atom pitches to tie are not the same");
+                            }
+
+                            Slur tie = new Slur(previousNotePitch, notePitch);
+                            addConnector(tie);
+                        }
+
+                        previousNotePitch = notePitch;
+                    }
+                }
+            }
+        }
+
     }
 
     @Override
@@ -75,6 +99,10 @@ public class HorizontalLayout extends ScoreLayout {
         }
         doHorizontalLayout(simultaneities);
 
+        // add the connectors to the canvas
+        for (LayoutConnector connector: connectors) {
+            canvas.add(connector.getGraphics());
+        }
 
     }
 

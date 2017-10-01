@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom> {
+    private boolean stemUp;
     Group group;
     ArrayList<NotePitch> notePitches;
     Stem stem;
@@ -29,7 +30,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
 
         notePitches = new ArrayList<>();
 
-        boolean stemUp = true; // FIXME: 22/9/17 step up or down depending on beams
+        stemUp = true; // FIXME: 22/9/17 step up or down depending on beams
 
         double stemXDisplacement = 0;
         CoordinateComponent stemYPosition = null;
@@ -101,5 +102,9 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
 
     public List<NotePitch> getNotePitches() {
         return notePitches;
+    }
+
+    public boolean isStemUp() {
+        return stemUp;
     }
 }
