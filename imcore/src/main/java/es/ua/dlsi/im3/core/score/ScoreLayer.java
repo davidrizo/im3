@@ -485,7 +485,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 
     private void constructBeamIfRequired(ArrayList<SingleFigureAtom> group) throws IM3Exception {
 	    if (group != null && group.size() > 1) {
-	        BeamedGroup beamedGroup = new BeamedGroup(group.get(0).getDuration(), staff.getNotationType(), true);
+	        BeamedGroup beamedGroup = new BeamedGroup(true);
 	        for (SingleFigureAtom atom: group) {
 	            beamedGroup.addSubatom(atom);
                 remove(atom);

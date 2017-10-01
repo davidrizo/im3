@@ -763,6 +763,30 @@ public class XMLExporterImporterTest {
 		doTest(XMLExporterImporterTest::assertMelisma, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/melisma.xml")));
 	}
 
+	// ------------------------------------------------------------------------------------------
+	private static Void assertSimpleBeam(ScoreSong song) {
+		try {
+			assertEquals(1, song.getStaves().size());
+			List<Atom> atoms = song.getStaves().get(0).getAtoms();
+			assertEquals(3, atoms.size());
+			assertEquals(BeamedGroup.class, atoms.get(0).getClass());
+			assertEquals(2, atoms.get(0).getAtoms().size());
+            assertEquals(BeamedGroup.class, atoms.get(1).getClass());
+            assertEquals(4, atoms.get(1).getAtoms().size());
+            assertEquals(SimpleRest.class, atoms.get(2).getClass());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		return null;
+	}
+
+    // TODO: 1/10/17 Import beams in MusicXML
+    @Test
+	public void simpleBeam() throws Exception {
+		doTest(XMLExporterImporterTest::assertSimpleBeam, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.mei")));
+		//doTest(XMLExporterImporterTest::assertSimpleBeam, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.xml")));
+	}
 
 	//TODO Grace notes, slurs, tuplet dentro de tuplet
 	// tuplet con elementos en distintos staves, tuplet con acordes con notas en distintos staves

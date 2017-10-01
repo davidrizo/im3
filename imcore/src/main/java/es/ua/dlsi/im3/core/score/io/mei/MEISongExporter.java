@@ -943,13 +943,17 @@ public class MEISongExporter implements ISongExporter {
 					throw new UnsupportedOperationException("Unsupported yet: " + atom.getClass());
 				}
 			}
-		} else if (atom instanceof BeamGroup) {
-				XMLExporterHelper.start(sb, tabs, "beam", params);
-				BeamGroup beam = (BeamGroup) atom;
-				for (Atom beamAtom: beam.getAtoms()) {
-					processAtom(tabs, beamAtom, defaultStaff);
-				}
-				XMLExporterHelper.end(sb, tabs, "beam");				
+		} else if (atom instanceof BeamedGroup) {
+            BeamedGroup beam = (BeamedGroup) atom;
+            if (!beam.isComputedBeam()) {
+                XMLExporterHelper.start(sb, tabs, "beam", params);
+            }
+            for (Atom beamAtom : beam.getAtoms()) {
+                processAtom(tabs, beamAtom, defaultStaff);
+            }
+            if (!beam.isComputedBeam()) {
+                XMLExporterHelper.end(sb, tabs, "beam");
+            }
 		} else if (atom instanceof SimpleTuplet) {
 				SimpleTuplet tuplet = (SimpleTuplet) atom;
 				params.add("num");

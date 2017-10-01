@@ -16,12 +16,11 @@ public class BeamedGroupTest {
         ScoreSong song = new ScoreSong();
         ScorePart part = song.addPart();
         ScoreLayer layer = part.addScoreLayer();
-        BeamedGroup eighth = new BeamedGroup(Figures.EIGHTH.getDuration(), NotationType.eModern, false);
-        assertEquals(1, eighth.getNumBeams());
+        BeamedGroup eighth = new BeamedGroup(false);
         SimpleNote n1 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(pitches[0], 4));
         eighth.addSubatom(n1);
 
-        BeamedGroup sixteen = new BeamedGroup(Figures.SIXTEENTH.getDuration(),  NotationType.eModern, false);
+        BeamedGroup sixteen = new BeamedGroup(false);
         SimpleNote n2 = new SimpleNote(Figures.SIXTEENTH, 0, new ScientificPitch(pitches[1], 4));
         SimpleNote n3 = new SimpleNote(Figures.SIXTEENTH, 0, new ScientificPitch(pitches[2], 4));
         sixteen.addSubatom(n2);

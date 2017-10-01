@@ -31,12 +31,11 @@ public class LayoutBeamedGroupTest {
         ScoreLayer layer = part.addScoreLayer();
         staff.addLayer(layer);
 
-        BeamedGroup eighth = new BeamedGroup(Figures.EIGHTH.getDuration(), NotationType.eModern, false);
-        assertEquals(1, eighth.getNumBeams());
+        BeamedGroup eighth = new BeamedGroup(false);
         SimpleNote n1 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.C, 4));
         eighth.addSubatom(n1);
 
-        BeamedGroup sixteen = new BeamedGroup(Figures.SIXTEENTH.getDuration(),  NotationType.eModern, false);
+        BeamedGroup sixteen = new BeamedGroup(false);
         SimpleNote n2 = new SimpleNote(Figures.SIXTEENTH, 0, new ScientificPitch(PitchClasses.D, 4));
         SimpleNote n3 = new SimpleNote(Figures.SIXTEENTH, 0, new ScientificPitch(PitchClasses.E, 4));
         sixteen.addSubatom(n2);

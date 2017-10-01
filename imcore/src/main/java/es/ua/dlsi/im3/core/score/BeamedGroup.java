@@ -6,48 +6,29 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import org.apache.commons.lang3.math.Fraction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
- * Group of notes, rests, or other beamed groups
+ * Group of notes, rests, or other beamed groups. The number of beams should be deduced from the duration of the included atoms
  * @author drizo
  */
 public class BeamedGroup extends CompoundAtom {
-    private final Time eachElementDuration;
     /**
      * True if the beam is not explicitly created but computed by our layout algorithms
      */
     boolean computedBeam;
 
-    Figures eachElementFigure;
-
-    final private NotationType notationType;
-
-    public BeamedGroup(Time eachElementDuration, NotationType notationType, boolean computedBeam) throws IM3Exception {
+    public BeamedGroup(boolean computedBeam) throws IM3Exception {
         this.computedBeam = computedBeam;
-        this.notationType = notationType;
-        this.eachElementDuration = eachElementDuration;
-        eachElementFigure = Figures.findDuration(eachElementDuration, notationType);
-    }
-
-    @Override
-    public void addSubatom(Atom subatom) throws IM3Exception {
-        if (!subatom.getDuration().equals(eachElementDuration)) {
-            throw new IM3Exception("The duration of the subatom should be " + eachElementDuration + " and it is " + subatom.getDuration());
-        }
-        super.addSubatom(subatom);
     }
 
     @Override
 	public String toString() {
-		return "Beamed group of " + eachElementDuration + ", computed?:" + computedBeam + ", " + super.toString();
+		return "Beamed group, computed?:" + computedBeam + ", " + super.toString();
 	}
 
     public boolean isComputedBeam() {
         return computedBeam;
-    }
-
-    public int getNumBeams() {
-        return eachElementFigure.getNumFlags();
     }
 }

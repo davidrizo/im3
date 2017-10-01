@@ -205,7 +205,6 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	StaffTimedPlaceHolder currentStaffTimedPlaceHolder;
 	HashMap<Time, StaffTimedPlaceHolder> placeHolders;
 	protected boolean importingMusic = false;
-	BeamGroup currentBeam;
 	private SimpleChord lastChord;
 	private Time dynamTime;
     private Time harmTime;
@@ -249,8 +248,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     private ArrayList<SimpleMultiMeasureRest> pendingMultiMeasureRestsToSetDuration;
 	private Measure currentMeasure;
     private KernImporter kernImporter; // used for importing <harm>
+    private String beamedGroupXMLID;
+    private ArrayList<Atom> beamedGroupElements;
 
-	@Override
+
+
+    @Override
 	protected void init() throws ParserConfigurationException, SAXException, IM3Exception {
 		song = new ScoreSong(); //TODO ¿Y si es una colección?
 		staffNumbers = new HashMap<>();
@@ -264,6 +267,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		layers = new HashMap<>();
 		maximumVoicesTime = Time.TIME_ZERO;
 		lastMeasureEndTime = Time.TIME_ZERO;
+        beamedGroupElements = null;
 	}
 	
 	/*private String getLayerCode() throws ImportException {
@@ -318,22 +322,23 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		xmlIDs.put(xmlid, object);
 	}
 
-	private void addElementToVoiceStaffOrTuplet(Atom atom, String xmlid, HashMap<String, String> attributesMap, Staff elementStaff) throws ImportException, IM3Exception {
+	private void addElementToVoiceStaffOrTupletOrBeam(Atom atom, String xmlid, HashMap<String, String> attributesMap, Staff elementStaff) throws ImportException, IM3Exception {
 		setXMLID(xmlid, atom);
-		
-		if (tupletElements == null) { //TODO Tuplet dentro de tuplet
-			lastVoice.add(atom); // sets the time
+
+		if (tupletElements != null) {
+            tupletElements.add(atom);
+        } else if (beamedGroupElements != null) {
+            beamedGroupElements.add(atom);
+        } else {
+            lastVoice.add(atom); // sets the time
             //lastChord.setTime(getCurrentTime());
-			elementStaff.addCoreSymbol(atom); // if note it will be inserted as staff change in other place
-			//lastChord.setStaff(lastStaff); in addCoreSymbol
-			if (atom instanceof SingleFigureAtom && !(atom instanceof SimpleMultiMeasureRest)) {
-				processPossibleMensuralImperfection(attributesMap, ((SingleFigureAtom)atom).getAtomFigure());
-			}
-			updateCurrentTime();
-		} else {
-			tupletElements.add(atom);
-		}
-		
+            elementStaff.addCoreSymbol(atom); // if note it will be inserted as staff change in other place
+            //lastChord.setStaff(lastStaff); in addCoreSymbol
+            if (atom instanceof SingleFigureAtom && !(atom instanceof SimpleMultiMeasureRest)) {
+                processPossibleMensuralImperfection(attributesMap, ((SingleFigureAtom)atom).getAtomFigure());
+            }
+            updateCurrentTime();
+        }
 	}
 	
 	@Override
@@ -536,9 +541,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					tupletElements = new ArrayList<>();
 					break;
 				case "beam":
-					//TODO currentBeam = new Beam(null, null, null, n);
-					// Cuidado cuando es tuplet - ¿cómo lo debemos modelar? - 
-					// ¿cómo atom con duración o como simple grupo?
+				    beamedGroupElements = new ArrayList<>();
 					break;
 				case "chord":
 					//TODO stem dir
@@ -554,7 +557,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					//}
 					
 					lastChord = new SimpleChord(figure, dots);
-					addElementToVoiceStaffOrTuplet(lastChord, xmlid, attributesMap, lastStaff);
+					addElementToVoiceStaffOrTupletOrBeam(lastChord, xmlid, attributesMap, lastStaff);
 					break;
 				case "note":
 					xmlid = getOptionalAttribute(attributesMap, "xml:id");
@@ -651,7 +654,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							lastStaff.addCoreSymbol(currentNote);
 						}*/
 						//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
-						addElementToVoiceStaffOrTuplet(currentNote, xmlid, attributesMap, elementStaff);
+						addElementToVoiceStaffOrTupletOrBeam(currentNote, xmlid, attributesMap, elementStaff);
 						//currentNote.setTime(getCurrentTime());
 						//if (currentBeam != null) {
 						//	currentBeam.addNoteOrChord(currentNote);
@@ -710,7 +713,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						elementStaff = lastStaff;
 					}
 					
-					addElementToVoiceStaffOrTuplet(rest, xmlid, attributesMap, elementStaff);
+					addElementToVoiceStaffOrTupletOrBeam(rest, xmlid, attributesMap, elementStaff);
 					break;			
 				case "mRest":
 					//TODO
@@ -745,7 +748,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					}
 					
 					//rest.setTime(getCurrentTime());
-					addElementToVoiceStaffOrTuplet(mrest, xmlid, attributesMap, elementStaff);
+					addElementToVoiceStaffOrTupletOrBeam(mrest, xmlid, attributesMap, elementStaff);
 					break;
                 case "multiRest":
 						//TODO
@@ -761,7 +764,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 
 						//rest.setTime(getCurrentTime());
-						addElementToVoiceStaffOrTuplet(multiMeasureRest, xmlid, attributesMap, lastStaff);
+						addElementToVoiceStaffOrTupletOrBeam(multiMeasureRest, xmlid, attributesMap, lastStaff);
 						break;
                 case "clef":
 					//TODO No sé para qué vale el parámetro staff aquí, cuando está dentro de uno ya...
@@ -1176,7 +1179,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				//tiedNote.getAtomPitch().setTiedFromPrevious(tiedFrom);
 				tiedFrom.setTiedToNext(lastAtomPitch);
 				currentTies.remove(tieCode);
-				//addElementToVoiceStaffOrTuplet(tiedNote, xmlid, attributesMap);
+				//addElementToVoiceStaffOrTupletOrBeam(tiedNote, xmlid, attributesMap);
 			} else if (type.equals("m")) { // middle
 				tiedFrom.setTiedToNext(lastAtomPitch);
 				currentTies.remove(tieCode);
@@ -1342,8 +1345,14 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				lastChord = null;
 				break;
 			case "beam":
-				currentBeam = null;
-				break;
+                BeamedGroup beamedGroup = new BeamedGroup(false);
+                for (Atom atom: beamedGroupElements) {
+                    beamedGroup.addSubatom(atom);
+                }
+                beamedGroupElements = null;
+                beamedGroupXMLID = null;
+                addElementToVoiceStaffOrTupletOrBeam(beamedGroup, beamedGroupXMLID, null, lastStaff);
+                break;
 			case "tuplet":
 				// now create the tuplets
 				// get whole duration (without taking into account the tuplet, i.e. 8th + 8th + 8th)
@@ -1357,7 +1366,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				
 				SimpleTuplet tuplet = new SimpleTuplet(tupletNum, tupletNumBase, eachFigure, tupletElements);
 				tupletElements = null;
-				addElementToVoiceStaffOrTuplet(tuplet, tupletXMLID, null, lastStaff);
+                tupletXMLID = null;
+				addElementToVoiceStaffOrTupletOrBeam(tuplet, tupletXMLID, null, lastStaff);
 				break;
 			case "music":
 				importingMusic = false;
