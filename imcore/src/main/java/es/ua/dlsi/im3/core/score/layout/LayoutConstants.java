@@ -19,8 +19,8 @@ public class LayoutConstants {
     public static final float PDF_LEFT_MARGIN = 20;
     public static final float PDF_TOP_MARGIN = 40;
     public static final double TOP_MARGIN = PDF_TOP_MARGIN;
-    public static final double STAFF_SEPARATION = EM*2;
-    public static final double SYSTEM_SEPARATION = EM*3;
+    public static final double STAFF_SEPARATION = EM*3;
+    public static final double SYSTEM_SEPARATION = EM*4;
     /**
      * Separation between the note head and the dot
      */
@@ -44,6 +44,6 @@ public class LayoutConstants {
     public static final double NON_DURATION_SYMBOLS_LATERIAl_INSET = EM/8;
 
     public static final double TEXT_FONT_SIZE = EM/3;
-    public static final double SEPARATION_LYRICS_STAFF = EM;
+    public static final double SEPARATION_LYRICS_STAFF = EM/8;
     public static final double LYRICS_VERSE_SEPARATION = TEXT_FONT_SIZE/2;
 }

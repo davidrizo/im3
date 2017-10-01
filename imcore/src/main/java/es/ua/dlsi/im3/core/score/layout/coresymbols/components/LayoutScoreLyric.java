@@ -31,7 +31,7 @@ public class LayoutScoreLyric extends Component<NotePitch> {
 
                 Coordinate coordinate = new Coordinate(
                         position.getX(),
-                        new CoordinateComponent(y));
+                        new CoordinateComponent(position.getY(), y));
                 Text text = new Text("LYR-", layoutFont, lyrics.getText(), coordinate); //TODO ID
                 group.add(text);
             }

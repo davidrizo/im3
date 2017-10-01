@@ -128,17 +128,32 @@ public class LayoutTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/patriarca/16-1544_ES-VC_1-3-1_00003.mei");
         ScoreSong song = importer.importSong(file);
+
+
         PageLayout layout = new PageLayout(song, LayoutFonts.capitan,
                 new CoordinateComponent(2000), new CoordinateComponent(1700));
         layout.layout();
 
         SVGExporter svgExporter = new SVGExporter();
-        File svgFile = TestFileUtils.createTempFile("patriarca1.svg");
+        File svgFile = TestFileUtils.createTempFile("patriarca1_pages.svg");
         svgExporter.exportLayout(svgFile, layout);
 
         PDFExporter pdfExporter = new PDFExporter();
-        File pdfFile = TestFileUtils.createTempFile("patriarca1.pdf");
+        File pdfFile = TestFileUtils.createTempFile("patriarca1_pages.pdf");
         pdfExporter.exportLayout(pdfFile, layout);
+
+        HorizontalLayout hlayout = new HorizontalLayout(song, LayoutFonts.capitan,
+                new CoordinateComponent(2000), new CoordinateComponent(1700));
+        hlayout.layout();
+
+        SVGExporter svgExporter2 = new SVGExporter();
+        File svgFile2 = TestFileUtils.createTempFile("patriarca1_horizontal.svg");
+        svgExporter.exportLayout(svgFile2, hlayout);
+
+        PDFExporter pdfExporter2 = new PDFExporter();
+        File pdfFile2 = TestFileUtils.createTempFile("patriarca1_horizontal.pdf");
+        pdfExporter2.exportLayout(pdfFile2, hlayout);
+
     }
 
 
