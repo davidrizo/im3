@@ -75,15 +75,18 @@ public class Bezier extends Shape {
     public void generatePDF(PDPageContentStream contents, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
         try {
             contents.setStrokingColor(0, 0, 0);
+            contents.setLineWidth(2); //TODO
             try {
                 contents.moveTo(getPFDCoordinateX(page, from.getAbsoluteX()), getPFDCoordinateY(page, from.getAbsoluteY()));
-                contents.curveTo((float)controlPointFrom.getAbsoluteX(), (float)controlPointFrom.getAbsoluteY(),
-                        (float)controlPointTo.getAbsoluteX(), (float)controlPointTo.getAbsoluteY(),
-                        (float)to.getAbsoluteX(), (float)to.getAbsoluteY());
+                contents.curveTo(
+                        getPFDCoordinateX(page, controlPointFrom.getAbsoluteX()), getPFDCoordinateY(page, controlPointFrom.getAbsoluteY()),
+                        getPFDCoordinateX(page, controlPointTo.getAbsoluteX()), getPFDCoordinateY(page, controlPointTo.getAbsoluteY()),
+                        getPFDCoordinateX(page, to.getAbsoluteX()), getPFDCoordinateY(page, to.getAbsoluteY()));
             } catch (IM3Exception e) {
                 throw new ExportException(e);
             }
             contents.stroke();
+            contents.setLineWidth(1); //TODO
         } catch (IOException e) {
             throw new ExportException(e);
         }
