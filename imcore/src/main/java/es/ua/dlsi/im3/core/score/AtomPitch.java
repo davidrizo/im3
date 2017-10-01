@@ -2,13 +2,15 @@ package es.ua.dlsi.im3.core.score;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.TreeMap;
 
 /**
  * @author drizo
  */
-public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, IUniqueIDObject {
+public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, IUniqueIDObject, ITimedSymbolWithConnectors {
 	/**
 	 * The atom figure is the one this pitch is attached to, that in turn will belong to an Atom
 	 */
@@ -35,6 +37,8 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 	 * Texts: indexed by verse number
 	 */
 	TreeMap<Integer, ScoreLyric> lyrics;
+
+    ConnectorCollection connectorCollection;
 
 
 	public AtomPitch(AtomFigure atomFigure, ScientificPitch spitch) {
@@ -263,4 +267,41 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 
 		lyrics.put(verseNumber, scoreLyric);
 	}
+
+    @Override
+    public Collection<Connector> getConnectors() {
+        if (connectorCollection == null) {
+            return null;
+        } else {
+            return connectorCollection.getConnectors();
+        }
+    }
+
+    @Override
+    public void addConnector(Connector connector) {
+        if (connectorCollection == null) {
+            connectorCollection = new ConnectorCollection();
+        }
+        connectorCollection.add(connector);
+    }
+
+    @Override
+    public boolean containsConnectorFrom(ISymbolWithConnectors fromSymbol) {
+        if (connectorCollection == null) {
+            return false;
+        } else {
+            return connectorCollection.containsConnectorFrom(fromSymbol);
+        }
+
+    }
+
+    @Override
+    public boolean containsConnectorTo(ISymbolWithConnectors fromSymbol) {
+        if (connectorCollection == null) {
+            return false;
+        } else {
+            return connectorCollection.containsConnectorTo(fromSymbol);
+        }
+    }
+
 }

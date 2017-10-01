@@ -6,10 +6,10 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.IConnectableWithSlur;
 import es.ua.dlsi.im3.core.score.layout.graphics.Bezier;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
-public class Slur extends LayoutConnector {
+public class LayoutSlur extends LayoutConnector {
     protected Bezier bezier;
 
-    public Slur(IConnectableWithSlur from, IConnectableWithSlur to) throws IM3Exception {
+    public LayoutSlur(IConnectableWithSlur from, IConnectableWithSlur to) throws IM3Exception {
         // TODO: 1/10/17 Que se pueda cambiar la dirección según la posición
         Direction directionFrom = from.getDefaultSlurDirection();
         Direction directionTo = to.getDefaultSlurDirection();

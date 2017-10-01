@@ -21,7 +21,7 @@ package es.ua.dlsi.im3.core.score;
  *
  * @author drizo
  */
-public class Slur extends Connector<ITimedSymbolWithConnectors, ITimedSymbolWithConnectors> {
+public class Slur extends Connector {
     private PositionAboveBelow position;
 
 	public Slur(ITimedSymbolWithConnectors from, ITimedSymbolWithConnectors to, PositionAboveBelow position) {

@@ -816,8 +816,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					if (pendingConnectors.contains(pendingConnector)) {
 						throw new ImportException("Duplicating pending connector: " + pendingConnector);
 					}
-					pendingConnectors.add(pendingConnector);
-					break;		
+                    pendingConnectors.add(pendingConnector);
+					break;
 				case "dynam":
 					dynamTime = decodeTStamp(currentMeasure, attributesMap);
 					staffNumber = getAttribute(attributesMap, "staff");
@@ -1540,6 +1540,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			} else {
 				throw new ImportException("Missing either startid or endif for connector " + pendingConnector.tag);
 			}
+
+            AtomPitch from;
+            AtomPitch to;
 			
 			switch (pendingConnector.tag) {
 			/*case "slur":
@@ -1554,10 +1557,27 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					fromElement.addConnector(slur);
 					toElement.addConnector(slur);
 					break;*/
+                case "slur":
+                    if (fromElement instanceof SimpleNote) {
+                        from = ((SimpleNote) fromElement).getAtomPitch();
+                    } else if (!(fromElement instanceof AtomPitch)) {
+                        throw new ImportException("Unsupported slur from " + fromElement.getClass());
+                    } else {
+                        from = (AtomPitch) fromElement;
+                    }
+                    if (toElement instanceof SimpleNote) {
+                        to = ((SimpleNote) toElement).getAtomPitch();
+                    } else if (!(toElement instanceof AtomPitch)) {
+                        throw new ImportException("Unsupported slur to " + fromElement.getClass()); // TODO: 1/10/17 Slurs desde cualquier cosa (startid...): StaffTimedPlaceHolder
+                    } else {
+                        to = (AtomPitch) toElement;
+                    }
+
+                    Slur slur = new Slur(from, to);
+                    from.addConnector(slur);
+                    to.addConnector(slur);
+                    break;
 				case "tie":
-					AtomPitch from;
-					AtomPitch to;
-					
 					if (fromElement instanceof SimpleNote) {
 						 from = ((SimpleNote) fromElement).getAtomPitch();
 					} else if (!(fromElement instanceof AtomPitch)) { 

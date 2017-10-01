@@ -71,7 +71,7 @@ public class ScoreSong {
 	/**
 	 * Connectors are ordered in order to be drawn properly
 	 */
-	TreeSet<Connector<?,?>> connectors;
+	//TreeSet<Connector<?,?>> connectors;
 
 	private Time anacrusisOffset;
 
@@ -92,7 +92,7 @@ public class ScoreSong {
 		parts = new ArrayList<>();
 		staves = new ArrayList<>();
 		staffGroups = new ArrayList<StaffGroup>();
-		connectors = new TreeSet<>(new Comparator<Connector<?,?>>() {
+		/*connectors = new TreeSet<>(new Comparator<Connector<?,?>>() {
 
 			@Override
 			public int compare(Connector<?,?> o1, Connector<?,?> o2) {
@@ -104,24 +104,24 @@ public class ScoreSong {
 				return diff;
 			}
 
-		});
+		});*/
 	}
 
-	private static int compareConnectorClasses(Connector<?,?> a, Connector<?,?> b) {
+	/*private static int compareConnectorClasses(Connector<?,?> a, Connector<?,?> b) {
 		return getConnectorClassOrder(a) - getConnectorClassOrder(b);
 	}
 
 	private static int getConnectorClassOrder(Connector<?,?> o) {
-		/*if (o instanceof BeamGroup) {
-			return 0;
-		} else */if (o instanceof Slur) {
+		//if (o instanceof BeamGroup) {
+		//	return 0;
+		//} else if (o instanceof Slur) {
 			return 2;
 		} else if (o instanceof Wedge) {
 			return 2;
 		} else {
 			return 4;
 		}
-	}
+	}*/
 
 	// ----------------------------------------------------------------------
 	// ----------------------- General information
@@ -372,7 +372,6 @@ public class ScoreSong {
 	/**
 	 * It returns scorenotes alone or score notes inside chords
 	 *
-	 * @param bar
 	 * @return
 	 * @throws IM3Exception
 	 */
@@ -403,7 +402,6 @@ public class ScoreSong {
 	/**
 	 * It returns scorenotes alone or score notes inside chords
 	 *
-	 * @param segment
 	 * @return
 	 * @throws IM3Exception
 	 */
@@ -808,7 +806,7 @@ public class ScoreSong {
 	// --------------------------------
 	// ----------------------------------------------------------------------
 
-	public void addConnector(Connector<?,?> c) {
+	/*public void addConnector(Connector<?,?> c) {
 		this.connectors.add(c);
 	}
 
@@ -818,7 +816,7 @@ public class ScoreSong {
 
 	public Collection<Connector<?,?>> getConnectors() {
 		return connectors;
-	}
+	}*/
 
 	public void createVisualElementsIfNeeded() throws IM3Exception {
 		throw new UnsupportedOperationException("FRACTIONS");
@@ -933,51 +931,6 @@ public class ScoreSong {
 		if (this.getBarCount() == 0) {
 			this.createBars();
 		}
-	}*/
-
-	/**
-	 * @param layoutEngine
-	 * @param usePaging
-	 * @throws es.ua.dlsi.im3.notation.NotationException
-	 * @see Bellini, P., & Nesi, P. (2004). Automatic justification and
-	 *      line-breaking of music sheets. International Journal of
-	 *      Human-Computer Studies, 61(1), 104–137.
-	 *      doi:10.1016/j.ijhcs.2003.12.001
-	 * @param K
-	 *            tuning parameter - usually a 3 value is given by default
-	 */
-	/*FRACTIONS public void computeLayout(ILayoutEngine layoutEngine, boolean usePaging, double K, double defaultPhysicalSymbolWidth)
-			throws NotationException, IM3Exception {
-		// TODO - paging
-		double staffY = 1; //TODO - esto es el padding del primer pentagrama
-		for (Staff staff : staves) {
-			staff.setRelativeY(staffY);
-			staff.computeLocalLayout(); // needs to be computed before the
-										// horizontal layout - it computes the Y
-										// layout and default positions
-			staffY += staff.getHeight();
-		}
-
-		layoutEngine.doHorizontalLayout(K,defaultPhysicalSymbolWidth);
-		//layoutEngine.debugPrint();
-
-		double maxWidth = 0;
-		for (Staff staff : staves) {
-			staff.computeMarksAndAttachmentsLayout();
-			maxWidth = Math.max(maxWidth, staff.computeStaffWidth());
-		}
-		for (Staff staff : staves) {
-			staff.setWidth(maxWidth);
-		}
-
-		for (Connector c : connectors) { // note they are ordered so that the
-											// layout of symbols are computed
-											// in suitable order
-			c.computeLocalLayout();
-		}
-		// Logger.getLogger(Score.class.getName()).log(Level.INFO, "Minimum
-		// figureAndDots ratio found {0}", this.computedDmin);
-		// Mainly vertical layout
 	}*/
 
 	public int getNumVoices() {
@@ -1126,8 +1079,6 @@ public class ScoreSong {
 	
 	/**
 	 *
-	 * @param oldValue
-	 * @param newValue
 	 *            if null it is removed
 	 * @throws IM3Exception
 	 */
@@ -1519,9 +1470,7 @@ public class ScoreSong {
 	/**
 	 * It creates all missing measures
 	 * 
-	 * @param createIncompleteBars
 	 *            If false, the measures that are not complete are not created
-	 * @throws IM2Exception
 	 */
 	/*FRACCIONES public void createBars(boolean createIncompleteBars) throws IM3Exception {
 		createBars(this.getSongDuration(), createIncompleteBars);

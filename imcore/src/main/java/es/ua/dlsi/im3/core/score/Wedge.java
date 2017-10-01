@@ -21,7 +21,7 @@ package es.ua.dlsi.im3.core.score;
  *
  * @author drizo
  */
-public class Wedge extends Connector<ITimedSymbolWithConnectors, ITimedSymbolWithConnectors> {
+public class Wedge extends Connector {
 	Staff staff;
 	public Wedge(Staff staff, ITimedSymbolWithConnectors from, ITimedSymbolWithConnectors to) {
 		super(from, to);

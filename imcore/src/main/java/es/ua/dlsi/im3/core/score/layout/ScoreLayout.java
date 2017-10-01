@@ -4,17 +4,16 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolInStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Slur;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * It contains staves that can be split in several. Symbols like
@@ -28,9 +27,15 @@ public abstract class ScoreLayout {
     protected final LayoutSymbolFactory layoutSymbolFactory;
     protected final Simultaneities simultaneities;
     protected final double noteHeadWidth;
-    protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbols;
+    protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbolsInStaves;
+    /**
+     * Used for building connectors
+     */
+    HashMap<AtomPitch, NotePitch> layoutPitches;
+
     protected final List<LayoutCoreBarline> barlines;
     protected final List<LayoutConnector> connectors;
+
 
     public ScoreLayout(ScoreSong song, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         this.scoreSong = song;
@@ -50,10 +55,11 @@ public abstract class ScoreLayout {
     }
 
     private void createLayoutSymbols() throws IM3Exception {
-        coreSymbols = new HashMap<>();
+        coreSymbolsInStaves = new HashMap<>();
+        layoutPitches = new HashMap<>();
         for (Staff staff: scoreSong.getStaves()) {
             ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff = new ArrayList<>();
-            coreSymbols.put(staff, coreSymbolsInStaff);
+            coreSymbolsInStaves.put(staff, coreSymbolsInStaff);
             // add contents of staff
             List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
             for (ITimedElementInStaff symbol: symbols) {
@@ -65,6 +71,14 @@ public abstract class ScoreLayout {
                         coreSymbolsInStaff.add((LayoutCoreSymbolInStaff) layoutCoreSymbol);
                     } else {
                         throw new IM3RuntimeException("Unimplemented " + layoutCoreSymbol.getClass()); // TODO: 24/9/17 Debemos ponerlos en otra lista? Beamed groups?
+                    }
+
+                    //TODO Esto no me gusta
+                    if (layoutCoreSymbol instanceof LayoutCoreSingleFigureAtom) {
+                        LayoutCoreSingleFigureAtom sfa = (LayoutCoreSingleFigureAtom) layoutCoreSymbol;
+                        for (NotePitch notePitch: sfa.getNotePitches()) {
+                            layoutPitches.put(notePitch.getAtomPitch(), notePitch);
+                        }
                     }
                 }
             }
@@ -88,7 +102,55 @@ public abstract class ScoreLayout {
     /**
      * This must be implemented in the different layout. A connector, e.g. a slur, could be split between staves
      */
-    protected abstract void createConnectors() throws IM3Exception;
+    protected void createConnectors() throws IM3Exception {
+// TODO: 1/10/17 Implementarlo en hijos, una ligadura puede que haya que partirla
+        NotePitch previousNotePitch = null;
+
+        for (Map.Entry<Staff, List<LayoutCoreSymbolInStaff>> entry: this.coreSymbolsInStaves.entrySet()) {
+            for (LayoutCoreSymbolInStaff coreSymbolInStaff: entry.getValue()) {
+                if (coreSymbolInStaff instanceof LayoutCoreSingleFigureAtom) {
+                    LayoutCoreSingleFigureAtom lcsfa = (LayoutCoreSingleFigureAtom) coreSymbolInStaff;
+                    for (NotePitch notePitch: lcsfa.getNotePitches()) {
+                        // create ties
+                        if (notePitch.getAtomPitch().isTiedFromPrevious()) {
+                            if (notePitch.getAtomPitch().getTiedFromPrevious() != previousNotePitch.getAtomPitch()) {
+                                throw new IM3Exception("Atom pitches to tie are not the same");
+                            }
+
+                            LayoutSlur tie = new LayoutSlur(previousNotePitch, notePitch);
+                            addConnector(tie);
+                        }
+
+                        // create slurs and other connectors
+                        Collection<Connector> atomPitchConnectors = notePitch.getAtomPitch().getConnectors();
+                        if (atomPitchConnectors != null) {
+                            for (Connector connector: atomPitchConnectors) {
+                                // just create "to" connectors to avoid duplicate in both directions
+                                if (connector.getTo() == notePitch.getAtomPitch()) {
+                                    // TODO: 1/10/17 Factory como LayoutCoreSymbol para connectors
+
+                                    NotePitch from = layoutPitches.get(connector.getFrom());
+                                    if (from == null) {
+                                        throw new IM3Exception("Cannot find a NotePitch for AtomPitch " + connector.getFrom() + " for connector " + connector);
+                                    }
+
+                                    if (connector instanceof Slur) {
+                                        LayoutSlur layoutSlur = new LayoutSlur(from, notePitch);
+                                        addConnector(layoutSlur);
+                                    } else {
+                                        System.err.println("CONNECTOR NON SUPPORTED: " + connector.getClass());
+                                    }
+                                }
+                            }
+                        }
+
+
+                        previousNotePitch = notePitch;
+                    }
+                }
+            }
+        }
+    }
 
     protected void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
         // Replace for a factory if required
@@ -105,7 +167,7 @@ public abstract class ScoreLayout {
         return layoutFont;
     }
 
-    protected void addConnector(Slur connector) {
+    protected void addConnector(LayoutSlur connector) {
         this.connectors.add(connector);
     }
 

@@ -18,34 +18,30 @@
 package es.ua.dlsi.im3.core.score;
 
 /**
- * The connector is attached to the "from" symbol
- * 
  * @author drizo
- * @param <NotationSymbolTypeFrom>
- * @param <NotationSymbolTypeTo>
  */
-public abstract class Connector<NotationSymbolTypeFrom extends ISymbolWithConnectors, NotationSymbolTypeTo extends ISymbolWithConnectors> {
-	NotationSymbolTypeFrom from;
-	NotationSymbolTypeTo to;
+public abstract class Connector {
+	ISymbolWithConnectors from;
+	ISymbolWithConnectors to;
 
-	public Connector(NotationSymbolTypeFrom from, NotationSymbolTypeTo to) {
+	public Connector(ISymbolWithConnectors from, ISymbolWithConnectors to) {
 		this.from = from;
 		this.to = to;
 	}
 
-	public NotationSymbolTypeFrom getFrom() {
+	public ISymbolWithConnectors getFrom() {
 		return from;
 	}
 
-	public NotationSymbolTypeTo getTo() {
+	public ISymbolWithConnectors getTo() {
 		return to;
 	}
 
-	public void setTo(NotationSymbolTypeTo to) {
+	public void setTo(ISymbolWithConnectors to) {
 		this.to = to;
 	}
 
-	public void setFrom(NotationSymbolTypeFrom from) {
+	public void setFrom(ISymbolWithConnectors from) {
 		this.from = from;
 	}
 

@@ -21,7 +21,8 @@ public class PageLayout extends ScoreLayout {
     }
 
     @Override
-    protected void createConnectors() {
+    protected void createConnectors() throws IM3Exception {
+        super.createConnectors();
         System.err.println("TO-DO CONNECTORS IN PAGE LAYOUT"); // TODO: 1/10/17 Connectors en Page Layout
     }
 
@@ -180,7 +181,11 @@ public class PageLayout extends ScoreLayout {
             }
         }
 
-        // TODO: 1/10/17 Add connectors to the canvas
+        // add the connectors to the canvas
+        for (LayoutConnector connector: connectors) {
+            page.getCanvas().add(connector.getGraphics());
+        }
+
     }
 
     @Override

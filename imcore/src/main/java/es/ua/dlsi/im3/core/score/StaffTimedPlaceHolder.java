@@ -47,7 +47,7 @@ public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbol
 	}
 
 	@Override
-	public Collection<Connector<?, ?>> getConnectors() {
+	public Collection<Connector> getConnectors() {
 		if (connectorCollection == null) {
 			return null;
 		} else {
@@ -56,7 +56,7 @@ public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbol
 	}
 
 	@Override
-	public void addConnector(Connector<?, ?> connector) {
+	public void addConnector(Connector connector) {
 		if (connectorCollection == null) {
 			connectorCollection = new ConnectorCollection();
 		}
@@ -64,23 +64,22 @@ public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbol
 	}
 
 	@Override
-	public boolean containsConnectorFrom(Class<? extends Connector<?, ?>> connectorClass,
-			ISymbolWithConnectors fromSymbol) {
+	public boolean containsConnectorFrom(ISymbolWithConnectors fromSymbol) {
 		if (connectorCollection == null) {
 			return false;
 		} else {
-			return connectorCollection.containsConnectorFrom(connectorClass, fromSymbol);
+			return connectorCollection.containsConnectorFrom(fromSymbol);
 		}
 		
 	}
 
 	@Override
-	public boolean containsConnectorTo(Class<? extends Connector<?, ?>> connectorClass,
-			ISymbolWithConnectors fromSymbol) {
+	public boolean containsConnectorTo(ISymbolWithConnectors fromSymbol) {
 		if (connectorCollection == null) {
 			return false;
 		} else {
-			return connectorCollection.containsConnectorTo(connectorClass, fromSymbol);
+			return connectorCollection.containsConnectorTo(fromSymbol);
 		}		
 	}
+
 }

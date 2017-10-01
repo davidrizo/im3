@@ -4,10 +4,10 @@ import java.util.Collection;
 
 public interface ISymbolWithConnectors extends IUniqueIDObject {
 
-	Collection<Connector<?,?>> getConnectors();
-	void addConnector(Connector<?,?> connector);
-	boolean containsConnectorFrom(Class<? extends Connector<?,?>> connectorClass, ISymbolWithConnectors fromSymbol);
-	boolean containsConnectorTo(Class<? extends Connector<?,?>> connectorClass, ISymbolWithConnectors fromSymbol);
+	Collection<Connector> getConnectors();
+	void addConnector(Connector connector);
+	boolean containsConnectorFrom(ISymbolWithConnectors fromSymbol);
+	boolean containsConnectorTo(ISymbolWithConnectors fromSymbol);
 
 
 }

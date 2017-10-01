@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.pdf;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.layout.FontFactory;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
@@ -11,6 +12,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.IGraphicsExporter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
@@ -28,8 +30,17 @@ public class PDFExporter implements IGraphicsExporter {
     }
 
     private void generatePDF(PDDocument document, Canvas canvas) throws ExportException {
-        PDPage page = new PDPage();
-        //page.setCropBox(new PDRectangle(30, 30, page.getCropBox().getWidth()-30, page.getCropBox().getHeight()-30));
+        //PDPage page = new PDPage();
+        // TODO: 1/10/17 PDF SIZE en función de lo que recibimos
+        //PDPage page = new PDPage(new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()));
+
+        PDPage page = null;
+        try {
+            page = new PDPage(new PDRectangle((float)canvas.getWidth(), (float)canvas.getHeight()));
+        } catch (IM3Exception e) {
+            throw new ExportException(e);
+        }
+
         document.addPage(page);
 
         try {

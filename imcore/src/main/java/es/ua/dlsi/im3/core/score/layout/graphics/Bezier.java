@@ -63,7 +63,7 @@ public class Bezier extends Shape {
             XMLExporterHelper.startEnd(sb, tabs, "path",
                     "stroke", "black",
                     "fill", "none",
-                    "stroke-width", "3", // TODO: 1/10/17 No debería ser 3, deberíamos montar los slurs de otra forma
+                    "stroke-width", "2", // TODO: 1/10/17 No debería ser 3, deberíamos montar los slurs de otra forma
                     "d", path.toString());
 
         } catch (IM3Exception e) {

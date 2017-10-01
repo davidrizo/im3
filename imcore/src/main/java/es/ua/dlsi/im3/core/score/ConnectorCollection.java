@@ -5,32 +5,32 @@ import java.util.Collection;
 import java.util.List;
 
 public class ConnectorCollection {
-	List<Connector<?,?>> connectors;
+	List<Connector> connectors;
 
 	public ConnectorCollection() {
 		connectors = new ArrayList<>();
 	}
 
-	public Collection<Connector<?, ?>> getConnectors() {
+	public Collection<Connector> getConnectors() {
 		return connectors;
 	}
 
-	public void add(Connector<?, ?> connector) {
+	public void add(Connector connector) {
 		connectors.add(connector);		
 	}
 
-	public boolean containsConnectorTo(Class<?> claz, ISymbolWithConnectors toSymbol) {
-		for (Connector<?,?> c: this.connectors) {
-			if (c.getTo() == toSymbol && c.getClass() == claz) {
+	public boolean containsConnectorTo(ISymbolWithConnectors toSymbol) {
+		for (Connector c: this.connectors) {
+			if (c.getTo() == toSymbol) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean containsConnectorFrom(Class<?> claz, ISymbolWithConnectors fromSymbol) {
-		for (Connector<?,?> c: this.connectors) {
-			if (c.getFrom() == fromSymbol && c.getClass() == claz) {
+	public boolean containsConnectorFrom(ISymbolWithConnectors fromSymbol) {
+		for (Connector c: this.connectors) {
+			if (c.getFrom() == fromSymbol) {
 				return true;
 			}
 		}
