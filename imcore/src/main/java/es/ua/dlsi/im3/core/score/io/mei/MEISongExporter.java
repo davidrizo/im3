@@ -1107,8 +1107,10 @@ public class MEISongExporter implements ISongExporter {
 		Accidentals pitchAccidental = scorePitch.getPitchClass().getAccidental();
 		Accidentals previousAccidental = previousAccidentals.get(prevAccMapKey);
 		if (previousAccidental == null) {
-            KeySignature ks = atomPitch.getStaff().getRunningKeySignatureAt(atomPitch.getTime());
-            previousAccidental = ks.getAccidentalOf(scorePitch.getPitchClass().getNoteName());
+            KeySignature ks = atomPitch.getStaff().getRunningKeySignatureOrNullAt(atomPitch.getTime());
+            if (ks != null) {
+                previousAccidental = ks.getAccidentalOf(scorePitch.getPitchClass().getNoteName());
+            }
         }
 
         String accidGes = null;
