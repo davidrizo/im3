@@ -4,14 +4,11 @@ import es.ua.dlsi.im3.core.TestFileUtils;
 import org.apache.commons.math3.fraction.Fraction;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class ProbabilisticAutomatonTest {
+public class DeterministicProbabilisticAutomatonTest {
     @Test
     public void verySimplePA() throws Exception {
         HashSet<State> states = new HashSet<>();
@@ -34,10 +31,11 @@ public class ProbabilisticAutomatonTest {
 
         Alphabet<String> alphabet = new Alphabet<>(new HashSet<>(Arrays.asList("a", "b", "c")));
 
-        ProbabilisticAutomaton automaton = new ProbabilisticAutomaton(states, startProbabilities, acceptStates, alphabet, deltas);
+        DeterministicProbabilisticAutomaton automaton = new DeterministicProbabilisticAutomaton(states, s1, acceptStates, alphabet, deltas);
 
         automaton.writeDot(TestFileUtils.createTempFile("pa.dot"));
-        //equals(Fraction.ONE, automaton.run());
+        List<String> sequence = Arrays.asList("a", "b");
+        assertEquals(Fraction.ONE, automaton.probabilityOf(sequence));
 
     }
 

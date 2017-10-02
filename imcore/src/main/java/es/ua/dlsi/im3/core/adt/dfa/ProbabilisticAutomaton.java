@@ -50,7 +50,15 @@ public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType 
             DeltaInput<StateType, AlphabetSymbolType> input = new DeltaInput(transition.getFrom(), transition.getToken());
             this.deltas.put(input, transition);
         }
-	}
+        checkProbabilities();
+    }
+
+    /**
+     * Check probabilities are correct
+     */
+    private void checkProbabilities() {
+        System.err.println("TO-DO Comprobar sumas de probabilidades = 1"); // TODO: 2/10/17 Comprobar sumas de probabilidades = 1
+    }
 
     public void writeDot(File file) throws FileNotFoundException, IM3Exception {
         PrintStream os = new PrintStream(new FileOutputStream(file));
