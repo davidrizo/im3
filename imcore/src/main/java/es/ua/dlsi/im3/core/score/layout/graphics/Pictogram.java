@@ -42,6 +42,8 @@ public class Pictogram extends GraphicsElement {
 
     private double width;
 
+    private double height;
+
     LayoutFont layoutFont;
 
     public Pictogram(String ID, LayoutFont layoutFont, String codepoint, Coordinate position) throws IM3Exception {
@@ -55,6 +57,7 @@ public class Pictogram extends GraphicsElement {
         path.setContent(glyph.getPath());
         path.getTransforms().add(layoutFont.getJavaFXScale());
         width = path.getLayoutBounds().getWidth() * layoutFont.getScaleX();
+        height = path.getLayoutBounds().getHeight() * layoutFont.getScaleX();
 
     }
 
@@ -117,4 +120,7 @@ public class Pictogram extends GraphicsElement {
     }
 
 
+    public double getHeight() {
+        return height;
+    }
 }

@@ -18,6 +18,7 @@ public class CapitanFont extends LayoutFont {
         super(CapitanFont.class.getResourceAsStream(SVGFONT),
                 CapitanFont.class.getResourceAsStream(OTFMUSICFONT),
                 CapitanFont.class.getResourceAsStream(OTFTEXTCFONT),
-                CapitanFont.class.getResourceAsStream(METADATA));
+                CapitanFont.class.getResourceAsStream(METADATA),
+                new CapitanMap());
     }
 }

@@ -4,19 +4,22 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.BeamGroup;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
+import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 
 import java.util.List;
 
 public class LayoutBeamGroup {
+    private final LayoutFont layoutFont;
     BeamGroup beamGroup;
     List<LayoutCoreSingleFigureAtom> layoutCoreSingleFigureAtoms;
     Group group;
 
-    public LayoutBeamGroup(BeamGroup beamedGroup, List<LayoutCoreSingleFigureAtom> layoutCoreSingleFigureAtoms) {
+    public LayoutBeamGroup(BeamGroup beamedGroup, List<LayoutCoreSingleFigureAtom> layoutCoreSingleFigureAtoms, LayoutFont layoutFont) {
         this.beamGroup = beamedGroup;
         this.layoutCoreSingleFigureAtoms = layoutCoreSingleFigureAtoms;
+        this.layoutFont = layoutFont;
     }
 
     /**
@@ -59,8 +62,8 @@ public class LayoutBeamGroup {
                     new CoordinateComponent(to.getStemEnd().getX()),
                     new CoordinateComponent(to.getStemEnd().getY(), displacementY));
 
-            Line line = new Line("BEAMLINE-", fromPosition, toPosition);
-            group.add(line);
+            GraphicsElement beam = layoutFont.getFontMap().createBeam("BEAM-", fromPosition, toPosition); // TODO ID
+            group.add(beam);
             displacementY += LayoutConstants.BEAM_SEPARATION; // FIXME: 1/10/17 Dirección según plica - extender plica
         }
 

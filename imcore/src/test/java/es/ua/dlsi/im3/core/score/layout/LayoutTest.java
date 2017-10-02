@@ -131,7 +131,7 @@ public class LayoutTest {
 
 
         PageLayout layout = new PageLayout(song, LayoutFonts.capitan,
-                new CoordinateComponent(2000), new CoordinateComponent(1700));
+                new CoordinateComponent(3000), new CoordinateComponent(1700));
         layout.layout();
 
         SVGExporter svgExporter = new SVGExporter();
@@ -143,7 +143,7 @@ public class LayoutTest {
         pdfExporter.exportLayout(pdfFile, layout);
 
         HorizontalLayout hlayout = new HorizontalLayout(song, LayoutFonts.capitan,
-                new CoordinateComponent(2000), new CoordinateComponent(1700));
+                new CoordinateComponent(3000), new CoordinateComponent(1700));
         hlayout.layout();
 
         SVGExporter svgExporter2 = new SVGExporter();

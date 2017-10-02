@@ -15,38 +15,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements IConnectableWithSlur {
-    private static final HashMap<Figures, String> UNICODES = new HashMap<>();
+
     private final Pictogram noteHeadPictogram;
     private final AtomPitch atomPitch;
     private final LayoutFont layoutFont;
-
-    {
-        UNICODES.put(Figures.DOUBLE_WHOLE, "noteheadDoubleWhole");
-        UNICODES.put(Figures.WHOLE, "noteheadWhole");
-        UNICODES.put(Figures.HALF, "noteheadHalf");
-        UNICODES.put(Figures.QUARTER, "noteheadBlack");
-        UNICODES.put(Figures.EIGHTH, "noteheadBlack");
-        UNICODES.put(Figures.SIXTEENTH, "noteheadBlack");
-        UNICODES.put(Figures.THIRTY_SECOND, "noteheadBlack");
-        UNICODES.put(Figures.SIXTY_FOURTH, "noteheadBlack");
-        UNICODES.put(Figures.HUNDRED_TWENTY_EIGHTH, "noteheadBlack");
-        UNICODES.put(Figures.TWO_HUNDRED_FIFTY_SIX, "noteheadBlack");
-        // TODO Existen hasta la 1024th
-
-        //TODO Mensural
-        // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
-        UNICODES.put(Figures.SEMIBREVE, "mensuralWhiteSemibrevis");
-        UNICODES.put(Figures.MINIM, "mensuralWhiteMinima");
-        //UNICODES.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
-        UNICODES.put(Figures.SEMIMINIM, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
-        // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
-        UNICODES.put(Figures.FUSA, "mensuralBlackSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
-    }
-
-    /**
-     * Used by the layout engines
-     */
-    public static String NOTE_HEAD_WIDTH_CODEPOINT = "noteheadBlack";
 
     private Group root;
 
@@ -130,7 +102,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     }
 
     private String getUnicode() throws IM3Exception {
-        String unicode = UNICODES.get(parent.getCoreSymbol().getAtomFigure().getFigure());
+        String unicode = layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure());
         if (unicode == null) {
             throw new IM3Exception("Cannot find a font unicode for " + parent.getCoreSymbol().getAtomFigure().getFigure());
         }
@@ -204,5 +176,9 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
 
         return new Coordinate(new CoordinateComponent(getNoteHeadPosition().getX(), xdiplacement),
                 new CoordinateComponent(getNoteHeadPosition().getY(), ydisplacement));
+    }
+
+    public Pictogram getNoteHeadPictogram() {
+        return noteHeadPictogram;
     }
 }

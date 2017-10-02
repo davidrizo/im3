@@ -47,7 +47,7 @@ public abstract class ScoreLayout {
         barlines = new ArrayList<>();
         connectors = new ArrayList<>();
 
-        Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), NotePitch.NOTE_HEAD_WIDTH_CODEPOINT, // TODO: 22/9/17 Quizás esto debería ser cosa del FontLayout
+        Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
                 new Coordinate(new CoordinateComponent(0),
                         new CoordinateComponent(0)
                 ));
@@ -131,7 +131,7 @@ public abstract class ScoreLayout {
         beams = new ArrayList<>();
 
         for (Map.Entry<BeamGroup, List<LayoutCoreSingleFigureAtom>> entry: singleLayoutFigureAtomsInBeam.entrySet()) {
-            LayoutBeamGroup layoutBeamGroup = new LayoutBeamGroup(entry.getKey(), entry.getValue());
+            LayoutBeamGroup layoutBeamGroup = new LayoutBeamGroup(entry.getKey(), entry.getValue(), layoutFont);
             layoutBeamGroup.createBeams();
             beams.add(layoutBeamGroup);
         }

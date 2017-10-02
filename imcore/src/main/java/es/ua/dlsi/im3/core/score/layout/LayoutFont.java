@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.io.JSONGlyphNamesReader;
+import es.ua.dlsi.im3.core.score.layout.fonts.IFontMap;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGFont;
@@ -29,6 +30,7 @@ public class LayoutFont {
     Font javaFXTextFont;
     Text javaFXTextForSizes;
     double textHeightInPixels;
+    IFontMap fontMap;
 
     /**
      * @param otfMusicFontResource Typically a file with the font
@@ -36,7 +38,8 @@ public class LayoutFont {
      * @param svgFontResource Typically a file with the font
      * @param mappingResource Typically a file with the mapping (usually SMuFL)
      */
-    public LayoutFont(InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource) throws ImportException, IM3Exception {
+    public LayoutFont(InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
+        this.fontMap = fontMap;
         SVGFontImporter importer = new SVGFontImporter();
         svgFont = importer.importStream(svgFontResource);
         mapping = new JSONGlyphNamesReader(mappingResource);
@@ -101,5 +104,9 @@ public class LayoutFont {
 
     public double getTextHeightInPixels() {
         return textHeightInPixels;
+    }
+
+    public IFontMap getFontMap() {
+        return fontMap;
     }
 }

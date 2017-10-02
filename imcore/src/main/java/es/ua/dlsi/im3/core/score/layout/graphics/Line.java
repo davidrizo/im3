@@ -51,13 +51,16 @@ public class Line extends Shape {
     @Override
     public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         try {
+            String strokeWidth;
+
             XMLExporterHelper.startEnd(sb, tabs, "line",
                     "x1", Double.toString(from.getAbsoluteX()),
                     "y1", Double.toString(from.getAbsoluteY()),
                     "x2", Double.toString(to.getAbsoluteX()),
                     "y2", Double.toString(to.getAbsoluteY()),
-                    "stroke", "black" //TODO Constants
-            );
+                    "stroke", "black", //TODO Constants
+                    "stroke-width", Double.toString(thickness)
+                    );
         } catch (IM3Exception e) {
             throw new ExportException(e);
         }

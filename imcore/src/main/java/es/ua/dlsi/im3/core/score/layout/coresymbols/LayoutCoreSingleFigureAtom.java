@@ -112,10 +112,28 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
     }
 
     public Coordinate getStemEnd() throws IM3Exception {
-        if (stem == null) {
-            throw new IM3Exception("The symbol does not have flag: " + this);
+        if (stem != null) {
+            return stem.getLineEnd();
+        } else {
+            // the stem is included in the glyph
+            if (notePitches.size() != 1) {
+                throw new IM3Exception("Unsupported " + notePitches.size() + " pitches for getStemEnd");
+            }
+            NotePitch refHead = notePitches.get(0);
+            double ydisplacement;
+            double xdisplacement;
+            if (stemUp) {
+                ydisplacement = -refHead.getNoteHeadPictogram().getHeight();
+                xdisplacement = 0;
+            } else {
+                ydisplacement = refHead.getNoteHeadPictogram().getHeight();
+                xdisplacement = refHead.getNoteHeadWidth();
+            }
+            Coordinate result = new Coordinate(
+                    new CoordinateComponent(refHead.getNoteHeadPosition().getX(), xdisplacement),
+                    new CoordinateComponent(refHead.getNoteHeadPosition().getY(), ydisplacement));
+            return result;
         }
-        return stem.getLineEnd();
     }
 
     public void removeFlag() {
