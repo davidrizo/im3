@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="3.0.0">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title>Salve a 8</title>
+                <composer>Gerónimo Latorre</composer>
+                <respStmt>
+                    <persName role="encoder">David Rizo</persName>
+                </respStmt>                
+            </titleStmt>
+            <pubStmt/>
+            <seriesStmt>
+                <title>Salve a 8</title>
+            </seriesStmt>
+        </fileDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <score>
+                    <scoreDef>
+                        <staffGrp symbol="bracket">
+                            <staffDef n="1" lines="5" clef.line="2" clef.shape="G" meter.sym="common" key.sig="1f" notationtype="mensural"/>
+                        </staffGrp>
+                    </scoreDef>
+                    <section>
+                        <staff n="1">
+                            <layer>
+                                <!--TODO TEXTO Tiple 1º de 1º Coro a 8.-->
+                                <!-- TODO TEXTO La Torre de la derecha arriba -->
+                                <!-- Pentagrama 1 -->
+                                <rest dur="minima"/>
+                                <note pname="d" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">Re</syl>
+                                    </verse>                                                                        
+                                </note> 
+                                <barLine/>
+                                <note pname="e" dur="semiminima" oct="5"  xml:id="N1">
+                                    <verse n="1">
+                                        <syl wordpos="m">gi</syl>
+                                    </verse>                                                                                                            
+                                </note>                                
+                                <note pname="d" dur="semiminima" oct="5"/>                                
+                                <note pname="g" dur="semibrevis" oct="5"/>
+                                <note pname="f" dur="minima" oct="5" xml:id="N2">
+                                    <accid accid="s"/>
+                                </note>
+                                <slur startid="#N1" endid="#N2"/>
+                                <barLine/>
+                                <note pname="g" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">na</syl>
+                                    </verse>                                                                        
+                                </note>
+                                <note pname="g" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">re</syl>
+                                    </verse>                                                                        
+                                </note>
+                                <barLine/>
+                                <note pname="a" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">gi</syl>
+                                    </verse>                                                                        
+                                </note>
+                                <barLine/>
+                                <note pname="a" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">na</syl>
+                                    </verse>                                                                        
+                                </note>  
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="d" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">re</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <barLine/>
+                                <note pname="d" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">gi</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <barLine/>
+                                <note pname="d" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">na</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <note pname="d" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">re</syl>
+                                    </verse>                                                                                                           
+                                </note>
+                                <barLine/>
+                                <note pname="a" dur="semibrevis" oct="5" xml:id="N3">
+                                    <verse n="1">
+                                        <syl wordpos="m">gi</syl>
+                                    </verse>                                                                                                            
+                                </note>                                
+                                <barLine/>
+                                <note pname="b" dur="semiminima" oct="5"/>
+                                <note pname="a" dur="semiminima" oct="5"/>
+                                <note pname="g" dur="minima" oct="5" xml:id="N4">
+                                    <verse n="1">
+                                        <syl wordpos="t">na</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <slur startid="#N3" endid="#N4"/>
+                                <barLine/>
+                                <note pname="a" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">sal</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <note pname="b" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">ve</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <note pname="b" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">re</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <barLine/>
+                                <note pname="a" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">gi</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <barLine/>
+                                <note pname="b" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">na</syl>
+                                    </verse>                                                                                                            
+                                </note>
+                                <barLine/>
+                                <custos pname="g" oct="5"/>
+                                <sb/>
+                                
+                                <!-- Pentagrama 2 -->
+                                <rest dur="semiminima"/>
+                                <note pname="g" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">ma</syl>
+                                    </verse>                                                                                                                                                
+                                </note>
+                                <note pname="g" dur="semiminima" oct="5"/>
+                                    <verse n="1">
+                                        <syl wordpos="t">ter</syl>
+                                    </verse>                                                                                                                                                
+                                <barLine/>
+                                <!-- TODO Seguir lyrics por aquí --> 
+                                <rest dur="semiminima"/>
+                                <note pname="f" dur="minima" oct="5">
+                                    <accid accid="s"/>
+                                </note>
+                                <note pname="f" dur="semiminima" oct="5"/>
+                                <barLine/>                                
+                                <note pname="g" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                <note pname="a" dur="semibrevis" oct="5"/>
+                                <barLine/>
+
+                                <!--<multiRpt num="3"> drizo: THIS IS NOT STANDARD but could be a solution                                     
+                                    <rest dur="semibrevis"/>    
+                                </multiRpt>-->
+                                <!-- Alternative encoding-->
+                                <rest dur="semibrevis"/>
+                                <rest dur="semibrevis"/>
+                                <rest dur="semibrevis"/>                                
+                                <!-- End of alternative encoding-->                                
+
+
+                                <!--<multiRest dur.ges="semibrevis" num="3"/>-->
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="g" dur="minima" oct="5"/>
+                                <note pname="g" dur="semiminima" oct="5"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="g" dur="semiminima" oct="5"/>
+                                <note pname="g" dur="semiminima" oct="5"/>
+                                <note pname="f" dur="semiminima" oct="5"/>
+                                <barLine/>
+                                <note pname="g" dur="minima" oct="5" dots="1"/>
+                                <note pname="g" dur="semiminima" oct="5"/>
+                                <barLine/>
+                                <note pname="f" dur="minima" oct="5"/>
+                                <rest dur="semiminima"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="f" dur="minima" oct="5"/>
+                                <note pname="f" dur="semiminima" oct="5"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="d" dur="minima" oct="5"/>
+                                <note pname="d" dur="semiminima" oct="5"/>
+                                <note pname="e" dur="semiminima" oct="5">
+                                    <accid accid="f"/>
+                                </note>
+                                <barLine/>
+                                <note pname="f" dur="minima" oct="5" dots="1"/>
+                                <note pname="f" dur="semiminima" oct="5"/>
+                                <barLine/>
+                                <note pname="e" dur="semiminima" oct="5">
+                                    <accid accid="f"/>
+                                </note>
+                                <note pname="g" dur="semiminima" oct="5"/>
+                                <custos pname="f" oct="5"/>
+                                <sb/> <!-- véase cómo parte un "compás" -->
+                                
+                                <!-- Pentagrama 3 -->
+                                <note pname="f" dur="semiminima" oct="5"/>
+                                <note pname="f" dur="semiminima" oct="5"/>
+                                <barLine/>
+                                <note pname="f" dur="semibrevis" oct="5" dots="1"/>
+                                <note pname="f" dur="semiminima" oct="5"/>
+                                <barLine/>
+                                <note pname="f" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                
+                                <!--<multiRpt num="3"> drizo: THIS IS NOT STANDARD but could be a solution                                     
+                                    <rest dur="brevis"/>    TODO este compás no dura 4
+                                    <rest dur="semibrevis"/> 
+                                </multiRpt>-->
+                                <!-- Alternative encoding-->
+                                <rest dur="brevis"/>
+                                <rest dur="semibrevis"/> 
+                                <rest dur="brevis"/>
+                                <rest dur="semibrevis"/> 
+                                <rest dur="brevis"/>
+                                <rest dur="semibrevis"/> 
+                                <!-- End of alternative encoding-->                                
+
+                                <barLine/>
+                                <note pname="g" dur="semibrevis" oct="5" xml:id="N5"/> 
+                                <barLine/>
+                                <note pname="f" dur="semibrevis" oct="5" xml:id="N6"> 
+                                    <accid accid="s"/> 
+                                </note>
+                                <slur startid="#N5" endid="#N6"/>
+                                <barLine/>
+                                <note pname="g" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                <note pname="d" dur="minima" oct="5"/>
+                                <note pname="d" dur="minima" oct="5"/>
+                                <barLine/>
+                                <note pname="d" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                <note pname="d" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                <note pname="f" dur="minima" oct="5"/>
+                                <note pname="f" dur="minima" oct="5"/>
+                                <barLine/>
+                                <note pname="f" dur="semiminima" oct="5" xml:id="N7"/> 
+                                <note pname="e" dur="semiminima" oct="5" xml:id="N8">
+                                    <accid accid="f"/>
+                                </note>
+                                <slur startid="#N7" endid="#N8"/>
+                                <note pname="d" dur="minima" oct="5"/>
+                                <barLine/>
+                                <note pname="d" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                <note pname="d" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="g" dur="semiminima" oct="5"/>
+                                <note pname="b" dur="semiminima" oct="5"/> 
+                                <rest dur="semiminima"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="f" dur="semiminima" oct="5"/>
+                                <note pname="b" dur="semiminima" oct="5"/> 
+                                <rest dur="semiminima"/>
+                                <barLine/>
+                                <sb/> <!-- TODO custos -->
+                                
+                                <!-- Pentagrama 4 -->
+                                <rest dur="semiminima"/>
+                                <note pname="a" dur="semiminima" oct="5"/>
+                                <note pname="b" dur="semiminima" oct="5"/>
+                                <note pname="b" dur="semiminima" oct="5"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="a" dur="semiminima" oct="5"/>
+                                <note pname="a" dur="minima" oct="5"/>
+                                <barLine/>
+                                <note pname="b" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="a" dur="minima" oct="5"/>
+                                <barLine/> <!-- TODO it has a dot above it -->                                
+                                <note pname="a" dur="semiminima" oct="5"/>
+                                <note pname="g" dur="minima" oct="5"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="b" dur="minima" oct="5"/>
+                                <barLine/> <!-- TODO it has a dot above it -->
+                                <note pname="b" dur="semiminima" oct="5"/>
+                                <note pname="a" dur="minima" oct="5"/>
+                                <barLine/>
+                                <note pname="a" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                                <note pname="a" dur="minima" oct="5"/>
+                                <rest dur="semiminima"/>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <accid accid="s" ploc="c" oloc="5"/> <!-- TODO No implementado ploc / oloc en IM3 --> 
+                                </note>
+                                <barLine/>
+                                <note pname="g" dur="minima" oct="5"/>
+                                <rest dur="semiminima"/>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <accid accid="s"/>  
+                                </note>
+                                <barLine/>
+                                <note pname="g" dur="semiminima" oct="5"/>
+                                <rest dur="semiminima"/>
+                                <note pname="a" dur="semiminima" oct="5" dots="1"/> <!-- se ve muy poco el puntillo, en la letra de arriba -->
+                                <note pname="a" dur="fusa" oct="5"/>
+                                <barLine/>
+                                <note pname="b" dur="minima" oct="5" xml:id="N9"/>
+                                <note pname="a" dur="minima" oct="5" xml:id="N10"/>
+                                <slur startid="#N9" endid="#N10"/>
+                                <barLine/>
+                                <note pname="d" dur="minima" oct="5" dots="1"/>
+                                <note pname="d" dur="fusa" oct="6"/>
+                                <note pname="c" dur="fusa" oct="6"/>
+                                <barLine/>
+                                <note pname="b" dur="semiminima" oct="5" xml:id="N11"/>
+                                <beam>
+                                    <note pname="a" dur="fusa" oct="5"/>
+                                    <note pname="g" dur="fusa" oct="5"/>
+                                </beam>
+                                <note pname="a" dur="minima" oct="5" xml:id="N12"/>
+                                <barLine/>
+                                <custos/>
+                                <sb/>
+                            </layer>
+                        </staff>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>
