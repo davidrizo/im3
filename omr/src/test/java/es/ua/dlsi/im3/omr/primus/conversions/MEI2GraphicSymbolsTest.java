@@ -17,7 +17,7 @@ public class MEI2GraphicSymbolsTest {
         ScoreSong song = importer.importSong(file);
         MEI2GraphicSymbols conversor = new MEI2GraphicSymbols();
         String stringFormat = conversor.convert(song);
-        assertEquals("clef-L2\taccidental.#-L5\taccidental.#-S3\ttimeSig.4-L4\ttimeSig.4-L2\tnote.WHOLE-L2\tbarline-L1\tnote.QUARTER-S1\trest.QUARTER-L3\taccidental.#-L2\tnote.EIGHTH-L2\trest.EIGHTH-L3\tnote.QUARTER-L6\tbarline-L1\tthickbarline_L1",
+        assertEquals("clef-L2\taccidental.#-L5\taccidental.#-S3\ttimeSig.4-L4\ttimeSig.4-L2\tnote.WHOLE-L2\tbarline-L1\tnote.QUARTER-S1\trest.QUARTER-L3\taccidental.#-L2\tnote.EIGHTH-L2\trest.EIGHTH-L3\tnote.QUARTER-L6\tbarline-L1",
                 stringFormat);
     }
 
