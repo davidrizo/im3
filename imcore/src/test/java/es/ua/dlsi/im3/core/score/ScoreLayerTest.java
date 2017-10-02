@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 import static org.junit.Assert.*;
@@ -37,10 +38,13 @@ public class ScoreLayerTest {
 
         layer.createBeaming();
 
-        assertEquals(2, layer.size());
-        TreeSet<Atom> atoms = layer.getAtomsSortedByTime();
-        assertTrue(atoms.first() instanceof SimpleNote);
-        assertTrue(atoms.last() instanceof BeamedGroup);
+        assertEquals(3, layer.size());
+
+        assertNull(n0.getBelongsToBeam());
+        assertNotNull(n1.getBelongsToBeam());
+        assertNotNull(n2.getBelongsToBeam());
+        assertEquals(n1.getBelongsToBeam(), n2.getBelongsToBeam());
+
         assertEquals(3, layer.getAtomFigures().size());
         assertEquals(3, layer.getAtomPitches().size());
     }

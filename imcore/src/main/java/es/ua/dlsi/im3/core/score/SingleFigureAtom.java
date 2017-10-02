@@ -1,13 +1,19 @@
 package es.ua.dlsi.im3.core.score;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import org.apache.commons.lang3.math.Fraction;
 
-public abstract class SingleFigureAtom extends Atom {
+public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithConnectors {
 	AtomFigure atomFigure;
+	BeamGroup belongsToBeam;
+    /**
+     * Note that the NotePitches can also have connectors
+     */
+    ConnectorCollection connectorCollection;
 	
 	public SingleFigureAtom(Figures figure, int dots) {
 		atomFigure = new AtomFigure(this, figure, dots);
@@ -68,5 +74,49 @@ public abstract class SingleFigureAtom extends Atom {
     public void setDuration(Time duration) {
         super.setDuration(duration);
         this.atomFigure.setDuration(duration);
+    }
+
+    public BeamGroup getBelongsToBeam() {
+        return belongsToBeam;
+    }
+
+    public void setBelongsToBeam(BeamGroup belongsToBeam) {
+        this.belongsToBeam = belongsToBeam;
+    }
+
+    @Override
+    public Collection<Connector> getConnectors() {
+        if (connectorCollection == null) {
+            return null;
+        } else {
+            return connectorCollection.getConnectors();
+        }
+    }
+
+    @Override
+    public void addConnector(Connector connector) {
+        if (connectorCollection == null) {
+            connectorCollection = new ConnectorCollection();
+        }
+        connectorCollection.add(connector);
+    }
+
+    @Override
+    public boolean containsConnectorFrom(ISymbolWithConnectors fromSymbol) {
+        if (connectorCollection == null) {
+            return false;
+        } else {
+            return connectorCollection.containsConnectorFrom(fromSymbol);
+        }
+
+    }
+
+    @Override
+    public boolean containsConnectorTo(ISymbolWithConnectors fromSymbol) {
+        if (connectorCollection == null) {
+            return false;
+        } else {
+            return connectorCollection.containsConnectorTo(fromSymbol);
+        }
     }
 }

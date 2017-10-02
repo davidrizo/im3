@@ -1673,4 +1673,6 @@ public class ScoreSong {
     public boolean hasSystemBreak(Time time) {
         return systemBreaks.containsKey(time);
     }
+
+
 }

@@ -462,7 +462,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
                 Measure measure = staff.getScoreSong().getMeasureActiveAtTime(singleFigureAtom.getTime());
                 if (lastFigureAtom != null
                         && lastMeasure == measure // same pointer
-                        && lastFigureAtom.getAtomFigure().getDuration().equals(singleFigureAtom.getAtomFigure().getDuration())
+                        //&& lastFigureAtom.getAtomFigure().getDuration().equals(singleFigureAtom.getAtomFigure().getDuration())
                         && beat == lastNoteBeat) {
                     group.add(singleFigureAtom);
                 } else {
@@ -485,14 +485,10 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 
     private void constructBeamIfRequired(ArrayList<SingleFigureAtom> group) throws IM3Exception {
 	    if (group != null && group.size() > 1) {
-	        BeamedGroup beamedGroup = new BeamedGroup(true);
+	        BeamGroup beamedGroup = new BeamGroup(true);
 	        for (SingleFigureAtom atom: group) {
-	            beamedGroup.addSubatom(atom);
-                remove(atom);
+	            beamedGroup.add(atom);
             }
-
-            add(beamedGroup);
-
         }
     }
 

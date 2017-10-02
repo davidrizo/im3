@@ -2,18 +2,21 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.score.BeamedGroup;
-import es.ua.dlsi.im3.core.score.CompoundAtom;
+import es.ua.dlsi.im3.core.score.BeamGroup;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 
-public class LayoutBeamGroup extends CompoundLayout {
-    BeamedGroup beamedGroup;
+import java.util.List;
+
+public class LayoutBeamGroup {
+    BeamGroup beamGroup;
+    List<LayoutCoreSingleFigureAtom> layoutCoreSingleFigureAtoms;
     Group group;
 
-    public LayoutBeamGroup(BeamedGroup beamedGroup) {
-        this.beamedGroup = beamedGroup;
+    public LayoutBeamGroup(BeamGroup beamedGroup, List<LayoutCoreSingleFigureAtom> layoutCoreSingleFigureAtoms) {
+        this.beamGroup = beamedGroup;
+        this.layoutCoreSingleFigureAtoms = layoutCoreSingleFigureAtoms;
     }
 
     /**
@@ -23,7 +26,7 @@ public class LayoutBeamGroup extends CompoundLayout {
         group = new Group("BEAM-"); //TODO ID
         // TODO: 1/10/17 Importante !!! No funciona con grupos de varias duraciones
         Integer flags = null;
-        for (LayoutCoreSymbol coreSymbol: this.coreSymbols) {
+        for (LayoutCoreSymbol coreSymbol: this.layoutCoreSingleFigureAtoms) {
             if (!(coreSymbol instanceof LayoutCoreSingleFigureAtom)) {
                 throw new IM3Exception("Unsupported groups of non LayoutCoreSingleFigureAtom"); // FIXME: 1/10/17 Rests, different durations
             }
@@ -39,11 +42,11 @@ public class LayoutBeamGroup extends CompoundLayout {
             lcoreSingleFigureAtom.removeFlag();
         }
 
-        if (this.coreSymbols.size() < 2) {
-            throw new IM3Exception("Cannot create beams with less than 2 elements, there are: " + this.coreSymbols.size()); // TODO: 1/10/17 Broken beam of 1 note
+        if (this.layoutCoreSingleFigureAtoms.size() < 2) {
+            throw new IM3Exception("Cannot create beams with less than 2 elements, there are: " + this.layoutCoreSingleFigureAtoms.size()); // TODO: 1/10/17 Broken beam of 1 note
         }
-        LayoutCoreSingleFigureAtom from = (LayoutCoreSingleFigureAtom) coreSymbols.get(0);
-        LayoutCoreSingleFigureAtom to = (LayoutCoreSingleFigureAtom) coreSymbols.get(this.coreSymbols.size()-1);
+        LayoutCoreSingleFigureAtom from = layoutCoreSingleFigureAtoms.get(0);
+        LayoutCoreSingleFigureAtom to = layoutCoreSingleFigureAtoms.get(this.layoutCoreSingleFigureAtoms.size()-1);
 
         // TODO: 1/10/17 En lugar de line un polígono
         double displacementY = 0;

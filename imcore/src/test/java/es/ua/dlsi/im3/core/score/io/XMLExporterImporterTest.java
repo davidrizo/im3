@@ -768,17 +768,24 @@ public class XMLExporterImporterTest {
 		try {
 			assertEquals(1, song.getStaves().size());
 			List<Atom> atoms = song.getStaves().get(0).getAtoms();
-			assertEquals(3, atoms.size());
-			assertEquals(BeamedGroup.class, atoms.get(0).getClass());
-			assertEquals(2, atoms.get(0).getAtoms().size());
-            assertEquals(BeamedGroup.class, atoms.get(1).getClass());
-            assertEquals(4, atoms.get(1).getAtoms().size());
-            assertEquals(SimpleRest.class, atoms.get(2).getClass());
+			assertEquals(7, atoms.size());
+
+            ArrayList<BeamGroup> beams = new ArrayList<>();
+			for (int i=0; i<6; i++) {
+                assertEquals(SimpleNote.class, atoms.get(i).getClass());
+                BeamGroup beam = ((SimpleNote) atoms.get(i)).getBelongsToBeam();
+                assertNotNull(beam);
+                beams.add(beam);
+            }
+            assertEquals(SimpleRest.class, atoms.get(6).getClass());
+            assertSame(beams.get(0), beams.get(1));
+            assertNotSame(beams.get(0), beams.get(2));
+            assertSame(beams.get(2), beams.get(3));
+            assertSame(beams.get(2), beams.get(4));
+            assertSame(beams.get(2), beams.get(5));
 
             List<ITimedElementInStaff> coreSymbolsInStaff = song.getStaves().get(0).getCoreSymbolsOrdered();
-            assertEquals(6, coreSymbolsInStaff.size());
-            assertEquals(BeamedGroup.class, coreSymbolsInStaff.get(3).getClass());
-            assertEquals(BeamedGroup.class, coreSymbolsInStaff.get(4).getClass());
+            assertEquals(10, coreSymbolsInStaff.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());

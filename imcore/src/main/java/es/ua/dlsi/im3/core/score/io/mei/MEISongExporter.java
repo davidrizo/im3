@@ -63,6 +63,7 @@ public class MEISongExporter implements ISongExporter {
     public static final String HARM_TYPE_DEGREE = "degree";
     public static final String HARM_TYPE_TONAL_FUNCTION = "tonalFunction";
     private int skipMeasures;
+    private BeamGroup lastBeam;
 
 	/*FRACCIONES class ConnectorWithLayer {
 		Connector<?,?> connector;
@@ -87,8 +88,6 @@ public class MEISongExporter implements ISongExporter {
 		try {
 			ps = new PrintStream(file, "UTF-8");
 			this.song = song;
-			//song.createVisualElementsIfNeeded(); // important (e.g. accidentals)
-			System.err.println("TO-DO URGENT: song.createVisualElementsIfNeeded"); //TODO URGENT song.createVisualElementsIfNeeded
 			preprocess();
 			ps.print(exportSong());
 		} catch (Exception e) {
@@ -106,6 +105,7 @@ public class MEISongExporter implements ISongExporter {
 
 	protected void preprocess() throws IM3Exception {
 		marksPerBar = new HashMap<>();
+        lastBeam = null;
 		if (song.getStaves() != null) {
 			for (Staff staff: song.getStaves()) {
 				if (!(staff instanceof AnalysisStaff)) {
@@ -202,7 +202,7 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.start(sb, tabs, "encodingDesc");
 		XMLExporterHelper.start(sb, tabs+1, "appInfo");
 		XMLExporterHelper.start(sb, tabs+2, "application");
-		XMLExporterHelper.text(sb, tabs+3, "name", "drizo's IM3 Library @Universidad de Alicante");
+		XMLExporterHelper.text(sb, tabs+3, "name", "IM3 Java Library © David Rizo");
 		XMLExporterHelper.end(sb, tabs+2, "application");
 		XMLExporterHelper.end(sb, tabs+1, "appInfo");
 		XMLExporterHelper.end(sb, tabs, "encodingDesc");		
@@ -573,6 +573,9 @@ public class MEISongExporter implements ISongExporter {
                             for (ScoreLayer layer : staff.getLayers()) {
                                 XMLExporterHelper.start(sb, tabs + 2, "layer", "n", getNumber(layer));
                                 processBarLayer(tabs + 3, bar, staff, layer); //TODO que no salga si en la capa no hay nada
+                                if (lastBeam != null) {
+                                    closeBeam(tabs);
+                                }
                                 XMLExporterHelper.end(sb, tabs + 2, "layer");
                             }
                             processBar(tabs + 2, bar, staff);
@@ -767,6 +770,9 @@ public class MEISongExporter implements ISongExporter {
 								throw new ExportException("Unsupported symbol type for export: '" + slr.getClass() + "'");
 							}
 						}
+                        if (lastBeam != null) {
+                            closeBeam(tabs);
+                        }
 						XMLExporterHelper.end(sb, tabs+1, "layer");
 					}
 					XMLExporterHelper.end(sb, tabs, "staff");
@@ -912,12 +918,27 @@ public class MEISongExporter implements ISongExporter {
 			params.add(getNumber(atom.getStaff()));
 		}
 
-		//TODO URGENT Tuplets
 		if (atom instanceof SingleFigureAtom) {
+            SingleFigureAtom sfatom = (SingleFigureAtom) atom;
+
+            if (sfatom.getBelongsToBeam() != lastBeam) {
+                if (lastBeam != null) {
+                    // close previous beam, just export if not computed
+                    closeBeam(tabs);
+                }
+
+                // open new beam, just export if not computed
+                lastBeam = sfatom.getBelongsToBeam();
+                if (lastBeam != null) {
+                    XMLExporterHelper.start(sb, tabs, "beam"); //TODO ID, ¿staff?
+                }
+
+            } // else it is the same beam (on no one), no-op
+
 			if (atom instanceof SimpleMeasureRest) {
 				SimpleMeasureRest mrest = (SimpleMeasureRest) atom;
 				if (mrest.getAtomFigure().getFigure() != Figures.WHOLE) { // e.g. for anacrusis
-					SingleFigureAtom sfatom = (SingleFigureAtom) atom;
+					//SingleFigureAtom sfatom = (SingleFigureAtom) atom;
 					fillDurationParams(sfatom.getAtomFigure(), params);
 				}
 				XMLExporterHelper.startEnd(sb, tabs, "mRest", params);
@@ -928,7 +949,6 @@ public class MEISongExporter implements ISongExporter {
 				XMLExporterHelper.startEnd(sb, tabs, "multiRest", params);
                 skipMeasures = mrest.getNumMeasures();
 			} else {
-				SingleFigureAtom sfatom = (SingleFigureAtom) atom;
 				fillDurationParams(sfatom.getAtomFigure(), params);
 				if (atom instanceof SimpleRest) {			
 					XMLExporterHelper.startEnd(sb, tabs, "rest", params); 
@@ -943,17 +963,6 @@ public class MEISongExporter implements ISongExporter {
 					throw new UnsupportedOperationException("Unsupported yet: " + atom.getClass());
 				}
 			}
-		} else if (atom instanceof BeamedGroup) {
-            BeamedGroup beam = (BeamedGroup) atom;
-            if (!beam.isComputedBeam()) {
-                XMLExporterHelper.start(sb, tabs, "beam", params);
-            }
-            for (Atom beamAtom : beam.getAtoms()) {
-                processAtom(tabs, beamAtom, defaultStaff);
-            }
-            if (!beam.isComputedBeam()) {
-                XMLExporterHelper.end(sb, tabs, "beam");
-            }
 		} else if (atom instanceof SimpleTuplet) {
 				SimpleTuplet tuplet = (SimpleTuplet) atom;
 				params.add("num");
@@ -964,6 +973,9 @@ public class MEISongExporter implements ISongExporter {
 				for (Atom tupletAtom: tuplet.getAtoms()) {
 					processAtom(tabs+1, tupletAtom, defaultStaff);
 				}
+				if (lastBeam != null) {
+				    closeBeam(tabs);
+                }
 				XMLExporterHelper.end(sb, tabs, "tuplet");				
 		} else {
 			throw new UnsupportedOperationException("Unsupported yet: " + atom.getClass());
@@ -974,7 +986,14 @@ public class MEISongExporter implements ISongExporter {
 		
 	}
 
-	private void processPitches(StringBuilder sb, int tabs, AtomFigure atomFigure, List<AtomPitch> atomPitches, ArrayList<String> params) throws IM3Exception {
+    private void closeBeam(int tabs) {
+        if (!lastBeam.isComputed()) {
+            XMLExporterHelper.end(sb, tabs, "beam");
+        }
+        lastBeam = null;
+    }
+
+    private void processPitches(StringBuilder sb, int tabs, AtomFigure atomFigure, List<AtomPitch> atomPitches, ArrayList<String> params) throws IM3Exception {
 		if (atomPitches != null) {
 			boolean multiplePitches = atomPitches.size() > 1;
 			for (AtomPitch atomPitch: atomPitches) {

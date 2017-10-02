@@ -28,6 +28,7 @@ public abstract class ScoreLayout {
     protected final Simultaneities simultaneities;
     protected final double noteHeadWidth;
     protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbolsInStaves;
+    protected HashMap<BeamGroup, List<LayoutCoreSingleFigureAtom>> singleLayoutFigureAtomsInBeam;
     /**
      * Used for building connectors
      */
@@ -59,9 +60,9 @@ public abstract class ScoreLayout {
         // TODO: 1/10/17 Beaming - parámetro para que se pueda deshabilitar
         //layoutStaff.createBeaming();
 
+        singleLayoutFigureAtomsInBeam = new HashMap<>();
         coreSymbolsInStaves = new HashMap<>();
         layoutPitches = new HashMap<>();
-        beams = new ArrayList<>();
         for (Staff staff: scoreSong.getStaves()) {
             ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff = new ArrayList<>();
             coreSymbolsInStaves.put(staff, coreSymbolsInStaff);
@@ -69,7 +70,7 @@ public abstract class ScoreLayout {
             List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
 
             for (ITimedElementInStaff symbol: symbols) {
-                createLayoutSymbol(coreSymbolsInStaff, symbol, null);
+                createLayoutSymbol(coreSymbolsInStaff, symbol);
             }
 
             // create barlines
@@ -87,21 +88,13 @@ public abstract class ScoreLayout {
         }
     }
 
-    private void createLayoutSymbol(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, ITimedElementInStaff symbol, CompoundLayout compoundLayout) throws IM3Exception {
+    private void createLayoutSymbol(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, ITimedElementInStaff symbol) throws IM3Exception {
         if (symbol instanceof CompoundAtom) {
-            if (symbol instanceof BeamedGroup) { //TODO Deberíamos generalizarlo
-                LayoutBeamGroup beam = new LayoutBeamGroup((BeamedGroup) symbol);
-                beams.add(beam);
-                compoundLayout = beam;
-            } // else // TODO: 1/10/17 ¿Algo más?
             for (Atom subatom : ((CompoundAtom) symbol).getAtoms()) {
-                createLayoutSymbol(coreSymbolsInStaff, subatom, compoundLayout);
+                createLayoutSymbol(coreSymbolsInStaff, subatom);
             }
         } else {
             LayoutCoreSymbol layoutCoreSymbol = layoutSymbolFactory.createCoreSymbol(layoutFont, symbol);
-            if (compoundLayout != null) {
-                compoundLayout.add(layoutCoreSymbol);
-            }
             //createLayout(symbol, layoutStaff);
             if (layoutCoreSymbol != null) {
                 simultaneities.add(layoutCoreSymbol);
@@ -114,6 +107,17 @@ public abstract class ScoreLayout {
                 //TODO Esto de añadir los layout pitches con el instanceof no me gusta
                 if (layoutCoreSymbol instanceof LayoutCoreSingleFigureAtom) {
                     LayoutCoreSingleFigureAtom sfa = (LayoutCoreSingleFigureAtom) layoutCoreSymbol;
+
+                    BeamGroup beam = sfa.getCoreSymbol().getBelongsToBeam();
+                    if (beam != null) {
+                        List<LayoutCoreSingleFigureAtom> layoutAtomsInBeam = singleLayoutFigureAtomsInBeam.get(beam);
+                        if (layoutAtomsInBeam == null) {
+                            layoutAtomsInBeam = new ArrayList<>();
+                            singleLayoutFigureAtomsInBeam.put(sfa.getCoreSymbol().getBelongsToBeam(), layoutAtomsInBeam);
+                        }
+                        layoutAtomsInBeam.add(sfa);
+                    }
+
                     for (NotePitch notePitch : sfa.getNotePitches()) {
                         layoutPitches.put(notePitch.getAtomPitch(), notePitch);
                     }
@@ -124,9 +128,12 @@ public abstract class ScoreLayout {
 
     // TODO: 1/10/17 Esto debería ser distinto en layoutPages por si hay que partir un beam (no es normal, pero...)
     protected void createBeams() throws IM3Exception {
-        for (LayoutBeamGroup beamedGroup: beams) {
-            beamedGroup.createBeams();
+        beams = new ArrayList<>();
 
+        for (Map.Entry<BeamGroup, List<LayoutCoreSingleFigureAtom>> entry: singleLayoutFigureAtomsInBeam.entrySet()) {
+            LayoutBeamGroup layoutBeamGroup = new LayoutBeamGroup(entry.getKey(), entry.getValue());
+            layoutBeamGroup.createBeams();
+            beams.add(layoutBeamGroup);
         }
 
         /*for (Map.Entry<Staff, List<LayoutCoreSymbolInStaff>> entry: this.coreSymbolsInStaves.entrySet()) {

@@ -59,8 +59,8 @@ public class AtomTest {
 		
 		SimpleTuplet tuplet = new SimpleTuplet(3, 2, Figures.EIGHTH, 
 				createPitch(PitchClasses.E, 3, Fraction.getFraction(8, 1)), 
-				createPitch(PitchClasses.F, 3, Fraction.getFraction(25, 3)),
-				createPitch(PitchClasses.G, 3, Fraction.getFraction(26, 3)));
+				createPitch(PitchClasses.F, 3, Fraction.getFraction(26, 3)),
+				createPitch(PitchClasses.G, 3, Fraction.getFraction(28, 3)));
 		expectedDurations.add(Fraction.getFraction(1,1));
 		
 		voice.add(tuplet);
@@ -78,7 +78,7 @@ public class AtomTest {
 		assertEquals(expectedOnsets.size(), pitches.size());
 		for (int i=0; i<expectedPitches.size(); i++) {
 			assertEquals("#"+i, expectedPitches.get(i), pitches.get(i).getScientificPitch());
-			assertEquals("#"+i, expectedOnsets.get(i), pitches.get(i).getTime().getExactTime());
+            assertEquals("#"+i, expectedOnsets.get(i), pitches.get(i).getTime().getExactTime());
 		}
 		
 		assertEquals(9, voice.getDuration().getComputedTime(), 0.0001);

@@ -322,16 +322,15 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		xmlIDs.put(xmlid, object);
 	}
 
-	private void addElementToVoiceStaffOrTupletOrBeam(Atom atom, String xmlid, HashMap<String, String> attributesMap, Staff elementStaff) throws ImportException, IM3Exception {
+	private void addElementToVoiceStaffOrTuplet(Atom atom, String xmlid, HashMap<String, String> attributesMap, Staff elementStaff) throws ImportException, IM3Exception {
 		setXMLID(xmlid, atom);
+
+		if (beamedGroupElements != null && atom instanceof SingleFigureAtom) {
+			beamedGroupElements.add((SingleFigureAtom) atom);
+		}
 
 		if (tupletElements != null) {
             tupletElements.add(atom);
-        } else if (beamedGroupElements != null) {
-		    if (!(atom instanceof SingleFigureAtom)) {
-		        throw new ImportException("Cannot put a " + atom.getClass() + " into a beamed group");
-            }
-            beamedGroupElements.add((SingleFigureAtom) atom);
         } else {
             lastVoice.add(atom); // sets the time
             //lastChord.setTime(getCurrentTime());
@@ -561,7 +560,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					//}
 					
 					lastChord = new SimpleChord(figure, dots);
-					addElementToVoiceStaffOrTupletOrBeam(lastChord, xmlid, attributesMap, lastStaff);
+					addElementToVoiceStaffOrTuplet(lastChord, xmlid, attributesMap, lastStaff);
 					break;
 				case "note":
 					xmlid = getOptionalAttribute(attributesMap, "xml:id");
@@ -658,7 +657,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							lastStaff.addCoreSymbol(currentNote);
 						}*/
 						//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
-						addElementToVoiceStaffOrTupletOrBeam(currentNote, xmlid, attributesMap, elementStaff);
+						addElementToVoiceStaffOrTuplet(currentNote, xmlid, attributesMap, elementStaff);
 						//currentNote.setTime(getCurrentTime());
 						//if (currentBeam != null) {
 						//	currentBeam.addNoteOrChord(currentNote);
@@ -717,7 +716,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						elementStaff = lastStaff;
 					}
 					
-					addElementToVoiceStaffOrTupletOrBeam(rest, xmlid, attributesMap, elementStaff);
+					addElementToVoiceStaffOrTuplet(rest, xmlid, attributesMap, elementStaff);
 					break;			
 				case "mRest":
 					//TODO
@@ -752,7 +751,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					}
 					
 					//rest.setTime(getCurrentTime());
-					addElementToVoiceStaffOrTupletOrBeam(mrest, xmlid, attributesMap, elementStaff);
+					addElementToVoiceStaffOrTuplet(mrest, xmlid, attributesMap, elementStaff);
 					break;
                 case "multiRest":
 						//TODO
@@ -768,7 +767,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 
 						//rest.setTime(getCurrentTime());
-						addElementToVoiceStaffOrTupletOrBeam(multiMeasureRest, xmlid, attributesMap, lastStaff);
+						addElementToVoiceStaffOrTuplet(multiMeasureRest, xmlid, attributesMap, lastStaff);
 						break;
                 case "clef":
 					//TODO No sé para qué vale el parámetro staff aquí, cuando está dentro de uno ya...
@@ -1183,7 +1182,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				//tiedNote.getAtomPitch().setTiedFromPrevious(tiedFrom);
 				tiedFrom.setTiedToNext(lastAtomPitch);
 				currentTies.remove(tieCode);
-				//addElementToVoiceStaffOrTupletOrBeam(tiedNote, xmlid, attributesMap);
+				//addElementToVoiceStaffOrTuplet(tiedNote, xmlid, attributesMap);
 			} else if (type.equals("m")) { // middle
 				tiedFrom.setTiedToNext(lastAtomPitch);
 				currentTies.remove(tieCode);
@@ -1349,13 +1348,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				lastChord = null;
 				break;
 			case "beam":
-                BeamedGroup beamedGroup = new BeamedGroup(false);
+                BeamGroup beamedGroup = new BeamGroup(false);
                 for (SingleFigureAtom atom: beamedGroupElements) {
-                    beamedGroup.addSubatom(atom);
+                    beamedGroup.add(atom);
                 }
                 beamedGroupElements = null;
                 beamedGroupXMLID = null;
-                addElementToVoiceStaffOrTupletOrBeam(beamedGroup, beamedGroupXMLID, null, lastStaff);
                 break;
 			case "tuplet":
 				// now create the tuplets
@@ -1370,8 +1368,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				
 				SimpleTuplet tuplet = new SimpleTuplet(tupletNum, tupletNumBase, eachFigure, tupletElements);
 				tupletElements = null;
+				addElementToVoiceStaffOrTuplet(tuplet, tupletXMLID, null, lastStaff);
                 tupletXMLID = null;
-				addElementToVoiceStaffOrTupletOrBeam(tuplet, tupletXMLID, null, lastStaff);
 				break;
 			case "music":
 				importingMusic = false;
@@ -1555,8 +1553,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				throw new ImportException("Missing either startid or endif for connector " + pendingConnector.tag);
 			}
 
-            AtomPitch from;
-            AtomPitch to;
+            ITimedSymbolWithConnectors from;
+            ITimedSymbolWithConnectors to;
 			
 			switch (pendingConnector.tag) {
 			/*case "slur":
@@ -1572,19 +1570,15 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					toElement.addConnector(slur);
 					break;*/
                 case "slur":
-                    if (fromElement instanceof SimpleNote) {
-                        from = ((SimpleNote) fromElement).getAtomPitch();
-                    } else if (!(fromElement instanceof AtomPitch)) {
+                    if (fromElement instanceof ITimedSymbolWithConnectors) {
+                        from = (ITimedSymbolWithConnectors) fromElement;
+                    } else {
                         throw new ImportException("Unsupported slur from " + fromElement.getClass());
-                    } else {
-                        from = (AtomPitch) fromElement;
                     }
-                    if (toElement instanceof SimpleNote) {
-                        to = ((SimpleNote) toElement).getAtomPitch();
-                    } else if (!(toElement instanceof AtomPitch)) {
-                        throw new ImportException("Unsupported slur to " + fromElement.getClass()); // TODO: 1/10/17 Slurs desde cualquier cosa (startid...): StaffTimedPlaceHolder
+                    if (toElement instanceof ITimedSymbolWithConnectors) {
+                        to = (ITimedSymbolWithConnectors) toElement;
                     } else {
-                        to = (AtomPitch) toElement;
+                        throw new ImportException("Unsupported slur to " + fromElement.getClass()); // TODO: 1/10/17 Slurs desde cualquier cosa (startid...): StaffTimedPlaceHolder
                     }
 
                     Slur slur = new Slur(from, to);
@@ -1606,15 +1600,23 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					} else {
 						to = (AtomPitch) toElement;
 					}
-					if (from.getTiedToNext() == null) {
-						from.setTiedToNext(to);
+					AtomPitch fromPitch=null, toPitch=null;
+					if (from instanceof AtomPitch) {
+					    fromPitch = (AtomPitch) from;
+                    }
+                    if (to instanceof AtomPitch) {
+                        toPitch = (AtomPitch) to;
+                    }
+
+					if (fromPitch.getTiedToNext() == null) {
+						fromPitch.setTiedToNext(toPitch);
 						// TODO ¿Es necesaria la representación gráfica ahora del tie?
 						/*AMTie tie = new AMTie(from); 
 						tie.setTo(to);
 						from.addConnector(tie);
 						to.addConnector(tie);
 						currentScorePart.addConnector(tie);*/
-					} else if (from.getTiedToNext() != from) {
+					} else if (fromPitch.getTiedToNext() != fromPitch) {
 						throw new ImportException("The AtomPitch " + from + " already has a tie to other AtomPitch");
 					}
 					break;

@@ -23,11 +23,6 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
     protected Time modifiedTime;
 
     /**
-     * In things like beams
-     */
-    CompoundLayout parent;
-
-    /**
      * @param layoutFont
      * @param coreSymbol
      */
@@ -77,14 +72,6 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
 
     public CoreSymbolType getCoreSymbol() {
         return coreSymbol;
-    }
-
-    public CompoundLayout getParent() {
-        return parent;
-    }
-
-    public void setParent(CompoundLayout parent) {
-        this.parent = parent;
     }
 
     @Override
