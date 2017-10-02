@@ -14,6 +14,7 @@
         <module>analysis</module>
         <module>similarity</module>
         <module>languagemodel</module>
+        <module>omr</module>
     </modules>
 
     <properties>
