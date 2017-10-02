@@ -1148,6 +1148,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				return Syllabic.middle;
 			case "end":
 				return Syllabic.end;
+            case "single":
+                return Syllabic.single;
 			default:
 				throw new ImportException("Unknown syllabic: " + syllabic);
 		}

@@ -1023,7 +1023,7 @@ public class MEISongExporter implements ISongExporter {
                         for (ScoreLyric scoreLyric : atomPitch.getLyrics().values()) {
                             XMLExporterHelper.start(sb, tabs+2, "verse", "n", scoreLyric.getVerse().toString()); //TODO ID
 
-                            if (scoreLyric.getSyllabic() != null) {
+                            if (scoreLyric.getSyllabic() != null && scoreLyric.getSyllabic() != Syllabic.single) {
                                 XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText(), "wordpos", syllabic2WordPos(scoreLyric.getSyllabic()));
                             } else {
                                 XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText());    
