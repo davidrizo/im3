@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.adt.dfa;
 
+import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 
 /**
@@ -18,13 +19,13 @@ public class Transition<StateType extends State, AlphabetSymbolType extends Comp
     /**
      * Avoid problems with overflows
      */
-    private Fraction probability;
+    private BigFraction probability;
 
     public Transition(StateType from, AlphabetSymbolType token, StateType to, Fraction probability) {
         this.from = from;
         this.token = token;
         this.to = to;
-        this.probability = probability;
+        this.probability = new BigFraction(probability.getNumerator(), probability.getDenominator());
         countVisits = 0;
     }
 
@@ -76,11 +77,11 @@ public class Transition<StateType extends State, AlphabetSymbolType extends Comp
         return to;
     }
 
-    public Fraction getProbability() {
+    public BigFraction getProbability() {
         return probability;
     }
 
-    public void setProbability(Fraction probability) {
+    public void setProbability(BigFraction probability) {
         this.probability = probability;
     }
 }

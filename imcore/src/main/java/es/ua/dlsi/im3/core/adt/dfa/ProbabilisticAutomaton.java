@@ -8,18 +8,19 @@ import java.util.*;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 
 // TODO: 2/10/17 ¿Guardamos las transiciones de salida en cada símbolo?
 /**
- * Probabilistic automaton. Use Fraction for probabilities to avoid problems with underflows
+ * Probabilistic automaton. Use BigFraction for probabilities to avoid problems with underflows
  * @author drizo
  */
 public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends Comparable<AlphabetSymbolType>> {
 	Set<StateType> states;
     Alphabet<AlphabetSymbolType> alphabet;
-	HashMap<StateType, Fraction> startProbabilities;
-    HashMap<StateType, Fraction> endProbabilities;
+	HashMap<StateType, BigFraction> startProbabilities;
+    HashMap<StateType, BigFraction> endProbabilities;
     HashSetValuedHashMap<DeltaInput<StateType, AlphabetSymbolType>, Transition<StateType, AlphabetSymbolType>> deltas;
 
 	/**
@@ -37,12 +38,15 @@ public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType 
         return result;
     }
 	
-	public ProbabilisticAutomaton(Set<StateType> states, HashMap<StateType, Fraction> startProbabilities, HashMap<StateType, Fraction> endProbabilities,
+	public ProbabilisticAutomaton(Set<StateType> states, HashMap<StateType, BigFraction> startProbabilities, HashMap<StateType, Fraction> endProbabilities,
                                   Alphabet<AlphabetSymbolType> alphabet, Collection<Transition<StateType, AlphabetSymbolType>> transitions) throws IM3Exception {
 		super();
 		this.states = states;
 		this.startProbabilities = startProbabilities;
-		this.endProbabilities = endProbabilities;
+		this.endProbabilities = new HashMap<>();
+		for (Map.Entry<StateType, Fraction> entry: endProbabilities.entrySet()) {
+		    this.endProbabilities.put(entry.getKey(), new BigFraction(entry.getValue().getNumerator(), entry.getValue().getDenominator()));
+        }
 		this.alphabet = alphabet;
 		this.deltas = new HashSetValuedHashMap();
 		for (Transition<StateType, AlphabetSymbolType> transition: transitions) {
@@ -79,16 +83,16 @@ public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType 
 
         os.println("start [shape=point];");
         for (StateType state: states) {
-            Fraction sp = startProbabilities.get(state);
-            if (sp != null && sp.getNumerator() != 0) {
+            BigFraction sp = startProbabilities.get(state);
+            if (sp != null && sp.getNumeratorAsLong() != 0) {
                 os.println("start -> s" + state.getNumber() + "[label = \"p=" + sp + "\"];");
             }
         }
 
         os.println("end [shape=doublecircle];");
         for (StateType state: states) {
-            Fraction sp = endProbabilities.get(state);
-            if (sp != null && sp.getNumerator() != 0) {
+            BigFraction sp = endProbabilities.get(state);
+            if (sp != null && sp.getNumeratorAsLong() != 0) {
                 os.println("s" + state.getNumber() + " -> end [label = \"p=" + sp + "\"];");
             }
         }
@@ -108,7 +112,7 @@ public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType 
         for (AlphabetSymbolType symbol : alphabet.getSymbols()) {
             Set<Transition<StateType, AlphabetSymbolType>> transitions = delta(state, symbol);
             for (Transition transition: transitions) {
-                if (transition.getProbability().getNumerator() > 0) {
+                if (transition.getProbability().getNumeratorAsLong() > 0) {
                     State to = transition.getTo();
                     os.println("s" + to.getNumber() + "[label=\"" + to.getName() + "\"];");
                     os.println("s" + state.getNumber() + "->s" + to.getNumber() + "[label=\"" + symbol.toString() + ", p=" + transition.getProbability() + "\"];");
@@ -122,24 +126,24 @@ public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType 
      * If normalizes the probabilities to sum up 1 for all the output transitions of each state
      */
     public void normalizeProbabilities() throws IM3Exception {
-        Fraction sum = Fraction.ZERO;
+        BigFraction sum = BigFraction.ZERO;
         for (State state: states) {
-            Fraction startProb = startProbabilities.get(state);
+            BigFraction startProb = startProbabilities.get(state);
             if (startProb != null) {
                 sum = sum.add(startProb);
             }
         }
         for (StateType state: states) {
-            Fraction startProb = startProbabilities.get(state);
+            BigFraction startProb = startProbabilities.get(state);
             if (startProb != null) {
                 startProbabilities.put(state, startProb.divide(sum));
             } else {
-                startProbabilities.put(state, Fraction.ZERO);
+                startProbabilities.put(state, BigFraction.ZERO);
             }
         }
 
         for (StateType state: states) {
-            sum = Fraction.ZERO;
+            sum = BigFraction.ZERO;
             ArrayList<Transition<StateType, AlphabetSymbolType>> stateOutputTransitions = new ArrayList<>();
             for (AlphabetSymbolType symbol : alphabet.getSymbols()) {
                 Set<Transition<StateType, AlphabetSymbolType>> dtransitions = delta(state, symbol);
