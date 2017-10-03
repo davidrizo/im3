@@ -11,7 +11,7 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 
-// TODO: 2/10/17 ¿Guardamos las transiciones de salida en cada símbolo?
+// TODO: 2/10/17 ¿Guardamos las transiciones de salida en cada símbolo? --> Llamarle transductor
 /**
  * Probabilistic automaton. Use BigFraction for probabilities to avoid problems with underflows
  * @author drizo

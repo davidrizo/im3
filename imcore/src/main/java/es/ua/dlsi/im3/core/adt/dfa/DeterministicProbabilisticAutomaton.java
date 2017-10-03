@@ -6,7 +6,11 @@ import org.apache.commons.math3.fraction.Fraction;
 
 import java.util.*;
 
+// TODO: 3/10/17 Llamarle transductor. Quizás esto debería ir en ProbabilisticAutomaton
 public class DeterministicProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends Comparable<AlphabetSymbolType>>  extends ProbabilisticAutomaton<StateType, AlphabetSymbolType> {
+
+
+
     public DeterministicProbabilisticAutomaton(Set<StateType> states, StateType startState, HashMap<StateType, Fraction> endProbabilities, Alphabet<AlphabetSymbolType> alphabet, Collection<Transition<StateType, AlphabetSymbolType>> transitions) throws IM3Exception {
         super(states, new HashMap<>(), endProbabilities, alphabet, transitions); // FIXME: 2/10/17 Start state
         startProbabilities.put(startState, BigFraction.ONE);
@@ -29,7 +33,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
         }
     }
 
-    public BigFraction probabilityOf(List<AlphabetSymbolType> sequence) throws IM3Exception {
+    public BigFraction probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence) throws IM3Exception {
         BigFraction best = BigFraction.ZERO;
 
         for (Map.Entry<StateType, BigFraction> entry: startProbabilities.entrySet()) {
@@ -43,12 +47,13 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
         return best;
     }
 
-    private BigFraction probabilityOf(List<AlphabetSymbolType> sequence, StateType startState) throws IM3Exception {
+    private BigFraction probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, StateType startState) throws IM3Exception {
         /// Use logarithms to avoid underflows
         BigFraction p = BigFraction.ONE;
         StateType currentState = startState; // start probability = 1 // TODO: 3/10/17 Se puede iniciar de cualquier estado
+        currentState.onEnter(sequence.get(0));
         for (int i=0; i<sequence.size(); i++) {
-            Set<Transition<StateType, AlphabetSymbolType>> transitions = delta(currentState, sequence.get(i));
+            Set<Transition<StateType, AlphabetSymbolType>> transitions = delta(currentState, sequence.get(i).getSymbol());
             if (transitions.size() == 0) {
                 return BigFraction.ZERO; //TODO smoothing
             } else if (transitions.size() > 1) {
@@ -62,9 +67,12 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 } else {
                     p = p.multiply(transitionProb);
                 }
+                currentState.onExit();
                 currentState = transition.getTo();
+                currentState.onEnter(sequence.get(i));
             }
         }
+        currentState.onExit();
         BigFraction fraction = endProbabilities.get(currentState);
         if (fraction == null) {
             return BigFraction.ZERO;

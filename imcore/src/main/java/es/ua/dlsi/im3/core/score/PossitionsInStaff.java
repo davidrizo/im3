@@ -21,7 +21,5 @@ public class PossitionsInStaff {
     public static final PositionInStaff SPACE_1 = new PositionInStaff(1);
     public static final PositionInStaff SPACE_2 = new PositionInStaff(3);
     public static final PositionInStaff SPACE_3 = new PositionInStaff(5);
-
-
-
+    public static final PositionInStaff SPACE_4 = new PositionInStaff(7);
 }

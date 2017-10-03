@@ -35,7 +35,7 @@
         </workDesc>
         <extMeta>
             <frames xmlns:humxml="http://www.humdrum.org/ns/humxml">
-                <metaFrame n="0" token="!!!COM: Bach, Johann Sebastian" xml:id="loc0">
+                <metaFrame n="0" graphicalToken="!!!COM: Bach, Johann Sebastian" xml:id="loc0">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -43,7 +43,7 @@
                         <referenceValue>Bach, Johann Sebastian</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="1" token="!!!CDT: 1685/3//-1750/7/28/" xml:id="loc1">
+                <metaFrame n="1" graphicalToken="!!!CDT: 1685/3//-1750/7/28/" xml:id="loc1">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -51,7 +51,7 @@
                         <referenceValue>1685/3//-1750/7/28/</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="4" token="!!!AGN: 4-Part Chorale" xml:id="loc4">
+                <metaFrame n="4" graphicalToken="!!!AGN: 4-Part Chorale" xml:id="loc4">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -59,7 +59,7 @@
                         <referenceValue>4-Part Chorale</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="5" token="!!!SCT: BH 001" xml:id="loc5">
+                <metaFrame n="5" graphicalToken="!!!SCT: BH 001" xml:id="loc5">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -67,7 +67,7 @@
                         <referenceValue>BH 001</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="6" token="!!!SCT: BWV 269" xml:id="loc6">
+                <metaFrame n="6" graphicalToken="!!!SCT: BWV 269" xml:id="loc6">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -75,7 +75,7 @@
                         <referenceValue>BWV 269</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="7" token="!!!ONB1: Text by Georg Niege; 16th Century secular melody, first appears " xml:id="loc7">
+                <metaFrame n="7" graphicalToken="!!!ONB1: Text by Georg Niege; 16th Century secular melody, first appears " xml:id="loc7">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -83,7 +83,7 @@
                         <referenceValue>Text by Georg Niege; 16th Century secular melody, first appears</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="8" token="!!!ONB2: in sacred use in Neu Catechismus-Gesangb죨lein, Hamburg, 1598. " xml:id="loc8">
+                <metaFrame n="8" graphicalToken="!!!ONB2: in sacred use in Neu Catechismus-Gesangb죨lein, Hamburg, 1598. " xml:id="loc8">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -91,7 +91,7 @@
                         <referenceValue>in sacred use in Neu Catechismus-Gesangb죨lein, Hamburg, 1598.</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="10" token="!!!license: GNU General Public License (http://www.gnu.org/copyleft/gpl.html)" xml:id="loc10">
+                <metaFrame n="10" graphicalToken="!!!license: GNU General Public License (http://www.gnu.org/copyleft/gpl.html)" xml:id="loc10">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -99,7 +99,7 @@
                         <referenceValue>GNU General Public License (http://www.gnu.org/copyleft/gpl.html)</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="11" token="!!!SMA: 371 Bach Chorales, edited by Ludwig Erk, C.F. Peters" xml:id="loc11">
+                <metaFrame n="11" graphicalToken="!!!SMA: 371 Bach Chorales, edited by Ludwig Erk, C.F. Peters" xml:id="loc11">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -107,7 +107,7 @@
                         <referenceValue>371 Bach Chorales, edited by Ludwig Erk, C.F. Peters</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="12" token="!!!PDT: 1850, 1865" xml:id="loc12">
+                <metaFrame n="12" graphicalToken="!!!PDT: 1850, 1865" xml:id="loc12">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>
@@ -115,7 +115,7 @@
                         <referenceValue>1850, 1865</referenceValue>
                     </frameInfo>
                 </metaFrame>
-                <metaFrame n="13" token="!!!ONB: Harmony and Root analysis done manually by Craig Sapp" xml:id="loc13">
+                <metaFrame n="13" graphicalToken="!!!ONB: Harmony and Root analysis done manually by Craig Sapp" xml:id="loc13">
                     <frameInfo>
                         <startTime float="0" />
                         <frameType>reference</frameType>

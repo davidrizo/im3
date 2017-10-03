@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.core.adt.dfa;
 
-public class State implements Comparable<State> {
+import es.ua.dlsi.im3.core.IM3Exception;
+
+public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, TokenType extends Token<AlphabetSymbolType>> implements Comparable<State<AlphabetSymbolType, TokenType>> {
 	protected int number;
 	private String name;
 	
@@ -12,11 +14,6 @@ public class State implements Comparable<State> {
 
 	public int getNumber() {
 		return number;
-	}
-
-	@Override
-	public int compareTo(State o) {
-		return number - o.number;
 	}
 
 	@Override
@@ -50,5 +47,24 @@ public class State implements Comparable<State> {
     @Override
     public String toString() {
         return name;
+    }
+
+    /**
+     * Launched when entering the state
+     */
+    public void onEnter(TokenType token) throws IM3Exception {
+	    // np-op
+    }
+
+    /**
+     * Launched when exiting the state
+     */
+    public void onExit() {
+        // np-op
+    }
+
+    @Override
+    public int compareTo(State<AlphabetSymbolType, TokenType> o) {
+        return number - o.number;
     }
 }

@@ -35,8 +35,8 @@ headerMens: MENS;
 
 record: (field (TAB field)*); 
 
-//field: (token editorialToken?) | '.';
-field: token 
+//field: (graphicalToken editorialToken?) | '.';
+field: graphicalToken
      | (DOT // nothing is done, it is just a placeholder
      | FIELDCOMMENT
      | EXCLAMATION_SIGN // empty comment
@@ -45,8 +45,8 @@ field: token
 
 //repeatToken: 
 
-//token: interpretation | tandemInterpretation | splineOperations | localComment | note | rest | barline;
-token: interpretation | tandemInterpretation | noteRestChord | barline | splineOperations | harm;
+//graphicalToken: interpretation | tandemInterpretation | splineOperations | localComment | note | rest | barline;
+graphicalToken: interpretation | tandemInterpretation | noteRestChord | barline | splineOperations | harm;
 
 interpretation: INTERPRETATION;
 
@@ -302,7 +302,7 @@ EDITORIALSIGNIFIER
     :
 	'y' -> skip //TODO 'X' que es tambin sin Mtrica
     ;
-    // y = the previous disappears, yy = the whole token disappears
+    // y = the previous disappears, yy = the whole graphicalToken disappears
     // X = to force accidentals or whatever to be shown
 //	('y'Ê| 'Y' | 'x') -> skip //TODO 'X' que es tambin sin Mtrica
 

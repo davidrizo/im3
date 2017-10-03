@@ -3,8 +3,9 @@ package es.ua.dlsi.im3.omr.language;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.*;
+import es.ua.dlsi.im3.omr.language.states.ClefState;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.primus.conversions.Token;
+import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
 import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 
@@ -16,11 +17,10 @@ import java.util.*;
 public class GraphicalSymbolsAutomaton {
     DeterministicProbabilisticAutomaton<State, GraphicalSymbol> dpa;
 
-
     public GraphicalSymbolsAutomaton() throws IM3Exception {
         HashSet<State> states = new HashSet<>();
         State start = new State(1, "start");
-        State clef = new State(2, "clef");
+        State clef = new ClefState(2);
         State keysig = new State(3, "keysig");
         State timesig1 = new State(4, "timesig1");
         State timesig2 = new State(5, "timesig2");
@@ -73,16 +73,7 @@ public class GraphicalSymbolsAutomaton {
         return dpa;
     }
 
-    public BigFraction probabilityOf(List<GraphicalSymbol> sequence) throws IM3Exception {
+    public BigFraction probabilityOf(List<GraphicalToken> sequence) throws IM3Exception {
         return dpa.probabilityOf(sequence);
-    }
-
-    public BigFraction probabilityOfTokens(List<Token> tokenList) throws IM3Exception {
-        ArrayList<GraphicalSymbol> sequence = new ArrayList<>();
-        // TODO: 3/10/17 A esto hay que añadir la evaluación semántica (alteraciones en la armadura, compases llenos...)
-        for (Token token: tokenList) {
-            sequence.add(token.getSymbol());
-        }
-        return probabilityOf(sequence);
     }
 }

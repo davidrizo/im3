@@ -1,15 +1,13 @@
 package es.ua.dlsi.im3.omr.primus.language;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
+import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
 import es.ua.dlsi.im3.omr.primus.conversions.MEI2GraphicSymbols;
-import es.ua.dlsi.im3.omr.primus.conversions.Token;
 import org.apache.commons.math3.fraction.BigFraction;
-import org.apache.commons.math3.fraction.Fraction;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -75,13 +73,13 @@ public class LanguageChecker {
             MEISongImporter importer = new MEISongImporter();
             try {
                 ScoreSong scoreSong = importer.importSong(file);
-                List<Token> tokenList = converter.convert(scoreSong);
-                BigFraction p = automaton.probabilityOfTokens(tokenList);
+                List<GraphicalToken> graphicalTokenList = converter.convert(scoreSong);
+                BigFraction p = automaton.probabilityOf(graphicalTokenList);
                 if (p.getNumeratorAsLong() == 0) {
-                    notAccepted.println(file.getAbsolutePath() + "\t" + tokenList);
+                    notAccepted.println(file.getAbsolutePath() + "\t" + graphicalTokenList);
                     nko++;
                 } else {
-                    ok.println(p + "\t" + file.getAbsolutePath() + "\t" + tokenList);
+                    ok.println(p + "\t" + file.getAbsolutePath() + "\t" + graphicalTokenList);
                     nok++;
                 }
             } catch (Throwable e) {

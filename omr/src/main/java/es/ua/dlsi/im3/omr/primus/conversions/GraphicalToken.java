@@ -1,13 +1,12 @@
 package es.ua.dlsi.im3.omr.primus.conversions;
 
+import es.ua.dlsi.im3.core.adt.dfa.Token;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 
-public class Token {
+public class GraphicalToken extends Token<GraphicalSymbol> {
     public static final char LINE_SEPARATOR = '-';
     private static final char VALUE_SEPARATOR = '.';
 
-
-    GraphicalSymbol symbol;
     String value;
     PositionInStaff positionInStaff;
 
@@ -17,14 +16,10 @@ public class Token {
      * @param value May be null
      * @param positionInStaff
      */
-    public Token(GraphicalSymbol symbol, String value, PositionInStaff positionInStaff) {
-        this.symbol = symbol;
+    public GraphicalToken(GraphicalSymbol symbol, String value, PositionInStaff positionInStaff) {
+        super(symbol);
         this.value = value;
         this.positionInStaff = positionInStaff;
-    }
-
-    public GraphicalSymbol getSymbol() {
-        return symbol;
     }
 
     public String getValue() {
