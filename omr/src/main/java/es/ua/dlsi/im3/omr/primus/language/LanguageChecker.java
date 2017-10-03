@@ -8,10 +8,10 @@ import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.primus.conversions.MEI2GraphicSymbols;
 import es.ua.dlsi.im3.omr.primus.conversions.Token;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,59 +22,86 @@ import java.util.List;
  */
 public class LanguageChecker {
     public static final void main(String [] args) {
-        if (args.length != 1) {
-            System.err.println("Use: LanguageChecker <mei files folder>");
+        if (args.length != 2) {
+            System.err.println("Use: LanguageChecker <mei files folder> <output folder>");
             return;
         }
 
-        File folder = new File(args[0]);
-        if (!folder.exists()) {
-            System.err.println("The folder " + folder.getAbsolutePath() + " does not exist");
+        File inputFolder = new File(args[0]);
+        if (!inputFolder.exists()) {
+            System.err.println("The folder " + inputFolder.getAbsolutePath() + " does not exist");
             return;
         }
         ArrayList<File> files = new ArrayList<>();
         try {
-            FileUtils.readFiles(folder, files, "mei", true);
+            FileUtils.readFiles(inputFolder, files, "mei", true);
         } catch (IOException e) {
             System.err.println("Error reading files: " + e);
             return;
         }
 
+        File outputFolder = new File(args[1]);
+        if (!outputFolder.exists()) {
+            outputFolder.mkdirs();
+            return;
+        }
+
         LanguageChecker checker = new LanguageChecker();
         try {
-            checker.run(files);
-        } catch (IM3Exception e) {
+            checker.run(files, outputFolder);
+        } catch (Exception e) {
             System.err.println("Error checking: " + e.getMessage());
             return;
         }
     }
 
-    private void run(ArrayList<File> files) throws IM3Exception {
+    private void run(ArrayList<File> files, File outputFolder) throws IM3Exception, IOException {
         GraphicalSymbolsAutomaton automaton = new GraphicalSymbolsAutomaton();
         MEI2GraphicSymbols converter = new MEI2GraphicSymbols();
 
-        System.out.println("------Files with 0 probability -------");
-        System.err.println("----- Cannot read the following files ------");
+        PrintStream errors = new PrintStream(new FileOutputStream(new File(outputFolder, "errors.txt")));
+        PrintStream ok = new PrintStream(new FileOutputStream(new File(outputFolder, "ok.txt")));
+        PrintStream notAccepted = new PrintStream(new FileOutputStream(new File(outputFolder, "notaccepted.txt")));
 
+        int n=files.size();
+        int i=1;
+        int nok=0;
+        int nko=0;
+        int nerrorsImport = 0;
         for (File file: files) {
+            System.out.println("Processing " + i + "/" + n);
+            i++;
+
             MEISongImporter importer = new MEISongImporter();
             try {
                 ScoreSong scoreSong = importer.importSong(file);
                 List<Token> tokenList = converter.convert(scoreSong);
-                Fraction p = automaton.probabilityOfTokens(tokenList);
-                if (p.getNumerator() == 0) {
-                    System.out.println(file.getAbsolutePath() + "\t" + tokenList);
+                BigFraction p = automaton.probabilityOfTokens(tokenList);
+                if (p.getNumeratorAsLong() == 0) {
+                    notAccepted.println(file.getAbsolutePath() + "\t" + tokenList);
+                    nko++;
                 } else {
-                    System.out.println(p);
+                    ok.println(p + "\t" + file.getAbsolutePath() + "\t" + tokenList);
+                    nok++;
                 }
-            } catch (ImportException e) {
-                System.err.println(file.getAbsolutePath());
-                e.printStackTrace(System.err);
-                System.err.println("\n------\n");
+            } catch (Throwable e) {
+                errors.println(file.getAbsolutePath());
+                e.printStackTrace(errors);
+                errors.println("\n------\n");
+                nerrorsImport++;
             }
         }
 
+        errors.close();
+        ok.close();
+        notAccepted.close();
 
+        System.out.println("-------------------------");
+        System.out.println("Total: " + n);
+        System.out.println("Accepted: " + nok);
+        System.out.println("No accepted: " + nko);
+        System.out.println("Errors importing: " + nerrorsImport);
+        System.out.println("-------------------------");
 
     }
 }

@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.*;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.primus.conversions.Token;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 
 import java.util.*;
@@ -60,7 +61,6 @@ public class GraphicalSymbolsAutomaton {
         transitions.add(new Transition<>(endbar, GraphicalSymbol.note, notes));
         transitions.add(new Transition<>(endbar, GraphicalSymbol.rest, notes));
         transitions.add(new Transition<>(noteacc, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.rest, endbar));
         transitions.add(new Transition<>(notes, GraphicalSymbol.barline, endbar));
 
 
@@ -73,11 +73,11 @@ public class GraphicalSymbolsAutomaton {
         return dpa;
     }
 
-    public Fraction probabilityOf(List<GraphicalSymbol> sequence) throws IM3Exception {
+    public BigFraction probabilityOf(List<GraphicalSymbol> sequence) throws IM3Exception {
         return dpa.probabilityOf(sequence);
     }
 
-    public Fraction probabilityOfTokens(List<Token> tokenList) throws IM3Exception {
+    public BigFraction probabilityOfTokens(List<Token> tokenList) throws IM3Exception {
         ArrayList<GraphicalSymbol> sequence = new ArrayList<>();
         // TODO: 3/10/17 A esto hay que añadir la evaluación semántica (alteraciones en la armadura, compases llenos...)
         for (Token token: tokenList) {

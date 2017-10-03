@@ -128,7 +128,7 @@ public class MEI2GraphicSymbols {
             tokens.add(new Token(GraphicalSymbol.rest, rest.getAtomFigure().getFigure().toString(), PossitionsInStaff.LINE_3));
             convertDots(tokens, rest.getAtomFigure(), PossitionsInStaff.LINE_3);
         } else {
-            throw new ExportException("Unsupported symbol " + symbol.getClass());
+            throw new ExportException("Unsupported symbol conversion of: " + symbol.getClass());
         }
     }
 }

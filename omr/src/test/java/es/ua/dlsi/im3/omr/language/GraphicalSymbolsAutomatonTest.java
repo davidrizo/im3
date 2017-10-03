@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.language;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 import org.junit.Test;
 
@@ -23,9 +24,9 @@ public class GraphicalSymbolsAutomatonTest {
                 GraphicalSymbol.barline
                 );
 
-        Fraction p = gspa.probabilityOf(sequence);
+        BigFraction p = gspa.probabilityOf(sequence);
         System.out.println("Probability of " + sequence + "\n\t=" + p);
-        assertTrue(p.getNumerator() > 0);
+        assertTrue(p.getNumeratorAsLong() > 0);
 
         List<GraphicalSymbol> sequence2 = Arrays.asList(
                 GraphicalSymbol.accidental,
@@ -33,9 +34,9 @@ public class GraphicalSymbolsAutomatonTest {
                 GraphicalSymbol.barline
         );
 
-        Fraction p2 = gspa.probabilityOf(sequence2);
+        BigFraction p2 = gspa.probabilityOf(sequence2);
         System.out.println("Probability of " + sequence2 + "\n\t=" + p2);
-        assertEquals(0, p2.getNumerator());
+        assertEquals(0, p2.getNumeratorAsLong());
 
     }
 
