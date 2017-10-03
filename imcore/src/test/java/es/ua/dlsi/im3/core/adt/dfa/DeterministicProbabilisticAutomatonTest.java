@@ -39,7 +39,7 @@ public class DeterministicProbabilisticAutomatonTest {
         automaton.normalizeProbabilities();
         automaton.writeDot(TestFileUtils.createTempFile("pa.dot"));
         List<String> sequence = Arrays.asList("a", "b");
-        assertEquals(Fraction.ONE, automaton.probabilityOf(sequence));
+        assertEquals(1, automaton.probabilityOf(sequence).getNumeratorAsLong());
     }
 
 }
