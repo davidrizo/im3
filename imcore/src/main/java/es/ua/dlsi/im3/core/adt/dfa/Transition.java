@@ -28,6 +28,10 @@ public class Transition<StateType extends State, AlphabetSymbolType extends Comp
         countVisits = 0;
     }
 
+    public Transition(StateType from, AlphabetSymbolType token, StateType to) {
+        this(from, token, to, Fraction.ONE);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,5 +78,9 @@ public class Transition<StateType extends State, AlphabetSymbolType extends Comp
 
     public Fraction getProbability() {
         return probability;
+    }
+
+    public void setProbability(Fraction probability) {
+        this.probability = probability;
     }
 }

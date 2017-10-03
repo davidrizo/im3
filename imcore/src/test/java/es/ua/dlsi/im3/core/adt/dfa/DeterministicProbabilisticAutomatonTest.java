@@ -24,19 +24,22 @@ public class DeterministicProbabilisticAutomatonTest {
         startProbabilities.put(s2, Fraction.ZERO);
         startProbabilities.put(s3, Fraction.ZERO);
 
-        HashSet<State> acceptStates = new HashSet<>(Arrays.asList(s3));
+        HashMap<State, Fraction> endProbabilities = new HashMap<>();
+        endProbabilities.put(s1, Fraction.ZERO);
+        endProbabilities.put(s2, Fraction.ZERO);
+        endProbabilities.put(s3, Fraction.ONE);
+
         Set<Transition<State, String>> deltas = new HashSet<>();
         deltas.add(new Transition<>(s1, "a", s2, Fraction.ONE));
         deltas.add(new Transition<>(s2, "b", s3, Fraction.ONE));
 
         Alphabet<String> alphabet = new Alphabet<>(new HashSet<>(Arrays.asList("a", "b", "c")));
 
-        DeterministicProbabilisticAutomaton automaton = new DeterministicProbabilisticAutomaton(states, s1, acceptStates, alphabet, deltas);
-
+        DeterministicProbabilisticAutomaton automaton = new DeterministicProbabilisticAutomaton(states, s1, endProbabilities, alphabet, deltas);
+        automaton.normalizeProbabilities();
         automaton.writeDot(TestFileUtils.createTempFile("pa.dot"));
         List<String> sequence = Arrays.asList("a", "b");
         assertEquals(Fraction.ONE, automaton.probabilityOf(sequence));
-
     }
 
 }
