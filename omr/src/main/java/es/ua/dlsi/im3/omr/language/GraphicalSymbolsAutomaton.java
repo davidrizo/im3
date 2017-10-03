@@ -4,15 +4,19 @@ package es.ua.dlsi.im3.omr.language;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.*;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
+import es.ua.dlsi.im3.omr.primus.conversions.Token;
 import org.apache.commons.math3.fraction.Fraction;
 
 import java.util.*;
 
-public class GraphicalSymbolsPA  {
+/**
+ * Deterministic probabilistic automaton that models a staff
+ */
+public class GraphicalSymbolsAutomaton {
     DeterministicProbabilisticAutomaton<State, GraphicalSymbol> dpa;
 
 
-    public GraphicalSymbolsPA() throws IM3Exception {
+    public GraphicalSymbolsAutomaton() throws IM3Exception {
         HashSet<State> states = new HashSet<>();
         State start = new State(1, "start");
         State clef = new State(2, "clef");
@@ -39,9 +43,9 @@ public class GraphicalSymbolsPA  {
         transitions.add(new Transition<>(start, GraphicalSymbol.clef, clef));
         transitions.add(new Transition<>(clef, GraphicalSymbol.accidental, keysig));
         transitions.add(new Transition<>(keysig, GraphicalSymbol.accidental, keysig));
-        transitions.add(new Transition<>(clef, GraphicalSymbol.number, timesig1));
-        transitions.add(new Transition<>(keysig, GraphicalSymbol.number, timesig1));
-        transitions.add(new Transition<>(timesig1, GraphicalSymbol.number, timesig2));
+        transitions.add(new Transition<>(clef, GraphicalSymbol.text, timesig1));
+        transitions.add(new Transition<>(keysig, GraphicalSymbol.text, timesig1));
+        transitions.add(new Transition<>(timesig1, GraphicalSymbol.text, timesig2));
 
         transitions.add(new Transition<>(timesig1, GraphicalSymbol.rest, notes));
         transitions.add(new Transition<>(timesig2, GraphicalSymbol.note, notes));
@@ -71,5 +75,14 @@ public class GraphicalSymbolsPA  {
 
     public Fraction probabilityOf(List<GraphicalSymbol> sequence) throws IM3Exception {
         return dpa.probabilityOf(sequence);
+    }
+
+    public Fraction probabilityOfTokens(List<Token> tokenList) throws IM3Exception {
+        ArrayList<GraphicalSymbol> sequence = new ArrayList<>();
+        // TODO: 3/10/17 A esto hay que añadir la evaluación semántica (alteraciones en la armadura, compases llenos...)
+        for (Token token: tokenList) {
+            sequence.add(token.getSymbol());
+        }
+        return probabilityOf(sequence);
     }
 }

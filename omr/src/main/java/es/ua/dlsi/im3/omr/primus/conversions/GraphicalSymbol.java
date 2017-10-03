@@ -10,7 +10,7 @@ public enum GraphicalSymbol {
     barline,
     thickbarline,
     line,
-    number;
+    text;
 
 
     /*public static final String DOT = "dot-";
