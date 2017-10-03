@@ -14,17 +14,10 @@ import java.util.HashMap;
 
 public class MEI2GraphicSymbols {
     static final PositionInStaff CENTER_LINE = PositionInStaff.fromLine(3);
-    public static final String DOT = "dot-";
-    public static final String CLEF = "clef-";
-    public static final String NOTE = "note.";
-    public static final String REST = "rest.";
-    public static final String ACC = "accidental.";
     public static final char SEPARATOR = '\t';
-    public static final String BARLINE_0 = "barline-L1";
-    public static final String LINE_2 = "-L2";
-    public static final String LINE_4 = "-L4";
-    public static final String THICKBARLINE_0 = "thickbarline_L1";
-    public static final String TIMESIGNATURE = "timeSig.";
+    public static final String LINE = "-L";
+    public static final char LINE_SEPARATOR = '-';
+    private static final char VALUE_SEPARATOR = '.';
 
     /**
      *
@@ -70,7 +63,9 @@ public class MEI2GraphicSymbols {
                 measure = scoreSong.getMeasureActiveAtTime(symbol.getTime());
             }
             if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
-                sb.append(BARLINE_0);
+                sb.append(GraphicalSymbol.barline);
+                sb.append(LINE);
+                sb.append(1);
                 sb.append(SEPARATOR);
             }
 
@@ -78,7 +73,8 @@ public class MEI2GraphicSymbols {
             lastMeasure = measure;
         }
         sb.append(SEPARATOR);
-        sb.append(BARLINE_0);
+        sb.append(LINE);
+        sb.append(1);
         /*sb.append(SEPARATOR);
         sb.append(THICKBARLINE_0);*/
 
@@ -86,7 +82,7 @@ public class MEI2GraphicSymbols {
     }
 
     private void convertDuration(StringBuilder sb, AtomFigure figure) {
-        sb.append(figure.getFigure().name());
+        sb.append(figure.getFigure().name().toLowerCase());
 
     }
 
@@ -94,8 +90,8 @@ public class MEI2GraphicSymbols {
         for (int i=0; i<figure.getDots(); i++) {
             if (i>0) {
                 sb.append(SEPARATOR);
-                sb.append(DOT);
-                sb.append('-');
+                sb.append(GraphicalSymbol.dot);
+                sb.append(LINE_SEPARATOR);
                 sb.append(positionInStaff.toString());
             }
         }
@@ -104,7 +100,8 @@ public class MEI2GraphicSymbols {
     private void convert(StringBuilder sb, ITimedElementInStaff symbol, HashMap<AtomPitch, Accidentals> drawnAccidentals) throws IM3Exception {
         if (symbol instanceof Clef) {
             PositionInStaff positionInStaff = PositionInStaff.fromLine(((Clef) symbol).getLine());
-            sb.append(CLEF);
+            sb.append(GraphicalSymbol.clef);
+            sb.append(LINE_SEPARATOR);
             sb.append(positionInStaff.toString());
         } else if (symbol instanceof KeySignature) {
             KeySignature ks = (KeySignature) symbol;
@@ -117,25 +114,31 @@ public class MEI2GraphicSymbols {
                     } else {
                         sb.append(SEPARATOR);
                     }
-                    sb.append(ACC);
+                    sb.append(GraphicalSymbol.accidental);
+                    sb.append(VALUE_SEPARATOR);
                     sb.append(ks.getAccidental().getAbbrName()); // FIXME: 24/9/17  Nombre como en PRIMUS
-                    sb.append('-');
+                    sb.append(LINE_SEPARATOR);
                     sb.append(position.toString());
                 }
             }
         } else if (symbol instanceof TimeSignature) {
             if (symbol instanceof SignTimeSignature) {
-                sb.append(TIMESIGNATURE);
+                sb.append(GraphicalSymbol.number);
+                sb.append(VALUE_SEPARATOR);
                 sb.append(((SignTimeSignature)symbol).getSignString());
             } else if (symbol instanceof FractionalTimeSignature ){
                 FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
-                sb.append(TIMESIGNATURE);
+                sb.append(GraphicalSymbol.number);
+                sb.append(VALUE_SEPARATOR);
                 sb.append(ts.getNumerator());
-                sb.append(LINE_4);
+                sb.append(LINE);
+                sb.append('4');
                 sb.append(SEPARATOR);
-                sb.append(TIMESIGNATURE);
+                sb.append(GraphicalSymbol.number);
+                sb.append(VALUE_SEPARATOR);
                 sb.append(ts.getDenominator());
-                sb.append(LINE_2);
+                sb.append(LINE);
+                sb.append('2');
             } else {
                 throw new ExportException("Unsupported time signature" + symbol.getClass());
             }
@@ -146,15 +149,17 @@ public class MEI2GraphicSymbols {
                     note.getPitch().getPitchClass().getNoteName(), note.getPitch().getOctave());
             Accidentals accidentalToDraw = drawnAccidentals.get(note.getAtomPitch());
             if (accidentalToDraw != null) {
-                sb.append(ACC);
+                sb.append(GraphicalSymbol.accidental);
+                sb.append(VALUE_SEPARATOR);
                 sb.append(accidentalToDraw.getAbbrName());
-                sb.append('-');
+                sb.append(LINE_SEPARATOR);
                 sb.append(positionInStaff.toString());
                 sb.append(SEPARATOR);
             }
-            sb.append(NOTE);
+            sb.append(GraphicalSymbol.note);
+            sb.append(VALUE_SEPARATOR);
             convertDuration(sb, note.getAtomFigure());
-            sb.append('-');
+            sb.append(LINE_SEPARATOR);
             sb.append(positionInStaff.toString());
 
             if (positionInStaff.laysOnLine()) {
@@ -163,9 +168,10 @@ public class MEI2GraphicSymbols {
             convertDots(sb, note.getAtomFigure(), positionInStaff);
         } else if (symbol instanceof SimpleRest) {
             SimpleRest rest = (SimpleRest) symbol;
-            sb.append(REST);
+            sb.append(GraphicalSymbol.rest);
+            sb.append(VALUE_SEPARATOR);
             convertDuration(sb, rest.getAtomFigure());
-            sb.append('-');
+            sb.append(LINE_SEPARATOR);
             sb.append(CENTER_LINE.toString());
             convertDots(sb, rest.getAtomFigure(), CENTER_LINE);
         } else {
