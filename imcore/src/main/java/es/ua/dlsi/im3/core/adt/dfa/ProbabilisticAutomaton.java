@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import es.ua.dlsi.im3.core.IM3Exception;
