@@ -74,7 +74,7 @@ public class LanguageChecker {
             try {
                 ScoreSong scoreSong = importer.importSong(file);
                 List<GraphicalToken> graphicalTokenList = converter.convert(scoreSong);
-                BigFraction p = automaton.probabilityOf(graphicalTokenList);
+                BigFraction p = automaton.probabilityOf(graphicalTokenList).getProbability();
                 if (p.getNumeratorAsLong() == 0) {
                     notAccepted.println(file.getAbsolutePath() + "\t" + graphicalTokenList);
                     nko++;

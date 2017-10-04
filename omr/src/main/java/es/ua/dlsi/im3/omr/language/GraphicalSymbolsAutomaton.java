@@ -73,7 +73,7 @@ public class GraphicalSymbolsAutomaton {
         return dpa;
     }
 
-    public BigFraction probabilityOf(List<GraphicalToken> sequence) throws IM3Exception {
+    public Transduction probabilityOf(List<GraphicalToken> sequence) throws IM3Exception {
         return dpa.probabilityOf(sequence);
     }
 }

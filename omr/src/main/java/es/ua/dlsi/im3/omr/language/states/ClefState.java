@@ -9,13 +9,15 @@ import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
 
-public class ClefState extends State<GraphicalSymbol, GraphicalToken> {
+import java.util.List;
+
+public class ClefState extends State<GraphicalSymbol, GraphicalToken, Object> {
     public ClefState(int number) {
         super(number, "clef");
     }
 
     @Override
-    public void onEnter(GraphicalToken token) throws IM3Exception {
+    public void onEnter(GraphicalToken token, List<Object> generatedOutput) throws IM3Exception {
         if (!token.getSymbol().equals(GraphicalSymbol.clef)) {
             throw new IM3Exception("Expected a clef and found a " + token.getSymbol());
         }
@@ -27,7 +29,8 @@ public class ClefState extends State<GraphicalSymbol, GraphicalToken> {
         // TODO: 3/10/17 NotationType 
         Clef clef = ImportFactories.createClef(NotationType.eModern, token.getValue().toUpperCase(), token.getPositionInStaff().getLine(), 0); // TODO: 3/10/17 Octave change
 
-        // TODO: 3/10/17 Cálculo de la probabilidad - ej. que para G2 esté en la línea 5 
-        System.out.println("Importing clef: " + clef);
+        // TODO: 3/10/17 Cálculo de la probabilidad - ej. que para G2 esté en la línea 5
+
+        generatedOutput.add(clef);
     }
 }

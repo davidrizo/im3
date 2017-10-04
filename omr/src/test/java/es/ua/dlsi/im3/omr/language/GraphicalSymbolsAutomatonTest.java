@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.language;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.adt.dfa.Transduction;
 import es.ua.dlsi.im3.core.score.PossitionsInStaff;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
@@ -20,7 +21,7 @@ public class GraphicalSymbolsAutomatonTest {
         GraphicalSymbolsAutomaton gspa = new GraphicalSymbolsAutomaton();
         gspa.getDeterministicProbabilisticAutomaton().writeDot(TestFileUtils.createTempFile("gspa.dot"));
 
-        List<GraphicalToken> sequence = Arrays.asList(
+        List<GraphicalToken> sequence1 = Arrays.asList(
                 new GraphicalToken(GraphicalSymbol.clef, "g", PossitionsInStaff.LINE_2),
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PossitionsInStaff.LINE_3),
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PossitionsInStaff.SPACE_4),
@@ -32,18 +33,18 @@ public class GraphicalSymbolsAutomatonTest {
                 new GraphicalToken(GraphicalSymbol.barline, null, PossitionsInStaff.LINE_1)
                 );
 
-        BigFraction p = gspa.probabilityOf(sequence);
-        System.out.println("Probability of " + sequence + "\n\t=" + p);
-        assertTrue(p.getNumeratorAsLong() > 0);
+        Transduction t1 = gspa.probabilityOf(sequence1);
+        System.out.println("Probability of " + sequence1 + "\n\t=" + t1.getProbability());
+        assertTrue(t1.getProbability().getNumeratorAsLong() > 0);
 
         List<GraphicalToken> sequence2 = Arrays.asList(
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PossitionsInStaff.SPACE_4),
                 new GraphicalToken(GraphicalSymbol.text, "3", PossitionsInStaff.LINE_4)
         );
 
-        BigFraction p2 = gspa.probabilityOf(sequence2);
-        System.out.println("Probability of " + sequence2 + "\n\t=" + p2);
-        assertEquals(0, p2.getNumeratorAsLong());
+        Transduction t2 = gspa.probabilityOf(sequence2);
+        System.out.println("Probability of " + sequence2 + "\n\t=" + t2.getProbability());
+        assertEquals(0, t2.getProbability().getNumeratorAsLong());
 
     }
 
