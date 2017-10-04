@@ -5,8 +5,8 @@ import org.apache.commons.math3.fraction.BigFraction;
 public class Transduction {
     BigFraction probability;
 
-    public Transduction() {
-        this.probability = BigFraction.ZERO;
+    public Transduction(BigFraction initialProbability) {
+        this.probability = initialProbability;
     }
 
     public BigFraction getProbability() {
@@ -15,5 +15,9 @@ public class Transduction {
 
     public void setProbability(BigFraction probability) {
         this.probability = probability;
+    }
+
+    public void setZeroProbability() {
+        probability = BigFraction.ZERO;
     }
 }

@@ -52,16 +52,20 @@ public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, In
     }
 
     /**
-     * Launched when entering the state
+     * Launched when entering the state. The transduction probability is allowed to be changed by the method
+     * No exception can be launched. If a exception happens, the probability must be set to 0.
+     * If a implementation exception must be thrown, use IM3RuntimeException
      */
-    public void onEnter(InputTokenType token, State previousState, TransductionType transduction) throws IM3Exception {
+    public void onEnter(InputTokenType token, State previousState, TransductionType transduction)  {
 	    // np-op
     }
 
     /**
-     * Launched when exiting the state
+     * Launched when exiting the state. The transduction probability is allowed to be changed by the method.
+     * No exception can be launched. If a exception happens, the probability must be set to 0
+     * If a implementation exception must be thrown, use IM3RuntimeException
      */
-    public void onExit(State nextState, TransductionType transduction) throws IM3Exception {
+    public void onExit(State nextState, boolean isStateChange, TransductionType transduction)  {
         // np-op
     }
 

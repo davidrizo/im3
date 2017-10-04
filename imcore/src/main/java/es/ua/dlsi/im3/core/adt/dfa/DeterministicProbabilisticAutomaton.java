@@ -56,7 +56,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
         }
 
         if (bestTransduction == null) {
-            return transductionFactory.create();
+            return transductionFactory.create(BigFraction.ZERO);
         } else {
             return bestTransduction;
         }
@@ -66,9 +66,13 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
     private TransductionType probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, StateType startState, ITransductionFactory<TransductionType> transductionFactory) throws IM3Exception {
 
         BigFraction p = BigFraction.ONE;
-        TransductionType transduction = transductionFactory.create();
+        TransductionType transduction = transductionFactory.create(BigFraction.ONE);
         StateType currentState = startState;
+
         currentState.onEnter(sequence.get(0), null, transduction);
+        if (transduction.getProbability().getNumeratorAsLong() == 0) {
+            return transduction; // don't need to go on
+        }
 
         for (int i=0; i<sequence.size(); i++) {
             Set<Transition<StateType, AlphabetSymbolType>> transitions = delta(currentState, sequence.get(i).getSymbol());
@@ -83,17 +87,29 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 Transition<StateType, AlphabetSymbolType> transition = transitions.iterator().next();
                 BigFraction transitionProb = transition.getProbability();
                 if (transitionProb == null) {
-                    p = BigFraction.ZERO;
+                    transduction.setProbability(BigFraction.ZERO);
+                    return transduction; // don't need to go on
                 } else {
                     p = p.multiply(transitionProb);
+                    transduction.setProbability(p);
                 }
-                currentState.onExit(transition.getTo(), transduction);
+                currentState.onExit(transition.getTo(), !currentState.equals(transition.getTo()), transduction);
+                if (transduction.getProbability().getNumeratorAsLong() == 0) {
+                    return transduction; // don't need to go on
+                }
                 transition.getTo().onEnter(sequence.get(i), currentState, transduction);
+                if (transduction.getProbability().getNumeratorAsLong() == 0) {
+                    return transduction; // don't need to go on
+                }
                 currentState = transition.getTo();
             }
         }
 
-        currentState.onExit(null, transduction);
+        currentState.onExit(null, true, transduction);
+        if (transduction.getProbability().getNumeratorAsLong() == 0) {
+            return transduction; // don't need to go on
+        }
+
         BigFraction fraction = endProbabilities.get(currentState);
         if (fraction == null) {
             p = BigFraction.ZERO;
