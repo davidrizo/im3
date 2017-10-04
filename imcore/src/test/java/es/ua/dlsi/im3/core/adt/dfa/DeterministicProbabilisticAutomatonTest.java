@@ -40,7 +40,7 @@ public class DeterministicProbabilisticAutomatonTest {
         automaton.normalizeProbabilities();
         automaton.writeDot(TestFileUtils.createTempFile("pa.dot"));
         List<Token<String>> sequence = Arrays.asList(new Token<>("a"), new Token<>("b"));
-        assertEquals(1, automaton.probabilityOf(sequence).getProbability().getNumeratorAsLong());
+        assertEquals(1, automaton.probabilityOf(sequence, new SingleTransductionFactory()).getProbability().getNumeratorAsLong());
     }
 
 }

@@ -4,7 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 
 import java.util.List;
 
-public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, InputTokenType extends Token<AlphabetSymbolType>, OutputTokenType> implements Comparable<State<AlphabetSymbolType, InputTokenType, OutputTokenType>> {
+public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, InputTokenType extends Token<AlphabetSymbolType>, TransductionType extends Transduction> implements Comparable<State<AlphabetSymbolType, InputTokenType, TransductionType>> {
 	protected int number;
 	private String name;
 	
@@ -54,19 +54,19 @@ public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, In
     /**
      * Launched when entering the state
      */
-    public void onEnter(InputTokenType token, List<OutputTokenType> generatedOutput) throws IM3Exception {
+    public void onEnter(InputTokenType token, State previousState, TransductionType transduction) throws IM3Exception {
 	    // np-op
     }
 
     /**
      * Launched when exiting the state
      */
-    public void onExit() {
+    public void onExit(State nextState, TransductionType transduction) throws IM3Exception {
         // np-op
     }
 
     @Override
-    public int compareTo(State<AlphabetSymbolType, InputTokenType, OutputTokenType> o) {
+    public int compareTo(State<AlphabetSymbolType, InputTokenType, TransductionType> o) {
         return number - o.number;
     }
 }
