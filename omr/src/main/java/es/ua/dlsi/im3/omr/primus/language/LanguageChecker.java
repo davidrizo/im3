@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
+import es.ua.dlsi.im3.omr.language.modern.GraphicalModernSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
 import es.ua.dlsi.im3.omr.primus.conversions.MEI2GraphicSymbols;
 import org.apache.commons.math3.fraction.BigFraction;
@@ -54,7 +55,7 @@ public class LanguageChecker {
     }
 
     private void run(ArrayList<File> files, File outputFolder) throws IM3Exception, IOException {
-        GraphicalSymbolsAutomaton automaton = new GraphicalSymbolsAutomaton();
+        GraphicalModernSymbolsAutomaton automaton = new GraphicalModernSymbolsAutomaton();
         MEI2GraphicSymbols converter = new MEI2GraphicSymbols();
 
         PrintStream errors = new PrintStream(new FileOutputStream(new File(outputFolder, "errors.txt")));

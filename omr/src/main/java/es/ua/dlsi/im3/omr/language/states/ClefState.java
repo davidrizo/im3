@@ -1,8 +1,10 @@
 package es.ua.dlsi.im3.omr.language.states;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.adt.dfa.Token;
+import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.io.ImportFactories;
@@ -18,20 +20,29 @@ public class ClefState extends OMRState {
     }
 
     @Override
-    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) throws IM3Exception {
+    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction)  {
         if (!token.getSymbol().equals(GraphicalSymbol.clef)) {
-            throw new IM3Exception("Expected a clef and found a " + token.getSymbol());
+            throw new IM3RuntimeException("Expected a clef and found a " + token.getSymbol());
         }
 
         if (token.getValue() == null) {
-            throw new IM3Exception("Value of clef is null");
+            throw new IM3RuntimeException("Value of clef is null");
         }
 
         // TODO: 3/10/17 NotationType
-        Clef clef = ImportFactories.createClef(NotationType.eModern, token.getValue().toUpperCase(), token.getPositionInStaff().getLine(), 0); // TODO: 3/10/17 Octave change
+        Clef clef = null; // TODO: 3/10/17 Octave change
+        try {
+            clef = ImportFactories.createClef(transduction.getStaff().getNotationType(), token.getValue().toUpperCase(), token.getPositionInStaff().getLine(), 0);
+        } catch (ImportException e) {
+            transduction.setZeroProbability();
+        }
 
         // TODO: 3/10/17 Cálculo de la probabilidad - ej. que para G2 esté en la línea 5
 
-        transduction.getStaff().addClef(clef);
+        try {
+            transduction.getStaff().addClef(clef);
+        } catch (IM3Exception e) {
+            throw new IM3RuntimeException(e);
+        }
     }
 }

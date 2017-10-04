@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
+import es.ua.dlsi.im3.omr.language.modern.GraphicalModernSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
 import org.apache.commons.math3.fraction.BigFraction;
@@ -23,7 +24,7 @@ import static org.junit.Assert.*;
 public class GraphicalSymbolsAutomatonTest {
     @Test
     public void getDeterministicProbabilisticAutomaton() throws Exception {
-        GraphicalSymbolsAutomaton gspa = new GraphicalSymbolsAutomaton();
+        GraphicalModernSymbolsAutomaton gspa = new GraphicalModernSymbolsAutomaton();
         gspa.getDeterministicProbabilisticAutomaton().writeDot(TestFileUtils.createTempFile("gspa.dot"));
 
         List<GraphicalToken> sequence1 = Arrays.asList(
