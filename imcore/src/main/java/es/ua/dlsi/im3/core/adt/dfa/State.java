@@ -2,7 +2,9 @@ package es.ua.dlsi.im3.core.adt.dfa;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
-public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, TokenType extends Token<AlphabetSymbolType>> implements Comparable<State<AlphabetSymbolType, TokenType>> {
+import java.util.List;
+
+public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, InputTokenType extends Token<AlphabetSymbolType>, OutputTokenType> implements Comparable<State<AlphabetSymbolType, InputTokenType, OutputTokenType>> {
 	protected int number;
 	private String name;
 	
@@ -52,7 +54,7 @@ public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, To
     /**
      * Launched when entering the state
      */
-    public void onEnter(TokenType token) throws IM3Exception {
+    public void onEnter(InputTokenType token, List<OutputTokenType> generatedOutput) throws IM3Exception {
 	    // np-op
     }
 
@@ -64,7 +66,7 @@ public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, To
     }
 
     @Override
-    public int compareTo(State<AlphabetSymbolType, TokenType> o) {
+    public int compareTo(State<AlphabetSymbolType, InputTokenType, OutputTokenType> o) {
         return number - o.number;
     }
 }

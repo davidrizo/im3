@@ -33,29 +33,49 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
         }
     }
 
-    public BigFraction probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence) throws IM3Exception {
+    /**
+     *
+     * @param sequence
+     * @return
+     * @throws IM3Exception
+     */
+    public Transduction probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence) throws IM3Exception {
         BigFraction best = BigFraction.ZERO;
 
+        Transduction bestTransduction = null;
+
         for (Map.Entry<StateType, BigFraction> entry: startProbabilities.entrySet()) {
+            ArrayList outputTokensFromThisState = new ArrayList();
             if (entry.getValue().getNumeratorAsLong() != 0) {
-                BigFraction p = probabilityOf(sequence, entry.getKey()).multiply(entry.getValue());
-                if (p.compareTo(best) > 0) {
+                Transduction transduction = probabilityOf(sequence, entry.getKey());
+
+                BigFraction p = transduction.getProbability().multiply(entry.getValue());
+                transduction.setProbability(p);
+                if (best == null || p.compareTo(best) > 0) {
                     best = p;
+                    bestTransduction = transduction;
                 }
             }
         }
-        return best;
+
+        if (bestTransduction == null) {
+            return new Transduction(BigFraction.ZERO, null);
+        } else {
+            return bestTransduction;
+        }
     }
 
-    private BigFraction probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, StateType startState) throws IM3Exception {
+    // TODO: 4/10/17 Output list - tokens
+    private Transduction probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, StateType startState) throws IM3Exception {
         /// Use logarithms to avoid underflows
+        List outputTokens = new ArrayList();
         BigFraction p = BigFraction.ONE;
         StateType currentState = startState; // start probability = 1 // TODO: 3/10/17 Se puede iniciar de cualquier estado
-        currentState.onEnter(sequence.get(0));
+        currentState.onEnter(sequence.get(0), outputTokens);
         for (int i=0; i<sequence.size(); i++) {
             Set<Transition<StateType, AlphabetSymbolType>> transitions = delta(currentState, sequence.get(i).getSymbol());
             if (transitions.size() == 0) {
-                return BigFraction.ZERO; //TODO smoothing
+                return new Transduction(BigFraction.ZERO, outputTokens); //TODO smoothing
             } else if (transitions.size() > 1) {
                 throw new IM3Exception("This automaton is not deterministic, there are " + transitions.size() +
                         " transitions from state " + currentState + " with token " + sequence.get(i));
@@ -69,16 +89,17 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 }
                 currentState.onExit();
                 currentState = transition.getTo();
-                currentState.onEnter(sequence.get(i));
+                currentState.onEnter(sequence.get(i), outputTokens);
             }
         }
         currentState.onExit();
         BigFraction fraction = endProbabilities.get(currentState);
         if (fraction == null) {
-            return BigFraction.ZERO;
+            p = BigFraction.ZERO;
         } else {
             p = p.multiply(endProbabilities.get(currentState));
         }
-        return p;
+
+        return new Transduction(p, outputTokens);
     }
 }

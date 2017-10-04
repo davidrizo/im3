@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.TestFileUtils;
 import org.apache.commons.math3.fraction.Fraction;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -38,8 +39,8 @@ public class DeterministicProbabilisticAutomatonTest {
         DeterministicProbabilisticAutomaton automaton = new DeterministicProbabilisticAutomaton(states, s1, endProbabilities, alphabet, deltas);
         automaton.normalizeProbabilities();
         automaton.writeDot(TestFileUtils.createTempFile("pa.dot"));
-        List<String> sequence = Arrays.asList("a", "b");
-        assertEquals(1, automaton.probabilityOf(sequence).getNumeratorAsLong());
+        List<Token<String>> sequence = Arrays.asList(new Token<>("a"), new Token<>("b"));
+        assertEquals(1, automaton.probabilityOf(sequence).getProbability().getNumeratorAsLong());
     }
 
 }
