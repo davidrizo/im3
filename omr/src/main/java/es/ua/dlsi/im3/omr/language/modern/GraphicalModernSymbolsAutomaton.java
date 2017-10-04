@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.omr.language.GraphicalSymbolAlphabet;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.language.states.ClefState;
 import es.ua.dlsi.im3.omr.language.states.KeySignatureState;
+import es.ua.dlsi.im3.omr.language.states.TimeSignatureState;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import org.apache.commons.math3.fraction.Fraction;
 
@@ -22,16 +23,14 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         State start = new State(1, "start");
         State clef = new ClefState(2);
         State keysig = new KeySignatureState(3);
-        State timesig1 = new State(4, "timesig1");
-        State timesig2 = new State(5, "timesig2");
+        State timesig = new TimeSignatureState(4);
         State noteacc = new State(6, "accnote");
         State notes = new State(7, "notes");
         State endbar = new State(8, "endbar");
         states.add(start);
         states.add(clef);
         states.add(keysig);
-        states.add(timesig1);
-        states.add(timesig2);
+        states.add(timesig);
         states.add(noteacc);
         states.add(notes);
         states.add(endbar);
@@ -44,15 +43,13 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         transitions.add(new Transition<>(start, GraphicalSymbol.clef, clef));
         transitions.add(new Transition<>(clef, GraphicalSymbol.accidental, keysig));
         transitions.add(new Transition<>(keysig, GraphicalSymbol.accidental, keysig));
-        transitions.add(new Transition<>(clef, GraphicalSymbol.text, timesig1));
-        transitions.add(new Transition<>(keysig, GraphicalSymbol.text, timesig1));
-        transitions.add(new Transition<>(timesig1, GraphicalSymbol.text, timesig2));
+        transitions.add(new Transition<>(clef, GraphicalSymbol.text, timesig));
+        transitions.add(new Transition<>(keysig, GraphicalSymbol.text, timesig));
+        transitions.add(new Transition<>(timesig, GraphicalSymbol.text, timesig));
 
-        transitions.add(new Transition<>(timesig1, GraphicalSymbol.rest, notes));
-        transitions.add(new Transition<>(timesig2, GraphicalSymbol.note, notes));
+        transitions.add(new Transition<>(timesig, GraphicalSymbol.rest, notes));
 
-        transitions.add(new Transition<>(timesig1, GraphicalSymbol.accidental, noteacc));
-        transitions.add(new Transition<>(timesig2, GraphicalSymbol.accidental, noteacc));
+        transitions.add(new Transition<>(timesig, GraphicalSymbol.accidental, noteacc));
         transitions.add(new Transition<>(notes, GraphicalSymbol.accidental, noteacc));
         transitions.add(new Transition<>(endbar, GraphicalSymbol.accidental, noteacc));
 

@@ -60,23 +60,21 @@ public class KeySignatureState extends OMRState {
             throw new IM3RuntimeException("Cannot generate a key signature without keys");
         }
 
-        Key key = null;
-
-        // TODO: 4/10/17 Comprobar que las alteraciones (posiciones en líneas) son las correctas, si no dar p=0
-        try {
-            if (accidentals.get(0) == Accidentals.FLAT) {
-                key = new Key(-accidentals.size(), Mode.UNKNOWN);
-            } else {
-                key = new Key(accidentals.size(), Mode.UNKNOWN);
-            }
-            transduction.getStaff().addKeySignature(new KeySignature(transduction.getStaff().getNotationType(), key));
-        } catch (IM3Exception e) {
-            throw new IM3RuntimeException(e);
-        }
-
-
-
         if (isStateChange) {
+            Key key = null;
+
+            // TODO: 4/10/17 Comprobar que las alteraciones (posiciones en líneas) son las correctas, si no dar p=0
+            try {
+                if (accidentals.get(0) == Accidentals.FLAT) {
+                    key = new Key(-accidentals.size(), Mode.UNKNOWN);
+                } else {
+                    key = new Key(accidentals.size(), Mode.UNKNOWN);
+                }
+                transduction.getStaff().addKeySignature(new KeySignature(transduction.getStaff().getNotationType(), key));
+            } catch (IM3Exception e) {
+                throw new IM3RuntimeException(e);
+            }
+
             positions = null;
             accidentals = null;
         }

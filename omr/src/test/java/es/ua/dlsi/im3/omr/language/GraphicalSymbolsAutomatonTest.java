@@ -32,7 +32,7 @@ public class GraphicalSymbolsAutomatonTest {
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PossitionsInStaff.LINE_3),
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PossitionsInStaff.SPACE_4),
                 new GraphicalToken(GraphicalSymbol.text, "3", PossitionsInStaff.LINE_4),
-                new GraphicalToken(GraphicalSymbol.text, "4", PossitionsInStaff.LINE_4),
+                new GraphicalToken(GraphicalSymbol.text, "4", PossitionsInStaff.LINE_2),
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PossitionsInStaff.SPACE_2),
                 new GraphicalToken(GraphicalSymbol.note, "HALF", PossitionsInStaff.SPACE_2),
                 new GraphicalToken(GraphicalSymbol.rest, "QUARTER", PossitionsInStaff.LINE_3),
