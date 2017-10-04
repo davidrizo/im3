@@ -15,7 +15,7 @@ import java.util.*;
  * Deterministic probabilistic automaton that models a staff
  */
 public class GraphicalSymbolsAutomaton {
-    DeterministicProbabilisticAutomaton<State, GraphicalSymbol> dpa;
+    DeterministicProbabilisticAutomaton<State, GraphicalSymbol, OMRTransduction> dpa;
 
     public GraphicalSymbolsAutomaton() throws IM3Exception {
         HashSet<State> states = new HashSet<>();
@@ -69,11 +69,11 @@ public class GraphicalSymbolsAutomaton {
         dpa.normalizeProbabilities();
     }
 
-    public DeterministicProbabilisticAutomaton<State, GraphicalSymbol> getDeterministicProbabilisticAutomaton() {
+    public DeterministicProbabilisticAutomaton<State, GraphicalSymbol, OMRTransduction> getDeterministicProbabilisticAutomaton() {
         return dpa;
     }
 
-    public Transduction probabilityOf(List<GraphicalToken> sequence) throws IM3Exception {
-        return dpa.probabilityOf(sequence);
+    public OMRTransduction probabilityOf(List<GraphicalToken> sequence) throws IM3Exception {
+        return dpa.probabilityOf(sequence, new OMRTransductionFactory());
     }
 }

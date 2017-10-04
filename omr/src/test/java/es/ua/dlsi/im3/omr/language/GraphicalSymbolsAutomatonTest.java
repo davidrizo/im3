@@ -3,12 +3,17 @@ package es.ua.dlsi.im3.omr.language;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.adt.dfa.Transduction;
 import es.ua.dlsi.im3.core.score.PossitionsInStaff;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
+import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
 import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +38,7 @@ public class GraphicalSymbolsAutomatonTest {
                 new GraphicalToken(GraphicalSymbol.barline, null, PossitionsInStaff.LINE_1)
                 );
 
-        Transduction t1 = gspa.probabilityOf(sequence1);
+        OMRTransduction t1 = gspa.probabilityOf(sequence1);
         System.out.println("Probability of " + sequence1 + "\n\t=" + t1.getProbability());
         assertTrue(t1.getProbability().getNumeratorAsLong() > 0);
 
@@ -42,9 +47,19 @@ public class GraphicalSymbolsAutomatonTest {
                 new GraphicalToken(GraphicalSymbol.text, "3", PossitionsInStaff.LINE_4)
         );
 
-        Transduction t2 = gspa.probabilityOf(sequence2);
+        OMRTransduction t2 = gspa.probabilityOf(sequence2);
         System.out.println("Probability of " + sequence2 + "\n\t=" + t2.getProbability());
         assertEquals(0, t2.getProbability().getNumeratorAsLong());
+
+        // draw first transduction
+        HorizontalLayout layout = new HorizontalLayout(t1.getSong(), LayoutFonts.bravura,
+                new CoordinateComponent(960), new CoordinateComponent(700));
+        layout.layout();
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("transduction.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
 
     }
 
