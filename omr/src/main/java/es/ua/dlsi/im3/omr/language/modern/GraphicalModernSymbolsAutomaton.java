@@ -7,9 +7,7 @@ import es.ua.dlsi.im3.core.adt.dfa.Transition;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolAlphabet;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
-import es.ua.dlsi.im3.omr.language.states.ClefState;
-import es.ua.dlsi.im3.omr.language.states.KeySignatureState;
-import es.ua.dlsi.im3.omr.language.states.TimeSignatureState;
+import es.ua.dlsi.im3.omr.language.states.*;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import org.apache.commons.math3.fraction.Fraction;
 
@@ -24,8 +22,8 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         State clef = new ClefState(2);
         State keysig = new KeySignatureState(3);
         State timesig = new TimeSignatureState(4);
-        State noteacc = new State(6, "accnote");
-        State notes = new State(7, "notes");
+        State noteacc = new AccNoteState(6);
+        State notes = new NotesState(7, "notes");
         State endbar = new State(8, "endbar");
         states.add(start);
         states.add(clef);
