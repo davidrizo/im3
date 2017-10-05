@@ -21,11 +21,9 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.ScoreAnalysisHook;
-import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Staff;
-import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.*;
 
+// TODO: 5/10/17 Deprecated?
 /**
  * The layer that contains all analysis hooks is the hooks layer
  * @author drizo
@@ -44,7 +42,8 @@ public class AnalysisStaff extends Staff {
 		return false;
 	}
 
-	@Override
+
+    @Override
 	public String __getIDPrefix() {
 		return "AS";
 	}

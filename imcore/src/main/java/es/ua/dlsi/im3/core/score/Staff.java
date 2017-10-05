@@ -429,6 +429,29 @@ public abstract class Staff extends VerticalScoreDivision {
 
     }
 
+    /**
+     *
+     * @param clef
+     * @param positionInStaff
+     * @return
+     * @throws IM3Exception When no possible pitch is found
+     */
+    public ScientificPitch computeScientificPitch(Clef clef, PositionInStaff positionInStaff) throws IM3Exception {
+        int bottomClefOctave = clef.getBottomLineOctave();
+        DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
+        int intervalWithC = bottomClefNoteName.getOrder() - DiatonicPitch.C.getOrder();
+        int lineSpace = positionInStaff.getLineSpace();
+        int octaveDifference = (lineSpace + intervalWithC) / 7;
+
+        int diatonicPitchDifference = lineSpace % 7; // TODO: 5/10/17 ¿Si es negativo?
+
+        DiatonicPitch[] noteNames = DiatonicPitch.getJustNoteNames();
+        DiatonicPitch diatonicPitch = noteNames[(diatonicPitchDifference + bottomClefNoteName.getOrder())%7];
+        int octave = (octaveDifference + bottomClefOctave);
+        ScientificPitch result = new ScientificPitch(diatonicPitch, null, octave);
+        return result;
+    }
+
 	public abstract boolean isPitched();
 
 	public final boolean isOssia() {
@@ -613,6 +636,17 @@ public abstract class Staff extends VerticalScoreDivision {
     public PositionInStaff computePositionForPitchWithoutClefOctaveChange(Time time, DiatonicPitch noteName, int octave) throws IM3Exception {
         Clef clef = getRunningClefAt(time);
         return computePositionInStaff(clef, noteName, octave + clef.getOctaveChange());
+    }
+
+    /**
+     * The last inserted clef
+     * @return Could return null
+     */
+    public Clef getLastClef() {
+        if (clefs == null || clefs.isEmpty()) {
+            return null;
+        }
+        return clefs.lastEntry().getValue();
     }
 
 }

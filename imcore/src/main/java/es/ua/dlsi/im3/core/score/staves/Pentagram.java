@@ -19,10 +19,8 @@ package es.ua.dlsi.im3.core.score.staves;
 
 import java.util.HashMap;
 
-import es.ua.dlsi.im3.core.score.Clef;
-import es.ua.dlsi.im3.core.score.DiatonicPitch;
-import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.*;
 
 /**
  * @author drizo
@@ -36,8 +34,7 @@ public class Pentagram extends Staff {
 	 * The staff must be added to the score song using ScoreSong.addStaff to be
 	 * added to the song
 	 * 
-	 * @param notationType
-	 * @param firstPart
+
 	 * @param hierarchicalOrder
 	 * @param numberIdentifier
 	 */
@@ -80,7 +77,8 @@ public class Pentagram extends Staff {
 		return true;
 	}
 
-	@Override
+
+    @Override
 	public String __getIDPrefix() {
 		return "PTGRM";
 	}

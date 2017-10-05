@@ -17,8 +17,8 @@
 
 package es.ua.dlsi.im3.core.score.staves;
 
-import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.*;
 
 /**
  *
@@ -36,7 +36,7 @@ public class PercussionStaff extends Staff {
 	return false;
     }
 
-	@Override
+    @Override
 	public String __getIDPrefix() {
 		return "PSTFF";
 	}
