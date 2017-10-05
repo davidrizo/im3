@@ -4,12 +4,8 @@ package es.ua.dlsi.im3.omr.language;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.*;
 import es.ua.dlsi.im3.core.score.NotationType;
-import es.ua.dlsi.im3.omr.language.states.ClefState;
-import es.ua.dlsi.im3.omr.language.states.KeySignatureState;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
-import org.apache.commons.math3.fraction.BigFraction;
-import org.apache.commons.math3.fraction.Fraction;
 
 import java.util.*;
 
@@ -28,7 +24,12 @@ public class GraphicalSymbolsAutomaton {
         return dpa;
     }
 
+    public OMRTransduction probabilityOf(List<GraphicalToken> sequence, boolean debug) throws IM3Exception {
+        dpa.setDebug(debug);
+        return dpa.probabilityOf(sequence, new OMRTransductionFactory(notationType));
+    }
     public OMRTransduction probabilityOf(List<GraphicalToken> sequence) throws IM3Exception {
+        dpa.setDebug(false);
         return dpa.probabilityOf(sequence, new OMRTransductionFactory(notationType));
     }
 }

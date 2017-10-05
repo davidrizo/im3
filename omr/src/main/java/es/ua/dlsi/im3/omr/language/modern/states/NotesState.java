@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.language.states;
+package es.ua.dlsi.im3.omr.language.modern.states;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;

@@ -4,7 +4,6 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.language.modern.GraphicalModernSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
 import es.ua.dlsi.im3.omr.primus.conversions.MEI2GraphicSymbols;
@@ -75,7 +74,7 @@ public class LanguageChecker {
             try {
                 ScoreSong scoreSong = importer.importSong(file);
                 List<GraphicalToken> graphicalTokenList = converter.convert(scoreSong);
-                BigFraction p = automaton.probabilityOf(graphicalTokenList).getProbability();
+                BigFraction p = automaton.probabilityOf(graphicalTokenList, true).getProbability();
                 if (p.getNumeratorAsLong() == 0) {
                     notAccepted.println(file.getAbsolutePath() + "\t" + graphicalTokenList);
                     nko++;

@@ -1,17 +1,13 @@
-package es.ua.dlsi.im3.omr.language.states;
+package es.ua.dlsi.im3.omr.language.modern.states;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
-import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
-import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
-
-import java.util.ArrayList;
 
 public class TimeSignatureState extends OMRState {
     // TODO: 4/10/17 C3, C, C/...

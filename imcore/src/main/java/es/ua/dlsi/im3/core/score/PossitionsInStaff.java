@@ -15,6 +15,8 @@ public class PossitionsInStaff {
      * Top line
      */
     public static final PositionInStaff LINE_5 = new PositionInStaff(8);
+    public static final PositionInStaff FIRST_TOP_LEDGER_LINE = new PositionInStaff(10);
+
     /**
      * Bottom space
      */
@@ -22,4 +24,6 @@ public class PossitionsInStaff {
     public static final PositionInStaff SPACE_2 = new PositionInStaff(3);
     public static final PositionInStaff SPACE_3 = new PositionInStaff(5);
     public static final PositionInStaff SPACE_4 = new PositionInStaff(7);
+    public static final PositionInStaff SPACE_5 = new PositionInStaff(9);
 }
+

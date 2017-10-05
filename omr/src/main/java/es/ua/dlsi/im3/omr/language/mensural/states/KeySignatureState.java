@@ -1,17 +1,14 @@
-package es.ua.dlsi.im3.omr.language.states;
+package es.ua.dlsi.im3.omr.language.mensural.states;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class KeySignatureState extends OMRState {
     ArrayList<PositionInStaff> positions;
@@ -62,8 +59,8 @@ public class KeySignatureState extends OMRState {
 
         if (isStateChange) {
             Key key = null;
-
-            // TODO: 4/10/17 Comprobar que las alteraciones (posiciones en líneas) son las correctas, si no dar p=0
+            // TODO: 5/10/17 Detectar si el doble bemol es la misma nota
+            // TODO: 5/10/17 Comprobar las armaduras usuales
             try {
                 if (accidentals.get(0) == Accidentals.FLAT) {
                     key = new Key(-accidentals.size(), Mode.UNKNOWN);
