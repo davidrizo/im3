@@ -23,37 +23,72 @@ import java.util.*;
  */
 public abstract class ScoreLayout {
     protected final ScoreSong scoreSong;
-    protected final LayoutFont layoutFont;
-    protected final LayoutSymbolFactory layoutSymbolFactory;
-    protected final Simultaneities simultaneities;
-    protected final double noteHeadWidth;
+    protected LayoutSymbolFactory layoutSymbolFactory;
+    protected Simultaneities simultaneities;
     protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbolsInStaves;
+    protected HashMap<Staff, LayoutFont> layoutFonts;
+    protected HashMap<Staff, Pictogram> noteHeads;
+    protected HashMap<Staff, Double> noteHeadWidths;
     protected HashMap<BeamGroup, List<LayoutCoreSingleFigureAtom>> singleLayoutFigureAtomsInBeam;
     /**
      * Used for building connectors
      */
     HashMap<AtomPitch, NotePitch> layoutPitches;
 
-    protected final List<LayoutCoreBarline> barlines;
-    protected final List<LayoutConnector> connectors;
+    protected List<LayoutCoreBarline> barlines;
+    protected List<LayoutConnector> connectors;
     protected List<LayoutBeamGroup> beams;
 
 
+    /**
+     * @param song
+     * @param font Same font for all staves
+     * @throws IM3Exception
+     */
     public ScoreLayout(ScoreSong song, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         this.scoreSong = song;
-        layoutFont = FontFactory.getInstance().getFont(font);
+        layoutFonts = new HashMap<>();
+        for (Staff staff: scoreSong.getStaves()) {
+            LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
+            layoutFonts.put(staff, layoutFont);
+        }
+        init();
+    }
+
+    private void init() throws IM3Exception {
         layoutSymbolFactory = new LayoutSymbolFactory();
         simultaneities = new Simultaneities();
         barlines = new ArrayList<>();
         connectors = new ArrayList<>();
+        noteHeads = new HashMap<>();
+        noteHeadWidths = new HashMap<>();
 
-        Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(), layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
-                new Coordinate(new CoordinateComponent(0),
-                        new CoordinateComponent(0)
-                ));
-        noteHeadWidth = noteHead.getWidth();
-        
+        for (Map.Entry<Staff, LayoutFont> layoutFontEntry: layoutFonts.entrySet()) {
+            Staff staff = layoutFontEntry.getKey();
+            LayoutFont layoutFont = layoutFontEntry.getValue();
+            Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(staff), layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
+                    new Coordinate(new CoordinateComponent(0),
+                            new CoordinateComponent(0)
+                    ));
+            double noteHeadWidth = noteHead.getWidth();
+            noteHeads.put(staff, noteHead);
+            noteHeadWidths.put(staff, noteHeadWidth);
+        }
         createLayoutSymbols();
+    }
+
+    public ScoreLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+        this.scoreSong = song;
+        layoutFonts = new HashMap<>();
+        for (Staff staff: scoreSong.getStaves()) {
+            LayoutFonts font = fonts.get(staff);
+            if (font == null) {
+                throw new IM3Exception("Cannot find the staff " + staff + " in the parameter");
+            }
+            LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
+            layoutFonts.put(staff, layoutFont);
+        }
+        init();
     }
 
     private void createLayoutSymbols() throws IM3Exception {
@@ -76,7 +111,7 @@ public abstract class ScoreLayout {
             // create barlines
             // TODO: 21/9/17 Deberíamos poder crear barlines de system
             for (Measure measure: scoreSong.getMeasures()) {
-                LayoutCoreBarline barline = new LayoutCoreBarline(layoutFont, measure.getEndTime());
+                LayoutCoreBarline barline = new LayoutCoreBarline(getLayoutFont(staff), measure.getEndTime());
                 simultaneities.add(barline);
                 barlines.add(barline);
             }
@@ -88,13 +123,20 @@ public abstract class ScoreLayout {
         }
     }
 
+    public LayoutFont getLayoutFont(Staff staff) throws IM3Exception {
+        LayoutFont layoutFont = layoutFonts.get(staff);
+        if (layoutFont == null) {
+            throw new IM3Exception("Staff not found in layoutFonts: " + staff);
+        }
+        return layoutFont;
+    }
     private void createLayoutSymbol(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, ITimedElementInStaff symbol) throws IM3Exception {
         if (symbol instanceof CompoundAtom) {
             for (Atom subatom : ((CompoundAtom) symbol).getAtoms()) {
                 createLayoutSymbol(coreSymbolsInStaff, subatom);
             }
         } else {
-            LayoutCoreSymbol layoutCoreSymbol = layoutSymbolFactory.createCoreSymbol(layoutFont, symbol);
+            LayoutCoreSymbol layoutCoreSymbol = layoutSymbolFactory.createCoreSymbol(getLayoutFont(symbol.getStaff()), symbol);
             //createLayout(symbol, layoutStaff);
             if (layoutCoreSymbol != null) {
                 simultaneities.add(layoutCoreSymbol);
@@ -131,6 +173,7 @@ public abstract class ScoreLayout {
         beams = new ArrayList<>();
 
         for (Map.Entry<BeamGroup, List<LayoutCoreSingleFigureAtom>> entry: singleLayoutFigureAtomsInBeam.entrySet()) {
+            LayoutFont layoutFont = getLayoutFont(entry.getValue().get(0).getCoreStaff());
             LayoutBeamGroup layoutBeamGroup = new LayoutBeamGroup(entry.getKey(), entry.getValue(), layoutFont);
             layoutBeamGroup.createBeams();
             beams.add(layoutBeamGroup);
@@ -208,6 +251,11 @@ public abstract class ScoreLayout {
 
     protected void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
         // Replace for a factory if required
+        // use the maximum noteHeadWidth among all the staves
+        double noteHeadWidth = 0;
+        for (Double nh: noteHeadWidths.values()) {
+            noteHeadWidth = Math.max(noteHeadWidth, nh);
+        }
         ILayoutEngine layoutEngine = new BelliniLayoutEngine(1, 1, noteHeadWidth/2); // TODO: 22/9/17 ¿qué valor ponemos?
         layoutEngine.reset(simultaneities);
         layoutEngine.doHorizontalLayout(simultaneities);
@@ -217,13 +265,12 @@ public abstract class ScoreLayout {
     public abstract void layout() throws IM3Exception;
     public abstract List<Canvas> getCanvases();
 
-    public LayoutFont getLayoutFont() {
-        return layoutFont;
-    }
-
     protected void addConnector(LayoutSlur connector) {
         this.connectors.add(connector);
     }
 
 
+    public Collection<LayoutFont> getLayoutFonts() {
+        return layoutFonts.values();
+    }
 }

@@ -20,8 +20,18 @@ public class SVGExporter implements IGraphicsExporter {
     }
 
     //TODO Cargar fuente .... sólo de lo que necesitamos
-    private void fillDefinitions(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs, LayoutFont layoutFont) {
-        String viewbox = "0 0 " + layoutFont.getSVGFont().getUnitsPerEM() + " " + layoutFont.getSVGFont().getUnitsPerEM();
+    private void fillDefinitions(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs, ScoreLayout layout) throws IM3Exception {
+        Integer unitsPerEM = null;
+        for (LayoutFont layoutFont: layout.getLayoutFonts()) {
+            if (unitsPerEM == null) {
+                unitsPerEM = layoutFont.getSVGFont().getUnitsPerEM();
+            } else if (!unitsPerEM.equals(layoutFont.getSVGFont().getUnitsPerEM())) {
+                // TODO: 6/10/17 Could adjust to one of them
+                throw new IM3Exception("Cannot use fonts with different units per EM: " + unitsPerEM + " and " + layoutFont.getSVGFont().getUnitsPerEM() + " for " + layoutFont.getFont());
+            }
+        }
+
+        String viewbox = "0 0 " + unitsPerEM + " " + unitsPerEM;
 
         XMLExporterHelper.start(sb, tabs, "defs");
         for (Glyph glyph: usedGlyphs) {
@@ -36,7 +46,7 @@ public class SVGExporter implements IGraphicsExporter {
         XMLExporterHelper.end(sb, tabs, "defs");
     }
 
-    public String exportLayout(Canvas canvas, LayoutFont layoutFont) throws IM3Exception {
+    public String exportLayout(Canvas canvas, ScoreLayout layout) throws IM3Exception {
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" standalone=\"no\"?>\n");
         XMLExporterHelper.start(sb, 0, "svg",
@@ -64,7 +74,7 @@ public class SVGExporter implements IGraphicsExporter {
         XMLExporterHelper.end(sbContent, 2, "g");
         XMLExporterHelper.end(sbContent, 1, "svg");
 
-        fillDefinitions(sb, 1, usedGlyphs, layoutFont);
+        fillDefinitions(sb, 1, usedGlyphs, layout);
 
         sb.append(sbContent);
         XMLExporterHelper.end(sb, 0, "svg");
@@ -77,7 +87,7 @@ public class SVGExporter implements IGraphicsExporter {
             throw new ExportException("Cannot export " + layout.getCanvases().size() + " canvases to SVG");
         }
         try (Writer w = new OutputStreamWriter(os, "UTF-8")) {
-            w.write(exportLayout(layout.getCanvases().get(0), layout.getLayoutFont()));
+            w.write(exportLayout(layout.getCanvases().get(0), layout));
         } // or w.close(); //close will auto-flush    }
         catch (Exception e) {
             throw new ExportException(e);
@@ -93,7 +103,7 @@ public class SVGExporter implements IGraphicsExporter {
             BufferedWriter out = null;
             try {
                 out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
-                out.write(exportLayout(layout.getCanvases().get(0), layout.getLayoutFont()));
+                out.write(exportLayout(layout.getCanvases().get(0), layout));
                 out.close();
             } catch (Exception e) {
                 throw new ExportException(e);

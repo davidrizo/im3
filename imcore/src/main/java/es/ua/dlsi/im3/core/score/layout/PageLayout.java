@@ -20,6 +20,12 @@ public class PageLayout extends ScoreLayout {
         this.height = height;
     }
 
+    public PageLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
+        super(song, fonts);
+        this.width = width;
+        this.height = height;
+    }
+
     @Override
     protected void createConnectors() throws IM3Exception {
         super.createConnectors();
@@ -36,7 +42,8 @@ public class PageLayout extends ScoreLayout {
 
         // add the system breaks, with a default duration that will be able to fit the new clef and new key signature
         for (SystemBreak sb: scoreSong.getSystemBreaks().values()) {
-            LayoutSystemBreak lsb = new LayoutSystemBreak(layoutFont, sb);
+            // use the first layout font, it can be any one
+            LayoutSystemBreak lsb = new LayoutSystemBreak(layoutFonts.values().iterator().next(), sb);
             simultaneities.add(lsb);
         }
 
@@ -86,7 +93,7 @@ public class PageLayout extends ScoreLayout {
                         Clef clef = staff.getClefAtTime(time);
                         if (clef == null) {
                             clef = staff.getRunningClefAt(time);
-                            LayoutCoreClef layoutCoreClef = new LayoutCoreClef(layoutFont, clef);
+                            LayoutCoreClef layoutCoreClef = new LayoutCoreClef(getLayoutFont(staff), clef);
                             layoutCoreClef.setSystem(lastSystem);
                             newSimultaneitiesToAdd.add(layoutCoreClef);
                             layoutCoreClef.setTime(time);
@@ -96,7 +103,7 @@ public class PageLayout extends ScoreLayout {
                         KeySignature ks = staff.getKeySignatureWithOnset(time);
                         if (ks == null) {
                             ks = staff.getRunningKeySignatureAt(time);
-                            LayoutCoreKeySignature layoutCoreKs = new LayoutCoreKeySignature(layoutFont, ks);
+                            LayoutCoreKeySignature layoutCoreKs = new LayoutCoreKeySignature(getLayoutFont(staff), ks);
                             layoutCoreKs.setSystem(lastSystem);
                             layoutCoreKs.setTime(time);
                             newSimultaneitiesToAdd.add(layoutCoreKs);

@@ -21,10 +21,12 @@ import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PDFExporter implements IGraphicsExporter {
-    PDFont musicFont;
-    PDFont textFont;
+    HashMap<LayoutFont, PDType0Font> musicFonts;
+    HashMap<LayoutFont, PDTrueTypeFont> textFonts;
 
     public PDFExporter() {
     }
@@ -50,7 +52,7 @@ public class PDFExporter implements IGraphicsExporter {
 
             for (GraphicsElement element : canvas.getElements()) {
                 if (!element.isHidden()) {
-                    element.generatePDF(contents, musicFont, textFont, page);
+                    element.generatePDF(contents, this, page);
                 }
             }
             contents.close();
@@ -66,7 +68,7 @@ public class PDFExporter implements IGraphicsExporter {
     }
     @Override
     public void exportLayout(OutputStream os, ScoreLayout layout) throws ExportException {
-        PDDocument document = createDocument(layout.getLayoutFont());
+        PDDocument document = createDocument(layout);
         try {
             generatePDF(document, layout);
             document.save(os);
@@ -78,7 +80,7 @@ public class PDFExporter implements IGraphicsExporter {
 
     @Override
     public void exportLayout(File file, ScoreLayout layout) throws ExportException {
-        PDDocument document = createDocument(layout.getLayoutFont());
+        PDDocument document = createDocument(layout);
         try {
             generatePDF(document, layout);
             document.save(file);
@@ -88,8 +90,8 @@ public class PDFExporter implements IGraphicsExporter {
         }
     }
 
-    public void exportLayout(File file, Canvas canvas, LayoutFont layoutFont) throws ExportException {
-        PDDocument document = createDocument(layoutFont);
+    public void exportLayout(File file, Canvas canvas, ScoreLayout layout) throws ExportException {
+        PDDocument document = createDocument(layout);
         try {
             generatePDF(document, canvas);
             document.save(file);
@@ -99,17 +101,41 @@ public class PDFExporter implements IGraphicsExporter {
         }
     }
 
-    private PDDocument createDocument(LayoutFont layoutFont) throws ExportException {
+    private PDDocument createDocument(ScoreLayout layout) throws ExportException {
+        musicFonts = new HashMap<>();
+        textFonts = new HashMap<>();
         PDDocument document = new PDDocument();
         try {
-            musicFont = PDType0Font.load(document, layoutFont.getOTFMusicFont(), false);
-            //musicFont = PDTrueTypeFont.load(document, layoutFont.getOTFMusicFont(), StandardEncoding.INSTANCE);
-            textFont = PDTrueTypeFont.load(document, layoutFont.getOtfTextFont(), WinAnsiEncoding.INSTANCE); //TODO ¿ñ?
+            for (LayoutFont layoutFont: layout.getLayoutFonts()) {
+                if (!musicFonts.containsKey(layoutFont)) {
+                    PDType0Font musicFont = PDType0Font.load(document, layoutFont.getOTFMusicFont(), false);
+                    musicFonts.put(layoutFont, musicFont);
+
+                    PDTrueTypeFont textFont = PDTrueTypeFont.load(document, layoutFont.getOtfTextFont(), WinAnsiEncoding.INSTANCE); //TODO ¿ñ?
+                    textFonts.put(layoutFont, textFont);
+                }
+            }
         } catch (IOException e) {
             throw new ExportException(e);
         }
         return document;
     }
 
+
+    public PDType0Font getMusicFont(LayoutFont layoutFont) throws ExportException {
+        PDType0Font musicFont = musicFonts.get(layoutFont);
+        if (musicFont == null) {
+            throw new ExportException("Cannot find music font for layout " + layoutFont);
+        }
+        return musicFont;
+    }
+
+    public PDTrueTypeFont getTextFont(LayoutFont layoutFont) throws ExportException {
+        PDTrueTypeFont textFont = textFonts.get(layoutFont);
+        if (textFont == null) {
+            throw new ExportException("Cannot find text font for layout " + layoutFont);
+        }
+        return textFont;
+    }
 
 }

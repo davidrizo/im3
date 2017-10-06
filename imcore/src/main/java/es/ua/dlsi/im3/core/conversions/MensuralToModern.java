@@ -14,12 +14,13 @@ public class MensuralToModern {
     private Time pendingMensureDuration;
     private Measure currentMeasure;
 
+
     /**
      * It creates a modern version of the mensural song
      * @param mensural
      * @return
      */
-    public ScoreSong convert(ScoreSong mensural) throws IM3Exception {
+    public ScoreSong convertIntoNewSong(ScoreSong mensural) throws IM3Exception {
         ScoreSong modernSong = new ScoreSong();
         for (ScorePart mensuralPart: mensural.getParts()) {
             ScorePart modernPart = new ScorePart(modernSong, mensuralPart.getNumber());
@@ -43,13 +44,24 @@ public class MensuralToModern {
             modernSong.addStaff(modernPentagram);
             ScoreLayer modernLayer = modernPart.addScoreLayer(modernPentagram);
 
-            convert(mensuralStaff, modernPentagram, modernLayer);
+            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer);
         }
         return modernSong;
     }
 
     // TODO: 6/10/17 Estoy convirtiendo sólo binario
-    private void convert(Staff mensuralStaff, Staff modernStaff, ScoreLayer modernLayer) throws IM3Exception {
+
+    /**
+     * It resets the modern output layer and staff contents and leaves the result inside
+     * @param mensuralStaff
+     * @param modernStaff
+     * @param modernLayer
+     * @throws IM3Exception
+     */
+    public void convertIntoStaff(Staff mensuralStaff, Staff modernStaff, ScoreLayer modernLayer) throws IM3Exception {
+        modernStaff.clear();
+        modernLayer.clear();
+
         activeTimeSignature = null;
         activeKeySignature = null;
         pendingMensureDuration = null;
@@ -82,7 +94,7 @@ public class MensuralToModern {
             if (!currentMeasure.hasEndTime()) {
                 currentMeasure.setEndTime(modernLayer.getDuration());
             }
-            // TODO: 6/10/17 Puede que tengamos que rellenar con silencios 
+            // TODO: 6/10/17 Puede que tengamos que rellenar con silencios
         }
     }
 

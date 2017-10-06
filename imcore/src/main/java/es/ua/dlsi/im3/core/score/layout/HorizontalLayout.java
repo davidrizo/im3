@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,6 +23,11 @@ public class HorizontalLayout extends ScoreLayout {
     Canvas canvas;
     public HorizontalLayout(ScoreSong song, LayoutFonts font, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
         super(song, font);
+        canvas = new Canvas(width, height);
+    }
+
+    public HorizontalLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
+        super(song, fonts);
         canvas = new Canvas(width, height);
     }
 

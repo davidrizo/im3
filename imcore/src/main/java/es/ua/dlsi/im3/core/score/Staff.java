@@ -655,4 +655,11 @@ public abstract class Staff extends VerticalScoreDivision {
         }
         return timeSignatures.lastEntry().getValue();
     }
+
+    public void clear() {
+        this.timeSignatures.clear();
+        this.coreSymbols.clear();
+        this.keySignatures.clear();
+        this.clefs.clear();
+    }
 }

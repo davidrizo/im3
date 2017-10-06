@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
 import javafx.scene.Node;
@@ -17,6 +18,7 @@ import javafx.scene.transform.Translate;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -84,8 +86,10 @@ public class Pictogram extends GraphicsElement {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contentStream, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
+    public void generatePDF(PDPageContentStream contentStream, PDFExporter exporter, PDPage page) throws ExportException {
         try {
+            PDType0Font musicFont = exporter.getMusicFont(layoutFont);
+
             contentStream.setFont(musicFont, LayoutConstants.FONT_SIZE);
             contentStream.beginText();
             contentStream.newLineAtOffset(getPFDCoordinateX(page, position.getAbsoluteX()), getPFDCoordinateY(page, position.getAbsoluteY()));

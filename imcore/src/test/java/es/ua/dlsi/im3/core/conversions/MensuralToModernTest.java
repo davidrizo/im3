@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -55,8 +57,9 @@ public class MensuralToModernTest {
         SimpleNote n8 = new SimpleNote(Figures.SEMIBREVE, 0, new ScientificPitch(DiatonicPitch.A, null, 5));
         add(staff, layer, n8);
 
+        // convert into a new song
         MensuralToModern mensuralToModern = new MensuralToModern();
-        ScoreSong modernSong = mensuralToModern.convert(song);
+        ScoreSong modernSong = mensuralToModern.convertIntoNewSong(song);
 
         assertEquals( "Modern parts",  1, modernSong.getParts().size());
         assertEquals( "Modern staves",  1, modernSong.getStaves().size());
@@ -68,8 +71,6 @@ public class MensuralToModernTest {
         //TODO assertEquals("Core symbols in staff", 17, modernStaff.getCoreSymbolsOrdered().size());
         //TODO assertEquals("Atoms in layer", 11, modernLayer.getAtoms().size());
 
-        // render it putting in the top staff the mensural one and in the bottom staff the modern one
-        // FIXME: 6/10/17
         HorizontalLayout layout = new HorizontalLayout(modernSong, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout();
@@ -77,6 +78,30 @@ public class MensuralToModernTest {
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("mensural2modern.svg");
         svgExporter.exportLayout(svgFile, layout);
+
+        // ---------
+        // convert into a new staff in the same song
+        Staff newModernStaff = new Pentagram(song, "2", 2);
+        ScorePart newPart = song.addPart();
+        ScoreLayer newLayer = newPart.addScoreLayer(newModernStaff);
+        newPart.addStaff(newModernStaff);
+        song.addStaff(newModernStaff);
+
+        MensuralToModern mensuralToModern2 = new MensuralToModern();
+
+        mensuralToModern2.convertIntoStaff(staff, newModernStaff, newLayer);
+
+        // render it putting in the top staff the mensural one and in the bottom staff the modern one
+        HashMap<Staff, LayoutFonts> fonts = new HashMap<>();
+        fonts.put(staff, LayoutFonts.capitan);
+        fonts.put(newModernStaff, LayoutFonts.bravura);
+        HorizontalLayout layout2 = new HorizontalLayout(song, fonts,
+                new CoordinateComponent(960), new CoordinateComponent(700));
+        layout2.layout();
+
+        SVGExporter svgExporter2 = new SVGExporter();
+        File svgFile2 = TestFileUtils.createTempFile("mensuralAndmodern.svg");
+        svgExporter.exportLayout(svgFile2, layout2);
 
     }
 

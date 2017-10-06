@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import javafx.scene.Node;
 import org.apache.commons.math3.analysis.function.Exp;
@@ -69,7 +70,7 @@ public class Line extends Shape {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
+    public void generatePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
         try {
             contents.setStrokingColor(0, 0, 0);
             try {

@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.io.JSONGlyphNamesReader;
 import es.ua.dlsi.im3.core.score.layout.fonts.IFontMap;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGFont;
@@ -22,6 +23,7 @@ public class LayoutFont {
      * As field to be reused
      */
     private final Scale javaFXScale;
+    private final LayoutFonts font;
     OpenTypeFont otfMusicFont;
     OpenTypeFont otfTextFont;
     SVGFont svgFont;
@@ -38,7 +40,8 @@ public class LayoutFont {
      * @param svgFontResource Typically a file with the font
      * @param mappingResource Typically a file with the mapping (usually SMuFL)
      */
-    public LayoutFont(InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
+    public LayoutFont(LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
+        this.font = font;
         this.fontMap = fontMap;
         SVGFontImporter importer = new SVGFontImporter();
         svgFont = importer.importStream(svgFontResource);
@@ -108,5 +111,24 @@ public class LayoutFont {
 
     public IFontMap getFontMap() {
         return fontMap;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LayoutFont that = (LayoutFont) o;
+
+        return font == that.font;
+    }
+
+    @Override
+    public int hashCode() {
+        return font.hashCode();
+    }
+
+    public LayoutFonts getFont() {
+        return font;
     }
 }

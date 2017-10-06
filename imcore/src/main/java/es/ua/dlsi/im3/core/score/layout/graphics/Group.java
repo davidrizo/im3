@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
 import javafx.scene.Node;
@@ -60,10 +61,10 @@ public class Group extends GraphicsElement {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, PDFont musicFont, PDFont textFont, PDPage page) throws ExportException {
+    public void generatePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
         //TODO ¿cómo se hace un grupo?
         for (GraphicsElement child: children) {
-            child.generatePDF(contents, musicFont, textFont, page);
+            child.generatePDF(contents, exporter, page);
         }
     }
 
