@@ -193,4 +193,8 @@ public class Time implements Comparable<Time> {
     public boolean isMaxValue() {
 		return exactTime.getNumerator() == Integer.MAX_VALUE;
     }
+
+    public boolean isNegative() {
+	    return exactTime.getNumerator() < 0;
+    }
 }
