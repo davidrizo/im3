@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 /**
  * Line or space in the staff. Invariant
  * @author drizo
@@ -79,5 +81,29 @@ public class PositionInStaff {
      */
     public PositionInStaff move(int lineSpaceDifference) {
         return new PositionInStaff(lineSpace + lineSpaceDifference);
+    }
+
+    public PositionInStaff getPositionBelow() {
+        return move(2);
+    }
+
+    public PositionInStaff getPositionAbove() {
+        return move(-2);
+    }
+
+    public static PositionInStaff parseString(String val) throws IM3Exception {
+        try {
+            if (val.startsWith(LINE_STR)) {
+                int line = Integer.parseInt(val.substring(1));
+                return fromLine(line);
+            } else if (val.startsWith(SPACE_STR)) {
+                int space = Integer.parseInt(val.substring(1));
+                return fromSpace(space);
+            } else {
+                throw new IM3Exception("Cannot parse '" + val + "' as a PositionInStaff");
+            }
+        } catch (NumberFormatException e) {
+            throw new IM3Exception("Cannot parse '" + val + "' as a PositionInStaff");
+        }
     }
 }

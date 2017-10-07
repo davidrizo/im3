@@ -17,15 +17,16 @@ public class PositionInStaffTest {
             PositionInStaff pos = PositionInStaff.fromLine(i);
             assertEquals("Line " + i, pos.getLine(), i);
             assertEquals("L"+i, pos.toString());
+
+            assertEquals("Parsed position in staff", pos, PositionInStaff.parseString(pos.toString()));
         }
 
         for (int i=-5; i<10; i++) {
             PositionInStaff pos = PositionInStaff.fromSpace(i);
             assertEquals("Space " + i, pos.getSpace(), i);
             assertEquals("S"+i, pos.toString());
+            assertEquals("Parsed position in staff", pos, PositionInStaff.parseString(pos.toString()));
         }
-
-
     }
 
 }

@@ -288,7 +288,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         }
         return figure;
     }
-    private void importRest(Staff staff, ScoreLayer layer, RestEvent event) throws ImportException {
+    private void importRest(Staff staff, ScoreLayer layer, RestEvent event) throws IM3Exception {
         Figures figure = convertFigure(event.getnotetype());
         SimpleRest rest = new SimpleRest(figure, 0);
         rest.setStaff(staff);

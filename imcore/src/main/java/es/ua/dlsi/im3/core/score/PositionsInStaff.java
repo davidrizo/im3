@@ -1,6 +1,6 @@
 package es.ua.dlsi.im3.core.score;
 
-public class PossitionsInStaff {
+public class PositionsInStaff {
     /**
      * Bottom line
      */

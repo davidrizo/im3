@@ -60,13 +60,13 @@ public class MEI2GraphicSymbols {
                 measure = scoreSong.getMeasureActiveAtTime(symbol.getTime());
             }
             if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PossitionsInStaff.LINE_1));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
             }
 
             convert(graphicalTokens, symbol, drawnAccidentals);
             lastMeasure = measure;
         }
-        graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PossitionsInStaff.LINE_1));
+        graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
         /*sb.append(SEPARATOR);
         sb.append(THICKBARLINE_0);*/
 
@@ -100,11 +100,11 @@ public class MEI2GraphicSymbols {
             }
         } else if (symbol instanceof TimeSignature) {
             if (symbol instanceof SignTimeSignature) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.text, ((SignTimeSignature)symbol).getSignString(), PossitionsInStaff.LINE_3));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.text, ((SignTimeSignature)symbol).getSignString(), PositionsInStaff.LINE_3));
             } else if (symbol instanceof FractionalTimeSignature ){
                 FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.text, Integer.toString(ts.getNumerator()), PossitionsInStaff.LINE_4));
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.text, Integer.toString(ts.getDenominator()), PossitionsInStaff.LINE_2));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.text, Integer.toString(ts.getNumerator()), PositionsInStaff.LINE_4));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.text, Integer.toString(ts.getDenominator()), PositionsInStaff.LINE_2));
             } else {
                 throw new ExportException("Unsupported time signature" + symbol.getClass());
             }
@@ -125,8 +125,8 @@ public class MEI2GraphicSymbols {
             convertDots(graphicalTokens, note.getAtomFigure(), positionInStaff);
         } else if (symbol instanceof SimpleRest) {
             SimpleRest rest = (SimpleRest) symbol;
-            graphicalTokens.add(new GraphicalToken(GraphicalSymbol.rest, rest.getAtomFigure().getFigure().toString(), PossitionsInStaff.LINE_3));
-            convertDots(graphicalTokens, rest.getAtomFigure(), PossitionsInStaff.LINE_3);
+            graphicalTokens.add(new GraphicalToken(GraphicalSymbol.rest, rest.getAtomFigure().getFigure().toString(), PositionsInStaff.LINE_3));
+            convertDots(graphicalTokens, rest.getAtomFigure(), PositionsInStaff.LINE_3);
         } else {
             throw new ExportException("Unsupported symbol conversion of: " + symbol.getClass());
         }
