@@ -36,5 +36,8 @@ public class ConnectorCollection {
 		}
 		return false;
 	}
-	
+
+    public void clear() {
+	    this.connectors.clear();
+    }
 }

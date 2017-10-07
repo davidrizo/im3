@@ -53,6 +53,7 @@ public class HorizontalLayout extends ScoreLayout {
             Coordinate rightTop = new Coordinate(canvas.getWidthCoordinateComponent(), y);
 
             LayoutStaff layoutStaff = new LayoutStaff(this, leftTop, rightTop, staff);
+            layoutStaves.put(staff, layoutStaff);
             system.addLayoutStaff(layoutStaff);
             canvas.add(layoutStaff.getGraphics());// TODO: 25/9/17 ¿Realmente hace falta el canvas? 
 
@@ -72,7 +73,10 @@ public class HorizontalLayout extends ScoreLayout {
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
         }
-        for (LayoutCoreBarline layoutCoreBarline: barlines) {
+
+        createStaffConnectors();
+
+        for (LayoutCoreBarline layoutCoreBarline: barlines.values()) {
             Staff staff = layoutCoreBarline.getStaff();
 
             if (staff == null) {

@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.conversions;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
@@ -22,9 +23,19 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 
 public class MensuralToModernTest {
+    private void printSVG(ScoreSong song, LayoutFonts font, String filename) throws IM3Exception {
+        HorizontalLayout layout = new HorizontalLayout(song, font,
+                new CoordinateComponent(960), new CoordinateComponent(700));
+        layout.layout();
+
+        SVGExporter msvgExporter = new SVGExporter();
+        File msvgFile = TestFileUtils.createTempFile(filename);
+        msvgExporter.exportLayout(msvgFile, layout);
+    }
+
     @Test
     public void convert() throws Exception {
-        ScoreSong song = new ScoreSong(new BinaryDurationEvaluator(new Time(2))); // TODO: 7/10/17 ¿Sería mejor cambiar las Figures? 
+        ScoreSong song = new ScoreSong(new BinaryDurationEvaluator(new Time(2))); // TODO: 7/10/17 ¿Sería mejor cambiar las Figures?
         Staff staff = new Pentagram(song, "1", 1);
         staff.setNotationType(NotationType.eMensural);
         song.addStaff(staff);
@@ -80,22 +91,8 @@ public class MensuralToModernTest {
         //TODO assertEquals("Core symbols in staff", 17, modernStaff.getCoreSymbolsOrdered().size());
         //TODO assertEquals("Atoms in layer", 11, modernLayer.getAtoms().size());
 
-        HorizontalLayout mlayout = new HorizontalLayout(song, LayoutFonts.capitan,
-                new CoordinateComponent(960), new CoordinateComponent(700));
-        mlayout.layout();
-
-        SVGExporter msvgExporter = new SVGExporter();
-        File msvgFile = TestFileUtils.createTempFile("mensural.svg");
-        msvgExporter.exportLayout(msvgFile, mlayout);
-
-
-        HorizontalLayout layout = new HorizontalLayout(modernSong, LayoutFonts.bravura,
-                new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
-
-        SVGExporter svgExporter = new SVGExporter();
-        File svgFile = TestFileUtils.createTempFile("mensural2modern.svg");
-        svgExporter.exportLayout(svgFile, layout);
+        //printSVG(song, LayoutFonts.capitan, "mensural.svg");
+        //printSVG(modernSong, LayoutFonts.bravura, "mensural2modern.svg");
 
         // ---------
         // convert into a new staff in the same song
@@ -118,9 +115,10 @@ public class MensuralToModernTest {
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout2.layout();
 
-        SVGExporter svgExporter2 = new SVGExporter();
-        File svgFile2 = TestFileUtils.createTempFile("mensuralAndmodern.svg");
-        svgExporter.exportLayout(svgFile2, layout2);
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("mensuralAndmodern.svg");
+        svgExporter.exportLayout(svgFile, layout2);
+
 
     }
 

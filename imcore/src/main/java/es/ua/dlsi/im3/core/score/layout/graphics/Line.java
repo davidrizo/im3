@@ -54,14 +54,26 @@ public class Line extends Shape {
         try {
             String strokeWidth;
 
-            XMLExporterHelper.startEnd(sb, tabs, "line",
-                    "x1", Double.toString(from.getAbsoluteX()),
-                    "y1", Double.toString(from.getAbsoluteY()),
-                    "x2", Double.toString(to.getAbsoluteX()),
-                    "y2", Double.toString(to.getAbsoluteY()),
-                    "stroke", "black", //TODO Constants
-                    "stroke-width", Double.toString(thickness)
-                    );
+            if (this.getStrokeType() == StrokeType.eDashed) {
+                XMLExporterHelper.startEnd(sb, tabs, "line",
+                        "x1", Double.toString(from.getAbsoluteX()),
+                        "y1", Double.toString(from.getAbsoluteY()),
+                        "x2", Double.toString(to.getAbsoluteX()),
+                        "y2", Double.toString(to.getAbsoluteY()),
+                        "stroke", "black", //TODO Constants
+                        "stroke-dasharray", "5, 5",
+                        "stroke-width", Double.toString(thickness)
+                );
+            } else {
+                XMLExporterHelper.startEnd(sb, tabs, "line",
+                        "x1", Double.toString(from.getAbsoluteX()),
+                        "y1", Double.toString(from.getAbsoluteY()),
+                        "x2", Double.toString(to.getAbsoluteX()),
+                        "y2", Double.toString(to.getAbsoluteY()),
+                        "stroke", "black", //TODO Constants
+                        "stroke-width", Double.toString(thickness)
+                );
+            }
         } catch (IM3Exception e) {
             throw new ExportException(e);
         }
@@ -74,6 +86,7 @@ public class Line extends Shape {
         try {
             contents.setStrokingColor(0, 0, 0);
             try {
+                // TODO: 7/10/17 Stroke type
                 contents.moveTo(getPFDCoordinateX(page, from.getAbsoluteX()), getPFDCoordinateY(page, from.getAbsoluteY()));
                 contents.lineTo(getPFDCoordinateX(page, to.getAbsoluteX()), getPFDCoordinateY(page, to.getAbsoluteY()));
             } catch (IM3Exception e) {

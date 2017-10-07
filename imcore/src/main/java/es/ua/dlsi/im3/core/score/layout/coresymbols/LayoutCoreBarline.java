@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -56,4 +57,21 @@ public class LayoutCoreBarline extends LayoutCoreSymbol {
     public Time getTime() {
         return time;
     }
+
+    public Coordinate getBottomEnd() throws IM3Exception {
+        if (from.getAbsoluteY() < to.getAbsoluteY()) {
+            return from;
+        } else {
+            return to;
+        }
+    }
+
+    public Coordinate getTopEnd() throws IM3Exception {
+        if (from.getAbsoluteY() > to.getAbsoluteY()) {
+            return from;
+        } else {
+            return to;
+        }
+    }
+
 }

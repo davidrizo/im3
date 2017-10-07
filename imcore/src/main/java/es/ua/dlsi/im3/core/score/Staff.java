@@ -29,7 +29,7 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
  *
  * @author drizo
  */
-public abstract class Staff extends VerticalScoreDivision {
+public abstract class Staff extends VerticalScoreDivision implements ISymbolWithConnectors {
 	/**
 	 * The staff belongs either to a page or is grouped into a system
 	 */
@@ -77,6 +77,9 @@ public abstract class Staff extends VerticalScoreDivision {
 	 * For occasional staff changes of one note N, N is maintained in the voice and its value staffChange modified     
 	 */
 	private final ArrayList<ScoreLayer> layers;
+
+	protected ConnectorCollection connectorCollection;
+
 	/**
 	 *
 	 * @param hierarchicalOrder
@@ -95,6 +98,7 @@ public abstract class Staff extends VerticalScoreDivision {
 		ossia = false;
 		layers = new ArrayList<>();
 		coreSymbols = new ArrayList<>();
+        connectorCollection = new ConnectorCollection();
 		// mainLayer = this.addLayer();
 	}
 
@@ -656,10 +660,49 @@ public abstract class Staff extends VerticalScoreDivision {
         return timeSignatures.lastEntry().getValue();
     }
 
+
+    @Override
+    public Collection<Connector> getConnectors() {
+        if (connectorCollection == null) {
+            return null;
+        } else {
+            return connectorCollection.getConnectors();
+        }
+    }
+
+    @Override
+    public void addConnector(Connector connector) {
+        if (connectorCollection == null) {
+            connectorCollection = new ConnectorCollection();
+        }
+        connectorCollection.add(connector);
+    }
+
+    @Override
+    public boolean containsConnectorFrom(ISymbolWithConnectors fromSymbol) {
+        if (connectorCollection == null) {
+            return false;
+        } else {
+            return connectorCollection.containsConnectorFrom(fromSymbol);
+        }
+
+    }
+
+    @Override
+    public boolean containsConnectorTo(ISymbolWithConnectors fromSymbol) {
+        if (connectorCollection == null) {
+            return false;
+        } else {
+            return connectorCollection.containsConnectorTo(fromSymbol);
+        }
+    }
+
     public void clear() {
         this.timeSignatures.clear();
         this.coreSymbols.clear();
         this.keySignatures.clear();
         this.clefs.clear();
+        this.marks.clear();
+        this.connectorCollection.clear();
     }
 }

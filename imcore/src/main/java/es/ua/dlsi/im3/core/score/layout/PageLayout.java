@@ -83,6 +83,7 @@ public class PageLayout extends ScoreLayout {
                     Coordinate staffLeftTopCoordinate = new Coordinate(null, y);
                     Coordinate staffRightTopCoordinate = new Coordinate(page.getCanvas().getWidthCoordinateComponent(), y);
                     LayoutStaff layoutStaff = new LayoutStaff(this, staffLeftTopCoordinate, staffRightTopCoordinate, staff);
+                    layoutStaves.put(staff, layoutStaff);
                     lastSystem.addLayoutStaff(layoutStaff);
                     page.getCanvas().add(layoutStaff.getGraphics());// TODO: 25/9/17 ¿Realmente hace falta el canvas?
                     nextY += LayoutConstants.STAFF_SEPARATION;
@@ -168,6 +169,8 @@ public class PageLayout extends ScoreLayout {
                 layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
             }
         }
+
+        createStaffConnectors();
 
         //simultaneities.printDebug();
 

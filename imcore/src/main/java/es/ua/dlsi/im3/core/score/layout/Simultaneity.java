@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.score.SingleFigureAtom;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolComparator;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSystemBreak;
@@ -49,6 +50,7 @@ public class Simultaneity implements Comparable<Simultaneity> {
             throw new IM3Exception("The symbol cannot be null");
         }
         this.time = firstSymbol.getTime();
+       // print(true, firstSymbol);
         this.order = LayoutCoreSymbolComparator.getInstance().getOrder(firstSymbol);
         symbols = new ArrayList<>();
         symbols.add(firstSymbol);
@@ -77,6 +79,7 @@ public class Simultaneity implements Comparable<Simultaneity> {
      * @param symbol
      */
     void add(LayoutCoreSymbol symbol) throws IM3Exception {
+        //print(false, symbol);
         if (LayoutCoreSymbolComparator.getInstance().getOrder(symbol) != order) {
             throw new IM3RuntimeException("Cannot add different order symbols ( "+ order + " and " +
                     LayoutCoreSymbolComparator.getInstance().getOrder(symbol) + ") to the same simultaneity");
@@ -86,6 +89,15 @@ public class Simultaneity implements Comparable<Simultaneity> {
         minWidth = Math.min(minWidth, symbol.getWidth());
         symbols.add(symbol);
     }
+
+    /*private void print(boolean first, LayoutCoreSymbol symbol) {
+        String f = first?"First ":"";
+        System.out.println(f + "symbol " + symbol.getTime() +  " " + symbol);
+        if (symbol.getCoreSymbol() instanceof SingleFigureAtom) {
+            SingleFigureAtom sfa = (SingleFigureAtom) symbol.getCoreSymbol();
+            System.out.println("\t"+sfa.getAtomFigure());
+        }
+    }*/
 
     @Override
     public String toString() {

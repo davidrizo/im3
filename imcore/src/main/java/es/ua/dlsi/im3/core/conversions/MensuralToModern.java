@@ -96,6 +96,13 @@ public class MensuralToModern {
             }
             // TODO: 6/10/17 Puede que tengamos que rellenar con silencios
         }
+
+        // now insert barlines between staves
+        for (Measure measure: modernStaff.getScoreSong().getMeasures()) {
+            DashedBarlineAcrossStaves dashedBarlineAcrossStaves = new DashedBarlineAcrossStaves(measure, modernStaff, mensuralStaff);
+            modernStaff.addConnector(dashedBarlineAcrossStaves);
+            mensuralStaff.addConnector(dashedBarlineAcrossStaves);
+        }
     }
 
     private void convert(Staff modernStaff, ScoreLayer modernLayer, MarkBarline symbol) {
@@ -164,6 +171,7 @@ public class MensuralToModern {
             } else {
                 throw new IM3Exception("Unsupported single figure atom type: " + singleFigureAtom.getClass());
             }
+            modernLayer.setDurationEvaluator(new DurationEvaluator()); // it does not use the evaluator of the MensuralSong
             modernLayer.add(outputAtom);
             modernStaff.addCoreSymbol(outputAtom);
             pendingDuration = pendingDuration.substract(outputFigureDuration);

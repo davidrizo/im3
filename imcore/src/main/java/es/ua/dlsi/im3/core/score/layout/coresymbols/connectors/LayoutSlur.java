@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.core.score.layout.coresymbols.components;
+package es.ua.dlsi.im3.core.score.layout.coresymbols.connectors;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.layout.*;

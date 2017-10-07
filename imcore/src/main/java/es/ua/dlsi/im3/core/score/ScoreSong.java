@@ -90,7 +90,6 @@ public class ScoreSong {
         tempoChanges = new TimedElementCollection<>();
         measures = new TimedElementCollection<>();
         idManager = new IDManager(this);
-        durationEvaluator = new DurationEvaluator();
         parts = new ArrayList<>();
         staves = new ArrayList<>();
         staffGroups = new ArrayList<StaffGroup>();

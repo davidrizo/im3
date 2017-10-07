@@ -6,7 +6,9 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolInStaff;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutSlur;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutDashedBarlineAcrossStaves;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
@@ -29,13 +31,14 @@ public abstract class ScoreLayout {
     protected HashMap<Staff, LayoutFont> layoutFonts;
     protected HashMap<Staff, Pictogram> noteHeads;
     protected HashMap<Staff, Double> noteHeadWidths;
+    protected HashMap<Staff, LayoutStaff> layoutStaves;
     protected HashMap<BeamGroup, List<LayoutCoreSingleFigureAtom>> singleLayoutFigureAtomsInBeam;
     /**
      * Used for building connectors
      */
     HashMap<AtomPitch, NotePitch> layoutPitches;
 
-    protected List<LayoutCoreBarline> barlines;
+    protected HashMap<Measure, LayoutCoreBarline> barlines;
     protected List<LayoutConnector> connectors;
     protected List<LayoutBeamGroup> beams;
 
@@ -58,7 +61,8 @@ public abstract class ScoreLayout {
     private void init() throws IM3Exception {
         layoutSymbolFactory = new LayoutSymbolFactory();
         simultaneities = new Simultaneities();
-        barlines = new ArrayList<>();
+        barlines = new HashMap<>();
+        layoutStaves = new HashMap<>();
         connectors = new ArrayList<>();
         noteHeads = new HashMap<>();
         noteHeadWidths = new HashMap<>();
@@ -117,7 +121,7 @@ public abstract class ScoreLayout {
                 for (Measure measure : scoreSong.getMeasures()) {
                     LayoutCoreBarline barline = new LayoutCoreBarline(staff, getLayoutFont(staff), measure.getEndTime());
                     simultaneities.add(barline);
-                    barlines.add(barline);
+                    barlines.put(measure, barline);
                 }
             }
 
@@ -125,6 +129,32 @@ public abstract class ScoreLayout {
             createBeams();
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
+        }
+    }
+
+    protected void createStaffConnectors() throws IM3Exception {
+        // create staff connectors
+        for (Staff staff: this.scoreSong.getStaves()) {
+            for (Connector connector: staff.getConnectors()) {
+                if (connector.getFrom() == staff) {
+                    // avoid creating twice
+                    if (connector instanceof DashedBarlineAcrossStaves) {
+                        DashedBarlineAcrossStaves dashedBarlineAcrossStaves = (DashedBarlineAcrossStaves) connector;
+                        LayoutCoreBarline barline = barlines.get(dashedBarlineAcrossStaves.getMeasure());
+                        if (barline == null) {
+                            throw new IM3RuntimeException("Cannot find a barline for measure " + dashedBarlineAcrossStaves.getMeasure() + " while creating LayoutDashedBarlineAcrossStaves");
+                        }
+                        LayoutStaff toLayoutStaff = layoutStaves.get(dashedBarlineAcrossStaves.getTo());
+                        if (toLayoutStaff == null) {
+                            throw new IM3RuntimeException("Cannot find a LayoutStaff for staff " + dashedBarlineAcrossStaves.getTo() + " while creating LayoutDashedBarlineAcrossStaves");
+                        }
+
+                        LayoutDashedBarlineAcrossStaves layoutDashedBarlineAcrossStaves = new LayoutDashedBarlineAcrossStaves(barline, toLayoutStaff);
+                        addConnector(layoutDashedBarlineAcrossStaves);
+                    }
+                }
+            }
+
         }
     }
 
@@ -206,9 +236,12 @@ public abstract class ScoreLayout {
      * This must be implemented in the different layout. A connector, e.g. a slur, could be split between staves
      */
     protected void createConnectors() throws IM3Exception {
-// TODO: 1/10/17 Implementarlo en hijos, una ligadura puede que haya que partirla
+        // TODO: 1/10/17 Factory como LayoutCoreSymbol para connectors
+
         NotePitch previousNotePitch = null;
 
+// TODO: 1/10/17 Implementarlo en hijos, una ligadura puede que haya que partirla
+        // create connectors between LayoutCoreSymbolInStaff
         for (Map.Entry<Staff, List<LayoutCoreSymbolInStaff>> entry: this.coreSymbolsInStaves.entrySet()) {
             for (LayoutCoreSymbolInStaff coreSymbolInStaff: entry.getValue()) {
                 if (coreSymbolInStaff instanceof LayoutCoreSingleFigureAtom) {
@@ -230,7 +263,6 @@ public abstract class ScoreLayout {
                             for (Connector connector: atomPitchConnectors) {
                                 // just create "to" connectors to avoid duplicate in both directions
                                 if (connector.getTo() == notePitch.getAtomPitch()) {
-                                    // TODO: 1/10/17 Factory como LayoutCoreSymbol para connectors
 
                                     NotePitch from = layoutPitches.get(connector.getFrom());
                                     if (from == null) {
@@ -255,6 +287,9 @@ public abstract class ScoreLayout {
     }
 
     protected void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
+        simultaneities.printDebug();
+
+
         // Replace for a factory if required
         // use the maximum noteHeadWidth among all the staves
         double noteHeadWidth = 0;
@@ -270,7 +305,7 @@ public abstract class ScoreLayout {
     public abstract void layout() throws IM3Exception;
     public abstract List<Canvas> getCanvases();
 
-    protected void addConnector(LayoutSlur connector) {
+    protected void addConnector(LayoutConnector connector) {
         this.connectors.add(connector);
     }
 
