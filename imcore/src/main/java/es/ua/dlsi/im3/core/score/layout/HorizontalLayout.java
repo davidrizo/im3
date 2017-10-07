@@ -72,10 +72,20 @@ public class HorizontalLayout extends ScoreLayout {
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
         }
-        for (LayoutCoreBarline barline: barlines) {
-            //TODO IMPORTANT it is the same system now - it should be drawn for the different groups (piano....)
-            barline.setLayoutStaff(system.getBottomStaff(), system.getTopStaff());
-            canvas.getElements().add(barline.getGraphics());
+        for (LayoutCoreBarline layoutCoreBarline: barlines) {
+            Staff staff = layoutCoreBarline.getStaff();
+
+            if (staff == null) {
+                //layoutCoreBarline.setLayoutStaff(lastSystem.getBottomStaff(), lastSystem.getTopStaff()); // covers all staves
+                //TODO IMPORTANT it is the same system now - it should be drawn for the different groups (piano....)
+                throw new IM3RuntimeException("LayoutCoreBarline has not staff");
+            } else {
+                LayoutStaff layoutStaff = system.get(staff);
+                layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
+            }
+
+            //barline.setLayoutStaff(system.getBottomStaff(), system.getTopStaff());
+            canvas.getElements().add(layoutCoreBarline.getGraphics());
         }
         doHorizontalLayout(simultaneities);
 

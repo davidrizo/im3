@@ -8,7 +8,6 @@ import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
 public class MensuralToModern {
-    private static final double DURATION_FACTOR = 2; // TODO: 6/10/17 Lo he hecho a ojo
     private KeySignature activeKeySignature;
     private TimeSignature activeTimeSignature;
     private Time pendingMensureDuration;
@@ -40,6 +39,7 @@ public class MensuralToModern {
 
             Staff mensuralStaff = mensuralPart.getStaves().iterator().next();
             Pentagram modernPentagram = new Pentagram(modernSong, mensuralStaff.getHierarchicalOrder(), mensuralStaff.getNumberIdentifier());
+            modernPentagram.setNotationType(NotationType.eModern);
             modernPart.addStaff(modernPentagram);
             modernSong.addStaff(modernPentagram);
             ScoreLayer modernLayer = modernPart.addScoreLayer(modernPentagram);
@@ -137,7 +137,7 @@ public class MensuralToModern {
 
         //int dots = singleFigureAtom.getAtomFigure().getDots();
         //Figures figure = singleFigureAtom.getAtomFigure().getFigure();
-        Time pendingDuration = singleFigureAtom.getAtomFigure().getDuration().multiply(2);
+        Time pendingDuration = singleFigureAtom.getAtomFigure().getDuration();
 
         // TODO: 6/10/17 ¿Puede cambiar el compás por enmedio?
         AtomPitch lastAtomPitch = null;

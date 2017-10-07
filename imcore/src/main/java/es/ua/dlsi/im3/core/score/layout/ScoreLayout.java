@@ -108,12 +108,17 @@ public abstract class ScoreLayout {
                 createLayoutSymbol(coreSymbolsInStaff, symbol);
             }
 
-            // create barlines
-            // TODO: 21/9/17 Deberíamos poder crear barlines de system
-            for (Measure measure: scoreSong.getMeasures()) {
-                LayoutCoreBarline barline = new LayoutCoreBarline(getLayoutFont(staff), measure.getEndTime());
-                simultaneities.add(barline);
-                barlines.add(barline);
+            if (staff.getNotationType() == null) {
+                throw new IM3Exception("The staff " + staff+  " has not a notation type");
+            }
+            if (staff.getNotationType().equals(NotationType.eModern)) {
+                // create barlines
+                // TODO: 21/9/17 Deberíamos poder crear barlines de system
+                for (Measure measure : scoreSong.getMeasures()) {
+                    LayoutCoreBarline barline = new LayoutCoreBarline(staff, getLayoutFont(staff), measure.getEndTime());
+                    simultaneities.add(barline);
+                    barlines.add(barline);
+                }
             }
 
             createConnectors();

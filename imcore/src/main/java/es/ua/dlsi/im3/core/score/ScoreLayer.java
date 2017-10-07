@@ -28,16 +28,27 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	 */
 	List<Atom> atoms;
 
+    DurationEvaluator durationEvaluator;
+
 	/**
 	 * They can only be created by a part, this is why this is just package visible
 	 * @param part
 	 * @param number
 	 */
-	ScoreLayer(ScorePart part, int number) {
+	ScoreLayer(ScorePart part, int number, DurationEvaluator durationEvaluator) {
 		this.part = part;
 		this.number = number; //TODO Comprobar que es un número único
 		atoms = new ArrayList<>();
+		this.durationEvaluator = durationEvaluator;
 	}
+
+    /**
+     * Used to replace the way durations are evaluated, mainly used in MensuralNotation
+     * @param durationEvaluator
+     */
+	public void setDurationEvaluator(DurationEvaluator durationEvaluator) {
+	    this.durationEvaluator = durationEvaluator;
+    }
 
 	public void setStaff(Staff staff) {
 		this.staff = staff;
@@ -73,19 +84,21 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		}
 	}
 
-	public void add(Atom atom) {
+	public void add(Atom atom) throws IM3Exception {
 		try {
 			atom.setTime(getDuration());
 			atom.setLayer(this);
 		} catch (IM3Exception e) {
 			throw new IM3RuntimeException("The onset should have been set for all atoms in a voice");
 		}
+        evaluateDurationBeforeAdd(atom, atoms.size());
 		atoms.add(atom);
 	}
 	
 	//TODO añadir con huecos, he quitado el VoiceGap
-	public void add(Time time, Atom atom) {
+	public void add(Time time, Atom atom) throws IM3Exception {
 		atom.setTime(time);
+        evaluateDurationBeforeAdd(atom, atoms.size());
 		atoms.add(atom);
 	}
 
@@ -96,18 +109,24 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		if (index < 0) {
 			throw new IM3Exception("Cannot find referenced atom");
 		}
+        evaluateDurationBeforeAdd(newAtom, index+1);
 		atoms.add(index + 1, newAtom);
 
 		// correct onset times
 		updateOnsets(index + 1);
 	}
 
-	// TODO Test unitario
+    private void evaluateDurationBeforeAdd(Atom newAtom, int index) throws IM3Exception {
+	    durationEvaluator.changeDurationIfRequired(newAtom,this, index);
+    }
+
+    // TODO Test unitario
 	public void addBefore(Atom referenceAtom, Atom newAtom) throws IM3Exception {
 		int index = atoms.indexOf(referenceAtom);
 		if (index < 0) {
 			throw new IM3Exception("Cannot find referenced atom");
 		}
+        evaluateDurationBeforeAdd(newAtom, index);
 		atoms.add(index, newAtom);
 
 		// correct onset times

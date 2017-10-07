@@ -33,7 +33,7 @@ import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
  * @author drizo
  */
 public class ScoreSong {
-	protected IDManager idManager;
+    protected IDManager idManager;
 
 	/**
 	 * Meter changes
@@ -77,21 +77,23 @@ public class ScoreSong {
 
     TimedElementCollection<Harm> harms;
 
-	//FRACTIONS private final String PART_ID_PREFIX = "P";
+    private final DurationEvaluator durationEvaluator;
 
-	public ScoreSong() {
-		//meters = new TimedElementCollection<>();
-		//keys = new TimedElementCollection<>();
+    //FRACTIONS private final String PART_ID_PREFIX = "P";
+
+    public ScoreSong(DurationEvaluator durationEvaluator) {
+        //meters = new TimedElementCollection<>();
+        //keys = new TimedElementCollection<>();
         harms = null;
         systemBreaks = new HashMap<>();
-		harmonies = new TimedElementCollection<>();
-		tempoChanges = new TimedElementCollection<>();
-		measures = new TimedElementCollection<>();
-		idManager = new IDManager(this);
-		
-		parts = new ArrayList<>();
-		staves = new ArrayList<>();
-		staffGroups = new ArrayList<StaffGroup>();
+        harmonies = new TimedElementCollection<>();
+        tempoChanges = new TimedElementCollection<>();
+        measures = new TimedElementCollection<>();
+        idManager = new IDManager(this);
+        durationEvaluator = new DurationEvaluator();
+        parts = new ArrayList<>();
+        staves = new ArrayList<>();
+        staffGroups = new ArrayList<StaffGroup>();
 		/*connectors = new TreeSet<>(new Comparator<Connector<?,?>>() {
 
 			@Override
@@ -105,6 +107,12 @@ public class ScoreSong {
 			}
 
 		});*/
+
+		this.durationEvaluator = durationEvaluator;
+    }
+
+	public ScoreSong() {
+        this(new DurationEvaluator());
 	}
 
 	/*private static int compareConnectorClasses(Connector<?,?> a, Connector<?,?> b) {
@@ -1675,4 +1683,7 @@ public class ScoreSong {
     }
 
 
+    public DurationEvaluator getDurationEvaluator() {
+        return durationEvaluator;
+    }
 }

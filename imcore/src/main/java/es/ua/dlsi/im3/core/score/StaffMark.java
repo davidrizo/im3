@@ -21,7 +21,6 @@ package es.ua.dlsi.im3.core.score;
 /**
  *
  * @author drizo
- * @param <CoreSymbolType>
  */
 public abstract class StaffMark implements ITimedElement, ISymbolInStaff {
 	private Time time;

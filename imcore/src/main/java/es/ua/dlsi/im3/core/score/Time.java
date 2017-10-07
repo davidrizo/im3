@@ -197,4 +197,8 @@ public class Time implements Comparable<Time> {
     public boolean isNegative() {
 	    return exactTime.getNumerator() < 0;
     }
+
+    public boolean isOne() {
+	    return exactTime.getNumerator() == 1;
+    }
 }

@@ -34,7 +34,7 @@ public class AtomTest {
 	@Test
 	public void testSimpleConstructsInVoice() throws IM3Exception {
 		ScorePart part = new ScorePart(new ScoreSong(), 1);
-		ScoreLayer voice = new ScoreLayer(part, 1);
+		ScoreLayer voice = new ScoreLayer(part, 1, new DurationEvaluator());
 		
 		expectedPitches = new ArrayList<>();
 		expectedOnsets = new ArrayList<>();

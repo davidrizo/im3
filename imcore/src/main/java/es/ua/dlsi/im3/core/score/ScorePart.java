@@ -181,7 +181,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 		for (ScoreLayer v : layers.values()) {
 			max = Math.max(max, v.getNumber());
 		}
-		ScoreLayer v = new ScoreLayer(this, max + 1);
+		ScoreLayer v = new ScoreLayer(this, max + 1, getScoreSong().getDurationEvaluator());
 		if (staff != null) {
 			staff.addLayer(v);
 		}

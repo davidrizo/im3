@@ -7,8 +7,10 @@ import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
+import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.junit.Test;
@@ -22,7 +24,7 @@ import static org.junit.Assert.*;
 public class MensuralToModernTest {
     @Test
     public void convert() throws Exception {
-        ScoreSong song = new ScoreSong();
+        ScoreSong song = new ScoreSong(new BinaryDurationEvaluator(new Time(2))); // TODO: 7/10/17 ¿Sería mejor cambiar las Figures? 
         Staff staff = new Pentagram(song, "1", 1);
         staff.setNotationType(NotationType.eMensural);
         song.addStaff(staff);
@@ -40,6 +42,7 @@ public class MensuralToModernTest {
         add(staff, layer, r1);
         SimpleNote n0 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(DiatonicPitch.D, null, 5));
         add(staff, layer, n0);
+        staff.addCoreSymbol(new MarkBarline(n0.getOffset()));
         SimpleNote n1 = new SimpleNote(Figures.SEMIMINIM, 0, new ScientificPitch(DiatonicPitch.E, null, 5));
         add(staff, layer, n1);
         SimpleNote n2 = new SimpleNote(Figures.SEMIMINIM, 0, new ScientificPitch(DiatonicPitch.F, null, 5));
@@ -48,14 +51,18 @@ public class MensuralToModernTest {
         add(staff, layer, n3);
         SimpleNote n4 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(DiatonicPitch.F, Accidentals.SHARP, 5));
         add(staff, layer, n4);
+        staff.addCoreSymbol(new MarkBarline(n4.getOffset()));
         SimpleNote n5 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(DiatonicPitch.G, null, 5));
         add(staff, layer, n5);
         SimpleNote n6 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(DiatonicPitch.G, null, 5));
         add(staff, layer, n6);
+        staff.addCoreSymbol(new MarkBarline(n6.getOffset()));
         SimpleNote n7 = new SimpleNote(Figures.SEMIBREVE, 0, new ScientificPitch(DiatonicPitch.A, null, 5));
         add(staff, layer, n7);
+        staff.addCoreSymbol(new MarkBarline(n7.getOffset()));
         SimpleNote n8 = new SimpleNote(Figures.SEMIBREVE, 0, new ScientificPitch(DiatonicPitch.A, null, 5));
         add(staff, layer, n8);
+        staff.addCoreSymbol(new MarkBarline(n8.getOffset()));
 
         // convert into a new song
         MensuralToModern mensuralToModern = new MensuralToModern();
@@ -70,6 +77,17 @@ public class MensuralToModernTest {
 
         //TODO assertEquals("Core symbols in staff", 17, modernStaff.getCoreSymbolsOrdered().size());
         //TODO assertEquals("Atoms in layer", 11, modernLayer.getAtoms().size());
+        //TODO assertEquals("Core symbols in staff", 17, modernStaff.getCoreSymbolsOrdered().size());
+        //TODO assertEquals("Atoms in layer", 11, modernLayer.getAtoms().size());
+
+        HorizontalLayout mlayout = new HorizontalLayout(song, LayoutFonts.capitan,
+                new CoordinateComponent(960), new CoordinateComponent(700));
+        mlayout.layout();
+
+        SVGExporter msvgExporter = new SVGExporter();
+        File msvgFile = TestFileUtils.createTempFile("mensural.svg");
+        msvgExporter.exportLayout(msvgFile, mlayout);
+
 
         HorizontalLayout layout = new HorizontalLayout(modernSong, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
@@ -85,6 +103,7 @@ public class MensuralToModernTest {
         ScorePart newPart = song.addPart();
         ScoreLayer newLayer = newPart.addScoreLayer(newModernStaff);
         newPart.addStaff(newModernStaff);
+        newModernStaff.setNotationType(NotationType.eModern); // TODO: 6/10/17 ¿Debería estar el tipo de notación en el constructor?
         song.addStaff(newModernStaff);
 
         MensuralToModern mensuralToModern2 = new MensuralToModern();

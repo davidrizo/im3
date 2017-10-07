@@ -133,7 +133,18 @@ public class PageLayout extends ScoreLayout {
                 } else {
                     if (coreSymbol instanceof LayoutCoreBarline) {
                         LayoutCoreBarline layoutCoreBarline = (LayoutCoreBarline) coreSymbol;
-                        layoutCoreBarline.setLayoutStaff(lastSystem.getBottomStaff(), lastSystem.getTopStaff());
+                        Staff staff = layoutCoreBarline.getStaff();
+
+                        if (staff == null) {
+                            //layoutCoreBarline.setLayoutStaff(lastSystem.getBottomStaff(), lastSystem.getTopStaff()); // covers all staves
+                            throw new IM3RuntimeException("LayoutCoreBarline has not staff");
+                        } else {
+                            LayoutStaff layoutStaff = lastSystem.get(staff);
+                            layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
+                        }
+
+
+
                     }
                     //TODO Quizás mejor en el system
                    // page.getCanvas().add(coreSymbol.getGraphics());
