@@ -43,6 +43,11 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
+            <Menu mnemonicParsing="false" text="Debug">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#handleTest" text="Test" />
+              </items>
+            </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
             <MenuItem mnemonicParsing="false" text="About ..." />
@@ -79,19 +84,34 @@
                         </VBox>
                      </children>
                   </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                     <children>
-                        <ScrollPane fx:id="scrollPane" prefViewportHeight="221.0" prefViewportWidth="247.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <content>
-                              <Group>
-                                 <children>
-                                    <Pane fx:id="marksPane" prefHeight="200.0" prefWidth="200.0" />
-                                    <ImageView fx:id="imageView" pickOnBounds="true" smooth="false" />
-                                 </children>
-                              </Group>
-                           </content>
-                        </ScrollPane>
-                     </children></AnchorPane>
+                  <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+                     <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                           <children>
+                              <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <items>
+                                    <ScrollPane fx:id="scrollPane" prefViewportHeight="221.0" prefViewportWidth="247.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <Group>
+                                             <children>
+                                                <Pane fx:id="marksPane" prefHeight="200.0" prefWidth="200.0" />
+                                                <ImageView fx:id="imageView" pickOnBounds="true" smooth="false" />
+                                             </children>
+                                          </Group>
+                                       </content>
+                                    </ScrollPane>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <ListView fx:id="lvSymbols" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                       </children>
+                                    </VBox>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="anchorPaneScore" prefHeight="200.0" prefWidth="200.0" />
+                     </items>
+                  </SplitPane>
               </items>
             </SplitPane>
          </children>

@@ -23,6 +23,7 @@ public class OMRApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/omrmain.fxml"));
         Scene scene = new Scene(root);
+        primaryStage.setTitle("MURET");
 
         mainStage = primaryStage;
         primaryStage.setScene(scene);

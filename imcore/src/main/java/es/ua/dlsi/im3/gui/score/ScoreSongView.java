@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.gui.score;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
@@ -20,17 +21,23 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
+
 // TODO: 17/9/17 Ahora sólo usamos el HorizontalLayout
 public class ScoreSongView {
-    private final Canvas canvas;
-    private final Pane mainPanel;
-    private final HorizontalLayout layout;
+    private Canvas canvas;
+    private Pane mainPanel;
+    private HorizontalLayout layout;
 
     public ScoreSongView(ScoreSong scoreSong, LayoutFonts font, ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) throws IM3Exception {
         // TODO: 21/9/17 Uso coordinates ahora porque más adelante deberíamos poder poner varios canvases en la misma pantalla
         // TODO: 21/9/17 Cuando cambie width o height hay que recalcular todo
 
         layout = new HorizontalLayout(scoreSong, font, new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
+        init(layout);
+    }
+
+    private void init(ScoreLayout layout) throws IM3Exception {
         layout.layout();
         canvas = layout.getCanvases().get(0); // it returns just one canvas
         mainPanel = new Pane();
@@ -39,6 +46,14 @@ public class ScoreSongView {
         mainPanel.setBackground(new Background(new BackgroundFill(Color.WHEAT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         createNodes();
+
+    }
+    public ScoreSongView(ScoreSong scoreSong, HashMap<Staff, LayoutFonts> fonts, ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) throws IM3Exception {
+        // TODO: 21/9/17 Uso coordinates ahora porque más adelante deberíamos poder poner varios canvases en la misma pantalla
+        // TODO: 21/9/17 Cuando cambie width o height hay que recalcular todo
+
+        layout = new HorizontalLayout(scoreSong, fonts, new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
+        init(layout);
     }
 
     public Pane getMainPanel() {
@@ -55,7 +70,7 @@ public class ScoreSongView {
             }
             if (node != null) {
                 // FIXME: 24/9/17 He puesto esto para probar, debe ir en PRIMUS
-                int width = 220;
+                /*int width = 220;
                 int height = 100;
 
                 FloatMap floatMap = new FloatMap();
@@ -71,7 +86,7 @@ public class ScoreSongView {
                 DisplacementMap displacementMap = new DisplacementMap();
                 displacementMap.setMapData(floatMap);
 
-                addEffectRecursive(node, displacementMap);
+                addEffectRecursive(node, displacementMap);*/
 
                 mainPanel.getChildren().add(node);
             }

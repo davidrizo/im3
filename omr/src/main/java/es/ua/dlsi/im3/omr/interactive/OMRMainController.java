@@ -1,10 +1,14 @@
 package es.ua.dlsi.im3.omr.interactive;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.interactive.components.*;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,12 +16,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
 import javafx.util.Callback;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -51,6 +57,11 @@ public class OMRMainController implements Initializable{
     @FXML
     ScrollPane scrollPane;
 
+    @FXML
+    AnchorPane anchorPaneScore;
+
+
+
     ScoreImageTagsView currentScoreImageTags;
 
     ObjectProperty<OMRProject> model;
@@ -79,6 +90,14 @@ public class OMRMainController implements Initializable{
                 }
             }
         });
+
+        lvSymbols.setCellFactory(new Callback<ListView<SymbolView>, ListCell<SymbolView>>() {
+            @Override
+            public ListCell<SymbolView> call(ListView<SymbolView> param) {
+                return new SymbolListCell();
+            }
+        });
+
 
         toolBar.disableProperty().bind(lvImages.getSelectionModel().selectedItemProperty().isNull());
 
@@ -133,6 +152,8 @@ public class OMRMainController implements Initializable{
             marksPane.prefWidthProperty().bind(imageView.getImage().widthProperty());
 
             fitToWindow();
+
+            createScoreView();
         }
     }
 
@@ -153,7 +174,7 @@ public class OMRMainController implements Initializable{
             // }
         } else {
             currentScoreImageTags = null;
-            lvSymbols.itemsProperty().unbind();
+            /// lvSymbols.itemsProperty().unbind();
         }
     }
 
@@ -164,6 +185,32 @@ public class OMRMainController implements Initializable{
         } else {
             sliderScale.setValue((scrollPane.getViewportBounds().getHeight()) / imageView.getLayoutBounds().getHeight());
         }
+    }
+
+    @FXML
+    private void handleTest() {
+        // TODO: 8/10/17 Quitar
+        createProject(new File("/Users/drizo/cmg/investigacion/training_sets/sources/tonalanalysis/TMP/A_IM3_MENSURAL_NEWTAGGER/data.train"));
+        try {
+            model.get().addImage(new File("/Users/drizo/cmg/investigacion/training_sets/sources/tonalanalysis/TMP/A_IM3_MENSURAL_NEWTAGGER/12633.jpg"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            ShowError.show(OMRApp.getMainStage(), "Cannot add test image", e);
+        }
+    }
+
+    private void createScoreView() throws IM3Exception {
+        HashMap<Staff, LayoutFonts> layoutFontsHashMap = new HashMap<>();
+        layoutFontsHashMap.put(model.get().getStaff(), LayoutFonts.capitan);
+        layoutFontsHashMap.put(model.get().getModernStaff(), LayoutFonts.bravura);
+
+        ScoreSongView scoreSongView = new ScoreSongView(model.get().getSong(),
+                layoutFontsHashMap, anchorPaneScore.widthProperty(), anchorPaneScore.heightProperty());
+        anchorPaneScore.getChildren().add(scoreSongView.getMainPanel());
+        AnchorPane.setLeftAnchor(scoreSongView.getMainPanel(), 0.0);
+        AnchorPane.setRightAnchor(scoreSongView.getMainPanel(), 0.0);
+        AnchorPane.setTopAnchor(scoreSongView.getMainPanel(), 0.0);
+        AnchorPane.setBottomAnchor(scoreSongView.getMainPanel(), 0.0);
     }
 
 
@@ -205,17 +252,21 @@ public class OMRMainController implements Initializable{
             ShowError.show(OMRApp.getMainStage(), "Cannot build an empty model");
             return;
         } else {
-            try {
-                OMRProject project = new OMRProject(trainingFile);
-                model.setValue(project);
-                lvImages.setItems(project.filesProperty());
-                labelTrainingModelSymbols.setText("Training symbols: " + project.getTrainingModelSymbolCount());
-            } catch (IM3Exception e) {
-                ShowError.show(OMRApp.getMainStage(), "Cannot create project", e);
-            }
+            createProject(trainingFile);
         }
 
         // TODO: 7/10/17 Nombre proyecto y mostrarlo en el caption
+    }
+
+    private void createProject(File trainingFile) {
+        try {
+            OMRProject project = new OMRProject(trainingFile);
+            model.setValue(project);
+            lvImages.setItems(project.filesProperty());
+            labelTrainingModelSymbols.setText("Training symbols: " + project.getTrainingModelSymbolCount());
+        } catch (IM3Exception e) {
+            ShowError.show(OMRApp.getMainStage(), "Cannot create project", e);
+        }
     }
 
     private void doAddImage() {
