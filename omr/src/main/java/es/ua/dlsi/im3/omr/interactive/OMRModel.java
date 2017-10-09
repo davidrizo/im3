@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 /**
  * Project
  */
-public class OMRProject {
+public class OMRModel {
     File trainingFile;
     private final ObservableList<ScoreImageFile> files;
     private ISymbolRecognizer recognizer;
@@ -38,7 +38,7 @@ public class OMRProject {
     Staff staff; // TODO: 8/10/17
     private Pentagram modernStaff;
 
-    public OMRProject(File trainingFile) throws IM3Exception {
+    public OMRModel(File trainingFile) throws IM3Exception {
         this.trainingFile = trainingFile;
         createSong();
         files = FXCollections.observableArrayList();

@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.omr.interactive;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.conversions.MensuralToModern;
 import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.gui.command.CommandManager;
@@ -36,8 +35,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.util.Callback;
@@ -102,7 +99,7 @@ public class OMRMainController implements Initializable{
 
     ScoreImageTagsView currentScoreImageTags;
 
-    ObjectProperty<OMRProject> model;
+    ObjectProperty<OMRModel> model;
 
     SymbolView symbolViewToChange;
 
@@ -351,7 +348,7 @@ public class OMRMainController implements Initializable{
 
     private void createProject(File trainingFile) {
         try {
-            OMRProject project = new OMRProject(trainingFile);
+            OMRModel project = new OMRModel(trainingFile);
             model.setValue(project);
             lvImages.setItems(project.filesProperty());
             labelTrainingModelSymbols.setText("Training symbols: " + project.getTrainingModelSymbolCount());
