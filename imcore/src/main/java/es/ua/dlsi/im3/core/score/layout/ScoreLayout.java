@@ -287,9 +287,6 @@ public abstract class ScoreLayout {
     }
 
     protected void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
-        simultaneities.printDebug();
-
-
         // Replace for a factory if required
         // use the maximum noteHeadWidth among all the staves
         double noteHeadWidth = 0;

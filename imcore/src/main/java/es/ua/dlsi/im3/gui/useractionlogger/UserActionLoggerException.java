@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 David Rizo Valero
+ * Copyright (C) 2014 David Rizo Valero
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,29 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.ua.dlsi.im3.omr.traced;
 
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
+package es.ua.dlsi.im3.gui.useractionlogger;
 
 /**
  *
  * @author drizo
  */
-public class ClassifierFactory<SymbolType> {
-    static ClassifierFactory instance = null;
-    
-    private ClassifierFactory() {	
+public class UserActionLoggerException extends Exception {
+
+    public UserActionLoggerException(String msg) {
+	super(msg);
+    }
+
+    public UserActionLoggerException(Throwable t) {
+	super(t);
     }
     
-    public static synchronized ClassifierFactory getInstance() {
-	if (instance == null) {
-	    instance = new ClassifierFactory();
-	}
-	return instance;
-    }
-    
-    
-    public IClassifier createClassifier(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) {
-    	return new TracedClassifier(reader, symbolFactory);
-    }
 }

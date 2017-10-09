@@ -17,6 +17,7 @@
 package es.ua.dlsi.im3.omr.interactive.components;
 
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -26,25 +27,20 @@ import javafx.scene.text.Text;
 public class NotationSymbolRenderer<SymbolType> {
 	static NotationSymbolRenderer instance;
 
-    public Text render(SymbolType symbolType, boolean useStaffMappingInRests) {
-        return new Text("*"); // FIXME: 7/10/17
-    }
+	//private final Font musicalFont;
+	//private final Font textFont;
 
-	/*
-	private final Font musicalFont;
-	private final Font textFont;
-
-	private final FontAndMapping mappingFactory;
+	//private final FontAndMapping mappingFactory;
 
 	private NotationSymbolRenderer() {
-		mappingFactory = FontMappingFactory.getInstance().getSpanishMensural();
-		musicalFont = Font.loadFont(mappingFactory.getMusicalFontStream(), 48);
-		textFont = Font.loadFont(mappingFactory.getLyricsFontStream(), 48);
+		//mappingFactory = FontMappingFactory.getInstance().getSpanishMensural();
+        //musicalFont = Font.loadFont(mappingFactory.getMusicalFontStream(), 48);
+        //textFont = Font.loadFont(mappingFactory.getLyricsFontStream(), 48);
 	}
 
-	public Text render(SymbolType symbolType, boolean useStaffMappingInRests) throws IM2Exception {
+	public Text render(SymbolType symbolType, boolean useStaffMappingInRests) throws IM3Exception {
 		Text result;
-		IFontMapping mapping = mappingFactory.getFontMapping();
+		/*IFontMapping mapping = mappingFactory.getFontMapping();
 		Font font = null;
 		switch (symbolType) {
 			case barline:
@@ -166,8 +162,11 @@ public class NotationSymbolRenderer<SymbolType> {
 			font = musicalFont;
 		}
 		result.setFont(font);
-		return result;
-	}*/
+		return result;*/
+
+		result = new Text("---TO-DO----"); // FIXME: 9/10/17
+        return result;
+    }
 
 	public static synchronized NotationSymbolRenderer getInstance() {
 		if (instance == null) {

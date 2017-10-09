@@ -117,7 +117,11 @@ public class Line extends Shape {
     @Override
     public Node getJavaFXRoot() throws ExportException {
         try {
-            return new javafx.scene.shape.Line(from.getAbsoluteX(), from.getAbsoluteY(), to.getAbsoluteX(), to.getAbsoluteY()); // TODO: 17/9/17 Grosor, color
+            javafx.scene.shape.Line fxline = new javafx.scene.shape.Line(from.getAbsoluteX(), from.getAbsoluteY(), to.getAbsoluteX(), to.getAbsoluteY()); // TODO: 17/9/17 Grosor, color
+            if (strokeType == StrokeType.eDashed) {
+                fxline.getStrokeDashArray().add(5d); //TODO Dependiendo del tamaño
+            }
+            return fxline;
         } catch (IM3Exception e) {
             throw new ExportException(e);
         }

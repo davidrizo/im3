@@ -20,12 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.omr.PositionedSymbolType;
-import es.ua.dlsi.im3.omr.mensuralspanish.MensuralSymbols;
 import es.ua.dlsi.im3.omr.model.Symbol;
-import es.ua.dlsi.im3.omr.model.SymbolType;
 import es.ua.dlsi.im3.omr.traced.Stroke;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -47,7 +46,7 @@ import javafx.scene.text.Text;
  * 
  * @author drizo
  */
-public class SymbolView extends Group {
+public class SymbolView<SymbolType> extends Group {
 	private static final double DEFAULT_WIDTH = 2;
 	private static final double SELECTED_WIDTH = 5;
 	
@@ -186,14 +185,12 @@ public class SymbolView extends Group {
 	
 	private void drawNotationSymbolView() throws IM3Exception {
         // TODO: 7/10/17 Usando sólo mensural
-        PositionedSymbolType<MensuralSymbols> pst = this.symbol.get().getPositionedSymbolType();
+        PositionedSymbolType<SymbolType> pst = this.symbol.get().getPositionedSymbolType();
 		if (pst != null) {
-            System.err.println("TODO!!!!!!!!!!!!!!!!! - DRAW NOTATION SYMBOL VIEW");
-            /*notationSymbolView = NotationSymbolRenderer.getInstance().render(pst.getSymbol(), false);
+            notationSymbolView = NotationSymbolRenderer.getInstance().render(pst.getSymbol(), false);
 			notationSymbolView.fillProperty().bind(musicalContentColor);
 			currentPosition = pst.getPosition();
-			drawInStaff();*/
-            System.err.println("TODO!!!!!!!!!!!!!!!!! - DRAW NOTATION SYMBOL VIEW");
+			drawInStaff();
 		}
 	}
 	
@@ -273,20 +270,21 @@ public class SymbolView extends Group {
 		return currentStrokeView;
 	}
 
-	void setSortedPossibleNotationSymbols(ArrayList<PositionedSymbolType> notationSymbols) {
+	public void setSortedPossibleNotationSymbols(ArrayList<PositionedSymbolType> notationSymbols) {
 		this.symbol.get().setSortedPossibleNotationSymbols(notationSymbols);
 	}
 
 	public List<Text> getSortedPossibleNotationSymbols() throws IM3Exception {
 		ArrayList<Text> result = new ArrayList<>();
-		for (PositionedSymbolType<MensuralSymbols> ns : this.symbol.get().getSortedPossibleNotationSymbols()) {
+		for (PositionedSymbolType<SymbolType> ns : this.symbol.get().getSortedPossibleNotationSymbols()) {
 			try {
-			    MensuralSymbols symbol = ns.getSymbol();
+                SymbolType symbol = ns.getSymbol();
 				Text graphic = NotationSymbolRenderer.getInstance().render(symbol, true);
 				graphic.setUserData(ns.getSymbol());
 				result.add(graphic);
 			} catch (Exception e) {
-				System.err.println(e.toString()); //TODO
+				e.printStackTrace();
+				throw new IM3RuntimeException(e);
 			}
 		}
 		return result;

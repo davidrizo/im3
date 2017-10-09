@@ -72,7 +72,7 @@ public class StrokeView extends Path {
 	return stroke;
     }
 
-    void addPoint(double x, double y) {
+    public void addPoint(double x, double y) {
 	stroke.addPoint(x, y);
 	//drawLine(x, y); invoked by the listener (see constructor)
     }

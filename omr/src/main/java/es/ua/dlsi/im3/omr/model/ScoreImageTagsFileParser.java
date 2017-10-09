@@ -19,6 +19,7 @@ package es.ua.dlsi.im3.omr.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
+import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
 import es.ua.dlsi.im3.omr.PositionedSymbolType;
 import es.ua.dlsi.im3.omr.interactive.components.ScoreImageTags;
 import es.ua.dlsi.im3.omr.traced.Point;
@@ -35,12 +36,12 @@ import java.util.logging.Logger;
  *
  * @author drizo
  */
-public class ScoreImageTagsFileParser {
+public class ScoreImageTagsFileParser<SymbolType> {
 	static enum State {
 		eReadingSymbol, eReadingStrokes
 	};
 
-	public ScoreImageTags parse(File file, BufferedImage pageImage) throws Exception {
+	public ScoreImageTags parse(File file, BufferedImage pageImage, IStringToSymbolFactory<SymbolType> factory) throws Exception {
 		ScoreImageTags result = new ScoreImageTags(file);
 		State state = State.eReadingSymbol;
 
@@ -62,7 +63,7 @@ public class ScoreImageTagsFileParser {
 						PositionInStaff positionInStaff;
 						if (strokesLineElements.length == 3) {
 							positionInStaff = parsePositionInStaff(strokesLineElements[2]);
-							SymbolType symbolType = parseNotationSymbol(strokesLineElements[1]);
+							SymbolType symbolType = parseNotationSymbol(strokesLineElements[1], factory);
 							pst = new PositionedSymbolType(symbolType, positionInStaff);
 						} else if (strokesLineElements.length != 1) {
 							throw new Exception("Expected 1 or 3 symbols in symbol description in line " + lineNumber + " in file " + file.getName());
@@ -123,8 +124,8 @@ public class ScoreImageTagsFileParser {
 		return result;
 	}
 
-	private SymbolType parseNotationSymbol(String string) {
-		return SymbolType.parseString(string);
+	private SymbolType parseNotationSymbol(String string, IStringToSymbolFactory<SymbolType> factory) {
+		return factory.parseString(string);
 	}
 
 	private PositionInStaff parsePositionInStaff(String string) throws IM3Exception {

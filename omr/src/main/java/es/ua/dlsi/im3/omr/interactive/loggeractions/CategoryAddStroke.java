@@ -14,29 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.ua.dlsi.im3.omr.traced;
 
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
+package es.ua.dlsi.im3.omr.interactive.loggeractions;
+
+
+import es.ua.dlsi.im3.gui.useractionlogger.UserActionCategory;
 
 /**
  *
  * @author drizo
  */
-public class ClassifierFactory<SymbolType> {
-    static ClassifierFactory instance = null;
-    
-    private ClassifierFactory() {	
+public class CategoryAddStroke extends UserActionCategory {
+
+    public CategoryAddStroke() {
+	super(null, "STROKE", "ADD");
     }
     
-    public static synchronized ClassifierFactory getInstance() {
-	if (instance == null) {
-	    instance = new ClassifierFactory();
-	}
-	return instance;
-    }
-    
-    
-    public IClassifier createClassifier(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) {
-    	return new TracedClassifier(reader, symbolFactory);
-    }
 }

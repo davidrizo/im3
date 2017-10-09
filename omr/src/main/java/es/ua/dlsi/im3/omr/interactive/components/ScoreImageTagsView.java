@@ -28,10 +28,12 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 
 /**
- *
+ * All symbols are rendered in this Group and duplicated in a SymbolView list that can be used outside
+ * (see property symbolViewsProperty())
  * @author drizo
  */
 public class ScoreImageTagsView extends Group {
@@ -88,7 +90,7 @@ public class ScoreImageTagsView extends Group {
 				}
 			}
 		});
-	}
+    }
 
 	public Color getNextColor() {
 		Color color;
@@ -108,7 +110,8 @@ public class ScoreImageTagsView extends Group {
 			SymbolView sv = new SymbolView(symbol, getNextColor());
 			symbolViews.add(sv);
 			getChildren().add(sv);
-		} // else done in newSymbolComplete
+
+        } // else done in newSymbolComplete
 	}
 
 	public final void addSymbol(Symbol symbol) {
@@ -162,7 +165,7 @@ public class ScoreImageTagsView extends Group {
 		}
 	}
 
-	boolean isDrawingSymbol() {
+	public boolean isDrawingSymbol() {
 		return currentSymbolView != null;
 	}
 

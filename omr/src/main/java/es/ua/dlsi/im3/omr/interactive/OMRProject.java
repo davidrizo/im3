@@ -8,12 +8,14 @@ import es.ua.dlsi.im3.core.score.clefs.ClefC3;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.omr.PositionedSymbolType;
 import es.ua.dlsi.im3.omr.interactive.components.ScoreImageFile;
 import es.ua.dlsi.im3.omr.mensuralspanish.ISymbolRecognizer;
 import es.ua.dlsi.im3.omr.mensuralspanish.MensuralSymbols;
 import es.ua.dlsi.im3.omr.mensuralspanish.StringToMensuralSymbolFactory;
 import es.ua.dlsi.im3.omr.mensuralspanish.SymbolRecognizerFactory;
 import es.ua.dlsi.im3.omr.model.ScoreImageTagsFileParser;
+import es.ua.dlsi.im3.omr.model.Symbol;
 import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +23,7 @@ import javafx.collections.ObservableList;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -105,7 +108,7 @@ public class OMRProject {
         ScoreImageFile sif = new ScoreImageFile(imageFile);
         File txtFile = new File(imageFile.getParentFile(), imageFile.getName() + ".txt");
         if (txtFile.exists()) {
-            sif.addTagsFile(parser.parse(txtFile, sif.getBufferedImage()));
+            sif.addTagsFile(parser.parse(txtFile, sif.getBufferedImage(), new StringToMensuralSymbolFactory()));
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Loaded tags file");
         }
         files.add(sif);
@@ -123,4 +126,21 @@ public class OMRProject {
     public String getTrainingModelSymbolCount() {
         return Long.toString(recognizer.getNumberOfTrainingSymbols());
     }
-}
+
+    public ArrayList<PositionedSymbolType> recognize(Symbol symbol) throws IM3Exception {
+        ArrayList<PositionedSymbolType> recognized = recognizer.recognize(symbol);
+        ArrayList<PositionedSymbolType> result = new ArrayList<>();
+        // add all symbols not recognized
+        TreeSet<MensuralSymbols> symbols = new TreeSet<>();
+        for (PositionedSymbolType<MensuralSymbols> positionedSymbolType : recognized) {
+            symbols.add(positionedSymbolType.getSymbol());
+            result.add(positionedSymbolType);
+        }
+        for (MensuralSymbols st: MensuralSymbols.values()) {
+            if (!symbols.contains(st)) {
+                result.add(new PositionedSymbolType(st, PositionsInStaff.LINE_3));
+            }
+        }
+
+        return result;
+    }}
