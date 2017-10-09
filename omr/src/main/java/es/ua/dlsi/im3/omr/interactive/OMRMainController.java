@@ -45,6 +45,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @deprecated Use OMRController
+ */
 public class OMRMainController implements Initializable{
     @FXML
     Button btnAddImage;

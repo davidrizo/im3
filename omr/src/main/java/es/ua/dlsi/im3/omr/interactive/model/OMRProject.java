@@ -112,4 +112,9 @@ public class OMRProject {
     public ObservableList<OMRPage> pagesProperty() {
         return pagesProperty;
     }
+
+    public void deletePage(OMRPage page) throws IM3Exception {
+        pagesProperty.remove(page);
+        save();
+    }
 }
