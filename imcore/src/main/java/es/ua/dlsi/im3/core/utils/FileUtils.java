@@ -9,6 +9,9 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
@@ -279,5 +282,10 @@ public class FileUtils {
 		}
 		return result;		
 	}
-	
+
+    public static void copy(File fromFile, File targetFile) throws IOException {
+	    Path from = Paths.get(fromFile.toURI());
+        Path to = Paths.get(targetFile.toURI());
+        Files.copy(from, to);
+    }
 }

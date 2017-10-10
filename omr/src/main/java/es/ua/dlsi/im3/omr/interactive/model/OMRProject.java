@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ToggleGroup;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.interactive.model.InputOutput;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import es.ua.dlsi.im3.omr.interactive.model.OMRProject;
+import es.ua.dlsi.im3.omr.interactive.model.OMRStaff;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -88,7 +89,7 @@ public class OMRController implements Initializable {
 
         initScaleSlider();
 
-        interaction = new Interaction(imageView, marksPane, btnIdentifyStaves.selectedProperty());
+        interaction = new Interaction(this, imageView, marksPane, btnIdentifyStaves.selectedProperty());
         btnIdentifyStaves.setTooltip(new Tooltip("Draw a rectangle surrounding each staff"));
     }
 
@@ -245,5 +246,17 @@ public class OMRController implements Initializable {
 
             ///createScoreView(); // FIXME: 10/10/17
         }
+    }
+
+    public void onStaffIdentified(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY) {
+        OMRPage page = getSelectedPage();
+        OMRStaff staff = new OMRStaff(page, topLeftX, topLeftY, bottomRightX, bottomRightY);
+        page.addStaff(staff);
+        marksPane.getChildren().add(staff.getRoot());
+        btnIdentifyStaves.setSelected(false);
+    }
+
+    private OMRPage getSelectedPage() {
+        return lvPages.getSelectionModel().getSelectedItem();
     }
 }

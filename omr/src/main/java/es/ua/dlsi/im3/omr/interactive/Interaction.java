@@ -1,20 +1,12 @@
 package es.ua.dlsi.im3.omr.interactive;
 
-import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.gui.useractionlogger.ActionLogger;
-import es.ua.dlsi.im3.gui.useractionlogger.actions.Coordinate;
-import es.ua.dlsi.im3.gui.useractionlogger.actions.MouseClickAction;
+import es.ua.dlsi.im3.gui.javafx.SelectionRectangle;
 import es.ua.dlsi.im3.gui.useractionlogger.actions.MouseMoveAction;
-import es.ua.dlsi.im3.omr.old.mensuraltagger.OMRMainController;
 import javafx.beans.property.BooleanProperty;
 import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Used to encapsulate the interaction with the image view to simplify the OMRController class
@@ -24,14 +16,16 @@ public class Interaction {
     private final ImageView imageView;
     private final Pane marksPane;
     private final BooleanProperty identiyingStaves;
+    private final OMRController controller;
 
     MouseMoveAction mouseMoveAction;
     private SelectionRectangle selectingRectangle;
 
-    public Interaction(ImageView imageView, Pane marksPane, BooleanProperty identiyingStaves) {
+    public Interaction(OMRController controller, ImageView imageView, Pane marksPane, BooleanProperty identiyingStaves) {
         this.imageView = imageView;
         this.marksPane = marksPane;
         this.identiyingStaves = identiyingStaves;
+        this.controller = controller;
         init();
     }
 
@@ -68,7 +62,7 @@ public class Interaction {
 
     private void doMouseDragged(MouseEvent t) {
         if (identiyingStaves.get()) {
-            if (selectingRectangle.getState() == SelectionRectangle.State.firstClick) {
+            if (selectingRectangle.isInFirstClickState()) {
                 selectingRectangle.changeState();
                 // now we know the user wants a rectangle, it was not a single click
                 marksPane.getChildren().add(selectingRectangle.getRoot());
@@ -82,6 +76,11 @@ public class Interaction {
         if (identiyingStaves.get()) {
             if (selectingRectangle != null) {
                 selectingRectangle.changeState();
+                controller.onStaffIdentified(selectingRectangle.getSelectionRectangle().getX(), selectingRectangle.getSelectionRectangle().getY(),
+                        selectingRectangle.getSelectionRectangle().getX()+selectingRectangle.getSelectionRectangle().getWidth(),
+                        selectingRectangle.getSelectionRectangle().getY()+selectingRectangle.getSelectionRectangle().getHeight());
+                marksPane.getChildren().remove(selectingRectangle.getRoot());
+                selectingRectangle = null;
             }
         }
     }

@@ -1,40 +1,40 @@
 package es.ua.dlsi.im3.omr.interactive.model.pojo;
 
 public class Staff {
-    private int leftTopX;
-    private int leftTopY;
-    private int bottomRightX;
-    private int bottomRightY;
+    private double leftTopX;
+    private double leftTopY;
+    private double bottomRightX;
+    private double bottomRightY;
 
-    public int getLeftTopX() {
+    public double getLeftTopX() {
         return leftTopX;
     }
 
-    public void setLeftTopX(int leftTopX) {
+    public void setLeftTopX(double leftTopX) {
         this.leftTopX = leftTopX;
     }
 
-    public int getLeftTopY() {
+    public double getLeftTopY() {
         return leftTopY;
     }
 
-    public void setLeftTopY(int leftTopY) {
+    public void setLeftTopY(double leftTopY) {
         this.leftTopY = leftTopY;
     }
 
-    public int getBottomRightX() {
+    public double getBottomRightX() {
         return bottomRightX;
     }
 
-    public void setBottomRightX(int bottomRightX) {
+    public void setBottomRightX(double bottomRightX) {
         this.bottomRightX = bottomRightX;
     }
 
-    public int getBottomRightY() {
+    public double getBottomRightY() {
         return bottomRightY;
     }
 
-    public void setBottomRightY(int bottomRightY) {
+    public void setBottomRightY(double bottomRightY) {
         this.bottomRightY = bottomRightY;
     }
 }

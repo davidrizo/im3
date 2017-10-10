@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.interactive;
+package es.ua.dlsi.im3.gui.javafx;
 
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import javafx.beans.binding.DoubleExpression;
@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 
 public class SelectionRectangle {
-	enum State {
+    enum State {
 		firstClick, // until it has some width and height it is not really created 
 		creating,  // from the first click to the click release, while dragging
 		created // after mouse release
@@ -30,7 +30,7 @@ public class SelectionRectangle {
 	public SelectionRectangle(double x, double y) {
 		selectionRectangle = new Rectangle();
 		selectionRectangle.setStrokeWidth(0); //TODO
-		selectionRectangle.setFill(Color.BLUE);
+		selectionRectangle.setFill(Color.RED);
 		selectionRectangle.setOpacity(0.2);
 		selectionRectangle.setX(x);
 		selectionRectangle.setY(y);
@@ -180,5 +180,11 @@ public class SelectionRectangle {
 	public State getState() {
 		return state;
 	}
+
+    public boolean isInFirstClickState() {
+	    return state == State.firstClick;
+    }
+
+
 
 }

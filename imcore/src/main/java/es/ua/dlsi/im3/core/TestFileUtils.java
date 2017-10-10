@@ -64,4 +64,23 @@ public class TestFileUtils {
 		}
 		return new File(TMP_FOLDER, s);
     }
+
+    public static File createTempFolder(String name) {
+        if (TMP_FOLDER == null) {
+            TMP_FOLDER = new File("/tmp");
+            if (!TMP_FOLDER.exists()) {
+                try {
+                    File f = File.createTempFile("test", null);
+                    TMP_FOLDER = f.getParentFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new IM3RuntimeException("Cannot create a temporary file for tests");
+                }
+
+            }
+        }
+        File file = new File(TMP_FOLDER, name);
+        file.mkdir();
+        return file;
+    }
 }

@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageFile;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 
 import javax.imageio.ImageIO;
@@ -67,7 +68,7 @@ public class OMRPage {
         }
     }
 
-    public void addStaff(int leftTopX, int leftTopY, int bottomRightX, int bottomRightY) {
+    public void addStaff(ToggleGroup staffToggleGroup, int leftTopX, int leftTopY, int bottomRightX, int bottomRightY) {
         OMRStaff staff = new OMRStaff(this, leftTopX, leftTopY, bottomRightX, bottomRightY);
         staves.add(staff);
     }
@@ -90,5 +91,20 @@ public class OMRPage {
 
     public String getImageRelativeFileName() {
         return imageRelativeFileName;
+    }
+
+
+    /**
+     * Hide all staves but shown
+     * @param shownStaff
+     */
+    public void onStaffShown(OMRStaff shownStaff) {
+        for (OMRStaff staff: staves) {
+            if (staff != shownStaff) {
+                staff.selectedProperty().set(false);
+            }
+
+
+        }
     }
 }

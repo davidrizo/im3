@@ -11,7 +11,6 @@ import es.ua.dlsi.im3.omr.interactive.model.pojo.Staff;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 
 public class InputOutput {
     static String createXMLFilename(File projectFolder) {
