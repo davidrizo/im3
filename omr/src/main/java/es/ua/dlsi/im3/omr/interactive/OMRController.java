@@ -56,7 +56,11 @@ public class OMRController implements Initializable {
     @FXML
     ScrollPane scrollPane;
 
+    @FXML
+    ToggleButton btnIdentifyStaves;
+
     ObjectProperty<OMRProject> project;
+    Interaction interaction;
 
     public OMRController() {
         project = new SimpleObjectProperty<>();
@@ -83,6 +87,9 @@ public class OMRController implements Initializable {
         });
 
         initScaleSlider();
+
+        interaction = new Interaction(imageView, marksPane, btnIdentifyStaves.selectedProperty());
+        btnIdentifyStaves.setTooltip(new Tooltip("Draw a rectangle surrounding each staff"));
     }
 
     @FXML
