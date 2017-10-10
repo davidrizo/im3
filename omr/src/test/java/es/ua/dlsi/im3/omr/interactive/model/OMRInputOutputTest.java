@@ -96,8 +96,7 @@ public class OMRInputOutputTest {
 
     @Test
     public void saveLoad() throws Exception {
-        OMRPage.SKIP_JAVAVFX_IMAGE = true;
-
+        OMRPage.SKIP_JAVAFX = true;
         String filename = "omrproject_" + new Date().toInstant().toEpochMilli();
         File projectFolder = TestFileUtils.createTempFolder(filename);
         if (projectFolder.exists()) {
@@ -113,14 +112,17 @@ public class OMRInputOutputTest {
         project.addPage(image1);
         project.addPage(image2);
 
+        InputOutput io = new InputOutput();
+        io.save(project);
+
         assertTrue(new File(projectFolder, filename + ".mrt").exists());
         assertTrue(new File(projectFolder, OMRProject.IMAGES_FOLDER + File.separator + "img1.jpg").exists());
         assertTrue(new File(projectFolder, OMRProject.IMAGES_FOLDER + File.separator + "img2.jpg").exists());
 
-        // --- Load it
-        OMRProject loaded = OMRProject.load(projectFolder);
-        assertEquals("Loaded images", 2, loaded.pagesProperty().size());
 
+        // --- Load it
+        OMRProject loaded = io.load(projectFolder);
+        assertEquals("Loaded images", 2, loaded.pagesProperty().size());
     }
 
 }

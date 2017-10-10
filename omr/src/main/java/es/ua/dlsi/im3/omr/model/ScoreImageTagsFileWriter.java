@@ -16,7 +16,7 @@
  */
 package es.ua.dlsi.im3.omr.model;
 
-import es.ua.dlsi.im3.omr.interactive.components.ScoreImageTags;
+import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageTags;
 import es.ua.dlsi.im3.omr.traced.Point;
 import es.ua.dlsi.im3.omr.traced.Stroke;
 

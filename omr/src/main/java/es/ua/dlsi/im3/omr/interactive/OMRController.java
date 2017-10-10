@@ -1,13 +1,12 @@
 package es.ua.dlsi.im3.omr.interactive;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.gui.useractionlogger.ActionLogger;
-import es.ua.dlsi.im3.omr.interactive.components.ScoreImageFile;
-import es.ua.dlsi.im3.omr.interactive.loggeractions.UserActionsPool;
+import es.ua.dlsi.im3.omr.interactive.model.InputOutput;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import es.ua.dlsi.im3.omr.interactive.model.OMRProject;
 import javafx.beans.property.ObjectProperty;
@@ -99,6 +98,8 @@ public class OMRController implements Initializable {
         if (folder != null) {
             try {
                 project.set(new OMRProject(folder));
+                InputOutput io = new InputOutput();
+                save();
                 loadProject();
             } catch (IM3Exception e) {
                 ShowError.show(OMRApp.getMainStage(), "Cannot create project", e);
@@ -113,7 +114,8 @@ public class OMRController implements Initializable {
 
         if (mrt != null) {
             try {
-                project.set(OMRProject.load(mrt.getParentFile()));
+                InputOutput io = new InputOutput();
+                project.set(io.load(mrt.getParentFile()));
                 loadProject();
             } catch (IM3Exception e) {
                 e.printStackTrace();
@@ -131,11 +133,16 @@ public class OMRController implements Initializable {
     private void handleSave() {
         if (!project.isNull().get()) {
             try {
-                project.get().save();
+                save();
             } catch (IM3Exception e) {
                 ShowError.show(OMRApp.getMainStage(), "Cannot save project", e);
             }
         }
+    }
+
+    private void save() throws ExportException {
+        InputOutput io = new InputOutput();
+        io.save(project.get());
     }
 
     @FXML
@@ -152,6 +159,7 @@ public class OMRController implements Initializable {
         if (jpg != null) {
             try {
                 project.get().addPage(jpg);
+                save();
             } catch (IM3Exception e) {
                 e.printStackTrace();
                 ShowError.show(OMRApp.getMainStage(), "Cannot add image", e);
@@ -164,6 +172,8 @@ public class OMRController implements Initializable {
         if (ShowConfirmation.show(OMRApp.getMainStage(), "Do you want to delete the image?")) {
             try {
                 project.get().deletePage(lvPages.getSelectionModel().getSelectedItem());
+                save();
+                lvPages.getSelectionModel().clearSelection();
             } catch (IM3Exception e) {
                 ShowError.show(OMRApp.getMainStage(), "Cannot delete image", e);
             }

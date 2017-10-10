@@ -18,61 +18,20 @@ public class OMRProject {
     /**
      * Used by GUI for binding
      */
-    transient private ObservableList<OMRPage> pagesProperty;
-    private List<OMRPage> pages;
-    transient File projectFolder;
-    transient File imagesFolder;
-    transient File xmlFile;
-
-    // Used for the persistor
-    public OMRProject() throws IM3Exception {
-    }
+    private ObservableList<OMRPage> pagesProperty;
+    File projectFolder;
+    File imagesFolder;
+    File xmlFile;
 
     public OMRProject(File projectFolder) throws IM3Exception {
         pagesProperty = FXCollections.observableArrayList();
         this.projectFolder = projectFolder;
-        this.xmlFile = new File(projectFolder, createXMLFilename(projectFolder));
+        this.xmlFile = new File(projectFolder, InputOutput.createXMLFilename(projectFolder));
         if (!projectFolder.exists()) {
             projectFolder.mkdirs();
         }
         imagesFolder = new File(projectFolder, IMAGES_FOLDER);
         imagesFolder.mkdirs();
-        save();
-    }
-
-    static String createXMLFilename(File projectFolder) {
-        return FileUtils.getFileWithoutPath(projectFolder.getName()) + ".mrt";
-    }
-
-    private static XStream createXStream() {
-        XStream xstream = new XStream();
-        return xstream;
-    }
-    public static OMRProject load(File projectFolder) throws IM3Exception {
-        XStream xStream = createXStream();
-        File xmlFile = new File(projectFolder, createXMLFilename(projectFolder));
-        OMRProject project = (OMRProject) xStream.fromXML(xmlFile);
-        project.setProjectFolder(projectFolder);
-        project.xmlFile = xmlFile;
-        try {
-            project.loadFiles();
-        } catch (IM3Exception e) {
-            throw new IM3Exception(e);
-        }
-        return project;
-    }
-
-    public void save() throws IM3Exception {
-        XStream xStream = createXStream();
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(xmlFile);
-        } catch (FileNotFoundException e) {
-            throw new IM3Exception(e);
-        }
-        pages = new ArrayList<>();
-        pages.addAll(pagesProperty);
-        xStream.toXML(this, fos);
     }
 
     public void addPage(File file) throws IM3Exception {
@@ -86,18 +45,10 @@ public class OMRProject {
 
         OMRPage page = new OMRPage(imagesFolder, file.getName());
         pagesProperty.add(page);
-        save();
     }
 
-    /**
-     * Used by the OMRInputOutput
-     */
-    void loadFiles() throws IM3Exception {
-        pagesProperty = FXCollections.observableArrayList();
-        for (OMRPage page: pages) {
-            pagesProperty.add(page);
-            page.loadImageFile(this.imagesFolder);
-        }
+    public void addPage(OMRPage page) {
+        pagesProperty.add(page);
     }
 
     private void setProjectFolder(File projectFolder) {
@@ -115,6 +66,14 @@ public class OMRProject {
 
     public void deletePage(OMRPage page) throws IM3Exception {
         pagesProperty.remove(page);
-        save();
     }
+
+    public File getProjectFolder() {
+        return projectFolder;
+    }
+
+    public File getImagesFolder() {
+        return imagesFolder;
+    }
+
 }
