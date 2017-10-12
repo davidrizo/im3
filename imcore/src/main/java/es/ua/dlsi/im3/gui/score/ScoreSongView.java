@@ -27,13 +27,11 @@ import java.util.HashMap;
 public class ScoreSongView {
     private Canvas canvas;
     private Pane mainPanel;
-    private HorizontalLayout layout;
+    private ScoreLayout layout;
 
-    public ScoreSongView(ScoreSong scoreSong, LayoutFonts font, ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) throws IM3Exception {
-        // TODO: 21/9/17 Uso coordinates ahora porque más adelante deberíamos poder poner varios canvases en la misma pantalla
-        // TODO: 21/9/17 Cuando cambie width o height hay que recalcular todo
-
-        layout = new HorizontalLayout(scoreSong, font, new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
+    public ScoreSongView(ScoreSong scoreSong, ScoreLayout layout) throws IM3Exception {
+        //layout = new HorizontalLayout(scoreSong, font, new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
+        this.layout = layout;
         init(layout);
     }
 
@@ -46,14 +44,6 @@ public class ScoreSongView {
         mainPanel.setBackground(new Background(new BackgroundFill(Color.WHEAT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         createNodes();
-
-    }
-    public ScoreSongView(ScoreSong scoreSong, HashMap<Staff, LayoutFonts> fonts, ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) throws IM3Exception {
-        // TODO: 21/9/17 Uso coordinates ahora porque más adelante deberíamos poder poner varios canvases en la misma pantalla
-        // TODO: 21/9/17 Cuando cambie width o height hay que recalcular todo
-
-        layout = new HorizontalLayout(scoreSong, fonts, new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
-        init(layout);
     }
 
     public Pane getMainPanel() {

@@ -4,6 +4,7 @@ import com.thoughtworks.xstream.XStream;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.omr.interactive.OMRController;
 import es.ua.dlsi.im3.omr.interactive.model.pojo.Page;
 import es.ua.dlsi.im3.omr.interactive.model.pojo.Project;
 import es.ua.dlsi.im3.omr.interactive.model.pojo.Staff;
@@ -41,19 +42,19 @@ public class InputOutput {
         xStream.toXML(pojoProject, fos);
     }
 
-    public OMRProject load(File projectFolder) throws IM3Exception {
+    public OMRProject load(OMRController controller, File projectFolder) throws IM3Exception {
         XStream xStream = new XStream();
         File xmlFile = new File(projectFolder, createXMLFilename(projectFolder));
         Project pojoProject = (Project) xStream.fromXML(xmlFile);
 
-        OMRProject omrProject = new OMRProject(projectFolder);
+        OMRProject omrProject = new OMRProject(projectFolder, controller);
         for (Page pojoPage: pojoProject.getPages()) {
-            OMRPage page = new OMRPage(omrProject.getImagesFolder(), pojoPage.getImageRelativeFileName());
+            OMRPage page = new OMRPage(omrProject, omrProject.getImagesFolder(), pojoPage.getImageRelativeFileName(), omrProject.getScoreSong());
             omrProject.addPage(page);
             page.loadImageFile();
 
             for (Staff pojoStaff: pojoPage.getStaves()) {
-                OMRStaff staff = new OMRStaff(page, pojoStaff.getLeftTopX(), pojoStaff.getLeftTopY(), pojoStaff.getBottomRightX(), pojoStaff.getBottomRightY());
+                OMRStaff staff = new OMRStaff(page, omrProject.getScoreSong(), pojoStaff.getLeftTopX(), pojoStaff.getLeftTopY(), pojoStaff.getBottomRightX(), pojoStaff.getBottomRightY());
                 page.addStaff(staff);
             }
         }

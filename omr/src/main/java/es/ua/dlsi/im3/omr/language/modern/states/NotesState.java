@@ -22,6 +22,7 @@ public class NotesState extends OMRState {
 
         // TODO: 5/10/17 Dots en la gramática - no aqui 
         if (token.getSymbol() == GraphicalSymbol.rest) {
+            //TODO No valdría tener antes un accidental
             SimpleRest rest = new SimpleRest(parseFigure(token.getValue()), 0);
             try {
                 transduction.getStaff().addCoreSymbol(rest);

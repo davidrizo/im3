@@ -50,7 +50,7 @@ public class SymbolView<SymbolType> extends Group {
 	private static final double DEFAULT_WIDTH = 2;
 	private static final double SELECTED_WIDTH = 5;
 	
-	ObjectProperty<Symbol> symbol;
+	ObjectProperty<Symbol<SymbolType>> symbol;
 	StrokeView currentStrokeView;
 	private final ObjectProperty<Color> color;
 	private final Color unselectedColor;
@@ -72,7 +72,7 @@ public class SymbolView<SymbolType> extends Group {
 	 */
 	private final Group miniatureGroup;
 	private boolean editing;
-	
+
 	/**
 	 * To allow undo and cancel
 	 */
@@ -89,7 +89,8 @@ public class SymbolView<SymbolType> extends Group {
 		unselectedColor = color;
 		this.symbol = new SimpleObjectProperty<>(symbol);
 		currentStrokeView = null;
-		for (Stroke stroke : symbol.getStrokes()) {
+        List<Stroke> strokes = symbol.getStrokes();
+		for (Stroke stroke : strokes) {
 			addStroke(stroke);
 		}
 
@@ -115,7 +116,7 @@ public class SymbolView<SymbolType> extends Group {
 		
 	}
 
-	public ObjectProperty<Symbol> symbolProperty() {
+	public ObjectProperty<Symbol<SymbolType>> symbolProperty() {
 		return symbol;
 	}
 
@@ -270,7 +271,7 @@ public class SymbolView<SymbolType> extends Group {
 		return currentStrokeView;
 	}
 
-	public void setSortedPossibleNotationSymbols(ArrayList<PositionedSymbolType> notationSymbols) {
+	public void setSortedPossibleNotationSymbols(ArrayList<PositionedSymbolType<SymbolType>> notationSymbols) {
 		this.symbol.get().setSortedPossibleNotationSymbols(notationSymbols);
 	}
 

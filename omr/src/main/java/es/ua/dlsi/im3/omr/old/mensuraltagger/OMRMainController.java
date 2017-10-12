@@ -2,6 +2,9 @@ package es.ua.dlsi.im3.omr.old.mensuraltagger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
+import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.command.ICommand;
@@ -278,8 +281,12 @@ public class OMRMainController implements Initializable{
         layoutFontsHashMap.put(model.get().getStaff(), LayoutFonts.capitan);
         layoutFontsHashMap.put(model.get().getModernStaff(), LayoutFonts.bravura);
 
+        ScoreLayout layout = new HorizontalLayout(model.get().getSong(), layoutFontsHashMap,
+                new CoordinateComponent(anchorPaneScore.widthProperty().doubleValue()),
+                new CoordinateComponent(anchorPaneScore.heightProperty().doubleValue()));
+
         ScoreSongView scoreSongView = new ScoreSongView(model.get().getSong(),
-                layoutFontsHashMap, anchorPaneScore.widthProperty(), anchorPaneScore.heightProperty());
+                layout);
         anchorPaneScore.getChildren().add(scoreSongView.getMainPanel());
         AnchorPane.setLeftAnchor(scoreSongView.getMainPanel(), 0.0);
         AnchorPane.setRightAnchor(scoreSongView.getMainPanel(), 0.0);

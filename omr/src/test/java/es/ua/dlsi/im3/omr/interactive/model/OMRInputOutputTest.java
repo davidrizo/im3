@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.omr.interactive.OMRController;
 import org.junit.Test;
 
 import javax.imageio.IIOImage;
@@ -102,7 +103,7 @@ public class OMRInputOutputTest {
         if (projectFolder.exists()) {
             projectFolder.delete();
         }
-        OMRProject project = new OMRProject(projectFolder);
+        OMRProject project = new OMRProject(projectFolder, null);
 
         File image1 = TestFileUtils.createTempFile("img1.jpg");
         File image2 = TestFileUtils.createTempFile("img2.jpg");
@@ -121,7 +122,8 @@ public class OMRInputOutputTest {
 
 
         // --- Load it
-        OMRProject loaded = io.load(projectFolder);
+        OMRController controller = new OMRController();
+        OMRProject loaded = io.load(controller, projectFolder);
         assertEquals("Loaded images", 2, loaded.pagesProperty().size());
     }
 

@@ -2,7 +2,12 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 import com.thoughtworks.xstream.XStream;
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.omr.interactive.OMRController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ToggleGroup;
@@ -23,9 +28,12 @@ public class OMRProject {
     File projectFolder;
     File imagesFolder;
     File xmlFile;
+    ScoreSong scoreSong;
+    OMRController omrController;
 
-    public OMRProject(File projectFolder) throws IM3Exception {
+    public OMRProject(File projectFolder, OMRController controller) throws IM3Exception {
         pagesProperty = FXCollections.observableArrayList();
+        this.omrController = controller;
         this.projectFolder = projectFolder;
         this.xmlFile = new File(projectFolder, InputOutput.createXMLFilename(projectFolder));
         if (!projectFolder.exists()) {
@@ -33,6 +41,9 @@ public class OMRProject {
         }
         imagesFolder = new File(projectFolder, IMAGES_FOLDER);
         imagesFolder.mkdirs();
+
+        // FIXME: 11/10/17 Esto debe ser interactivo
+        scoreSong = new ScoreSong(new BinaryDurationEvaluator(new Time(2)));
     }
 
     public void addPage(File file) throws IM3Exception {
@@ -44,8 +55,9 @@ public class OMRProject {
             throw new IM3Exception("Cannot copy input file " + file.getAbsolutePath() + " to " + targetFile.getAbsolutePath());
         }
 
-        OMRPage page = new OMRPage(imagesFolder, file.getName());
+        OMRPage page = new OMRPage(this, imagesFolder, file.getName(), scoreSong);
         pagesProperty.add(page);
+        // TODO: 11/10/17 Debe añadir una página al layout del scoreSOng
     }
 
     public void addPage(OMRPage page) {
@@ -77,4 +89,11 @@ public class OMRProject {
         return imagesFolder;
     }
 
+    public ScoreSong getScoreSong() {
+        return scoreSong;
+    }
+
+    public OMRController getOMRController() {
+        return omrController;
+    }
 }

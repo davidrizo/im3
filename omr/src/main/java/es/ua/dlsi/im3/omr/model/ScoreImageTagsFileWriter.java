@@ -26,6 +26,7 @@ import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +59,8 @@ public class ScoreImageTagsFileWriter {
 				} else {
 					ps.println(symbol.getStrokes().size());
 				}
-				for (Stroke s : symbol.getStrokes()) {
+				List<Stroke> strokeList = symbol.getStrokes();
+				for (Stroke s : strokeList) {
 					for (Point p : s.pointsProperty()) {
 						ps.print(p.getRelativeTime());
 						ps.print(',');

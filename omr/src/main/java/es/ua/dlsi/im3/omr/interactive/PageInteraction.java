@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.omr.interactive;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.javafx.SelectionRectangle;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.useractionlogger.actions.MouseMoveAction;
 import javafx.beans.property.BooleanProperty;
 import javafx.event.EventHandler;
@@ -11,7 +13,7 @@ import javafx.scene.layout.Pane;
 /**
  * Used to encapsulate the interaction with the image view to simplify the OMRController class
  */
-public class Interaction {
+public class PageInteraction {
 
     private final ImageView imageView;
     private final Pane marksPane;
@@ -21,7 +23,7 @@ public class Interaction {
     MouseMoveAction mouseMoveAction;
     private SelectionRectangle selectingRectangle;
 
-    public Interaction(OMRController controller, ImageView imageView, Pane marksPane, BooleanProperty identiyingStaves) {
+    public PageInteraction(OMRController controller, ImageView imageView, Pane marksPane, BooleanProperty identiyingStaves) {
         this.imageView = imageView;
         this.marksPane = marksPane;
         this.identiyingStaves = identiyingStaves;
@@ -48,7 +50,11 @@ public class Interaction {
         marksPane.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent t) {
-                doMouseReleased();
+                try {
+                    doMouseReleased();
+                } catch (IM3Exception e) {
+                    ShowError.show(OMRApp.getMainStage(), "Cannot add staff", e);
+                }
             }
         });
 
@@ -72,7 +78,7 @@ public class Interaction {
     }
 
 
-    private void doMouseReleased() {
+    private void doMouseReleased() throws IM3Exception {
         if (identiyingStaves.get()) {
             if (selectingRectangle != null) {
                 selectingRectangle.changeState();

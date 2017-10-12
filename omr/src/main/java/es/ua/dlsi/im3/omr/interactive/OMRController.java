@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.interactive;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
@@ -55,15 +56,20 @@ public class OMRController implements Initializable {
     Slider sliderScale;
 
     @FXML
+    Slider sliderTimer;
+
+    @FXML
     ScrollPane scrollPane;
 
     @FXML
     ToggleButton btnIdentifyStaves;
 
+    CommandManager commandManager;
     ObjectProperty<OMRProject> project;
-    Interaction interaction;
+    PageInteraction interaction;
 
     public OMRController() {
+        commandManager = new CommandManager();
         project = new SimpleObjectProperty<>();
     }
 
@@ -89,7 +95,7 @@ public class OMRController implements Initializable {
 
         initScaleSlider();
 
-        interaction = new Interaction(this, imageView, marksPane, btnIdentifyStaves.selectedProperty());
+        interaction = new PageInteraction(this, imageView, marksPane, btnIdentifyStaves.selectedProperty());
         btnIdentifyStaves.setTooltip(new Tooltip("Draw a rectangle surrounding each staff"));
     }
 
@@ -105,7 +111,7 @@ public class OMRController implements Initializable {
         File folder = dlg.openFolder("Create a new folder for the project");
         if (folder != null) {
             try {
-                project.set(new OMRProject(folder));
+                project.set(new OMRProject(folder, this));
                 InputOutput io = new InputOutput();
                 save();
                 loadProject();
@@ -123,7 +129,7 @@ public class OMRController implements Initializable {
         if (mrt != null) {
             try {
                 InputOutput io = new InputOutput();
-                project.set(io.load(mrt.getParentFile()));
+                project.set(io.load(this, mrt.getParentFile()));
                 loadProject();
             } catch (IM3Exception e) {
                 e.printStackTrace();
@@ -248,9 +254,10 @@ public class OMRController implements Initializable {
         }
     }
 
-    public void onStaffIdentified(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY) {
+    public void onStaffIdentified(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY) throws IM3Exception {
         OMRPage page = getSelectedPage();
-        OMRStaff staff = new OMRStaff(page, topLeftX, topLeftY, bottomRightX, bottomRightY);
+        // we use the same pane for all marks, symbols, etc... to use absolute coordinates in all cases
+        OMRStaff staff = new OMRStaff(page, project.get().getScoreSong(), topLeftX, topLeftY, bottomRightX, bottomRightY);
         page.addStaff(staff);
         marksPane.getChildren().add(staff.getRoot());
         btnIdentifyStaves.setSelected(false);
@@ -258,5 +265,17 @@ public class OMRController implements Initializable {
 
     private OMRPage getSelectedPage() {
         return lvPages.getSelectionModel().getSelectedItem();
+    }
+
+    public Pane getMarksPane() {
+        return marksPane;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
+
+    public Slider getSliderTimer() {
+        return sliderTimer;
     }
 }

@@ -106,6 +106,8 @@
                   <Slider fx:id="sliderScale" blockIncrement="5.0" majorTickUnit="0.05" max="4.0" minorTickCount="1" value="2.0" />
                   <Button mnemonicParsing="false" onAction="#handleFitToWindow" text="Fit to window" />
                     <ToggleButton fx:id="btnIdentifyStaves" text="Identify staves" />
+                  <Label text="Complete timer (s)" />
+                  <Slider fx:id="sliderTimer" blockIncrement="0.25" majorTickUnit="0.5" max="3.0" min="0.5" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.25" />
                </items>
             </ToolBar>
          </top>

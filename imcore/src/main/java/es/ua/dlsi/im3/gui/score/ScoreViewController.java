@@ -4,6 +4,9 @@ import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
+import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
@@ -102,7 +105,12 @@ public class ScoreViewController {
             } else {
                 font = LayoutFonts.bravura;
             }
-            scoreSongView = new ScoreSongView(song, font, stage.widthProperty(), stage.heightProperty());
+
+
+            ScoreLayout layout = new HorizontalLayout(song, font,
+                    new CoordinateComponent(stage.widthProperty().doubleValue()),
+                    new CoordinateComponent(stage.heightProperty().doubleValue()));
+            scoreSongView = new ScoreSongView(song, layout);
             scrollMainPane.setContent(scoreSongView.getMainPanel());
         } catch (Exception e) {
             e.printStackTrace();

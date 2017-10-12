@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  *
  * @author drizo
  */
-public class Symbol {
+public class Symbol<SymbolType> {
 	private static final int MARGIN = 5;
 	boolean symbolFinished;
 	ArrayList<Stroke> strokes;
@@ -41,7 +41,7 @@ public class Symbol {
 	BufferedImage symbolImage;
 	// falta imagen de lo que hay bajo + margen (5px todos los lados):
 	// imagen en OpenCV - mat - me envía correo
-	ArrayList<PositionedSymbolType> sortedPossibleNotationSymbols;
+	ArrayList<PositionedSymbolType<SymbolType>> sortedPossibleNotationSymbols;
 	private int minX;
 	private int maxX;
 	private int minY;
@@ -94,11 +94,11 @@ public class Symbol {
 		return positionedSymbolType;
 	}
 
-	public ArrayList<PositionedSymbolType> getSortedPossibleNotationSymbols() {
+	public ArrayList<PositionedSymbolType<SymbolType>> getSortedPossibleNotationSymbols() {
 		return sortedPossibleNotationSymbols;
 	}
 
-	public void setSortedPossibleNotationSymbols(ArrayList<PositionedSymbolType> sortedPossibleNotationSymbols) {
+	public void setSortedPossibleNotationSymbols(ArrayList<PositionedSymbolType<SymbolType>> sortedPossibleNotationSymbols) {
 		this.sortedPossibleNotationSymbols = sortedPossibleNotationSymbols;
 	}
 

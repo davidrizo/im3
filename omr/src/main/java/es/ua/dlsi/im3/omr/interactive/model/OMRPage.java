@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.omr.interactive.OMRController;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageFile;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
@@ -22,6 +24,7 @@ public class OMRPage {
      */
     static boolean SKIP_JAVAFX = false;
     private final File imagesFolder;
+    private final OMRProject omrProject;
     /**
      * File name relative to project path
      */
@@ -38,11 +41,15 @@ public class OMRPage {
      */
     BufferedImage bufferedImage;
 
-    public OMRPage(File imagesFolder, String imageRelativeFileName) throws IM3Exception {
+    ScoreSong scoreSong;
+
+    public OMRPage(OMRProject omrProject, File imagesFolder, String imageRelativeFileName, ScoreSong scoreSong) throws IM3Exception {
         this.imagesFolder = imagesFolder;
+        this.omrProject = omrProject;
         this.imageRelativeFileName = imageRelativeFileName;
         loadImageFile();
         staves = new ArrayList<>();
+        this.scoreSong = scoreSong;
     }
 
     void loadImageFile() throws IM3Exception {
@@ -68,8 +75,8 @@ public class OMRPage {
         }
     }
 
-    public void addStaff(ToggleGroup staffToggleGroup, int leftTopX, int leftTopY, int bottomRightX, int bottomRightY) {
-        OMRStaff staff = new OMRStaff(this, leftTopX, leftTopY, bottomRightX, bottomRightY);
+    public void addStaff(ToggleGroup staffToggleGroup, int leftTopX, int leftTopY, int bottomRightX, int bottomRightY) throws IM3Exception {
+        OMRStaff staff = new OMRStaff(this, scoreSong, leftTopX, leftTopY, bottomRightX, bottomRightY);
         staves.add(staff);
     }
 
@@ -106,5 +113,13 @@ public class OMRPage {
 
 
         }
+    }
+
+    public OMRController getOMRController() {
+        return omrProject.getOMRController();
+    }
+
+    public BufferedImage getBufferedImage() {
+        return bufferedImage;
     }
 }
