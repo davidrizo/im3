@@ -446,10 +446,10 @@ public class KernExporter {
                     car = 'L';
                     break;
                 case BREVE:
-                    car = 'V';
+                    car = 'S';
                     break;
                 case SEMIBREVE:
-                    car = 'v';
+                    car = 's';
                     break;
                 case MINIM:
                     car = 'M';
@@ -458,7 +458,7 @@ public class KernExporter {
                     car = 'm';
                     break;
                 case FUSA:
-                    car = 'F';
+                    car = 'U';
                     break;
                 case SEMIFUSA:
                     car = 'u';

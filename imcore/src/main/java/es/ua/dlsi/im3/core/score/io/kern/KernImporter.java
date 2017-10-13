@@ -70,6 +70,9 @@ public class KernImporter implements IScoreSongImporter {
         int ksNotesCount = 0;
         int lastDots;
         Figures lastFigure;
+        private Figures lastDurationFigure; // used just in modernDuration and mensuralDuration rules
+        private Integer lastDur;// used just in modernDuration and mensuralDuration rules
+
         SimpleChord chord;
 
         HashMap<Integer, ScoreLayer> spines = new HashMap<>();
@@ -110,6 +113,7 @@ public class KernImporter implements IScoreSongImporter {
         private boolean kernSpineFound = false;
 
         TreeSet<Integer> nonTupletDurations = new TreeSet<>(); // faster than a math op
+
         {
             nonTupletDurations.add(0);
             nonTupletDurations.add(1);
@@ -310,7 +314,7 @@ public class KernImporter implements IScoreSongImporter {
         public void exitSong(kernParser.SongContext ctx) {
             for (int i=0; i<ctx.getChildCount(); i++) {
                 ParseTree child = ctx.getChild(i);
-                System.out.println("CHIIIIIIDDDDDDDD " + child.getText());
+                System.out.println("CHIIIIIIDDDDDDDD " + child.getText()); // FIXME: 13/10/17
                 if (child instanceof TerminalNode) {
                     TerminalNode typeNode = (TerminalNode) child;
                     if (typeNode.getSymbol().getType() == kernLexer.METADATACOMMENT) {
@@ -822,37 +826,10 @@ public class KernImporter implements IScoreSongImporter {
         }
 
         @Override
-        public void exitDuration(kernParser.DurationContext ctx) {
-            Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "ScoreFigureAndDots {0}", ctx.getText());
-
-            if (inHarmSpine()) {
-                int line = ctx.NUMBER().getSymbol().getLine();
-                throw new GrammarParseRuntimeException("Unexpected duration in a harm spine: " + ctx.getText() + ", line " + line);
-            }
-            int dur = new Integer(ctx.NUMBER().getText());
-			/*
-			 * boolean processFigure = true; if (currentVoiceTemp.inTuplet) {
-			 * //if (dur != tupleElementDuration) { boolean isNonTupletDuration
-			 * = nonTupletDurations.contains(dur); int gcdVal=0;
-			 * //System.out.println("DUR: " + dur); if (!isNonTupletDuration) {
-			 * gcdVal = gcd(dur, currentVoiceTemp.mcdTupleElementDuration); } if
-			 * (isNonTupletDuration || gcdVal == 0) { try { processTuplet(); //
-			 * process previous values con continue with this one } catch
-			 * (NoMeterException | IM3Exception ex) {
-			 * Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE,
-			 * null, ex); throw new GrammarParseException(ex); } } else {
-			 * Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
-			 * "In tuplet with element figureAndDots {0}", ctx.getText());
-			 * currentVoiceTemp.tupletDurations.add(new
-			 * Integer(ctx.NUMBER().getText())); processFigure = false;
-			 * currentVoiceTemp.mcdTupleElementDuration = gcdVal;
-			 * currentVoiceTemp.mcm = mcm(dur, currentVoiceTemp.mcm);
-			 * Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
-			 * "In tuplet with gcd {0}",
-			 * currentVoiceTemp.mcdTupleElementDuration); } }
-			 */
-            VoiceTemp currentVoiceTemp = getCurrentVoiceTemp();
+        public void exitModernDuration(kernParser.ModernDurationContext ctx) {
             Figures f;
+
+            lastDur = new Integer(ctx.NUMBER().getText());
             switch (ctx.NUMBER().getText()) {
                 case "0":
                     f = Figures.DOUBLE_WHOLE;
@@ -887,19 +864,55 @@ public class KernImporter implements IScoreSongImporter {
                 default: // tuplet
                     f = Figures.NO_DURATION;
                     // one temporal that will be modified later
+            }
+            lastDurationFigure = f;
+        }
+
+        @Override
+        public void exitMensuralDuration(kernParser.MensuralDurationContext ctx) {
+            Figures f;
+
+            switch (ctx.getText()) {
+                case "X": f = Figures.MAXIMA; break;
+                case "L": f = Figures.LONGA; break;
+                case "S": f = Figures.BREVE; break;
+                case "s": f = Figures.SEMIBREVE; break;
+                case "M": f = Figures.MINIM; break;
+                case "m": f = Figures.SEMIMINIM; break;
+                case "U": f = Figures.FUSA; break;
+                case "u": f = Figures.SEMIFUSA; break;
+                default:
+                    throw new GrammarParseRuntimeException("Mensural duration '" + ctx.getText() + "' not recognized");
+            }
+            lastDurationFigure = f;
+        }
+
+        @Override
+        public void exitDuration(kernParser.DurationContext ctx) {
+            Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "ScoreFigureAndDots {0}", ctx.getText());
+
+            if (inHarmSpine()) {
+//                int line = ctx.getChild(0).getA
+                throw new GrammarParseRuntimeException("Unexpected duration in a harm spine: " + ctx.getText()); // + ", line " + line);
+            }
+
+            VoiceTemp currentVoiceTemp = getCurrentVoiceTemp();
+
+            Figures f = lastDurationFigure;
+            if (f == Figures.NO_DURATION) {
+                    // one temporal that will be modified later
                     Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                             "ScoreFigureAndDots figureAndDots has to be a tuplet {0}", ctx.getText());
                     if (!currentVoiceTemp.inTuplet) {
                         currentVoiceTemp.inTuplet = true;
                         currentVoiceTemp.tupletElements.clear();
-                        currentVoiceTemp.mcdTupleElementDuration = dur;
-                        currentVoiceTemp.mcm = dur;
+                        currentVoiceTemp.mcdTupleElementDuration = lastDur;
+                        currentVoiceTemp.mcm = lastDur;
                         currentVoiceTemp.tupletDurations.clear();
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                 "Starting tuplet with element figureAndDots {0}", ctx.getText());
                     }
-                    currentVoiceTemp.lastDuration = dur;
-
+                    currentVoiceTemp.lastDuration = lastDur;
             }
             int dots = ctx.augmentationDots().getText().length();
             if (!currentVoiceTemp.inTuplet) {
@@ -1604,28 +1617,28 @@ public class KernImporter implements IScoreSongImporter {
         public void exitMajorDegree(kernParser.MajorDegreeContext ctx) {
             super.exitMajorDegree(ctx);
             lastDegree.setDegreeType(DegreeType.major);
-            lastDegree.setDegree(parseDegree(ctx.MAJORDEGREES().getText()));
+            lastDegree.setDegree(parseDegree(ctx.getText()));
         }
 
         @Override
         public void exitMinorDegree(kernParser.MinorDegreeContext ctx) {
             super.exitMinorDegree(ctx);
             lastDegree.setDegreeType(DegreeType.minor);
-            lastDegree.setDegree(parseDegree(ctx.MINORDEGREES().getText()));
+            lastDegree.setDegree(parseDegree(ctx.getText()));
         }
 
         @Override
         public void exitAugmentedDegree(kernParser.AugmentedDegreeContext ctx) {
             super.exitAugmentedDegree(ctx);
             lastDegree.setDegreeType(DegreeType.augmented);
-            lastDegree.setDegree(parseDegree(ctx.MAJORDEGREES().getText()));
+            //already read in exitMajorDegree lastDegree.setDegree(parseDegree(ctx.getText()));
         }
 
         @Override
         public void exitDiminishedDegree(kernParser.DiminishedDegreeContext ctx) {
             super.exitDiminishedDegree(ctx);
             lastDegree.setDegreeType(DegreeType.diminished);
-            lastDegree.setDegree(parseDegree(ctx.MINORDEGREES().getText()));
+            // already read in exitMinorDegree lastDegree.setDegree(parseDegree(ctx.getText()));
         }
 
         private Degree parseDegree(String degree) {

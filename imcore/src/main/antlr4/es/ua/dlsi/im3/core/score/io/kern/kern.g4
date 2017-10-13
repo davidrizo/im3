@@ -2,6 +2,10 @@ grammar kern;
 /*
 Don't use rules for lexer literals based on letters ('a'...) because they are ambiguos and
 depend on the parser
+
+TO-DO See this website for a solution:
+https://stackoverflow.com/questions/28873463/no-context-sensitivity-in-antlr4
+
 */
 @lexer::header {
 }
@@ -106,8 +110,10 @@ numerator: NUMBER (PLUS NUMBER)*;
 denominator: NUMBER;
 
 //duration: figure editorialTokenSignifier? ('.'* editorialTokenSignifier?);
-duration: NUMBER augmentationDots;
+duration: (modernDuration | mensuralDuration) augmentationDots;
 augmentationDots: (DOT)*;
+modernDuration: NUMBER;
+mensuralDuration: ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u');
 
 
 noteRestChord: chord | note | rest;
@@ -216,13 +222,13 @@ root: rootAlteration? degree;
 
 degree: majorDegree | minorDegree | augmentedDegree | diminishedDegree;
 
-majorDegree: MAJORDEGREES;
+majorDegree: ('I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII');
 
-minorDegree: MINORDEGREES;
+minorDegree: ('i' | 'ii' | 'iii' | 'iv' | 'v' | 'vi' | 'vii');
 
-augmentedDegree: MAJORDEGREES PLUS;
+augmentedDegree: majorDegree PLUS;
 
-diminishedDegree: MINORDEGREES DIMINISHED;
+diminishedDegree: minorDegree DIMINISHED;
 
 rootAlteration: OCTOTHORPE | MINUS;
 
@@ -308,8 +314,6 @@ EDITORIALSIGNIFIER
 
 
 //// ------------------ HARM SPECIFIC
-MINORDEGREES: ('i' | 'ii' | 'iii' | 'iv' | 'v' | 'vi' | 'vii');
-MAJORDEGREES: ('I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII');
 DIMINISHED	:	'o';
 PLUS	:	'+';
 FIRSTINVERSION: 'a';

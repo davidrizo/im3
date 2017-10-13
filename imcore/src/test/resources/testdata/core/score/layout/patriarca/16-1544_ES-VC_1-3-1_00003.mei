@@ -151,21 +151,37 @@
                                         <syl wordpos="i">ma</syl>
                                     </verse>                                                                                                                                                
                                 </note>
-                                <note pname="g" dur="semiminima" oct="5"/>
+                                <note pname="g" dur="semiminima" oct="5">
                                     <verse n="1">
                                         <syl wordpos="t">ter</syl>
-                                    </verse>                                                                                                                                                
+                                    </verse>                  
+                                </note>
                                 <barLine/>
-                                <!-- TODO Seguir lyrics por aquí --> 
+                                 
                                 <rest dur="semiminima"/>
                                 <note pname="f" dur="minima" oct="5">
                                     <accid accid="s"/>
+                                    <verse n="1">
+                                        <syl wordpos="i">ma</syl>
+                                    </verse>                                                                                                                                                
                                 </note>
-                                <note pname="f" dur="semiminima" oct="5"/>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">ter</syl>
+                                    </verse>                                                                                                                                                
+                                </note>
                                 <barLine/>                                
-                                <note pname="g" dur="semibrevis" oct="5"/>
+                                <note pname="g" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">ma</syl>
+                                    </verse>                                                                                                                                                
+                                </note>
                                 <barLine/>
-                                <note pname="a" dur="semibrevis" oct="5"/>
+                                <note pname="a" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">ter</syl>
+                                    </verse>                                                                                                                                                
+                                </note>
                                 <barLine/>
 
                                 <!--<multiRpt num="3"> drizo: THIS IS NOT STANDARD but could be a solution                                     
@@ -181,49 +197,136 @@
                                 <!--<multiRest dur.ges="semibrevis" num="3"/>-->
                                 <barLine/>
                                 <rest dur="semiminima"/>
-                                <note pname="g" dur="minima" oct="5"/>
-                                <note pname="g" dur="semiminima" oct="5"/>
-                                <barLine/>
-                                <rest dur="semiminima"/>
-                                <note pname="g" dur="semiminima" oct="5"/>
-                                <note pname="g" dur="semiminima" oct="5"/>
-                                <note pname="f" dur="semiminima" oct="5"/>
-                                <barLine/>
-                                <note pname="g" dur="minima" oct="5" dots="1"/>
-                                <note pname="g" dur="semiminima" oct="5"/>
-                                <barLine/>
-                                <note pname="f" dur="minima" oct="5"/>
-                                <rest dur="semiminima"/>
-                                <barLine/>
-                                <rest dur="semiminima"/>
-                                <note pname="f" dur="minima" oct="5"/>
-                                <note pname="f" dur="semiminima" oct="5"/>
-                                <barLine/>
-                                <rest dur="semiminima"/>
-                                <note pname="d" dur="minima" oct="5"/>
-                                <note pname="d" dur="semiminima" oct="5"/>
-                                <note pname="e" dur="semiminima" oct="5">
-                                    <accid accid="f"/>
+                                <note pname="g" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">ma</syl>
+                                    </verse>                                                                                                                                                                                    
+                                </note>
+                                <note pname="g" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">ter</syl>
+                                    </verse>                                                                                                                                                                                    
                                 </note>
                                 <barLine/>
-                                <note pname="f" dur="minima" oct="5" dots="1"/>
-                                <note pname="f" dur="semiminima" oct="5"/>
+                                <rest dur="semiminima"/>
+                                <note pname="e" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">mi</syl>
+                                    </verse>                                                                                                                                                                                    
+                                </note>
+                                <note pname="e" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">se</syl>
+                                    </verse>                                                                                                                                                                                                                        
+                                </note>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">ri</syl>
+                                    </verse>                                                                                                                                                                                                                                                            
+                                </note>
+                                <barLine/>
+                                <note pname="g" dur="minima" oct="5" dots="1">
+                                    <verse n="1">
+                                        <syl wordpos="m">cor</syl>
+                                    </verse>                                                                                                                                                                                                                                                            
+                                </note>
+                                <note pname="g" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">di</syl>
+                                    </verse>                                                                                                                                                                                                                                                            
+                                </note>
+                                <barLine/>
+                                <note pname="f" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">e</syl>
+                                    </verse>                                                                                                                                                                                                                                                            
+                                </note>
+                                <rest dur="semiminima"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="f" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">ma</syl>
+                                    </verse>                                                                                                                                                                                                                                                            
+                                </note>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">ter</syl>
+                                    </verse>                                                                                                                                                                                                                                                           
+                                </note>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="d" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">mi</syl>
+                                    </verse>                                                                                                                                                                                                                                                           
+                                </note>
+                                <note pname="d" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">se</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
+                                <note pname="e" dur="semiminima" oct="5">
+                                    <accid accid="f"/>
+                                    <verse n="1">
+                                        <syl wordpos="m">ri</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
+                                <barLine/>
+                                <note pname="f" dur="minima" oct="5" dots="1">
+                                    <verse n="1">
+                                        <syl wordpos="m">cor</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">di</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
                                 <barLine/>
                                 <note pname="e" dur="semiminima" oct="5">
                                     <accid accid="f"/>
+                                    <verse n="1">
+                                        <syl wordpos="t">e</syl>
+                                    </verse>                                                                                                                                                                                                                       
                                 </note>
-                                <note pname="g" dur="semiminima" oct="5"/>
+                                <note pname="g" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">mi</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
+                                <barLine/>
                                 <custos pname="f" oct="5"/>
                                 <sb/> <!-- véase cómo parte un "compás" -->
                                 
                                 <!-- Pentagrama 3 -->
-                                <note pname="f" dur="semiminima" oct="5"/>
-                                <note pname="f" dur="semiminima" oct="5"/>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">se</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">ri</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
                                 <barLine/>
-                                <note pname="f" dur="semibrevis" oct="5" dots="1"/>
-                                <note pname="f" dur="semiminima" oct="5"/>
+                                <note pname="f" dur="semibrevis" oct="5" dots="1">
+                                    <verse n="1">
+                                        <syl wordpos="m">cor</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">di</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
                                 <barLine/>
-                                <note pname="f" dur="semibrevis" oct="5"/>
+                                <note pname="f" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">e</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note>
                                 <barLine/>
                                 
                                 <!--<multiRpt num="3"> drizo: THIS IS NOT STANDARD but could be a solution                                     
@@ -240,7 +343,11 @@
                                 <!-- End of alternative encoding-->                                
 
                                 <barLine/>
-                                <note pname="g" dur="semibrevis" oct="5" xml:id="N5"/> 
+                                <note pname="g" dur="semibrevis" oct="5" xml:id="N5">
+                                    <verse n="1">
+                                        <syl wordpos="i">vi</syl>
+                                    </verse>                                                                                                                                                                                                                       
+                                </note> 
                                 <barLine/>
                                 <note pname="f" dur="semibrevis" oct="5" xml:id="N6"> 
                                     <accid accid="s"/> 
@@ -249,38 +356,97 @@
                                 <barLine/>
                                 <note pname="g" dur="semibrevis" oct="5"/>
                                 <barLine/>
-                                <note pname="d" dur="minima" oct="5"/>
-                                <note pname="d" dur="minima" oct="5"/>
+                                <note pname="d" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">ta</syl>
+                                    </verse>                                                                                                                                                                                                                                                           
+                                </note>
+                                <note pname="d" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">dul</syl>
+                                    </verse>                                                                                                                                                                                                                                                           
+                                </note>
                                 <barLine/>
-                                <note pname="d" dur="semibrevis" oct="5"/>
+                                <note pname="d" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="m">ce</syl>
+                                    </verse>                                                                                                                                                                                                                                                           
+                                </note>
                                 <barLine/>
-                                <note pname="d" dur="semibrevis" oct="5"/>
+                                <note pname="d" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">do</syl>
+                                    </verse>                                                                                                                                                                                                                                                           
+                                </note>
                                 <barLine/>
-                                <note pname="f" dur="minima" oct="5"/>
-                                <note pname="f" dur="minima" oct="5"/>
+                                <note pname="f" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl>et</syl>
+                                    </verse>                                                                                                                                                                                                                                                                                               
+                                </note>
+                                <note pname="f" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl>spes</syl>
+                                    </verse>                                                                                                                                                                                                                                                                                               
+                                </note>
                                 <barLine/>
-                                <note pname="f" dur="semiminima" oct="5" xml:id="N7"/> 
+                                <note pname="f" dur="semiminima" oct="5" xml:id="N7">
+                                    <verse n="1">
+                                        <syl wordpos="i">nos</syl>
+                                    </verse>                                                                                                                                                                                                                                                                                                                                   
+                                </note> 
                                 <note pname="e" dur="semiminima" oct="5" xml:id="N8">
                                     <accid accid="f"/>
                                 </note>
                                 <slur startid="#N7" endid="#N8"/>
-                                <note pname="d" dur="minima" oct="5"/>
+                                <note pname="d" dur="minima" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">tra</syl>
+                                    </verse>                                                                        
+                                </note>
                                 <barLine/>
-                                <note pname="d" dur="semibrevis" oct="5"/>
+                                <note pname="d" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="i">sal</syl>
+                                    </verse>                                                                        
+                                </note>
                                 <barLine/>
-                                <note pname="d" dur="semibrevis" oct="5"/>
+                                <note pname="d" dur="semibrevis" oct="5">
+                                    <verse n="1">
+                                        <syl wordpos="t">ve</syl>
+                                    </verse>
+                                </note>
                                 <barLine/>
                                 <rest dur="semiminima"/>
-                                <note pname="g" dur="semiminima" oct="5"/>
-                                <note pname="b" dur="semiminima" oct="5"/> 
+                                <note pname="g" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl>at</syl>
+                                    </verse>
+                                </note>
+                                <note pname="b" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl>te</syl>
+                                    </verse>
+                                </note> 
                                 <rest dur="semiminima"/>
                                 <barLine/>
                                 <rest dur="semiminima"/>
-                                <note pname="f" dur="semiminima" oct="5"/>
-                                <note pname="b" dur="semiminima" oct="5"/> 
+                                <note pname="f" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl>ad</syl>
+                                    </verse>
+                                </note>
+                                <note pname="b" dur="semiminima" oct="5">
+                                    <verse n="1">
+                                        <syl>te</syl>
+                                    </verse>
+                                </note> 
                                 <rest dur="semiminima"/>
                                 <barLine/>
-                                <sb/> <!-- TODO custos -->
+                                <custos/> <!-- TODO custos, parece que parte de silencio  -->
+                                <sb/> 
+                                
+                                <!-- POR AQUI PASANDO LYRICS -->
                                 
                                 <!-- Pentagrama 4 -->
                                 <rest dur="semiminima"/>
@@ -339,9 +505,330 @@
                                     <note pname="g" dur="fusa" oct="5"/>
                                 </beam>
                                 <note pname="a" dur="minima" oct="5" xml:id="N12"/>
+                                <slur startid="#N11" endid="#N12"/>
                                 <barLine/>
-                                <custos/>
+                                <custos pname="a" oct="5"/>
                                 <sb/>
+                                
+                                <!-- Pentagrama 5 -->
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="fusa"/>
+                                <note pname="g" oct="5" dur="fusa"/>
+                                <note pname="g" oct="5" dur="semiminima" xml:id="N13"/>
+                                <note pname="f" oct="5" dur="semiminima" xml:id="N14">
+                                    <accid accid="s"/>  
+                                </note>
+                                <slur startid="#N13" endid="#N14"/>
+                                <barLine/>
+                                <note pname="d" oct="5" dur="semiminima"/>
+                                <rest dur="semiminima"/>
+                                <rest dur="minima"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="c" oct="6" dur="semiminima" dots="1"/>
+                                <note pname="c" oct="6" dur="fusa"/>                                
+                                <note pname="b" oct="5" dur="fusa">
+                                    <accid accid="s"/>  
+                                </note>
+                                <note pname="b" oct="5" dur="fusa"/>
+                                <barLine/>
+                                <note pname="c" oct="6" dur="minima" dots="1"/>
+                                <note pname="e" oct="5" dur="fusa"/>
+                                <note pname="e" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="e" oct="5" dur="semiminima"/>
+                                <note pname="e" oct="5" dur="fusa"/>
+                                <note pname="f" oct="5" dur="fusa"/>
+                                <beam>
+                                    <note pname="g" oct="5" dur="fusa" xml:id="N15"/>
+                                    <note pname="f" oct="5" dur="fusa"/>
+                                </beam>
+                                <note pname="e" oct="5" dur="semiminima" xml:id="N16"/>
+                                <slur startid="#N15" endid="#N16"/>
+                                <barLine/>
+                                <note pname="e" oct="5" dur="semiminima"/>
+                                <note pname="e" oct="5" dur="semiminima" dots="1"/>
+                                <note pname="f" oct="5" dur="fusa"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="c" oct="6" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <rest dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="minima"/>
+                                <barLine/>
+                                <custos pname="g" oct="5"/> <!-- TO-DO Realmente se indica la posición, no la nota -->
+                                <sb/>
+                                
+                                <!-- Pentagrama 6 -->
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <rest dur="semiminima"/>
+                                <rest dur="semiminima"/>
+                                <note pname="b" oct="5" dur="semiminima" xml:id="N17"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <rest dur="semiminima"/>
+                                <note pname="b" oct="5" dur="semiminima" xml:id="N18"/>
+                                <slur startid="#N17" endid="#N18"/> <!-- Forma tipo S -->
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <rest dur="semiminima"/>
+                                <note pname="f" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="minima" xml:id="N19"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="minima" xml:id="N20"/>
+                                <slur startid="#N19" endid="#N20"/> <!-- Forma tipo S -->
+                                <barLine/>                                
+                                <note pname="b" oct="5" dur="minima"/>
+                                <note pname="b" oct="5" dur="semiminima"/>
+                                <note pname="c" oct="6" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="b" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <rest dur="minima"/>
+                                <barLine/>
+                                <!--<multiRest dur.ges="semibrevis" num="1"/>-->
+                                <rest dur="semibrevis"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="g" oct="5" dur="fusa"/>
+                                <note pname="g" oct="5" dur="fusa"/>
+                                <note pname="a" oct="5" dur="fusa"/>
+                                <note pname="a" oct="5" dur="fusa"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="f" oct="5" dur="semiminima"/>
+                                <note pname="e" oct="5" dur="semiminima">
+                                    <accid accid="f"/>
+                                </note>
+                                <note pname="f" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <custos pname="e" oct="5"/> <!-- TO-DO Add flat -->
+                                <sb/> 
+                                
+                                <!-- Pentagrama 7 -->
+                                <note pname="e" oct="5" dur="semiminima">
+                                    <accid accid="f"/>
+                                </note>
+                                <note pname="d" oct="5" dur="semiminima"/>
+                                <rest dur="minima"/>
+                                <barLine/>
+                                <!--<multiRest dur.ges="semibrevis" num="1"/>-->
+                                <rest dur="semibrevis"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="fusa"/>
+                                <note pname="g" oct="5" dur="fusa"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <rest dur="minima"/>
+                                <barLine/>
+                                <note pname="f" oct="5" dur="fusa">
+                                    <accid accid="s"/>
+                                </note>
+                                <note pname="f" oct="5" dur="fusa"/>
+                                <note pname="f" oct="5" dur="fusa"/>
+                                <note pname="f" oct="5" dur="fusa"/>
+                                <note pname="f" oct="5" dur="fusa"/>
+                                <note pname="f" oct="5" dur="fusa"/>
+                                <note pname="f" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="b" oct="5" dur="semibrevis" xml:id="N21"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semibrevis" xml:id="N22"/>
+                                <barLine/>
+                                <slur startid="#N21" endid="#N22"/>
+                                <note pname="g" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="f" oct="5" dur="minima">
+                                    <accid accid="s"/>
+                                </note>
+                                <rest dur="minima"/>
+                                <!--<multiRest dur.ges="semibrevis" num="1"/>-->
+                                <rest dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="c" oct="6" dur="semiminima"/>
+                                <note pname="b" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="f" oct="5" dur="semiminima">
+                                    <accid accid="s"/>
+                                </note>
+                                <note pname="f" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="minima" xml:id="N23"/>
+                                <note pname="f" oct="5" dur="minima" xml:id="N24">
+                                    <accid accid="s"/>
+                                </note>
+                                <slur startid="#N23" endid="#N24"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="minima"/>
+                                <rest dur="minima"/>
+                                <barLine/>
+                                <!--<multiRest dur.ges="semibrevis" num="1"/>-->
+                                <rest dur="semibrevis"/>
+                                <barLine/>
+                                <custos pname="a" oct="5"/> <!-- Aquí parece que sí pinta la línea adicional -->
+                                <sb/>
+                                
+                                <!-- Pentagrama 8 -->
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="a" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="minima"/>
+                                <note pname="g" oct="5" dur="minima"/>
+                                <barLine/>
+                                <rest dur="semiminima"/> <!-- Interesante, parece un puntillo -->
+                                <note pname="g" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="minima"/>
+                                <rest dur="minima"/>
+                                <barLine/>
+                                <note pname="c" oct="6" dur="minima"/>
+                                <note pname="c" oct="6" dur="semiminima"/>
+                                <note pname="c" oct="6" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="c" oct="6" dur="minima"/>
+                                <note pname="b" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="b" oct="5" dur="semiminima" dots="1"/>
+                                <note pname="b" oct="5" dur="fusa"/>
+                                <note pname="a" oct="5" dur="minima"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="g" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semiminima" dots="1"/>
+                                <note pname="a" oct="5" dur="fusa"/>
+                                <note pname="g" oct="5" dur="minima"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="a" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="a" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <!--<multiRest dur.ges="semibrevis" num="1"/>-->
+                                <rest dur="semibrevis"/>
+                                <rest dur="semibrevis"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="d" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="e" oct="5" dur="semiminima" xml:id="N25"/>
+                                <note pname="f" oct="5" dur="semiminima"/>
+                                <note pname="g" oct="5" dur="semibrevis"/>
+                                <note pname="f" oct="5" dur="semibrevis"  xml:id="N26">
+                                    <accid accid="s"/>
+                                </note>
+                                <barLine/>
+                                <custos pname="g" oct="5"/>
+                                <slur startid="#N25" endid="#N26"/>
+                                <sb/>
+                                <!-- Pentagrama 9 -->
+                                <note pname="g" oct="5" dur="minima"/>
+                                <rest dur="minima"/>
+                                <barLine/>
+                                <!--<multiRest dur.ges="semibrevis" num="1"/>-->
+                                <rest dur="semibrevis"/>
+                                <rest dur="semibrevis"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="e" oct="5" dur="minima">
+                                    <accid accid="f"/>
+                                </note>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="e" oct="5" dur="minima">
+                                    <accid accid="f"/>
+                                </note>
+                                <note pname="e" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="f" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="f" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <note pname="f" oct="5" dur="semibrevis"/>
+                                <barLine/>
+                                <!--<multiRest dur.ges="semibrevis" num="1"/>-->
+                                <rest dur="semibrevis"/>
+                                <rest dur="semibrevis"/>
+                                <barLine/>
+                                <rest dur="minima"/>
+                                <note pname="e" oct="5" dur="minima">
+                                    <accid accid="f"/>
+                                </note>
+                                <note pname="d" oct="5" dur="semiminima"/>
+                                <note pname="c" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="b" oct="4" dur="minima">
+                                    <accid accid="s"/>
+                                </note>
+                                <note pname="c" oct="5" dur="semiminima"/>
+                                <note pname="d" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="e" oct="5" dur="minima">
+                                    <accid accid="f"/>
+                                </note>
+                                <note pname="d" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="d" oct="5" dur="minima"/>
+                                <note pname="d" oct="5" dur="semiminima"/>
+                                <note pname="d" oct="5" dur="semiminima"/>
+                                <barLine/>
+                                <note pname="e" oct="5" dur="semiminima" xml:id="N27"/>
+                                <note pname="g" oct="5" dur="semiminima" xml:id="N28"/>
+                                <slur startid="#N27" endid="#N28"/>
+                                <note pname="a" oct="5" dur="minima"/>
+                                <rest dur="minima"/>
+                                <note pname="g" oct="5" dur="minima"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="minima" xml:id="N29"/>
+                                <note pname="f" oct="5" dur="minima" xml:id="N30">
+                                    <accid accid="s"/>
+                                </note>
+                                <slur startid="#N29" endid="#N30"/>
+                                <barLine/>
+                                <note pname="g" oct="5" dur="semibrevis"/>
+                                <barLine /> <!-- TO-DO REPETITION BAR LINE-->
                             </layer>
                         </staff>
                     </section>
