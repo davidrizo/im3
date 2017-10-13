@@ -5,7 +5,7 @@ import es.ua.dlsi.im3.gui.command.ICommand;
 import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.interactive.OMRApp;
-import es.ua.dlsi.im3.omr.model.Symbol;
+import es.ua.dlsi.im3.omr.old.mensuraltagger.components.SymbolView;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.EventHandler;
@@ -31,7 +31,7 @@ public class StaffSymbolsInteraction<SymbolType> {
 
     public StaffSymbolsInteraction(OMRStaff<SymbolType> omrStaff, DoubleProperty symbolCompleteTimerValue) {
         this.omrStaff = omrStaff;
-        this.marksPane = omrStaff.getOmrController().getMarksPane();
+        this.marksPane = omrStaff.getOMRController().getMarksPane();
         enabled = true;
         drawing = false;
         this.symbolCompleteTimerValue = symbolCompleteTimerValue;
@@ -45,7 +45,6 @@ public class StaffSymbolsInteraction<SymbolType> {
                 if (enabled && omrStaff.contains(t.getX(), t.getY())) {
                     drawing = true;
                     startStroke();
-                    System.out.println("DRAW start " + t.getX());
                     beginDrawing(t.getX(), t.getY());
                 }
             }
@@ -56,7 +55,6 @@ public class StaffSymbolsInteraction<SymbolType> {
             public void handle(MouseEvent t) {
                 if (enabled && drawing && omrStaff.contains(t.getX(), t.getY())) {
                     if (t.isPrimaryButtonDown()) {
-                        System.out.println("DRAW go " + t.getX());
                         continueStroke(t.getX(), t.getY());
                     }
                 }
@@ -145,11 +143,11 @@ public class StaffSymbolsInteraction<SymbolType> {
 
     private void doSymbolComplete() {
         ICommand cmd = new ICommand() {
-            Symbol<SymbolType> symbol;
+            SymbolView<SymbolType> symbolView = null;
 
             @Override
             public void execute(IObservableTaskRunner observer) throws Exception {
-                symbol = omrStaff.newSymbolComplete();
+                symbolView = omrStaff.newSymbolComplete();
             }
 
             @Override
@@ -159,12 +157,12 @@ public class StaffSymbolsInteraction<SymbolType> {
 
             @Override
             public void undo() throws Exception {
-                omrStaff.removeSymbol(symbol);
+                omrStaff.removeSymbolView(symbolView);
             }
 
             @Override
             public void redo() throws Exception {
-                omrStaff.addSymbol(symbol);
+                omrStaff.addSymbolView(symbolView);
             }
 
             @Override
@@ -173,7 +171,7 @@ public class StaffSymbolsInteraction<SymbolType> {
             }
         };
         try {
-            omrStaff.getOmrController().getCommandManager().executeCommand(cmd);
+            omrStaff.getOMRController().getCommandManager().executeCommand(cmd);
         } catch (IM3Exception ex) {
             Logger.getLogger(StaffSymbolsInteraction.class.getName()).log(Level.SEVERE, null, ex);
             ShowError.show(OMRApp.getMainStage(), "Cannot complete symbol", ex);

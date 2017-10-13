@@ -64,6 +64,9 @@ public class OMRController implements Initializable {
     @FXML
     ToggleButton btnIdentifyStaves;
 
+    @FXML
+    KeyboardInteraction keyboardInteraction;
+
     CommandManager commandManager;
     ObjectProperty<OMRProject> project;
     PageInteraction interaction;
@@ -75,6 +78,8 @@ public class OMRController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        keyboardInteraction = new KeyboardInteraction(OMRApp.getMainStage().getScene());
+
         menuSave.disableProperty().bind(project.isNull());
         toolBar.disableProperty().bind(lvPages.getSelectionModel().selectedItemProperty().isNull());
         menuAddImage.disableProperty().bind(project.isNull());
@@ -257,7 +262,7 @@ public class OMRController implements Initializable {
     public void onStaffIdentified(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY) throws IM3Exception {
         OMRPage page = getSelectedPage();
         // we use the same pane for all marks, symbols, etc... to use absolute coordinates in all cases
-        OMRStaff staff = new OMRStaff(page, project.get().getScoreSong(), topLeftX, topLeftY, bottomRightX, bottomRightY);
+        OMRStaff staff = new OMRStaff(page, topLeftX, topLeftY, bottomRightX, bottomRightY);
         page.addStaff(staff);
         marksPane.getChildren().add(staff.getRoot());
         btnIdentifyStaves.setSelected(false);
@@ -278,4 +283,9 @@ public class OMRController implements Initializable {
     public Slider getSliderTimer() {
         return sliderTimer;
     }
+
+    public OMRProject getProject() {
+        return project.get();
+    }
+
 }

@@ -70,15 +70,26 @@ public abstract class ScoreLayout {
         for (Map.Entry<Staff, LayoutFont> layoutFontEntry: layoutFonts.entrySet()) {
             Staff staff = layoutFontEntry.getKey();
             LayoutFont layoutFont = layoutFontEntry.getValue();
-            Pictogram noteHead = new Pictogram("_NHWC_", getLayoutFont(staff), layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
-                    new Coordinate(new CoordinateComponent(0),
-                            new CoordinateComponent(0)
-                    ));
-            double noteHeadWidth = noteHead.getWidth();
-            noteHeads.put(staff, noteHead);
-            noteHeadWidths.put(staff, noteHeadWidth);
+
+            initWidths(staff, layoutFont);
         }
         createLayoutSymbols();
+    }
+
+    private void initWidths(Staff staff, LayoutFont layoutFont) throws IM3Exception {
+        Pictogram noteHead = new Pictogram("_NHWC_", layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
+                new Coordinate(new CoordinateComponent(0),
+                        new CoordinateComponent(0)
+                ));
+        double noteHeadWidth = noteHead.getWidth();
+        noteHeads.put(staff, noteHead);
+        noteHeadWidths.put(staff, noteHeadWidth);
+    }
+
+    public void addStaff(LayoutStaff layoutStaff, LayoutFont layoutFont) throws IM3Exception {
+        initWidths(layoutStaff.getStaff(), layoutFont);
+        layoutStaves.put(layoutStaff.getStaff(), layoutStaff);
+        layoutFonts.put(layoutStaff.getStaff(), layoutFont);
     }
 
     public ScoreLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
@@ -300,7 +311,7 @@ public abstract class ScoreLayout {
 
 
     public abstract void layout() throws IM3Exception;
-    public abstract List<Canvas> getCanvases();
+    public abstract Collection<Canvas> getCanvases();
 
     protected void addConnector(LayoutConnector connector) {
         this.connectors.add(connector);

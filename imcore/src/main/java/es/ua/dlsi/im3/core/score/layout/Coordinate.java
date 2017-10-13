@@ -28,6 +28,11 @@ public class Coordinate {
         }
     }
 
+    public Coordinate() {
+        this.x = new CoordinateComponent();
+        this.y = new CoordinateComponent();
+    }
+
     public CoordinateComponent getX() {
         return x;
     }

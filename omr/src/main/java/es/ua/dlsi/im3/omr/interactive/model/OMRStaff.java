@@ -3,7 +3,11 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.clefs.ClefC3;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.FontFactory;
+import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
@@ -16,22 +20,24 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class OMRStaff<SymbolType> {
     private final OMRPage page;
-    private List<Symbol<SymbolType>> symbols;
+    private List<SymbolView<SymbolType>> symbols;
     private Group root;
     private Rectangle boundingBox;
     private BooleanProperty selected;
-    private ScoreSong scoreSong;
     private Pentagram sourceStaff;
     private ScoreLayer sourceLayer;
     //private Pentagram transducedStaff;
@@ -39,10 +45,17 @@ public class OMRStaff<SymbolType> {
     private AnchorPane scoreViewPane;
     private StaffSymbolsInteraction staffSymbolsInteraction;
     private SymbolView<SymbolType> currentSymbolView;
+    /**
+     * Used for assigning different colors to successive symbols
+     */
+    private Color [] interleavingColors;
+    private LayoutStaff layoutStaff;
+    private ImitationLayout imitationLayout;
 
-    public OMRStaff(OMRPage page, ScoreSong scoreSong, double leftTopX, double leftTopY, double bottomRightX, double bottomRightY) throws IM3Exception {
+    public OMRStaff(OMRPage page, double leftTopX, double leftTopY, double bottomRightX, double bottomRightY) throws IM3Exception {
         this.page = page;
-        this.scoreSong = scoreSong;
+        symbols = new ArrayList<>();
+        interleavingColors = new Color [] {Color.BLUE, Color.GREEN};
 
         root = new Group();
         selected = new SimpleBooleanProperty(false);
@@ -50,10 +63,10 @@ public class OMRStaff<SymbolType> {
         createControls(leftTopX, leftTopY, bottomRightX, bottomRightY);
 
         createScoreSongStaff();
-        createScoreView();
 
         staffSymbolsInteraction = new StaffSymbolsInteraction(this, page.getOMRController().getSliderTimer().valueProperty());
 
+        // when staff is disabled it does not receive interaction
         selected.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -68,7 +81,7 @@ public class OMRStaff<SymbolType> {
         toggleSelected(); // activate and notify parent page to hide other staves
     }
 
-    public OMRController getOmrController() {
+    public OMRController getOMRController() {
         return page.getOMRController();
     }
 
@@ -160,7 +173,7 @@ public class OMRStaff<SymbolType> {
         return page;
     }
 
-    public List<Symbol<SymbolType>> getSymbols() {
+    public List<SymbolView<SymbolType>> getSymbols() {
         return symbols;
     }
 
@@ -174,12 +187,24 @@ public class OMRStaff<SymbolType> {
 
     // TODO: 11/10/17 Tipos de staff
     private void createScoreSongStaff() throws IM3Exception {
-        sourceStaff = new Pentagram(scoreSong, "1", 1); //TODO
+        ScoreSong scoreSong = page.getOMRProject().getScoreSong();
+        int staffNumber = scoreSong.getStaves().size()+1;
+        sourceStaff = new Pentagram(scoreSong, Integer.toString(staffNumber), staffNumber);
         sourceStaff.setNotationType(NotationType.eMensural); //TODO
         scoreSong.addStaff(sourceStaff);
         ScorePart part = scoreSong.addPart();
         part.addStaff(sourceStaff);
         sourceLayer = part.addScoreLayer(sourceStaff);
+        ScoreSongView scoreSongView = page.getOMRProject().getScoreSongView();
+        imitationLayout = page.getOMRProject().getImitationLayout();
+        layoutStaff = imitationLayout.createLayoutStaff(sourceStaff, boundingBox.getWidth(), boundingBox.getHeight(), FontFactory.getInstance().getFont(LayoutFonts.capitan)); //TODO
+
+        Node layoutStaffNode = layoutStaff.getGraphics().getJavaFXRoot();
+        scoreViewPane.getChildren().add(0, layoutStaffNode); // add to back to keep interaction triangle visible
+        AnchorPane.setLeftAnchor(layoutStaffNode, 0.0);
+        AnchorPane.setRightAnchor(layoutStaffNode, 0.0);
+        AnchorPane.setTopAnchor(layoutStaffNode, 30.0); //TODO
+        AnchorPane.setBottomAnchor(layoutStaffNode, 0.0);
 
         /*transducedStaff = new Pentagram(scoreSong, "2", 2); //TODO
         transducedStaff.setNotationType(NotationType.eModern); 
@@ -192,26 +217,8 @@ public class OMRStaff<SymbolType> {
         //sourceStaff.addClef(new ClefG2());
     }
 
-    private void createScoreView() throws IM3Exception {
-        HashMap<Staff, LayoutFonts> layoutFontsHashMap = new HashMap<>();
-        layoutFontsHashMap.put(sourceStaff, LayoutFonts.capitan);
-        //layoutFontsHashMap.put(transducedStaff, LayoutFonts.bravura);
-        ImitationLayout imitationLayout = new ImitationLayout(scoreSong, layoutFontsHashMap,
-                new CoordinateComponent(this.boundingBox.widthProperty().getValue()),
-                        new CoordinateComponent(this.boundingBox.heightProperty().getValue()));
-
-        ScoreSongView scoreSongView = new ScoreSongView(scoreSong, imitationLayout);
-        scoreViewPane.getChildren().add(0, scoreSongView.getMainPanel()); // add to back to keep interaction triangle visible
-        AnchorPane.setLeftAnchor(scoreSongView.getMainPanel(), 0.0);
-        AnchorPane.setRightAnchor(scoreSongView.getMainPanel(), 0.0);
-        AnchorPane.setTopAnchor(scoreSongView.getMainPanel(), 0.0);
-        AnchorPane.setBottomAnchor(scoreSongView.getMainPanel(), 0.0);
-    }
-
     public boolean contains(double x, double y) {
-        //return boundingBox.contains(x, y);
-        // FIXME: 12/10/17
-        return true;
+        return boundingBox.contains(x, y);
     }
 
     public SymbolView<SymbolType> getCurrentSymbolView() {
@@ -219,25 +226,36 @@ public class OMRStaff<SymbolType> {
     }
 
     public void createNewSymbol() throws IM3Exception {
-        // FIXME: 12/10/17
         Symbol<SymbolType> symbol = new Symbol<>(page.getBufferedImage());
-        currentSymbolView = new SymbolView<>(symbol, Color.BLUE); // TODO Intercalarlos
+        currentSymbolView = new SymbolView<>(symbol, interleavingColors[root.getChildren().size() % 2]);
         root.getChildren().add(currentSymbolView);
         //currentSymbolView =
     }
 
-    public Symbol<SymbolType> newSymbolComplete() throws IM3Exception {
-        // FIXME: 12/10/17
-        return currentSymbolView.getSymbol();
+    public SymbolView<SymbolType> newSymbolComplete() throws IM3Exception {
+        SymbolView<SymbolType> result = currentSymbolView;
+        this.symbols.add(currentSymbolView);
+        identifySymbol(currentSymbolView);
+        currentSymbolView = null;
+        return result;
     }
 
-    public void addSymbol(Symbol<SymbolType> symbol) {
-        // FIXME: 12/10/17
-        //currentSymbolView =
+    private void identifySymbol(SymbolView<SymbolType> currentSymbolView) throws IM3Exception {
+        //TODO
+        ClefC3 clefC3 = new ClefC3();
+        sourceStaff.addClef(clefC3);
+        LayoutCoreSymbol coreSymbol = imitationLayout.createAndAddSymbol(clefC3, layoutStaff);
+
+        scoreViewPane.getChildren().add(coreSymbol.getGraphics().getJavaFXRoot());         // FIXME: 13/10/17 Quitar esto
+
+
     }
 
-    public void removeSymbol(Symbol<SymbolType> symbol) {
-        // FIXME: 12/10/17
-        //currentSymbolView =
+    public void addSymbolView(SymbolView<SymbolType> symbol) {
+        this.symbols.add(currentSymbolView);
+    }
+
+    public void removeSymbolView(SymbolView<SymbolType> symbol) {
+        this.symbols.remove(currentSymbolView);
     }
 }

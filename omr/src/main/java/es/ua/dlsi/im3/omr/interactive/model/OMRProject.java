@@ -3,7 +3,10 @@ package es.ua.dlsi.im3.omr.interactive.model;
 import com.thoughtworks.xstream.XStream;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
@@ -17,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class OMRProject {
@@ -30,6 +34,8 @@ public class OMRProject {
     File xmlFile;
     ScoreSong scoreSong;
     OMRController omrController;
+    private ImitationLayout imitationLayout;
+    private ScoreSongView scoreSongView;
 
     public OMRProject(File projectFolder, OMRController controller) throws IM3Exception {
         pagesProperty = FXCollections.observableArrayList();
@@ -44,6 +50,13 @@ public class OMRProject {
 
         // FIXME: 11/10/17 Esto debe ser interactivo
         scoreSong = new ScoreSong(new BinaryDurationEvaluator(new Time(2)));
+        createScoreView();
+    }
+
+    private void createScoreView() throws IM3Exception {
+        //TODO Fonts
+        imitationLayout = new ImitationLayout(scoreSong, LayoutFonts.capitan);
+        scoreSongView = new ScoreSongView(scoreSong, imitationLayout);
     }
 
     public void addPage(File file) throws IM3Exception {
@@ -95,5 +108,13 @@ public class OMRProject {
 
     public OMRController getOMRController() {
         return omrController;
+    }
+
+    public ScoreSongView getScoreSongView() {
+        return scoreSongView;
+    }
+
+    public ImitationLayout getImitationLayout() {
+        return imitationLayout;
     }
 }

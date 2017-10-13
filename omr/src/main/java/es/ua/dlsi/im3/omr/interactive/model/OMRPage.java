@@ -76,7 +76,7 @@ public class OMRPage {
     }
 
     public void addStaff(ToggleGroup staffToggleGroup, int leftTopX, int leftTopY, int bottomRightX, int bottomRightY) throws IM3Exception {
-        OMRStaff staff = new OMRStaff(this, scoreSong, leftTopX, leftTopY, bottomRightX, bottomRightY);
+        OMRStaff staff = new OMRStaff(this, leftTopX, leftTopY, bottomRightX, bottomRightY);
         staves.add(staff);
     }
 
@@ -121,5 +121,9 @@ public class OMRPage {
 
     public BufferedImage getBufferedImage() {
         return bufferedImage;
+    }
+
+    public OMRProject getOMRProject() {
+        return omrProject;
     }
 }

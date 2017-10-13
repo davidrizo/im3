@@ -87,7 +87,8 @@ public class SVGExporter implements IGraphicsExporter {
             throw new ExportException("Cannot export " + layout.getCanvases().size() + " canvases to SVG");
         }
         try (Writer w = new OutputStreamWriter(os, "UTF-8")) {
-            w.write(exportLayout(layout.getCanvases().get(0), layout));
+            //TODO Sólo saca el primer canvas
+            w.write(exportLayout(layout.getCanvases().iterator().next(), layout));
         } // or w.close(); //close will auto-flush    }
         catch (Exception e) {
             throw new ExportException(e);
@@ -103,7 +104,8 @@ public class SVGExporter implements IGraphicsExporter {
             BufferedWriter out = null;
             try {
                 out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
-                out.write(exportLayout(layout.getCanvases().get(0), layout));
+                //TODO Sólo saca el primer canvas
+                out.write(exportLayout(layout.getCanvases().iterator().next(), layout));
                 out.close();
             } catch (Exception e) {
                 throw new ExportException(e);
