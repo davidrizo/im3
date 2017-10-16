@@ -516,7 +516,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					//updateTimesGivenMeasure();
 					Time markTime = getCurrentTime();
 					MarkBarline barline = new MarkBarline(markTime);
-					lastStaff.addCoreSymbol(barline);
+					lastStaff.addMarkBarline(barline);
 					break;
 				case "staff":
 					/*if (updateMeasure) {

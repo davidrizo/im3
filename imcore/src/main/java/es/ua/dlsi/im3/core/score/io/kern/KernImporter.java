@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.harmony.*;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.io.ImportException;
@@ -111,6 +112,7 @@ public class KernImporter implements IScoreSongImporter {
         private Measure lastMeasure = null;
         private Key lastHarmKey;
         private boolean kernSpineFound = false;
+        private boolean eofReached = false;
 
         TreeSet<Integer> nonTupletDurations = new TreeSet<>(); // faster than a math op
 
@@ -1081,7 +1083,7 @@ public class KernImporter implements IScoreSongImporter {
                                 "Pause found");
                         //TODO 2017 sn.setFermata(true);
                     }*/
-                    Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
+                    Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
                             "Score note added {0}", sn.toString());
 
                     //TODO Root spine
@@ -1368,50 +1370,66 @@ public class KernImporter implements IScoreSongImporter {
             // only process last spine barline
             Time currentTime = getLastTime();
 
-            //System.out.println("exitBarLine: " + ctx.getText() + ", spine " + currentSpineIndex + ", currentTime " + currentTime + ", measureInserted " + measureInserted);
-            if (kernSpineFound && scoreSong != null && !measureInserted && lastTime != null) {
-                measureInserted = true;
-                int barNumber;
-                if (ctx.NUMBER() == null) {
+            Staff staff = null;
+            try {
+                staff = getStaff(currentSpineIndex);
+            } catch (IM3Exception e) {
+                throw new GrammarParseRuntimeException(e);
+            }
+
+            if (staff.getNotationType() == NotationType.eMensural) {
+                MarkBarline markBarline = new MarkBarline(currentTime);
+                try {
+                    staff.addMarkBarline(markBarline);
+                } catch (IM3Exception e) {
+                    throw new GrammarParseRuntimeException(e);
+                }
+            } else {
+                //System.out.println("exitBarLine: " + ctx.getText() + ", spine " + currentSpineIndex + ", currentTime " + currentTime + ", measureInserted " + measureInserted);
+                if (kernSpineFound && scoreSong != null && !measureInserted && lastTime != null) {
+                    measureInserted = true;
+                    int barNumber;
+                    if (ctx.NUMBER() == null) {
+                        try {
+                            barNumber = scoreSong.getMeaureCount() + 1;
+                            Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
+                                    "Barline without number, assigning {0}", barNumber);
+                        } catch (IM3Exception ex) {
+                            Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new GrammarParseRuntimeException(ex);
+                        }
+                    } else {
+                        barNumber = new Integer(ctx.NUMBER().getText());
+                        Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Barline with number {0}",
+                                barNumber);
+                    }
                     try {
-                        barNumber = scoreSong.getMeaureCount() + 1;
-                        Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
-                                "Barline without number, assigning {0}", barNumber);
-                    } catch (IM3Exception ex) {
-                        Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
+                        if (lastMeasure != null) {
+                            lastMeasure.setEndTime(lastTime);
+                        }
+
+                        if (lastMeasure == null && !lastTime.isZero()) { // probably this will be an anacrusis
+                            lastMeasure = new Measure(scoreSong, 0);
+                            scoreSong.addMeasure(Time.TIME_ZERO, lastMeasure);
+                            lastMeasure.setEndTime(lastTime);
+                        }
+
+                        currentMeasure = new Measure(scoreSong, barNumber);
+                        scoreSong.addMeasure(lastTime, currentMeasure);
+
+                        /*TimeSignature ts = currentTimeSignature();
+                        if (ts instanceof ITimeSignatureWithDuration) {
+                            Time measureDuration = ((ITimeSignatureWithDuration) ts).getMeasureDuration();
+                            currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
+                        } else {
+                            throw new ImportException("Cannot infer the measure duration with a time signature without duration (" + ts + ") at measure " + currentMeasure);
+                        }*/
+
+                        lastMeasure = currentMeasure;
+                    } catch (Exception ex) {
+                        Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, "Error creating measure " + barNumber, ex);
                         throw new GrammarParseRuntimeException(ex);
                     }
-                } else {
-                    barNumber = new Integer(ctx.NUMBER().getText());
-                    Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Barline with number {0}",
-                            barNumber);
-                }
-                try {
-                    if (lastMeasure != null) {
-                        lastMeasure.setEndTime(lastTime);
-                    }
-
-                    if (lastMeasure == null && !lastTime.isZero()) { // probably this will be an anacrusis
-                        lastMeasure = new Measure(scoreSong, 0);
-                        scoreSong.addMeasure(Time.TIME_ZERO, lastMeasure);
-                        lastMeasure.setEndTime(lastTime);
-                    }
-
-                    currentMeasure = new Measure(scoreSong, barNumber);
-                    scoreSong.addMeasure(lastTime, currentMeasure);
-
-                    /*TimeSignature ts = currentTimeSignature();
-                    if (ts instanceof ITimeSignatureWithDuration) {
-                        Time measureDuration = ((ITimeSignatureWithDuration) ts).getMeasureDuration();
-                        currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
-                    } else {
-                        throw new ImportException("Cannot infer the measure duration with a time signature without duration (" + ts + ") at measure " + currentMeasure);
-                    }*/
-
-                    lastMeasure = currentMeasure;
-                } catch (Exception ex) {
-                    Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, "Error creating measure " + barNumber, ex);
-                    throw new GrammarParseRuntimeException(ex);
                 }
             }
         }
@@ -1740,6 +1758,12 @@ public class KernImporter implements IScoreSongImporter {
                     throw new GrammarParseRuntimeException("Unknown alteration: " + ctx.getText());
             }
         }
+
+        @Override
+        public void exitEndOfFile(kernParser.EndOfFileContext ctx) {
+            super.exitEndOfFile(ctx);
+            this.eofReached = true;
+        }
     }
 
     private void postProcess(ScoreSong scoreSong) throws IM3Exception, ImportException {
@@ -1814,6 +1838,10 @@ public class KernImporter implements IScoreSongImporter {
                 throw new ImportException(errorListener.getNumberErrorsFound() + " errors found in "
                         + file.getAbsolutePath() + "\n" + errorListener.toString());
             }
+
+            if (!loader.eofReached) {
+                throw new ImportException("The end of file has not been reached");
+            }
             // return song;
 
             // loader.setRootNotesToHarmonies();
@@ -1844,10 +1872,7 @@ public class KernImporter implements IScoreSongImporter {
             //}
             return song;
         } catch (Throwable e) {
-            // TODO Logs
-            // TODO Logs
             e.printStackTrace();
-
             Logger.getLogger(KernImporter.class.getName()).log(Level.WARNING, "Import error {0}", e.getMessage());
             for (ParseError pe : errorListener.getErrors()) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.WARNING, "Parse error: {0}", pe.toString());

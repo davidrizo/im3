@@ -19,6 +19,7 @@ import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.ISongExporter;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.io.kern.HarmExporter;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
@@ -740,6 +741,9 @@ public class MEISongExporter implements ISongExporter {
 							staffSymbols.add(ks); // the first one is exported in staffDef or scoreDef
 						}
 					}
+					for (MarkBarline markBarline: staff.getMarkBarLines()) {
+                        staffSymbols.add(markBarline);
+                    }
 					
 					XMLExporterHelper.start(sb, tabs, "staff", "n", getNumber(staff));
 					for (ScoreLayer layer: staff.getLayers()) {
@@ -765,7 +769,9 @@ public class MEISongExporter implements ISongExporter {
 							} else if (slr instanceof KeySignature) {
 								throw new UnsupportedOperationException("TO-DO Key change");
 							} else if (slr instanceof Atom) {
-								processAtom(tabs+2, (Atom) slr, staff);								
+                                processAtom(tabs + 2, (Atom) slr, staff);
+                            } else if (slr instanceof MarkBarline) {
+							    processBarLine(sb, tabs+2, (MarkBarline)slr, staff);
 							} else {
 								throw new ExportException("Unsupported symbol type for export: '" + slr.getClass() + "'");
 							}
@@ -781,8 +787,12 @@ public class MEISongExporter implements ISongExporter {
 		}
 	}
 
+    private void processBarLine(StringBuilder sb, int tabs, MarkBarline slr, Staff staff) {
+        XMLExporterHelper.startEnd(sb, tabs, "barLine");
+    }
 
-	private void processTimeSignature(int tabs, TimeSignature timeSignature) {
+
+    private void processTimeSignature(int tabs, TimeSignature timeSignature) {
 		if (timeSignature instanceof TimeSignatureMensural) {
 			ArrayList<String> params = new ArrayList<>();
 			processMensuralTimeSignature(timeSignature, params);

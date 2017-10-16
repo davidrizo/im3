@@ -231,7 +231,7 @@ public class KernExporter {
             }
 
             ArrayList<String> [] clefKsTsRecords = new ArrayList [5];
-            for (int i=0; i<5; i++) {
+            for (int i=0; i<clefKsTsRecords.length; i++) {
                 clefKsTsRecords[i] = new ArrayList<>();
             }
             ArrayList<String> record = new ArrayList<>();
@@ -271,7 +271,11 @@ public class KernExporter {
                     if (measureStr != null) {
                         clefKsTsRecords[4].add(measureStr);
                     } else {
-                        clefKsTsRecords[4].add(NOTHING);
+                        if (staff.getMarkBarLineWithOnset(time) != null) {
+                            clefKsTsRecords[4].add("=");
+                        } else {
+                            clefKsTsRecords[4].add(NOTHING);
+                        }
                     }
 
                     Atom atom = layer.getAtomExpandedWithOnset(time);

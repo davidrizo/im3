@@ -9,7 +9,9 @@ import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import org.apache.commons.lang3.math.Fraction;
 import org.junit.Test;
 
@@ -48,6 +50,14 @@ public class MensuralKernTest {
             ScoreSong importedSong = importKern(file);
             validationFunction.apply(importedSong);
         }
+
+        File file2 = TestFileUtils.createTempFile("aa.mei");
+        MEISongExporter meiSongExporter = new MEISongExporter();
+        meiSongExporter.exportSong(file2, song);
+        if (testExportImport) {
+            ScoreSong importedSong = importMEI(file2);
+            validationFunction.apply(importedSong);
+        }
     }
 
     // ------------------------------------------------------------------------------------------
@@ -64,6 +74,15 @@ public class MensuralKernTest {
             assertTrue("First note duration", note1.getAtomFigure().getFigure() == Figures.MINIM);
             assertEquals("First note pitch octave", 5, note1.getPitch().getOctave());
             assertEquals("First note pitch class", PitchClasses.D.getPitchClass(), note1.getPitch().getPitchClass());
+
+            assertEquals("Staves", 1, song.getStaves().size());
+            Staff staff = song.getStaves().get(0);
+            List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
+            assertTrue(symbols.get(0) instanceof Clef);
+            assertTrue(symbols.get(3) instanceof SimpleRest);
+            assertTrue(symbols.get(4) instanceof SimpleNote);
+            assertTrue(symbols.get(5) instanceof MarkBarline);
+            assertTrue(symbols.get(6) instanceof SimpleNote);
         } catch (Throwable t) {
             t.printStackTrace();
             fail(t.toString());
@@ -77,4 +96,31 @@ public class MensuralKernTest {
         doTest(MensuralKernTest::assertPatriarca1, importMEI(TestFileUtils.getFile("/testdata/core/score/layout/patriarca/16-1544_ES-VC_1-3-1_00003.mei")));
         //doTest(MensuralKernTest::assertPatriarca1, importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/guide02-example2-1.krn")));
     }
+
+    // ------------------------------------------------------------------------------------------
+    private static Void assertPatriarca2(ScoreSong song) {
+        try {
+            ScorePart part1 = song.getParts().get(0);
+
+            assertEquals("Staves", 1, song.getStaves().size());
+            Staff staff = song.getStaves().get(0);
+            List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
+            assertTrue(symbols.get(0) instanceof Clef);
+            assertTrue(symbols.get(3) instanceof SimpleRest);
+            assertTrue(symbols.get(4) instanceof SimpleRest);
+            assertTrue(symbols.get(5) instanceof MarkBarline);
+            assertTrue(symbols.get(6) instanceof SimpleRest);
+            assertTrue(symbols.get(7) instanceof SimpleNote);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail(t.toString());
+        }
+        return null;
+    }
+
+    @Test
+    public void testPatriarca2() throws Exception {
+        doTest(MensuralKernTest::assertPatriarca2, importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/mensural_binary.krn")));
+    }
+
 }

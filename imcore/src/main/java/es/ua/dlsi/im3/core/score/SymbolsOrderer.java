@@ -22,6 +22,7 @@ import java.util.List;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 
 /**
  * It orders symbols according to its time and the kind of symbol, e.g. clef
@@ -31,14 +32,16 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
  */
 public class SymbolsOrderer {
 	private static int getClassOrder(ITimedElement o) {
-		if (o instanceof Clef) {
+        if (o instanceof MarkBarline) {
+            return 1;
+        } else if (o instanceof Clef) {
 			return 2;
 		} else if (o instanceof KeySignature) {
 			return 3;
 		} else if (o instanceof TimeSignature) {
 			return 4;
 		} else if (o instanceof StaffTimedPlaceHolder) {
-				return 5;
+            return 5;
 		} else {
 			return 6;
 		}

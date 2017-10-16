@@ -20,7 +20,7 @@ import java.util.*;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 
 /**
  * It is just a visual holder for elements. The note, chord and rest sequences are stored in ScoreLayer,
@@ -50,6 +50,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 * different staves with different time signatures (e.g. Douce/Garison, Philippe de Vitry) 
 	 */
 	TreeMap<Time, TimeSignature> timeSignatures;
+    TreeMap<Time, MarkBarline> markBarlines;
 	
 	/**
 	 * Notes, rests, chords, time signatures, instrumentKey signatures, clefs, barlines 
@@ -107,6 +108,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		this.clefs = new TreeMap<>();
 		this.timeSignatures = new TreeMap<>();
 		this.keySignatures = new TreeMap<>();
+		this.markBarlines = new TreeMap<>();
 	}
 
 	// ----------------------------------------------------------------------
@@ -228,6 +230,10 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return this.keySignatures.values();
 	}
 
+    public Collection<MarkBarline> getMarkBarLines() {
+        return this.markBarlines.values();
+    }
+
 	/**
 	 * @param time
 	 * @return null if none
@@ -243,6 +249,16 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	public TimeSignature getTimeSignatureWithOnset(Time time) {
 		return this.timeSignatures.get(time);
 	}
+
+    /**
+     * @param time
+     * @return null if none
+     */
+    public MarkBarline getMarkBarLineWithOnset(Time time) {
+        return this.markBarlines.get(time);
+    }
+
+
 
 	/**
 	 * @param time
@@ -353,6 +369,21 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		this.coreSymbols.add(ts);
 		ts.setStaff(this);
 	}
+
+    public void addMarkBarline(MarkBarline ts) throws IM3Exception {
+        MarkBarline prev = markBarlines.get(ts.getTime());
+        if (prev != null) {
+            if (prev.equals(ts)) {
+                throw new IM3Exception("Inserting twice the same mark bar line " + ts);
+            } else {
+                this.coreSymbols.remove(prev);
+            }
+        }
+        this.markBarlines.put(ts.getTime(), ts);
+        this.coreSymbols.add(ts);
+        ts.setStaff(this);
+    }
+
 
 	// ----------------------------------------------------------------------
 	// ----------------------- Notation symbols --------------------------------

@@ -20,7 +20,9 @@ https://stackoverflow.com/questions/28873463/no-context-sensitivity-in-antlr4
     }
 }
 
-song: (METADATACOMMENT EOL)* header (EOL record)+ EOL?;
+song: (METADATACOMMENT EOL)* header (EOL record)+ EOL? endOfFile;
+
+endOfFile: EOF;
 
 //TODO Comentarios de varias líneas en la cabecera, mejor hacer como los comentarios de java, quitarlos en el lexico
 
