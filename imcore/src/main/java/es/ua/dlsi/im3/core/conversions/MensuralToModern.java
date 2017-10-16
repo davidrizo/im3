@@ -7,6 +7,9 @@ import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MensuralToModern {
     private KeySignature activeKeySignature;
     private TimeSignature activeTimeSignature;
@@ -15,7 +18,6 @@ public class MensuralToModern {
 
 
     /**
-     * It creates a modern version of the mensural song
      * @param mensural
      * @return
      */
@@ -44,7 +46,8 @@ public class MensuralToModern {
             modernSong.addStaff(modernPentagram);
             ScoreLayer modernLayer = modernPart.addScoreLayer(modernPentagram);
 
-            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer);
+            // TODO: 16/10/17 Que se calcule en función de la teoría musical 
+            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer, Intervals.FOURTH_PERFECT_DESC.createInterval());
         }
         return modernSong;
     }
@@ -58,7 +61,7 @@ public class MensuralToModern {
      * @param modernLayer
      * @throws IM3Exception
      */
-    public void convertIntoStaff(Staff mensuralStaff, Staff modernStaff, ScoreLayer modernLayer) throws IM3Exception {
+    public void convertIntoStaff(Staff mensuralStaff, Staff modernStaff, ScoreLayer modernLayer, Interval transposition) throws IM3Exception {
         modernStaff.clear();
         modernLayer.clear();
 
@@ -66,22 +69,24 @@ public class MensuralToModern {
         activeKeySignature = null;
         pendingMensureDuration = null;
         currentMeasure = new Measure(modernStaff.getScoreSong());
-        modernStaff.getScoreSong().addMeasure(Time.TIME_ZERO, currentMeasure);
+        if (modernStaff.getScoreSong().getMeasureWithOnset(Time.TIME_ZERO) == null) {
+            modernStaff.getScoreSong().addMeasure(Time.TIME_ZERO, currentMeasure);
+        }
 
         for (ITimedElementInStaff symbol: mensuralStaff.getCoreSymbolsOrdered()) {
             if (symbol instanceof Clef) {
-                modernStaff.addClef(convert((Clef) symbol));
+                modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertimos las claves?
             } else if (symbol instanceof TimeSignature) {
                 activeTimeSignature = convert((TimeSignature) symbol);
                 pendingMensureDuration = activeTimeSignature.getDuration();
                 modernStaff.addTimeSignature(activeTimeSignature);
             } else if (symbol instanceof KeySignature) {
-                activeKeySignature = convert((KeySignature) symbol);
+                activeKeySignature = convert((KeySignature) symbol, transposition);
                 modernStaff.addKeySignature(activeKeySignature);
             } else if (symbol instanceof MarkBarline) {
                 convert(modernStaff, modernLayer, (MarkBarline) symbol);
             } else if (symbol instanceof Atom) {
-                convert(modernStaff, modernLayer, (Atom) symbol);
+                convert(modernStaff, modernLayer, (Atom) symbol, transposition);
             } else {
                 throw new IM3Exception("Unsupported conversion of " + symbol.getClass());
             }
@@ -109,9 +114,10 @@ public class MensuralToModern {
         // TODO: 6/10/17 No estoy tratándolo
     }
 
-    private KeySignature convert(KeySignature symbol) throws IM3Exception {
+    private KeySignature convert(KeySignature symbol, Interval transposition) throws IM3Exception {
         // TODO: 6/10/17 ¿Cómo convertimos? ¿Qué transposición?
-        Key modernKey = new Key(symbol.getInstrumentKey().getPitchClass(), symbol.getInstrumentKey().getMode());
+        PitchClass newPitch = transposition.computePitchClassFrom(symbol.getInstrumentKey().getPitchClass());
+        Key modernKey = new Key(newPitch, symbol.getInstrumentKey().getMode());
         KeySignature keySignature = new KeySignature(NotationType.eModern, modernKey);
         return keySignature;
     }
@@ -135,7 +141,7 @@ public class MensuralToModern {
     }
 
     // TODO: 6/10/17 Ligatures....
-    private void convert(Staff modernStaff, ScoreLayer modernLayer, Atom atom) throws IM3Exception {
+    private void convert(Staff modernStaff, ScoreLayer modernLayer, Atom atom, Interval transposition) throws IM3Exception {
         if (!(atom instanceof SingleFigureAtom)) {
             throw new IM3Exception("Unsupported atom type " + atom.getClass());
         }
@@ -146,52 +152,117 @@ public class MensuralToModern {
         //Figures figure = singleFigureAtom.getAtomFigure().getFigure();
         Time pendingDuration = singleFigureAtom.getAtomFigure().getDuration();
 
+        modernLayer.setDurationEvaluator(new DurationEvaluator()); // it does not use the evaluator of the MensuralSong
+
         // TODO: 6/10/17 ¿Puede cambiar el compás por enmedio?
         AtomPitch lastAtomPitch = null;
         while (!pendingDuration.isZero()) {
             if (pendingMensureDuration.isNegative()) {
                 throw new IM3RuntimeException("Cannot have a negative pending measure duration: " + pendingMensureDuration);
             }
-            Time outputFigureDuration = Time.min(pendingMensureDuration, pendingDuration);
-            RhythmUtils.FigureAndDots outputFigureAndDots = RhythmUtils.findRhythmForDuration(NotationType.eModern, outputFigureDuration);
-
-            SingleFigureAtom outputAtom = null;
-            if (singleFigureAtom instanceof SimpleRest) {
-                outputAtom = new SimpleRest(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots());
-            } else if (singleFigureAtom instanceof SimpleNote) {
-                SimpleNote note = new SimpleNote(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots(),
-                        convertPitch(((SimpleNote)singleFigureAtom).getPitch()));
-                outputAtom = note;
-
-                if (lastAtomPitch != null) {
-                    lastAtomPitch.setTiedToNext(note.getAtomPitch());
-                }
-
-                lastAtomPitch = note.getAtomPitch();
-            } else {
-                throw new IM3Exception("Unsupported single figure atom type: " + singleFigureAtom.getClass());
+            if (pendingMensureDuration.isNegative()) {
+                throw new IM3RuntimeException("Cannot have a negative pending duration: " + pendingDuration);
             }
-            modernLayer.setDurationEvaluator(new DurationEvaluator()); // it does not use the evaluator of the MensuralSong
-            modernLayer.add(outputAtom);
-            modernStaff.addCoreSymbol(outputAtom);
+
+            Time outputFigureDuration = Time.min(pendingMensureDuration, pendingDuration);
+            List<RhythmUtils.FigureAndDots> outputFiguresAndDots;
+            try {
+                outputFiguresAndDots = RhythmUtils.findRhythmForDuration(NotationType.eModern, outputFigureDuration);
+            } catch (IM3Exception e) {
+                throw new IM3Exception("Error translating pending duration " + pendingDuration + " for figure " + singleFigureAtom, e);
+            }
+
+            SimpleNote prevNote = null;
+            for (RhythmUtils.FigureAndDots outputFigureAndDots: outputFiguresAndDots) {
+                SingleFigureAtom outputAtom = null;
+                if (singleFigureAtom instanceof SimpleRest) {
+                    outputAtom = new SimpleRest(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots());
+                } else if (singleFigureAtom instanceof SimpleNote) {
+                    SimpleNote note = new SimpleNote(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots(),
+                            convertPitch(((SimpleNote)singleFigureAtom).getPitch(), transposition));
+                    outputAtom = note;
+
+                    if (lastAtomPitch != null) {
+                        lastAtomPitch.setTiedToNext(note.getAtomPitch());
+                    }
+
+                    lastAtomPitch = note.getAtomPitch();
+
+                    if (prevNote != null) {
+                        note.getAtomPitch().setTiedFromPrevious(prevNote.getAtomPitch());
+                    }
+                    prevNote = note;
+                } else {
+                    throw new IM3Exception("Unsupported single figure atom type: " + singleFigureAtom.getClass());
+                }
+                modernLayer.add(outputAtom);
+                modernStaff.addCoreSymbol(outputAtom);
+            }
             pendingDuration = pendingDuration.substract(outputFigureDuration);
             pendingMensureDuration = pendingMensureDuration.substract(outputFigureDuration);
+
             if (pendingMensureDuration.isZero()) {
                 Time time = modernLayer.getDuration();
-                currentMeasure.setEndTime(time);
-                currentMeasure = new Measure(modernStaff.getScoreSong());
-                modernStaff.getScoreSong().addMeasure(time, currentMeasure);
+                if (modernStaff.getScoreSong().getMeasureWithOnset(time) == null) {
+                    currentMeasure.setEndTime(time);
+                    currentMeasure = new Measure(modernStaff.getScoreSong());
+                    modernStaff.getScoreSong().addMeasure(time, currentMeasure);
+                }
                 pendingMensureDuration = activeTimeSignature.getDuration();
             }
         }
     }
 
-    private ScientificPitch convertPitch(ScientificPitch pitch) {
+    private ScientificPitch convertPitch(ScientificPitch pitch, Interval transposition) throws IM3Exception {
         // TODO: 6/10/17 Conversión de altura - ¿qué transposición?
         // Usamos activeKeySignature - quizás deberíamos guardar también la activa del origen
-        ScientificPitch modern = pitch.clone();
+        ScientificPitch modern = transposition.computeScientificPitchFrom(pitch);
         return modern;
     }
 
+    /**
+     * It adds the staves of song2 into song1. If alternate is true it alternates song1 staves with song 2 staves. If
+     * it is false it appends the song2 at the end of song1. The parts are in both cases appended at the end
+     * It removes the parts and staves from song2
+     */
+    public void merge(ScoreSong song1, ScoreSong song2, boolean alternate) throws IM3Exception {
+        int expectedStaves = song1.getStaves().size() + song2.getStaves().size();
+
+        ArrayList<ScorePart> song1Parts = song1.getPartsSortedByNumberAsc();
+        for (ScorePart part: song2.getParts()) {
+            part.setSong(song1);
+            part.setNumber(1000 + part.getNumber()); //TODO
+            song1.addPart(part);
+        }
+        song2.clearParts();
+
+        if (!alternate) {
+            // TODO: 16/10/17 Hierarchical order, number...
+            for (Staff staff: song2.getStaves()) {
+                staff.setSong(song1);
+                staff.setHierarchicalOrder("Z-" + staff.getHierarchicalOrder()); //TODO
+                staff.setNumberIdentifier(1000+staff.getNumberIdentifier()); //TODO
+                song1.addStaff(staff);
+            }
+            song2.clearStaves();
+        } else {
+            if (song1.getStaves().size() != song2.getStaves().size()) {
+                throw new IM3Exception("song1 has " + song1.getStaves().size() + " and song2 has " + song2.getStaves().size());
+            }
+            for (int i=0; i<song2.getStaves().size(); i++) {
+                Staff staff = song2.getStaves().get(i);
+                staff.setSong(song1);
+                staff.setHierarchicalOrder("Z-" + staff.getHierarchicalOrder()); //TODO
+                staff.setNumberIdentifier(1000+staff.getNumberIdentifier()); //TODO
+                song1.addStaffAt((2*i)+1, staff);
+            }
+            song2.clearStaves();
+
+            if (song1.getStaves().size() != expectedStaves) {
+                throw new IM3Exception("Expected a result of " + expectedStaves + " and obtained " + song1.getStaves().size());
+            }
+        }
+
+    }
 
 }

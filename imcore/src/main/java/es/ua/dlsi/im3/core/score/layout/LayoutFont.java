@@ -24,6 +24,7 @@ public class LayoutFont {
      */
     private final Scale javaFXScale;
     private final LayoutFonts font;
+    private final String name;
     OpenTypeFont otfMusicFont;
     OpenTypeFont otfTextFont;
     SVGFont svgFont;
@@ -40,7 +41,8 @@ public class LayoutFont {
      * @param svgFontResource Typically a file with the font
      * @param mappingResource Typically a file with the mapping (usually SMuFL)
      */
-    public LayoutFont(LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
+    public LayoutFont(String name, LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
+        this.name = name;
         this.font = font;
         this.fontMap = fontMap;
         SVGFontImporter importer = new SVGFontImporter();
@@ -130,5 +132,9 @@ public class LayoutFont {
 
     public LayoutFonts getFont() {
         return font;
+    }
+
+    public String getName() {
+        return name;
     }
 }

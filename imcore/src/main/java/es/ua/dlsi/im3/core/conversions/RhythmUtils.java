@@ -6,6 +6,9 @@ import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.Time;
 import org.apache.commons.lang3.math.Fraction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by drizo on 13/6/17.
  */
@@ -27,16 +30,35 @@ public class RhythmUtils {
             return dots;
         }
     }
-    public static FigureAndDots findRhythmForDuration(NotationType notationType, Time duration) throws IM3Exception {
-        for (Figures f : Figures.values()) {
-            if (f != Figures.MAX_FIGURE) {
-                for (int dts = 0; dts < 5; dts++) {
-                    if (f.getDurationWithDots(dts).equals(duration)) {
-                        return new FigureAndDots(f, dts);
-                    }
+
+    /**
+     *
+     * @param notationType
+     * @param duration
+     * @return A list of figures equivalent to the given duration
+     * @throws IM3Exception
+     */
+    public static List<FigureAndDots> findRhythmForDuration(NotationType notationType, Time duration) throws IM3Exception {
+        ArrayList<FigureAndDots> result = new ArrayList<>();
+
+        int i=0;
+        Figures [] figures = Figures.getFiguresSortedDesc(notationType);
+        while (!duration.isZero() && i<figures.length) {
+            Figures figure = figures[i];
+            for (int dts = 2; dts >= 0; dts--) {
+                Time durWithDots = figure.getDurationWithDots(dts);
+                int comparison = durWithDots.compareTo(duration);
+                if (comparison <= 0) {
+                    result.add(new FigureAndDots(figure, dts));
+                    duration = duration.substract(durWithDots);
+                    break;
                 }
             }
+            i++;
         }
-        throw new IM3Exception("Cannot locate a valid figure with dots for duration " + duration);
+        if (!duration.isZero()) {
+            throw new IM3Exception("Cannot locate a valid figure with dots for duration " + duration);
+        }
+        return result;
     }
 }

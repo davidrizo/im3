@@ -41,7 +41,7 @@ public class LayoutSymbolFactory {
             LayoutCoreSymbol result = constructor.newInstance(layoutFont, coreSymbol);
             return  result;
         } catch (Exception e) {
-            throw new IM3Exception("Cannot instantiate the layout object", e);
+            throw new IM3Exception("Cannot instantiate the layout object using layout font " + layoutFont.getName(), e);
         }
     }
 }

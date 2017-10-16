@@ -1,9 +1,15 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import org.apache.commons.lang3.math.Fraction;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
+import java.util.ArrayList;
+
+/**
+ * The figures must be mantained in descending length
+ */
 public enum Figures {
 	MAX_FIGURE (Integer.MAX_VALUE, 1, Integer.MAX_VALUE, NotationType.eModern, false, 0), // used the same way Integer.MAX_VALUE
 	QUADRUPLE_WHOLE (16,1,-1, NotationType.eModern, false, 0),
@@ -26,7 +32,15 @@ public enum Figures {
 	FUSA (1, 4, 8, NotationType.eMensural, false, 1),
 	SEMIFUSA (1, 8, 16, NotationType.eMensural, false, 2),
 	NO_DURATION (0,1,0, NotationType.eModern, false, 0); // TODO: 22/9/17 Que tenga plica o no depende de la tipografía?
-	
+
+    static Figures [] SORTED_DESC_MENSURAL = new Figures[] {
+            MAXIMA, LONGA, BREVE, SEMIBREVE, MINIM, SEMIMINIM, FUSA, SEMIFUSA
+    };
+
+    static Figures [] SORTED_DESC_MODERN = new Figures[] {
+            QUADRUPLE_WHOLE, DOUBLE_WHOLE, WHOLE, HALF, QUARTER, EIGHTH, SIXTEENTH, THIRTY_SECOND, SIXTY_FOURTH, HUNDRED_TWENTY_EIGHTH, TWO_HUNDRED_FIFTY_SIX
+    };
+
 	final Time duration;
 	/**
 	 * Classical interpretation (the one used in denominators of meters)
@@ -107,4 +121,15 @@ public enum Figures {
 	public int getNumFlags() {
 		return numFlags;
 	}
+
+    public static Figures[] getFiguresSortedDesc(NotationType notationType) {
+        if (notationType == NotationType.eMensural) {
+            return SORTED_DESC_MENSURAL;
+        } else if (notationType == NotationType.eModern) {
+            return SORTED_DESC_MODERN;
+        } else {
+            throw new IM3RuntimeException("Unknown notation type " + notationType);
+        }
+    }
+
 }

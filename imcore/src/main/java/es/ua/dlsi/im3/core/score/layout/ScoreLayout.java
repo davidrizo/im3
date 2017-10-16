@@ -16,6 +16,8 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * It contains staves that can be split in several. Symbols like
@@ -153,15 +155,16 @@ public abstract class ScoreLayout {
                         DashedBarlineAcrossStaves dashedBarlineAcrossStaves = (DashedBarlineAcrossStaves) connector;
                         LayoutCoreBarline barline = barlines.get(dashedBarlineAcrossStaves.getMeasure());
                         if (barline == null) {
-                            throw new IM3RuntimeException("Cannot find a barline for measure " + dashedBarlineAcrossStaves.getMeasure() + " while creating LayoutDashedBarlineAcrossStaves");
-                        }
-                        LayoutStaff toLayoutStaff = layoutStaves.get(dashedBarlineAcrossStaves.getTo());
-                        if (toLayoutStaff == null) {
-                            throw new IM3RuntimeException("Cannot find a LayoutStaff for staff " + dashedBarlineAcrossStaves.getTo() + " while creating LayoutDashedBarlineAcrossStaves");
-                        }
+                            Logger.getLogger(ScoreLayout.class.getName()).log(Level.WARNING, "Cannot find a barline for measure " + dashedBarlineAcrossStaves.getMeasure() + " while creating LayoutDashedBarlineAcrossStaves");
+                        } else {
+                            LayoutStaff toLayoutStaff = layoutStaves.get(dashedBarlineAcrossStaves.getTo());
+                            if (toLayoutStaff == null) {
+                                throw new IM3RuntimeException("Cannot find a LayoutStaff for staff " + dashedBarlineAcrossStaves.getTo() + " while creating LayoutDashedBarlineAcrossStaves");
+                            }
 
-                        LayoutDashedBarlineAcrossStaves layoutDashedBarlineAcrossStaves = new LayoutDashedBarlineAcrossStaves(barline, toLayoutStaff);
-                        addConnector(layoutDashedBarlineAcrossStaves);
+                            LayoutDashedBarlineAcrossStaves layoutDashedBarlineAcrossStaves = new LayoutDashedBarlineAcrossStaves(barline, toLayoutStaff);
+                            addConnector(layoutDashedBarlineAcrossStaves);
+                        }
                     }
                 }
             }

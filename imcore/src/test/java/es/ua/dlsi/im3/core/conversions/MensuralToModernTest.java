@@ -105,7 +105,7 @@ public class MensuralToModernTest {
 
         MensuralToModern mensuralToModern2 = new MensuralToModern();
 
-        mensuralToModern2.convertIntoStaff(staff, newModernStaff, newLayer);
+        mensuralToModern2.convertIntoStaff(staff, newModernStaff, newLayer, Intervals.FOURTH_PERFECT_DESC.createInterval());
 
         // render it putting in the top staff the mensural one and in the bottom staff the modern one
         HashMap<Staff, LayoutFonts> fonts = new HashMap<>();

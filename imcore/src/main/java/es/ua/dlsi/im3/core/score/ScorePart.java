@@ -415,4 +415,10 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 		return atoms;
 	}
 
+    /**
+     * Use with caution. Used just by some converters of the library
+     */
+    public void setSong(ScoreSong song) {
+        this.scoreSong = song;
+    }
 }

@@ -396,13 +396,31 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					
 					break;
 					//TODO staff groups (ej. garison.mei)
-				case "staffGrp":
+				/*case "staffGrp":
 					label = getOptionalAttribute(attributesMap, "label");
 					//TODO
 					currentScorePart = new ScorePart(song, song.getParts().size()+1); //TODO
 					currentScorePart.setName(label);
 					song.addPart(currentScorePart);					
-					break;
+					break;*/
+				case "instrDef":
+                    label = getOptionalAttribute(attributesMap, "label");
+                    String instrNumber = getOptionalAttribute(attributesMap, "n");
+
+                    ScorePart p = null;
+                    if (instrNumber != null) {
+                        int nn = Integer.parseInt(instrNumber);
+                        p = song.getPartWithNumber(nn);
+                    }
+
+                    if (p != null) {
+                        currentScorePart = p;
+                    } else {
+                        currentScorePart = new ScorePart(song, song.getParts().size() + 1); //TODO
+                        currentScorePart.setName(label);
+                        song.addPart(currentScorePart);
+                    }
+                    break;
 				case "staffDef": 
 					lastStaff = processStaff(attributesMap);
 					label = getOptionalAttribute(attributesMap, "label");
@@ -941,13 +959,28 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		String voiceNumber = lastStaff.getNumberIdentifier() + "_" + number;
 		ScoreLayer voice = layers.get(voiceNumber);
 		if (voice == null) {
-			voice = currentScorePart.addScoreLayer(lastStaff);
+            ScorePart scorePart = getScorePart(lastStaff);
+
+			//voice = currentScorePart.addScoreLayer(lastStaff);
+            voice = scorePart.addScoreLayer(lastStaff);
 			layers.put(voiceNumber, voice);
 		}
 		return voice;
 	}
 
-	private Staff processStaff(HashMap<String, String> attributesMap) throws ImportException, IM3Exception {
+	//TODO Esto sólo permite que en un staff haya un instrumento
+    private ScorePart getScorePart(Staff lastStaff) throws ImportException {
+	    for (ScorePart part: song.getParts()) {
+	        for (Staff staff: part.getStaves()) {
+	            if (staff == lastStaff) {
+	                return part;
+                }
+            }
+        }
+        throw new ImportException("Staff" + lastStaff + " not found");
+    }
+
+    private Staff processStaff(HashMap<String, String> attributesMap) throws ImportException, IM3Exception {
 		Staff staff;
 		String number = getOptionalAttribute(attributesMap, "n");
 		String lines = getOptionalAttribute(attributesMap, "lines");
@@ -1387,7 +1420,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				if (lastKeySig != null) {
 					processKey(null, null, lastKeySig, lastKeyMode, null, null);
 				}
-				break; 				
+				break;
+			case "staffDef":
+			    if (currentScorePart == null) {
+			        currentScorePart = song.addPart();
+                }
+			    currentScorePart.addStaff(lastStaff);
+			    break;
 			case "measure":
 			    //TODO Check there are not any notes or rests
                 if (pendingMeasureRestsToSetDuration != null && !pendingMeasureRestsToSetDuration.isEmpty()

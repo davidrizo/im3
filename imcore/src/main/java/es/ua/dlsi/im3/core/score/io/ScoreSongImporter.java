@@ -14,23 +14,19 @@ import java.io.File;
  * Created by drizo on 9/6/17.
  */
 public class ScoreSongImporter {
-    public ScoreSong importSong(NotationType notationType, FileType fileType, File folder, String filename) throws ImportException {
+    public ScoreSong importSong(FileType fileType, File folder, String filename) throws ImportException {
         File file = new File(folder, filename);
-        return importSong(notationType, fileType, file);
+        return importSong(fileType, file);
     }
 
-    public ScoreSong importSong(NotationType notationType, FileType fileType, File file) throws ImportException {
+    public ScoreSong importSong(FileType fileType, File file) throws ImportException {
         if (!file.exists()) {
             throw new ImportException("Input file '" + file.getAbsolutePath() + "' does not exist");
         }
         switch (fileType) {
             case musicxml:
-                if (notationType == NotationType.eModern) {
-                    MusicXMLImporter musicXMLImporter = new MusicXMLImporter();
-                    return musicXMLImporter.importSong(file);
-                } else {
-                    throw new ImportException("Unsupported file type: " + fileType + " with notation type: " + notationType);
-                }
+                MusicXMLImporter musicXMLImporter = new MusicXMLImporter();
+                return musicXMLImporter.importSong(file);
             case mei:
                 MEISongImporter meiImporter = new MEISongImporter();
                 return meiImporter.importSong(file);
@@ -42,18 +38,14 @@ public class ScoreSongImporter {
         }
     }
 
-    public ScoreSong importSong(NotationType notationType, File file, String extension) throws ImportException {
+    public ScoreSong importSong(File file, String extension) throws ImportException {
         if (!file.exists()) {
             throw new ImportException("Input file '" + file.getAbsolutePath() + "' does not exist");
         }
         switch (extension) {
             case "xml":
-                if (notationType == NotationType.eModern) {
-                    MusicXMLImporter musicXMLImporter = new MusicXMLImporter();
-                    return musicXMLImporter.importSong(file);
-                } else {
-                    throw new ImportException("Unsupported extension: " + extension + " with notation type: " + notationType);
-                }
+                MusicXMLImporter musicXMLImporter = new MusicXMLImporter();
+                return musicXMLImporter.importSong(file);
             case "mei":
                 MEISongImporter meiImporter = new MEISongImporter();
                 return meiImporter.importSong(file);

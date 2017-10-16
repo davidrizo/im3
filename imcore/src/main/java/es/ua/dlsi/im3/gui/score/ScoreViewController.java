@@ -89,6 +89,7 @@ public class ScoreViewController {
         return menuBar;
     }
 
+    // FIXME: 16/10/17 Quitar notationType
     private void doOpenFile(NotationType notationType, boolean useHispanicVariant, String fileTypeName, String fileExtension) {
         try {
             OpenSaveFileDialog dlg = new OpenSaveFileDialog();
@@ -97,7 +98,7 @@ public class ScoreViewController {
             ScoreSongImporter importer = new ScoreSongImporter();
 
             String extension = FileUtils.getFileNameExtension(file.getName());
-            ScoreSong song = importer.importSong(notationType, file, extension);
+            ScoreSong song = importer.importSong(file, extension);
             // TODO: 17/9/17 Enlazar el modelo con el scoreSongView - usar ids como en JS
             LayoutFonts font;
             if (useHispanicVariant) {

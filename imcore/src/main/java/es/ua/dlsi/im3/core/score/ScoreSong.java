@@ -715,7 +715,7 @@ public class ScoreSong {
 	public List<Staff> getStaves() {
 		return staves;
 	}
-	
+
 
 	public void addStaff(Staff staff) throws IM3Exception {
 		for (Staff s : staves) {
@@ -1684,5 +1684,27 @@ public class ScoreSong {
 
     public DurationEvaluator getDurationEvaluator() {
         return durationEvaluator;
+    }
+
+    /**
+     *
+     * @param n
+     * @return null if not found
+     */
+    public ScorePart getPartWithNumber(int n) {
+       for (ScorePart part: parts) {
+           if (part.getNumber() == n) {
+               return part;
+           }
+       }
+       return  null;
+    }
+
+    public void clearParts() {
+        parts.clear();
+    }
+
+    public void clearStaves() {
+        staves.clear();
     }
 }

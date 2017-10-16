@@ -15,7 +15,7 @@ public class CapitanFont extends LayoutFont {
     private static final String METADATA = "/fonts/capitan/capitan_0.1.json";
 
     public CapitanFont() throws ImportException, IM3Exception {
-        super(LayoutFonts.capitan, CapitanFont.class.getResourceAsStream(SVGFONT),
+        super("Capitán", LayoutFonts.capitan, CapitanFont.class.getResourceAsStream(SVGFONT),
                 CapitanFont.class.getResourceAsStream(OTFMUSICFONT),
                 CapitanFont.class.getResourceAsStream(OTFTEXTCFONT),
                 CapitanFont.class.getResourceAsStream(METADATA),

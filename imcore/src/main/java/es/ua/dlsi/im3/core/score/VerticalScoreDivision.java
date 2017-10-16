@@ -39,7 +39,7 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 	private int numberIdentifier;
 
 	String name;
-	private final ScoreSong notationSong;
+	private ScoreSong notationSong;
 	private NotationType notationType;
 
 	public VerticalScoreDivision(ScoreSong notationSong, String hierarchicalOrder, int numberIdentifier) {
@@ -148,6 +148,14 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 	public void __setID(String id) {
 		this.ID = id;
 	}
+
+    /**
+     * Use with caution. Used just by some converters of the library
+     */
+    public void setSong(ScoreSong song) {
+        this.notationSong = song;
+    }
+
 }
 
 

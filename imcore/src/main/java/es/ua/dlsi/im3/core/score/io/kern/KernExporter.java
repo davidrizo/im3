@@ -284,7 +284,11 @@ public class KernExporter {
                     } else {
                         if (atom instanceof SimpleMeasureRest) {
                             SimpleMeasureRest mrest = (SimpleMeasureRest) atom;
-                            RhythmUtils.FigureAndDots fd = RhythmUtils.findRhythmForDuration(NotationType.eModern, mrest.getDuration());
+                            List<RhythmUtils.FigureAndDots> fds = RhythmUtils.findRhythmForDuration(NotationType.eModern, mrest.getDuration());
+                            if (fds.size() != 1) {
+                                throw new ExportException("Unsupported durations that have to be decomposed in a set of figures");
+                            }
+                            RhythmUtils.FigureAndDots fd = fds.get(0);
                             String duration = generateDuration(fd.getFigure(), fd.getDots(), Fraction.ONE);
                             record.add(duration + "rr");
                         } else {
