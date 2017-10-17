@@ -2,9 +2,7 @@ package es.ua.dlsi.im3.core.score.mensural;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.conversions.MensuralToModern;
-import es.ua.dlsi.im3.core.score.NotationType;
-import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
@@ -27,10 +25,11 @@ public class LayoutMensuralAndTranscription {
         }
 
         ScoreSongImporter importer = new ScoreSongImporter();
-        ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]));
+        ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]), new BinaryDurationEvaluator(new Time(2)));
 
         MensuralToModern mensuralToModern = new MensuralToModern();
-        ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural);
+        //TODO Parámetro
+        ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC);
         mensuralToModern.merge(mensural, modern, true);
 
         // TODO: 16/10/17 Poder cambiar esto

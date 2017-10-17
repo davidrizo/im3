@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.io.mei;
 import java.io.File;
 import java.io.InputStream;
 
+import es.ua.dlsi.im3.core.score.DurationEvaluator;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
 import es.ua.dlsi.im3.core.io.IXMLSAXImporterExtension;
@@ -16,9 +17,14 @@ public class MEISongImporter implements IScoreSongImporter {
 	private MEISAXScoreSongImporter importer;
 
 	public MEISongImporter() {
-		importer = new MEISAXScoreSongImporter();
+		importer = new MEISAXScoreSongImporter(new DurationEvaluator());
 	}
-	@Override
+
+    public MEISongImporter(DurationEvaluator durationEvaluator) {
+        importer = new MEISAXScoreSongImporter(durationEvaluator);
+    }
+
+    @Override
 	public ScoreSong importSong(File file) throws ImportException {
 		ScoreSong song = importer.importFileToScoreSong(file);
 		return song;

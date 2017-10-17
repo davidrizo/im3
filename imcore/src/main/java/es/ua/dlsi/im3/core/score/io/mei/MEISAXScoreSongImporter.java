@@ -57,7 +57,11 @@ import es.ua.dlsi.im3.core.io.ImportException;
  * @author drizo
  */
 public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
+    DurationEvaluator durationEvaluator;
 
+    public MEISAXScoreSongImporter(DurationEvaluator durationEvaluator) {
+        this.durationEvaluator = durationEvaluator;
+    }
 
     class PendingConnector {
 		Measure measure;
@@ -963,6 +967,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 			//voice = currentScorePart.addScoreLayer(lastStaff);
             voice = scorePart.addScoreLayer(lastStaff);
+            voice.setDurationEvaluator(durationEvaluator);
 			layers.put(voiceNumber, voice);
 		}
 		return voice;

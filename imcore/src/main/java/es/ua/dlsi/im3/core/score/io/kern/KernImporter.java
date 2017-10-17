@@ -38,8 +38,14 @@ import org.apache.commons.math3.util.ArithmeticUtils;
  * @author drizo
  */
 public class KernImporter implements IScoreSongImporter {
+    DurationEvaluator durationEvaluator;
 
     public KernImporter() {
+        durationEvaluator = new DurationEvaluator();
+    }
+
+    public KernImporter(DurationEvaluator durationEvaluator) {
+        this.durationEvaluator = durationEvaluator;
     }
 
     @Override
@@ -59,7 +65,7 @@ public class KernImporter implements IScoreSongImporter {
     }
 
     public static class Loader extends kernBaseListener {
-
+        DurationEvaluator durationEvaluator;
         ScoreSong scoreSong;
         ScoreLayer currentVoice; // TODO De momento solo tengo una voice por part
         int currentSpineIndex;
@@ -130,10 +136,11 @@ public class KernImporter implements IScoreSongImporter {
         }
 
 
-        Loader(ScoreSong song) {
+        Loader(ScoreSong song, DurationEvaluator durationEvaluator) {
             try {
                 //recordTime = Time.TIME_ZERO;
                 scoreSong = song;
+                this.durationEvaluator = durationEvaluator;
                 //TODO Ahora va todo a la misma part
                 globalPart = new ScorePart(scoreSong, 0);
                 scoreSong.addPart(globalPart);
@@ -299,8 +306,10 @@ public class KernImporter implements IScoreSongImporter {
                 try {
                     if (inRootSpine()) {
                         v = rootPart.addScoreLayer();
+                        v.setDurationEvaluator(durationEvaluator);
                     } else {
                         v = globalPart.addScoreLayer();
+                        v.setDurationEvaluator(durationEvaluator);
                     }
                 } catch (IM3Exception ex) {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
@@ -1831,7 +1840,7 @@ public class KernImporter implements IScoreSongImporter {
             ParseTree tree = parser.song();
             ParseTreeWalker walker = new ParseTreeWalker();
             ScoreSong song = new ScoreSong();
-            Loader loader = new Loader(song);
+            Loader loader = new Loader(song, durationEvaluator);
             walker.walk(loader, tree);
             if (errorListener.getNumberErrorsFound() != 0) {
 

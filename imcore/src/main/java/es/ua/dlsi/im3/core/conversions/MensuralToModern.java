@@ -18,10 +18,11 @@ public class MensuralToModern {
 
 
     /**
+     * It changes the duration of the atoms in the mensural song applying the durationMultiplier - important for correcly aligning layout spacing
      * @param mensural
      * @return
      */
-    public ScoreSong convertIntoNewSong(ScoreSong mensural) throws IM3Exception {
+    public ScoreSong convertIntoNewSong(ScoreSong mensural, Intervals transposition) throws IM3Exception {
         ScoreSong modernSong = new ScoreSong();
         for (ScorePart mensuralPart: mensural.getParts()) {
             ScorePart modernPart = new ScorePart(modernSong, mensuralPart.getNumber());
@@ -47,7 +48,7 @@ public class MensuralToModern {
             ScoreLayer modernLayer = modernPart.addScoreLayer(modernPentagram);
 
             // TODO: 16/10/17 Que se calcule en función de la teoría musical 
-            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer, Intervals.FOURTH_PERFECT_DESC.createInterval());
+            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer, transposition);
         }
         return modernSong;
     }
@@ -61,10 +62,11 @@ public class MensuralToModern {
      * @param modernLayer
      * @throws IM3Exception
      */
-    public void convertIntoStaff(Staff mensuralStaff, Staff modernStaff, ScoreLayer modernLayer, Interval transposition) throws IM3Exception {
+    public void convertIntoStaff(Staff mensuralStaff, Staff modernStaff, ScoreLayer modernLayer, Intervals transposition) throws IM3Exception {
         modernStaff.clear();
         modernLayer.clear();
 
+        Interval interval = transposition.createInterval();
         activeTimeSignature = null;
         activeKeySignature = null;
         pendingMensureDuration = null;
@@ -81,12 +83,12 @@ public class MensuralToModern {
                 pendingMensureDuration = activeTimeSignature.getDuration();
                 modernStaff.addTimeSignature(activeTimeSignature);
             } else if (symbol instanceof KeySignature) {
-                activeKeySignature = convert((KeySignature) symbol, transposition);
+                activeKeySignature = convert((KeySignature) symbol, interval);
                 modernStaff.addKeySignature(activeKeySignature);
             } else if (symbol instanceof MarkBarline) {
                 convert(modernStaff, modernLayer, (MarkBarline) symbol);
             } else if (symbol instanceof Atom) {
-                convert(modernStaff, modernLayer, (Atom) symbol, transposition);
+                convert(modernStaff, modernLayer, (Atom) symbol, interval);
             } else {
                 throw new IM3Exception("Unsupported conversion of " + symbol.getClass());
             }
@@ -102,6 +104,7 @@ public class MensuralToModern {
             // TODO: 6/10/17 Puede que tengamos que rellenar con silencios
         }
 
+        modernStaff.getScoreSong().numberMeasures();
         // now insert barlines between staves
         for (Measure measure: modernStaff.getScoreSong().getMeasures()) {
             DashedBarlineAcrossStaves dashedBarlineAcrossStaves = new DashedBarlineAcrossStaves(measure, modernStaff, mensuralStaff);
@@ -152,7 +155,7 @@ public class MensuralToModern {
         //Figures figure = singleFigureAtom.getAtomFigure().getFigure();
         Time pendingDuration = singleFigureAtom.getAtomFigure().getDuration();
 
-        modernLayer.setDurationEvaluator(new DurationEvaluator()); // it does not use the evaluator of the MensuralSong
+        modernLayer.setDurationEvaluator(new DurationEvaluator()); // TODO - it does not use the evaluator of the MensuralSong
 
         // TODO: 6/10/17 ¿Puede cambiar el compás por enmedio?
         AtomPitch lastAtomPitch = null;
@@ -223,7 +226,7 @@ public class MensuralToModern {
     /**
      * It adds the staves of song2 into song1. If alternate is true it alternates song1 staves with song 2 staves. If
      * it is false it appends the song2 at the end of song1. The parts are in both cases appended at the end
-     * It removes the parts and staves from song2
+     * It removes the parts and staves from song2. It copies the measures from song2 to song1
      */
     public void merge(ScoreSong song1, ScoreSong song2, boolean alternate) throws IM3Exception {
         int expectedStaves = song1.getStaves().size() + song2.getStaves().size();
@@ -235,6 +238,14 @@ public class MensuralToModern {
             song1.addPart(part);
         }
         song2.clearParts();
+        song1.clearMeasures();
+
+        for (Measure fromMeasure: song2.getMeasures()) {
+            Measure newMeasure = new Measure(song1, fromMeasure.getNumber());
+            newMeasure.setTime(fromMeasure.getTime());
+            newMeasure.setEndTime(fromMeasure.getEndTime());
+            song1.addMeasure(fromMeasure.getTime(), newMeasure);
+        }
 
         if (!alternate) {
             // TODO: 16/10/17 Hierarchical order, number...

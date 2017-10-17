@@ -1707,4 +1707,15 @@ public class ScoreSong {
     public void clearStaves() {
         staves.clear();
     }
+
+    /**
+     * It assigns correlative numbers from 1 to the measures. It clears previous numbering
+     */
+    public void numberMeasures() {
+        int n=1;
+        for (Measure measure: measures.getOrderedValues()) {
+            measure.setNumber(n);
+            n++;
+        }
+    }
 }

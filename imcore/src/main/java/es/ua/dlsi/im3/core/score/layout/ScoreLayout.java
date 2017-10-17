@@ -40,7 +40,7 @@ public abstract class ScoreLayout {
      */
     HashMap<AtomPitch, NotePitch> layoutPitches;
 
-    protected HashMap<Measure, LayoutCoreBarline> barlines;
+    protected HashMap<Staff, HashMap<Measure, LayoutCoreBarline>> barlines;
     protected List<LayoutConnector> connectors;
     protected List<LayoutBeamGroup> beams;
 
@@ -128,13 +128,16 @@ public abstract class ScoreLayout {
             if (staff.getNotationType() == null) {
                 throw new IM3Exception("The staff " + staff+  " has not a notation type");
             }
+
+            HashMap<Measure, LayoutCoreBarline> staffBarLines = new HashMap<>();
+            barlines.put(staff, staffBarLines);
             if (staff.getNotationType().equals(NotationType.eModern)) {
                 // create barlines
                 // TODO: 21/9/17 Deberíamos poder crear barlines de system
                 for (Measure measure : scoreSong.getMeasures()) {
                     LayoutCoreBarline barline = new LayoutCoreBarline(staff, getLayoutFont(staff), measure.getEndTime());
                     simultaneities.add(barline);
-                    barlines.put(measure, barline);
+                    staffBarLines.put(measure, barline);
                 }
             }
 
@@ -153,9 +156,10 @@ public abstract class ScoreLayout {
                     // avoid creating twice
                     if (connector instanceof DashedBarlineAcrossStaves) {
                         DashedBarlineAcrossStaves dashedBarlineAcrossStaves = (DashedBarlineAcrossStaves) connector;
-                        LayoutCoreBarline barline = barlines.get(dashedBarlineAcrossStaves.getMeasure());
+                        HashMap<Measure, LayoutCoreBarline> staffBarLines = barlines.get(dashedBarlineAcrossStaves.getFrom());
+                        LayoutCoreBarline barline = staffBarLines.get(dashedBarlineAcrossStaves.getMeasure());
                         if (barline == null) {
-                            Logger.getLogger(ScoreLayout.class.getName()).log(Level.WARNING, "Cannot find a barline for measure " + dashedBarlineAcrossStaves.getMeasure() + " while creating LayoutDashedBarlineAcrossStaves");
+                            throw new IM3Exception("Cannot find a barline for measure " + dashedBarlineAcrossStaves.getMeasure() + " while creating LayoutDashedBarlineAcrossStaves");
                         } else {
                             LayoutStaff toLayoutStaff = layoutStaves.get(dashedBarlineAcrossStaves.getTo());
                             if (toLayoutStaff == null) {

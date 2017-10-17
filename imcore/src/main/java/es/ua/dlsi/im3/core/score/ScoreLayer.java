@@ -514,4 +514,5 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
     public void clear() {
 	    this.atoms.clear();
     }
+
 }

@@ -4,6 +4,7 @@ package es.ua.dlsi.im3.core.score;
 public class DashedBarlineAcrossStaves extends Connector {
     private final Measure measure;
 
+
     public DashedBarlineAcrossStaves(Measure measure, Staff from, Staff to) {
         super(from, to);
         this.measure = measure;

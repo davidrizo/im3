@@ -10,6 +10,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * All systems are arranged in a single line
@@ -76,20 +77,14 @@ public class HorizontalLayout extends ScoreLayout {
 
         createStaffConnectors();
 
-        for (LayoutCoreBarline layoutCoreBarline: barlines.values()) {
-            Staff staff = layoutCoreBarline.getStaff();
-
-            if (staff == null) {
-                //layoutCoreBarline.setLayoutStaff(lastSystem.getBottomStaff(), lastSystem.getTopStaff()); // covers all staves
-                //TODO IMPORTANT it is the same system now - it should be drawn for the different groups (piano....)
-                throw new IM3RuntimeException("LayoutCoreBarline has not staff");
-            } else {
+        for (Map.Entry<Staff, HashMap<Measure, LayoutCoreBarline>> entry: barlines.entrySet()) {
+            Staff staff = entry.getKey();
+            for (LayoutCoreBarline layoutCoreBarline: entry.getValue().values()) {
                 LayoutStaff layoutStaff = system.get(staff);
                 layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
+                canvas.getElements().add(layoutCoreBarline.getGraphics());
             }
-
             //barline.setLayoutStaff(system.getBottomStaff(), system.getTopStaff());
-            canvas.getElements().add(layoutCoreBarline.getGraphics());
         }
         doHorizontalLayout(simultaneities);
 

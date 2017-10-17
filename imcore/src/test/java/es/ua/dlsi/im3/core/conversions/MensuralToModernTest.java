@@ -35,7 +35,8 @@ public class MensuralToModernTest {
 
     @Test
     public void convert() throws Exception {
-        ScoreSong song = new ScoreSong(new BinaryDurationEvaluator(new Time(2))); // TODO: 7/10/17 ¿Sería mejor cambiar las Figures?
+        ScoreSong song = new ScoreSong(new BinaryDurationEvaluator(new Time(2))); // TODO: 7/10/17 ¿Sería mejor cambiar las Figures o sólo en la traducción?
+        //ScoreSong song = new ScoreSong(new DurationEvaluator()); // TODO: 7/10/17 ¿Sería mejor cambiar las Figures o sólo en la traducción?
         Staff staff = new Pentagram(song, "1", 1);
         staff.setNotationType(NotationType.eMensural);
         song.addStaff(staff);
@@ -77,7 +78,7 @@ public class MensuralToModernTest {
 
         // convert into a new song
         MensuralToModern mensuralToModern = new MensuralToModern();
-        ScoreSong modernSong = mensuralToModern.convertIntoNewSong(song);
+        ScoreSong modernSong = mensuralToModern.convertIntoNewSong(song, Intervals.UNISON_PERFECT);
 
         assertEquals( "Modern parts",  1, modernSong.getParts().size());
         assertEquals( "Modern staves",  1, modernSong.getStaves().size());
@@ -105,7 +106,7 @@ public class MensuralToModernTest {
 
         MensuralToModern mensuralToModern2 = new MensuralToModern();
 
-        mensuralToModern2.convertIntoStaff(staff, newModernStaff, newLayer, Intervals.FOURTH_PERFECT_DESC.createInterval());
+        mensuralToModern2.convertIntoStaff(staff, newModernStaff, newLayer, Intervals.FOURTH_PERFECT_DESC);
 
         // render it putting in the top staff the mensural one and in the bottom staff the modern one
         HashMap<Staff, LayoutFonts> fonts = new HashMap<>();
