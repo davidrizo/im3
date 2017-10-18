@@ -51,7 +51,8 @@
                                     <note xml:id="note-0000001270023895" dur="4" oct="6" pname="d" tie="i" />
                                 </layer>
                             </staff>
-                            <trill xml:id="trill-0000001313646448" />
+                            <!-- drizo Manually corrected, it didn't have the startid --> 
+                            <trill xml:id="trill-0000001313646448" startid="#note-0000001099055185"/>
                         </measure>
                         <measure xml:id="measure-0000000080034157" right="single">
                             <staff xml:id="staff-0000001451635732" n="1">

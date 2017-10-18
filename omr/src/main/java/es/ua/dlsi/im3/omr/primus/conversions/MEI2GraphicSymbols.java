@@ -82,7 +82,7 @@ public class MEI2GraphicSymbols {
             throw new IM3Exception("Song without notes");
         }
 
-        Time measureEndTime = staff.getRunningTimeSignatureAt(lastMeasure).getDuration();
+        Time measureEndTime = staff.getRunningTimeSignatureAt(lastMeasure).getDuration().add(lastMeasure.getTime());
         if (lastEndTime.equals(measureEndTime)) {
             // add bar line just if the measure is complete
             graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
@@ -150,7 +150,25 @@ public class MEI2GraphicSymbols {
 
             String figureString = generateFigureString(note);
 
-            graphicalTokens.add(new GraphicalToken(GraphicalSymbol.note, figureString, positionInStaff));
+            GraphicalSymbol graphicalSymbol;
+            if (note.isGrace()) {
+                graphicalSymbol = GraphicalSymbol.gracenote;
+            } else {
+                graphicalSymbol = GraphicalSymbol.note;
+            }
+
+            // TODO: 18/10/17 Otras marcas
+            if (note.getMarks() != null) {
+                for (StaffMark mark : note.getMarks()) {
+                    if (mark instanceof Trill) {
+                        graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, null));
+                    } else {
+                        throw new IM3Exception("Unsupported mark: " + mark.getClass());
+                    }
+                }
+            }
+
+            graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
 
             if (note.getAtomFigure().getFermata() != null && note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
@@ -167,10 +185,48 @@ public class MEI2GraphicSymbols {
             if (note.getAtomPitch().isTiedToNext()) {
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, START, positionInStaff));
             }
+        } else if (symbol instanceof SimpleMultiMeasureRest) {
+            SimpleMultiMeasureRest multiMeasureRest = (SimpleMultiMeasureRest) symbol;
+            int n = multiMeasureRest.getNumMeasures();
+            ArrayList<Integer> digits = new ArrayList<>();
+            while (n>0) {
+                int digit = n%10;
+                n/=10;
+                digits.add(0, digit);
+            }
+            for (Integer digit: digits) {
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(digit), PositionsInStaff.SPACE_5));
+            }
+            if (multiMeasureRest.getAtomFigure().getFermata() != null && multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+            }
+
+            graphicalTokens.add(new GraphicalToken(GraphicalSymbol.multirest, null, PositionsInStaff.LINE_3));
+
+            if (multiMeasureRest.getAtomFigure().getFermata() != null && multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+            }
+
         } else if (symbol instanceof SimpleRest) {
             SimpleRest rest = (SimpleRest) symbol;
-            graphicalTokens.add(new GraphicalToken(GraphicalSymbol.rest, rest.getAtomFigure().getFigure().toString(), PositionsInStaff.LINE_3));
-            convertDots(graphicalTokens, rest.getAtomFigure(), PositionsInStaff.LINE_3);
+            if (rest.getAtomFigure().getFermata() != null && rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+            }
+
+            PositionInStaff positionsInStaff;
+            if (rest.getAtomFigure().getFigure() == Figures.WHOLE) {
+                positionsInStaff = PositionsInStaff.LINE_4;
+            } else {
+                positionsInStaff = PositionsInStaff.LINE_3;
+            }
+            graphicalTokens.add(new GraphicalToken(GraphicalSymbol.rest, rest.getAtomFigure().getFigure().toString(), positionsInStaff));
+
+            if (rest.getAtomFigure().getFermata() != null && rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+            }
+
+
+            convertDots(graphicalTokens, rest.getAtomFigure(), PositionsInStaff.SPACE_3);
         } else {
             throw new ExportException("Unsupported symbol conversion of: " + symbol.getClass());
         }

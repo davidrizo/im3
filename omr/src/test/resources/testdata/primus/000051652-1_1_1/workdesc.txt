@@ -1,9 +1,0 @@
-Using font  Leipzig
-RISM ID:  000051652
-Incipit:  1.1.1
-Author:  Fioravanti, Valentino
-Title:  Adelaide maritata. Excerpts
-@clef:  C-1
-@keysig:  bBEA
-@timesig:  c
-@data:  =4/2-'8G6GG8GnA/nBB-BBBnAB/4G
