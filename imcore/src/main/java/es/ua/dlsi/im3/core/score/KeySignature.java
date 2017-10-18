@@ -273,6 +273,10 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
             nextUp = !nextUp;
 
             PositionInStaff positionInStaff = staff.computePositionForPitchWithoutClefOctaveChange(time, nn, octave);
+            if (positionInStaff.getLineSpace() <= 0) {
+                // if falls below bottom line
+                positionInStaff = new PositionInStaff(positionInStaff.getLineSpace() + 7);
+            }
             result[i-1] = positionInStaff;
             i++;
         }

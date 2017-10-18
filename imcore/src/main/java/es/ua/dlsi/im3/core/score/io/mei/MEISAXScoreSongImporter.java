@@ -692,8 +692,6 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 					}
                     // TODO: 18/10/17 Comprobar Fermata con chords
-                    processFermata(currentAtomFigure, attributesMap);
-
 					processPossibleMensuralImperfection(attributesMap, currentAtomFigure);
 					String tie = getOptionalAttribute(attributesMap, "tie");
 					if (tie != null) { 						
@@ -709,8 +707,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 
 					updateCurrentTime();
-					
-					break;
+
+					// after the note has time
+                    processFermata(currentAtomFigure, attributesMap);
+
+
+                    break;
 				case "accid":
 					accid = getOptionalAttribute(attributesMap, "accid");
 					accidGes = getOptionalAttribute(attributesMap, "accid.ges");
@@ -746,9 +748,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					} else {
 						elementStaff = lastStaff;
 					}
-					
+
 					addElementToVoiceStaffOrTuplet(rest, xmlid, attributesMap, elementStaff);
-					break;			
+
+                    // after the note has time
+                    processFermata(rest.getAtomFigure(), attributesMap);
+
+                    break;
 				case "mRest":
 					//TODO
 					xmlid = getOptionalAttribute(attributesMap, "xml:id");
