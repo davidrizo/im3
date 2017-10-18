@@ -13,7 +13,10 @@ public enum GraphicalSymbol {
     metersign,
     digit,
     slur,
-    fermata, multirest, gracenote, trill;
+    fermata,
+    multirest,
+    gracenote,
+    trill;
 
 
     /*public static final String DOT = "dot-";
