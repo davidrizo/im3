@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="2100px" height="2970px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" overflow="visible">
+	<desc>Engraved by Verovio 2.0.0-dev-cba6710</desc>
+	<defs>
+		<symbol id="E050" viewBox="0 0 1000 1000" overflow="inherit">
+			<path transform="scale(1,-1)" d="M441 -245c-23 -4 -48 -6 -76 -6c-59 0 -102 7 -130 20c-88 42 -150 93 -187 154c-26 44 -43 103 -48 176c-4 60 11 123 44 189c29 57 65 106 110 148s96 85 153 127c-3 16 -8 46 -13 92c-4 43 -5 73 -5 89c0 117 16 172 69 257c34 54 64 82 89 82c21 0 43 -30 69 -92 s39 -115 41 -159c2 -120 -19 -173 -67 -256c-13 -20 -63 -90 -98 -118c-13 -9 -25 -19 -37 -29l31 -181c8 1 18 2 28 2c58 0 102 -12 133 -35c59 -43 92 -104 98 -184c11 -135 -80 -229 -180 -270c8 -57 17 -110 25 -162c5 -31 6 -58 6 -80c0 -30 -5 -53 -14 -70 c-35 -64 -88 -99 -158 -103c-42 -3 -83 6 -124 26c-50 24 -77 59 -80 105c-2 34 5 63 20 87c18 28 45 42 79 44c51 4 99 -40 103 -87c4 -56 -30 -94 -105 -115c17 -24 51 -36 102 -36c62 0 116 43 140 85c9 16 13 41 13 74c0 20 -1 42 -5 67c-8 53 -18 106 -26 159zM461 939 c-95 0 -135 -175 -135 -286c0 -24 2 -48 5 -71c50 39 92 82 127 128c43 57 63 106 60 148c-4 54 -23 82 -57 81zM406 119l54 -326c80 27 116 88 109 184c-7 99 -62 146 -163 142zM382 117c-74 -2 -132 -50 -128 -127c2 -46 43 -99 75 -115c-3 -2 -7 -5 -10 -10 c-70 33 -116 88 -123 172c-5 73 42 135 88 170c23 17 49 29 78 36l-29 170c-21 -13 -52 -37 -92 -73c-50 -44 -86 -84 -109 -119c-49 -75 -71 -140 -67 -195c5 -68 35 -127 93 -176s125 -73 203 -73c25 0 50 3 75 9c-19 111 -36 221 -54 331z" />
+		</symbol>
+		<symbol id="E262" viewBox="0 0 1000 1000" overflow="inherit">
+			<path transform="scale(1,-1)" d="M136 186v169h17v-164l44 14v-91l-44 -14v-165l44 12v-91l-44 -13v-155h-17v150l-76 -22v-155h-17v149l-43 -13v90l43 14v167l-43 -14v92l43 13v169h17v-163zM60 73v-167l76 22v168z" />
+		</symbol>
+		<symbol id="E08A" viewBox="0 0 1000 1000" overflow="inherit">
+			<path transform="scale(1,-1)" d="M340 179c-9 24 -56 41 -89 41c-46 0 -81 -28 -100 -58c-17 -28 -25 -78 -25 -150c0 -65 2 -111 8 -135c8 -31 18 -49 40 -67c20 -17 43 -25 70 -25c54 0 92 36 115 75c14 25 23 54 28 88h27c0 -63 -24 -105 -58 -141c-35 -38 -82 -56 -140 -56c-45 0 -83 13 -115 39 c-57 45 -101 130 -101 226c0 59 33 127 68 163c36 37 97 72 160 72c36 0 93 -21 121 -40c11 -8 23 -17 33 -30c19 -23 27 -48 27 -76c0 -51 -35 -88 -86 -88c-43 0 -76 27 -76 68c0 26 7 35 21 51c15 17 32 27 58 32c7 2 14 7 14 11z" />
+		</symbol>
+		<symbol id="E0A3" viewBox="0 0 1000 1000" overflow="inherit">
+			<path transform="scale(1,-1)" d="M98 -102zM200 138l41 -5c-2 0 -41 5 -41 5zM278 64c0 22 -17 39 -43 39c-12 0 -26 -3 -41 -10c-85 -43 -165 -94 -165 -156c5 -25 15 -32 49 -32c67 11 200 95 200 159zM0 -36c0 68 73 174 200 174c66 0 114 -39 114 -97c0 -84 -106 -173 -218 -173c-64 0 -96 32 -96 96z " />
+		</symbol>
+		<symbol id="E0A4" viewBox="0 0 1000 1000" overflow="inherit">
+			<path transform="scale(1,-1)" d="M0 -39c0 68 73 172 200 172c66 0 114 -37 114 -95c0 -84 -106 -171 -218 -171c-64 0 -96 30 -96 94z" />
+		</symbol>
+		<symbol id="E241" viewBox="0 0 1000 1000" overflow="inherit">
+			<path transform="scale(1,-1)" d="M179 646c15 -29 28.5449 -55.0752 46 -102c18.3213 -49.2549 30 -108.298 30 -138c0 -105 -80 -173 -168 -200c-18 -5 -47 -9 -87 -16v-190h22c8 0 33 61 71 95c4 3 -2 -3 61 56c62 58 122 137 122 241c0 37.5244 -12.6807 106.071 -35 163 c-19.9111 50.7861 -43 99 -66 132c-6 5 -10 7 -13 7s-5 -2 -5 -5l4 -10c1.17285 -2.93066 13.7646 -24.8115 18 -33z" />
+		</symbol>
+		<symbol id="E4E7" viewBox="0 0 1000 1000" overflow="inherit">
+			<path transform="scale(1,-1)" d="M133 -111c-16 38 -21 43 -64 51c-37 -4 -60 -25 -68 -60c0 -32 18 -52 55 -58c8 -6 22 -10 43 -10c31 0 62 7 82 20l-108 -324h37c72 220 143 439 215 659h-4l-10 -2l-7 -1c-15 -35 -27 -52 -59 -71c-26 -15 -56 -27 -88 -29c-11 0 -20 2 -26 6c29 3 56 25 51 56 c-15 35 -19 42 -64 48c-38 -4 -60 -23 -68 -58c0 -32 18 -52 55 -59c7 -5 22 -8 45 -8c48 0 76 7 112 25l-66 -197c-21 -23 -50 -47 -90 -47c-7 0 -15 1 -25 4c31 5 52 22 52 55z" />
+		</symbol>
+		<symbol id="E566" viewBox="0 0 1000 1000" overflow="inherit">
+			<path transform="scale(1,-1)" d="M18 208c0 -27 17 -47 45 -47l3 -2l13 4l23 9l14 55c-17 15 -35 22 -55 22c-26 0 -43 -17 -43 -41zM432 225c0 -21 -11 -36 -31 -37c-15 0 -20 10 -23 25l3 14l2 11l1 9l-4 4c-1 -1 -2 -1 -3 -1c-23 -13 -36 -24 -47 -48l-12 -27c-18 -50 -31 -105 -47 -157h-60l58 214 c0 7 -3 5 -5 9c-7 0 -25 -8 -51 -28l-43 -33l5 6c21 -35 32 -68 32 -98c0 -12 -1 -21 -4 -28l-6 -15c-1 -3 -5 -10 -12 -19c-14 -18 -30 -26 -49 -26c-30 0 -67 18 -67 52c1 1 1 6 3 15l20 84c-9 -5 -21 -8 -36 -8c-21 0 -29 7 -40 19c-10 12 -16 27 -16 47c0 23 6 33 17 45 s25 18 46 18c19 0 39 -8 60 -25l34 117h63l-46 -158l38 31l32 20c21 10 35 13 62 15c16 0 24 -7 24 -21l-1 -10l-6 -24c21 37 44 55 70 55c23 0 39 -23 39 -47zM162 167l-36 -115l-1 -10c0 -10 5 -16 16 -19c32 18 48 43 48 75c0 20 -9 43 -27 69z" />
+		</symbol>
+	</defs>
+	<style type="text/css">g.page-margin{font-family:Times;} g.tempo{font-weight:bold;} g.dir, g.dynam {font-style:italic;}</style>
+	<svg class="definition-scale" viewBox="0 0 21000 29700">
+		<g class="page-margin" transform="translate(500, 500)">
+			<g class="system" id="system-0000000399738183">
+				<g class="section boundaryStart" id="section-0000000537778393" />
+				<g class="measure" id="measure-0000000700952397">
+					<g class="staff" id="staff-0000001830264575">
+						<path d="M0 1400 L4558 1400" stroke="#000000" stroke-width="20" />
+						<path d="M0 1580 L4558 1580" stroke="#000000" stroke-width="20" />
+						<path d="M0 1760 L4558 1760" stroke="#000000" stroke-width="20" />
+						<path d="M0 1940 L4558 1940" stroke="#000000" stroke-width="20" />
+						<path d="M0 2120 L4558 2120" stroke="#000000" stroke-width="20" />
+						<g class="clef">
+							<use xlink:href="#E050" x="90" y="1940" height="720px" width="720px" />
+						</g>
+						<g class="keySig">
+							<use xlink:href="#E262" x="735" y="1400" height="720px" width="720px" />
+						</g>
+						<g class="meterSig">
+							<use xlink:href="#E08A" x="1056" y="1760" height="720px" width="720px" />
+						</g>
+						<g class="layer" id="layer-0000002028637810">
+							<g class="note" id="note-0000001865292898">
+								<use xlink:href="#E0A3" x="1624" y="1580" height="720px" width="720px" />
+								<g class="stem" id="stem-0000000954603184">
+									<rect x="1624" y="1602" height="608" width="20" />
+								</g>
+								<g class="tie" id="tie-0000000614736259">
+									<path d="M1872,1535 C2067,1393 2457,1393 2652,1535 C2457,1437 2067,1437 1872,1535" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" />
+								</g>
+							</g>
+							<g class="note" id="note-0000001011457780">
+								<use xlink:href="#E0A4" x="2674" y="1580" height="720px" width="720px" />
+								<g class="stem" id="stem-0000000165386751">
+									<rect x="2674" y="1602" height="608" width="20" />
+									<g class="flag" id="flag-0000000811284839">
+										<use xlink:href="#E241" x="2674" y="2210" height="720px" width="720px" />
+									</g>
+								</g>
+							</g>
+							<g class="note" id="note-0000000090358808">
+								<use xlink:href="#E0A4" x="3124" y="1580" height="720px" width="720px" />
+								<g class="stem" id="stem-0000000890614270">
+									<rect x="3124" y="1602" height="608" width="20" />
+								</g>
+							</g>
+							<g class="beam" id="beam-0000001596810933">
+								<polygon points="3814,2255 4150,2224 4150,2134 3814,2165 " />
+								<polygon points="3814,2120 4150,2089 4150,1999 3814,2030 " />
+								<g class="note" id="note-0000000389547627">
+									<use xlink:href="#E0A4" x="3814" y="1580" height="720px" width="720px" />
+									<g class="stem" id="stem-0000000593016300">
+										<rect x="3814" y="1602" height="633" width="20" />
+									</g>
+								</g>
+								<g class="note" id="note-0000000498214372">
+									<use xlink:href="#E0A4" x="4130" y="1310" height="720px" width="720px" />
+									<g class="stem" id="stem-0000000353348373">
+										<rect x="4130" y="1332" height="872" width="20" />
+									</g>
+								</g>
+							</g>
+						</g>
+					</g>
+					<g class="barLineAttr" id="bline-0000001132957616">
+						<path d="M4543 1400 L4543 2120" stroke="#000000" stroke-width="30" />
+					</g>
+				</g>
+				<g class="measure" id="measure-0000001103842276">
+					<g class="staff" id="staff-0000000450210551">
+						<path d="M4558 1400 L6779 1400" stroke="#000000" stroke-width="20" />
+						<path d="M4558 1580 L6779 1580" stroke="#000000" stroke-width="20" />
+						<path d="M4558 1760 L6779 1760" stroke="#000000" stroke-width="20" />
+						<path d="M4558 1940 L6779 1940" stroke="#000000" stroke-width="20" />
+						<path d="M4558 2120 L6779 2120" stroke="#000000" stroke-width="20" />
+						<g class="ledgerLines above">
+							<path d="M5026 1220 L5312 1220" stroke="#000000" stroke-width="35" />
+							<path d="M5911 1220 L6237 1220" stroke="#000000" stroke-width="35" />
+							<path d="M5911 1040 L6237 1040" stroke="#000000" stroke-width="35" />
+						</g>
+						<g class="layer" id="layer-0000001497452518">
+							<g class="rest" id="rest-0000001323610833">
+								<use xlink:href="#E4E7" x="4738" y="1760" height="720px" width="720px" />
+							</g>
+							<g class="beam" id="beam-0000001996733126">
+								<polygon points="5061,1895 5531,1940 5531,1850 5061,1805 " />
+								<g class="note" id="note-0000000144170958">
+									<use xlink:href="#E0A4" x="5061" y="1220" height="720px" width="720px" />
+									<g class="stem" id="stem-0000000933821056">
+										<rect x="5061" y="1242" height="633" width="20" />
+									</g>
+								</g>
+								<g class="note" id="note-0000000366697013">
+									<use xlink:href="#E0A4" x="5511" y="1310" height="720px" width="720px" />
+									<g class="stem" id="stem-0000000919995916">
+										<rect x="5511" y="1332" height="588" width="20" />
+									</g>
+								</g>
+							</g>
+							<g class="note" id="note-0000001946114248">
+								<use xlink:href="#E0A4" x="5961" y="950" height="720px" width="720px" />
+								<g class="stem" id="stem-0000000489101812">
+									<rect x="5961" y="972" height="788" width="20" />
+								</g>
+								<g class="tie" id="tie-0000000328479296">
+									<path d="M6209,905 C6391,763 6755,763 6937,905 C6755,807 6391,807 6209,905" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" />
+								</g>
+							</g>
+						</g>
+					</g>
+					<g class="trill" id="trill-0000000719737290">
+						<use xlink:href="#E566" x="5019" y="1079" height="720px" width="720px" />
+					</g>
+					<g class="barLineAttr" id="bline-0000000352231950">
+						<path d="M6764 1400 L6764 2120" stroke="#000000" stroke-width="30" />
+					</g>
+				</g>
+				<g class="measure" id="measure-0000001408365491">
+					<g class="staff" id="staff-0000000018738679">
+						<path d="M6779 1400 L10899 1400" stroke="#000000" stroke-width="20" />
+						<path d="M6779 1580 L10899 1580" stroke="#000000" stroke-width="20" />
+						<path d="M6779 1760 L10899 1760" stroke="#000000" stroke-width="20" />
+						<path d="M6779 1940 L10899 1940" stroke="#000000" stroke-width="20" />
+						<path d="M6779 2120 L10899 2120" stroke="#000000" stroke-width="20" />
+						<g class="ledgerLines above">
+							<path d="M6924 1220 L7210 1220" stroke="#000000" stroke-width="35" />
+							<path d="M7374 1220 L7660 1220" stroke="#000000" stroke-width="35" />
+							<path d="M7809 1220 L8135 1220" stroke="#000000" stroke-width="35" />
+							<path d="M8514 1220 L8800 1220" stroke="#000000" stroke-width="35" />
+							<path d="M8964 1220 L9250 1220" stroke="#000000" stroke-width="35" />
+							<path d="M6924 1040 L7210 1040" stroke="#000000" stroke-width="35" />
+							<path d="M7374 1040 L7660 1040" stroke="#000000" stroke-width="35" />
+						</g>
+						<g class="layer" id="layer-0000000301969641">
+							<g class="beam" id="beam-0000001424911163">
+								<polygon points="6959,1693 7429,1738 7429,1648 6959,1603 " />
+								<g class="note" id="note-0000000699898426">
+									<use xlink:href="#E0A4" x="6959" y="950" height="720px" width="720px" />
+									<g class="stem" id="stem-0000001914237215">
+										<rect x="6959" y="972" height="701" width="20" />
+									</g>
+								</g>
+								<g class="note" id="note-0000001891768844">
+									<use xlink:href="#E0A4" x="7409" y="1040" height="720px" width="720px" />
+									<g class="stem" id="stem-0000001132356798">
+										<rect x="7409" y="1062" height="656" width="20" />
+									</g>
+								</g>
+							</g>
+							<g class="note" id="note-0000001463567273">
+								<use xlink:href="#E0A4" x="7859" y="1130" height="720px" width="720px" />
+								<g class="stem" id="stem-0000000520624272">
+									<rect x="7859" y="1152" height="608" width="20" />
+								</g>
+							</g>
+							<g class="note" id="note-0000000897464573">
+								<use xlink:href="#E0A4" x="8549" y="1220" height="720px" width="720px" />
+								<g class="stem" id="stem-0000001283761626">
+									<rect x="8549" y="1242" height="608" width="20" />
+									<g class="flag" id="flag-0000000413446773">
+										<use xlink:href="#E241" x="8549" y="1850" height="720px" width="720px" />
+									</g>
+								</g>
+								<g class="tie" id="tie-0000001718555082">
+									<path d="M8662,1085 C8774,943 8998,943 9112,1085 C8998,987 8774,987 8662,1085" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" />
+								</g>
+							</g>
+							<g class="beam" id="beam-0000001866745589">
+								<polygon points="8999,1954 9335,1985 9335,1895 8999,1864 " />
+								<polygon points="8999,1819 9335,1850 9335,1760 8999,1729 " />
+								<g class="note" id="note-0000001909425530">
+									<use xlink:href="#E0A4" x="8999" y="1220" height="720px" width="720px" />
+									<g class="stem" id="stem-0000001690315766">
+										<rect x="8999" y="1242" height="692" width="20" />
+									</g>
+								</g>
+								<g class="note" id="note-0000001804515300">
+									<use xlink:href="#E0A4" x="9315" y="1310" height="720px" width="720px" />
+									<g class="stem" id="stem-0000000075912999">
+										<rect x="9315" y="1332" height="633" width="20" />
+									</g>
+								</g>
+							</g>
+							<g class="note" id="note-0000001724584166">
+								<use xlink:href="#E0A4" x="9631" y="1580" height="720px" width="720px" />
+								<g class="stem" id="stem-0000000264487875">
+									<rect x="9631" y="1602" height="608" width="20" />
+								</g>
+								<g class="tie" id="tie-0000000100211024">
+									<path d="M9879,1535 C9984,1393 10194,1393 10299,1535 C10194,1437 9984,1437 9879,1535" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" />
+								</g>
+							</g>
+							<g class="note" id="note-0000000499294403">
+								<use xlink:href="#E0A4" x="10321" y="1580" height="720px" width="720px" />
+								<g class="stem" id="stem-0000002104049482">
+									<rect x="10321" y="1602" height="608" width="20" />
+									<g class="flag" id="flag-0000000146428825">
+										<use xlink:href="#E241" x="10321" y="2210" height="720px" width="720px" />
+									</g>
+								</g>
+							</g>
+						</g>
+					</g>
+					<g class="barLineAttr" id="bline-0000000633134018">
+						<path d="M10884 1400 L10884 2120" stroke="#000000" stroke-width="30" />
+					</g>
+				</g>
+				<g class="boundaryEnd section-0000000537778393" id="bdend-0000000860844414" />
+			</g>
+		</g>
+	</svg>
+</svg>

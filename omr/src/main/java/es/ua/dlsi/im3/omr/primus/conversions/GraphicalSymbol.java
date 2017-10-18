@@ -10,7 +10,10 @@ public enum GraphicalSymbol {
     barline,
     thickbarline,
     line,
-    text;
+    metersign,
+    digit,
+    slur,
+    fermata;
 
 
     /*public static final String DOT = "dot-";
@@ -23,6 +26,7 @@ public enum GraphicalSymbol {
     public static final String LINE_4 = "-L4";
     public static final String THICKBARLINE_0 = "thickbarline_L1";
     public static final String TIMESIGNATURE = "timeSig.";*/
+
 
     @Override
     public String toString() {

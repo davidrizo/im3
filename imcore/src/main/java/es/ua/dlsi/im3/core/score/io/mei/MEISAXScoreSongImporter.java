@@ -322,7 +322,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	}
 	
 	private void setXMLID(String xmlid, IUniqueIDObject object) throws IM3Exception {
-		song.getIdManager().assignID(xmlid, object);
+        if (xmlid != null) {
+            song.getIdManager().assignID(xmlid, object);
+        } else {
+            song.getIdManager().assignNextID(object);
+            xmlid = object.__getID();
+        }
 		xmlIDs.put(xmlid, object);
 	}
 
@@ -684,8 +689,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						//if (currentBeam != null) {
 						//	currentBeam.addNoteOrChord(currentNote);
 						//}
+
 					}
-					
+                    // TODO: 18/10/17 Comprobar Fermata con chords
+                    processFermata(currentAtomFigure, attributesMap);
+
 					processPossibleMensuralImperfection(attributesMap, currentAtomFigure);
 					String tie = getOptionalAttribute(attributesMap, "tie");
 					if (tie != null) { 						
@@ -698,6 +706,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						MelodicFunction mf = MelodicFunction.valueOf(mfunc);
 						lastAtomPitch.setMelodicFunction(mf);
 					}
+
 
 					updateCurrentTime();
 					
@@ -830,7 +839,14 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					pendingConnector = new PendingConnector();
 					pendingConnector.tag = element;
 					pendingConnector.measure = currentMeasure;
-					pendingConnector.layer = processLayer(layerNumber);
+					if (layerNumber != null) {
+                        pendingConnector.layer = processLayer(layerNumber);
+                    } else {
+					    if (lastVoice == null) {
+					        throw new ImportException("Last voice is null while importing a " + element);
+                        }
+                        pendingConnector.layer = lastVoice;
+                    }
 					pendingConnector.tstamp = getOptionalAttribute(attributesMap, "tstamp");
 					pendingConnector.tstamp2 = getOptionalAttribute(attributesMap, "tstamp2");
 					pendingConnector.startid = getOptionalAttribute(attributesMap, "startid");
@@ -872,6 +888,25 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			throw new ImportException(e);
 		}
 	}
+
+    private void processFermata(AtomFigure atomFigure, HashMap<String, String> attributesMap) throws IM3Exception {
+        String fermata = getOptionalAttribute(attributesMap, "fermata");
+        if (fermata != null) {
+            PositionAboveBelow positionAboveBelow;
+            switch (fermata) {
+                case "above":
+                    positionAboveBelow = PositionAboveBelow.ABOVE;
+                    break;
+                case "below":
+                    positionAboveBelow = PositionAboveBelow.BELOW;
+                    break;
+                default:
+                    throw new ImportException("Unknown fermata position: '" + fermata + "'");
+            }
+            lastStaff.addFermata(atomFigure, positionAboveBelow);
+        }
+        
+    }
 
     private Syllabic wordpos2Syllabic(String sylType) throws ImportException {
         switch (sylType) {

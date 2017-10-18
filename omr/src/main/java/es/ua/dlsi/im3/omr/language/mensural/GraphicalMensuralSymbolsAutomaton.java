@@ -41,8 +41,8 @@ public class GraphicalMensuralSymbolsAutomaton extends GraphicalSymbolsAutomaton
         transitions.add(new Transition<>(start, GraphicalSymbol.clef, clef));
         transitions.add(new Transition<>(clef, GraphicalSymbol.accidental, keysig));
         transitions.add(new Transition<>(keysig, GraphicalSymbol.accidental, keysig));
-        transitions.add(new Transition<>(clef, GraphicalSymbol.text, timesig));
-        transitions.add(new Transition<>(keysig, GraphicalSymbol.text, timesig));
+        transitions.add(new Transition<>(clef, GraphicalSymbol.metersign, timesig));
+        transitions.add(new Transition<>(keysig, GraphicalSymbol.metersign, timesig));
 
         transitions.add(new Transition<>(timesig, GraphicalSymbol.rest, notes));
 

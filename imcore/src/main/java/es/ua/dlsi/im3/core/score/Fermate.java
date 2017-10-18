@@ -35,8 +35,6 @@ public class Fermate extends StaffMark implements INotationTypeDependant {
 	/**
 	 * 
 	 * @param snr
-	 * @param numberOfLines
-	 * @param above
 	 *            True if above, false if belog
 	 * @throws IM3Exception 
 	 */
@@ -69,6 +67,7 @@ public class Fermate extends StaffMark implements INotationTypeDependant {
 		if (!fermate.containsKey(position)) {
 			Fermata ll = new Fermata(this, position);
 			fermate.put(position, ll);
+			snr.setFermata(ll);
 		}
 	}
 

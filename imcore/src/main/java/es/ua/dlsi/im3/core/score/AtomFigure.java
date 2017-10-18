@@ -27,8 +27,9 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	 * Used for tuplets and proportions in mensural. In MEI = @numbase. In a triplet this value is 2
 	 */
 	Integer irregularGroupInSpaceOfFigures;
-	
-	/**
+    private Fermata fermata;
+
+    /**
 	 * Package visibility, use  Atom.addFigure
 	 * @param atom
 	 * @param figure
@@ -257,5 +258,13 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
     public void addDot() {
         this.dots++;
         duration = duration.add(duration.divide(2));
+    }
+
+    public void setFermata(Fermata fermata) {
+        this.fermata = fermata;
+    }
+
+    public Fermata getFermata() {
+        return fermata;
     }
 }

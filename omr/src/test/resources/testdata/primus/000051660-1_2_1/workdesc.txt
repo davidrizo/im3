@@ -1,0 +1,9 @@
+Using font  Leipzig
+RISM ID:  000051660
+Incipit:  1.2.1
+Author:  Anfossi, Pasquale
+Title:  Lascia pur ch'io vada a morte
+@clef:  C-1
+@keysig:  bBE
+@timesig:  3/4
+@data:  ''8.F6D/'4B8-BB''D/CC-CCE/DD4-8.D6F/q8F4.E

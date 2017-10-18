@@ -1,0 +1,8 @@
+@start:000051660-1_2_1
+@clef:C-1
+@keysig:bBE
+@key:
+@timesig:3/4
+@data:''8.F6D/'4B8-BB''D/CC-CCE/DD4-8.D6F/q8F4.E
+@end:000051660-1_2_1
+

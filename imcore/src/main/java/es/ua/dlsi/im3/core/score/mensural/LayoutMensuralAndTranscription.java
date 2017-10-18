@@ -44,6 +44,7 @@ public class LayoutMensuralAndTranscription {
             }
         }
 
+        mensural.debugPutIDsAsLyrics(); // FIXME: 17/10/17 Quitar
         // TODO: 16/10/17 Tamaño
         //PageLayout layout = new PageLayout(mensural, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
         HorizontalLayout layout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(20000), new CoordinateComponent(800));

@@ -117,6 +117,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         } else {
             // the stem is included in the glyph
             if (notePitches.size() != 1) {
+                // TODO: 17/10/17  
                 throw new IM3Exception("Unsupported " + notePitches.size() + " pitches for getStemEnd");
             }
             NotePitch refHead = notePitches.get(0);
@@ -136,10 +137,18 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         }
     }
 
-    public void removeFlag() {
-        if (flag != null) {
-            group.remove(flag.getGraphics());
-            flag = null;
+    public void removeFlag() throws IM3Exception {
+        if (notePitches.size() != 1) {
+            // TODO: 17/10/17 Por mensural
+            throw new IM3Exception("Unsupported " + notePitches.size() + " pitches for removeFlag");
+        }
+        if (notePitches.get(0).headIncludesFlag()) {
+            notePitches.get(0).useHeadWithoutFlag();
+        } else {
+            if (flag != null) {
+                group.remove(flag.getGraphics());
+                flag = null;
+            }
         }
     }
 }

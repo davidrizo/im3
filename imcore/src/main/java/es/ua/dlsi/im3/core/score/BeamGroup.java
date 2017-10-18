@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,5 +72,18 @@ public class BeamGroup {
 
     public boolean isComputed() {
         return computed;
+    }
+
+    public SingleFigureAtom getLastFigure() {
+        if (includedFigures.isEmpty()) {
+            throw new IM3RuntimeException("Empty figures");
+        }
+        return includedFigures.get(includedFigures.size()-1);
+    }
+    public SingleFigureAtom getFirstFigure() {
+        if (includedFigures.isEmpty()) {
+            throw new IM3RuntimeException("Empty figures");
+        }
+        return includedFigures.get(0);
     }
 }

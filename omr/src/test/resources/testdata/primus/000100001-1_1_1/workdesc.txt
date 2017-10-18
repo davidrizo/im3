@@ -1,0 +1,9 @@
+Using font  Leipzig
+RISM ID:  000100001
+Incipit:  1.1.1
+Author:  Bach, Johann Ernst
+Title:  Sonatas
+@clef:  G-2
+@keysig:  xF
+@timesig:  c
+@data:  ''2D+8D4D{6DG}/-{8AtG}'''4D+/{8DC}''4B8A+{6AG}4D+8D+/

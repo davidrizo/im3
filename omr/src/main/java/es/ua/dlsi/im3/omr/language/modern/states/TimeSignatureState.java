@@ -20,7 +20,7 @@ public class TimeSignatureState extends OMRState {
 
     @Override
     public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
-        if (!token.getSymbol().equals(GraphicalSymbol.text)) {
+        if (!token.getSymbol().equals(GraphicalSymbol.digit)) {
             // the automaton has an error
             throw new IM3RuntimeException("Expected an accidental and found a " + token.getSymbol());
         }

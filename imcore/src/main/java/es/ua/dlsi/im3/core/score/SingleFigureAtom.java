@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.tree.ITreeLabel;
+import es.ua.dlsi.im3.core.adt.tree.Tree;
 import org.apache.commons.lang3.math.Fraction;
 
 public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithConnectors {
@@ -14,8 +16,8 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
      * Note that the NotePitches can also have connectors
      */
     ConnectorCollection connectorCollection;
-	
-	public SingleFigureAtom(Figures figure, int dots) {
+
+    public SingleFigureAtom(Figures figure, int dots) {
 		atomFigure = new AtomFigure(this, figure, dots);
 		addDuration(atomFigure.getDuration());
 	}

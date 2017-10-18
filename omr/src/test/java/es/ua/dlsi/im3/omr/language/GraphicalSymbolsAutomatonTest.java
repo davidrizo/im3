@@ -28,8 +28,8 @@ public class GraphicalSymbolsAutomatonTest {
                 new GraphicalToken(GraphicalSymbol.clef, "g", PositionsInStaff.LINE_2),
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.LINE_3),
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.SPACE_4),
-                new GraphicalToken(GraphicalSymbol.text, "3", PositionsInStaff.LINE_4),
-                new GraphicalToken(GraphicalSymbol.text, "4", PositionsInStaff.LINE_2),
+                new GraphicalToken(GraphicalSymbol.digit, "3", PositionsInStaff.LINE_4),
+                new GraphicalToken(GraphicalSymbol.digit, "4", PositionsInStaff.LINE_2),
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.SPACE_2),
                 new GraphicalToken(GraphicalSymbol.note, "HALF", PositionsInStaff.SPACE_2),
                 new GraphicalToken(GraphicalSymbol.rest, "QUARTER", PositionsInStaff.LINE_3),
@@ -42,7 +42,7 @@ public class GraphicalSymbolsAutomatonTest {
 
         List<GraphicalToken> sequence2 = Arrays.asList(
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.SPACE_4),
-                new GraphicalToken(GraphicalSymbol.text, "3", PositionsInStaff.LINE_4)
+                new GraphicalToken(GraphicalSymbol.digit, "3", PositionsInStaff.LINE_4)
         );
 
         OMRTransduction t2 = gspa.probabilityOf(sequence2, true);
@@ -66,7 +66,7 @@ public class GraphicalSymbolsAutomatonTest {
         List<GraphicalToken> sequence1 = Arrays.asList(
                 new GraphicalToken(GraphicalSymbol.clef, "g", PositionsInStaff.LINE_2),
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.LINE_3),
-                new GraphicalToken(GraphicalSymbol.text, "C", PositionsInStaff.LINE_3),
+                new GraphicalToken(GraphicalSymbol.metersign, "C", PositionsInStaff.LINE_3),
                 new GraphicalToken(GraphicalSymbol.rest, "MINIM", PositionsInStaff.LINE_4),
                 new GraphicalToken(GraphicalSymbol.note, "MINIM", PositionsInStaff.LINE_4),
                 new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1),
@@ -89,7 +89,7 @@ public class GraphicalSymbolsAutomatonTest {
 
         List<GraphicalToken> sequence2 = Arrays.asList(
                 new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.SPACE_4),
-                new GraphicalToken(GraphicalSymbol.text, "3", PositionsInStaff.LINE_4)
+                new GraphicalToken(GraphicalSymbol.digit, "3", PositionsInStaff.LINE_4)
         );
 
         OMRTransduction t2 = gspa.probabilityOf(sequence2, true);

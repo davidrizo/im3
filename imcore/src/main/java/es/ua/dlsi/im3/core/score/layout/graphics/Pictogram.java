@@ -60,7 +60,6 @@ public class Pictogram extends GraphicsElement {
         path.getTransforms().add(layoutFont.getJavaFXScale());
         width = path.getLayoutBounds().getWidth() * layoutFont.getScaleX();
         height = path.getLayoutBounds().getHeight() * layoutFont.getScaleX();
-
     }
 
     public String getCodepoint() {

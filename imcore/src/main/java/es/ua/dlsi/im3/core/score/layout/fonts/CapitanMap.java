@@ -21,18 +21,20 @@ public class CapitanMap implements IFontMap {
         UNICODES.put(Figures.SEMIMINIM, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
         // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
         UNICODES.put(Figures.FUSA, "mensuralBlackSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        //mensuralBlackFusa
+        //mensuralBlackSemiminima
     }
 
     private static final HashMap<Figures, String> UNICODES_WITHOUT_FLAG = new HashMap<>();
     {
         //TODO Mensural
         // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
-        UNICODES.put(Figures.SEMIBREVE, "mensuralWhiteSemibrevis");
-        UNICODES.put(Figures.MINIM, "mensuralWhiteMinima");
+        UNICODES_WITHOUT_FLAG.put(Figures.SEMIBREVE, "mensuralWhiteSemibrevis");
+        UNICODES_WITHOUT_FLAG.put(Figures.MINIM, "mensuralWhiteMinima");
         //UNICODES.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
-        UNICODES.put(Figures.SEMIMINIM, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        UNICODES_WITHOUT_FLAG.put(Figures.SEMIMINIM, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
         // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
-        UNICODES.put(Figures.FUSA, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        UNICODES_WITHOUT_FLAG.put(Figures.FUSA, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
     }
 
     @Override

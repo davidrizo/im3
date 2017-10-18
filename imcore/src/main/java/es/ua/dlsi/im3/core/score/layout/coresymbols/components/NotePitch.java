@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements IConnectableWithSlur {
 
-    private final Pictogram noteHeadPictogram;
+    private Pictogram noteHeadPictogram;
     private final AtomPitch atomPitch;
     private final LayoutFont layoutFont;
 
@@ -109,6 +109,23 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
         return unicode;
     }
 
+    public boolean headIncludesFlag() throws IM3Exception {
+        return !layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure()).equals(
+                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure())
+        );
+    }
+
+    public void useHeadWithoutFlag() throws IM3Exception {
+        Pictogram newNoteHeadPictogram = new Pictogram(noteHeadPictogram.getID(), layoutFont,
+                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure()),
+                noteHeadPictogram.getPosition());
+
+        root.remove(noteHeadPictogram);
+        root.add(newNoteHeadPictogram);
+        noteHeadPictogram = newNoteHeadPictogram;
+    }
+
+
     public AtomPitch getAtomPitch() {
         return atomPitch;
     }
@@ -181,4 +198,5 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     public Pictogram getNoteHeadPictogram() {
         return noteHeadPictogram;
     }
+
 }

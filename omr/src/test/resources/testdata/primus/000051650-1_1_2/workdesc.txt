@@ -1,0 +1,9 @@
+Using font  Bravura
+RISM ID:  000051650
+Incipit:  1.1.2
+Author:  Abos, Girolamo
+Title:  Tito Manlio. Excerpts
+@clef:  C-1
+@keysig:  bBEA
+@timesig:  3/4
+@data:  =10/'4B8E''EEC/'AA4--/''F8.E6C'8.B6A/8AG4-

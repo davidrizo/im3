@@ -736,4 +736,13 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         this.marks.clear();
         this.connectorCollection.clear();
     }
+
+    /**
+     *
+     * @param time
+     * @return null if not exists
+     */
+    public Fermate getFermateWithOnset(Time time) {
+        return fermate.get(time);
+    }
 }

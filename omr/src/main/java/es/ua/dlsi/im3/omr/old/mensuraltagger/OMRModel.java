@@ -76,7 +76,7 @@ public class OMRModel {
         song.addStaff(modernStaff);
         ScorePart modernPart = song.addPart();
         ScoreLayer modernLayer = modernPart.addScoreLayer(modernStaff);
-        transducer.convertIntoStaff(staff, modernStaff, modernLayer);
+        transducer.convertIntoStaff(staff, modernStaff, modernLayer, Intervals.UNISON_PERFECT);
     }
 
     private void readTrainingFile(File trainingFile) throws IM3Exception {

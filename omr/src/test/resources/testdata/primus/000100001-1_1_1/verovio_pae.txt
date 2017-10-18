@@ -1,0 +1,8 @@
+@start:000100001-1_1_1
+@clef:G-2
+@keysig:xF
+@key:
+@timesig:c
+@data:''2D+8D4D{6DG}/-{8AtG}'''4D+/{8DC}''4B8A+{6AG}4D+8D+/
+@end:000100001-1_1_1
+

@@ -38,8 +38,10 @@ public class GraphicalToken extends Token<GraphicalSymbol> {
             sb.append(VALUE_SEPARATOR);
             sb.append(value);
         }
-        sb.append(LINE_SEPARATOR);
-        sb.append(positionInStaff.toString());
+        if (positionInStaff != null) {
+            sb.append(LINE_SEPARATOR);
+            sb.append(positionInStaff.toString());
+        }
         return sb.toString();
     }
 }

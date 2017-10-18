@@ -1718,4 +1718,16 @@ public class ScoreSong {
             n++;
         }
     }
+
+    public void debugPutIDsAsLyrics() {
+        for (AtomPitch atomPitch: this.getAtomPitches()) {
+            String id = atomPitch.__getID();
+            if (id == null) {
+              id = atomPitch.getAtomFigure().getAtom().__getID();
+            }
+            if (id != null) {
+                atomPitch.addLyric(2, id, Syllabic.single);
+            }
+        }
+    }
 }

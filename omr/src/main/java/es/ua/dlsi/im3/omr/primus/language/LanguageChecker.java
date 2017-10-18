@@ -73,7 +73,7 @@ public class LanguageChecker {
             MEISongImporter importer = new MEISongImporter();
             try {
                 ScoreSong scoreSong = importer.importSong(file);
-                List<GraphicalToken> graphicalTokenList = converter.convert(scoreSong);
+                List<GraphicalToken> graphicalTokenList = converter.convert(scoreSong).getTokens();
                 BigFraction p = automaton.probabilityOf(graphicalTokenList, true).getProbability();
                 if (p.getNumeratorAsLong() == 0) {
                     notAccepted.println(file.getAbsolutePath() + "\t" + graphicalTokenList);
