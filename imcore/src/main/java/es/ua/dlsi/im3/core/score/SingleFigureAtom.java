@@ -2,12 +2,8 @@ package es.ua.dlsi.im3.core.score;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-
-import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.adt.tree.ITreeLabel;
-import es.ua.dlsi.im3.core.adt.tree.Tree;
-import org.apache.commons.lang3.math.Fraction;
 
 public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithConnectors {
 	AtomFigure atomFigure;
@@ -16,6 +12,11 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
      * Note that the NotePitches can also have connectors
      */
     ConnectorCollection connectorCollection;
+    /**
+     * True if it is a grace note
+     */
+    private boolean grace;
+    private HashSet<StaffMark> marks;
 
     public SingleFigureAtom(Figures figure, int dots) {
 		atomFigure = new AtomFigure(this, figure, dots);
@@ -120,5 +121,27 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
         } else {
             return connectorCollection.containsConnectorTo(fromSymbol);
         }
+    }
+
+    public void setGrace(boolean grace) {
+        this.grace = grace;
+        if (grace) {
+            this.setDuration(Time.TIME_ZERO);
+        }
+    }
+
+    public boolean isGrace() {
+        return grace;
+    }
+
+    public void addMark(StaffMark mark) {
+	    if (this.marks == null) {
+	        this.marks = new HashSet<>();
+        }
+	    this.marks.add(mark);
+    }
+
+    public HashSet<StaffMark> getMarks() {
+        return marks;
     }
 }

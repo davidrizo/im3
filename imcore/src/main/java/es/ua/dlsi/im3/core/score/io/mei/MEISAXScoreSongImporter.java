@@ -63,7 +63,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
         this.durationEvaluator = durationEvaluator;
     }
 
-    class PendingConnector {
+    class PendingConnectorOrMark {
 		Measure measure;
 		String tstamp;
 		String tstamp2;
@@ -73,7 +73,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		String content;
 		Staff staff;
 		public ScoreLayer layer;
-		@Override
+
+        @Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
@@ -96,7 +97,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			PendingConnector other = (PendingConnector) obj;
+			PendingConnectorOrMark other = (PendingConnectorOrMark) obj;
 			if (!getOuterType().equals(other.getOuterType()))
 				return false;
 			if (content == null) {
@@ -146,7 +147,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 		@Override
 		public String toString() {
-			return "PendingConnector [measure=" + measure.getNumber() + 
+			return "PendingConnectorOrMark [measure=" + measure.getNumber() +
 					", tstamp=" + tstamp + ", tstamp2=" + tstamp2 + ", startid="
 					+ startid + ", endid=" + endid + ", tag=" + tag + ", content=" + content + ", staff=" 
 					+ (staff!=null?staff.getNumberIdentifier():"null") +
@@ -186,7 +187,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	
 	HashMap<String, Object> xmlIDs;
 	HashMap<Measure, Integer> measurePositions;
-	HashSet<PendingConnector> pendingConnectors;
+	HashSet<PendingConnectorOrMark> pendingConnectorOrMarks;
 	String titleType;
 	// they may be used in handleElementContent, not always initialized, only for elements that we know will use them
 	//protected HashMap<String, String> attributesMap;
@@ -265,7 +266,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		currentTime = new HashMap<>();
         previousAccidentals = new HashMap<>();
 		xmlIDs = new HashMap<>();
-		pendingConnectors = new HashSet<>();
+		pendingConnectorOrMarks = new HashSet<>();
 		placeHolders = new HashMap<>();
 		hierarchicalIdGenerator = new HierarchicalIDGenerator();
 		layers = new HashMap<>();
@@ -369,7 +370,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		String layerNumber;
 		//Time time;
 		Staff elementStaff;
-		PendingConnector pendingConnector;
+		PendingConnectorOrMark pendingConnectorOrMark;
 		
 		//attributesMap = getAttributes(element, saxAttributes);
 		try {
@@ -668,7 +669,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							lastAtomPitch.setStaffChange(elementStaff);
 							elementStaff.addCoreSymbol(lastAtomPitch);
 						}
-						//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
+                        // TODO: 18/10/17 Comprobar grace notes acorde
+                        //lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
 					} else {
 						if (figure == null) {
 							throw new ImportException("Cannot import note not in chord without dur");
@@ -676,7 +678,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						currentNote = new SimpleNote(figure, dots, sp);
 						currentAtomFigure = currentNote.getAtomFigure();
 						lastAtomPitch = currentNote.getAtomPitch();
-													
+
+                        String grace = getOptionalAttribute(attributesMap, "grace");
+                        // TODO: 18/10/17 acc, unacc, unknown - de quién quita la nota el valor
+                        currentNote.setGrace(grace != null);
+
 						/*if (elementStaff != lastStaff) {
 							lastAtomPitch.setStaffChange(elementStaff);							
 							elementStaff.addCoreSymbol(lastAtomPitch);
@@ -827,46 +833,47 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					break;
 				case "tie":
 					staffNumber = getOptionalAttribute(attributesMap, "staff");
-					pendingConnector = new PendingConnector();
-					pendingConnector.tag = element;
-					pendingConnector.measure = currentMeasure;
-					pendingConnector.startid = getAttribute(attributesMap, "startid");
-					pendingConnector.endid = getAttribute(attributesMap, "endid");
-					if (pendingConnectors.contains(pendingConnector)) {
-						throw new ImportException("Duplicating pending connector: " + pendingConnector);
+					pendingConnectorOrMark = new PendingConnectorOrMark();
+					pendingConnectorOrMark.tag = element;
+					pendingConnectorOrMark.measure = currentMeasure;
+					pendingConnectorOrMark.startid = getAttribute(attributesMap, "startid");
+					pendingConnectorOrMark.endid = getAttribute(attributesMap, "endid");
+					if (pendingConnectorOrMarks.contains(pendingConnectorOrMark)) {
+						throw new ImportException("Duplicating pending connector: " + pendingConnectorOrMark);
 					}
-					pendingConnectors.add(pendingConnector);
-					break;		
+					pendingConnectorOrMarks.add(pendingConnectorOrMark);
+					break;
+                case "trill":
 				case "phrase": 
 				case "slur":
 				case "hairpin":
 					staffNumber = getOptionalAttribute(attributesMap, "staff");
 					layerNumber = getOptionalAttribute(attributesMap, "layer");
-					pendingConnector = new PendingConnector();
-					pendingConnector.tag = element;
-					pendingConnector.measure = currentMeasure;
+					pendingConnectorOrMark = new PendingConnectorOrMark();
+					pendingConnectorOrMark.tag = element;
+					pendingConnectorOrMark.measure = currentMeasure;
 					if (layerNumber != null) {
-                        pendingConnector.layer = processLayer(layerNumber);
+                        pendingConnectorOrMark.layer = processLayer(layerNumber);
                     } else {
 					    if (lastVoice == null) {
 					        throw new ImportException("Last voice is null while importing a " + element);
                         }
-                        pendingConnector.layer = lastVoice;
+                        pendingConnectorOrMark.layer = lastVoice;
                     }
-					pendingConnector.tstamp = getOptionalAttribute(attributesMap, "tstamp");
-					pendingConnector.tstamp2 = getOptionalAttribute(attributesMap, "tstamp2");
-					pendingConnector.startid = getOptionalAttribute(attributesMap, "startid");
-					pendingConnector.endid = getOptionalAttribute(attributesMap, "endid");
+					pendingConnectorOrMark.tstamp = getOptionalAttribute(attributesMap, "tstamp");
+					pendingConnectorOrMark.tstamp2 = getOptionalAttribute(attributesMap, "tstamp2");
+					pendingConnectorOrMark.startid = getOptionalAttribute(attributesMap, "startid");
+					pendingConnectorOrMark.endid = getOptionalAttribute(attributesMap, "endid");
 					if (staffNumber != null) {
-						pendingConnector.staff = findStaff(staffNumber);
+						pendingConnectorOrMark.staff = findStaff(staffNumber);
 					}
 					if (element.equals("hairpin")) {
-						pendingConnector.content = getAttribute(attributesMap, "form");
+						pendingConnectorOrMark.content = getAttribute(attributesMap, "form");
 					}
-					if (pendingConnectors.contains(pendingConnector)) {
-						throw new ImportException("Duplicating pending connector: " + pendingConnector);
+					if (pendingConnectorOrMarks.contains(pendingConnectorOrMark)) {
+						throw new ImportException("Duplicating pending connector: " + pendingConnectorOrMark);
 					}
-                    pendingConnectors.add(pendingConnector);
+                    pendingConnectorOrMarks.add(pendingConnectorOrMark);
 					break;
 				case "dynam":
 					dynamTime = decodeTStamp(currentMeasure, attributesMap);
@@ -888,6 +895,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         lastVerse.setSyllabic(wordpos2Syllabic(sylType));
                     }
                     break;
+
 				}
 			}
 		} catch (Exception e) {
@@ -1615,33 +1623,35 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			}
 		}
 		 
-		for (PendingConnector pendingConnector: pendingConnectors) {
+		for (PendingConnectorOrMark pendingConnectorOrMark : pendingConnectorOrMarks) {
 			Object fromElement;
 			String fromStr, toStr;
-			if (pendingConnector.startid != null) {				
-				fromElement = findXMLID(pendingConnector.startid);
-				fromStr = pendingConnector.startid;
-			} else if (pendingConnector.tstamp != null) {
-				fromElement = getPlaceHolderFromTStamp(pendingConnector.measure, pendingConnector.tstamp, pendingConnector.staff, pendingConnector.layer);
-				fromStr = pendingConnector.tstamp;
+			if (pendingConnectorOrMark.startid != null) {
+				fromElement = findXMLID(pendingConnectorOrMark.startid);
+				fromStr = pendingConnectorOrMark.startid;
+			} else if (pendingConnectorOrMark.tstamp != null) {
+				fromElement = getPlaceHolderFromTStamp(pendingConnectorOrMark.measure, pendingConnectorOrMark.tstamp, pendingConnectorOrMark.staff, pendingConnectorOrMark.layer);
+				fromStr = pendingConnectorOrMark.tstamp;
 			} else {
-				throw new ImportException("Missing either startid or endif for connector " + pendingConnector.tag);
+				throw new ImportException("Missing either startid or endif for connector " + pendingConnectorOrMark.tag);
 			}
-			Object toElement;
-			if (pendingConnector.endid != null) {				
-				toElement = findXMLID(pendingConnector.endid);
-				toStr = pendingConnector.endid;
-			} else if (pendingConnector.tstamp2 != null) {
-				toElement = getPlaceHolderFromTStamp2(pendingConnector.staff, pendingConnector.layer, pendingConnector.measure, measures, pendingConnector.tstamp2);
-				toStr = pendingConnector.tstamp2;
-			} else {
-				throw new ImportException("Missing either startid or endif for connector " + pendingConnector.tag);
-			}
+            Object toElement = null;
+			if (!pendingConnectorOrMark.tag.equals("trill")) {
+                if (pendingConnectorOrMark.endid != null) {
+                    toElement = findXMLID(pendingConnectorOrMark.endid);
+                    toStr = pendingConnectorOrMark.endid;
+                } else if (pendingConnectorOrMark.tstamp2 != null) {
+                    toElement = getPlaceHolderFromTStamp2(pendingConnectorOrMark.staff, pendingConnectorOrMark.layer, pendingConnectorOrMark.measure, measures, pendingConnectorOrMark.tstamp2);
+                    toStr = pendingConnectorOrMark.tstamp2;
+                } else {
+                    throw new ImportException("Missing either startid or endif for connector " + pendingConnectorOrMark.tag);
+                }
+            }
 
             ITimedSymbolWithConnectors from;
             ITimedSymbolWithConnectors to;
 			
-			switch (pendingConnector.tag) {
+			switch (pendingConnectorOrMark.tag) {
 			/*case "slur":
 				case "phrase": // TODO - deberían ser semánticamente diferentes
 					Slur slur = new Slur(fromElement, toElement);
@@ -1654,6 +1664,21 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					fromElement.addConnector(slur);
 					toElement.addConnector(slur);
 					break;*/
+                case "trill":
+                    if (!(fromElement instanceof SingleFigureAtom)) {
+                        throw new ImportException("Cannot add a trill to other thing than SingleFigureAtom, and it is " + fromElement.getClass());
+                    }
+                    SingleFigureAtom sfa = (SingleFigureAtom) fromElement;
+                    Staff staff;
+                    if (pendingConnectorOrMark.staff == null) {
+                        staff = sfa.getStaff();
+                    } else {
+                        staff = pendingConnectorOrMark.staff;
+                    }
+                    Trill trill = new Trill(staff, sfa);
+                    sfa.addMark(trill); // TODO: 18/10/17 Normalizar dónde añadimos los objetos
+                    lastStaff.addMark(trill);
+                    break;
                 case "slur":
                     if (fromElement instanceof ITimedSymbolWithConnectors) {
                         from = (ITimedSymbolWithConnectors) fromElement;
@@ -1706,7 +1731,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					}
 					break;
 				/*FRACCIONES case "hairpin":
-					String form = pendingConnector.content;
+					String form = pendingConnectorOrMark.content;
 					AMHairpin hairpin;
 					if (form.equals("cres")) {
 						hairpin = new AMHairpinCrescendo();
