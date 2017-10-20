@@ -102,8 +102,8 @@ public class MEI2GraphicSymbols {
         for (int i=0; i<figure.getDots(); i++) {
             graphicalTokens.add(new GraphicalToken(GraphicalSymbol.dot, null, positionInStaff));
         }
-
     }
+
     private void convert(ArrayList<GraphicalToken> graphicalTokens, ITimedElementInStaff symbol, HashMap<AtomPitch, Accidentals> drawnAccidentals) throws IM3Exception {
         if (symbol instanceof Clef) {
             PositionInStaff positionInStaff = PositionInStaff.fromLine(((Clef) symbol).getLine());
@@ -115,7 +115,7 @@ public class MEI2GraphicSymbols {
             if (positions != null) {
                 boolean first = true;
                 for (PositionInStaff position: positions) {
-                    graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, ks.getAccidental().getAbbrName(), position));
+                    graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, ks.getAccidental().name().toLowerCase(), position));
                 }
             }
         } else if (symbol instanceof TimeSignature) {
@@ -145,7 +145,7 @@ public class MEI2GraphicSymbols {
 
             Accidentals accidentalToDraw = drawnAccidentals.get(note.getAtomPitch());
             if (accidentalToDraw != null) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, accidentalToDraw.getAbbrName(), positionInStaff));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, accidentalToDraw.name().toLowerCase(), positionInStaff));
             }
 
             String figureString = generateFigureString(note);
