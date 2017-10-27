@@ -895,7 +895,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         lastVerse.setSyllabic(wordpos2Syllabic(sylType));
                     }
                     break;
-
+                case "dot":
+                    lastAtomPitch.getAtomFigure().addDot(); // TODO: 27/10/17 Ver casos como mensural patriarca.mei donde aparece nota - barra - dot 
+                    break;
 				}
 			}
 		} catch (Exception e) {

@@ -29,7 +29,8 @@ public class LayoutMensuralAndTranscription {
 
         MensuralToModern mensuralToModern = new MensuralToModern();
         //TODO Parámetro
-        ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC);
+        //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC); // ésta genera más sostenidos
+        ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FIFTH_PERFECT_DESC);
         mensuralToModern.merge(mensural, modern, true);
 
         // TODO: 16/10/17 Poder cambiar esto
