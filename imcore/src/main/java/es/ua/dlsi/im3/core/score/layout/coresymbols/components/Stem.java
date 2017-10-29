@@ -15,7 +15,7 @@ public class Stem extends Component<LayoutCoreSingleFigureAtom> {
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
      */
     public Stem(LayoutCoreSingleFigureAtom parent, Coordinate position, boolean stemUp) {
-        super(parent, position);
+        super(null, parent, position);
         Coordinate from = position;
         Coordinate to;
 

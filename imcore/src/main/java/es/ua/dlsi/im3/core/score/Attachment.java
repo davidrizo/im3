@@ -22,14 +22,14 @@ package es.ua.dlsi.im3.core.score;
  * @author drizo
  * @param <CoreSymbolType>
  */
-public abstract class Attachment <CoreSymbolType> {
-    CoreSymbolType coreSymbol;
+public abstract class Attachment <CoreSymbolType extends ITimedElement> {
+    CoreSymbolType attachedTo;
 
-    public Attachment(CoreSymbolType coreSymbol) {	
-    		this.coreSymbol = coreSymbol;
+    public Attachment(CoreSymbolType attachedTo) {
+    		this.attachedTo = attachedTo;
     }
 
-    public CoreSymbolType getCoreSymbol() {
-    		return coreSymbol;
+    public CoreSymbolType getAttachedTo() {
+        return attachedTo;
     }
 }

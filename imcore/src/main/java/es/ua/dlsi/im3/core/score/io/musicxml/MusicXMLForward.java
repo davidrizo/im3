@@ -11,6 +11,7 @@ import es.ua.dlsi.im3.core.score.Time;
  */
 public class MusicXMLForward implements ITimedElementInStaff{
 	Time time;
+    Integer horizontalOrderInStaff;
 
 	/**
 	 * The time to forward
@@ -34,5 +35,6 @@ public class MusicXMLForward implements ITimedElementInStaff{
 	@Override
 	public void setStaff(Staff staff) {
 	}
+
 
 }

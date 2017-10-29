@@ -29,4 +29,5 @@ public class MarkBarline implements ITimedElementInStaff {
     public Time getTime() {
         return time;
     }
+
 }

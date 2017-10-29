@@ -254,10 +254,14 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 
     /**
      * This method adds a dot and changes the duration of the figure
+     * @return Added duration
      */
-    public void addDot() {
+    public Time addDot() {
         this.dots++;
-        duration = duration.add(duration.divide(2));
+        Time addedDuration = duration.divide(2);
+        duration = duration.add(addedDuration);
+        this.atom.addDuration(addedDuration);
+        return addedDuration;
     }
 
     public void setFermata(Fermata fermata) {

@@ -23,7 +23,7 @@ public enum Figures {
 	SIXTY_FOURTH (1, 16, 64,NotationType.eModern, true, 4),
 	HUNDRED_TWENTY_EIGHTH (1, 32, 128, NotationType.eModern, true, 5),
 	TWO_HUNDRED_FIFTY_SIX (1, 64, 256, NotationType.eModern, true, 6),
-	MAXIMA (16, 1, -2, NotationType.eMensural, false, 0),
+	MAXIMA (16, 1, -2, NotationType.eMensural, false, 0), //TODO Dejar con MAXIMA 32, etc...
 	LONGA (8, 1, -1, NotationType.eMensural, false, 0),
 	BREVE (4, 1, 0, NotationType.eMensural, false, 0),
 	SEMIBREVE (2, 1, 1, NotationType.eMensural, false, 0),

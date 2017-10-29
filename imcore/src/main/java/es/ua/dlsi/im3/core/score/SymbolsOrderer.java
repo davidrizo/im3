@@ -51,10 +51,9 @@ public class SymbolsOrderer {
 	// order them, the order of classes will be:
 	// first clefs, next instrumentKey signature, then time signature, finally sounding
 	// symbols
-	static int compareClasses(ITimedElement o1, ITimedElement o2) throws IM3Exception {
-		int order1 = getClassOrder(o1);
-		int order2 = getClassOrder(o2);
-
+	static int compareClasses(ITimedElementInStaff o1, ITimedElementInStaff o2) throws IM3Exception {
+        int order1 = getClassOrder(o1);
+        int order2 = getClassOrder(o2);
 		if (order1 == order2) {
 			return o1.getTime().compareTo(o2.getTime());
 		} else {
@@ -62,18 +61,24 @@ public class SymbolsOrderer {
 		}
 	}
 
-	public static void sortList(List<? extends ITimedElement> input) {
-		Collections.sort(input, new Comparator<ITimedElement>() {
+	public static void sortList(List<? extends ITimedElementInStaff> input) {
+		Collections.sort(input, new Comparator<ITimedElementInStaff>() {
 			// compare by time. As we have several classes in the same
 			// collection we order them (see compareClasses), the order of
 			// classes will be:
 			// first clefs, next instrumentKey signature, then time signature, finally
 			// sounding symbols (compare
 			@Override
-			public int compare(ITimedElement o1, ITimedElement o2) {
+			public int compare(ITimedElementInStaff o1, ITimedElementInStaff o2) {
 					int diff;
 					try {
-						diff = o1.getTime().compareTo(o2.getTime());
+					    if (o1.getTime() == null) {
+					        throw new IM3RuntimeException("Null time in " + o1);
+                        }
+                        if (o2.getTime() == null) {
+                            throw new IM3RuntimeException("Null time in " + o2);
+                        }
+                        diff = o1.getTime().compareTo(o2.getTime());
 						if (diff != 0) {
 							return diff;
 						} else {

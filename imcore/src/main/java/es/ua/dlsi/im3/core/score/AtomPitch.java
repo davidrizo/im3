@@ -2,10 +2,7 @@ package es.ua.dlsi.im3.core.score;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * @author drizo
@@ -40,6 +37,11 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 
     ConnectorCollection connectorCollection;
 
+    HashSet<Attachment<AtomPitch>> attachments;
+
+    HashSet<DisplacedDot> displacedDots;
+
+    Integer horizontalOrderInStaff;
 
 	public AtomPitch(AtomFigure atomFigure, ScientificPitch spitch) {
 		this.atomFigure = atomFigure;
@@ -303,5 +305,32 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
             return connectorCollection.containsConnectorTo(fromSymbol);
         }
     }
+
+    public void addAttachment(Attachment<AtomPitch> attachment) {
+	    if (attachments == null) {
+            attachments = new HashSet<>();
+        }
+        attachments.add(attachment);
+	    if (attachment instanceof AttachmentInStaff) {
+            getStaff().addAttachment((AttachmentInStaff<?>) attachment); //TODO ¿Está esto bien diseñado?
+        }
+    }
+
+    public void addDisplacedDot(DisplacedDot displacedDot) {
+	    if (displacedDots == null) {
+	        displacedDots = new HashSet<>();
+        }
+        displacedDots.add(displacedDot);
+	    addAttachment(displacedDot); //TODO ¿Es necesario también meterlo aquí para algo?
+    }
+
+    public HashSet<Attachment<AtomPitch>> getAttachments() {
+        return attachments;
+    }
+
+    public HashSet<DisplacedDot> getDisplacedDots() {
+        return displacedDots;
+    }
+
 
 }

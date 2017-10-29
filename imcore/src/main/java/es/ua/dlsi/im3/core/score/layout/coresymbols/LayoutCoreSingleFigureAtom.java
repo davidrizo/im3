@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Not used for rests
  */
-public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom> {
+public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom>  {
     private boolean stemUp;
     Group group;
     ArrayList<NotePitch> notePitches;
@@ -40,6 +40,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         for (AtomPitch atomPitch: coreSymbol.getAtomPitches()) {
             NotePitch notePitch = new NotePitch(layoutFont, this, atomPitch, position);
             notePitches.add(notePitch);
+            addComponent(notePitch); // TODO: 28/10/17 Añadir todos los demás componentes !!!!
             group.add(notePitch.getGraphics());
 
             // FIXME: 22/9/17 Esto funciona cuando es una nota, en acordes?
@@ -151,4 +152,5 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
             }
         }
     }
+
 }

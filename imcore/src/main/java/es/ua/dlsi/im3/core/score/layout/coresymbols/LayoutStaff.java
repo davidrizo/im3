@@ -40,7 +40,9 @@ public class LayoutStaff extends NotationSymbol {
         this.scoreLayout = scoreLayout;
         this.position = leftTop;
         this.rightTop = rightTop;
-        layoutSymbolsInStaff = new TreeSet<>(LayoutCoreSymbolComparator.getInstance());
+        //layoutSymbolsInStaff = new TreeSet<>(LayoutCoreSymbolComparator.getInstance());
+        layoutSymbolsInStaff = new TreeSet<>();
+
         group = new Group("GROUP-STAFF-"+staff.__getID()); //TODO IDS
         for (int i=0; i<staff.getLineCount(); i++) {
             //double y = LayoutConstants.STAFF_TOP_MARGIN + i*LayoutConstants.SPACE_HEIGHT;
@@ -218,6 +220,11 @@ public class LayoutStaff extends NotationSymbol {
     public void createNoteAccidentals() throws IM3Exception {
         createNoteAccidentals(Time.TIME_ZERO, Time.TIME_MAX);
     }
+
+    public TreeSet<LayoutCoreSymbolInStaff> getLayoutSymbolsInStaff() {
+        return layoutSymbolsInStaff;
+    }
+
 
     /*public void createNoteAccidentals(Time timeZero, Time timeMax) throws IM3Exception {
         TreeMap<DiatonicPitch, ScientificPitch> alteredDiatonicPitchInBar = new TreeMap<>();

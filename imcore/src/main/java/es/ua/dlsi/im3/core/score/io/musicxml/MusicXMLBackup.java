@@ -11,6 +11,7 @@ import es.ua.dlsi.im3.core.score.Time;
  */
 public class MusicXMLBackup implements ITimedElementInStaff{
 	Time time;
+    Integer horizontalOrderInStaff;
 
 	/**
 	 * The time to backup

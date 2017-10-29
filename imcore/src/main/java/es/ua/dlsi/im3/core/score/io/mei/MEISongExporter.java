@@ -747,7 +747,7 @@ public class MEISongExporter implements ISongExporter {
 					
 					XMLExporterHelper.start(sb, tabs, "staff", "n", getNumber(staff));
 					for (ScoreLayer layer: staff.getLayers()) {
-						List<ITimedElement> symbols = new ArrayList<>();
+						List<ITimedElementInStaff> symbols = new ArrayList<>();
 						for (int i=0; i<layer.size(); i++) {
 							symbols.add(layer.getAtom(i));
 						}
@@ -756,8 +756,9 @@ public class MEISongExporter implements ISongExporter {
 							firstLayer = false;
 							symbols.addAll(staffSymbols);
 						}					
-						Collections.sort(symbols, ITimedElement.TIMED_ELEMENT_COMPARATOR);
-						for (ITimedElement slr : symbols) {
+						//Collections.sort(symbols, ITimedElementInStaff.TIMED_ELEMENT_COMPARATOR);
+                        SymbolsOrderer.sortList(symbols);
+						for (ITimedElementInStaff slr : symbols) {
 							if (slr instanceof Clef) { 
 								ArrayList<String> params = new ArrayList<>();
 								processClefChange((Clef) slr, params);

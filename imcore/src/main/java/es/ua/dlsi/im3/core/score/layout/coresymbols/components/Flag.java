@@ -35,7 +35,7 @@ public class Flag extends Component<LayoutCoreSingleFigureAtom> {
     Pictogram pictogram;
 
     public Flag(LayoutFont layoutFont, LayoutCoreSingleFigureAtom parent, Figures figure, Coordinate position, boolean stemUp) throws IM3Exception {
-        super(parent, position);
+        super(null, parent, position);
 
         pictogram = new Pictogram("FLAG", layoutFont, getUnicode(stemUp, figure), position);//TODO IDS
     }

@@ -68,7 +68,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 												// as
 												// well in order to deal with
 												// layout
-	private final ArrayList<Attachment<?>> attachments;
+	private final ArrayList<AttachmentInStaff<?>> attachments;
 	
 	private boolean ossia;
 
@@ -422,15 +422,16 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		this.marks.add(mark);
 	}
 
-	public void addAttachment(Attachment<?> attachment) {
-		this.attachments.add(attachment);
+	public void addAttachment(AttachmentInStaff<?> attachment) {
+	    this.attachments.add(attachment);
+	    this.coreSymbols.add(attachment);
 	}
 
 	public ArrayList<StaffMark> getMarks() {
 		return marks;
 	}
 
-	public ArrayList<Attachment<?>> getAttachments() {
+	public ArrayList<AttachmentInStaff<?>> getAttachments() {
 		return attachments;
 	}
 	

@@ -28,7 +28,7 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
     }
 
     public Accidental(LayoutFont layoutFont, ParentType parent, Accidentals accidental, Coordinate position) throws IM3Exception {
-        super(parent, position);
+        super(accidental, parent, position);
         this.accidental = accidental;
 
         pictogram = new Pictogram("ACC", layoutFont, getUnicode(), position); //TODO IDS

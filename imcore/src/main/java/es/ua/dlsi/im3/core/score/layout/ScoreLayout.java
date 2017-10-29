@@ -3,10 +3,8 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolInStaff;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutDashedBarlineAcrossStaves;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
@@ -16,8 +14,6 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * It contains staves that can be split in several. Symbols like
@@ -35,6 +31,7 @@ public abstract class ScoreLayout {
     protected HashMap<Staff, Double> noteHeadWidths;
     protected HashMap<Staff, LayoutStaff> layoutStaves;
     protected HashMap<BeamGroup, List<LayoutCoreSingleFigureAtom>> singleLayoutFigureAtomsInBeam;
+    protected HashMap<Object, NotationSymbol> coreSymbolViews;
     /**
      * Used for building connectors
      */
@@ -111,7 +108,7 @@ public abstract class ScoreLayout {
     private void createLayoutSymbols() throws IM3Exception {
         // TODO: 1/10/17 Beaming - parámetro para que se pueda deshabilitar
         //layoutStaff.createBeaming();
-
+        coreSymbolViews = new HashMap<>();
         singleLayoutFigureAtomsInBeam = new HashMap<>();
         coreSymbolsInStaves = new HashMap<>();
         layoutPitches = new HashMap<>();
@@ -124,7 +121,6 @@ public abstract class ScoreLayout {
             for (ITimedElementInStaff symbol: symbols) {
                 createLayoutSymbol(coreSymbolsInStaff, symbol);
             }
-
             if (staff.getNotationType() == null) {
                 throw new IM3Exception("The staff " + staff+  " has not a notation type");
             }
@@ -145,6 +141,20 @@ public abstract class ScoreLayout {
             createBeams();
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
+        }
+
+        // now link dependant symbols
+        for (Map.Entry<Object, NotationSymbol> entry: coreSymbolViews.entrySet()) {
+            if (entry.getValue() instanceof LayoutAttachmentInStaff) {
+                LayoutAttachmentInStaff layoutAttachmentInStaff = (LayoutAttachmentInStaff) entry.getValue();
+                AttachmentInStaff<ITimedElementInStaff> coreSymbol = (AttachmentInStaff) layoutAttachmentInStaff.getCoreSymbol();
+                NotationSymbol attachedToView = coreSymbolViews.get(coreSymbol.getAttachedTo());
+                if (attachedToView == null) {
+                    throw new IM3Exception("Cannot find the view of the attached to object: " + coreSymbol.getAttachedTo());
+                }
+                layoutAttachmentInStaff.setAttachedToView(attachedToView);
+            }
+
         }
     }
 
@@ -190,32 +200,53 @@ public abstract class ScoreLayout {
             }
         } else {
             LayoutCoreSymbol layoutCoreSymbol = layoutSymbolFactory.createCoreSymbol(getLayoutFont(symbol.getStaff()), symbol);
-            //createLayout(symbol, layoutStaff);
-            if (layoutCoreSymbol != null) {
-                simultaneities.add(layoutCoreSymbol);
-                if (layoutCoreSymbol instanceof LayoutCoreSymbolInStaff) {
-                    coreSymbolsInStaff.add((LayoutCoreSymbolInStaff) layoutCoreSymbol);
-                } else {
-                    throw new IM3RuntimeException("Unimplemented " + layoutCoreSymbol.getClass()); // TODO: 24/9/17 Debemos ponerlos en otra lista? Beamed groups?
+
+            coreSymbolViews.put(symbol, layoutCoreSymbol);
+            if (layoutCoreSymbol.getComponents() != null) {
+                List<Component<LayoutCoreSymbol>> components = layoutCoreSymbol.getComponents();
+                for (Component<LayoutCoreSymbol> component : components) {
+                    coreSymbolViews.put(component.getModelElement(), component);
+                }
+            }
+
+            addCoreSymbolToSimultaneities(coreSymbolsInStaff, layoutCoreSymbol);
+
+            // now add the symbols dependant of the main symbol (e.g. displaced dot)
+            /*Collection<LayoutCoreSymbol> dependantSymbols = layoutCoreSymbol.getDependantCoreSymbols();
+            if (dependantSymbols != null) {
+                for (LayoutCoreSymbol ds : dependantSymbols) {
+                    addCoreSymbolToSimultaneities(coreSymbolsInStaff, ds);
+                }
+            }*/
+        }
+    }
+
+    private void addCoreSymbolToSimultaneities(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, LayoutCoreSymbol layoutCoreSymbol) throws IM3Exception {
+        //createLayout(symbol, layoutStaff);
+        if (layoutCoreSymbol != null) {
+            simultaneities.add(layoutCoreSymbol);
+            if (layoutCoreSymbol instanceof LayoutCoreSymbolInStaff) {
+                coreSymbolsInStaff.add((LayoutCoreSymbolInStaff) layoutCoreSymbol);
+            } else {
+                throw new IM3RuntimeException("Unimplemented " + layoutCoreSymbol.getClass()); // TODO: 24/9/17 Debemos ponerlos en otra lista? Beamed groups?
+            }
+
+            //TODO Esto de añadir los layout pitches con el instanceof no me gusta
+            if (layoutCoreSymbol instanceof LayoutCoreSingleFigureAtom) {
+                LayoutCoreSingleFigureAtom sfa = (LayoutCoreSingleFigureAtom) layoutCoreSymbol;
+
+                BeamGroup beam = sfa.getCoreSymbol().getBelongsToBeam();
+                if (beam != null) {
+                    List<LayoutCoreSingleFigureAtom> layoutAtomsInBeam = singleLayoutFigureAtomsInBeam.get(beam);
+                    if (layoutAtomsInBeam == null) {
+                        layoutAtomsInBeam = new ArrayList<>();
+                        singleLayoutFigureAtomsInBeam.put(sfa.getCoreSymbol().getBelongsToBeam(), layoutAtomsInBeam);
+                    }
+                    layoutAtomsInBeam.add(sfa);
                 }
 
-                //TODO Esto de añadir los layout pitches con el instanceof no me gusta
-                if (layoutCoreSymbol instanceof LayoutCoreSingleFigureAtom) {
-                    LayoutCoreSingleFigureAtom sfa = (LayoutCoreSingleFigureAtom) layoutCoreSymbol;
-
-                    BeamGroup beam = sfa.getCoreSymbol().getBelongsToBeam();
-                    if (beam != null) {
-                        List<LayoutCoreSingleFigureAtom> layoutAtomsInBeam = singleLayoutFigureAtomsInBeam.get(beam);
-                        if (layoutAtomsInBeam == null) {
-                            layoutAtomsInBeam = new ArrayList<>();
-                            singleLayoutFigureAtomsInBeam.put(sfa.getCoreSymbol().getBelongsToBeam(), layoutAtomsInBeam);
-                        }
-                        layoutAtomsInBeam.add(sfa);
-                    }
-
-                    for (NotePitch notePitch : sfa.getNotePitches()) {
-                        layoutPitches.put(notePitch.getAtomPitch(), notePitch);
-                    }
+                for (NotePitch notePitch : sfa.getNotePitches()) {
+                    layoutPitches.put(notePitch.getAtomPitch(), notePitch);
                 }
             }
         }
@@ -327,5 +358,9 @@ public abstract class ScoreLayout {
 
     public Collection<LayoutFont> getLayoutFonts() {
         return layoutFonts.values();
+    }
+
+    public Collection<LayoutStaff> getLayoutStaves() {
+        return layoutStaves.values();
     }
 }

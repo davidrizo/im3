@@ -21,7 +21,7 @@ public class LayoutScoreLyric extends Component<NotePitch> {
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
      */
     public LayoutScoreLyric(NotePitch parent, LayoutFont layoutFont, Coordinate position) {
-        super(parent, position);
+        super(null, parent, position);
         group = new Group("LYRICS-"); //TODO ID
         if (parent.getAtomPitch().getLyrics() != null) {
             lyrics = new ArrayList<>();

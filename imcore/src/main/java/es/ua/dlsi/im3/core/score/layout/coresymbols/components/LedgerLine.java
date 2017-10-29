@@ -16,7 +16,7 @@ public class LedgerLine extends Component<LedgerLines> {
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
      */
     public LedgerLine(LedgerLines parent, Coordinate position, double noteHeadWidth) {
-        super(parent, position);
+        super(null, parent, position);
         Coordinate from = new Coordinate(
                 new CoordinateComponent(position.getX(), -LayoutConstants.LEDGER_LINE_EXCESS_OVER_NOTE_HEAD),
                 new CoordinateComponent(position.getY()));

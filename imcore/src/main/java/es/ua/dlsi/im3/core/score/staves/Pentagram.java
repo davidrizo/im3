@@ -57,7 +57,7 @@ public class Pentagram extends Staff {
 	}
 
 	private int computeBottomLineNoteOrder(Clef clef) {
-		int noteOrder = clef.getNote().getOrder() + clef.getNoteOctave() * 7;
+		int noteOrder = clef.getNote().getHorizontalOrderInStaff() + clef.getNoteOctave() * 7;
 		return noteOrder - (clef.getLine() - 1) * 2;
 	}
 

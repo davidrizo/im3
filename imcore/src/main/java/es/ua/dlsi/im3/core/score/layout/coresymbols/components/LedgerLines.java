@@ -26,7 +26,7 @@ public class LedgerLines extends Component<LayoutStaff> {
      * @param numberOfLines
      */
     public LedgerLines(LayoutStaff parent, Coordinate position, double noteHeadWidth, PositionAboveBelow positionAboveBelow, int numberOfLines) {
-        super(parent, position);
+        super(null, parent, position);
         this.noteHeadWidth = noteHeadWidth;
         group = new Group("G_LEDGER_LINES_");//TODO IDS
         ensure(numberOfLines, positionAboveBelow);

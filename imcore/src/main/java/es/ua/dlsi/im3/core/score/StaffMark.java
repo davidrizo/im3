@@ -27,7 +27,7 @@ public abstract class StaffMark implements ITimedElement, ISymbolInStaff {
     private Staff staff;
     public StaffMark(Staff staff, Time time) {
     		this.staff = staff;
-		this.time = time;
+		    this.time = time;
 	}
 	@Override	
 	public Time getTime()  {
@@ -47,6 +47,6 @@ public abstract class StaffMark implements ITimedElement, ISymbolInStaff {
 	public void setStaff(Staff staff) {
 		this.staff = staff;
 	}
-    
-    
+
+
 }

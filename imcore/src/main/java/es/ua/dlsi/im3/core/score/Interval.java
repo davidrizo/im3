@@ -279,8 +279,8 @@ public class Interval implements Comparable<Interval> {
 	 */
 	/*
 	 * public static Interval compute(PitchClass from, PitchClass to) throws
-	 * IM3Exception { int order = from.getNoteName().getOrder(); int toorder =
-	 * to.getNoteName().getOrder(); int name, sts; MotionDirection direction; if
+	 * IM3Exception { int order = from.getNoteName().getHorizontalOrderInStaff(); int toorder =
+	 * to.getNoteName().getHorizontalOrderInStaff(); int name, sts; MotionDirection direction; if
 	 * (order == toorder) { name = toorder - order; sts = to.getSemitonesFromC()
 	 * - from.getSemitonesFromC(); if (sts == 0) { direction =
 	 * MotionDirection.EQUAL; } else if (sts < 0) { direction =
@@ -311,8 +311,8 @@ public class Interval implements Comparable<Interval> {
 	 * (to.isRest()) { throw new IM3Exception(
 	 * "Cannot compute the interval to a rest"); }
 	 * 
-	 * int order = from.getNoteName().getOrder(); int toorder =
-	 * to.getNoteName().getOrder(); int name, sts; MotionDirection direction; if
+	 * int order = from.getNoteName().getHorizontalOrderInStaff(); int toorder =
+	 * to.getNoteName().getHorizontalOrderInStaff(); int name, sts; MotionDirection direction; if
 	 * (order == toorder) { name = toorder - order; sts = to.getSemitonesFromC()
 	 * - from.getSemitonesFromC(); if (sts == 0) { direction =
 	 * MotionDirection.EQUAL; } else if (sts < 0) { direction =
@@ -571,17 +571,17 @@ public class Interval implements Comparable<Interval> {
 	 * diffsemitones;
 	 * 
 	 * switch (direction) { case EQUAL: case ASCENDING: dest =
-	 * DiatonicPitch.noteFromOrder((from.getNoteName().getOrder() + (this.getName()
-	 * - 1)) % 7); // -1 because unison = 1 if (dest.getOrder() <
-	 * from.getNoteName().getOrder()) { octaveOffset = 12; }
+	 * DiatonicPitch.noteFromOrder((from.getNoteName().getHorizontalOrderInStaff() + (this.getName()
+	 * - 1)) % 7); // -1 because unison = 1 if (dest.getHorizontalOrderInStaff() <
+	 * from.getNoteName().getHorizontalOrderInStaff()) { octaveOffset = 12; }
 	 * 
 	 * diffsemitones = octaveOffset + dest.getSemitonesFromC() -
 	 * from.getSemitonesFromC(); acc =
 	 * Accidentals.accidentalForAlter((this.semitones - diffsemitones) % 12);
 	 * return new PitchClass(dest, acc); case DESCENDING: dest =
-	 * DiatonicPitch.noteFromOrder((7 + from.getNoteName().getOrder() -
-	 * (this.getName() -1)) % 7); if (dest.getOrder() >
-	 * from.getNoteName().getOrder()) { octaveOffset = -12; }
+	 * DiatonicPitch.noteFromOrder((7 + from.getNoteName().getHorizontalOrderInStaff() -
+	 * (this.getName() -1)) % 7); if (dest.getHorizontalOrderInStaff() >
+	 * from.getNoteName().getHorizontalOrderInStaff()) { octaveOffset = -12; }
 	 * 
 	 * diffsemitones = octaveOffset + dest.getSemitonesFromC() -
 	 * from.getSemitonesFromC(); acc =
@@ -602,9 +602,9 @@ public class Interval implements Comparable<Interval> {
 	 * from) throws IM3Exception { DiatonicPitch dest; Accidentals acc; int
 	 * octaveOffset = 0; int diffsemitones; int octave = from.getOctave();
 	 * switch (direction) { case EQUAL: case ASCENDING: dest =
-	 * DiatonicPitch.noteFromOrder((from.getPitchClass().getNoteName().getOrder() +
-	 * (this.getName() - 1)) % 7); // -1 because unison = 1 if (dest.getOrder()
-	 * < from.getPitchClass().getNoteName().getOrder()) { octaveOffset = 12;
+	 * DiatonicPitch.noteFromOrder((from.getPitchClass().getNoteName().getHorizontalOrderInStaff() +
+	 * (this.getName() - 1)) % 7); // -1 because unison = 1 if (dest.getHorizontalOrderInStaff()
+	 * < from.getPitchClass().getNoteName().getHorizontalOrderInStaff()) { octaveOffset = 12;
 	 * octave+=1; }
 	 * 
 	 * diffsemitones = octaveOffset + dest.getSemitonesFromC() -
@@ -612,8 +612,8 @@ public class Interval implements Comparable<Interval> {
 	 * Accidentals.accidentalForAlter((this.semitones - diffsemitones) % 12);
 	 * return new ScientificPitch(new PitchClass(dest, acc), octave); case
 	 * DESCENDING: dest = DiatonicPitch.noteFromOrder((7 +
-	 * from.getPitchClass().getNoteName().getOrder() - (this.getName() -1)) %
-	 * 7); if (dest.getOrder() > from.getPitchClass().getNoteName().getOrder())
+	 * from.getPitchClass().getNoteName().getHorizontalOrderInStaff() - (this.getName() -1)) %
+	 * 7); if (dest.getHorizontalOrderInStaff() > from.getPitchClass().getNoteName().getHorizontalOrderInStaff())
 	 * { octaveOffset = -12; octave-=1; }
 	 * 
 	 * diffsemitones = octaveOffset + dest.getSemitonesFromC() -

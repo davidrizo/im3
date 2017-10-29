@@ -2,9 +2,7 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.score.SingleFigureAtom;
 import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolComparator;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSystemBreak;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 
@@ -51,7 +49,7 @@ public class Simultaneity implements Comparable<Simultaneity> {
         }
         this.time = firstSymbol.getTime();
        // print(true, firstSymbol);
-        this.order = LayoutCoreSymbolComparator.getInstance().getOrder(firstSymbol);
+        this.order = LayoutSymbolsHorizontalOrderings.getInstance().getGroupDefaultOrder(firstSymbol);
         symbols = new ArrayList<>();
         symbols.add(firstSymbol);
         minWidth = maxWidth = firstSymbol.getWidth();
@@ -80,9 +78,9 @@ public class Simultaneity implements Comparable<Simultaneity> {
      */
     void add(LayoutCoreSymbol symbol) throws IM3Exception {
         //print(false, symbol);
-        if (LayoutCoreSymbolComparator.getInstance().getOrder(symbol) != order) {
+        if (LayoutSymbolsHorizontalOrderings.getInstance().getGroupDefaultOrder(symbol) != order) {
             throw new IM3RuntimeException("Cannot add different order symbols ( "+ order + " and " +
-                    LayoutCoreSymbolComparator.getInstance().getOrder(symbol) + ") to the same simultaneity");
+                    LayoutSymbolsHorizontalOrderings.getInstance().getGroupDefaultOrder(symbol) + ") to the same simultaneity");
         }
 
         maxWidth = Math.max(maxWidth, symbol.getWidth());

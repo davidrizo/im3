@@ -89,6 +89,8 @@ public class MensuralToModern {
                 convert(modernStaff, modernLayer, (MarkBarline) symbol);
             } else if (symbol instanceof Atom) {
                 convert(modernStaff, modernLayer, (Atom) symbol, interval);
+            } else if (symbol instanceof DisplacedDot) {
+                // no-op It is never displaced, if always accompanies the pitch
             } else {
                 throw new IM3Exception("Unsupported conversion of " + symbol.getClass());
             }

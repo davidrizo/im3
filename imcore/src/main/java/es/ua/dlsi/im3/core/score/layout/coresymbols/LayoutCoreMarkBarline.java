@@ -14,7 +14,7 @@ public class LayoutCoreMarkBarline extends LayoutCoreSymbolInStaff<MarkBarline> 
 
     Line line;
 
-    public LayoutCoreMarkBarline(LayoutFont layoutFont, MarkBarline coreSymbol) {
+    public LayoutCoreMarkBarline(LayoutFont layoutFont, MarkBarline coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
         this.line = line;
 

@@ -13,7 +13,7 @@ public class Dot extends Component<NotePitch> {
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
      */
     public Dot(LayoutFont layoutFont, NotePitch parent, Coordinate position) throws IM3Exception {
-        super(parent, position);
+        super(null, parent, position);
         pictogram = new Pictogram("DOT-", layoutFont, "augmentationDot", position);//TODO IDS
     }
 

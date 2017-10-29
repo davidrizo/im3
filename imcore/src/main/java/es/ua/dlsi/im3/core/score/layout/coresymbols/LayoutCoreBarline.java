@@ -13,7 +13,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 /**
  * If may be a system barline
  */
-public class LayoutCoreBarline extends LayoutCoreSymbol {
+public class LayoutCoreBarline extends LayoutCoreSymbol  {
     private final Coordinate from;
     private final Coordinate to;
     private final Staff staff;
@@ -30,6 +30,7 @@ public class LayoutCoreBarline extends LayoutCoreSymbol {
         to = new Coordinate(position.getX(), null);
 
         line = new Line("BARLINE-", from, to);//TODO IDS
+
     }
 
     public Staff getStaff() {

@@ -2,10 +2,12 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ITimedElement;
-import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSymbolComparator;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaffSystem;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * It represents the symbols that drive the rendering of the score.
@@ -17,10 +19,20 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
     protected CoreSymbolType coreSymbol;
     protected LayoutFont layoutFont;
     protected LayoutStaffSystem system;
+
     /**
      * If we want it to be drawn at other time
      */
     protected Time modifiedTime;
+    /**
+     * Besides the time, it indicates the order as the position from left to right
+     */
+    protected int defaultHorizontalOrdering;
+
+
+
+    private List<Component<? extends LayoutCoreSymbol<CoreSymbolType>>> components;
+
 
     /**
      * @param layoutFont
@@ -31,6 +43,8 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
         this.layoutFont = layoutFont;
         // Initial value - it will be changed using the displacement of the Coordinate position
         this.position = new Coordinate(new CoordinateComponent(), new CoordinateComponent());
+
+        defaultHorizontalOrdering = LayoutSymbolsHorizontalOrderings.getInstance().getGroupDefaultOrder(this);
     }
 
     /**
@@ -74,8 +88,46 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
         return coreSymbol;
     }
 
+    /*@Override
+    public int compareTo(LayoutCoreSymbol o) {
+        return o.getTime().compareTo(o.getTime()); // see getTime()
+        //return LayoutCoreSymbolComparator.getInstance().compare(this, o);
+    }*/
+
+    public void addComponent(Component<? extends LayoutCoreSymbol<CoreSymbolType>> component) {
+        if (components == null) {
+            components = new ArrayList<>();
+        }
+        components.add(component);
+    }
+
+    public List<Component<? extends LayoutCoreSymbol<CoreSymbolType>>> getComponents() {
+        return components;
+    }
+
     @Override
     public int compareTo(LayoutCoreSymbol o) {
-        return LayoutCoreSymbolComparator.getInstance().compare(this, o);
+        int diff = getTime().compareTo(o.getTime());
+        if (diff == 0) {
+            diff = defaultHorizontalOrdering - o.defaultHorizontalOrdering;
+            if (diff == 0) {
+                diff = hashCode() - o.hashCode();
+            }
+        }
+        return diff;
     }
+
+    @Override
+    public String toString() {
+        return getClass() + "@" + getTime() + ", hordering=" + defaultHorizontalOrdering;
+    }
+
+    /**
+     * Such as a dot displaced from a note head
+     * @return
+     */
+    /*public Collection<LayoutCoreSymbol> getDependantCoreSymbols() {
+        return null;
+    }*/
+
 }

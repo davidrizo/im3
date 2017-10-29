@@ -183,9 +183,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			throw new ImportException("Unknown figure type: " + content);
 		}
 		return figure;
-	}	
-	
-	HashMap<String, Object> xmlIDs;
+	}
+    private int horizontalOrderInStaff;
+    HashMap<String, Object> xmlIDs;
 	HashMap<Measure, Integer> measurePositions;
 	HashSet<PendingConnectorOrMark> pendingConnectorOrMarks;
 	String titleType;
@@ -535,13 +535,15 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					}
 					break;
                 case "sb":
+                    horizontalOrderInStaff = 0;
                     Time sbtime = getCurrentTime();
                     if (!song.hasSystemBreak(sbtime )) { // it appears in different parts
                         song.addSystemBreak(new SystemBreak(sbtime, true));
                     }
                     break;
 				case "barLine":
-					//updateTimesGivenMeasure();
+                    horizontalOrderInStaff++;
+                    //updateTimesGivenMeasure();
 					Time markTime = getCurrentTime();
 					MarkBarline barline = new MarkBarline(markTime);
 					lastStaff.addMarkBarline(barline);
@@ -563,6 +565,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					layerCount++;
 					number = getOptionalAttribute(attributesMap, "n");
 					lastVoice = processLayer(number);
+                    horizontalOrderInStaff = 0;
 					break;
 				case "tuplet":
 					tupletXMLID = getOptionalAttribute(attributesMap, "xml:id");
@@ -675,10 +678,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						if (figure == null) {
 							throw new ImportException("Cannot import note not in chord without dur");
 						}
+
 						currentNote = new SimpleNote(figure, dots, sp);
 						currentAtomFigure = currentNote.getAtomFigure();
 						lastAtomPitch = currentNote.getAtomPitch();
-
+                        horizontalOrderInStaff++;
                         String grace = getOptionalAttribute(attributesMap, "grace");
                         // TODO: 18/10/17 acc, unacc, unknown - de quién quita la nota el valor
                         currentNote.setGrace(grace != null);
@@ -720,6 +724,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
                     break;
 				case "accid":
+				    //TODO Posibilidad de poner horizontalPositionInStaff
 					accid = getOptionalAttribute(attributesMap, "accid");
 					accidGes = getOptionalAttribute(attributesMap, "accid.ges");
 					
@@ -746,6 +751,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					dur = getOptionalAttribute(attributesMap, "dur");
 					figure = getFigure(dur, attributesMap);					
 					SimpleRest rest = new SimpleRest(figure, dots);
+                    horizontalOrderInStaff++;
 					//rest.setTime(getCurrentTime());
 					String restStaffChange = getOptionalAttribute(attributesMap, "staff");
 					
@@ -792,8 +798,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						}
 						pendingMeasureRestsToSetDuration.add(mrest);
 					}
-					
-					//rest.setTime(getCurrentTime());
+
+                    horizontalOrderInStaff++;
+                    //rest.setTime(getCurrentTime());
 					addElementToVoiceStaffOrTuplet(mrest, xmlid, attributesMap, elementStaff);
 					break;
                 case "multiRest":
@@ -808,8 +815,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         }
                         pendingMultiMeasureRestsToSetDuration.add(multiMeasureRest);
 
+                        horizontalOrderInStaff++;
 
-						//rest.setTime(getCurrentTime());
+                    //rest.setTime(getCurrentTime());
 						addElementToVoiceStaffOrTuplet(multiMeasureRest, xmlid, attributesMap, lastStaff);
 						break;
                 case "clef":
@@ -823,14 +831,16 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					} else {
 						clefTime = getCurrentTime();
 					}
-					//tstamp = getOptionalAttribute(attributesMap, "tstamp");
+
+                    //tstamp = getOptionalAttribute(attributesMap, "tstamp");
 					//double clefTime = getCurrentTime();
 					//if (tstamp != null) {
 					//	clefTime += Double.parseDouble(tstamp);
 					//}
-					processClef(clefLine, clefShape, clefTime, getOptionalAttribute(attributesMap, "dis"),
-							getOptionalAttribute(attributesMap, "dis.place"));
-					break;
+                    Clef clef = processClef(clefLine, clefShape, clefTime, getOptionalAttribute(attributesMap, "dis"),
+                            getOptionalAttribute(attributesMap, "dis.place"));
+                    horizontalOrderInStaff++;
+                    break;
 				case "tie":
 					staffNumber = getOptionalAttribute(attributesMap, "staff");
 					pendingConnectorOrMark = new PendingConnectorOrMark();
@@ -896,7 +906,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     }
                     break;
                 case "dot":
-                    lastAtomPitch.getAtomFigure().addDot(); // TODO: 27/10/17 Ver casos como mensural patriarca.mei donde aparece nota - barra - dot 
+                    Time addedDuration = lastAtomPitch.getAtomFigure().addDot(); // TODO: 27/10/17 Ver casos como mensural patriarca.mei donde aparece nota - barra - dot
+                    horizontalOrderInStaff++;
+                    lastAtomPitch.addDisplacedDot(new DisplacedDot(getCurrentTime(), lastAtomPitch));
+                    setCurrentTime(getCurrentTime().add(addedDuration));
                     break;
 				}
 			}
@@ -1136,7 +1149,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 	}
 
-	private void processClef(String clefLine, String clefShape, Time time, String octaveDisplace, String octaveDisplacePosition) throws ImportException, IM3Exception {
+	private Clef processClef(String clefLine, String clefShape, Time time, String octaveDisplace, String octaveDisplacePosition) throws ImportException, IM3Exception {
 		Integer octaveChange = null;
 		if (octaveDisplace != null) {
 			int idisp = Integer.parseInt(octaveDisplace);
@@ -1163,6 +1176,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				Integer.parseInt(clefLine), octaveChange);
 		lastClef.setTime(time);
 		lastStaff.addClef(lastClef);
+		return lastClef;
 	}
 
 

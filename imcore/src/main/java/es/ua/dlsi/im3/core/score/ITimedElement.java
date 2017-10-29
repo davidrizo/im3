@@ -37,7 +37,7 @@ public interface ITimedElement {
     //void setTime(Time time) throws IM3Exception; 
 //    public void move(long offset) throws IM3Exception;
 	
-	Comparator<ITimedElement> TIMED_ELEMENT_COMPARATOR = new Comparator<ITimedElement>() {
+	/*Comparator<ITimedElement> TIMED_ELEMENT_COMPARATOR = new Comparator<ITimedElement>() {
 		@Override
 		public int compare(ITimedElement o1, ITimedElement o2) {
 			int diff;
@@ -55,6 +55,6 @@ public interface ITimedElement {
 			return diff;
 		}
 		
-	};
+	};*/
 	
 }

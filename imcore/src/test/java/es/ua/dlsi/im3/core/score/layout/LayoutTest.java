@@ -8,7 +8,6 @@ import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
-import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.junit.Test;
 
 import java.io.File;

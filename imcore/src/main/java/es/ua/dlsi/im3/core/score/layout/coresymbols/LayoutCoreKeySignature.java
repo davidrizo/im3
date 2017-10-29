@@ -39,7 +39,7 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
         double nextRelativeXPosition = 0;
         int octave = getStartingOctave();
         for (DiatonicPitch nn : alteredNoteNames) {
-            int noteOrder = nn.getOrder() + octave * 7;
+            int noteOrder = nn.getHorizontalOrderInStaff() + octave * 7;
             if (i > 1) {
                 if (nextUp) {
                     if (noteOrder < previousNoteOrder) {
@@ -51,7 +51,7 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
                     }
                 }
             }
-            previousNoteOrder = nn.getOrder() + octave * 7;
+            previousNoteOrder = nn.getHorizontalOrderInStaff() + octave * 7;
             nextUp = !nextUp;
 
             CoordinateComponent x = new CoordinateComponent(position.getX(), nextRelativeXPosition);
@@ -74,7 +74,7 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
 
                 Accidental p = new Accidental(layoutFont, this, coreSymbol.getAccidental(), position);
                 nextRelativeXPosition += p.getWidth();
-                addComponent(p);
+                addAccidentalComponent(p);
 
             }
         }
@@ -92,7 +92,7 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
         }
     }
 
-    private void addComponent(Accidental p) {
+    private void addAccidentalComponent(Accidental p) {
         accidentals.add(p);
         group.add(p.getGraphics());
     }
