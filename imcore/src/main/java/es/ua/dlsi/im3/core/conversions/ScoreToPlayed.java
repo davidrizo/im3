@@ -19,14 +19,25 @@ public class ScoreToPlayed {
         track.setName(part.getName());
         int resolution = track.getPlayedSong().getResolution();
         for (ScoreLayer voice : part.getLayers()) {
+            PlayedNote prevNote = null;
             for (AtomPitch atomPitch : voice.getAtomPitches()) {
-                //TODO Lyrics
-                PlayedNote pn = new PlayedNote(atomPitch.getScientificPitch().computeMidiPitch(),
-                        (long) (atomPitch.getAtomFigure().getComputedDuration() * resolution));
-
-                pn.setScientificPitch(atomPitch.getScientificPitch());
-                track.addNote((long) atomPitch.getTime().multiply(track.getPlayedSong().getResolution()).getComputedTime(), pn);
-
+                long duration = (long) (atomPitch.getAtomFigure().getComputedDuration() * resolution);
+                int midiPitch = atomPitch.getScientificPitch().computeMidiPitch();
+                if (atomPitch.isTiedFromPrevious()) {
+                    if (prevNote == null) {
+                        throw new IM3Exception("Tied note without a previous one");
+                    }
+                    if (prevNote.getMidiPitch() != midiPitch) {
+                        throw new IM3Exception("Tied note without a different midi pitch: " + midiPitch + " vs. " + prevNote.getMidiPitch());
+                    }
+                    prevNote.setDurationInTicks(prevNote.getDurationInTicks() + duration);
+                } else {
+                    //TODO Lyrics
+                    PlayedNote pn = new PlayedNote(midiPitch, duration);
+                    pn.setScientificPitch(atomPitch.getScientificPitch());
+                    track.addNote((long) atomPitch.getTime().multiply(track.getPlayedSong().getResolution()).getComputedTime(), pn);
+                    prevNote = pn;
+                }
             }
         }
     }

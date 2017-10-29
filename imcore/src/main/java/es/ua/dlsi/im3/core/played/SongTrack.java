@@ -311,7 +311,11 @@ public class SongTrack {
 		return playedNotes;
 	}
 
-	// TODO Test unitario
+    public void addControlMessage(int tick, int message) {
+
+    }
+
+    // TODO Test unitario
 	/**
 	 * Polphony reduction Miguel
 	 *

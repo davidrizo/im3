@@ -2,6 +2,10 @@ package es.ua.dlsi.im3.core.score.mensural;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.conversions.MensuralToModern;
+import es.ua.dlsi.im3.core.conversions.ScoreToPlayed;
+import es.ua.dlsi.im3.core.played.PlayedSong;
+import es.ua.dlsi.im3.core.played.SongTrack;
+import es.ua.dlsi.im3.core.played.io.MidiSongExporter;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
@@ -20,8 +24,8 @@ public class LayoutMensuralAndTranscription {
     public static final void main(String [] args) throws IOException, IM3Exception {
         // TODO: 16/10/17 Que se pueda elegir el tipo de renderización y salida
 
-        if (args.length != 2) {
-            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output file>");
+        if (args.length != 3) {
+            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file> <outout midi file>");
         }
 
         ScoreSongImporter importer = new ScoreSongImporter();
@@ -31,6 +35,16 @@ public class LayoutMensuralAndTranscription {
         //TODO Parámetro
         //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC); // ésta genera más sostenidos
         ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FIFTH_PERFECT_DESC);
+        //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.UNISON_PERFECT);
+        String midiFile = args[2];
+        ScoreToPlayed scoreToPlayed = new ScoreToPlayed();
+        PlayedSong played = scoreToPlayed.createPlayedSongFromScore(modern);
+
+        MidiSongExporter exporter = new MidiSongExporter();
+        exporter.addResetEWSCWordBuilderMessage(); // TODO: 29/10/17 Generalizar esto
+        exporter.exportSong(new File(midiFile), played);
+
+
         mensuralToModern.merge(mensural, modern, true);
 
         // TODO: 16/10/17 Poder cambiar esto
@@ -48,7 +62,7 @@ public class LayoutMensuralAndTranscription {
         mensural.debugPutIDsAsLyrics(); // FIXME: 17/10/17 Quitar
         // TODO: 16/10/17 Tamaño
         //PageLayout layout = new PageLayout(mensural, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
-        HorizontalLayout layout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(20000), new CoordinateComponent(800));
+        HorizontalLayout layout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(30000), new CoordinateComponent(2800));
         layout.layout();
         //PDFExporter pdfExporter = new PDFExporter();
         //pdfExporter.exportLayout(new File(args[1]), layout);

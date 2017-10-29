@@ -154,6 +154,9 @@ public class PlayedNote implements Comparable<PlayedNote> {
 		this.ticks = duration;
 	}
 
+	public void setDurationInTicks(long duration) {
+	    setTicks(duration);
+    }
 	/**
 	 * Not used, just here for legacy algorithms
 	 *

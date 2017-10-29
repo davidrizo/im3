@@ -36,7 +36,11 @@ public class MidiSongExporter {
 	 * LOG2
 	 */
 	private static final double LOG2 = Math.log(2);
-	/**
+    // TODO: 29/10/17 Generalizar esto
+    // TODO: 29/10/17 For EWSC Word Builder 
+    private boolean resetEWSCWordBuilderMessage;
+
+    /**
 	 * Converts a string in hexadecimal notation into byte.
 	 * @param hex string in hexadecimal notation
 	 * @return a byte (1bytes)
@@ -160,8 +164,7 @@ public class MidiSongExporter {
     /**
      * Put the meter into the track
      * @param track
-     * @param meter
-     * @throws InvalidMidiDataException 
+     * @throws InvalidMidiDataException
      */
     private void putTempoChange(Track track, Tempo tempo, long tick) throws InvalidMidiDataException {
 		//System.out.println("Exporting tempo");
@@ -193,7 +196,15 @@ public class MidiSongExporter {
 			int i=-1;
 			for (SongTrack part : playedSong.getTracks()) {
 				Track track = sequence.createTrack();
-				i++;
+
+                // TODO: 29/10/17 Generalizar a todos los mensajes posibles e instantes
+                if (resetEWSCWordBuilderMessage) {
+                    ShortMessage resetWBMessage = new ShortMessage(ShortMessage.CONTROL_CHANGE, 21, 127);
+                    MidiEvent event = new MidiEvent(resetWBMessage, 0);
+                    track.add(event);
+                }
+
+                i++;
 				if (i==0) {
 
 					for (Meter ts: playedSong.getMeters()) {
@@ -259,4 +270,9 @@ public class MidiSongExporter {
 			throw new ExportException(e);
 		} 
 	}
+
+    // TODO: 29/10/17 Generalizar esto
+    public void addResetEWSCWordBuilderMessage() {
+        resetEWSCWordBuilderMessage = true;
+    }
 }

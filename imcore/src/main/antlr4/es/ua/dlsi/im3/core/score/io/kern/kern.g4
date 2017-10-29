@@ -89,7 +89,7 @@ noteNameUpperCase: ('A'|'B'|'C'|'D'|'E'|'F'|'G');
 staff: NUMBER;
 
 //TODO change C1....
-clef: G2 | F2 | F3 | F4 | C3 | C4 | G1 | Gv2;
+clef: G2 | F2 | F3 | F4 | C3 | C4 | C2 | G1 | Gv2;
 
 keysignature: keysignatureNote*; // natural, sharp, flat
 
@@ -299,6 +299,7 @@ F4:'F4';
 F3:'F3';
 F2:'F2';
 C3:'C3';
+C2:'C2';
 C4:'C4';
 G1:'G1';
 Gv2: 'Gv2';
