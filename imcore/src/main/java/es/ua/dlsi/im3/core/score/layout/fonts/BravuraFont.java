@@ -17,7 +17,8 @@ public class BravuraFont extends LayoutFont {
     private static final String SVGFONT = "/fonts/bravura/bravura_1.12.svg";
     private static final String METADATA = "/fonts/bravura/glyphnames-1.12.json";
     public BravuraFont() throws ImportException, IM3Exception {
-        super("Bravura", LayoutFonts.bravura, BravuraFont.class.getResourceAsStream(SVGFONT),
+        super("Bravura", LayoutFonts.bravura,
+                BravuraFont.class.getResourceAsStream(SVGFONT),
                 BravuraFont.class.getResourceAsStream(OTFMUSICFONT),
                 BravuraFont.class.getResourceAsStream(OTFTEXTCFONT),
                 BravuraFont.class.getResourceAsStream(METADATA),

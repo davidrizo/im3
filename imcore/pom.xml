@@ -53,15 +53,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/resources</directory>
-                <includes>
-                    <include>**/*.*</include>
-                </includes>
-            </resource>
-
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.antlr</groupId>
