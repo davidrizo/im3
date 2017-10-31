@@ -26,6 +26,7 @@ public class FontFactory {
                 try {
                     bravuraFont = new BravuraFont();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     throw new IM3RuntimeException(e);
                 }
             }

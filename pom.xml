@@ -15,8 +15,6 @@
         <module>similarity</module>
         <module>languagemodel</module>
         <module>omr</module>
-        <module>javafx</module>
-        <module>interactiveOMR</module>
     </modules>
 
     <properties>
@@ -24,5 +22,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
 
 </project>

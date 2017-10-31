@@ -45,6 +45,16 @@ public class LayoutFont {
         this.name = name;
         this.font = font;
         this.fontMap = fontMap;
+        if (otfMusicFontResource == null) {
+            throw new ImportException("Music font resource stream is null");
+        }
+        if (otfTextFontResource == null) {
+            throw new ImportException("Text font resource stream is null");
+        }
+        if (svgFontResource == null) {
+            throw new ImportException("Music font svg resource stream is null");
+        }
+
         SVGFontImporter importer = new SVGFontImporter();
         svgFont = importer.importStream(svgFontResource);
         mapping = new JSONGlyphNamesReader(mappingResource);
