@@ -3,13 +3,14 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.Direction;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
 import java.util.HashMap;
 
-public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRest> {
+public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRest> implements IConnectableWithSlur{
     private final Pictogram pictogram;
     SimpleRest rest;
 
@@ -73,4 +74,13 @@ public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRes
         return unicode;
     }
 
+    @Override
+    public Direction getDefaultSlurDirection() {
+        return Direction.up;
+    }
+
+    @Override
+    public Coordinate getConnectionPoint(Direction direction) {
+        return position;
+    }
 }

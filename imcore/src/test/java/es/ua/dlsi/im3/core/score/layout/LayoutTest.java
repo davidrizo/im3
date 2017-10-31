@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
@@ -170,6 +171,25 @@ public class LayoutTest {
 
         PDFExporter pdfExporter = new PDFExporter();
         File pdfFile = TestFileUtils.createTempFile("simple_tie.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+    }
+
+    @Test
+    public void horizontalLayoutSimpleSlur() throws Exception {
+        MEISongImporter importer = new MEISongImporter();
+        // TODO: 31/10/17 Importar slur con MusicXML (simple_slur.xml) 
+        File file = TestFileUtils.getFile("/testdata/core/score/io/simple_slur.mei");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(960), new CoordinateComponent(700));
+        layout.layout();
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("simple_slur.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("simple_slur.pdf");
         pdfExporter.exportLayout(pdfFile, layout);
     }
 

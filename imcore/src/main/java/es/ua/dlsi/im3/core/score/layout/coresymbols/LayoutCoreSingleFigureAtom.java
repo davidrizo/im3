@@ -4,9 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.AtomPitch;
 import es.ua.dlsi.im3.core.score.SingleFigureAtom;
 import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.Coordinate;
-import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
-import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Flag;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Stem;
@@ -19,7 +17,7 @@ import java.util.List;
 /**
  * Not used for rests
  */
-public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom>  {
+public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom>  implements IConnectableWithSlur {
     private boolean stemUp;
     Group group;
     ArrayList<NotePitch> notePitches;
@@ -153,4 +151,24 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         }
     }
 
+    @Override
+    public Direction getDefaultSlurDirection() {
+        return Direction.up; // TODO: 31/10/17
+    }
+
+    @Override
+    public Coordinate getConnectionPoint(Direction direction) {
+        // TODO: 31/10/17 para acordes y posición
+        if (notePitches == null || notePitches.isEmpty()) {
+            return position;
+        } else {
+            Coordinate connectionPoint = new Coordinate(
+                    notePitches.get(0).getNoteHeadPosition().getX(),
+                    // TODO: 31/10/17 Negativo puesto a piñón 
+                    new CoordinateComponent(notePitches.get(0).getNoteHeadPosition().getY(), -LayoutConstants.SEPARATION_NOTE_SLUR)
+            );
+            return connectionPoint;
+        }
+        //return position;
+    }
 }
