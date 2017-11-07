@@ -31,7 +31,6 @@ public class KeySignatureAccidentalElement {
      * 
      * @param coreSymbol
      * @param noteName
-     * @param octaveRelativeToStartingOne
      * @param order From 1
      */
     public KeySignatureAccidentalElement(KeySignature coreSymbol, DiatonicPitch noteName, int octave, int order) {

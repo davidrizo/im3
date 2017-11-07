@@ -2,12 +2,10 @@ package es.ua.dlsi.im3.core.conversions;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
-import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
@@ -17,7 +15,6 @@ import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -77,7 +74,7 @@ public class MensuralToModernTest {
         staff.addCoreSymbol(new MarkBarline(n8.getOffset()));
 
         // convert into a new song
-        MensuralToModern mensuralToModern = new MensuralToModern();
+        MensuralToModern mensuralToModern = new MensuralToModern(new Clef[] {new ClefG2()});
         ScoreSong modernSong = mensuralToModern.convertIntoNewSong(song, Intervals.UNISON_PERFECT);
 
         assertEquals( "Modern parts",  1, modernSong.getParts().size());
@@ -104,9 +101,10 @@ public class MensuralToModernTest {
         newModernStaff.setNotationType(NotationType.eModern); // TODO: 6/10/17 ¿Debería estar el tipo de notación en el constructor?
         song.addStaff(newModernStaff);
 
-        MensuralToModern mensuralToModern2 = new MensuralToModern();
+        Clef [] modernClefs = new Clef[] {new ClefG2()};
+        MensuralToModern mensuralToModern2 = new MensuralToModern(modernClefs);
 
-        mensuralToModern2.convertIntoStaff(staff, newModernStaff, newLayer, Intervals.FOURTH_PERFECT_DESC);
+        mensuralToModern2.convertIntoStaff(staff, newModernStaff, newLayer, Intervals.FOURTH_PERFECT_DESC, modernClefs[0]);
 
         // render it putting in the top staff the mensural one and in the bottom staff the modern one
         HashMap<Staff, LayoutFonts> fonts = new HashMap<>();

@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
+import es.ua.dlsi.im3.core.score.layout.graphics.Text;
 
 import java.util.*;
 
@@ -17,6 +18,7 @@ public class LayoutStaff extends NotationSymbol {
     Staff staff;
 	TreeSet<LayoutCoreSymbolInStaff> layoutSymbolsInStaff;
 	ScoreLayout scoreLayout;
+	Text staffName;
 
     /**
      *
@@ -33,7 +35,7 @@ public class LayoutStaff extends NotationSymbol {
 	Group group;
 
 
-    public LayoutStaff(ScoreLayout scoreLayout, Coordinate leftTop, Coordinate rightTop, Staff staff) {
+    public LayoutStaff(ScoreLayout scoreLayout, Coordinate leftTop, Coordinate rightTop, Staff staff) throws IM3Exception {
         lines = new ArrayList<>();
         ledgerLines = new TreeMap<>();
         this.staff = staff;
@@ -44,19 +46,37 @@ public class LayoutStaff extends NotationSymbol {
         layoutSymbolsInStaff = new TreeSet<>();
 
         group = new Group("GROUP-STAFF-"+staff.__getID()); //TODO IDS
+
+        double staffNameWidth = 0;
+
         for (int i=0; i<staff.getLineCount(); i++) {
             //double y = LayoutConstants.STAFF_TOP_MARGIN + i*LayoutConstants.SPACE_HEIGHT;
             double y = i* LayoutConstants.SPACE_HEIGHT;
             //Line line = new Line(LayoutConstants.STAFF_LEFT_MARGIN, y, width-LayoutConstants.STAFF_RIGHT_MARGIN, y); //TODO márgenes arriba abajo
-            Coordinate from = new Coordinate(leftTop.getX(), new CoordinateComponent(leftTop.getY(), y));
+            //if (staff.getName() != null) {
+              //  staffNameWidth = LayoutConstants.STAFF_NAME_WIDTH;
+            //}
+            Coordinate from = new Coordinate(new CoordinateComponent(leftTop.getX(), staffNameWidth), new CoordinateComponent(leftTop.getY(), y));
             Coordinate to = new Coordinate(rightTop.getX(), new CoordinateComponent(leftTop.getY(), y));
             Line line = new Line("LINE-", from, to); //TODO márgenes arriba abajo - quizás mejor en el grupo en el que están on en la página
             //TODO IDS
             lines.add(0, line);
             group.add(0, line);
         }
-    }
 
+        //TODO
+       /* if (staff.getName() != null) {
+            Coordinate staffNamePosition = new Coordinate(
+                    null,
+                    lines.get(lines.size()/2).getPosition().getY()
+            );
+
+            staffName = new Text("NAME-", scoreLayout.getLayoutFont(staff), staff.getName(), staffNamePosition);
+            staffNamePosition.getX().setDisplacement(staffNameWidth - staffName.getWidth() - 35); // TODO: 2/11/17 -35 a piñón
+            group.add(staffName);
+
+        }*/
+    }
 
     public List<Line> getLines() {
         return lines;

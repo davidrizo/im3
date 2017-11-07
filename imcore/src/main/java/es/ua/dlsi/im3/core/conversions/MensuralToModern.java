@@ -11,10 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MensuralToModern {
+    private final Clef[] modernClefs;
     private KeySignature activeKeySignature;
     private TimeSignature activeTimeSignature;
     private Time pendingMensureDuration;
     private Measure currentMeasure;
+    
+    
+    public MensuralToModern(Clef[] modernClefs) {
+        this.modernClefs = modernClefs;
+    }
 
 
     /**
@@ -24,6 +30,7 @@ public class MensuralToModern {
      */
     public ScoreSong convertIntoNewSong(ScoreSong mensural, Intervals transposition) throws IM3Exception {
         ScoreSong modernSong = new ScoreSong();
+        int istaff=0;
         for (ScorePart mensuralPart: mensural.getParts()) {
             ScorePart modernPart = new ScorePart(modernSong, mensuralPart.getNumber());
             modernSong.addPart(modernPart);
@@ -47,8 +54,12 @@ public class MensuralToModern {
             modernSong.addStaff(modernPentagram);
             ScoreLayer modernLayer = modernPart.addScoreLayer(modernPentagram);
 
-            // TODO: 16/10/17 Que se calcule en función de la teoría musical 
-            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer, transposition);
+            // TODO: 16/10/17 Que se calcule en función de la teoría musical - además, para las claves, esto no vale por si hay cambios de clave
+            if (istaff >= modernClefs.length) {
+                throw new IM3Exception("Number of staves != clef mapping");
+            }
+            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer, transposition, modernClefs[istaff]);
+            istaff++;
         }
         return modernSong;
     }
@@ -60,9 +71,10 @@ public class MensuralToModern {
      * @param mensuralStaff
      * @param modernStaff
      * @param modernLayer
+     * @param modernClef
      * @throws IM3Exception
      */
-    public void convertIntoStaff(Staff mensuralStaff, Staff modernStaff, ScoreLayer modernLayer, Intervals transposition) throws IM3Exception {
+    public void convertIntoStaff(Staff mensuralStaff, Staff modernStaff, ScoreLayer modernLayer, Intervals transposition, Clef modernClef) throws IM3Exception {
         modernStaff.clear();
         modernLayer.clear();
 
@@ -77,7 +89,13 @@ public class MensuralToModern {
 
         for (ITimedElementInStaff symbol: mensuralStaff.getCoreSymbolsOrdered()) {
             if (symbol instanceof Clef) {
-                modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertimos las claves?
+                if (symbol.getTime().isZero()) {
+                    modernClef.setNotationType(NotationType.eModern);
+                    modernClef.setTime(Time.TIME_ZERO);
+                    modernStaff.addClef(modernClef);
+                } else {
+                    modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
+                }
             } else if (symbol instanceof TimeSignature) {
                 activeTimeSignature = convert((TimeSignature) symbol);
                 pendingMensureDuration = activeTimeSignature.getDuration();

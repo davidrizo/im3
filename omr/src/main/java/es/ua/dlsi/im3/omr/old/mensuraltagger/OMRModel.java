@@ -70,13 +70,13 @@ public class OMRModel {
         }
 
         /// -----
-        MensuralToModern transducer = new MensuralToModern();
+        MensuralToModern transducer = new MensuralToModern(null); // FIXME: 7/11/17 null
         modernStaff = new Pentagram(song, "2", 2);
         modernStaff.setNotationType(NotationType.eModern);
         song.addStaff(modernStaff);
         ScorePart modernPart = song.addPart();
         ScoreLayer modernLayer = modernPart.addScoreLayer(modernStaff);
-        transducer.convertIntoStaff(staff, modernStaff, modernLayer, Intervals.UNISON_PERFECT);
+        transducer.convertIntoStaff(staff, modernStaff, modernLayer, Intervals.UNISON_PERFECT, null); // FIXME: 7/11/17 null
     }
 
     private void readTrainingFile(File trainingFile) throws IM3Exception {

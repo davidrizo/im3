@@ -7,7 +7,13 @@ import es.ua.dlsi.im3.core.played.PlayedSong;
 import es.ua.dlsi.im3.core.played.SongTrack;
 import es.ua.dlsi.im3.core.played.io.MidiSongExporter;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.clefs.ClefC2;
+import es.ua.dlsi.im3.core.score.clefs.ClefC3;
+import es.ua.dlsi.im3.core.score.clefs.ClefF4;
+import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
+import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
+import es.ua.dlsi.im3.core.score.io.lilypond.LilypondExporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.PageLayout;
@@ -24,14 +30,36 @@ public class LayoutMensuralAndTranscription {
     public static final void main(String [] args) throws IOException, IM3Exception {
         // TODO: 16/10/17 Que se pueda elegir el tipo de renderización y salida
 
-        if (args.length != 3) {
-            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file> <outout midi file>");
+        if (args.length != 5) {
+            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file> <output midi file> <output ly file> <output krn>");
         }
 
+        System.out.println("Input: " + args[0]);
         ScoreSongImporter importer = new ScoreSongImporter();
         ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]), new BinaryDurationEvaluator(new Time(2)));
 
-        MensuralToModern mensuralToModern = new MensuralToModern();
+        // exportamos también a lilypond
+        LilypondExporter lilypondExporter = new LilypondExporter();
+        File lyFile = new File(args[3]);
+        lilypondExporter.exportSong(lyFile, mensural);
+
+        // exportamos también a lilypond
+        KernExporter kernExporter = new KernExporter();
+        File kernFile = new File(args[4]);
+        kernExporter.exportSong(kernFile, mensural);
+
+
+        // TODO: 2/11/17 Esto deberá seguir unas normas - no éstas puestas casi a piñón
+        if (mensural.getStaves().size() != 8) {
+            throw new IM3Exception("TO-DO ESTO ESTÁ HECHO PARA PATRIARCA!!!! - CAMBIAR MAPAS DE CLAVES DE FORMA INTERACTIVA O CON REGLAS");
+        }
+
+        Clef [] modernClefs = new Clef [] {
+            new ClefG2(), new ClefG2(), new ClefG2(), new ClefF4(),
+            new ClefG2(), new ClefG2(), new ClefF4(), new ClefF4()
+        };
+
+        MensuralToModern mensuralToModern = new MensuralToModern(modernClefs);
         //TODO Parámetro
         //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC); // ésta genera más sostenidos
         ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FIFTH_PERFECT_DESC);
@@ -43,7 +71,6 @@ public class LayoutMensuralAndTranscription {
         MidiSongExporter exporter = new MidiSongExporter();
         exporter.addResetEWSCWordBuilderMessage(); // TODO: 29/10/17 Generalizar esto
         exporter.exportSong(new File(midiFile), played);
-
 
         mensuralToModern.merge(mensural, modern, true);
 

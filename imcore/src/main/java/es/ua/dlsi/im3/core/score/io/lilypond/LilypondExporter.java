@@ -189,7 +189,7 @@ public class LilypondExporter implements ISongExporter {
         }
 
         if (staff.getName() != null) {
-            sb.append("\\\t\tset Staff.instrument = \"" + staff.getName() + "\" \n");
+            sb.append("\t\\set Staff.instrument = \"" + staff.getName() + "\" \n");
         }
 
         exportClef(staff, staff.getClefAtTime(Time.TIME_ZERO), sb);
@@ -229,19 +229,19 @@ public class LilypondExporter implements ISongExporter {
         sb.append("\t\t\\clef ");
         if (staff.getNotationType() == NotationType.eMensural) {
             if (clef instanceof ClefG2) {
-                sb.append("mensural-g");
+                sb.append("\"mensural-g\"");
             } else if (clef instanceof ClefF4) {
-                sb.append("mensural-f");
+                sb.append("\"mensural-f\"");
             } else if (clef instanceof ClefC1) {
-                sb.append("mensural-c1");
+                sb.append("\"mensural-c1\"");
             } else if (clef instanceof ClefC2) {
-                sb.append("mensural-c2");
+                sb.append("\"mensural-c2\"");
             } else if (clef instanceof ClefC3) {
-                sb.append("mensural-c3");
+                sb.append("\"mensural-c3\"");
             } else if (clef instanceof ClefC4) {
-                sb.append("mensural-c4");
+                sb.append("\"mensural-c4\"");
             } else if (clef instanceof ClefC5) {
-                sb.append("mensural-c5");
+                sb.append("\"mensural-c5\"");
             } else {
                 throw new ExportException("Unsupported clef: " + clef.getClass().getName());
             }
