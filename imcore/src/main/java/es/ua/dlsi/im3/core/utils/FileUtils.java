@@ -13,9 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-
-
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -284,8 +283,12 @@ public class FileUtils {
 	}
 
     public static void copy(File fromFile, File targetFile) throws IOException {
-	    Path from = Paths.get(fromFile.toURI());
-        Path to = Paths.get(targetFile.toURI());
-        Files.copy(from, to);
+	    if (!fromFile.equals(targetFile)) {
+            Path from = Paths.get(fromFile.toURI());
+            Path to = Paths.get(targetFile.toURI());
+            Files.copy(from, to);
+        } else {
+            Logger.getLogger(FileUtils.class.getName()).log(Level.INFO, "Skipping copy because both files are the same: " + fromFile.getAbsolutePath() + " and " + targetFile.getAbsolutePath());
+        }
     }
 }
