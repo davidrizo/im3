@@ -4,6 +4,7 @@ package es.ua.dlsi.im3.omr.interactive.model;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefC3;
+import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.FontFactory;
 import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
@@ -11,6 +12,7 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.omr.PositionedSymbolType;
 import es.ua.dlsi.im3.omr.interactive.OMRController;
 import es.ua.dlsi.im3.omr.model.Symbol;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.SymbolView;
@@ -34,6 +36,7 @@ import java.util.List;
 
 public class OMRStaff<SymbolType> {
     private final OMRPage page;
+    private final OMRProject project;
     private List<SymbolView<SymbolType>> symbols;
     private Group root;
     private Rectangle boundingBox;
@@ -52,7 +55,8 @@ public class OMRStaff<SymbolType> {
     private LayoutStaff layoutStaff;
     private ImitationLayout imitationLayout;
 
-    public OMRStaff(OMRPage page, double leftTopX, double leftTopY, double bottomRightX, double bottomRightY) throws IM3Exception {
+    public OMRStaff(OMRProject project, OMRPage page, double leftTopX, double leftTopY, double bottomRightX, double bottomRightY) throws IM3Exception {
+        this.project = project;
         this.page = page;
         symbols = new ArrayList<>();
         interleavingColors = new Color [] {Color.BLUE, Color.GREEN};
@@ -234,6 +238,7 @@ public class OMRStaff<SymbolType> {
 
     public SymbolView<SymbolType> newSymbolComplete() throws IM3Exception {
         SymbolView<SymbolType> result = currentSymbolView;
+        currentSymbolView.finishSymbol();
         this.symbols.add(currentSymbolView);
         identifySymbol(currentSymbolView);
         currentSymbolView = null;
@@ -241,12 +246,35 @@ public class OMRStaff<SymbolType> {
     }
 
     private void identifySymbol(SymbolView<SymbolType> currentSymbolView) throws IM3Exception {
-        System.err.println("TO-DO IDENTIFICAR SIMBOLO YA");
-        //TODO
-        ClefC3 clefC3 = new ClefC3();
-        sourceStaff.addClef(clefC3);
-        LayoutCoreSymbol coreSymbol = imitationLayout.createAndAddSymbol(clefC3, layoutStaff);
+        ArrayList<PositionedSymbolType> recognizedSymbols = project.getRecognizer().recognize(currentSymbolView.getSymbol());
 
+        if (recognizedSymbols.isEmpty()) {
+            throw new IM3Exception("No symbol identified");
+        }
+
+        PositionedSymbolType best = recognizedSymbols.get(0);
+
+
+
+        // TODO: 9/11/17 En lugar de esto tendrá que haber un transductor - debería ser más bien un addSymbol
+        ITimedElementInStaff symbolInStaff = project.getGraphicalToScoreSymbolFactory().convert(best);
+        //TODO Quitar esto y moverlo al transductor
+        if (symbolInStaff instanceof Clef) {
+            sourceStaff.addClef((Clef) symbolInStaff);
+        } else if (symbolInStaff instanceof SimpleNote) {
+            sourceStaff.addCoreSymbol(symbolInStaff);
+        } else {
+            throw new IM3Exception("Unsupported " + symbolInStaff);
+        }
+
+        // FIXME: 9/11/17
+        if (layoutStaff.getStaff().getClefAtTime(Time.TIME_ZERO) == null) {
+            layoutStaff.getStaff().addClef(new ClefG2()); //TODO QUITAR YA
+        }
+
+        LayoutCoreSymbol coreSymbol = imitationLayout.createAndAddSymbol(symbolInStaff, layoutStaff);
+
+        //TODO Esto debería renderizarlo el layout
         scoreViewPane.getChildren().add(coreSymbol.getGraphics().getJavaFXRoot());
 
 

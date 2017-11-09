@@ -24,8 +24,8 @@ public class NewOpenProjectDialogController extends FXMLDialog {
     File trainingFile;
     private Preferences prefs;
 
-    public NewOpenProjectDialogController(Stage stage) {
-        super(stage, "New project", "/fxml/newopenproject.fxml");
+    public NewOpenProjectDialogController(Stage stage, String title) {
+        super(stage, title, "/fxml/newopenproject.fxml");
         labelProjectFolder.setText("");
         labelTrainingSetFile.setText("");
 

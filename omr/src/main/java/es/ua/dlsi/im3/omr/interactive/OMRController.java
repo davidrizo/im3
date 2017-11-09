@@ -123,7 +123,7 @@ public class OMRController implements Initializable {
                 ShowError.show(OMRApp.getMainStage(), "Cannot create project", e);
             }
         }*/
-        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage());
+        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "New project");
         if (dlg.show()) {
             try {
                 project.set(new OMRProject(dlg.getProjectFolder(), dlg.getTrainingFile(), this));
@@ -138,7 +138,7 @@ public class OMRController implements Initializable {
 
     @FXML
     private void handleOpenProject() {
-        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage());
+        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "Open project");
         if (dlg.show()) {
             try {
                 InputOutput io = new InputOutput();
@@ -272,7 +272,7 @@ public class OMRController implements Initializable {
     public void onStaffIdentified(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY) throws IM3Exception {
         OMRPage page = getSelectedPage();
         // we use the same pane for all marks, symbols, etc... to use absolute coordinates in all cases
-        OMRStaff staff = new OMRStaff(page, topLeftX, topLeftY, bottomRightX, bottomRightY);
+        OMRStaff staff = new OMRStaff(project.get(), page, topLeftX, topLeftY, bottomRightX, bottomRightY);
         page.addStaff(staff);
         marksPane.getChildren().add(staff.getRoot());
         btnIdentifyStaves.setSelected(false);

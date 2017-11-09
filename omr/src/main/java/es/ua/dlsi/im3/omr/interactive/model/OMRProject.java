@@ -7,11 +7,9 @@ import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.omr.IGraphicalToScoreSymbolFactory;
 import es.ua.dlsi.im3.omr.interactive.OMRController;
-import es.ua.dlsi.im3.omr.mensuralspanish.ISymbolRecognizer;
-import es.ua.dlsi.im3.omr.mensuralspanish.MensuralSymbols;
-import es.ua.dlsi.im3.omr.mensuralspanish.StringToMensuralSymbolFactory;
-import es.ua.dlsi.im3.omr.mensuralspanish.SymbolRecognizerFactory;
+import es.ua.dlsi.im3.omr.mensuralspanish.*;
 import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +32,7 @@ public class OMRProject {
     private ISymbolRecognizer recognizer;
     private ImitationLayout imitationLayout;
     private ScoreSongView scoreSongView;
+    IGraphicalToScoreSymbolFactory graphicalToScoreSymbolFactory;
 
     public OMRProject(File projectFolder, File trainingFile, OMRController controller) throws IM3Exception {
         pagesProperty = FXCollections.observableArrayList();
@@ -45,6 +44,9 @@ public class OMRProject {
         }
         imagesFolder = new File(projectFolder, IMAGES_FOLDER);
         imagesFolder.mkdirs();
+
+        // TODO: 9/11/17 Debemos poder parametrizar esto, que pueda ser también moderno
+        graphicalToScoreSymbolFactory = new MensuralGraphicalToScoreSymbolFactory();
         
         this.trainingFile = trainingFile;
         readTrainingFile(this.trainingFile);
@@ -128,6 +130,13 @@ public class OMRProject {
         } catch (IOException e) {
             throw new IM3Exception("Cannot train", e);
         }
+    }
 
+    public ISymbolRecognizer getRecognizer() {
+        return recognizer;
+    }
+
+    public IGraphicalToScoreSymbolFactory getGraphicalToScoreSymbolFactory() {
+        return graphicalToScoreSymbolFactory;
     }
 }

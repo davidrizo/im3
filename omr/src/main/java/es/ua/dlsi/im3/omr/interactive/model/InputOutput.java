@@ -53,7 +53,7 @@ public class InputOutput {
             page.loadImageFile();
 
             for (Staff pojoStaff: pojoPage.getStaves()) {
-                OMRStaff staff = new OMRStaff(page, pojoStaff.getLeftTopX(), pojoStaff.getLeftTopY(), pojoStaff.getBottomRightX(), pojoStaff.getBottomRightY());
+                OMRStaff staff = new OMRStaff(omrProject, page, pojoStaff.getLeftTopX(), pojoStaff.getLeftTopY(), pojoStaff.getBottomRightX(), pojoStaff.getBottomRightY());
                 page.addStaff(staff);
             }
         }
