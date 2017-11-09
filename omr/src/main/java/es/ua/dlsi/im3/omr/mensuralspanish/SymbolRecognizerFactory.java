@@ -39,8 +39,8 @@ public class SymbolRecognizerFactory<SymbolType> {
 	return instance;
     }
     
-    public ISymbolRecognizer buildRecognizer(Staff staff, IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) throws IM3Exception {
-    	//return new RandomSymbolRecognizer(staff); //TODO
-        return new TracedSymbolRecognizer(staff, reader, symbolFactory);
+    public ISymbolRecognizer buildRecognizer(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) throws IM3Exception {
+    	//return new RandomSymbolRecognizer(staff);
+        return new TracedSymbolRecognizer(reader, symbolFactory);
     }
 }

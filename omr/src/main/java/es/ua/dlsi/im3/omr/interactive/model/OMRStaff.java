@@ -241,12 +241,13 @@ public class OMRStaff<SymbolType> {
     }
 
     private void identifySymbol(SymbolView<SymbolType> currentSymbolView) throws IM3Exception {
+        System.err.println("TO-DO IDENTIFICAR SIMBOLO YA");
         //TODO
         ClefC3 clefC3 = new ClefC3();
         sourceStaff.addClef(clefC3);
         LayoutCoreSymbol coreSymbol = imitationLayout.createAndAddSymbol(clefC3, layoutStaff);
 
-        scoreViewPane.getChildren().add(coreSymbol.getGraphics().getJavaFXRoot());         // FIXME: 13/10/17 Quitar esto
+        scoreViewPane.getChildren().add(coreSymbol.getGraphics().getJavaFXRoot());
 
 
     }

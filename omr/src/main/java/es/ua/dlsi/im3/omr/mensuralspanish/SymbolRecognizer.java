@@ -27,13 +27,7 @@ import es.ua.dlsi.im3.core.score.Staff;
  * @author drizo
  */
 public abstract class SymbolRecognizer implements ISymbolRecognizer {
-    protected Staff staff;
-    protected final ScoreLayer layer;
-
-    public SymbolRecognizer(Staff staff) throws IM3Exception {
-	this.staff = staff;		
-	layer = staff.getLayers().get(0); // TODO: 7/10/17
-
+    public SymbolRecognizer() throws IM3Exception {
     }
 
     

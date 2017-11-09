@@ -76,13 +76,19 @@ public class OMRModel {
         song.addStaff(modernStaff);
         ScorePart modernPart = song.addPart();
         ScoreLayer modernLayer = modernPart.addScoreLayer(modernStaff);
-        transducer.convertIntoStaff(staff, modernStaff, modernLayer, Intervals.UNISON_PERFECT, null); // FIXME: 7/11/17 null
+        transducer.convertIntoStaff(staff, modernStaff, modernLayer, Intervals.UNISON_PERFECT, createModernClef(staff.getClefAtTime(Time.TIME_ZERO))); // FIXME: 7/11/17 null
+    }
+
+    // TODO: 8/11/17 Que salga de alguna regla
+    private Clef createModernClef(Clef mensuralClef) {
+        Clef modernClef = mensuralClef.clone();
+        return modernClef;
     }
 
     private void readTrainingFile(File trainingFile) throws IM3Exception {
         // TODO: 7/10/17 Factory con tipos de símbolos
         BimodalDatasetReader<MensuralSymbols> reader = new BimodalDatasetReader<>();
-        recognizer = SymbolRecognizerFactory.getInstance().buildRecognizer(getStaff(), reader, new StringToMensuralSymbolFactory());
+        recognizer = SymbolRecognizerFactory.getInstance().buildRecognizer(reader, new StringToMensuralSymbolFactory());
         try {
             recognizer.learn(trainingFile);
         } catch (IOException e) {

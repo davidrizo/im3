@@ -1,30 +1,27 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
-import com.thoughtworks.xstream.XStream;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.interactive.OMRController;
+import es.ua.dlsi.im3.omr.mensuralspanish.ISymbolRecognizer;
+import es.ua.dlsi.im3.omr.mensuralspanish.MensuralSymbols;
+import es.ua.dlsi.im3.omr.mensuralspanish.StringToMensuralSymbolFactory;
+import es.ua.dlsi.im3.omr.mensuralspanish.SymbolRecognizerFactory;
+import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ToggleGroup;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class OMRProject {
     static final String IMAGES_FOLDER = "images";
+    private final File trainingFile;
     /**
      * Used by GUI for binding
      */
@@ -34,10 +31,11 @@ public class OMRProject {
     File xmlFile;
     ScoreSong scoreSong;
     OMRController omrController;
+    private ISymbolRecognizer recognizer;
     private ImitationLayout imitationLayout;
     private ScoreSongView scoreSongView;
 
-    public OMRProject(File projectFolder, OMRController controller) throws IM3Exception {
+    public OMRProject(File projectFolder, File trainingFile, OMRController controller) throws IM3Exception {
         pagesProperty = FXCollections.observableArrayList();
         this.omrController = controller;
         this.projectFolder = projectFolder;
@@ -47,6 +45,9 @@ public class OMRProject {
         }
         imagesFolder = new File(projectFolder, IMAGES_FOLDER);
         imagesFolder.mkdirs();
+        
+        this.trainingFile = trainingFile;
+        readTrainingFile(this.trainingFile);
 
         // FIXME: 11/10/17 Esto debe ser interactivo
         scoreSong = new ScoreSong(new BinaryDurationEvaluator(new Time(2)));
@@ -116,5 +117,17 @@ public class OMRProject {
 
     public ImitationLayout getImitationLayout() {
         return imitationLayout;
+    }
+
+    private void readTrainingFile(File trainingFile) throws IM3Exception {
+        // TODO: 7/10/17 Factory con tipos de símbolos
+        BimodalDatasetReader<MensuralSymbols> reader = new BimodalDatasetReader<>();
+        recognizer = SymbolRecognizerFactory.getInstance().buildRecognizer(reader, new StringToMensuralSymbolFactory());
+        try {
+            recognizer.learn(trainingFile);
+        } catch (IOException e) {
+            throw new IM3Exception("Cannot train", e);
+        }
+
     }
 }

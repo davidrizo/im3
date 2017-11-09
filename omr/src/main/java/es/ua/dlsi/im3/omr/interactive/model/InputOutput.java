@@ -18,7 +18,6 @@ public class InputOutput {
         return FileUtils.getFileWithoutPath(projectFolder.getName()) + ".mrt";
     }
 
-
     public void save(OMRProject project) throws ExportException {
         Project pojoProject = new Project();
         for (OMRPage page: project.pagesProperty()) {
@@ -42,12 +41,12 @@ public class InputOutput {
         xStream.toXML(pojoProject, fos);
     }
 
-    public OMRProject load(OMRController controller, File projectFolder) throws IM3Exception {
+    public OMRProject load(OMRController controller, File projectFolder, File trainingFile) throws IM3Exception {
         XStream xStream = new XStream();
         File xmlFile = new File(projectFolder, createXMLFilename(projectFolder));
         Project pojoProject = (Project) xStream.fromXML(xmlFile);
 
-        OMRProject omrProject = new OMRProject(projectFolder, controller);
+        OMRProject omrProject = new OMRProject(projectFolder, trainingFile, controller);
         for (Page pojoPage: pojoProject.getPages()) {
             OMRPage page = new OMRPage(omrProject, omrProject.getImagesFolder(), pojoPage.getImageRelativeFileName(), omrProject.getScoreSong());
             omrProject.addPage(page);

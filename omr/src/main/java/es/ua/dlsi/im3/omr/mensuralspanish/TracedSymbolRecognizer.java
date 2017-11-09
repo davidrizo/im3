@@ -45,8 +45,7 @@ public class TracedSymbolRecognizer<SymbolType> extends SymbolRecognizer {
 	private final static int RESIZE_H = 30;
 	IClassifier classifier;
 
-	public TracedSymbolRecognizer(Staff staff, IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) throws IM3Exception {
-		super(staff);
+	public TracedSymbolRecognizer(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) throws IM3Exception {
 		classifier = ClassifierFactory.getInstance().createClassifier(reader, symbolFactory);
 	}
 

@@ -3,7 +3,6 @@ package es.ua.dlsi.im3.omr.interactive;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.gui.command.CommandManager;
-import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
@@ -112,11 +111,22 @@ public class OMRController implements Initializable {
 
     @FXML
     private void handleNewProject() {
-        OpenFolderDialog dlg = new OpenFolderDialog();
+        /*OpenFolderDialog dlg = new OpenFolderDialog();
         File folder = dlg.openFolder("Create a new folder for the project");
         if (folder != null) {
             try {
                 project.set(new OMRProject(folder, this));
+                InputOutput io = new InputOutput();
+                save();
+                loadProject();
+            } catch (IM3Exception e) {
+                ShowError.show(OMRApp.getMainStage(), "Cannot create project", e);
+            }
+        }*/
+        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage());
+        if (dlg.show()) {
+            try {
+                project.set(new OMRProject(dlg.getProjectFolder(), dlg.getTrainingFile(), this));
                 InputOutput io = new InputOutput();
                 save();
                 loadProject();
@@ -128,17 +138,17 @@ public class OMRController implements Initializable {
 
     @FXML
     private void handleOpenProject() {
-        OpenSaveFileDialog dlg = new OpenSaveFileDialog();
-        File mrt = dlg.openFile("Select the main file of the project", "MURET files", "mrt");
-
-        if (mrt != null) {
+        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage());
+        if (dlg.show()) {
             try {
                 InputOutput io = new InputOutput();
-                project.set(io.load(this, mrt.getParentFile()));
+                File folder = dlg.getProjectFolder();
+                File training = dlg.getTrainingFile();
+                project.set(io.load(this, folder, training));
                 loadProject();
-            } catch (IM3Exception e) {
-                e.printStackTrace();
-                ShowError.show(OMRApp.getMainStage(), "Cannot open project", e);
+            } catch (IM3Exception ex) {
+                ex.printStackTrace();
+                ShowError.show(OMRApp.getMainStage(), "Cannot open project", ex);
             }
         }
     }
