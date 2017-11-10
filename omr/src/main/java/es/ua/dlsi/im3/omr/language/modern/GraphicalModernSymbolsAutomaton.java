@@ -15,6 +15,9 @@ import org.apache.commons.math3.fraction.Fraction;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * Modified by Jordi Aracil 2
+ */
 public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
     public GraphicalModernSymbolsAutomaton() throws IM3Exception {
         super(NotationType.eModern);
