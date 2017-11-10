@@ -17,6 +17,7 @@ import java.util.HashSet;
 
 /**
  * Modified by Jordi Aracil 2
+ * Versión 1
  */
 public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
     public GraphicalModernSymbolsAutomaton() throws IM3Exception {
