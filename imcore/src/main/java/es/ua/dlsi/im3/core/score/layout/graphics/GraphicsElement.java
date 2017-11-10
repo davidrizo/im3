@@ -1,17 +1,9 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
-import es.ua.dlsi.im3.core.score.layout.LayoutFont;
-import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
-import javafx.scene.Node;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-
-import java.util.HashSet;
 
 // TODO: 18/9/17  Create a GraphicsDevice instead of implementing these interfaces
 public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement, ISVGElement {
