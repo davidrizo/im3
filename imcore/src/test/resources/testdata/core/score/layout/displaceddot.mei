@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="3.0.0">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title>Displaced dot test</title>
+                <respStmt>
+                    <persName role="encoder">David Rizo</persName>
+                </respStmt>                
+            </titleStmt>
+            <pubStmt/>
+            <seriesStmt>
+                <title>Displaced dot test</title>
+            </seriesStmt>
+        </fileDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <score>
+                    <scoreDef>
+                        <staffGrp symbol="bracket">
+                            <staffDef n="1" lines="5" clef.line="2" clef.shape="G" meter.sym="common" key.sig="1f" notationtype="mensural" label="Tiple 1º">
+                                <instrDef n="1" label="Tiple 1º"/>
+                            </staffDef>
+                            <staffDef n="2" lines="5" clef.line="2" clef.shape="G" meter.sym="common" key.sig="1f" notationtype="mensural" label="Tiple 2º">
+                                <instrDef n="2" label="Tiple 2º"/>
+                            </staffDef>
+                        </staffGrp>
+                    </scoreDef>
+                    <section>
+                        <staff n="1">
+                            <layer>
+                                <note pname="c" dur="semibrevis" oct="5"/> 
+                                <barLine/> 
+                                <dot/> <!-- this dot is drawn after the bar line -->
+                                <note pname="d" dur="minima" oct="5"/>
+                                <barLine/>
+                                <note pname="e" dur="semibrevis" oct="5"/>
+                                <!-- skip bar line -->
+                                <note pname="f" dur="semibrevis" oct="5"/>
+                                <barLine/>
+                            </layer>
+                        </staff>
+						<staff n="2">
+							<layer n="1">
+							    <note pname="g" dur="semibrevis" oct="4"/>
+							    <barLine/>
+							    <note pname="a" dur="semibrevis" oct="4"/>
+							    <barLine/>
+							    <note pname="b" dur="semibrevis" oct="4"/>
+							    <barLine xml:id="BL6"/>
+							    <note pname="c" dur="semibrevis" oct="5"/>
+							    <barLine/>
+							</layer>
+						</staff>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>
