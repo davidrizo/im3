@@ -10,6 +10,8 @@ import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.IGraphicalToScoreSymbolFactory;
 import es.ua.dlsi.im3.omr.interactive.OMRController;
 import es.ua.dlsi.im3.omr.mensuralspanish.*;
+import es.ua.dlsi.im3.omr.segmentation.DummyPageSegmenter;
+import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
 import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,6 +35,7 @@ public class OMRProject {
     private ImitationLayout imitationLayout;
     private ScoreSongView scoreSongView;
     IGraphicalToScoreSymbolFactory graphicalToScoreSymbolFactory;
+    IPageSegmenter pageSegmenter;
 
     public OMRProject(File projectFolder, File trainingFile, OMRController controller) throws IM3Exception {
         pagesProperty = FXCollections.observableArrayList();
@@ -47,7 +50,8 @@ public class OMRProject {
 
         // TODO: 9/11/17 Debemos poder parametrizar esto, que pueda ser también moderno
         graphicalToScoreSymbolFactory = new MensuralGraphicalToScoreSymbolFactory();
-        
+        pageSegmenter = new DummyPageSegmenter();
+
         this.trainingFile = trainingFile;
         readTrainingFile(this.trainingFile);
 

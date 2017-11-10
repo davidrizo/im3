@@ -16,11 +16,14 @@ import java.util.List;
 
 public class MEI2GraphicSymbols {
     static final PositionInStaff CENTER_LINE = PositionInStaff.fromLine(3);
-    public static final char SEPARATOR = '\t';
-    public static final String START = "start";
-    public static final String END = "end";
-    public static final String ABOVE = "above";
-    public static final String BELOW = "below";
+    private static final char SEPARATOR = '\t';
+    private static final String START = "start";
+    private static final String END = "end";
+    private static final String ABOVE = "above";
+    private static final String BELOW = "below";
+    private static final String TRILL = "trill";
+    private static final String FERMATA = "fermata";
+
     /**
      *
      * @param inputFile MEI File
@@ -49,6 +52,7 @@ public class MEI2GraphicSymbols {
 
     public ScoreGraphicalDescription convert(ScoreSong scoreSong) throws IM3Exception {
         ArrayList<GraphicalToken> graphicalTokens = new ArrayList<>();
+        ArrayList<SemanticToken> semanticTokens = new ArrayList<>();
         if (scoreSong.getStaves().size() != 1) {
             //Note we don't have information in the MEI file about line breaking
             throw new ExportException("Currently only one staff is supported in the export format");
@@ -67,9 +71,10 @@ public class MEI2GraphicSymbols {
             }
             if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
+                semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
             }
 
-            convert(graphicalTokens, symbol, drawnAccidentals);
+            convert(graphicalTokens, semanticTokens, symbol, drawnAccidentals);
 
             if (symbol instanceof Atom) {
                 lastEndTime = ((Atom)symbol).getOffset();
@@ -86,11 +91,12 @@ public class MEI2GraphicSymbols {
         if (lastEndTime.equals(measureEndTime)) {
             // add bar line just if the measure is complete
             graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
+            semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
         }
         /*sb.append(SEPARATOR);
         sb.append(THICKBARLINE_0);*/
 
-        return new ScoreGraphicalDescription(graphicalTokens);
+        return new ScoreGraphicalDescription(graphicalTokens, semanticTokens);
     }
 
     private void convertDuration(StringBuilder sb, AtomFigure figure) {
@@ -104,11 +110,12 @@ public class MEI2GraphicSymbols {
         }
     }
 
-    private void convert(ArrayList<GraphicalToken> graphicalTokens, ITimedElementInStaff symbol, HashMap<AtomPitch, Accidentals> drawnAccidentals) throws IM3Exception {
+    private void convert(ArrayList<GraphicalToken> graphicalTokens, ArrayList<SemanticToken> semanticTokens, ITimedElementInStaff symbol, HashMap<AtomPitch, Accidentals> drawnAccidentals) throws IM3Exception {
         if (symbol instanceof Clef) {
             PositionInStaff positionInStaff = PositionInStaff.fromLine(((Clef) symbol).getLine());
             Clef clef = (Clef) symbol;
             graphicalTokens.add(new GraphicalToken(GraphicalSymbol.clef, clef.getNote().name(), positionInStaff));
+            semanticTokens.add(new SemanticToken(SemanticSymbol.clef, clef.getNote() + "" + clef.getLine()));
         } else if (symbol instanceof KeySignature) {
             KeySignature ks = (KeySignature) symbol;
             PositionInStaff [] positions = ks.computePositionsOfAccidentals();
@@ -118,17 +125,29 @@ public class MEI2GraphicSymbols {
                     graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, ks.getAccidental().name().toLowerCase(), position));
                 }
             }
+            StringBuilder sb = new StringBuilder();
+            sb.append(ks.getConcertPitchKey().getPitchClass().toString());
+            if (ks.getConcertPitchKey().getMode() != null && ks.getConcertPitchKey().getMode() != Mode.UNKNOWN) {
+                sb.append(ks.getConcertPitchKey().getMode().getName());
+            }
+            semanticTokens.add(new SemanticToken(SemanticSymbol.keySignature, sb.toString()));
+
         } else if (symbol instanceof TimeSignature) {
+            StringBuilder sb = new StringBuilder();
             if (symbol instanceof SignTimeSignature) {
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.metersign, ((SignTimeSignature)symbol).getSignString(), PositionsInStaff.LINE_3));
+                sb.append(((SignTimeSignature)symbol).getSignString());
             } else if (symbol instanceof FractionalTimeSignature ){
                 FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getNumerator()), PositionsInStaff.LINE_4));
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getDenominator()), PositionsInStaff.LINE_2));
+                sb.append(ts.getNumerator());
+                sb.append('/');
+                sb.append(ts.getDenominator());
             } else {
                 throw new ExportException("Unsupported time signature" + symbol.getClass());
             }
-
+            semanticTokens.add(new SemanticToken(SemanticSymbol.timeSignature, sb.toString()));
         } else if (symbol instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) symbol;
 
@@ -185,13 +204,31 @@ public class MEI2GraphicSymbols {
             if (note.getAtomPitch().isTiedToNext()) {
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, START, positionInStaff));
             }
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(note.getPitch().toString());
+            sb.append(SemanticToken.SUBVALUE_SEPARATOR);
+            fillSingleFigureAtom(sb, note);
+            SemanticSymbol semanticSymbol;
+            if (note.isGrace()) {
+                semanticSymbol = SemanticSymbol.gracenote;
+            } else {
+                semanticSymbol = SemanticSymbol.note;
+            }
+
+            semanticTokens.add(new SemanticToken(semanticSymbol, sb.toString()));
+
+            if (note.getAtomPitch().isTiedToNext()) {
+                semanticTokens.add(new SemanticToken(SemanticSymbol.tie));
+            }
+
         } else if (symbol instanceof SimpleMultiMeasureRest) {
             SimpleMultiMeasureRest multiMeasureRest = (SimpleMultiMeasureRest) symbol;
             int n = multiMeasureRest.getNumMeasures();
             ArrayList<Integer> digits = new ArrayList<>();
             while (n>0) {
-                int digit = n%10;
-                n/=10;
+                int digit = n % 10;
+                n /= 10;
                 digits.add(0, digit);
             }
             for (Integer digit: digits) {
@@ -206,6 +243,9 @@ public class MEI2GraphicSymbols {
             if (multiMeasureRest.getAtomFigure().getFermata() != null && multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
             }
+
+            semanticTokens.add(new SemanticToken(SemanticSymbol.multirest, Integer.toString(multiMeasureRest.getNumMeasures())));
+
 
         } else if (symbol instanceof SimpleRest) {
             SimpleRest rest = (SimpleRest) symbol;
@@ -227,9 +267,37 @@ public class MEI2GraphicSymbols {
 
 
             convertDots(graphicalTokens, rest.getAtomFigure(), PositionsInStaff.SPACE_3);
+
+            StringBuilder sb = new StringBuilder();
+            fillSingleFigureAtom(sb, rest);
+            semanticTokens.add(new SemanticToken(SemanticSymbol.rest, sb.toString()));
         } else {
             throw new ExportException("Unsupported symbol conversion of: " + symbol.getClass());
         }
+    }
+
+    private void fillSingleFigureAtom(StringBuilder sb, SingleFigureAtom atom) throws IM3Exception {
+        sb.append(atom.getAtomFigure().getFigure().name().toLowerCase());
+        for (int i=0; i<atom.getAtomFigure().getDots(); i++) {
+            sb.append('.');
+        }
+        if (atom.getAtomFigure().getFermata() != null) {
+            sb.append(SemanticToken.SUBVALUE_SEPARATOR);
+            sb.append(FERMATA);
+        }
+        // TODO: 10/11/17 Otras marcas
+        if (atom.getMarks() != null) {
+            for (StaffMark mark : atom.getMarks()) {
+                if (mark instanceof Trill) {
+                    sb.append(SemanticToken.SUBVALUE_SEPARATOR);
+                    sb.append(TRILL);
+                } else {
+                    throw new IM3Exception("Unsupported mark: " + mark.getClass());
+                }
+            }
+        }
+
+
     }
 
     private String generateFigureString(SimpleNote note) {
@@ -248,12 +316,39 @@ public class MEI2GraphicSymbols {
         }
     }
 
+    public void run(List<File> files) {
+        int i=0;
+        int n = files.size();
+        for (File file: files) {
+            System.out.println("Processing " + i + "/" + n);
+            i++;
+
+            MEISongImporter importer = new MEISongImporter();
+            ScoreGraphicalDescriptionWriter writer = new ScoreGraphicalDescriptionWriter();
+            MEI2GraphicSymbols converter = new MEI2GraphicSymbols();
+            try {
+                ScoreSong scoreSong = importer.importSong(file);
+                ScoreGraphicalDescription graficalDescription = converter.convert(scoreSong);
+                File outputFile = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".agnostic");
+                writer.write(outputFile, graficalDescription.getTokens());
+
+                File outputFileSemantic = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".semantic");
+                writer.write(outputFileSemantic, graficalDescription.getSemanticTokens());
+
+            } catch (Exception e) {
+                System.err.print("---------------------------------------------------------------");
+                System.err.print("Error processing " + file.getAbsolutePath());
+                e.printStackTrace(System.err);
+            }
+        }
+    }
+
     /**
      * @param args
      */
     public static final void main(String [] args) {
         if (args.length != 1) {
-            System.err.println("Use: MEI2GraphicSymbols <mei files folder (it leaves here the output file with extension .prm)>");
+            System.err.println("Use: MEI2GraphicSymbols <mei files folder (it leaves here the output file with extension .agnostic and .semantic)>");
             return;
         }
 
@@ -270,25 +365,6 @@ public class MEI2GraphicSymbols {
             return;
         }
 
-        int i=0;
-        int n = files.size();
-        for (File file: files) {
-            System.out.println("Processing " + i + "/" + n);
-            i++;
-
-            MEISongImporter importer = new MEISongImporter();
-            ScoreGraphicalDescriptionWriter writer = new ScoreGraphicalDescriptionWriter();
-            MEI2GraphicSymbols converter = new MEI2GraphicSymbols();
-            try {
-                ScoreSong scoreSong = importer.importSong(file);
-                ScoreGraphicalDescription graficalDescription = converter.convert(scoreSong);
-                File outputFile = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".prm");
-                writer.write(outputFile, graficalDescription);
-            } catch (Exception e) {
-                System.err.print("---------------------------------------------------------------");
-                System.err.print("Error processing " + file.getAbsolutePath());
-                e.printStackTrace(System.err);
-            }
-        }
+        new MEI2GraphicSymbols().run(files);
     }
 }

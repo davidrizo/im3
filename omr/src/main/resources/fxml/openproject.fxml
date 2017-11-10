@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+      <Label fx:id="messageLabel" text="Select the project target folder" wrapText="true">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="detailsLabel" text="Select a taining set file" wrapText="true" GridPane.rowIndex="1">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Button mnemonicParsing="false" onAction="#handleSelectFolder" text="..." GridPane.columnIndex="1" />
+      <Button mnemonicParsing="false" onAction="#handleSelectTrainingSetFile" text="..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Label fx:id="labelTrainingSetFile" text="&lt;Training set file&gt;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <Label fx:id="labelProjectFolder" text="&lt;Project folder&gt;" GridPane.columnIndex="2" />
+  </children>
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" maxWidth="407.0" minWidth="-Infinity" prefWidth="202.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="407.0" minWidth="10.0" prefWidth="30.0" />
+    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="Infinity" minWidth="-Infinity" prefWidth="560.0" />
+  </columnConstraints>
+  <padding>
+    <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+  </padding>
+  <rowConstraints>
+    <RowConstraints maxHeight="Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+  </rowConstraints>
+</GridPane>
