@@ -135,9 +135,9 @@ public class MEI2GraphicSymbols {
         } else if (symbol instanceof TimeSignature) {
             StringBuilder sb = new StringBuilder();
             if (symbol instanceof SignTimeSignature) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.metersign, ((SignTimeSignature)symbol).getSignString(), PositionsInStaff.LINE_3));
-                sb.append(((SignTimeSignature)symbol).getSignString());
-            } else if (symbol instanceof FractionalTimeSignature ){
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.metersign, ((SignTimeSignature) symbol).getSignString(), PositionsInStaff.LINE_3));
+                sb.append(((SignTimeSignature) symbol).getSignString());
+            } else if (symbol instanceof FractionalTimeSignature) {
                 FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getNumerator()), PositionsInStaff.LINE_4));
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getDenominator()), PositionsInStaff.LINE_2));
@@ -148,6 +148,8 @@ public class MEI2GraphicSymbols {
                 throw new ExportException("Unsupported time signature" + symbol.getClass());
             }
             semanticTokens.add(new SemanticToken(SemanticSymbol.timeSignature, sb.toString()));
+        } else if (symbol instanceof SimpleChord) {
+            throw new IM3Exception("Unsupported chords");
         } else if (symbol instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) symbol;
 
