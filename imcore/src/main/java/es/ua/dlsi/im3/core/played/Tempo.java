@@ -1,6 +1,6 @@
 package es.ua.dlsi.im3.core.played;
 
-public class Tempo {
+public class Tempo implements IPlayedEvent{
 	int tempo;
 	long time;
 	public Tempo(int value) {
@@ -13,6 +13,7 @@ public class Tempo {
 	public final void setTempo(int value) {
 		this.tempo = value;
 	}
+	@Override
 	public final long getTime() {
 		return time;
 	}

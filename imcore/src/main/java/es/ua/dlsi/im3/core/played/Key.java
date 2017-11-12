@@ -1,6 +1,6 @@
 package es.ua.dlsi.im3.core.played;
 
-public class Key {
+public class Key implements IPlayedEvent {
 	public enum Mode {MAJOR, MINOR};
 	
 	private Mode mode;
@@ -32,6 +32,7 @@ public class Key {
 		this.fifths = sf;
 	}
 
+	@Override
 	public final long getTime() {
 		return time;
 	}

@@ -24,12 +24,12 @@ import es.ua.dlsi.im3.core.io.ImportException;
 @date 23/02/2010
  **/
 public class MidiSongImporterTest {
-	private boolean testExportImport = true;
+	private static boolean testExportImport = true;
 	@Before
 	public void setUp() throws Exception {
 	}
 
-    private void doTest(Function<PlayedSong, Void> validationFunction, PlayedSong song) throws Exception {
+    public static void doTest(Function<PlayedSong, Void> validationFunction, PlayedSong song) throws Exception {
         validationFunction.apply(song);
         MidiSongExporter exporter = new MidiSongExporter();
         File file = TestFileUtils.createTempFile("aa.mid");
@@ -41,14 +41,14 @@ public class MidiSongImporterTest {
         }
     }
 
-    private PlayedSong importMIDI(File file) throws ImportException {
+    private static PlayedSong importMIDI(File file) throws ImportException {
         MidiSongImporter importer = new MidiSongImporter();
         PlayedSong song = importer.importSong(file);
         return song;
     }
 
     //----------------------------------------------------------------------------------------
-    private static Void assertTimeSignatureChanges(PlayedSong song) {
+    public static Void assertTimeSignatureChanges(PlayedSong song) {
 	    try {
             String [] expectedTimeSignatures = {
                     "4/4", "2/4", "3/4", "7/4", "5/4", "1/4", "3/8", "9/8", "6/8", "15/8", "6/2", "12/16", "15/16", "3/64", "2/2"
@@ -120,7 +120,7 @@ public class MidiSongImporterTest {
     }
 
     //----------------------------------------------------------------------------------------
-    private static Void assertTimeKeyChanges(PlayedSong song) {
+    public static Void assertTimeKeyChanges(PlayedSong song) {
         try {
             Key[] expectedKeys = {
                     new Key(2, Key.Mode.MAJOR),
@@ -130,7 +130,7 @@ public class MidiSongImporterTest {
             };
 
             long [] expectedTimes = {
-                0,8,12, 20
+                    0,8,12, 20
             };
             int resolution = song.getResolution();
 

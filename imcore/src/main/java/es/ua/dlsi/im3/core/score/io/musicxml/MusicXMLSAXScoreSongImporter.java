@@ -1209,6 +1209,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 		staffNumbers.put(number, staff);		
 		song.addStaff(staff);
+		currentScorePart.addStaff(staff); //TODO Comprobar esto
 		staff.setNotationType(NotationType.eModern);
 		return staff;
 	}
@@ -1221,7 +1222,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		Mode mode;
 		if (keyMode == null) {
 			mode = Mode.MAJOR;
-		} else {
+		} else if (keyMode.equals("none")) {
+		    mode = Mode.UNKNOWN;
+        } else {
 			mode = Mode.stringToMode(keyMode);
 		}
 		lastKey = new KeySignature(null, new Key(keyFifiths, mode));

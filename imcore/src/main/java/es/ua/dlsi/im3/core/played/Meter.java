@@ -2,7 +2,7 @@ package es.ua.dlsi.im3.core.played;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
-public class Meter {
+public class Meter implements IPlayedEvent {
 	int numerator;
 	int denominator;
 	long time;
@@ -24,6 +24,7 @@ public class Meter {
 		this.time = time;
 	}
 
+	@Override
 	public long getTime() {
 		return time;
 	}
