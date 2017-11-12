@@ -46,4 +46,21 @@ public class Key {
 		this.mode = key.mode;		
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Key key = (Key) o;
+
+        if (fifths != key.fifths) return false;
+        return mode == key.mode;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mode != null ? mode.hashCode() : 0;
+        result = 31 * result + fifths;
+        return result;
+    }
 }
