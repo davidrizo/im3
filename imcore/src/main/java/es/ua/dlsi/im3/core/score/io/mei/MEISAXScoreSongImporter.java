@@ -164,6 +164,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		FIGURES.put("minima", Figures.MINIM);
 		FIGURES.put("semiminima", Figures.SEMIMINIM);
 		FIGURES.put("fusa", Figures.FUSA);
+        FIGURES.put("semifusa", Figures.SEMIFUSA);
 		FIGURES.put("long", Figures.QUADRUPLE_WHOLE);
 		FIGURES.put("breve", Figures.DOUBLE_WHOLE);
 		FIGURES.put("1", Figures.WHOLE);
