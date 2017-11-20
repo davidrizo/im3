@@ -10,7 +10,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
 import java.util.HashMap;
 
-public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRest> implements IConnectableWithSlur{
+public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRest> implements IConnectableWithSlurInStaff {
     private final Pictogram pictogram;
     SimpleRest rest;
 

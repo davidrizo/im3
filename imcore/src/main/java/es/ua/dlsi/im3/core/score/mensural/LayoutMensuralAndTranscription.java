@@ -111,8 +111,11 @@ public class LayoutMensuralAndTranscription {
             int pageNumber = 1;
             for (Canvas canvas: pageLayout.getCanvases()) {
                 SVGExporter svgExporterPage = new SVGExporter();
-                File pageFile = new File(svgHorizontalFile.getParent(), partSVGNamePrefix + "_page_" + pageNumber + ".svg");
+                // TODO: 20/11/17 He quitado los page breaks
+                //File pageFile = new File(svgHorizontalFile.getParent(), partSVGNamePrefix + "_page_" + pageNumber + ".svg");
+                File pageFile = new File(svgHorizontalFile.getParent(), partSVGNamePrefix + ".svg");
                 svgExporterPage.exportLayout(pageFile, canvas, pageLayout);
+                pageNumber++;
             }
 
 

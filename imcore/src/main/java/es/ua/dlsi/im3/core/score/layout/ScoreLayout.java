@@ -35,7 +35,7 @@ public abstract class ScoreLayout {
     /**
      * Used for building connectors
      */
-    HashMap<ITimedSymbolWithConnectors, IConnectableWithSlur> layoutConnectorEnds;
+    HashMap<ITimedSymbolWithConnectors, IConnectableWithSlurInStaff> layoutConnectorEnds;
 
     protected HashMap<Staff, List<LayoutCoreBarline>> barlines;
     protected List<LayoutConnector> connectors;
@@ -152,8 +152,8 @@ public abstract class ScoreLayout {
                 }
             }
 
-            createConnectors();
-            createBeams();
+            //createConnectors();
+            //createBeams();
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
         }
@@ -197,10 +197,10 @@ public abstract class ScoreLayout {
             }
 
             if (symbol instanceof ITimedSymbolWithConnectors) {
-                if (!(layoutCoreSymbol instanceof IConnectableWithSlur)) { // TODO: 31/10/17 Esto no está bien diseñado
-                    throw new IM3Exception("Design Inconsistency, " + layoutCoreSymbol + " should implement IConnectableWithSlur because "+ symbol + " is a ITimedSymbolWithConnectors");
+                if (!(layoutCoreSymbol instanceof IConnectableWithSlurInStaff)) { // TODO: 31/10/17 Esto no está bien diseñado
+                    throw new IM3Exception("Design Inconsistency, " + layoutCoreSymbol + " should implement IConnectableWithSlurInStaff because "+ symbol + " is a ITimedSymbolWithConnectors");
                 }
-                layoutConnectorEnds.put((ITimedSymbolWithConnectors)symbol, (IConnectableWithSlur)layoutCoreSymbol);
+                layoutConnectorEnds.put((ITimedSymbolWithConnectors)symbol, (IConnectableWithSlurInStaff)layoutCoreSymbol);
             }
             addCoreSymbolToSimultaneities(coreSymbolsInStaff, layoutCoreSymbol);
 
@@ -296,8 +296,9 @@ public abstract class ScoreLayout {
                                 throw new IM3Exception("Atom pitches to tie are not the same");
                             }
 
-                            LayoutSlur slur = new LayoutSlur(previousNotePitch, notePitch);
-                            addConnector(slur);
+                            createSlur(previousNotePitch, notePitch);
+                            //LayoutSlur slur = new LayoutSlur(previousNotePitch, notePitch);
+                            //addConnector(slur);
                         }
 
                         // create slurs and other connectors
@@ -316,25 +317,28 @@ public abstract class ScoreLayout {
         }
     }
 
-    private void createConnectors(IConnectableWithSlur layoutCoreSymbolInStaff, ITimedSymbolWithConnectors symbolWithConnectors) throws IM3Exception {
+    protected void createSlur(IConnectableWithSlurInStaff from, IConnectableWithSlurInStaff to) throws IM3Exception {
+        if (from == null) {
+            throw new IM3Exception("Cannot find a layout symbol for core symbol " + from + " for connector " + to);
+        }
+
+        LayoutSlur layoutSlur = new LayoutSlur(from, to);
+        addConnector(layoutSlur);
+    }
+
+    protected void createConnectors(IConnectableWithSlurInStaff layoutCoreSymbolInStaff, ITimedSymbolWithConnectors symbolWithConnectors) throws IM3Exception {
         Collection<Connector> atomPitchConnectors = symbolWithConnectors.getConnectors();
 
         if (atomPitchConnectors != null) {
             for (Connector connector: atomPitchConnectors) {
-                // just create "to" connectors to avoid duplicate in both directions
-                if (connector.getTo() == symbolWithConnectors) {
-
-                    IConnectableWithSlur from = layoutConnectorEnds.get(connector.getFrom());
-                    if (from == null) {
-                        throw new IM3Exception("Cannot find a layout symbol for core symbol " + connector.getFrom() + " for connector " + connector);
+                if (connector instanceof Slur) {
+                    // just create "to" connectors to avoid duplicate in both directions
+                    if (connector.getTo() == symbolWithConnectors) {
+                        IConnectableWithSlurInStaff from = layoutConnectorEnds.get(connector.getFrom());
+                        createSlur(from, layoutCoreSymbolInStaff);
                     }
-
-                    if (connector instanceof Slur) {
-                        LayoutSlur layoutSlur = new LayoutSlur(from, layoutCoreSymbolInStaff);
-                        addConnector(layoutSlur);
-                    } else {
-                        System.err.println("CONNECTOR NON SUPPORTED: " + connector.getClass());
-                    }
+                } else {
+                    System.err.println("CONNECTOR NON SUPPORTED: " + connector.getClass());
                 }
             }
         }

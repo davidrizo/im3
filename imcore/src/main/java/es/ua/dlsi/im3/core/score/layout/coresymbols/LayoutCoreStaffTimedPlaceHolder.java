@@ -11,7 +11,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 /**
  * Currently we don't show any visual representation
  */
-public class LayoutCoreStaffTimedPlaceHolder extends LayoutCoreSymbolInStaff<StaffTimedPlaceHolder> implements IConnectableWithSlur {
+public class LayoutCoreStaffTimedPlaceHolder extends LayoutCoreSymbolInStaff<StaffTimedPlaceHolder> implements IConnectableWithSlurInStaff {
     Line line;
     public LayoutCoreStaffTimedPlaceHolder(LayoutFont layoutFont, StaffTimedPlaceHolder coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);

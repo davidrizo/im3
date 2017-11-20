@@ -4,10 +4,8 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.LayoutConnector;
-import es.ua.dlsi.im3.core.score.layout.Simultaneity;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutDashedBarlineAcrossStaves;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 // TODO: 20/11/17 Todo esto necesita reescribirse totalmente

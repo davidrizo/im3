@@ -23,4 +23,8 @@ public abstract class LayoutCoreSymbolInStaff<CoreSymbolType extends ITimedEleme
     public Staff getCoreStaff() {
         return ((ITimedElementInStaff)coreSymbol).getStaff();
     }
+
+    public LayoutStaff getLayoutStaff() {
+        return layoutStaff;
+    }
 }

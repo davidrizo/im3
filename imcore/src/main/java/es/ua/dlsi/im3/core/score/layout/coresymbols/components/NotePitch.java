@@ -11,7 +11,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
 import java.util.ArrayList;
 
-public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements IConnectableWithSlur {
+public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements IConnectableWithSlurInStaff {
 
     private Pictogram noteHeadPictogram;
     private final AtomPitch atomPitch;
@@ -205,6 +205,12 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
         } else {
             return Direction.up;
         }
+    }
+
+    // TODO: 20/11/17 Debe poder ser distinto al del padre como en core
+    @Override
+    public LayoutStaff getLayoutStaff() {
+        return this.parent.getLayoutStaff();
     }
 
     // TODO: 1/10/17 El enganche en la plica se hará con el LayoutCoreSingleFigureAtom, no aquí

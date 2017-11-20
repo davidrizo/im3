@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 
@@ -35,6 +36,32 @@ public class PageLayout extends ScoreLayout {
         System.err.println("TO-DO CONNECTORS IN PAGE LAYOUT"); // TODO: 1/10/17 Connectors en Page Layout
     }
 
+    /**
+     * It a connector spans two layout systems it must be split into two
+     * @param from
+     * @param to
+     * @throws IM3Exception
+     */
+    @Override
+    protected void createSlur(IConnectableWithSlurInStaff from, IConnectableWithSlurInStaff to) throws IM3Exception {
+        if (from == null) {
+            throw new IM3Exception("Cannot find a layout symbol for core symbol " + from + " for connector " + to);
+        }
+
+        if (from.getLayoutStaff() == to.getLayoutStaff()) {
+            LayoutSlur layoutSlur = new LayoutSlur(from, to);
+            addConnector(layoutSlur);
+        } else {
+            // create two broken slurs
+            LayoutSlur layoutSlurFrom = new LayoutSlur(from, null);
+            addConnector(layoutSlurFrom);
+
+            LayoutSlur layoutSlurTo = new LayoutSlur(null, to);
+            addConnector(layoutSlurTo);
+        }
+    }
+
+
     @Override
     public void layout() throws IM3Exception {
         // TODO: 19/9/17 En esta versión creamos todos los símbolos cada vez - habría que crear sólo los necesarios
@@ -50,11 +77,13 @@ public class PageLayout extends ScoreLayout {
                 LayoutSystemBreak lsb = new LayoutSystemBreak(layoutFonts.values().iterator().next(), sb);
                 simultaneities.add(lsb);
             }
-            for (PageBreak sb: staves.iterator().next().getPageBreaks().values()) {
+            // TODO: 20/11/17 He quitado los page breaks
+            /*for (PageBreak sb: staves.iterator().next().getPageBreaks().values()) {
                 // use the first layout font, it can be any one
                 LayoutPageBreak lsb = new LayoutPageBreak(layoutFonts.values().iterator().next(), sb);
                 simultaneities.add(lsb);
-            }
+            }*/
+            //--------
         } // else discard system breaks
 
         // perform a first horizontal layout
@@ -226,6 +255,10 @@ public class PageLayout extends ScoreLayout {
 
             }
         }
+
+        createConnectors();
+        createBeams();
+
 
         for (Page page: pages) {
             // add the connectors to the canvas

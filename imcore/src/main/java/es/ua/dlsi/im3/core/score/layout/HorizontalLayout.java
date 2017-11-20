@@ -91,6 +91,9 @@ public class HorizontalLayout extends ScoreLayout {
 
         doHorizontalLayout(simultaneities);
 
+        createConnectors();
+        createBeams();
+
         // add the connectors to the canvas
         for (LayoutConnector connector: connectors) {
             canvas.add(connector.getGraphics());
