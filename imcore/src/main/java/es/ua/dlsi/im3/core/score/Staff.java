@@ -81,6 +81,21 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
 	protected ConnectorCollection connectorCollection;
 
+    // TODO: 17/11/17 A system
+    /**
+     * Explicit system breaks
+     */
+    HashMap<Time, SystemBreak> systemBreaks;
+    // TODO: 17/11/17 A system
+    /**
+     * Explicit system breaks
+     */
+    HashMap<Time, PageBreak> pageBreaks;
+
+    /**
+     * Parts represented in this staff, usually it will be just 1 part
+     */
+    List<ScorePart> parts;
 	/**
 	 *
 	 * @param hierarchicalOrder
@@ -93,6 +108,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			int nlines) {
 		super(song, hierarchicalOrder, numberIdentifier);
 		init(nlines);
+        parts = new LinkedList<>();
 		fermate = new TreeMap<>();
 		this.marks = new ArrayList<>();
 		this.attachments = new ArrayList<>();
@@ -109,9 +125,19 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		this.timeSignatures = new TreeMap<>();
 		this.keySignatures = new TreeMap<>();
 		this.markBarlines = new TreeMap<>();
-	}
+        this.systemBreaks = new HashMap<>();
+        this.pageBreaks = new HashMap<>();
+    }
 
-	// ----------------------------------------------------------------------
+    public void addPart(ScorePart part) {
+	    parts.add(part);
+    }
+
+    public List<ScorePart> getParts() {
+        return parts;
+    }
+
+    // ----------------------------------------------------------------------
 	// ----------------------- General --------------------------------
 	// ----------------------------------------------------------------------
 	public StaffGroup getParentSystem() {
@@ -745,5 +771,36 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      */
     public Fermate getFermateWithOnset(Time time) {
         return fermate.get(time);
+    }
+
+
+    public void addSystemBreak(SystemBreak sb) throws IM3Exception {
+        if (sb.getTime() == null) {
+            throw new IM3Exception("System break has not time set");
+        }
+        systemBreaks.put(sb.getTime(), sb);
+    }
+
+    public HashMap<Time, SystemBreak> getSystemBreaks() {
+        return systemBreaks;
+    }
+
+    public boolean hasSystemBreak(Time time) {
+        return systemBreaks.containsKey(time);
+    }
+
+    public void addPageBreak(PageBreak sb) throws IM3Exception {
+        if (sb.getTime() == null) {
+            throw new IM3Exception("Page break has not time set");
+        }
+        pageBreaks.put(sb.getTime(), sb);
+    }
+
+    public HashMap<Time, PageBreak> getPageBreaks() {
+        return pageBreaks;
+    }
+
+    public boolean hasPageBreak(Time time) {
+        return pageBreaks.containsKey(time);
     }
 }

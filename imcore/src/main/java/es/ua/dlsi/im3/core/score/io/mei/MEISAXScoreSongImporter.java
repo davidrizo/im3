@@ -538,8 +538,18 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 case "sb":
                     horizontalOrderInStaff = 0;
                     Time sbtime = getCurrentTime();
-                    if (!song.hasSystemBreak(sbtime )) { // it appears in different parts
-                        song.addSystemBreak(new SystemBreak(sbtime, true));
+                    // TODO: 17/11/17 A system en lugar de staff
+                    if (!lastStaff.hasSystemBreak(sbtime )) {
+                        lastStaff.addSystemBreak(new SystemBreak(sbtime, true));
+                    }
+                    break;
+                case "pb":
+                    // TODO: 17/11/17 A system en lugar de staff
+                    horizontalOrderInStaff = 0;
+                    Time pbtime = getCurrentTime();
+                    // TODO: 17/11/17 A system en lugar de staff
+                    if (!lastStaff.hasPageBreak(pbtime )) {
+                        lastStaff.addPageBreak(new PageBreak(pbtime, true));
                     }
                     break;
 				case "barLine":
@@ -559,6 +569,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					
 					staffCount++;	
 					layerCount=0;
+                    previousAccidentals = new HashMap<>();
 					number = getOptionalAttribute(attributesMap, "n");
 					lastStaff = findStaff(number);
 					break;
@@ -842,6 +853,20 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                             getOptionalAttribute(attributesMap, "dis.place"));
                     horizontalOrderInStaff++;
                     break;
+                case "custos":
+                    oct = getOptionalAttribute(attributesMap, "oct");
+                    pname = getOptionalAttribute(attributesMap, "pname");
+                    Custos custos;
+                    if (oct != null && pname != null) {
+                        octave = Integer.parseInt(oct);
+                        DiatonicPitch dp = DiatonicPitch.valueOf(pname.toUpperCase());
+                        custos = new Custos(lastStaff, getCurrentTime(), dp, octave);
+                    } else {
+                        custos = new Custos(lastStaff, getCurrentTime());
+                    }
+
+                    lastStaff.addMark(custos);
+                    break;
 				case "tie":
 					staffNumber = getOptionalAttribute(attributesMap, "staff");
 					pendingConnectorOrMark = new PendingConnectorOrMark();
@@ -1066,9 +1091,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				throw new ImportException("Unimplemented staves with " + lines + " lines");
 		}
 		staffNumbers.put(number, staff);
-		staff.setName(label);
+        staff.setName(label);
 		staff.setOssia(inOssia);
 		song.addStaff(staff);
+        staff.addPart(currentScorePart); // TODO: 20/11/17 Parts when two parts in a staff
         return staff;
 	}
 

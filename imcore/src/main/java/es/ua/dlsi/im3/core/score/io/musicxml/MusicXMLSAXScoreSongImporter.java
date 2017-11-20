@@ -288,9 +288,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			case "print":
 			    String newSystem = getOptionalAttribute(attributes, "new-system");
 			    if (newSystem != null) {
-			        song.addSystemBreak(new SystemBreak(measureStartTime, true));
-                }
-				break;
+                    defaultStaff.addSystemBreak(new SystemBreak(measureStartTime, true));
+                } // TODO: 20/11/17 Page break 
+                // TODO: 20/11/17 Comprobar
+                break;
 			case "direction":
 				currentNote = null;
 				//currentStaffPlaceHolder = new AMStaffPlaceHolder(currentScorePart.getElements().size(), currentTime);
@@ -1211,7 +1212,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		song.addStaff(staff);
 		currentScorePart.addStaff(staff); //TODO Comprobar esto
 		staff.setNotationType(NotationType.eModern);
-		return staff;
+		staff.addPart(currentScorePart); // TODO: 20/11/17 Parts when two parts in a staff
+        return staff;
 	}
 
 

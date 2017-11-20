@@ -716,11 +716,22 @@ public class XMLExporterImporterTest {
     // ------------------------------------------------------------------------------------------
     private static Void assertSystemBreaks(ScoreSong song) {
         try {
+            assertEquals(2, song.getStaves().size());
             ArrayList<Measure> measures = song.getMeasuresSortedAsArray();
             assertEquals(11, measures.size());
-            assertEquals(2, song.getSystemBreaks().size());
-            assertTrue(song.hasSystemBreak(measures.get(2).getTime()));
-            assertTrue(song.hasSystemBreak(measures.get(7).getTime()));
+
+            // just one staff contains the system break
+            boolean found = false;
+            for (Staff staff: song.getStaves()) {
+                if (staff.getSystemBreaks().size() == 2) {
+                    found = true;
+                    assertTrue(staff.hasSystemBreak(measures.get(2).getTime()));
+                    assertTrue(staff.hasSystemBreak(measures.get(7).getTime()));
+                }
+            }
+            if (!found) {
+                fail("No staff contains 2 system breaks");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

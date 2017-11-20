@@ -23,6 +23,7 @@ import java.util.*;
  */
 public abstract class ScoreLayout {
     protected final ScoreSong scoreSong;
+    protected final Collection<Staff> staves;
     protected LayoutSymbolFactory layoutSymbolFactory;
     protected Simultaneities simultaneities;
     protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbolsInStaves;
@@ -42,20 +43,38 @@ public abstract class ScoreLayout {
     protected List<LayoutBeamGroup> beams;
 
 
+    // TODO: 20/11/17 mejor que el parámetro staves esté en el método abstract layout() y que toda la inicialización se haga ahí
     /**
      * @param song
      * @param font Same font for all staves
      * @throws IM3Exception
      */
-    public ScoreLayout(ScoreSong song, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+    public ScoreLayout(ScoreSong song, Collection<Staff> staves, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         this.scoreSong = song;
         layoutFonts = new HashMap<>();
-        for (Staff staff: scoreSong.getStaves()) {
+        this.staves = staves;
+        for (Staff staff: staves) {
             LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
             layoutFonts.put(staff, layoutFont);
         }
         init();
     }
+
+    public ScoreLayout(ScoreSong song, Collection<Staff> staves, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+        this.scoreSong = song;
+        layoutFonts = new HashMap<>();
+        this.staves = staves;
+        for (Staff staff: staves) {
+            LayoutFonts font = fonts.get(staff);
+            if (font == null) {
+                throw new IM3Exception("Cannot find the staff " + staff + " in the parameter");
+            }
+            LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
+            layoutFonts.put(staff, layoutFont);
+        }
+        init();
+    }
+
 
     private void init() throws IM3Exception {
         layoutSymbolFactory = new LayoutSymbolFactory();
@@ -91,20 +110,6 @@ public abstract class ScoreLayout {
         layoutFonts.put(layoutStaff.getStaff(), layoutFont);
     }
 
-    public ScoreLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
-        this.scoreSong = song;
-        layoutFonts = new HashMap<>();
-        for (Staff staff: scoreSong.getStaves()) {
-            LayoutFonts font = fonts.get(staff);
-            if (font == null) {
-                throw new IM3Exception("Cannot find the staff " + staff + " in the parameter");
-            }
-            LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
-            layoutFonts.put(staff, layoutFont);
-        }
-        init();
-    }
-
     private void createLayoutSymbols() throws IM3Exception {
         // TODO: 1/10/17 Beaming - parámetro para que se pueda deshabilitar
         //layoutStaff.createBeaming();
@@ -112,7 +117,7 @@ public abstract class ScoreLayout {
         singleLayoutFigureAtomsInBeam = new HashMap<>();
         coreSymbolsInStaves = new HashMap<>();
         layoutConnectorEnds = new HashMap<>();
-        for (Staff staff: scoreSong.getStaves()) {
+        for (Staff staff: staves) {
             ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff = new ArrayList<>();
             coreSymbolsInStaves.put(staff, coreSymbolsInStaff);
             // add contents of staff
@@ -160,7 +165,7 @@ public abstract class ScoreLayout {
 
     protected void createStaffConnectors() throws IM3Exception {
         // create staff connectors
-        for (Staff staff: this.scoreSong.getStaves()) {
+        for (Staff staff: staves) {
             for (Connector connector: staff.getConnectors()) {
                 if (connector.getFrom() == staff) {
                     // avoid creating twice
@@ -367,6 +372,7 @@ public abstract class ScoreLayout {
 
 
     public abstract void layout() throws IM3Exception;
+
     public abstract Collection<Canvas> getCanvases();
 
     protected void addConnector(LayoutConnector connector) {

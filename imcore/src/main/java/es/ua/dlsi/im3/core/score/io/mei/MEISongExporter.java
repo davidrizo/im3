@@ -111,18 +111,20 @@ public class MEISongExporter implements ISongExporter {
 			for (Staff staff: song.getStaves()) {
 				if (!(staff instanceof AnalysisStaff)) {
 					for (StaffMark mark: staff.getMarks()) {
-						Measure bar = song.getMeasureActiveAtTime(mark.getTime());
-						HashMap<Staff, ArrayList<StaffMark>> barStaves = marksPerBar.get(bar);
-						if (barStaves == null) {
-							barStaves = new HashMap<>();
-							marksPerBar.put(bar, barStaves);
-						}
-						ArrayList<StaffMark> marks = barStaves.get(staff);
-						if (marks == null) {
-							marks = new ArrayList<>();
-							barStaves.put(staff, marks);
-						}
-						marks.add(mark);
+					    if (song.hasMeasures()) {
+                            Measure bar = song.getMeasureActiveAtTime(mark.getTime());
+                            HashMap<Staff, ArrayList<StaffMark>> barStaves = marksPerBar.get(bar);
+                            if (barStaves == null) {
+                                barStaves = new HashMap<>();
+                                marksPerBar.put(bar, barStaves);
+                            }
+                            ArrayList<StaffMark> marks = barStaves.get(staff);
+                            if (marks == null) {
+                                marks = new ArrayList<>();
+                                barStaves.put(staff, marks);
+                            }
+                            marks.add(mark);
+                        }
 					}
 				}
 			}
@@ -501,8 +503,13 @@ public class MEISongExporter implements ISongExporter {
 			Harm lastHarm = null;
             skipMeasures = 0; // used for multimeasure rests
 			for (Measure bar : bars) {
-				if (song.hasSystemBreak(bar.getTime())) { // TODO: 24/9/17 ¿Y si está en medio de un compás?
-                    XMLExporterHelper.startEnd(sb, tabs, "sb"); //TODO ID
+                for (Staff staff : song.getStaves()) {
+                    if (staff.hasSystemBreak(bar.getTime())) { // TODO: 24/9/17 ¿Y si está en medio de un compás?
+                        XMLExporterHelper.startEnd(sb, tabs, "sb"); //TODO ID
+                    }
+                    if (staff.hasPageBreak(bar.getTime())) { // TODO: ¿Y si está en medio de un compás?
+                        XMLExporterHelper.startEnd(sb, tabs, "pg"); //TODO ID
+                    }
                 }
 			    if (skipMeasures > 0) {
                     skipMeasures --;
