@@ -113,6 +113,8 @@ public class MensuralToModern {
                 convert(modernStaff, modernLayer, (Atom) symbol, interval);
             } else if (symbol instanceof DisplacedDot) {
                 // no-op It is never displaced, if always accompanies the pitch
+            } else if (symbol instanceof Custos) {
+                // no-op
             } else {
                 throw new IM3Exception("Unsupported conversion of " + symbol.getClass());
             }
@@ -129,9 +131,11 @@ public class MensuralToModern {
         }
 
         modernStaff.getScoreSong().numberMeasures();
+
+        // TODO: 20/11/17 ¿Mejor en merge?
         // now insert barlines between staves
         for (Measure measure: modernStaff.getScoreSong().getMeasures()) {
-            DashedBarlineAcrossStaves dashedBarlineAcrossStaves = new DashedBarlineAcrossStaves(measure, modernStaff, mensuralStaff);
+            DashedBarlineAcrossStaves dashedBarlineAcrossStaves = new DashedBarlineAcrossStaves(measure.getEndTime(), modernStaff, mensuralStaff);
             modernStaff.addConnector(dashedBarlineAcrossStaves);
             mensuralStaff.addConnector(dashedBarlineAcrossStaves);
         }
@@ -266,7 +270,9 @@ public class MensuralToModern {
             }
         }
 
-        song1.clearMeasures();
+        if (song1.hasMeasures()) {
+            throw new IM3Exception("The target song already had measures");
+        }
 
         for (Measure fromMeasure: song2.getMeasures()) {
             Measure newMeasure = new Measure(song1, fromMeasure.getNumber());
@@ -283,7 +289,7 @@ public class MensuralToModern {
                 throw new IM3Exception("Cannot find a part named '" + staff.getName() + "' in target song");
             }
 
-            staff.setHierarchicalOrder("Z-" + staff.getHierarchicalOrder()); //TODO
+            staff.setHierarchicalOrder(staff.getHierarchicalOrder() + ".1"); //TODO
             staff.setNumberIdentifier(1000+staff.getNumberIdentifier()); //TODO
             song1Part.addStaff(staff); // TODO: 20/11/17 Relaciones bidireccionales
             staff.addPart(song1Part);

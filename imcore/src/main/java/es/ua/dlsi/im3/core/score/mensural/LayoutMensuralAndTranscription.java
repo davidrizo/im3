@@ -105,7 +105,8 @@ public class LayoutMensuralAndTranscription {
         String svgFileName = FileUtils.getFileWithoutPathOrExtension(svgHorizontalFile);
         for (ScorePart part: mensural.getParts()) {
             String partSVGNamePrefix = svgFileName + "_" + FileUtils.leaveValidCaracters(part.getName());
-            PageLayout pageLayout = new PageLayout(mensural, part.getStaves(), true, fontsHashMap, new CoordinateComponent(30000), new CoordinateComponent(2800));
+            PageLayout pageLayout = new PageLayout(mensural, part.getStaves(), true, fontsHashMap,
+                    new CoordinateComponent(30000), new CoordinateComponent(4800));
             pageLayout.layout();
             int pageNumber = 1;
             for (Canvas canvas: pageLayout.getCanvases()) {

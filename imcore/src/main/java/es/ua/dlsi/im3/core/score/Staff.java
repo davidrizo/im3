@@ -41,6 +41,10 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 * Used to be able to quick locate a clef given a time. 
 	 */
 	TreeMap<Time, Clef> clefs;
+    /**
+     * Used to be able to quick locate custos
+     */
+    TreeMap<Time, Custos> custos;
 	/**
 	 * This is the only place there the instrumentKey signatures are stored
 	 */
@@ -127,6 +131,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		this.markBarlines = new TreeMap<>();
         this.systemBreaks = new HashMap<>();
         this.pageBreaks = new HashMap<>();
+        this.custos = new TreeMap<>();
     }
 
     public void addPart(ScorePart part) {
@@ -247,6 +252,16 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	public Collection<Clef> getClefs() {
 		return this.clefs.values();
 	}
+
+    public Collection<Custos> getCustos() {
+        return this.custos.values();
+    }
+
+    public void addCustos(Custos custos) {
+	    this.custos.put(custos.getTime(), custos);
+        this.coreSymbols.add(custos);
+        custos.setStaff(this);
+    }
 
 	public Collection<TimeSignature> getTimeSignatures() {
 		return this.timeSignatures.values();

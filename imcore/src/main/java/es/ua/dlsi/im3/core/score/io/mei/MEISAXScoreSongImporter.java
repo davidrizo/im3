@@ -224,6 +224,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
      */
 	private HashMap<Integer, Accidentals> previousAccidentals;
 
+    private Custos lastCustosWithoutPitch;
 
     private boolean inOssia = false;
 	private HashMap<String, Staff> staffNumbers;
@@ -713,6 +714,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						//}
 
 					}
+
+					if (lastCustosWithoutPitch != null) {
+                        lastCustosWithoutPitch.setDiatonicPitch(lastAtomPitch.getScientificPitch().getPitchClass().getNoteName());
+                        lastCustosWithoutPitch.setOctave(lastAtomPitch.getScientificPitch().getOctave());
+                        lastCustosWithoutPitch = null;
+                    }
                     // TODO: 18/10/17 Comprobar Fermata con chords
 					processPossibleMensuralImperfection(attributesMap, currentAtomFigure);
 					String tie = getOptionalAttribute(attributesMap, "tie");
@@ -861,11 +868,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         octave = Integer.parseInt(oct);
                         DiatonicPitch dp = DiatonicPitch.valueOf(pname.toUpperCase());
                         custos = new Custos(lastStaff, getCurrentTime(), dp, octave);
+                        lastCustosWithoutPitch = null;
                     } else {
                         custos = new Custos(lastStaff, getCurrentTime());
+                        lastCustosWithoutPitch = custos;
                     }
 
-                    lastStaff.addMark(custos);
+                    lastStaff.addCustos(custos);
                     break;
 				case "tie":
 					staffNumber = getOptionalAttribute(attributesMap, "staff");

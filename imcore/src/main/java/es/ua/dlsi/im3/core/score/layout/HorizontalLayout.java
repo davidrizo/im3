@@ -75,17 +75,20 @@ public class HorizontalLayout extends ScoreLayout {
             //simultaneities.printDebug();
         }
 
-        createStaffConnectors();
-
-        for (Map.Entry<Staff, HashMap<Measure, LayoutCoreBarline>> entry: barlines.entrySet()) {
+        for (Map.Entry<Staff, List<LayoutCoreBarline>> entry: barlines.entrySet()) {
             Staff staff = entry.getKey();
-            for (LayoutCoreBarline layoutCoreBarline: entry.getValue().values()) {
+            for (LayoutCoreBarline barline: entry.getValue()) {
                 LayoutStaff layoutStaff = system.get(staff);
-                layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
-                canvas.getElements().add(layoutCoreBarline.getGraphics());
+                barline.setLayoutStaff(layoutStaff, layoutStaff);
+                canvas.getElements().add(barline.getGraphics());
+                system.addLayoutCoreBarline(barline);
             }
             //barline.setLayoutStaff(system.getBottomStaff(), system.getTopStaff());
         }
+
+
+        system.createStaffConnectors(connectors); //TODO ¿Qué pasa si un conector salta de página?
+
         doHorizontalLayout(simultaneities);
 
         // add the connectors to the canvas

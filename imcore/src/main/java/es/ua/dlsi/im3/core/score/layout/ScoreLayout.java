@@ -5,7 +5,6 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutDashedBarlineAcrossStaves;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
@@ -23,7 +22,7 @@ import java.util.*;
  */
 public abstract class ScoreLayout {
     protected final ScoreSong scoreSong;
-    protected final Collection<Staff> staves;
+    protected TreeSet<Staff> staves;
     protected LayoutSymbolFactory layoutSymbolFactory;
     protected Simultaneities simultaneities;
     protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbolsInStaves;
@@ -38,7 +37,7 @@ public abstract class ScoreLayout {
      */
     HashMap<ITimedSymbolWithConnectors, IConnectableWithSlur> layoutConnectorEnds;
 
-    protected HashMap<Staff, HashMap<Measure, LayoutCoreBarline>> barlines;
+    protected HashMap<Staff, List<LayoutCoreBarline>> barlines;
     protected List<LayoutConnector> connectors;
     protected List<LayoutBeamGroup> beams;
 
@@ -52,7 +51,7 @@ public abstract class ScoreLayout {
     public ScoreLayout(ScoreSong song, Collection<Staff> staves, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         this.scoreSong = song;
         layoutFonts = new HashMap<>();
-        this.staves = staves;
+        initStaves(staves);
         for (Staff staff: staves) {
             LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
             layoutFonts.put(staff, layoutFont);
@@ -60,10 +59,21 @@ public abstract class ScoreLayout {
         init();
     }
 
+    private void initStaves(Collection<Staff> staves) {
+        this.staves = new TreeSet<>(new Comparator<Staff>() {
+            @Override
+            public int compare(Staff o1, Staff o2) {
+                return o1.getHierarchicalOrder().compareTo(o2.getHierarchicalOrder());
+            }
+        });
+        this.staves.addAll(staves);
+
+    }
+
     public ScoreLayout(ScoreSong song, Collection<Staff> staves, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         this.scoreSong = song;
         layoutFonts = new HashMap<>();
-        this.staves = staves;
+        initStaves(staves);
         for (Staff staff: staves) {
             LayoutFonts font = fonts.get(staff);
             if (font == null) {
@@ -130,15 +140,15 @@ public abstract class ScoreLayout {
                 throw new IM3Exception("The staff " + staff+  " has not a notation type");
             }
 
-            HashMap<Measure, LayoutCoreBarline> staffBarLines = new HashMap<>();
+            List<LayoutCoreBarline> staffBarLines = new LinkedList<>();
             barlines.put(staff, staffBarLines);
             if (staff.getNotationType().equals(NotationType.eModern)) {
                 // create barlines
                 // TODO: 21/9/17 Deberíamos poder crear barlines de system
                 for (Measure measure : scoreSong.getMeasures()) {
-                    LayoutCoreBarline barline = new LayoutCoreBarline(staff, getLayoutFont(staff), measure.getEndTime());
+                    LayoutCoreBarline barline = new LayoutCoreBarline(staff, getLayoutFont(staff), measure);
                     simultaneities.add(barline);
-                    staffBarLines.put(measure, barline);
+                    staffBarLines.add(barline);
                 }
             }
 
@@ -158,34 +168,6 @@ public abstract class ScoreLayout {
                     throw new IM3Exception("Cannot find the view of the attached to object: " + coreSymbol.getAttachedTo());
                 }
                 layoutAttachmentInStaff.setAttachedToView(attachedToView);
-            }
-
-        }
-    }
-
-    protected void createStaffConnectors() throws IM3Exception {
-        // create staff connectors
-        for (Staff staff: staves) {
-            for (Connector connector: staff.getConnectors()) {
-                if (connector.getFrom() == staff) {
-                    // avoid creating twice
-                    if (connector instanceof DashedBarlineAcrossStaves) {
-                        DashedBarlineAcrossStaves dashedBarlineAcrossStaves = (DashedBarlineAcrossStaves) connector;
-                        HashMap<Measure, LayoutCoreBarline> staffBarLines = barlines.get(dashedBarlineAcrossStaves.getFrom());
-                        LayoutCoreBarline barline = staffBarLines.get(dashedBarlineAcrossStaves.getMeasure());
-                        if (barline == null) {
-                            throw new IM3Exception("Cannot find a barline for measure " + dashedBarlineAcrossStaves.getMeasure() + " while creating LayoutDashedBarlineAcrossStaves");
-                        } else {
-                            LayoutStaff toLayoutStaff = layoutStaves.get(dashedBarlineAcrossStaves.getTo());
-                            if (toLayoutStaff == null) {
-                                throw new IM3RuntimeException("Cannot find a LayoutStaff for staff " + dashedBarlineAcrossStaves.getTo() + " while creating LayoutDashedBarlineAcrossStaves");
-                            }
-
-                            LayoutDashedBarlineAcrossStaves layoutDashedBarlineAcrossStaves = new LayoutDashedBarlineAcrossStaves(barline, toLayoutStaff);
-                            addConnector(layoutDashedBarlineAcrossStaves);
-                        }
-                    }
-                }
             }
 
         }

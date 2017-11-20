@@ -66,6 +66,7 @@ public class PageLayout extends ScoreLayout {
         pages.add(lastPage);
         double layoutStaffStartingX = 0;
         double nextY = LayoutConstants.TOP_MARGIN;
+
         LayoutStaffSystem lastSystem = null;
         Simultaneities lastLayoutSimultaneities = null;
 
@@ -160,10 +161,10 @@ public class PageLayout extends ScoreLayout {
                         } else {
                             LayoutStaff layoutStaff = lastSystem.get(staff);
                             layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
+                            lastPage.getCanvas().getElements().add(layoutCoreBarline.getGraphics());
+
+                            lastSystem.addLayoutCoreBarline(layoutCoreBarline);
                         }
-
-
-
                     }
                     //TODO Quizás mejor en el system
                    // page.getCanvas().add(coreSymbol.getGraphics());
@@ -190,7 +191,11 @@ public class PageLayout extends ScoreLayout {
             }
         }
 
-        createStaffConnectors(); //TODO ¿Qué pasa si un conector salta de página?
+        for (Page page: pages) {
+            for (LayoutStaffSystem system: page.getSystemsInPage()) {
+               system.createStaffConnectors(connectors); //TODO ¿Qué pasa si un conector salta de página?
+            }
+        }
 
         //simultaneities.printDebug();
 

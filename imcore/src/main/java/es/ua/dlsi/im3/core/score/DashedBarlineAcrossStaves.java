@@ -2,15 +2,14 @@ package es.ua.dlsi.im3.core.score;
 
 // TODO: 7/10/17 ¿Sería mejor que Measure tuviera MarkBarline?
 public class DashedBarlineAcrossStaves extends Connector {
-    private final Measure measure;
+    private final Time time;
 
-
-    public DashedBarlineAcrossStaves(Measure measure, Staff from, Staff to) {
+    public DashedBarlineAcrossStaves(Time time, Staff from, Staff to) {
         super(from, to);
-        this.measure = measure;
+        this.time = time;
     }
 
-    public Measure getMeasure() {
-        return measure;
+    public Time getTime() {
+        return time;
     }
 }

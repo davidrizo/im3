@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.Measure;
 import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
@@ -13,17 +14,17 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 /**
  * If may be a system barline
  */
-public class LayoutCoreBarline extends LayoutCoreSymbol  {
+public class LayoutCoreBarline extends LayoutCoreSymbol<Measure>  {
     private final Coordinate from;
     private final Coordinate to;
     private final Staff staff;
     Line line;
     Time time;
 
-    public LayoutCoreBarline(Staff staff, LayoutFont layoutFont, Time time) throws IM3Exception {
-        super(layoutFont, null);
+    public LayoutCoreBarline(Staff staff, LayoutFont layoutFont, Measure measure) throws IM3Exception {
+        super(layoutFont, measure);
         this.staff = staff;
-        this.time = time;
+        this.time = measure.getEndTime();
         //Coordinate from = new Coordinate(position.getX(), layoutStaff.getYAtLine(1));
         //Coordinate to = new Coordinate(position.getX(), layoutStaff.getYAtLine(5));
         from = new Coordinate(position.getX(), null);
