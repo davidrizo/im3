@@ -66,7 +66,9 @@ public class HorizontalLayout extends ScoreLayout {
 
             for (LayoutCoreSymbolInStaff coreSymbol: layoutSymbolsInStaff) {
                 coreSymbol.setLayoutStaff(layoutStaff);
-                layoutStaff.add(coreSymbol);
+                if (!(coreSymbol instanceof LayoutCoreCustos)) {
+                    layoutStaff.add(coreSymbol);
+                } // ommitted in this layout
             }
 
             layoutStaff.createNoteAccidentals();

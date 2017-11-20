@@ -653,7 +653,9 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
                 lastMeasure = measure;
             }
 
-            if (symbol instanceof KeySignature) {
+            if (symbol instanceof MarkBarline) {
+                alteredDiatonicPitchInBar.clear();
+            } else  if (symbol instanceof KeySignature) {
                 alteredDiatonicPitchInKeySignature = ((KeySignature)symbol).getAlteredDiatonicPitchSet();
             } else if (symbol instanceof SingleFigureAtom) {
                 SingleFigureAtom singleFigureAtom = (SingleFigureAtom) symbol;
