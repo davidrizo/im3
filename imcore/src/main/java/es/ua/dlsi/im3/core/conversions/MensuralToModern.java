@@ -196,7 +196,7 @@ public class MensuralToModern {
             }
 
             Time outputFigureDuration = Time.min(pendingMensureDuration, pendingDuration);
-            List<RhythmUtils.FigureAndDots> outputFiguresAndDots;
+            List<FigureAndDots> outputFiguresAndDots;
             try {
                 outputFiguresAndDots = RhythmUtils.findRhythmForDuration(NotationType.eModern, outputFigureDuration);
             } catch (IM3Exception e) {
@@ -204,7 +204,7 @@ public class MensuralToModern {
             }
 
             SimpleNote prevNote = null;
-            for (RhythmUtils.FigureAndDots outputFigureAndDots: outputFiguresAndDots) {
+            for (FigureAndDots outputFigureAndDots: outputFiguresAndDots) {
                 SingleFigureAtom outputAtom = null;
                 if (singleFigureAtom instanceof SimpleRest) {
                     outputAtom = new SimpleRest(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots());

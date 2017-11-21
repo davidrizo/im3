@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.io.kern;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.conversions.FigureAndDots;
 import es.ua.dlsi.im3.core.conversions.RhythmUtils;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
@@ -284,11 +285,11 @@ public class KernExporter {
                     } else {
                         if (atom instanceof SimpleMeasureRest) {
                             SimpleMeasureRest mrest = (SimpleMeasureRest) atom;
-                            List<RhythmUtils.FigureAndDots> fds = RhythmUtils.findRhythmForDuration(NotationType.eModern, mrest.getDuration());
+                            List<FigureAndDots> fds = RhythmUtils.findRhythmForDuration(NotationType.eModern, mrest.getDuration());
                             if (fds.size() != 1) {
                                 throw new ExportException("Unsupported durations that have to be decomposed in a set of figures");
                             }
-                            RhythmUtils.FigureAndDots fd = fds.get(0);
+                            FigureAndDots fd = fds.get(0);
                             String duration = generateDuration(fd.getFigure(), fd.getDots(), Fraction.ONE);
                             record.add(duration + "rr");
                         } else {
