@@ -56,7 +56,7 @@ public class MEI2GraphicSymbolsTest {
     }
 
     @Test
-    public void convertPrimusMultimeasureDoubleWholeGlyph() throws Exception { 
+    public void convertPrimusMultimeasureDoubleWholeGlyph() throws Exception {
         String expectedAgnostic = "[clef.C-L1, accidental.flat-L4, accidental.flat-L2, accidental.flat-S3, metersign.C-L3, fermata.above, rest.whole-L4, barline-L1, note.half-S5, note.quarter-L4, dot-S4, note.eighth-L3, barline-L1, note.quarter-L2, note.quarter-L2, fermata.above, rest.half-L3, barline-L1, digit.2-S5, multirest-L3, barline-L1, note.half-L6, note.quarter-L5, dot-S5, note.eighth-L4, barline-L1, note.quarter-S3, note.quarter-S3, fermata.above, rest.half-L3, barline-L1]";
         String expectedSemantic = "[clef-C1, keySignature-EbM, timeSignature-C, rest-whole_fermata, barline, note-Eb5_half, note-Bb4_quarter., note-G4_eighth, barline, note-Eb4_quarter, note-Eb4_quarter, rest-half_fermata, barline, multirest-2, barline, note-F5_half, note-D5_quarter., note-Bb4_eighth, barline, note-Ab4_quarter, note-Ab4_quarter, rest-half_fermata, barline]";
         test("/testdata/primus/000051653-1_2_1/000051653-1_2_1.mei", expectedAgnostic, expectedSemantic);
