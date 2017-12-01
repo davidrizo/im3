@@ -22,4 +22,9 @@ public class Instrument implements Comparable<Instrument> {
     public int compareTo(Instrument o) {
         return name.compareTo(o.name);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
