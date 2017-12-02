@@ -18,12 +18,12 @@ public class PageInteraction {
     private final ImageView imageView;
     private final Pane marksPane;
     private final BooleanProperty identiyingStaves;
-    private final OMRController controller;
+    private final OMRMainController controller;
 
     MouseMoveAction mouseMoveAction;
     private SelectionRectangle selectingRectangle;
 
-    public PageInteraction(OMRController controller, ImageView imageView, Pane marksPane, BooleanProperty identiyingStaves) {
+    public PageInteraction(OMRMainController controller, ImageView imageView, Pane marksPane, BooleanProperty identiyingStaves) {
         this.imageView = imageView;
         this.marksPane = marksPane;
         this.identiyingStaves = identiyingStaves;

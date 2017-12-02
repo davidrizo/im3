@@ -13,7 +13,7 @@ import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.PositionedSymbolType;
-import es.ua.dlsi.im3.omr.interactive.OMRController;
+import es.ua.dlsi.im3.omr.interactive.OMRMainController;
 import es.ua.dlsi.im3.omr.model.Symbol;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.SymbolView;
 import javafx.beans.property.BooleanProperty;
@@ -68,7 +68,7 @@ public class OMRStaff<SymbolType> {
 
         createScoreSongStaff();
 
-        staffSymbolsInteraction = new StaffSymbolsInteraction(this, page.getOMRController().getSliderTimer().valueProperty());
+        //TODO YA staffSymbolsInteraction = new StaffSymbolsInteraction(this, page.getOMRController().getSliderTimer().valueProperty());
 
         // when staff is disabled it does not receive interaction
         selected.addListener(new ChangeListener<Boolean>() {
@@ -85,8 +85,8 @@ public class OMRStaff<SymbolType> {
         toggleSelected(); // activate and notify parent page to hide other staves
     }
 
-    public OMRController getOMRController() {
-        return page.getOMRController();
+    public OMRMainController getOMRController() {
+        return null; // //TODO YA page.getOMRController();
     }
 
     private void createControls(double leftTopX, double leftTopY, double bottomRightX, double bottomRightY) {

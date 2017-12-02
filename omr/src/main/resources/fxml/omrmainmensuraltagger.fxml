@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.old.mensuraltagger.OMRMainController">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleNewProject" text="New project" />
+            <MenuItem mnemonicParsing="false" text="Open…" />
+            <Menu mnemonicParsing="false" text="Open Recent" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" onAction="#handleSaveProject" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Revert" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleUndo" text="Undo" />
+            <MenuItem mnemonicParsing="false" onAction="#handleRedo" text="Redo" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+          </items>
+        </Menu>
+            <Menu mnemonicParsing="false" text="Debug">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#handleTest" text="Test" />
+              </items>
+            </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About ..." />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+      <ToolBar fx:id="toolBar" prefHeight="40.0" prefWidth="200.0">
+         <items>
+            <Label text="Scale" />
+            <Slider fx:id="sliderScale" blockIncrement="5.0" majorTickUnit="0.05" max="4.0" minorTickCount="1" value="2.0" />
+            <Button mnemonicParsing="false" onAction="#handleFitToWindow" text="Fit to window" />
+            <Slider fx:id="sliderTimer" blockIncrement="0.25" majorTickUnit="0.5" max="3.0" min="0.5" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.25" />
+            <Label text="Complete timer (s)" />
+            <Separator orientation="VERTICAL" prefHeight="20.0" />
+            <Button mnemonicParsing="false" onAction="#handleSymbolComplete" text="Symbol complete (space)" />
+         </items>
+      </ToolBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <SplitPane fx:id="splitPaneImages" dividerPositions="0.1111111111111111" layoutX="74.0" layoutY="59.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <VBox layoutX="30.0" layoutY="25.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                <items>
+                                  <Button fx:id="btnAddImage" mnemonicParsing="false" onAction="#handleAddImage" text="Add" />
+                                    <Button fx:id="btnRemoveImage" mnemonicParsing="false" onAction="#handleRemoveImage" text="Remove" />
+                                </items>
+                              </ToolBar>
+                              <ListView fx:id="lvImages" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+                  <SplitPane fx:id="splitPaneScoreView" dividerPositions="0.7280701754385965" orientation="VERTICAL">
+                     <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                           <children>
+                              <SplitPane fx:id="splitPaneSymbols" dividerPositions="0.9079646017699115" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <items>
+                                    <ScrollPane fx:id="scrollPane" prefViewportHeight="221.0" prefViewportWidth="247.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <Group>
+                                             <children>
+                                                <ImageView fx:id="imageView" pickOnBounds="true" smooth="false" />
+                                                <Pane fx:id="marksPane" prefHeight="200.0" prefWidth="200.0" />
+                                             </children>
+                                          </Group>
+                                       </content>
+                                    </ScrollPane>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <ListView fx:id="lvSymbols" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                       </children>
+                                    </VBox>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="anchorPaneScore" prefHeight="200.0" prefWidth="200.0" />
+                     </items>
+                  </SplitPane>
+              </items>
+            </SplitPane>
+         </children>
+    </AnchorPane>
+      <ToolBar fx:id="toolbarCorrectionSymbols" prefHeight="40.0" prefWidth="200.0">
+         <items>
+            <Button mnemonicParsing="false" text="Button" />
+         </items>
+      </ToolBar>
+      <ToolBar prefHeight="21.0" prefWidth="640.0">
+         <items>
+            <Label fx:id="labelTrainingModelSymbols" text="Training model symbols:" />
+         </items>
+      </ToolBar>
+  </children>
+</VBox>

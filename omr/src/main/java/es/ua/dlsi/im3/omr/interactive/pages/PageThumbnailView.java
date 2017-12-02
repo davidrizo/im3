@@ -1,11 +1,8 @@
 package es.ua.dlsi.im3.omr.interactive.pages;
 
-import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
 import es.ua.dlsi.im3.omr.interactive.PredefinedIcon;
-import es.ua.dlsi.im3.omr.interactive.model.ImageFile;
 import es.ua.dlsi.im3.omr.interactive.model.Instrument;
+import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -19,7 +16,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -34,7 +30,7 @@ public class PageThumbnailView {
     private final Node previewIcon;
     Label labelOrder;
     private final Node interactionIcon;
-    ImageFile imageFile;
+    OMRPage omrPage;
     AnchorPane mainPane;
     ImageView imageView;
     Image image;
@@ -46,12 +42,12 @@ public class PageThumbnailView {
     Rectangle rightDropbox;
 
 
-    public PageThumbnailView(ImageFile imageFile) {
-        this.imageFile = imageFile;
+    public PageThumbnailView(OMRPage omrPage) {
+        this.omrPage = omrPage;
         borderPane = new BorderPane();
         mainPane = new AnchorPane();
 
-        image = SwingFXUtils.toFXImage(imageFile.getBufferedImage(), null);
+        image = SwingFXUtils.toFXImage(omrPage.getBufferedImage(), null);
         imageView = new ImageView(image);
         imageView.setFitHeight(150);
         imageView.setFitWidth(150);
@@ -59,10 +55,10 @@ public class PageThumbnailView {
         imageView.setPreserveRatio(true);
         labels  = new VBox(5);
         labels.setAlignment(Pos.CENTER);
-        labelOrder = new Label("Page " + imageFile.getOrder());
+        labelOrder = new Label("Page " + omrPage.getOrder());
         labels.getChildren().add(labelOrder);
-        labels.getChildren().add(new Label(imageFile.getFileName()));
-        for (Instrument instrument: imageFile.getInstrumentList()) {
+        labels.getChildren().add(new Label(omrPage.getImageRelativeFileName()));
+        for (Instrument instrument: omrPage.getInstrumentList()) {
             labels.getChildren().add(new Label(instrument.toString()));
         }
         updateLabel();
@@ -112,10 +108,10 @@ public class PageThumbnailView {
     private void doPreview() {
         Stage stage = new Stage(StageStyle.UTILITY);
         String title;
-        if (imageFile.getInstrumentList().isEmpty()) {
-            stage.setTitle("Page " + imageFile.getOrder() + ", " + imageFile.getFileName() + " " + imageFile.getInstrumentList());
+        if (omrPage.getInstrumentList().isEmpty()) {
+            stage.setTitle("Page " + omrPage.getOrder() + ", " + omrPage.getImageRelativeFileName() + " " + omrPage.getInstrumentList());
         } else {
-            stage.setTitle("Page " + imageFile.getOrder() + ", " +  imageFile.getInstrumentList() + " " + imageFile.getFileName());
+            stage.setTitle("Page " + omrPage.getOrder() + ", " +  omrPage.getInstrumentList() + " " + omrPage.getImageRelativeFileName());
         }
 
         stage.setWidth(900); //TODO
@@ -184,7 +180,7 @@ public class PageThumbnailView {
 
     private void addInstrumentToPage(Instrument instrument) {
         //TODO Sinc modelo
-        imageFile.addInstrument(instrument);
+        omrPage.addInstrument(instrument);
         labels.getChildren().add(new Label(instrument.getName()));
     }
 
@@ -206,11 +202,11 @@ public class PageThumbnailView {
         return rightDropbox;
     }
 
-    public ImageFile getImageFile() {
-        return imageFile;
+    public OMRPage getOmrPage() {
+        return omrPage;
     }
 
     public void updateLabel() {
-        labelOrder.setText("Page " + imageFile.getOrder());
+        labelOrder.setText("Page " + omrPage.getOrder());
     }
 }

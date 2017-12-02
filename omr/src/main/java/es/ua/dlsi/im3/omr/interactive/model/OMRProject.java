@@ -8,7 +8,7 @@ import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.IGraphicalToScoreSymbolFactory;
-import es.ua.dlsi.im3.omr.interactive.OMRController;
+import es.ua.dlsi.im3.omr.interactive.OMRMainController;
 import es.ua.dlsi.im3.omr.mensuralspanish.*;
 import es.ua.dlsi.im3.omr.segmentation.DummyPageSegmenter;
 import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
@@ -20,33 +20,50 @@ import java.io.File;
 import java.io.IOException;
 
 public class OMRProject {
-    static final String IMAGES_FOLDER = "images";
-    private final File trainingFile;
     /**
-     * Used by GUI for binding
+     * Where images will be stored inside the project folder
      */
-    private ObservableList<OMRPage> pagesProperty;
+    static final String IMAGES_FOLDER = "images";
+
+    private File trainingFile;
     File projectFolder;
     File imagesFolder;
     File xmlFile;
+
+
+
+
     ScoreSong scoreSong;
-    OMRController omrController;
+    //OMRMainController omrController;
     private ISymbolRecognizer recognizer;
     private ImitationLayout imitationLayout;
     private ScoreSongView scoreSongView;
     IGraphicalToScoreSymbolFactory graphicalToScoreSymbolFactory;
     IPageSegmenter pageSegmenter;
 
-    public OMRProject(File projectFolder, File trainingFile, OMRController controller) throws IM3Exception {
-        pagesProperty = FXCollections.observableArrayList();
-        this.omrController = controller;
+    /**
+     * Used by GUI for binding
+     */
+    private ObservableList<OMRPage> pagesProperty;
+
+    public OMRProject(File projectXMLFile) throws IM3Exception {
+        //TODO - loading
+    }
+
+    public OMRProject(File projectFolder, File trainingFile) throws IM3Exception {
+        //this.omrController = controller;
         this.projectFolder = projectFolder;
-        this.xmlFile = new File(projectFolder, InputOutput.createXMLFilename(projectFolder));
         if (!projectFolder.exists()) {
             projectFolder.mkdirs();
         }
         imagesFolder = new File(projectFolder, IMAGES_FOLDER);
         imagesFolder.mkdirs();
+        this.xmlFile = new File(projectFolder, InputOutput.createXMLFilename(projectFolder));
+
+        pagesProperty = FXCollections.observableArrayList();
+
+        //-- POR AQUI
+        /*TODO YA
 
         // TODO: 9/11/17 Debemos poder parametrizar esto, que pueda ser también moderno
         graphicalToScoreSymbolFactory = new MensuralGraphicalToScoreSymbolFactory();
@@ -57,7 +74,7 @@ public class OMRProject {
 
         // FIXME: 11/10/17 Esto debe ser interactivo
         scoreSong = new ScoreSong(new BinaryDurationEvaluator(new Time(2)));
-        createScoreView();
+        createScoreView();*/
     }
 
     private void createScoreView() throws IM3Exception {
@@ -76,6 +93,13 @@ public class OMRProject {
         }
 
         OMRPage page = new OMRPage(this, imagesFolder, file.getName(), scoreSong);
+        int nextNumber;
+        if (pagesProperty.isEmpty()) {
+            nextNumber = 1;
+        } else {
+            nextNumber = pagesProperty.get(pagesProperty.size()-1).getOrder()+1;
+        }
+        page.setOrder(nextNumber);
         pagesProperty.add(page);
         // TODO: 11/10/17 Debe añadir una página al layout del scoreSOng
     }
@@ -113,9 +137,9 @@ public class OMRProject {
         return scoreSong;
     }
 
-    public OMRController getOMRController() {
+    /*public OMRMainController getOMRController() {
         return omrController;
-    }
+    }*/
 
     public ScoreSongView getScoreSongView() {
         return scoreSongView;

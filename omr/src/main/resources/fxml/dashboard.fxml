@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Group?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.interactive.OMRController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.interactive.DashboardController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -46,17 +39,6 @@
                      </accelerator></MenuItem>
           </items>
         </Menu>
-            <Menu mnemonicParsing="false" text="Project">
-              <items>
-                <MenuItem fx:id="menuAddImage" mnemonicParsing="false" onAction="#handleAddImage" text="Add image">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="UP" shortcut="ANY" />
-                     </accelerator>
-                  </MenuItem>
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="menuDeleteImage" mnemonicParsing="false" onAction="#handleDeleteImage" text="Delete image" />
-              </items>
-            </Menu>
         <Menu mnemonicParsing="false" text="Edit">
           <items>
             <MenuItem mnemonicParsing="false" text="Undo" />
@@ -71,11 +53,7 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
-            <Menu mnemonicParsing="false" text="View">
-              <items>
-                <MenuItem fx:id="menuShowHideProjectImages" mnemonicParsing="false" onAction="#handleShowHideProjectImages" text="Hide project images" />
-              </items>
-            </Menu>
+            <Menu mnemonicParsing="false" text="View" />
         <Menu mnemonicParsing="false" text="Help">
           <items>
             <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
@@ -83,34 +61,18 @@
         </Menu>
       </menus>
     </MenuBar>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <BorderPane fx:id="borderPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <left>
-            <ListView fx:id="lvPages" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-         </left>
-         <center>
-            <ScrollPane fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <content>
-                  <Group>
-                     <children>
-                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <Pane fx:id="marksPane" prefHeight="200.0" prefWidth="200.0" />
-                     </children>
-                  </Group>
-               </content>
-            </ScrollPane>
-         </center>
-         <top>
-            <ToolBar fx:id="toolBar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ToolBar orientation="VERTICAL" prefHeight="371.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <items>
-                  <Label text="Scale" />
-                  <Slider fx:id="sliderScale" blockIncrement="5.0" majorTickUnit="0.05" max="4.0" minorTickCount="1" value="2.0" />
-                  <Button mnemonicParsing="false" onAction="#handleFitToWindow" text="Fit to window" />
-                    <ToggleButton fx:id="btnIdentifyStaves" text="Identify staves" />
-                  <Label text="Complete timer (s)" />
-                  <Slider fx:id="sliderTimer" blockIncrement="0.25" majorTickUnit="0.5" max="3.0" min="0.5" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.25" />
+                  <ToggleButton fx:id="tbPages" mnemonicParsing="false" onAction="#handleOpenPages" text="Pages">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="tgDashboardButtons" />
+                     </toggleGroup>
+                  </ToggleButton>
                </items>
             </ToolBar>
-         </top>
+         </left>
       </BorderPane>
   </children>
 </VBox>

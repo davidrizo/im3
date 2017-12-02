@@ -1,13 +1,16 @@
 package es.ua.dlsi.im3.omr.interactive.pages;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
-import es.ua.dlsi.im3.omr.interactive.model.ImageFile;
+import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.omr.interactive.OMRApp;
+import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
+import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -17,17 +20,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PagesController implements Initializable {
-    @FXML
-    Label labelProjectName;
-
     @FXML
     FlowPane flowPane;
 
@@ -42,26 +40,38 @@ public class PagesController implements Initializable {
         state = State.idle; //TODO cambiar estado en drag & drop
         iconAdd = new IconAdd();
         thumbnailViews = new ArrayList<>();
+        loadProjectPages();
+        listenToPagesChanges();
+    }
 
-        //TODO YA!!!
-        ArrayList<File> files = new ArrayList<>();
-        try {
-            FileUtils.readFiles(new File("/Users/drizo/Documents/EASD.A/docencia/alicante-2017-2018/inv/imagenes_patriarca"), files, "tif");
-            files.sort(new Comparator<File>() {
-                @Override
-                public int compare(File o1, File o2) {
-                    return o1.getName().compareTo(o2.getName());
+    private void listenToPagesChanges() {
+        OMRModel.getInstance().getCurrentProject().pagesProperty().addListener(new ListChangeListener<OMRPage>() {
+            @Override
+            public void onChanged(Change<? extends OMRPage> c) {
+                while (c.next()) {
+                    if (c.wasPermutated()) {
+                        /*for (int i = c.getFrom(); i < c.getTo(); ++i) {
+                            //TODO permutar
+                        }*/
+                    } else if (c.wasUpdated()) {
+                        //update item - no lo necesitamos de momento porque lo tenemos todo con binding, si no podríamos actualizar aquí
+                    } else {
+                        for (OMRPage remitem : c.getRemoved()) {
+                            //TODO
+                        }
+                        for (OMRPage additem : c.getAddedSubList()) {
+                            createPageView(additem, true);
+                        }
+                    }
                 }
-            });
+            }
+        });
+    }
 
-            for (int i=0; i<files.size(); i++) {
-                ImageFile imageFile = new ImageFile(files.get(i)); //TODO - del modelo
-                imageFile.setOrder(i); //TODO Debería estar guardado en el modelo
-
-                PageThumbnailView pageView = new PageThumbnailView(imageFile);
-                flowPane.getChildren().add(pageView.getRoot());
-                thumbnailViews.add(pageView);
-                addInteraction(pageView);
+    private void loadProjectPages() {
+        try {
+            for (OMRPage omrPage: OMRModel.getInstance().getCurrentProject().pagesProperty()) {
+                createPageView(omrPage, false);
             }
             addPageAddIcon();
         } catch (Exception e) {
@@ -69,9 +79,20 @@ public class PagesController implements Initializable {
         }
     }
 
+    private void createPageView(OMRPage omrPage, boolean skipLoadIcon) {
+        PageThumbnailView pageView = new PageThumbnailView(omrPage);
+        if (skipLoadIcon) {
+            flowPane.getChildren().add(flowPane.getChildren().size() - 1, pageView.getRoot()); // before the addImage icon
+        } else {
+            flowPane.getChildren().add(pageView.getRoot()); // before the addImage icon
+        }
+        thumbnailViews.add(pageView);
+        addInteraction(pageView);
+    }
+
     private void addPageAddIcon() {
         flowPane.getChildren().add(iconAdd.getRoot());
-        //TODO Refactorizar
+        //TODO Refactorizar - un tipo Icono
         iconAdd.getRoot().setOnMouseEntered(event -> {
             iconAdd.highlight(true);
         });
@@ -79,20 +100,17 @@ public class PagesController implements Initializable {
             iconAdd.highlight(false);
         });
         iconAdd.getRoot().setOnMouseClicked(event -> {
-            doAddPage();
+            doAddImages();
         });
     }
 
-    private void doAddPage() {
-        ShowMessage.show(null, "TO-DO ADD PAGE");
-    }
 
     private void addInteraction(PageThumbnailView pageView) {
         pageView.getRoot().setOnDragDetected(event -> {
             Dragboard db = pageView.getRoot().startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
             // Store the node ID in order to know what is dragged.
-            content.putString(new Integer(pageView.getImageFile().getOrder()).toString());
+            content.putString(new Integer(pageView.getOmrPage().getOrder()-1).toString());
             db.setContent(content);
             event.consume();
         });
@@ -130,7 +148,7 @@ public class PagesController implements Initializable {
             // Reorder pages
             Dragboard db = event.getDragboard();
             if (db.hasString()) {
-                int toOrder = pageView.getImageFile().getOrder();
+                int toOrder = pageView.getOmrPage().getOrder()-1;
                 if (insertAfter) {
                     toOrder++;
                 }
@@ -169,10 +187,50 @@ public class PagesController implements Initializable {
         // recompute ordering
         for (int i= 0; i<thumbnailViews.size(); i++) {
             PageThumbnailView tv = thumbnailViews.get(i);
-            tv.getImageFile().setOrder(i);
+            tv.getOmrPage().setOrder(i+1);
             tv.updateLabel();
         }
     }
 
+    private void doAddImages() {
+        OpenSaveFileDialog dlg = new OpenSaveFileDialog();
+        List<File> files = dlg.openFiles("Select an image", new String[]{"JPG", "TIF", "TIFF"}, new String[]{"jpg", "tif", "tiff"});
+
+        if (files != null) {
+            try {
+                ArrayList<File> sortFiles = new ArrayList<>(files); // cannot sort directly files (UnsupportedOperationException)
+                // sort by name before adding it
+                sortFiles.sort(new Comparator<File>() {
+                    @Override
+                    public int compare(File o1, File o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                });
+                for (File file: sortFiles) {
+                    OMRModel.getInstance().getCurrentProject().addPage(file);
+                }
+
+                OMRModel.getInstance().save();
+            } catch (IM3Exception e) {
+                e.printStackTrace();
+                ShowError.show(OMRApp.getMainStage(), "Cannot add image", e);
+            }
+        }
+
+    }
+
+
+    private void doDeleteImage() {
+        /*TODO if (ShowConfirmation.show(OMRApp.getMainStage(), "Do you want to delete the image?")) {
+            try {
+                project.get().deletePage(lvPages.getSelectionModel().getSelectedItem());
+                save();
+                lvPages.getSelectionModel().clearSelection();
+            } catch (IM3Exception e) {
+                ShowError.show(OMRApp.getMainStage(), "Cannot delete image", e);
+            }
+        }*/
+
+    }
 
 }

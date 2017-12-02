@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
-
 
 <BorderPane fx:id="borderPane" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.interactive.pages.PagesController">
    <center>
@@ -14,7 +12,4 @@
          </content>
       </ScrollPane>
    </center>
-   <top>
-      <Label fx:id="labelProjectName" text="Project &lt;name&gt;" BorderPane.alignment="CENTER" />
-   </top>
 </BorderPane>
