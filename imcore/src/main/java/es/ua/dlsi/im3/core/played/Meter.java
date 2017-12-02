@@ -3,8 +3,8 @@ package es.ua.dlsi.im3.core.played;
 import es.ua.dlsi.im3.core.IM3Exception;
 
 public class Meter implements IPlayedEvent {
-	int numerator;
-	int denominator;
+	protected int numerator;
+    protected int denominator;
 	long time;
 
 	public Meter(int num, int den) {
@@ -20,7 +20,15 @@ public class Meter implements IPlayedEvent {
 		return denominator;
 	}
 
-	public final void setTime(long time) {
+    public void setNumerator(int numerator) {
+        this.numerator = numerator;
+    }
+
+    public void setDenominator(int denominator) {
+        this.denominator = denominator;
+    }
+
+    public final void setTime(long time) {
 		this.time = time;
 	}
 

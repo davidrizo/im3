@@ -28,7 +28,9 @@ public class ShowMessage {
 
     public static void show(Stage stage, String message) {
         Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle(stage.getTitle());
+        if (stage != null) {
+            alert.setTitle(stage.getTitle());
+        }
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.initOwner(stage);
