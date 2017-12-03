@@ -3,9 +3,15 @@ package es.ua.dlsi.im3.omr.interactive;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.gui.command.CommandManager;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.pages.PagesController;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,6 +44,8 @@ public class DashboardController implements Initializable {
     @FXML
     BorderPane borderPane;
 
+    StringProperty title;
+
     CommandManager commandManager;
 
     @Override
@@ -54,6 +62,21 @@ public class DashboardController implements Initializable {
         menuItemRedo.disableProperty().bind(commandManager.redoAvailableProperty().not());
         menuItemUndo.disableProperty().bind(commandManager.undoAvailableProperty().not());
 
+        title = new SimpleStringProperty("");
+        SimpleStringProperty changedProperty = new SimpleStringProperty("");
+        OMRApp.getMainStage().titleProperty().bind(Bindings.concat("MURET ", title, " ", changedProperty));
+
+        commandManager.commandAppliedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue.booleanValue()) {
+                    changedProperty.set("(modified)");
+                } else {
+                    changedProperty.set("");
+                }
+            }
+        });
+
     }
 
     @FXML
@@ -63,7 +86,7 @@ public class DashboardController implements Initializable {
             //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
             try {
                 OMRModel.getInstance().createProject(dlg.getProjectFolder(), dlg.getTrainingFile());
-                OMRApp.getMainStage().setTitle("MURET Project " + OMRModel.getInstance().getCurrentProject().getName());
+                title.setValue(OMRModel.getInstance().getCurrentProject().getName());
                 openPagesView();
             } catch (IM3Exception e) {
                 ShowError.show(OMRApp.getMainStage(), "Cannot create project", e);
@@ -79,7 +102,7 @@ public class DashboardController implements Initializable {
             //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
             try {
                 OMRModel.getInstance().openProject(dlg.getProjectFolder(), dlg.getTrainingFile());
-                OMRApp.getMainStage().setTitle("MURET Project " + OMRModel.getInstance().getCurrentProject().getName());
+                title.setValue(OMRModel.getInstance().getCurrentProject().getName());
                 openPagesView();
             } catch (IM3Exception e) {
                 ShowError.show(OMRApp.getMainStage(), "Cannot open project", e);
@@ -127,6 +150,7 @@ public class DashboardController implements Initializable {
     private void handleSave() {
         try {
             OMRModel.getInstance().save();
+            commandManager.resetNeedsSave();
         } catch (IM3Exception e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot save project", e);
         }
@@ -134,17 +158,25 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void handleClose() {
-        borderPane.setCenter(null);
-        tgDashboardButtons.selectToggle(null);
-        OMRModel.getInstance().clearProject();
-        OMRApp.getMainStage().setTitle("MURET");
-        // TODO: 9/10/17 Cerrar ventanas....
+        //TODO Preguntar si salvar
+        if (commandManager.commandAppliedProperty().get()) {
+            if (ShowConfirmation.show(OMRApp.getMainStage(), "This project has been modified, do you really want to close without save?")) {
+                borderPane.setCenter(null);
+                tgDashboardButtons.selectToggle(null);
+                OMRModel.getInstance().clearProject();
+                OMRApp.getMainStage().setTitle("MURET");
+            }
+        }
     }
 
 
     @FXML
     private void handleQuit() {
-        // TODO: 9/10/17 Preguntar si hay algo abierto
-        OMRApp.getMainStage().close();
+        //TODO Preguntar si salvar
+        if (commandManager.commandAppliedProperty().get()) {
+            if (ShowConfirmation.show(OMRApp.getMainStage(), "This project has been modified, do you really want to exit without save?")) {
+                OMRApp.getMainStage().close();
+            }
+        }
     }
 }

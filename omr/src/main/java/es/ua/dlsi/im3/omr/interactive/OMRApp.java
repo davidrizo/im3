@@ -33,7 +33,6 @@ public class OMRApp extends Application {
         //Parent root = FXMLLoader.load(getClass().getResource("/fxml/pages.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
         scene.setRoot(root);
-        primaryStage.setTitle("MURET");
         primaryStage.setMaximized(true);
         primaryStage.show();
     }
