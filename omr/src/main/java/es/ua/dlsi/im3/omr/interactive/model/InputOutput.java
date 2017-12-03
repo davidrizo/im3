@@ -27,7 +27,6 @@ public class InputOutput {
         Project pojoProject = new Project();
         for (OMRPage page: project.pagesProperty()) {
             Page pojoPage = new Page(page.getImageRelativeFileName());
-            pojoPage.setOrder(page.getOrder());
             pojoPage.setInstrumentList(page.getInstrumentList());
             pojoProject.getPages().add(pojoPage);
             for (OMRStaff staff: page.getStaves()) {

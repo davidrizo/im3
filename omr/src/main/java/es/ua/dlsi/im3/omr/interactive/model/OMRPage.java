@@ -164,4 +164,9 @@ public class OMRPage {
     public OMRProject getOMRProject() {
         return omrProject;
     }
+
+    @Override
+    public String toString() {
+        return imageRelativeFileName + ", order " + order;
+    }
 }

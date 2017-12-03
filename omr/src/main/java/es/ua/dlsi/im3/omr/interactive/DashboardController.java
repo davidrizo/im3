@@ -2,20 +2,19 @@ package es.ua.dlsi.im3.omr.interactive;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.Pair;
+import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.pages.PagesController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,6 +22,12 @@ import java.util.ResourceBundle;
 public class DashboardController implements Initializable {
     @FXML
     MenuItem menuSave;
+
+    @FXML
+    MenuItem menuItemUndo;
+
+    @FXML
+    MenuItem menuItemRedo;
 
     @FXML
     ToggleGroup tgDashboardButtons;
@@ -33,6 +38,8 @@ public class DashboardController implements Initializable {
     @FXML
     BorderPane borderPane;
 
+    CommandManager commandManager;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tbPages.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull()
@@ -42,6 +49,10 @@ public class DashboardController implements Initializable {
         //menuProject.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
         //TODO menuAddImage.disableProperty().bind(tbPages.selectedProperty().not());
         //TODO menuDeleteImage.disableProperty().bind(lvPages.getSelectionModel().selectedItemProperty().isNull());
+
+        commandManager = new CommandManager();
+        menuItemRedo.disableProperty().bind(commandManager.redoAvailableProperty().not());
+        menuItemUndo.disableProperty().bind(commandManager.undoAvailableProperty().not());
 
     }
 
@@ -76,14 +87,31 @@ public class DashboardController implements Initializable {
         }
     }
 
+    @FXML
+    public void handleUndo() {
+        try {
+            commandManager.undo();
+        } catch (IM3Exception e) {
+            ShowError.show(OMRApp.getMainStage(), "Cannot undo", e);
+        }
+    }
+
+    @FXML
+    public void handleRedo() {
+        try {
+            commandManager.redo();
+        } catch (IM3Exception e) {
+            ShowError.show(OMRApp.getMainStage(), "Cannot redo", e);
+        }
+    }
+
     private void openPagesView() {
         tgDashboardButtons.selectToggle(tbPages); // it opens the page
         try {
             Pair<PagesController, Parent> pair = ViewLoader.loadView("pages.fxml");
             borderPane.setCenter(pair.getY());
-            /*pair.getX().setAddImageMenuItem(menuAddImage);
-            pair.getX().setDeleteImageMenuItem(menuDeleteImage);
-            pair.getX().initMenus();*/
+            pair.getX().setCommandManager(commandManager);
+            //pair.getX().initMenus(menuItemUndo, menuItemRedo);
         } catch (IOException e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot load pages screen", e);
         }

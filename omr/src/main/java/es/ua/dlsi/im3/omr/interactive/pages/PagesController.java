@@ -2,15 +2,19 @@ package es.ua.dlsi.im3.omr.interactive.pages;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.gui.command.CommandManager;
+import es.ua.dlsi.im3.gui.command.ICommand;
+import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
 import es.ua.dlsi.im3.omr.interactive.OMRApp;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -33,15 +37,24 @@ public class PagesController implements Initializable {
 
     State state;
 
-    ArrayList<PageThumbnailView> thumbnailViews;
+    HashMap<OMRPage, PageThumbnailView> pagePageThumbnailViewHashMap;
+    private CommandManager commandManager;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         state = State.idle; //TODO cambiar estado en drag & drop
         iconAdd = new IconAdd();
-        thumbnailViews = new ArrayList<>();
+        pagePageThumbnailViewHashMap = new HashMap<>();
         loadProjectPages();
         listenToPagesChanges();
+    }
+
+    public void setCommandManager(CommandManager commandManager) {
+        this.commandManager = commandManager;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     private void listenToPagesChanges() {
@@ -57,7 +70,7 @@ public class PagesController implements Initializable {
                         //update item - no lo necesitamos de momento porque lo tenemos todo con binding, si no podríamos actualizar aquí
                     } else {
                         for (OMRPage remitem : c.getRemoved()) {
-                            //TODO
+                            removePageView(remitem);
                         }
                         for (OMRPage additem : c.getAddedSubList()) {
                             createPageView(additem, true);
@@ -82,13 +95,24 @@ public class PagesController implements Initializable {
     private void createPageView(OMRPage omrPage, boolean skipLoadIcon) {
         PageThumbnailView pageView = new PageThumbnailView(omrPage);
         if (skipLoadIcon) {
-            flowPane.getChildren().add(flowPane.getChildren().size() - 1, pageView.getRoot()); // before the addImage icon
+            flowPane.getChildren().add(flowPane.getChildren().size() - 1, pageView); // before the addImage icon
         } else {
-            flowPane.getChildren().add(pageView.getRoot()); // before the addImage icon
+            flowPane.getChildren().add(pageView); // before the addImage icon
         }
-        thumbnailViews.add(pageView);
+        pagePageThumbnailViewHashMap.put(omrPage, pageView);
         addInteraction(pageView);
     }
+
+    private void removePageView(OMRPage page) {
+        PageThumbnailView view = pagePageThumbnailViewHashMap.get(page);
+        if (view == null) {
+            throw new IM3RuntimeException("Cannot find page " + page);
+        }
+        flowPane.getChildren().remove(view);
+        recomputeOrdering();
+    }
+
+
 
     private void addPageAddIcon() {
         flowPane.getChildren().add(iconAdd.getRoot());
@@ -106,8 +130,8 @@ public class PagesController implements Initializable {
 
 
     private void addInteraction(PageThumbnailView pageView) {
-        pageView.getRoot().setOnDragDetected(event -> {
-            Dragboard db = pageView.getRoot().startDragAndDrop(TransferMode.MOVE);
+        pageView.setOnDragDetected(event -> {
+            Dragboard db = pageView.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
             // Store the node ID in order to know what is dragged.
             content.putString(new Integer(pageView.getOmrPage().getOrder()-1).toString());
@@ -115,8 +139,22 @@ public class PagesController implements Initializable {
             event.consume();
         });
 
+        pageView.setOpenPageHandler(handler -> {
+            doOpenPage(pageView);
+        });
+
+        pageView.setDeletePageHandler(handler -> {
+            doDeletePage(pageView);
+        });
+
         initDropZone(pageView.getLeftDropbox(), pageView, false);
         initDropZone(pageView.getRightDropbox(), pageView, true);
+
+        pageView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                doOpenPage(pageView);
+            }
+        });
     }
 
     /**
@@ -153,40 +191,88 @@ public class PagesController implements Initializable {
                     toOrder++;
                 }
                 Logger.getLogger(PagesController.class.getName()).log(Level.INFO, "Drag&drop: moving page at position {0} to position {1}", new Object[]{db.getString(), toOrder});
-                moveThumbnail(Integer.parseInt(db.getString()), toOrder);
+                moveThumbnail(pageView, Integer.parseInt(db.getString()), toOrder);
 
                 event.setDropCompleted(true);
                 event.consume();
-
             }
         });
     }
 
-    private void moveThumbnail(int fromOrder, int toOrder) {
-        //TODO Command para poder deshacer
-        // remove thumbnail from list
-        Node thumbnailNode = flowPane.getChildren().remove(fromOrder);
-        PageThumbnailView thumbnailView = thumbnailViews.remove(fromOrder);
+    private void moveThumbnail(final PageThumbnailView page, final int fromOrder, final int toOrder) {
+        ICommand command = new ICommand() {
+            ArrayList<PageThumbnailView> currentOrdering;
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                currentOrdering = new ArrayList<>();
+                for (int i=0; i<flowPane.getChildren().size()-1; i++) {
+                    currentOrdering.add((PageThumbnailView) flowPane.getChildren().get(i));
+                }
+                doExecute();
+            }
 
-        if (fromOrder < toOrder) {
-            toOrder--; // because we have removed it from lists
+            private void doExecute() {
+                // remove thumbnail from list
+                PageThumbnailView thumbnailNode = (PageThumbnailView) flowPane.getChildren().remove(fromOrder);
+
+                int to = toOrder;
+                if (fromOrder < toOrder) {
+                    to--; // because we have removed it from lists
+                }
+
+                if (thumbnailNode == null) {
+                    throw new IM3RuntimeException("No thumbnail at index " + fromOrder + " in flowPane");
+                }
+
+                // add to position
+                flowPane.getChildren().add(to, thumbnailNode);
+
+                // recompute ordering
+                recomputeOrdering();
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                // set the saved ordering
+                flowPane.getChildren().clear();
+                for (PageThumbnailView pageThumbnailView: currentOrdering) {
+                    flowPane.getChildren().add(pageThumbnailView);
+                }
+                flowPane.getChildren().add(iconAdd.getRoot());
+                recomputeOrdering();
+            }
+
+            @Override
+            public void redo() throws Exception {
+                doExecute();
+            }
+
+            @Override
+            public String getEventName() {
+                return "Move page";
+            }
+
+            @Override
+            public String toString() {
+                return "Move " + page.toString();
+            }
+        };
+        try {
+            commandManager.executeCommand(command);
+        } catch (IM3Exception e) {
+            ShowError.show(OMRApp.getMainStage(), "Cannot move", e);
         }
 
-        if (thumbnailNode == null) {
-            throw new IM3RuntimeException("No thumbnail at index " + fromOrder + " in flowPane");
-        }
+    }
 
-        if (thumbnailView == null) {
-            throw new IM3RuntimeException("No thumbnailView at index " + fromOrder + " in flowPane");
-        }
-
-        // add to position
-        flowPane.getChildren().add(toOrder, thumbnailNode);
-        thumbnailViews.add(toOrder, thumbnailView);
-
-        // recompute ordering
-        for (int i= 0; i<thumbnailViews.size(); i++) {
-            PageThumbnailView tv = thumbnailViews.get(i);
+    private void recomputeOrdering() {
+        for (int i = 0; i< flowPane.getChildren().size()-1; i++) {
+            PageThumbnailView tv = (PageThumbnailView) flowPane.getChildren().get(i);
             tv.getOmrPage().setOrder(i+1);
             tv.updateLabel();
         }
@@ -219,18 +305,20 @@ public class PagesController implements Initializable {
 
     }
 
-
-    private void doDeleteImage() {
-        /*TODO if (ShowConfirmation.show(OMRApp.getMainStage(), "Do you want to delete the image?")) {
+    private void doDeletePage(PageThumbnailView pageView) {
+        if (ShowConfirmation.show(OMRApp.getMainStage(), "Do you want to delete " + pageView.getOmrPage().toString() + "?")) {
             try {
-                project.get().deletePage(lvPages.getSelectionModel().getSelectedItem());
-                save();
-                lvPages.getSelectionModel().clearSelection();
+                OMRModel.getInstance().getCurrentProject().deletePage(pageView.getOmrPage());
+                OMRModel.getInstance().save();
             } catch (IM3Exception e) {
-                ShowError.show(OMRApp.getMainStage(), "Cannot delete image", e);
+                ShowError.show(OMRApp.getMainStage(), "Cannot delete page", e);
             }
-        }*/
-
+        }
     }
+
+    private void doOpenPage(PageThumbnailView pageView) {
+        ShowMessage.show(null, "ABRIR");
+    }
+
 
 }

@@ -31,8 +31,6 @@ public class OMRProject {
     File xmlFile;
 
 
-
-
     ScoreSong scoreSong;
     //OMRMainController omrController;
     private ISymbolRecognizer recognizer;
@@ -123,6 +121,10 @@ public class OMRProject {
 
     public void deletePage(OMRPage page) throws IM3Exception {
         pagesProperty.remove(page);
+        File targetFile = new File(imagesFolder, page.getImageRelativeFileName());
+        if (!targetFile.delete()) {
+            throw new IM3Exception("Cannot remove file " + targetFile.getAbsolutePath() + " from disk");
+        }
     }
 
     public File getProjectFolder() {

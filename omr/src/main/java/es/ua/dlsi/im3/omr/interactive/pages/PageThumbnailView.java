@@ -25,7 +25,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class PageThumbnailView {
+public class PageThumbnailView extends BorderPane {
     private final VBox labels;
     private final Node previewIcon;
     Label labelOrder;
@@ -34,17 +34,18 @@ public class PageThumbnailView {
     AnchorPane mainPane;
     ImageView imageView;
     Image image;
-    BorderPane borderPane;
     /**
      * Used to reorder using drag and drop
      */
     Rectangle leftDropbox;
     Rectangle rightDropbox;
 
+    IOpenPageHandler openPageHandler;
+    IDeletePageHandler deletePageHandler;
+
 
     public PageThumbnailView(OMRPage omrPage) {
         this.omrPage = omrPage;
-        borderPane = new BorderPane();
         mainPane = new AnchorPane();
 
         image = SwingFXUtils.toFXImage(omrPage.getBufferedImage(), null);
@@ -62,23 +63,23 @@ public class PageThumbnailView {
             labels.getChildren().add(new Label(instrument.toString()));
         }
         updateLabel();
-        borderPane.setBottom(labels);
-        borderPane.setCenter(mainPane);
+        setBottom(labels);
+        setCenter(mainPane);
 
         leftDropbox = createDropbox();
         rightDropbox = createDropbox();
-        borderPane.setLeft(leftDropbox);
-        borderPane.setRight(rightDropbox);
+        setLeft(leftDropbox);
+        setRight(rightDropbox);
 
         mainPane.getChildren().add(imageView);
         interactionIcon = createInteractionIcon();
         mainPane.getChildren().add(interactionIcon);
         AnchorPane.setRightAnchor(interactionIcon, 20.0); //TODO
         AnchorPane.setTopAnchor(interactionIcon, 10.0); //TODO
-        AnchorPane.setTopAnchor(borderPane, 0.0);
-        AnchorPane.setLeftAnchor(borderPane, 0.0);
-        AnchorPane.setRightAnchor(borderPane, 0.0);
-        AnchorPane.setBottomAnchor(borderPane, 0.0);
+        AnchorPane.setTopAnchor(this, 0.0);
+        AnchorPane.setLeftAnchor(this, 0.0);
+        AnchorPane.setRightAnchor(this, 0.0);
+        AnchorPane.setBottomAnchor(this, 0.0);
         
         previewIcon = createPreviewIcon();
         mainPane.getChildren().add(previewIcon);
@@ -144,6 +145,15 @@ public class PageThumbnailView {
         interactionDots.setOnMouseClicked(event -> {
             ContextMenu contextMenu = new ContextMenu();
 
+            MenuItem openMenu = new MenuItem("Open");
+            contextMenu.getItems().add(openMenu);
+            contextMenu.getItems().add(new SeparatorMenuItem());
+            openMenu.setOnAction(event1 -> {
+                if (openPageHandler != null) {
+                    openPageHandler.openPage(this);
+                }
+            });
+
             //TODo Modelo
             Instrument [] instruments = {
                     new Instrument("Tiple 1º, 1º coro"),
@@ -170,6 +180,12 @@ public class PageThumbnailView {
             contextMenu.getItems().add(new SeparatorMenuItem());
             MenuItem deleteMenu = new MenuItem("Delete");
             contextMenu.getItems().add(deleteMenu);
+            deleteMenu.setOnAction(event1 -> {
+                if (deletePageHandler != null) {
+                    deletePageHandler.deletePage(this);
+                }
+            });
+
 
             contextMenu.show(interactionDots, event.getScreenX(), event.getScreenY());
         });
@@ -190,10 +206,6 @@ public class PageThumbnailView {
         return r;
     }
 
-    public Node getRoot() {
-        return borderPane;
-    }
-
     public Rectangle getLeftDropbox() {
         return leftDropbox;
     }
@@ -208,5 +220,26 @@ public class PageThumbnailView {
 
     public void updateLabel() {
         labelOrder.setText("Page " + omrPage.getOrder());
+    }
+
+    public IOpenPageHandler getOpenPageHandler() {
+        return openPageHandler;
+    }
+
+    public void setOpenPageHandler(IOpenPageHandler openPageHandler) {
+        this.openPageHandler = openPageHandler;
+    }
+
+    public IDeletePageHandler getDeletePageHandler() {
+        return deletePageHandler;
+    }
+
+    public void setDeletePageHandler(IDeletePageHandler deletePageHandler) {
+        this.deletePageHandler = deletePageHandler;
+    }
+
+    @Override
+    public String toString() {
+        return omrPage.toString();
     }
 }
