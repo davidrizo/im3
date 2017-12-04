@@ -210,8 +210,12 @@ public class CommandManager {
 			throw new IM3Exception(ex);
 		    }
 		    if (command.canBeUndone()) {
-			pushUndoableCommand(command);
-		    }
+			    pushUndoableCommand(command);
+		    } else {
+		        // if a command cannot be undone, it makes no sense to be able to undo / redo
+		        this.redosProperty.clear();
+                this.undosProperty.clear();
+            }
 		    //FXUtils.changeCursor(currentCursor);
 		} catch (IM3Exception e) {
 		    //FXUtils.changeCursor(currentCursor);
