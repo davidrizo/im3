@@ -2,7 +2,6 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.omr.interactive.OMRMainController;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageFile;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
@@ -22,7 +21,7 @@ public class OMRPage {
     private static boolean JAI_CHECKED = false;
 
     int order;
-    Set<Instrument> instrumentList;
+    Set<OMRInstrument> instrumentList;
 
     /**
      * Used for unit tests
@@ -119,14 +118,14 @@ public class OMRPage {
         return imageRelativeFileName;
     }
 
-    public void addInstrument(Instrument instrument) {
+    public void addInstrument(OMRInstrument instrument) {
         this.instrumentList.add(instrument);
     }
-    public void removeInstrument(Instrument instrument) {
+    public void removeInstrument(OMRInstrument instrument) {
         this.instrumentList.remove(instrument);
     }
 
-    public Set<Instrument> getInstrumentList() {
+    public Set<OMRInstrument> getInstrumentList() {
         return instrumentList;
     }
 

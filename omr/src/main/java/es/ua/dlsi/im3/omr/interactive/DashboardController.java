@@ -134,6 +134,7 @@ public class DashboardController implements Initializable {
             Pair<PagesController, Parent> pair = ViewLoader.loadView("pages.fxml");
             borderPane.setCenter(pair.getY());
             pair.getX().setCommandManager(commandManager);
+            pair.getX().setDashboard(this);
             //pair.getX().initMenus(menuItemUndo, menuItemRedo);
         } catch (IOException e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot load pages screen", e);
@@ -146,14 +147,17 @@ public class DashboardController implements Initializable {
         openPagesView();
     }
 
-    @FXML
-    private void handleSave() {
+    public void save() {
         try {
             OMRModel.getInstance().save();
             commandManager.resetNeedsSave();
         } catch (IM3Exception e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot save project", e);
         }
+    }
+    @FXML
+    private void handleSave() {
+        save();
     }
 
     @FXML

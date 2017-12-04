@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
+import es.ua.dlsi.im3.omr.interactive.DashboardController;
 import es.ua.dlsi.im3.omr.interactive.OMRApp;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
@@ -39,6 +40,7 @@ public class PagesController implements Initializable {
 
     HashMap<OMRPage, PageThumbnailView> pagePageThumbnailViewHashMap;
     private CommandManager commandManager;
+    private DashboardController dashboard;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -93,7 +95,7 @@ public class PagesController implements Initializable {
     }
 
     private void createPageView(OMRPage omrPage, boolean skipLoadIcon) {
-        PageThumbnailView pageView = new PageThumbnailView(omrPage);
+        PageThumbnailView pageView = new PageThumbnailView(this, omrPage);
         if (skipLoadIcon) {
             flowPane.getChildren().add(flowPane.getChildren().size() - 1, pageView); // before the addImage icon
         } else {
@@ -284,32 +286,106 @@ public class PagesController implements Initializable {
 
         if (files != null) {
             try {
-                ArrayList<File> sortFiles = new ArrayList<>(files); // cannot sort directly files (UnsupportedOperationException)
-                // sort by name before adding it
-                sortFiles.sort(new Comparator<File>() {
+                ICommand command = new ICommand() {
+                    ArrayList<OMRPage> addedPages;
+                    ArrayList<File> sortedFiles;
                     @Override
-                    public int compare(File o1, File o2) {
-                        return o1.getName().compareTo(o2.getName());
+                    public void execute(IObservableTaskRunner observer) throws Exception {
+                        addedPages = new ArrayList<>();
+                        sortedFiles = new ArrayList<>(files); // cannot sort directly files (UnsupportedOperationException)
+                        // sort by name before adding it
+                        sortedFiles.sort(new Comparator<File>() {
+                            @Override
+                            public int compare(File o1, File o2) {
+                                return o1.getName().compareTo(o2.getName());
+                            }
+                        });
+                        doExecute();
+                        dashboard.save();
                     }
-                });
-                for (File file: sortFiles) {
-                    OMRModel.getInstance().getCurrentProject().addPage(file);
-                }
 
-                OMRModel.getInstance().save();
+                    private void doExecute() throws IM3Exception {
+                        for (File file: sortedFiles) {
+                            addedPages.add(OMRModel.getInstance().getCurrentProject().addPage(file));
+                        }
+                    }
+
+                    @Override
+                    public boolean canBeUndone() {
+                        return false; //TODO Habrá que evitar que se copien los ficheros directamente en el modelo
+                    }
+
+                    @Override
+                    public void undo() throws Exception {
+                        for (OMRPage page: addedPages) {
+                            OMRModel.getInstance().getCurrentProject().deletePage(page);
+                        }
+                    }
+
+                    @Override
+                    public void redo() throws Exception {
+                        doExecute();
+                    }
+
+                    @Override
+                    public String getEventName() {
+                        return "Add page";
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Add page(s)";
+                    }
+                };
+
+                commandManager.executeCommand(command);
             } catch (IM3Exception e) {
                 e.printStackTrace();
                 ShowError.show(OMRApp.getMainStage(), "Cannot add image", e);
             }
         }
-
     }
 
     private void doDeletePage(PageThumbnailView pageView) {
-        if (ShowConfirmation.show(OMRApp.getMainStage(), "Do you want to delete " + pageView.getOmrPage().toString() + "?")) {
+        if (ShowConfirmation.show(OMRApp.getMainStage(), "Do you want to delete " + pageView.getOmrPage().toString() + "?. It cannot be undone")) {
             try {
-                OMRModel.getInstance().getCurrentProject().deletePage(pageView.getOmrPage());
-                OMRModel.getInstance().save();
+                ICommand command = new ICommand() {
+                    @Override
+                    public void execute(IObservableTaskRunner observer) throws Exception {
+                        doExecute();
+                        dashboard.save();
+                    }
+
+                    private void doExecute() throws IM3Exception {
+                        OMRModel.getInstance().getCurrentProject().deletePage(pageView.getOmrPage());
+                    }
+
+                    @Override
+                    public boolean canBeUndone() {
+                        return false;  //TODO Habrá que evitar que se copien los ficheros directamente en el modelo
+                    }
+
+                    @Override
+                    public void undo() throws Exception {
+                        OMRModel.getInstance().getCurrentProject().addPage(pageView.getOmrPage());
+                    }
+
+                    @Override
+                    public void redo() throws Exception {
+                        doExecute();
+                    }
+
+                    @Override
+                    public String getEventName() {
+                        return "Delete";
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Delete " + pageView.toString();
+                    }
+                };
+                commandManager.executeCommand(command);
             } catch (IM3Exception e) {
                 ShowError.show(OMRApp.getMainStage(), "Cannot delete page", e);
             }
@@ -321,4 +397,11 @@ public class PagesController implements Initializable {
     }
 
 
+    public void setDashboard(DashboardController dashboard) {
+        this.dashboard = dashboard;
+    }
+
+    public DashboardController getDashboard() {
+        return dashboard;
+    }
 }

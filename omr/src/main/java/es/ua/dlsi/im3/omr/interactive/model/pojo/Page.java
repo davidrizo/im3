@@ -1,10 +1,9 @@
 package es.ua.dlsi.im3.omr.interactive.model.pojo;
 
-import es.ua.dlsi.im3.omr.interactive.model.Instrument;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Page {
     String imageRelativeFileName;
@@ -15,11 +14,13 @@ public class Page {
 
     public Page() {
         staves = new ArrayList<>();
+        instrumentList = new TreeSet<>();
     }
 
     public Page(String imageRelativeFileName) {
         this.imageRelativeFileName = imageRelativeFileName;
         staves = new ArrayList<>();
+        instrumentList = new TreeSet<>();
     }
 
     public String getImageRelativeFileName() {

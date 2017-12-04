@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.interactive.OMRMainController;
+import es.ua.dlsi.im3.omr.interactive.model.pojo.Instrument;
 import es.ua.dlsi.im3.omr.interactive.model.pojo.Page;
 import es.ua.dlsi.im3.omr.interactive.model.pojo.Project;
 import es.ua.dlsi.im3.omr.interactive.model.pojo.Staff;
@@ -25,10 +26,18 @@ public class InputOutput {
 
     public void save(OMRProject project) throws ExportException {
         Project pojoProject = new Project();
+        for (OMRInstrument instrument: project.instrumentsProperty()) {
+            Instrument pojoInstrument = new Instrument(instrument.getName());
+            pojoProject.getInstruments().add(pojoInstrument);
+        }
+
         for (OMRPage page: project.pagesProperty()) {
             Page pojoPage = new Page(page.getImageRelativeFileName());
             pojoPage.setOrder(page.getOrder());
-            pojoPage.setInstrumentList(page.getInstrumentList());
+            for (OMRInstrument instrument: page.getInstrumentList()) {
+                // no need to have the same object, just need to have the same name
+                pojoPage.getInstrumentList().add(new Instrument(instrument.getName()));
+            }
             pojoProject.getPages().add(pojoPage);
             for (OMRStaff staff: page.getStaves()) {
                 Staff pojoStaff = new Staff();
@@ -72,10 +81,19 @@ public class InputOutput {
             }
         });
 
+        for (Instrument pojoInstrument: pojoProject.getInstruments()) {
+            omrProject.addInstrument(pojoInstrument.getName());
+        }
+
         for (Page pojoPage: pagesList) {
             OMRPage page = new OMRPage(omrProject, omrProject.getImagesFolder(), pojoPage.getImageRelativeFileName(), omrProject.getScoreSong());
             page.setOrder(pojoPage.getOrder());
             omrProject.addPage(page);
+
+            for (Instrument instrument: pojoPage.getInstrumentList()) {
+                page.addInstrument(omrProject.findInstrument(instrument.getName()));
+            }
+
             page.loadImageFile();
 
             for (Staff pojoStaff: pojoPage.getStaves()) {

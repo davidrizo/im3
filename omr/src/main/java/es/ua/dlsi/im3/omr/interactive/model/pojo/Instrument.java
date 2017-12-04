@@ -1,8 +1,5 @@
-package es.ua.dlsi.im3.omr.interactive.model;
+package es.ua.dlsi.im3.omr.interactive.model.pojo;
 
-/**
- * Instrument or voice
- */
 public class Instrument implements Comparable<Instrument> {
     String name;
 
@@ -21,10 +18,5 @@ public class Instrument implements Comparable<Instrument> {
     @Override
     public int compareTo(Instrument o) {
         return name.compareTo(o.name);
-    }
-
-    @Override
-    public String toString() {
-        return name;
     }
 }

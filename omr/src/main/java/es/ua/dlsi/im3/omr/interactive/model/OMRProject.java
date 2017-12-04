@@ -15,6 +15,7 @@ import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
 import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +44,8 @@ public class OMRProject {
      * Used by GUI for binding
      */
     private ObservableList<OMRPage> pagesProperty;
+    private ObservableSet<OMRInstrument> instrumentsProperty;
+
 
     public OMRProject(File projectXMLFile) throws IM3Exception {
         //TODO - loading
@@ -59,6 +62,7 @@ public class OMRProject {
         this.xmlFile = new File(projectFolder, InputOutput.createXMLFilename(projectFolder));
 
         pagesProperty = FXCollections.observableArrayList();
+        instrumentsProperty = FXCollections.observableSet();
 
         //-- POR AQUI
         /*TODO YA
@@ -81,7 +85,7 @@ public class OMRProject {
         scoreSongView = new ScoreSongView(scoreSong, imitationLayout);
     }
 
-    public void addPage(File file) throws IM3Exception {
+    public OMRPage addPage(File file) throws IM3Exception {
         // copy the image file into the images folder
         File targetFile = new File(imagesFolder, file.getName());
         try {
@@ -100,6 +104,7 @@ public class OMRProject {
         page.setOrder(nextNumber);
         pagesProperty.add(page);
         // TODO: 11/10/17 Debe añadir una página al layout del scoreSOng
+        return page;
     }
 
     public void addPage(OMRPage page) {
@@ -117,6 +122,10 @@ public class OMRProject {
 
     public ObservableList<OMRPage> pagesProperty() {
         return pagesProperty;
+    }
+
+    public ObservableSet<OMRInstrument> instrumentsProperty() {
+        return instrumentsProperty;
     }
 
     public void deletePage(OMRPage page) throws IM3Exception {
@@ -168,5 +177,20 @@ public class OMRProject {
 
     public IGraphicalToScoreSymbolFactory getGraphicalToScoreSymbolFactory() {
         return graphicalToScoreSymbolFactory;
+    }
+
+    public OMRInstrument addInstrument(String name) {
+        OMRInstrument instrument = new OMRInstrument(name);
+        instrumentsProperty.add(instrument);
+        return instrument;
+    }
+
+    public OMRInstrument findInstrument(String name) throws IM3Exception {
+        for (OMRInstrument instrument: instrumentsProperty) {
+            if (instrument.getName().equals(name)) {
+                return instrument;
+            }
+        }
+        throw new IM3Exception("Instrument " + name + " not found");
     }
 }

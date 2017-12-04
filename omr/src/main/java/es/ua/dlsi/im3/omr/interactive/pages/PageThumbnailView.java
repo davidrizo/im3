@@ -1,8 +1,17 @@
 package es.ua.dlsi.im3.omr.interactive.pages;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.gui.command.CommandManager;
+import es.ua.dlsi.im3.gui.command.ICommand;
+import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowInput;
+import es.ua.dlsi.im3.omr.interactive.OMRApp;
 import es.ua.dlsi.im3.omr.interactive.PredefinedIcon;
-import es.ua.dlsi.im3.omr.interactive.model.Instrument;
+import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
+import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
+import javafx.collections.ObservableSet;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -25,9 +34,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.Set;
+
 public class PageThumbnailView extends BorderPane {
     private final VBox labels;
     private final Node previewIcon;
+    private final PagesController pagesController;
     Label labelOrder;
     private final Node interactionIcon;
     OMRPage omrPage;
@@ -43,9 +55,9 @@ public class PageThumbnailView extends BorderPane {
     IOpenPageHandler openPageHandler;
     IDeletePageHandler deletePageHandler;
 
-
-    public PageThumbnailView(OMRPage omrPage) {
+    public PageThumbnailView(PagesController pagesController, OMRPage omrPage) {
         this.omrPage = omrPage;
+        this.pagesController = pagesController;
         mainPane = new AnchorPane();
 
         image = SwingFXUtils.toFXImage(omrPage.getBufferedImage(), null);
@@ -59,7 +71,7 @@ public class PageThumbnailView extends BorderPane {
         labelOrder = new Label("Page " + omrPage.getOrder());
         labels.getChildren().add(labelOrder);
         labels.getChildren().add(new Label(omrPage.getImageRelativeFileName()));
-        for (Instrument instrument: omrPage.getInstrumentList()) {
+        for (OMRInstrument instrument: omrPage.getInstrumentList()) {
             labels.getChildren().add(new Label(instrument.toString()));
         }
         updateLabel();
@@ -85,6 +97,8 @@ public class PageThumbnailView extends BorderPane {
         mainPane.getChildren().add(previewIcon);
         AnchorPane.setLeftAnchor(previewIcon, 20.0); //TODO
         AnchorPane.setTopAnchor(previewIcon, 10.0); //TODO
+
+
 
     }
 
@@ -155,18 +169,9 @@ public class PageThumbnailView extends BorderPane {
             });
 
             //TODo Modelo
-            Instrument [] instruments = {
-                    new Instrument("Tiple 1º, 1º coro"),
-                    new Instrument("Tiple 2ª, 1º coro"),
-                    new Instrument("Alto, 1º coro"),
-                    new Instrument("Tenor, 1º coro"),
-                    new Instrument("Tiple, 2º coro"),
-                    new Instrument("Alto, 2º coro"),
-                    new Instrument("Tenor, 2º coro"),
-                    new Instrument("Bajo, 2º coro")
-            };
+            Set<OMRInstrument> omrInstruments = OMRModel.getInstance().getCurrentProject().instrumentsProperty();
 
-            for (Instrument instrument: instruments) {
+            for (OMRInstrument instrument: omrInstruments) {
                 MenuItem menuInstrument = new MenuItem(instrument.getName());
                 contextMenu.getItems().add(menuInstrument);
                 menuInstrument.setOnAction(eventMenuInstrument -> {
@@ -174,11 +179,28 @@ public class PageThumbnailView extends BorderPane {
                 });
             }
 
-            MenuItem addInstrument = new MenuItem("Add instrument...");
+            MenuItem addInstrument = new MenuItem("Add other instrument...");
             contextMenu.getItems().add(addInstrument);
+            addInstrument.setOnAction(event1 -> {
+                String name = ShowInput.show(OMRApp.getMainStage(), "New instrument", "Introduce the instrument name");
+                if (name != null) {
+                    OMRInstrument instrument = OMRModel.getInstance().getCurrentProject().addInstrument(name);
+                    addInstrumentToPage(instrument);
+                }
+            });
 
             contextMenu.getItems().add(new SeparatorMenuItem());
-            MenuItem deleteMenu = new MenuItem("Delete");
+            for (OMRInstrument instrument: omrPage.getInstrumentList()) {
+                MenuItem deleteInstrument = new MenuItem("Remove " + instrument);
+                contextMenu.getItems().add(deleteInstrument);
+                deleteInstrument.setOnAction(event1 -> {
+                    removeInstrumentFromPage(instrument);
+                });
+
+            }
+
+            contextMenu.getItems().add(new SeparatorMenuItem());
+            MenuItem deleteMenu = new MenuItem("Delete page");
             contextMenu.getItems().add(deleteMenu);
             deleteMenu.setOnAction(event1 -> {
                 if (deletePageHandler != null) {
@@ -194,10 +216,118 @@ public class PageThumbnailView extends BorderPane {
         return interactionDots;
     }
 
-    private void addInstrumentToPage(Instrument instrument) {
-        //TODO Sinc modelo
-        omrPage.addInstrument(instrument);
-        labels.getChildren().add(new Label(instrument.getName()));
+    private void removeInstrumentFromPage(OMRInstrument instrument) {
+        ICommand command = new ICommand() {
+            OMRInstrument deletedInstrument;
+            Label deletedLabel;
+            int positionOfLabel;
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                deletedInstrument = instrument;
+                deletedLabel = null;
+                for (int i=0; deletedLabel == null && i<labels.getChildren().size(); i++) {
+                    Node node = labels.getChildren().get(i);
+                    if (node instanceof Label && ((Label)node).getText().equals(instrument.getName())) {
+                        deletedLabel = (Label) node;
+                        positionOfLabel = i;
+                    }
+                }
+                if (deletedLabel == null) {
+                    throw new IM3Exception("Cannot find the label for instrument " + instrument.getName());
+                }
+
+                doExecute();
+            }
+
+            private void doExecute() {
+                omrPage.removeInstrument(instrument);
+                labels.getChildren().remove(deletedLabel);
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                omrPage.addInstrument(deletedInstrument);
+                labels.getChildren().add(positionOfLabel, deletedLabel);
+            }
+
+            @Override
+            public void redo() throws Exception {
+                doExecute();
+            }
+
+            @Override
+            public String getEventName() {
+                return "Remove instrument";
+            }
+
+            @Override
+            public String toString() {
+                return "Remove instrument " + deletedInstrument;
+            }
+        };
+
+        try {
+            pagesController.getCommandManager().executeCommand(command);
+        } catch (IM3Exception e) {
+            ShowError.show(OMRApp.getMainStage(), "Cannot add instrument", e);
+        }
+    }
+
+    private void addInstrumentToPage(OMRInstrument instrument) {
+        ICommand command = new ICommand() {
+            OMRInstrument insertedInstrument;
+            Label insertedLabel;
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                insertedInstrument = instrument;
+                omrPage.addInstrument(instrument);
+                doExecute();
+            }
+
+            private void doExecute() {
+                insertedLabel = new Label(instrument.getName());
+                labels.getChildren().add(insertedLabel);
+
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                omrPage.removeInstrument(instrument);
+                labels.getChildren().remove(insertedLabel);
+            }
+
+            @Override
+            public void redo() throws Exception {
+                doExecute();
+            }
+
+            @Override
+            public String getEventName() {
+                return "Add instrument";
+            }
+
+            @Override
+            public String toString() {
+                return "Add instrument " + insertedInstrument;
+            }
+        };
+
+        try {
+            pagesController.getCommandManager().executeCommand(command);
+        } catch (IM3Exception e) {
+            ShowError.show(OMRApp.getMainStage(), "Cannot add instrument", e);
+        }
+
     }
 
     private Rectangle createDropbox() {
