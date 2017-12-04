@@ -8,6 +8,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -69,7 +70,7 @@
     </MenuBar>
       <BorderPane fx:id="borderPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <left>
-            <ToolBar orientation="VERTICAL" prefHeight="371.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <ToolBar fx:id="toolbar" orientation="VERTICAL" prefHeight="371.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <items>
                   <ToggleButton fx:id="tbPages" mnemonicParsing="false" onAction="#handleOpenPages" text="Pages">
                      <toggleGroup>
@@ -79,6 +80,9 @@
                </items>
             </ToolBar>
          </left>
+         <center>
+            <AnchorPane fx:id="centerPane" BorderPane.alignment="CENTER" />
+         </center>
       </BorderPane>
   </children>
 </VBox>

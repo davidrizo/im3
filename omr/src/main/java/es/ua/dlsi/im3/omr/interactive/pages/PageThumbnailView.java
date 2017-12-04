@@ -27,6 +27,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -51,6 +52,7 @@ public class PageThumbnailView extends BorderPane {
      */
     Rectangle leftDropbox;
     Rectangle rightDropbox;
+    Line highlightLine;
 
     IOpenPageHandler openPageHandler;
     IDeletePageHandler deletePageHandler;
@@ -64,7 +66,6 @@ public class PageThumbnailView extends BorderPane {
         imageView = new ImageView(image);
         imageView.setFitHeight(150);
         imageView.setFitWidth(150);
-        imageView.setStyle("-fx-background-color: black");
         imageView.setPreserveRatio(true);
         labels  = new VBox(5);
         labels.setAlignment(Pos.CENTER);
@@ -77,6 +78,11 @@ public class PageThumbnailView extends BorderPane {
         updateLabel();
         setBottom(labels);
         setCenter(mainPane);
+
+        highlightLine = new Line(0, 0, imageView.getFitWidth(), 0);
+        highlightLine.setStroke(Color.RED);
+        highlightLine.setStrokeWidth(5);
+        setTop(highlightLine);
 
         leftDropbox = createDropbox();
         rightDropbox = createDropbox();
@@ -98,8 +104,7 @@ public class PageThumbnailView extends BorderPane {
         AnchorPane.setLeftAnchor(previewIcon, 20.0); //TODO
         AnchorPane.setTopAnchor(previewIcon, 10.0); //TODO
 
-
-
+        highlight(false);
     }
 
     private Node createPreviewIcon() {
@@ -371,5 +376,9 @@ public class PageThumbnailView extends BorderPane {
     @Override
     public String toString() {
         return omrPage.toString();
+    }
+
+    public void highlight(boolean highlight) {
+        highlightLine.setVisible(highlight);
     }
 }

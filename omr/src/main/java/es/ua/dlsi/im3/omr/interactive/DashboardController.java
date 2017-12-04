@@ -5,7 +5,11 @@ import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.omr.interactive.documentanalysis.DocumentAnalysisController;
+import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
+import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
+import es.ua.dlsi.im3.omr.interactive.pages.PageThumbnailView;
 import es.ua.dlsi.im3.omr.interactive.pages.PagesController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,14 +19,20 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import sun.plugin.javascript.navig.Anchor;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DashboardController implements Initializable {
@@ -36,13 +46,21 @@ public class DashboardController implements Initializable {
     MenuItem menuItemRedo;
 
     @FXML
+    ToolBar toolbar;
+
+    @FXML
     ToggleGroup tgDashboardButtons;
 
     @FXML
     ToggleButton tbPages;
 
+    ToggleButton tbSelectedPage;
+
     @FXML
     BorderPane borderPane;
+
+    @FXML
+    AnchorPane centerPane;
 
     StringProperty title;
 
@@ -50,8 +68,9 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tbPages.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull()
-                .or(tbPages.selectedProperty()));
+        toolbar.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
+
+        tbPages.disableProperty().bind(tbPages.selectedProperty());
 
         menuSave.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
         //menuProject.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
@@ -129,11 +148,10 @@ public class DashboardController implements Initializable {
     }
 
     private void openPagesView() {
-        tgDashboardButtons.selectToggle(tbPages); // it opens the page
+        tgDashboardButtons.selectToggle(tbPages);
         try {
             Pair<PagesController, Parent> pair = ViewLoader.loadView("pages.fxml");
-            borderPane.setCenter(pair.getY());
-            pair.getX().setCommandManager(commandManager);
+            setMainPane(pair.getY());
             pair.getX().setDashboard(this);
             //pair.getX().initMenus(menuItemUndo, menuItemRedo);
         } catch (IOException e) {
@@ -182,5 +200,53 @@ public class DashboardController implements Initializable {
                 OMRApp.getMainStage().close();
             }
         }
+    }
+
+    public void openPage(PageThumbnailView pageView) {
+        try {
+            if (pageView.getOmrPage().getInstrumentList().isEmpty()) {
+                throw new IM3Exception("No instrument assigned yet to the page");
+            }
+
+            // ask for all pages containing the same instruments in this page view
+            List<OMRPage> pagesToOpen = new ArrayList<>();
+            for (OMRPage page: OMRModel.getInstance().getCurrentProject().pagesProperty()) {
+                for (OMRInstrument instrument: pageView.getOmrPage().getInstrumentList()) {
+                    if (page.containsInstrument(instrument)) {
+                        pagesToOpen.add(page);
+                        break;
+                    }
+                }
+            }
+
+            if (pagesToOpen.isEmpty()) {
+                throw new IM3Exception("At least this page (" + pageView.getOmrPage() + ") should be opened");
+            }
+
+            tbSelectedPage = new ToggleButton(pageView.getOmrPage().toString());
+            tgDashboardButtons.getToggles().add(tbSelectedPage);
+            toolbar.getItems().add(tbSelectedPage);
+            tgDashboardButtons.selectToggle(tbSelectedPage);
+
+            Pair<DocumentAnalysisController, Parent> pair = ViewLoader.loadView("documentanalysis.fxml");
+            setMainPane(pair.getY());
+            pair.getX().setDashboard(this);
+            pair.getX().setPages(pageView.getOmrPage(), pagesToOpen);
+        } catch (Exception e) {
+            ShowError.show(OMRApp.getMainStage(), "Cannot load pages screen", e);
+        }
+    }
+
+    private void setMainPane(Node node) {
+        centerPane.getChildren().clear();
+        centerPane.getChildren().add(node);
+        AnchorPane.setTopAnchor(node, 0.0);
+        AnchorPane.setLeftAnchor(node, 0.0);
+        AnchorPane.setBottomAnchor(node, 0.0);
+        AnchorPane.setRightAnchor(node, 0.0);
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 }

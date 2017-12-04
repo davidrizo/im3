@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.interactive.pages;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.command.ICommand;
 import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
@@ -11,11 +12,15 @@ import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
 import es.ua.dlsi.im3.omr.interactive.DashboardController;
 import es.ua.dlsi.im3.omr.interactive.OMRApp;
+import es.ua.dlsi.im3.omr.interactive.ViewLoader;
+import es.ua.dlsi.im3.omr.interactive.documentanalysis.DocumentAnalysisController;
+import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -39,7 +44,6 @@ public class PagesController implements Initializable {
     State state;
 
     HashMap<OMRPage, PageThumbnailView> pagePageThumbnailViewHashMap;
-    private CommandManager commandManager;
     private DashboardController dashboard;
 
     @Override
@@ -49,14 +53,6 @@ public class PagesController implements Initializable {
         pagePageThumbnailViewHashMap = new HashMap<>();
         loadProjectPages();
         listenToPagesChanges();
-    }
-
-    public void setCommandManager(CommandManager commandManager) {
-        this.commandManager = commandManager;
-    }
-
-    public CommandManager getCommandManager() {
-        return commandManager;
     }
 
     private void listenToPagesChanges() {
@@ -157,6 +153,15 @@ public class PagesController implements Initializable {
                 doOpenPage(pageView);
             }
         });
+
+        pageView.setOnMouseEntered(event -> {
+            pageView.highlight(true);
+        });
+
+        pageView.setOnMouseExited(event -> {
+            pageView.highlight(false);
+        });
+
     }
 
     /**
@@ -265,7 +270,7 @@ public class PagesController implements Initializable {
             }
         };
         try {
-            commandManager.executeCommand(command);
+            dashboard.getCommandManager().executeCommand(command);
         } catch (IM3Exception e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot move", e);
         }
@@ -338,7 +343,7 @@ public class PagesController implements Initializable {
                     }
                 };
 
-                commandManager.executeCommand(command);
+                dashboard.getCommandManager().executeCommand(command);
             } catch (IM3Exception e) {
                 e.printStackTrace();
                 ShowError.show(OMRApp.getMainStage(), "Cannot add image", e);
@@ -385,7 +390,7 @@ public class PagesController implements Initializable {
                         return "Delete " + pageView.toString();
                     }
                 };
-                commandManager.executeCommand(command);
+                dashboard.getCommandManager().executeCommand(command);
             } catch (IM3Exception e) {
                 ShowError.show(OMRApp.getMainStage(), "Cannot delete page", e);
             }
@@ -393,7 +398,7 @@ public class PagesController implements Initializable {
     }
 
     private void doOpenPage(PageThumbnailView pageView) {
-        ShowMessage.show(null, "ABRIR");
+        dashboard.openPage(pageView);
     }
 
 
@@ -403,5 +408,9 @@ public class PagesController implements Initializable {
 
     public DashboardController getDashboard() {
         return dashboard;
+    }
+
+    public CommandManager getCommandManager() {
+        return dashboard.getCommandManager();
     }
 }

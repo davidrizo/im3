@@ -168,4 +168,8 @@ public class OMRPage {
     public String toString() {
         return imageRelativeFileName + ", order " + order;
     }
+
+    public boolean containsInstrument(OMRInstrument instrument) {
+        return instrumentList.contains(instrument);
+    }
 }
