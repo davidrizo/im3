@@ -134,6 +134,13 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private Integer keyTransposeDiatonic;
 	private KeySignature lastKey;
 	private String measureRest;
+    // The first measure containing the multimeasure rest has the element attributes/measure-style/multiple-rest and the rest, the other ones contain a rest. We just add an element
+    private Integer multipleRest;
+    private int pendingMultirests;
+    /**
+     * Finale exports the multimeasure rests different in each voice. It just uses the multiple-rest attribute for the first part!!
+     */
+    private HashMap<Time, Integer> pendingMultirestsPerMeasure;
 	private TimeSignature lastTimeSignature;
 
 	@Override
@@ -141,6 +148,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		song = new ScoreSong();
 		currentDivisions = null;
 		partNumbers  = new HashMap<>();
+        pendingMultirestsPerMeasure = new HashMap();
 		hierarchicalIdGenerator = new HierarchicalIDGenerator();
 		//partGroups = new ArrayDeque<>();
 	}
@@ -283,7 +291,12 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			case "measure":
 				currentMeasureNumber = getOptionalAttribute(attributes, "number");
 				//currentMeasureTime = getCurrentTime(getDefaultStaff(), getDefaultVoice());
-				measureElementsToInsert = new TreeMap<>();				
+				measureElementsToInsert = new TreeMap<>();
+
+                multipleRest = pendingMultirestsPerMeasure.get(measureStartTime); // Finale adds just the multimeasure to the first voice
+                if (multipleRest != null) {
+                    pendingMultirests = multipleRest;
+                }
 				break;
 			case "print":
 			    String newSystem = getOptionalAttribute(attributes, "new-system");
@@ -730,6 +743,11 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			case "octave-change":
 				clefOctaveChange = Integer.parseInt(content);
 				break;
+            case "multiple-rest":
+                multipleRest = Integer.parseInt(content);
+                pendingMultirests = multipleRest;
+                pendingMultirestsPerMeasure.put(measureStartTime, multipleRest);
+                break;
 			}
 		} catch (Exception e) {
 			throw new ImportException(e);
@@ -847,7 +865,35 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					lastStaff.addLayer(layer);	
 				}*/		
 				Measure currentMeasure = ImportFactories.processMeasure(song, measureStartTime, currentMeasureNumber);
+
+				if (multipleRest != null) {
+                    if (lastTimeSignature == null) {
+                        throw new ImportException("Cannot import a multiple rest without a time signature");
+                    }
+
+                    for (Staff staff : currentScorePart.getStaves()) {
+                        SimpleMultiMeasureRest multiMeasureRest = new SimpleMultiMeasureRest(lastTimeSignature.getDuration(), multipleRest);
+                        staff.addCoreSymbol(multiMeasureRest);
+
+                        // add to the first layer
+                        ScoreLayer layer;
+                        if (currentScorePart.getLayers().isEmpty()) {
+                            layer = getOrCreateLayer(staff, lastVoiceNumber);
+                        } else {
+                            layer = currentScorePart.getLayers().iterator().next();
+                        }
+                        layer.add(multiMeasureRest);
+                    }
+                    currentMeasure.setEndTime(measureStartTime.add(lastTimeSignature.getDuration()));
+                    multipleRest = null;
+                }
+
 				processMeasureElements(currentMeasure);
+
+                if (pendingMultirests > 0) {
+                    pendingMultirests--;
+                }
+                measureRest = null;
 				break;
 			case "part":
 				/*8 mayo if (lastStaff == null) {
@@ -962,16 +1008,19 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		
 		if (context == eContexts.eRest) {
 			if (measureRest != null && measureRest.equals("yes")) {
-				if (lastTimeSignature == null) {
-					throw new IM3Exception("There is not a lastTimeSignature");
-				}
-				SimpleMeasureRest mrest;
-				if (lastFigure != null) {
-					mrest = new SimpleMeasureRest(lastFigure, lastDuration);
-				} else {
-					mrest = new SimpleMeasureRest(Figures.WHOLE, lastDuration);
-				}				
-				lastContainer.add(mrest);								
+                    if (pendingMultirests == 0) {
+                        if (lastTimeSignature == null) {
+                            throw new IM3Exception("There is not a lastTimeSignature");
+                        }
+
+                        SimpleMeasureRest mrest;
+                        if (lastFigure != null) {
+                            mrest = new SimpleMeasureRest(lastFigure, lastDuration);
+                        } else {
+                            mrest = new SimpleMeasureRest(Figures.WHOLE, lastDuration);
+                        }
+                        lastContainer.add(mrest);
+                    }
 			} else {
 				SimpleRest rest;
 				if (lastFigure != null) {
@@ -1360,7 +1409,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							} else if (atom instanceof SimpleMeasureRest) {
 								pendingMRestsToSetDuration.add((SimpleMeasureRest) atom);
 								resetTimes.add(sv);
-							}
+							} else if (atom instanceof SimpleMultiMeasureRest) {
+                                resetTimes.add(sv);
+                            }
 							else {
 								throw new ImportException("Whole measure figures are only implemented for measure rests, and this is a " + atom.getClass() + ", with expected duration");
 							}
@@ -1396,8 +1447,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				maxMeasureTime = Time.max(maxMeasureTime, sv.getTime());
 			}
 		}
-		
-		if (measureStartTime.compareTo(maxMeasureTime) < 0) {
+
+		// omitted (with hasEndTime) for multimeasure rests
+		if (!currentMeasure.hasEndTime() && measureStartTime.compareTo(maxMeasureTime) < 0) {
 			currentMeasure.setEndTime(maxMeasureTime);
 		}
 		
@@ -1429,6 +1481,14 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			}
 			measureRest.setDuration(measureDuration);
 		}
+
+		if (!currentMeasure.hasEndTime()) {
+		    if (lastTimeSignature == null) { //TODO Ver si esto está bien
+		        throw new ImportException("Last time signature is null and current measure has not end time");
+            }
+            currentMeasure.setEndTime(currentMeasure.getTime().add(lastTimeSignature.getDuration()));
+        }
+
 		measureStartTime = currentMeasure.getEndTime();
 		for (StaffAndVoice rt: resetTimes) {
 			rt.setTime(measureStartTime);
@@ -1478,7 +1538,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				if (diff < 0) {
 					song.setAnacrusisOffset(measureDuration.substract(maxEndTime));
 				} else if (diff > 0) {
-					throw new ImportException("Fist measure duration based on atom is " + maxEndTime + " and expected first measure duration based on time signature is " + measureDuration);
+					// throw new ImportException("Fist measure duration based on atom is " + maxEndTime + " and expected first measure duration based on time signature is " + measureDuration);
+                    // no-op For multimeasure rests starting work
 				} // else normal measure
 			}
 

@@ -649,7 +649,10 @@ public class XMLExporterImporterTest {
 			assertEquals("Staves", 3, song.getStaves().size());
 			assertEquals("Measures", 4, song.getNumMeasures());
 			for (Staff staff: song.getStaves()) {
-				System.out.println(staff.getAtoms());
+                //System.out.println("STAFF: " + staff);
+                //for (Atom atom: staff.getAtoms()) {
+                //    System.out.println(atom.getClass() + "  " + atom.getTime());
+                //}
 				assertEquals("Atoms", 3, staff.getAtoms().size());
 				SimpleMultiMeasureRest smr = (SimpleMultiMeasureRest) staff.getAtoms().get(1);
 				assertEquals("Multimeasure number of measures", 2, smr.getNumMeasures());
@@ -665,13 +668,41 @@ public class XMLExporterImporterTest {
 	@Test
 	public void multimeasureRest() throws Exception {
 		doTest(XMLExporterImporterTest::assertMultimeasureRest, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest.mei")));
-
+        doTest(XMLExporterImporterTest::assertMultimeasureRest, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest.xml")));
 		//TODO Import from MusicXML        <measure-style>
         //TODO  <multiple-rest>2</multiple-rest>
         //TODO</measure-style>
-
-        //doTest(XMLExporterImporterTest::assertMultimeasureRest, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest.xml")));
 	}
+
+
+    // ------------------------------------------------------------------------------------------
+    private static Void assertMultimeasureRestBeginning(ScoreSong song) {
+        try {
+            assertEquals("Staves", 1, song.getStaves().size());
+            assertEquals("Measures", 7, song.getNumMeasures());
+            Staff staff = song.getStaves().get(0);
+            //for (Atom atom: staff.getAtoms()) {
+            //    System.out.println(atom.getClass());
+            //}
+            assertEquals("Atoms", 4, staff.getAtoms().size());
+            SimpleMultiMeasureRest smr = (SimpleMultiMeasureRest) staff.getAtoms().get(0);
+            assertEquals("Multimeasure number of measures", 6, smr.getNumMeasures());
+            assertEquals("Duration", 18, smr.getQuarterRatioDuration(), 0.001);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+
+    @Test
+    public void multimeasureRestBeginning() throws Exception {
+        doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.mei")));
+        doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.xml")));
+    }
+
+
+
 
     // ------------------------------------------------------------------------------------------
     private static Void assertAccidentals(ScoreSong song) {
@@ -774,7 +805,7 @@ public class XMLExporterImporterTest {
 		doTest(XMLExporterImporterTest::assertMelisma, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/melisma.xml")));
 	}
 
-	// ------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 	private static Void assertSimpleBeam(ScoreSong song) {
 		try {
 			assertEquals(1, song.getStaves().size());
@@ -810,6 +841,8 @@ public class XMLExporterImporterTest {
 		doTest(XMLExporterImporterTest::assertSimpleBeam, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.mei")));
 		//doTest(XMLExporterImporterTest::assertSimpleBeam, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.xml")));
 	}
+
+
 
 	//TODO Grace notes, slurs, tuplet dentro de tuplet
 	// tuplet con elementos en distintos staves, tuplet con acordes con notas en distintos staves

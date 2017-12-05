@@ -1536,7 +1536,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			case "measure":
 			    //TODO Check there are not any notes or rests
                 if (pendingMeasureRestsToSetDuration != null && !pendingMeasureRestsToSetDuration.isEmpty()
-                && pendingMultiMeasureRestsToSetDuration != null && !pendingMultiMeasureRestsToSetDuration.isEmpty()) {
+                    && pendingMultiMeasureRestsToSetDuration != null && !pendingMultiMeasureRestsToSetDuration.isEmpty()) {
                     throw new ImportException("Cannot create both multimeasure rests and measure rests");
                 }
 
@@ -1552,11 +1552,18 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 								measureDuration = ts.getDuration();
 								currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
                             } else {
-                                if (maximumVoicesTime.isZero()) {
-                                    throw new ImportException("Cannot infer the measure duration for mRest or multiRest " + mrest);
+                                if (maximumVoicesTime.isZero()) { // for multimeasure rests starting the staff
+                                    TimeSignature ts = mrest.getStaff().getRunningTimeSignatureAt(mrest);
+                                    if (ts == null) {
+                                        throw new ImportException("Cannot infer the measure duration without time signatures at element " + mrest);
+                                    }
+                                    measureDuration = ts.getDuration();
+                                    currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
+                                    //throw new ImportException("Cannot infer the measure duration for mRest or multiRest " + mrest);
+                                } else {
+                                    measureDuration = maximumVoicesTime.substract(currentMeasure.getTime());
+                                    currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
                                 }
-                                measureDuration = maximumVoicesTime.substract(currentMeasure.getTime());
-                                currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
                             }
                             mrest.setDuration(measureDuration);
                             lastVoice = mrest.getLayer();
