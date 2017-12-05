@@ -23,6 +23,9 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * @deprecated
+ */
 public class OMRMainController implements Initializable {
     @FXML
     ListView<OMRPage> lvPages;

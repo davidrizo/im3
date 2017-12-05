@@ -18,7 +18,7 @@
       </ToolBar>
    </top>
    <center>
-      <ScrollPane BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
          <content>
             <VBox fx:id="vboxPages" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                <padding>

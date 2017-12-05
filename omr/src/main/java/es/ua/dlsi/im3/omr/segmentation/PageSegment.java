@@ -6,23 +6,23 @@ import es.ua.dlsi.im3.omr.traced.Coordinate;
  * Currently we use rectangular regions
  */
 public class PageSegment {
-    SegmentType segmentType;
+    RegionType segmentType;
     Coordinate leftTop;
     Coordinate bottomRight;
 
-    public PageSegment(SegmentType segmentType, Coordinate leftTop, Coordinate bottomRight) {
+    public PageSegment(RegionType segmentType, Coordinate leftTop, Coordinate bottomRight) {
         this.segmentType = segmentType;
         this.leftTop = leftTop;
         this.bottomRight = bottomRight;
     }
 
-    public PageSegment(SegmentType segmentType, int leftTopX, int leftTopY, int rightBottomX, int rightBottomY) {
+    public PageSegment(RegionType segmentType, int leftTopX, int leftTopY, int rightBottomX, int rightBottomY) {
         this.segmentType = segmentType;
         this.leftTop = new Coordinate(leftTopX, leftTopY);
         this.bottomRight = new Coordinate(rightBottomX, rightBottomY);
     }
 
-    public SegmentType getSegmentType() {
+    public RegionType getSegmentType() {
         return segmentType;
     }
 

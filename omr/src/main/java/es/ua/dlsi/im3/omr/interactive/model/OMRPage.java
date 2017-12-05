@@ -22,6 +22,7 @@ public class OMRPage {
 
     int order;
     Set<OMRInstrument> instrumentList;
+    List<OMRRegion> regionList;
 
     /**
      * Used for unit tests
@@ -49,6 +50,7 @@ public class OMRPage {
 
     public OMRPage(OMRProject omrProject, File imagesFolder, String imageRelativeFileName, ScoreSong scoreSong) throws IM3Exception {
         this.instrumentList = new TreeSet<>(); // we mantain it ordered
+        this.regionList = new ArrayList<>();
         this.imagesFolder = imagesFolder;
         this.omrProject = omrProject;
         this.imageRelativeFileName = imageRelativeFileName;
@@ -118,6 +120,9 @@ public class OMRPage {
         return imageRelativeFileName;
     }
 
+    public Set<OMRInstrument> getInstrumentList() {
+        return instrumentList;
+    }
     public void addInstrument(OMRInstrument instrument) {
         this.instrumentList.add(instrument);
     }
@@ -125,9 +130,19 @@ public class OMRPage {
         this.instrumentList.remove(instrument);
     }
 
-    public Set<OMRInstrument> getInstrumentList() {
-        return instrumentList;
+
+    public List<OMRRegion> getRegionList() {
+        return regionList;
     }
+    public void addRegion(OMRRegion region) {
+        this.regionList.add(region);
+    }
+    public void removeRetion(OMRRegion region) {
+        this.regionList.remove(region);
+    }
+
+
+
 
     public int getOrder() {
         return order;

@@ -10,17 +10,19 @@ public class Page {
     List<Staff> staves;
     int order;
     Set<Instrument> instrumentList;
-
+    List<Region> regions;
 
     public Page() {
         staves = new ArrayList<>();
         instrumentList = new TreeSet<>();
+        regions = new ArrayList<>();
     }
 
     public Page(String imageRelativeFileName) {
         this.imageRelativeFileName = imageRelativeFileName;
         staves = new ArrayList<>();
         instrumentList = new TreeSet<>();
+        regions = new ArrayList<>();
     }
 
     public String getImageRelativeFileName() {
@@ -53,5 +55,9 @@ public class Page {
 
     public void setInstrumentList(Set<Instrument> instrumentList) {
         this.instrumentList = instrumentList;
+    }
+
+    public List<Region> getRegions() {
+        return regions;
     }
 }

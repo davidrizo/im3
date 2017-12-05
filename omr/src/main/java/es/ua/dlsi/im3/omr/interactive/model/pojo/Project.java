@@ -3,6 +3,9 @@ package es.ua.dlsi.im3.omr.interactive.model.pojo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * We use a parallel hierarchy just for saving using XStream making easier to it this way
+ */
 public class Project {
     List<Page> pages;
     List<Instrument> instruments;

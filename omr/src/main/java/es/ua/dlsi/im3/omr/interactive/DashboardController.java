@@ -233,6 +233,7 @@ public class DashboardController implements Initializable {
             pair.getX().setDashboard(this);
             pair.getX().setPages(pageView.getOmrPage(), pagesToOpen);
         } catch (Exception e) {
+            e.printStackTrace();
             ShowError.show(OMRApp.getMainStage(), "Cannot load pages screen", e);
         }
     }

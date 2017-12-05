@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 /**
+ * @deprecated
  * Used to encapsulate the interaction with the image view to simplify the OMRController class
  */
 public class PageInteraction {

@@ -30,7 +30,6 @@ public class OMRApp extends Application {
         //Parent root = FXMLLoader.load(getClass().getResource("/fxml/omrmainmensuraltagger.fxml"));
 
         //Parent root = FXMLLoader.load(getClass().getResource("/fxml/omrmain.fxml"));
-        //Parent root = FXMLLoader.load(getClass().getResource("/fxml/pages.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
         scene.setRoot(root);
         primaryStage.setMaximized(true);
