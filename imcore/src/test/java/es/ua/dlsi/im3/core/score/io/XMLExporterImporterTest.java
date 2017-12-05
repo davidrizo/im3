@@ -805,6 +805,63 @@ public class XMLExporterImporterTest {
 		doTest(XMLExporterImporterTest::assertMelisma, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/melisma.xml")));
 	}
 
+
+    // ------------------------------------------------------------------------------------------
+    private static Void assertNaturals(ScoreSong song) {
+        try {
+            assertEquals(1, song.getStaves().size());
+            assertEquals("Key signature with 2 sharps", 2, song.getUniqueKeyWithOnset(Time.TIME_ZERO).getFifths());
+            List<AtomPitch> atomPitches = song.getStaves().get(0).getAtomPitches();
+            assertEquals(6, atomPitches.size());
+
+            PitchClasses [] expected = new PitchClasses[] {
+              PitchClasses.F_SHARP, PitchClasses.F, PitchClasses.F_SHARP, PitchClasses.F, PitchClasses.F_SHARP, PitchClasses.F_SHARP
+            };
+
+            for (int i=0; i<atomPitches.size(); i++) {
+                assertEquals("Pitch #" + i, expected[i].getPitchClass(), atomPitches.get(i).getScientificPitch().getPitchClass());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+    @Test
+    public void naturals() throws Exception {
+        doTest(XMLExporterImporterTest::assertNaturals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/naturals.mei")));
+        doTest(XMLExporterImporterTest::assertNaturals, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/naturals.xml")));
+    }
+
+    // ------------------------------------------------------------------------------------------
+    private static Void assertNaturals2(ScoreSong song) {
+        try {
+            assertEquals(1, song.getStaves().size());
+            assertEquals("Key signature with 4 flats", -4, song.getUniqueKeyWithOnset(Time.TIME_ZERO).getFifths());
+            List<AtomPitch> atomPitches = song.getStaves().get(0).getAtomPitches();
+            assertEquals(8, atomPitches.size());
+
+            PitchClasses [] expected = new PitchClasses[] {
+                    PitchClasses.G, PitchClasses.A_SHARP, PitchClasses.C_DSHARP, PitchClasses.A_DFLAT,
+                    PitchClasses.C_FLAT, PitchClasses.C, PitchClasses.G, PitchClasses.G
+            };
+
+            for (int i=0; i<atomPitches.size(); i++) {
+                assertEquals("Pitch #" + i, expected[i].getPitchClass(), atomPitches.get(i).getScientificPitch().getPitchClass());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+    @Test
+    public void naturals2() throws Exception {
+        doTest(XMLExporterImporterTest::assertNaturals2, importMEI(TestFileUtils.getFile("/testdata/core/score/io/naturals2.mei")));
+        doTest(XMLExporterImporterTest::assertNaturals2, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/naturals2.xml")));
+    }
     // ------------------------------------------------------------------------------------------
 	private static Void assertSimpleBeam(ScoreSong song) {
 		try {

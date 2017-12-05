@@ -637,7 +637,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      * @throws IM3Exception
      */
 	public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow(Time fromTime, Time toTime) throws IM3Exception {
-		TreeMap<DiatonicPitch, ScientificPitch> alteredDiatonicPitchInBar = new TreeMap<>();
+		TreeMap<DiatonicPitchAndOctave, PitchClass> alteredDiatonicPitchInBar = new TreeMap<>();
 		TreeMap<DiatonicPitch, PitchClass> alteredDiatonicPitchInKeySignature = new TreeMap<>();
         HashMap<AtomPitch, Accidentals> result = new HashMap<>();
 		KeySignature currentKeySignature = null; // getRunningKeySignatureAt(fromTime);
@@ -671,18 +671,45 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         return result;
 	}
 
-    void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar,
+    void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitchAndOctave, PitchClass> alteredNoteNamesInBar,
 											TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature,
                                             HashMap<AtomPitch, Accidentals> result, AtomPitch ps) throws IM3Exception {
-		ScientificPitch pc = ps.getScientificPitch();
-		if (!alteredNoteNamesInBar.containsValue(pc)) { // if not previously altered
-			Accidentals requiredAccidental = computeRequiredAccidental(alteredNoteNamesInKeySignature,
-					pc.getPitchClass());
 
-            result.put(ps, requiredAccidental);
-		}
+	    ScientificPitch pc = ps.getScientificPitch();
+        DiatonicPitchAndOctave diatonicPitchAndOctave = new DiatonicPitchAndOctave(pc.getPitchClass().getNoteName(), pc.getOctave());
+
+	    PitchClass alteredNoteInBar = alteredNoteNamesInBar.get(diatonicPitchAndOctave);
+	    if (alteredNoteInBar == null) {
+	        // check key signature
+            Accidentals requiredAccidental = computeRequiredAccidental(alteredNoteNamesInKeySignature,
+                    pc.getPitchClass());
+
+            if (requiredAccidental != null) {
+                result.put(ps, requiredAccidental);
+                alteredNoteNamesInBar.put(diatonicPitchAndOctave, pc.getPitchClass());
+            }
+        } else {
+            if (!alteredNoteInBar.equals(pc.getPitchClass())) {
+                // TODO: 5/12/17 Mensural # is a natural of previous b
+                Accidentals realAccidental = pc.getPitchClass().getAccidental(); // the one that will sound, not the represented
+                Accidentals writtenAccidental;
+                if (realAccidental == null || realAccidental == Accidentals.NATURAL) {
+                    writtenAccidental = Accidentals.NATURAL;
+                } else {
+                    writtenAccidental = realAccidental;
+                }
+                result.put(ps, writtenAccidental);
+                alteredNoteNamesInBar.put(diatonicPitchAndOctave, pc.getPitchClass()); // if will change the previous value
+            }
+        }
 	}
 
+    /**
+     *
+     * @param alteredSet
+     * @param pc
+     * @return null if no explicit accidental is required
+     */
 	private Accidentals computeRequiredAccidental(TreeMap<DiatonicPitch, PitchClass> alteredSet, PitchClass pc) {
 		// needs accidental?
 		Accidentals requiredAccidental = null;

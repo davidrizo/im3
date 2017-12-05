@@ -1341,6 +1341,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		case "n":
 			return Accidentals.NATURAL;
 		case "ss":
+		case "x":
 			return Accidentals.DOUBLE_SHARP;
 		case "ff":
 			return Accidentals.DOUBLE_FLAT;
