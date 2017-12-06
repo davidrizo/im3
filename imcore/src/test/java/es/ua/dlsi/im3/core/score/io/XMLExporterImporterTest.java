@@ -862,6 +862,49 @@ public class XMLExporterImporterTest {
         doTest(XMLExporterImporterTest::assertNaturals2, importMEI(TestFileUtils.getFile("/testdata/core/score/io/naturals2.mei")));
         doTest(XMLExporterImporterTest::assertNaturals2, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/naturals2.xml")));
     }
+
+    // ------------------------------------------------------------------------------------------
+    private static Void assertFermateTrills(ScoreSong song) {
+        try {
+            assertEquals(1, song.getStaves().size());
+            Staff staff = song.getStaves().get(0);
+            List<Atom> atoms  = song.getStaves().get(0).getAtoms();
+            assertEquals(3, atoms.size());
+
+            assertEquals("Fermate", 2, staff.getFermate().size());
+            Fermate f0 = staff.getFermateWithOnset(Time.TIME_ZERO);
+            assertNotNull("First fermate", f0);
+            assertEquals(1, f0.getFermate().size());
+            assertNotNull("First fermate position", f0.getFermata(PositionAboveBelow.BELOW));
+
+            Fermate f1 = staff.getFermateWithOnset(new Time(1));
+            assertNotNull("Second fermate", f1);
+            assertEquals(1, f1.getFermate().size());
+            assertNotNull("Second fermate position", f1.getFermata(PositionAboveBelow.ABOVE));
+
+            int count = 0;
+            int [] expectedTrillBeats = new int[] {0, 2};
+            List<StaffMark> marks = staff.getMarksOrderedByTime();
+            for (int i=0; i<marks.size(); i++) {
+                if (marks.get(i) instanceof Trill) {
+                    assertEquals("Trill #" + i + " time", new Time(expectedTrillBeats[count]),marks.get(i).getTime());
+                    count++;
+                }
+            }
+            assertEquals("Trills", 2, count);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+    @Test
+    public void fermateTrills() throws Exception {
+	    // the .mei has been exported from Sibelius and modified manually to encode the fermate in to different ways
+        doTest(XMLExporterImporterTest::assertFermateTrills, importMEI(TestFileUtils.getFile("/testdata/core/score/io/fermata_trill.mei")));
+        doTest(XMLExporterImporterTest::assertFermateTrills, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/fermata_trill.xml")));
+    }
     // ------------------------------------------------------------------------------------------
 	private static Void assertSimpleBeam(ScoreSong song) {
 		try {

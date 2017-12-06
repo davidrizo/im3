@@ -18,6 +18,7 @@ package es.ua.dlsi.im3.core.score.io.musicxml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.core.score.*;
 import org.apache.commons.lang3.math.Fraction;
 import org.xml.sax.SAXException;
@@ -94,9 +96,12 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	
 	String lastTieNumber;
 	String lastTieType;
+    private PositionAboveBelow lastFermataPosition = null;
+    private ArrayList<Pair<Atom, PositionAboveBelow>> pendingFermate; // don't use HashMap because atoms have not time yet
+    private PositionAboveBelow lastTrillPosition;
+    private ArrayList<Pair<Atom, PositionAboveBelow>> pendingTrills; // don't use HashMap because atoms have not time yet
 
-
-	/**
+    /**
 	 * Used to disambiguate symbols like duration that can be found in note or backup symbols
 	 */
 	enum eContexts {
@@ -149,6 +154,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		currentDivisions = null;
 		partNumbers  = new HashMap<>();
         pendingMultirestsPerMeasure = new HashMap();
+        pendingFermate = new ArrayList<>();
+        pendingTrills = new ArrayList<>();
 		hierarchicalIdGenerator = new HierarchicalIDGenerator();
 		//partGroups = new ArrayDeque<>();
 	}
@@ -205,7 +212,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		String value;
 		String number;
 		Staff staff;
-		
+        PositionAboveBelow positionAboveBelow = PositionAboveBelow.UNDEFINED;
 		try {
 			switch (element) {
 			case "score-timewise":
@@ -499,11 +506,25 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					throw new ImportException("No current staff holder or current note");
 				}*/
 				break;
+            case "trill-mark":
+                //TODO position
+                lastTrillPosition = PositionAboveBelow.UNDEFINED;
+                break;
 			case "fermata":
-				/*type = getOptionalAttribute(attributes, "type");
-				AMFermata fermata = new AMFermata();
-				fermata.setPosition(getPositionForFermata(type));
-				currentNote.addMarker(fermata);*/
+			    type = getOptionalAttribute(attributes, "type");
+			    if (type != null) {
+                    switch (type) {
+                        case "inverted":
+                            positionAboveBelow = PositionAboveBelow.BELOW;
+                            break;
+                        case "upright":
+                            positionAboveBelow = PositionAboveBelow.ABOVE;
+                            break;
+                        default:
+                            throw new ImportException("Unkown fermata position: " + type);
+                    }
+                }
+                lastFermataPosition = positionAboveBelow;
 				break;
 			case "lyric":
                 String lastLyricNumberStr = getOptionalAttribute(attributes, "number");
@@ -863,7 +884,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				
 				/*for (ScoreLayer layer: layerNumbers.values()) {
 					lastStaff.addLayer(layer);	
-				}*/		
+				}*/
 				Measure currentMeasure = ImportFactories.processMeasure(song, measureStartTime, currentMeasureNumber);
 
 				if (multipleRest != null) {
@@ -1005,7 +1026,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				throw new ImportException("Missing duration and type");
 			}
 		}
-		
+
 		if (context == eContexts.eRest) {
 			if (measureRest != null && measureRest.equals("yes")) {
                     if (pendingMultirests == 0) {
@@ -1020,6 +1041,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
                             mrest = new SimpleMeasureRest(Figures.WHOLE, lastDuration);
                         }
                         lastContainer.add(mrest);
+                        lastAtom = mrest;
                     }
 			} else {
 				SimpleRest rest;
@@ -1028,8 +1050,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				} else {
 					rest = new SimpleRest(Figures.NO_DURATION, 0);
 				} 
-				lastContainer.add(rest);				
+				lastContainer.add(rest);
+                lastAtom = rest;
 			}
+
 		} else if (context == eContexts.eNote) {
 			ScientificPitch sp = new ScientificPitch(lastNoteName, lastAccidental, lastOctave);
 			SimpleNote simpleNote = new SimpleNote(lastFigure, dots, sp);
@@ -1105,10 +1129,19 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			} else {
 				throw new ImportException("Invalid type: " + lastAtom.getClass());
 			}
-		} else {
+
+        } else {
 			throw new IM3RuntimeException("Should not enter here");
 		}
-		
+
+        if (lastFermataPosition != null && lastAtom != null) {
+		    pendingFermate.add(new Pair(lastAtom, lastFermataPosition));
+        }
+
+        if (lastTrillPosition != null && lastAtom != null) {
+            pendingTrills.add(new Pair(lastAtom, lastTrillPosition));
+        }
+
 		// handle tuplet
 		if (tupletActualNotes != null) { 
 			if (context != eContexts.eChord) { // the first note has done this job
@@ -1188,6 +1221,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 		
 		tupletActualNotes = null;
+		lastFermataPosition = null;
+		lastTrillPosition = null;
 	}
 
 	private Syllabic parseSyllabic(String syllabic) throws ImportException {
@@ -1493,6 +1528,29 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		for (StaffAndVoice rt: resetTimes) {
 			rt.setTime(measureStartTime);
 		}
+
+		// fermate
+        for (Pair<Atom, PositionAboveBelow> entry: pendingFermate) {
+		    if (entry.getX() instanceof SingleFigureAtom) {
+                ((SingleFigureAtom) entry.getX()).getAtomFigure().getStaff().addFermata(((SingleFigureAtom) entry.getX()).getAtomFigure(), entry.getY());
+            } else {
+		        throw new ImportException("Cannot add fermate to non SingleFigureAtom: " + entry.getX().getClass());
+            }
+        }
+        pendingFermate.clear();
+
+		// trills
+        for (Pair<Atom, PositionAboveBelow> entry: pendingTrills) {
+            if (entry.getX() instanceof SingleFigureAtom) {
+                SingleFigureAtom sfa = ((SingleFigureAtom) entry.getX());
+                Trill trill = new Trill(entry.getX().getStaff(), entry.getY(), sfa);
+                sfa.getStaff().addMark(trill); //TODO Que no haya que ponerlo a mano en tantos sitios
+                sfa.addMark(trill);
+            } else {
+                throw new ImportException("Cannot add trill to non SingleFigureAtom: " + entry.getX().getClass());
+            }
+        }
+        pendingTrills.clear();
 	}
 	
 	//TODO Ver cambios de tonalidad o compás por enmedio ...

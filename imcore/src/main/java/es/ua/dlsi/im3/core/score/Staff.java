@@ -472,6 +472,21 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return marks;
 	}
 
+    public ArrayList<StaffMark> getMarksOrderedByTime() {
+	    ArrayList<StaffMark> ordered = new ArrayList<>(marks);
+	    ordered.sort(new Comparator<StaffMark>() {
+            @Override
+            public int compare(StaffMark o1, StaffMark o2) {
+                int diff = o1.getTime().substract(o2.getTime()).intValue();
+                if (diff == 0) {
+                    diff = o1.hashCode() - o2.hashCode();
+                }
+                return diff;
+            }
+        });
+        return marks;
+    }
+
 	public ArrayList<AttachmentInStaff<?>> getAttachments() {
 		return attachments;
 	}
@@ -846,5 +861,14 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
     public boolean hasPageBreak(Time time) {
         return pageBreaks.containsKey(time);
+    }
+
+    public Atom getAtomWithOnset(Time time) {
+        for (ITimedElementInStaff symbol: coreSymbols) {
+            if (symbol instanceof Atom && symbol.getTime().equals(time)) {
+                return (Atom) symbol;
+            }
+        }
+        return null;
     }
 }
