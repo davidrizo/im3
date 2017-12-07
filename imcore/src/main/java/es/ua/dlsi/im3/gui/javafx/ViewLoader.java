@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.interactive;
+package es.ua.dlsi.im3.gui.javafx;
 
 import es.ua.dlsi.im3.core.adt.Pair;
 import javafx.fxml.FXMLLoader;
