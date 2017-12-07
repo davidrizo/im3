@@ -53,7 +53,7 @@ public class LayoutTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.xml");
         ScoreSong song = importer.importSong(file);
-        PageLayout pageLayout = new PageLayout(song, LayoutFonts.bravura,
+        PageLayout pageLayout = new PageLayout(song, song.getStaves(), true, LayoutFonts.bravura,
                 new CoordinateComponent(1500), new CoordinateComponent(1000));
         systemBreaks(song, pageLayout, "manual_system_break_page");
 
@@ -130,7 +130,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
 
 
-        PageLayout layout = new PageLayout(song, LayoutFonts.capitan,
+        PageLayout layout = new PageLayout(song, song.getStaves(), true, LayoutFonts.capitan,
                 new CoordinateComponent(3000), new CoordinateComponent(1700));
         layout.layout();
 

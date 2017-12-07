@@ -9,14 +9,14 @@ public class SimpleMultiMeasureRest extends SimpleRest {
 	 */
 	int numMeasures;
 	public SimpleMultiMeasureRest(Time measureDuration, int numMeasures) {
-		this(Figures.WHOLE, measureDuration.multiplyBy(Fraction.getFraction(numMeasures, 1)), numMeasures);
+		this(Figures.WHOLE, measureDuration, numMeasures);
 	}
 	/**
 	 *
 	 * @param measureDuration
 	 */
 	public SimpleMultiMeasureRest(Figures figure, Time measureDuration, int numMeasures) {
-		super(figure, 0, measureDuration);
+		super(figure, 0, measureDuration.multiplyBy(Fraction.getFraction(numMeasures, 1)));
 		this.numMeasures = numMeasures;
 	}
 

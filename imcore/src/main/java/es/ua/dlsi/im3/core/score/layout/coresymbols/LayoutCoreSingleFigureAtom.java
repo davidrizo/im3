@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Not used for rests
  */
-public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom>  implements IConnectableWithSlur {
+public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom>  implements IConnectableWithSlurInStaff {
     private boolean stemUp;
     Group group;
     ArrayList<NotePitch> notePitches;

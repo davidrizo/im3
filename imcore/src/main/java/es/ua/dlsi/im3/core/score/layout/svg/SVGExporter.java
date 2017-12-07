@@ -95,7 +95,7 @@ public class SVGExporter implements IGraphicsExporter {
         }
     }
 
-        @Override
+    @Override
     public void exportLayout(File file, ScoreLayout layout)  throws ExportException {
             if (layout.getCanvases().size() != 1) {
                 throw new ExportException("Cannot export " + layout.getCanvases().size() + " canvases to SVG");
@@ -110,5 +110,17 @@ public class SVGExporter implements IGraphicsExporter {
             } catch (Exception e) {
                 throw new ExportException(e);
             }
+    }
+
+    public void exportLayout(File file, Canvas canvas, ScoreLayout layout) throws ExportException {
+        BufferedWriter out = null;
+        try {
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
+            out.write(exportLayout(canvas, layout));
+            out.close();
+        } catch (Exception e) {
+            throw new ExportException(e);
+        }
+
     }
 }

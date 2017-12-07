@@ -23,12 +23,12 @@ public class HorizontalLayout extends ScoreLayout {
      */
     Canvas canvas;
     public HorizontalLayout(ScoreSong song, LayoutFonts font, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
-        super(song, font);
+        super(song, song.getStaves(), font);
         canvas = new Canvas(width, height);
     }
 
     public HorizontalLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
-        super(song, fonts);
+        super(song, song.getStaves(), fonts);
         canvas = new Canvas(width, height);
     }
 
@@ -47,7 +47,7 @@ public class HorizontalLayout extends ScoreLayout {
         system = new LayoutStaffSystem();
 
         double nextY = LayoutConstants.TOP_MARGIN;
-        for (Staff staff: scoreSong.getStaves()) {
+        for (Staff staff: staves) {
             CoordinateComponent y = new CoordinateComponent(nextY);
             nextY += LayoutConstants.STAFF_SEPARATION;
             Coordinate leftTop = new Coordinate(null, y);
@@ -66,7 +66,9 @@ public class HorizontalLayout extends ScoreLayout {
 
             for (LayoutCoreSymbolInStaff coreSymbol: layoutSymbolsInStaff) {
                 coreSymbol.setLayoutStaff(layoutStaff);
-                layoutStaff.add(coreSymbol);
+                if (!(coreSymbol instanceof LayoutCoreCustos)) {
+                    layoutStaff.add(coreSymbol);
+                } // ommitted in this layout
             }
 
             layoutStaff.createNoteAccidentals();
@@ -75,18 +77,24 @@ public class HorizontalLayout extends ScoreLayout {
             //simultaneities.printDebug();
         }
 
-        createStaffConnectors();
-
-        for (Map.Entry<Staff, HashMap<Measure, LayoutCoreBarline>> entry: barlines.entrySet()) {
+        for (Map.Entry<Staff, List<LayoutCoreBarline>> entry: barlines.entrySet()) {
             Staff staff = entry.getKey();
-            for (LayoutCoreBarline layoutCoreBarline: entry.getValue().values()) {
+            for (LayoutCoreBarline barline: entry.getValue()) {
                 LayoutStaff layoutStaff = system.get(staff);
-                layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
-                canvas.getElements().add(layoutCoreBarline.getGraphics());
+                barline.setLayoutStaff(layoutStaff, layoutStaff);
+                canvas.getElements().add(barline.getGraphics());
+                system.addLayoutCoreBarline(barline);
             }
             //barline.setLayoutStaff(system.getBottomStaff(), system.getTopStaff());
         }
+
+
+        system.createStaffConnectors(connectors); //TODO ¿Qué pasa si un conector salta de página?
+
         doHorizontalLayout(simultaneities);
+
+        createConnectors();
+        createBeams();
 
         // add the connectors to the canvas
         for (LayoutConnector connector: connectors) {

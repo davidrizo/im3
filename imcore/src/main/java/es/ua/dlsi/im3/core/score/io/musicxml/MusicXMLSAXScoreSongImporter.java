@@ -18,6 +18,7 @@ package es.ua.dlsi.im3.core.score.io.musicxml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.core.score.*;
 import org.apache.commons.lang3.math.Fraction;
 import org.xml.sax.SAXException;
@@ -94,9 +96,12 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	
 	String lastTieNumber;
 	String lastTieType;
+    private PositionAboveBelow lastFermataPosition = null;
+    private ArrayList<Pair<Atom, PositionAboveBelow>> pendingFermate; // don't use HashMap because atoms have not time yet
+    private PositionAboveBelow lastTrillPosition;
+    private ArrayList<Pair<Atom, PositionAboveBelow>> pendingTrills; // don't use HashMap because atoms have not time yet
 
-
-	/**
+    /**
 	 * Used to disambiguate symbols like duration that can be found in note or backup symbols
 	 */
 	enum eContexts {
@@ -134,6 +139,13 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private Integer keyTransposeDiatonic;
 	private KeySignature lastKey;
 	private String measureRest;
+    // The first measure containing the multimeasure rest has the element attributes/measure-style/multiple-rest and the rest, the other ones contain a rest. We just add an element
+    private Integer multipleRest;
+    private int pendingMultirests;
+    /**
+     * Finale exports the multimeasure rests different in each voice. It just uses the multiple-rest attribute for the first part!!
+     */
+    private HashMap<Time, Integer> pendingMultirestsPerMeasure;
 	private TimeSignature lastTimeSignature;
 
 	@Override
@@ -141,6 +153,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		song = new ScoreSong();
 		currentDivisions = null;
 		partNumbers  = new HashMap<>();
+        pendingMultirestsPerMeasure = new HashMap();
+        pendingFermate = new ArrayList<>();
+        pendingTrills = new ArrayList<>();
 		hierarchicalIdGenerator = new HierarchicalIDGenerator();
 		//partGroups = new ArrayDeque<>();
 	}
@@ -197,7 +212,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		String value;
 		String number;
 		Staff staff;
-		
+        PositionAboveBelow positionAboveBelow = PositionAboveBelow.UNDEFINED;
 		try {
 			switch (element) {
 			case "score-timewise":
@@ -283,14 +298,20 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			case "measure":
 				currentMeasureNumber = getOptionalAttribute(attributes, "number");
 				//currentMeasureTime = getCurrentTime(getDefaultStaff(), getDefaultVoice());
-				measureElementsToInsert = new TreeMap<>();				
+				measureElementsToInsert = new TreeMap<>();
+
+                multipleRest = pendingMultirestsPerMeasure.get(measureStartTime); // Finale adds just the multimeasure to the first voice
+                if (multipleRest != null) {
+                    pendingMultirests = multipleRest;
+                }
 				break;
 			case "print":
 			    String newSystem = getOptionalAttribute(attributes, "new-system");
 			    if (newSystem != null) {
-			        song.addSystemBreak(new SystemBreak(measureStartTime, true));
-                }
-				break;
+                    defaultStaff.addSystemBreak(new SystemBreak(measureStartTime, true));
+                } // TODO: 20/11/17 Page break 
+                // TODO: 20/11/17 Comprobar
+                break;
 			case "direction":
 				currentNote = null;
 				//currentStaffPlaceHolder = new AMStaffPlaceHolder(currentScorePart.getElements().size(), currentTime);
@@ -485,11 +506,25 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					throw new ImportException("No current staff holder or current note");
 				}*/
 				break;
+            case "trill-mark":
+                //TODO position
+                lastTrillPosition = PositionAboveBelow.UNDEFINED;
+                break;
 			case "fermata":
-				/*type = getOptionalAttribute(attributes, "type");
-				AMFermata fermata = new AMFermata();
-				fermata.setPosition(getPositionForFermata(type));
-				currentNote.addMarker(fermata);*/
+			    type = getOptionalAttribute(attributes, "type");
+			    if (type != null) {
+                    switch (type) {
+                        case "inverted":
+                            positionAboveBelow = PositionAboveBelow.BELOW;
+                            break;
+                        case "upright":
+                            positionAboveBelow = PositionAboveBelow.ABOVE;
+                            break;
+                        default:
+                            throw new ImportException("Unkown fermata position: " + type);
+                    }
+                }
+                lastFermataPosition = positionAboveBelow;
 				break;
 			case "lyric":
                 String lastLyricNumberStr = getOptionalAttribute(attributes, "number");
@@ -729,6 +764,11 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			case "octave-change":
 				clefOctaveChange = Integer.parseInt(content);
 				break;
+            case "multiple-rest":
+                multipleRest = Integer.parseInt(content);
+                pendingMultirests = multipleRest;
+                pendingMultirestsPerMeasure.put(measureStartTime, multipleRest);
+                break;
 			}
 		} catch (Exception e) {
 			throw new ImportException(e);
@@ -844,9 +884,37 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				
 				/*for (ScoreLayer layer: layerNumbers.values()) {
 					lastStaff.addLayer(layer);	
-				}*/		
+				}*/
 				Measure currentMeasure = ImportFactories.processMeasure(song, measureStartTime, currentMeasureNumber);
+
+				if (multipleRest != null) {
+                    if (lastTimeSignature == null) {
+                        throw new ImportException("Cannot import a multiple rest without a time signature");
+                    }
+
+                    for (Staff staff : currentScorePart.getStaves()) {
+                        SimpleMultiMeasureRest multiMeasureRest = new SimpleMultiMeasureRest(lastTimeSignature.getDuration(), multipleRest);
+                        staff.addCoreSymbol(multiMeasureRest);
+
+                        // add to the first layer
+                        ScoreLayer layer;
+                        if (currentScorePart.getLayers().isEmpty()) {
+                            layer = getOrCreateLayer(staff, lastVoiceNumber);
+                        } else {
+                            layer = currentScorePart.getLayers().iterator().next();
+                        }
+                        layer.add(multiMeasureRest);
+                    }
+                    currentMeasure.setEndTime(measureStartTime.add(lastTimeSignature.getDuration()));
+                    multipleRest = null;
+                }
+
 				processMeasureElements(currentMeasure);
+
+                if (pendingMultirests > 0) {
+                    pendingMultirests--;
+                }
+                measureRest = null;
 				break;
 			case "part":
 				/*8 mayo if (lastStaff == null) {
@@ -958,19 +1026,23 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				throw new ImportException("Missing duration and type");
 			}
 		}
-		
+
 		if (context == eContexts.eRest) {
 			if (measureRest != null && measureRest.equals("yes")) {
-				if (lastTimeSignature == null) {
-					throw new IM3Exception("There is not a lastTimeSignature");
-				}
-				SimpleMeasureRest mrest;
-				if (lastFigure != null) {
-					mrest = new SimpleMeasureRest(lastFigure, lastDuration);
-				} else {
-					mrest = new SimpleMeasureRest(Figures.WHOLE, lastDuration);
-				}				
-				lastContainer.add(mrest);								
+                    if (pendingMultirests == 0) {
+                        if (lastTimeSignature == null) {
+                            throw new IM3Exception("There is not a lastTimeSignature");
+                        }
+
+                        SimpleMeasureRest mrest;
+                        if (lastFigure != null) {
+                            mrest = new SimpleMeasureRest(lastFigure, lastDuration);
+                        } else {
+                            mrest = new SimpleMeasureRest(Figures.WHOLE, lastDuration);
+                        }
+                        lastContainer.add(mrest);
+                        lastAtom = mrest;
+                    }
 			} else {
 				SimpleRest rest;
 				if (lastFigure != null) {
@@ -978,8 +1050,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				} else {
 					rest = new SimpleRest(Figures.NO_DURATION, 0);
 				} 
-				lastContainer.add(rest);				
+				lastContainer.add(rest);
+                lastAtom = rest;
 			}
+
 		} else if (context == eContexts.eNote) {
 			ScientificPitch sp = new ScientificPitch(lastNoteName, lastAccidental, lastOctave);
 			SimpleNote simpleNote = new SimpleNote(lastFigure, dots, sp);
@@ -1055,10 +1129,19 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			} else {
 				throw new ImportException("Invalid type: " + lastAtom.getClass());
 			}
-		} else {
+
+        } else {
 			throw new IM3RuntimeException("Should not enter here");
 		}
-		
+
+        if (lastFermataPosition != null && lastAtom != null) {
+		    pendingFermate.add(new Pair(lastAtom, lastFermataPosition));
+        }
+
+        if (lastTrillPosition != null && lastAtom != null) {
+            pendingTrills.add(new Pair(lastAtom, lastTrillPosition));
+        }
+
 		// handle tuplet
 		if (tupletActualNotes != null) { 
 			if (context != eContexts.eChord) { // the first note has done this job
@@ -1138,6 +1221,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 		
 		tupletActualNotes = null;
+		lastFermataPosition = null;
+		lastTrillPosition = null;
 	}
 
 	private Syllabic parseSyllabic(String syllabic) throws ImportException {
@@ -1209,8 +1294,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 		staffNumbers.put(number, staff);		
 		song.addStaff(staff);
+		currentScorePart.addStaff(staff); //TODO Comprobar esto
 		staff.setNotationType(NotationType.eModern);
-		return staff;
+		staff.addPart(currentScorePart); // TODO: 20/11/17 Parts when two parts in a staff
+        return staff;
 	}
 
 
@@ -1221,7 +1308,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		Mode mode;
 		if (keyMode == null) {
 			mode = Mode.MAJOR;
-		} else {
+		} else if (keyMode.equals("none")) {
+		    mode = Mode.UNKNOWN;
+        } else {
 			mode = Mode.stringToMode(keyMode);
 		}
 		lastKey = new KeySignature(null, new Key(keyFifiths, mode));
@@ -1355,7 +1444,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							} else if (atom instanceof SimpleMeasureRest) {
 								pendingMRestsToSetDuration.add((SimpleMeasureRest) atom);
 								resetTimes.add(sv);
-							}
+							} else if (atom instanceof SimpleMultiMeasureRest) {
+                                resetTimes.add(sv);
+                            }
 							else {
 								throw new ImportException("Whole measure figures are only implemented for measure rests, and this is a " + atom.getClass() + ", with expected duration");
 							}
@@ -1391,8 +1482,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				maxMeasureTime = Time.max(maxMeasureTime, sv.getTime());
 			}
 		}
-		
-		if (measureStartTime.compareTo(maxMeasureTime) < 0) {
+
+		// omitted (with hasEndTime) for multimeasure rests
+		if (!currentMeasure.hasEndTime() && measureStartTime.compareTo(maxMeasureTime) < 0) {
 			currentMeasure.setEndTime(maxMeasureTime);
 		}
 		
@@ -1424,10 +1516,41 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			}
 			measureRest.setDuration(measureDuration);
 		}
+
+		if (!currentMeasure.hasEndTime()) {
+		    if (lastTimeSignature == null) { //TODO Ver si esto está bien
+		        throw new ImportException("Last time signature is null and current measure has not end time");
+            }
+            currentMeasure.setEndTime(currentMeasure.getTime().add(lastTimeSignature.getDuration()));
+        }
+
 		measureStartTime = currentMeasure.getEndTime();
 		for (StaffAndVoice rt: resetTimes) {
 			rt.setTime(measureStartTime);
 		}
+
+		// fermate
+        for (Pair<Atom, PositionAboveBelow> entry: pendingFermate) {
+		    if (entry.getX() instanceof SingleFigureAtom) {
+                ((SingleFigureAtom) entry.getX()).getAtomFigure().getStaff().addFermata(((SingleFigureAtom) entry.getX()).getAtomFigure(), entry.getY());
+            } else {
+		        throw new ImportException("Cannot add fermate to non SingleFigureAtom: " + entry.getX().getClass());
+            }
+        }
+        pendingFermate.clear();
+
+		// trills
+        for (Pair<Atom, PositionAboveBelow> entry: pendingTrills) {
+            if (entry.getX() instanceof SingleFigureAtom) {
+                SingleFigureAtom sfa = ((SingleFigureAtom) entry.getX());
+                Trill trill = new Trill(entry.getX().getStaff(), entry.getY(), sfa);
+                sfa.getStaff().addMark(trill); //TODO Que no haya que ponerlo a mano en tantos sitios
+                sfa.addMark(trill);
+            } else {
+                throw new ImportException("Cannot add trill to non SingleFigureAtom: " + entry.getX().getClass());
+            }
+        }
+        pendingTrills.clear();
 	}
 	
 	//TODO Ver cambios de tonalidad o compás por enmedio ...
@@ -1473,7 +1596,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				if (diff < 0) {
 					song.setAnacrusisOffset(measureDuration.substract(maxEndTime));
 				} else if (diff > 0) {
-					throw new ImportException("Fist measure duration based on atom is " + maxEndTime + " and expected first measure duration based on time signature is " + measureDuration);
+					// throw new ImportException("Fist measure duration based on atom is " + maxEndTime + " and expected first measure duration based on time signature is " + measureDuration);
+                    // no-op For multimeasure rests starting work
 				} // else normal measure
 			}
 

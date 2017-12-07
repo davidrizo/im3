@@ -30,9 +30,12 @@ public class MensuralToModern {
      */
     public ScoreSong convertIntoNewSong(ScoreSong mensural, Intervals transposition) throws IM3Exception {
         ScoreSong modernSong = new ScoreSong();
+        modernSong.addTitle(mensural.getTitle());
         int istaff=0;
         for (ScorePart mensuralPart: mensural.getParts()) {
             ScorePart modernPart = new ScorePart(modernSong, mensuralPart.getNumber());
+            modernPart.setName(mensuralPart.getName());
+            modernPart.setNumber(mensuralPart.getNumber());
             modernSong.addPart(modernPart);
 
             if (mensuralPart.getLayers().size() != 1) {
@@ -51,6 +54,7 @@ public class MensuralToModern {
             Pentagram modernPentagram = new Pentagram(modernSong, mensuralStaff.getHierarchicalOrder(), mensuralStaff.getNumberIdentifier());
             modernPentagram.setNotationType(NotationType.eModern);
             modernPart.addStaff(modernPentagram);
+            modernPentagram.addPart(modernPart);
             modernSong.addStaff(modernPentagram);
             ScoreLayer modernLayer = modernPart.addScoreLayer(modernPentagram);
 
@@ -109,6 +113,8 @@ public class MensuralToModern {
                 convert(modernStaff, modernLayer, (Atom) symbol, interval);
             } else if (symbol instanceof DisplacedDot) {
                 // no-op It is never displaced, if always accompanies the pitch
+            } else if (symbol instanceof Custos) {
+                // no-op
             } else {
                 throw new IM3Exception("Unsupported conversion of " + symbol.getClass());
             }
@@ -125,9 +131,11 @@ public class MensuralToModern {
         }
 
         modernStaff.getScoreSong().numberMeasures();
+
+        // TODO: 20/11/17 ¿Mejor en merge?
         // now insert barlines between staves
         for (Measure measure: modernStaff.getScoreSong().getMeasures()) {
-            DashedBarlineAcrossStaves dashedBarlineAcrossStaves = new DashedBarlineAcrossStaves(measure, modernStaff, mensuralStaff);
+            DashedBarlineAcrossStaves dashedBarlineAcrossStaves = new DashedBarlineAcrossStaves(measure.getEndTime(), modernStaff, mensuralStaff);
             modernStaff.addConnector(dashedBarlineAcrossStaves);
             mensuralStaff.addConnector(dashedBarlineAcrossStaves);
         }
@@ -188,7 +196,7 @@ public class MensuralToModern {
             }
 
             Time outputFigureDuration = Time.min(pendingMensureDuration, pendingDuration);
-            List<RhythmUtils.FigureAndDots> outputFiguresAndDots;
+            List<FigureAndDots> outputFiguresAndDots;
             try {
                 outputFiguresAndDots = RhythmUtils.findRhythmForDuration(NotationType.eModern, outputFigureDuration);
             } catch (IM3Exception e) {
@@ -196,7 +204,7 @@ public class MensuralToModern {
             }
 
             SimpleNote prevNote = null;
-            for (RhythmUtils.FigureAndDots outputFigureAndDots: outputFiguresAndDots) {
+            for (FigureAndDots outputFigureAndDots: outputFiguresAndDots) {
                 SingleFigureAtom outputAtom = null;
                 if (singleFigureAtom instanceof SimpleRest) {
                     outputAtom = new SimpleRest(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots());
@@ -244,21 +252,27 @@ public class MensuralToModern {
     }
 
     /**
-     * It adds the staves of song2 into song1. If alternate is true it alternates song1 staves with song 2 staves. If
-     * it is false it appends the song2 at the end of song1. The parts are in both cases appended at the end
+     * It adds the staves of song2 into song1. The parts must contain 1 staff each one. The song2 staves are added to the equivalent
+     * parts in song1 (those with same name).
      * It removes the parts and staves from song2. It copies the measures from song2 to song1
      */
-    public void merge(ScoreSong song1, ScoreSong song2, boolean alternate) throws IM3Exception {
+    public void merge(ScoreSong song1, ScoreSong song2) throws IM3Exception {
         int expectedStaves = song1.getStaves().size() + song2.getStaves().size();
 
-        ArrayList<ScorePart> song1Parts = song1.getPartsSortedByNumberAsc();
-        for (ScorePart part: song2.getParts()) {
-            part.setSong(song1);
-            part.setNumber(1000 + part.getNumber()); //TODO
-            song1.addPart(part);
+        if (song1.getStaves().size() != song2.getStaves().size()) {
+            throw new IM3Exception("Cannot merge two songs with different number of staves: " +
+                    song1.getStaves().size() + " and " + song2.getStaves().size());
         }
-        song2.clearParts();
-        song1.clearMeasures();
+
+        for (Staff staff: song2.getStaves()) {
+            if (staff.getParts().size() != 1) {
+                throw new IM3Exception("Cannot merge staves containing not unique parts, it contains " + staff.getParts().size() + " parts");
+            }
+        }
+
+        if (song1.hasMeasures()) {
+            throw new IM3Exception("The target song already had measures");
+        }
 
         for (Measure fromMeasure: song2.getMeasures()) {
             Measure newMeasure = new Measure(song1, fromMeasure.getNumber());
@@ -267,32 +281,22 @@ public class MensuralToModern {
             song1.addMeasure(fromMeasure.getTime(), newMeasure);
         }
 
-        if (!alternate) {
-            // TODO: 16/10/17 Hierarchical order, number...
-            for (Staff staff: song2.getStaves()) {
-                staff.setSong(song1);
-                staff.setHierarchicalOrder("Z-" + staff.getHierarchicalOrder()); //TODO
-                staff.setNumberIdentifier(1000+staff.getNumberIdentifier()); //TODO
-                song1.addStaff(staff);
-            }
-            song2.clearStaves();
-        } else {
-            if (song1.getStaves().size() != song2.getStaves().size()) {
-                throw new IM3Exception("song1 has " + song1.getStaves().size() + " and song2 has " + song2.getStaves().size());
-            }
-            for (int i=0; i<song2.getStaves().size(); i++) {
-                Staff staff = song2.getStaves().get(i);
-                staff.setSong(song1);
-                staff.setHierarchicalOrder("Z-" + staff.getHierarchicalOrder()); //TODO
-                staff.setNumberIdentifier(1000+staff.getNumberIdentifier()); //TODO
-                song1.addStaffAt((2*i)+1, staff);
-            }
-            song2.clearStaves();
+        for (Staff staff: song2.getStaves()) {
+            staff.setSong(song1);
 
-            if (song1.getStaves().size() != expectedStaves) {
-                throw new IM3Exception("Expected a result of " + expectedStaves + " and obtained " + song1.getStaves().size());
+            ScorePart song1Part = song1.getPartWithName(staff.getParts().get(0).getName());
+            if (song1Part == null) {
+                throw new IM3Exception("Cannot find a part named '" + staff.getName() + "' in target song");
             }
+
+            staff.setHierarchicalOrder(staff.getHierarchicalOrder() + ".1"); //TODO
+            staff.setNumberIdentifier(1000+staff.getNumberIdentifier()); //TODO
+            song1Part.addStaff(staff); // TODO: 20/11/17 Relaciones bidireccionales
+            staff.addPart(song1Part);
+            song1.addStaff(staff);
         }
+        song2.clearStaves();
+        song2.clearParts();
 
     }
 

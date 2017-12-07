@@ -62,10 +62,6 @@ public class ScoreSong {
 	Staff analysisStaff;
 	Metadata metadata;
 
-    /**
-     * Explicit system breaks
-     */
-    HashMap<Time, SystemBreak> systemBreaks;
 	List<Staff> staves;
 	List<StaffGroup> staffGroups;
 	/**
@@ -85,7 +81,6 @@ public class ScoreSong {
         //meters = new TimedElementCollection<>();
         //keys = new TimedElementCollection<>();
         harms = null;
-        systemBreaks = new HashMap<>();
         harmonies = new TimedElementCollection<>();
         tempoChanges = new TimedElementCollection<>();
         measures = new TimedElementCollection<>();
@@ -1665,23 +1660,6 @@ public class ScoreSong {
 
 		return harms.getValueAtTimeOrNull(time);
     }
-
-    public void addSystemBreak(SystemBreak sb) throws IM3Exception {
-        if (sb.getTime() == null) {
-            throw new IM3Exception("System break has not time set");
-        }
-    	systemBreaks.put(sb.getTime(), sb);
-    }
-
-    public HashMap<Time, SystemBreak> getSystemBreaks() {
-        return systemBreaks;
-    }
-
-    public boolean hasSystemBreak(Time time) {
-        return systemBreaks.containsKey(time);
-    }
-
-
     public DurationEvaluator getDurationEvaluator() {
         return durationEvaluator;
     }
@@ -1699,6 +1677,16 @@ public class ScoreSong {
        }
        return  null;
     }
+
+    public ScorePart getPartWithName(String name) {
+        for (ScorePart part: parts) {
+            if (part.getName() != null && part.getName().equals(name)) {
+                return part;
+            }
+        }
+        return  null;
+    }
+
 
     public void clearParts() {
         parts.clear();
@@ -1730,4 +1718,5 @@ public class ScoreSong {
             }
         }
     }
+
 }

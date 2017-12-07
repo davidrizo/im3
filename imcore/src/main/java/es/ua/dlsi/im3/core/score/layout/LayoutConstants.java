@@ -50,5 +50,6 @@ public class LayoutConstants {
     public static final double SLUR_HEIGHT = EM/3;
     public static final double SEPARATION_NOTE_SLUR = EM/3;
     public static final double BEAM_SEPARATION = EM/4;
+    public static final double BROKEN_SLUR_WIDTH = EM;
     public static double STAFF_NAME_WIDTH = EM * 4;
 }

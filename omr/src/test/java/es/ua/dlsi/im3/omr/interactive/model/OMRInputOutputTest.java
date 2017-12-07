@@ -1,7 +1,7 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.omr.interactive.OMRController;
+import es.ua.dlsi.im3.omr.interactive.OMRMainController;
 import org.junit.Test;
 
 import javax.imageio.IIOImage;
@@ -103,7 +103,7 @@ public class OMRInputOutputTest {
             projectFolder.delete();
         }
         File trainFile = TestFileUtils.getFile("/testdata/bimodal/bimodal_tiny.train");
-        OMRProject project = new OMRProject(projectFolder, trainFile, null);
+        OMRProject project = new OMRProject(projectFolder, trainFile);
 
         File image1 = TestFileUtils.createTempFile("img1.jpg");
         File image2 = TestFileUtils.createTempFile("img2.jpg");
@@ -122,8 +122,8 @@ public class OMRInputOutputTest {
 
 
         // --- Load it
-        OMRController controller = new OMRController();
-        OMRProject loaded = io.load(controller, projectFolder, trainFile);
+        OMRMainController controller = new OMRMainController();
+        OMRProject loaded = io.load(projectFolder, trainFile);
         assertEquals("Loaded images", 2, loaded.pagesProperty().size());
     }
 

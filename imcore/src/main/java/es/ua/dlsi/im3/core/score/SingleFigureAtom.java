@@ -144,4 +144,6 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
     public HashSet<StaffMark> getMarks() {
         return marks;
     }
+
+
 }

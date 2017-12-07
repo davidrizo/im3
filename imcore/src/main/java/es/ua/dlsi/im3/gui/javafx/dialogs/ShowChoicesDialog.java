@@ -27,18 +27,38 @@ import javafx.stage.Stage;
  * @author drizo
  */
 public class ShowChoicesDialog<T> {
+    ChoiceDialog<T> dialog;
 
-    /**
-     * @param message
-     * @return true when user accepts
-     */
-    public T show(Stage stage, String title, String message, Collection<T> choices) {
-        ChoiceDialog<T> dialog = new ChoiceDialog<>();
-        dialog.getItems().addAll(choices);
+
+    private void init(Stage stage, String title, String message) {
         dialog.setTitle(stage.getTitle());
         dialog.setHeaderText(title);
         dialog.setContentText(message);
         dialog.initOwner(stage);
+    }
+
+    /**
+     * @param defaultChoice May be null
+     * @return true when user accepts
+     */
+    public T show(Stage stage, String title, String message, Collection<T> choices, T defaultChoice) {
+        dialog = new ChoiceDialog<>(defaultChoice, choices);
+        init(stage, title, message);
+        Optional<T> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            return result.get();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param defaultChoice May be null
+     * @return true when user accepts
+     */
+    public T show(Stage stage, String title, String message, T [] choices, T defaultChoice) {
+        dialog = new ChoiceDialog<>(defaultChoice, choices);
+        init(stage, title, message);
         Optional<T> result = dialog.showAndWait();
         if (result.isPresent()) {
             return result.get();

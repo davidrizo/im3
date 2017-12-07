@@ -21,6 +21,7 @@ public class CapitanMap implements IFontMap {
         UNICODES.put(Figures.SEMIMINIM, "mensuralBlackMinima"); //TODO Ver esto - ¿igual en proporción ternaria?
         // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
         UNICODES.put(Figures.FUSA, "mensuralBlackSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        UNICODES.put(Figures.SEMIFUSA, "mensuralBlackFusa"); //TODO Ver esto - ¿igual en proporción ternaria?
         //mensuralBlackFusa
         //mensuralBlackSemiminima
     }

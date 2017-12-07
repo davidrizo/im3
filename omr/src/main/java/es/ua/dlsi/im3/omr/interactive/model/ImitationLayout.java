@@ -25,19 +25,19 @@ public class ImitationLayout extends ScoreLayout {
     HashMap<LayoutStaff, Canvas> canvases;
 
     public ImitationLayout(ScoreSong song, LayoutFonts font) throws IM3Exception {
-        super(song, font);
+        super(song, null, font); // FIXME: 29/11/17 el null
         canvases = new HashMap<>();
     }
 
     public ImitationLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception {
-        super(song, fonts);
+        super(song, null, fonts); // FIXME: 29/11/17
         canvases = new HashMap<>();
     }
 
     @Override
     public void layout() throws IM3Exception {
 
-        createStaffConnectors();
+        //createStaffConnectors(); // FIXME: 29/11/17
         // add the connectors to the canvas
         // TODO: 12/10/17
         /*for (LayoutConnector connector: connectors) {

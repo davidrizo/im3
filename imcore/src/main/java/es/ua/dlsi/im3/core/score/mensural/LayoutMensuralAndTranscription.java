@@ -18,6 +18,7 @@ import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.PageLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
+import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
@@ -31,7 +32,7 @@ public class LayoutMensuralAndTranscription {
         // TODO: 16/10/17 Que se pueda elegir el tipo de renderización y salida
 
         if (args.length != 5) {
-            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file> <output midi file> <output ly file> <output krn>");
+            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file (it generates also parts)> <output midi file> <output ly file> <output krn>");
         }
 
         System.out.println("Input: " + args[0]);
@@ -63,6 +64,7 @@ public class LayoutMensuralAndTranscription {
         //TODO Parámetro
         //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC); // ésta genera más sostenidos
         ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FIFTH_PERFECT_DESC);
+
         //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.UNISON_PERFECT);
         String midiFile = args[2];
         ScoreToPlayed scoreToPlayed = new ScoreToPlayed();
@@ -72,7 +74,7 @@ public class LayoutMensuralAndTranscription {
         exporter.addResetEWSCWordBuilderMessage(); // TODO: 29/10/17 Generalizar esto
         exporter.exportSong(new File(midiFile), played);
 
-        mensuralToModern.merge(mensural, modern, true);
+        mensuralToModern.merge(mensural, modern);
 
         // TODO: 16/10/17 Poder cambiar esto
         HashMap<Staff, LayoutFonts> fontsHashMap = new HashMap<>();
@@ -89,13 +91,34 @@ public class LayoutMensuralAndTranscription {
         mensural.debugPutIDsAsLyrics(); // FIXME: 17/10/17 Quitar
         // TODO: 16/10/17 Tamaño
         //PageLayout layout = new PageLayout(mensural, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
-        HorizontalLayout layout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(30000), new CoordinateComponent(2800));
-        layout.layout();
+        HorizontalLayout hlayout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(30000), new CoordinateComponent(2800));
+        hlayout.layout();
         //PDFExporter pdfExporter = new PDFExporter();
         //pdfExporter.exportLayout(new File(args[1]), layout);
         SVGExporter svgExporter = new SVGExporter();
-        svgExporter.exportLayout(new File(args[1]), layout);
+        File svgHorizontalFile = new File(args[1]);
+        svgExporter.exportLayout(svgHorizontalFile, hlayout);
         System.out.println("Done!");
 
+
+        // Generate pages for all parts
+        String svgFileName = FileUtils.getFileWithoutPathOrExtension(svgHorizontalFile);
+        for (ScorePart part: mensural.getParts()) {
+            String partSVGNamePrefix = svgFileName + "_" + FileUtils.leaveValidCaracters(part.getName());
+            PageLayout pageLayout = new PageLayout(mensural, part.getStaves(), true, fontsHashMap,
+                    new CoordinateComponent(30000), new CoordinateComponent(4800));
+            pageLayout.layout();
+            int pageNumber = 1;
+            for (Canvas canvas: pageLayout.getCanvases()) {
+                SVGExporter svgExporterPage = new SVGExporter();
+                // TODO: 20/11/17 He quitado los page breaks
+                //File pageFile = new File(svgHorizontalFile.getParent(), partSVGNamePrefix + "_page_" + pageNumber + ".svg");
+                File pageFile = new File(svgHorizontalFile.getParent(), partSVGNamePrefix + ".svg");
+                svgExporterPage.exportLayout(pageFile, canvas, pageLayout);
+                pageNumber++;
+            }
+
+
+        }
     }
 }

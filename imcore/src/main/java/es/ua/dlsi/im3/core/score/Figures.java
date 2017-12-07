@@ -50,13 +50,15 @@ public enum Figures {
 
     final boolean usesStem;
     final int numFlags;
-	
-	Figures(int quarters, int quarterSubdivisions, int meterUnit, NotationType notationType, boolean usesStem, int flags) {
+    private final Time ratio;
+
+    Figures(int quarters, int quarterSubdivisions, int meterUnit, NotationType notationType, boolean usesStem, int flags) {
 		duration = new Time(Fraction.getFraction(quarters, quarterSubdivisions));
 		this.meterUnit = meterUnit;
 		this.notationType = notationType;
 		this.usesStem = usesStem;
 		this.numFlags = flags;
+		this.ratio = new Time(Fraction.getFraction(quarters, quarterSubdivisions));
 	}
 
 	public Time getDuration() {
@@ -80,6 +82,9 @@ public enum Figures {
 	}
 
 
+	public Time getRatio() {
+	    return ratio;
+    }
 	/**
 	 * Compute the duration of the figure using dots
 	 * @param dots

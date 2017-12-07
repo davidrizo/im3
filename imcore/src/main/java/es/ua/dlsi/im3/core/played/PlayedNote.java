@@ -9,7 +9,7 @@ import es.ua.dlsi.im3.core.score.ScientificPitch;
  * @date 03/06/2011
  *
  */
-public class PlayedNote implements Comparable<PlayedNote> {
+public class PlayedNote implements Comparable<PlayedNote>, IPlayedEvent{
 	public static final int REST = 0;
 	/**
 	 * Time in ticks
@@ -208,6 +208,7 @@ public class PlayedNote implements Comparable<PlayedNote> {
 		this.time = time;
 	}
 
+	@Override
 	public long getTime() {
 		return time;
 	}

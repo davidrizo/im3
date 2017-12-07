@@ -111,18 +111,20 @@ public class MEISongExporter implements ISongExporter {
 			for (Staff staff: song.getStaves()) {
 				if (!(staff instanceof AnalysisStaff)) {
 					for (StaffMark mark: staff.getMarks()) {
-						Measure bar = song.getMeasureActiveAtTime(mark.getTime());
-						HashMap<Staff, ArrayList<StaffMark>> barStaves = marksPerBar.get(bar);
-						if (barStaves == null) {
-							barStaves = new HashMap<>();
-							marksPerBar.put(bar, barStaves);
-						}
-						ArrayList<StaffMark> marks = barStaves.get(staff);
-						if (marks == null) {
-							marks = new ArrayList<>();
-							barStaves.put(staff, marks);
-						}
-						marks.add(mark);
+					    if (song.hasMeasures()) {
+                            Measure bar = song.getMeasureActiveAtTime(mark.getTime());
+                            HashMap<Staff, ArrayList<StaffMark>> barStaves = marksPerBar.get(bar);
+                            if (barStaves == null) {
+                                barStaves = new HashMap<>();
+                                marksPerBar.put(bar, barStaves);
+                            }
+                            ArrayList<StaffMark> marks = barStaves.get(staff);
+                            if (marks == null) {
+                                marks = new ArrayList<>();
+                                barStaves.put(staff, marks);
+                            }
+                            marks.add(mark);
+                        }
 					}
 				}
 			}
@@ -501,8 +503,13 @@ public class MEISongExporter implements ISongExporter {
 			Harm lastHarm = null;
             skipMeasures = 0; // used for multimeasure rests
 			for (Measure bar : bars) {
-				if (song.hasSystemBreak(bar.getTime())) { // TODO: 24/9/17 ¿Y si está en medio de un compás?
-                    XMLExporterHelper.startEnd(sb, tabs, "sb"); //TODO ID
+                for (Staff staff : song.getStaves()) {
+                    if (staff.hasSystemBreak(bar.getTime())) { // TODO: 24/9/17 ¿Y si está en medio de un compás?
+                        XMLExporterHelper.startEnd(sb, tabs, "sb"); //TODO ID
+                    }
+                    if (staff.hasPageBreak(bar.getTime())) { // TODO: ¿Y si está en medio de un compás?
+                        XMLExporterHelper.startEnd(sb, tabs, "pg"); //TODO ID
+                    }
                 }
 			    if (skipMeasures > 0) {
                     skipMeasures --;
@@ -579,8 +586,8 @@ public class MEISongExporter implements ISongExporter {
                                 }
                                 XMLExporterHelper.end(sb, tabs + 2, "layer");
                             }
-                            processBar(tabs + 2, bar, staff);
                             XMLExporterHelper.end(sb, tabs + 1, "staff");
+                            processBar(tabs + 1, bar, staff); // 20171206 - after adding fermate and trills - it was before the end of staff
                         }
                     }
 
@@ -634,10 +641,31 @@ public class MEISongExporter implements ISongExporter {
                 ArrayList<StaffMark> marks = mpb.get(staff);
                 if (marks != null) {
                     for (StaffMark staffMark : marks) {
-                        String text = generateTextForStaffMark(staffMark);
-                        if (text != null) {
-                            XMLExporterHelper.text(sb, tabs, "dynam", text, "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
-                        } // else ledger lines... that we don't export
+                        if (staffMark instanceof Fermate) {
+                            Fermate fermate = (Fermate) staffMark;
+                            for (Fermata fermata : fermate.getFermate().values()) {
+                                if (fermata.getPosition() != PositionAboveBelow.UNDEFINED) {
+                                    XMLExporterHelper.startEnd(sb, tabs, "fermata", "place", fermata.getPosition().name().toLowerCase(),
+                                            "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+                                } else {
+                                    XMLExporterHelper.startEnd(sb, tabs, "fermata",
+                                            "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+
+                                }
+                            }
+                        } else 	if (staffMark instanceof Trill) {
+                            Trill trill = (Trill) staffMark;
+                            if (trill.getPosition() != PositionAboveBelow.UNDEFINED) {
+                                XMLExporterHelper.startEnd(sb, tabs, "trill", "place", trill.getPosition().name().toLowerCase(),
+                                        "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+                            } else {
+                                XMLExporterHelper.startEnd(sb, tabs, "trill",
+                                        "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+
+                            }
+                        } else 	if (staffMark instanceof DynamicMark) {
+                            XMLExporterHelper.text(sb, tabs, "dynam", ((DynamicMark) staffMark).getText(), "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+                        }
                     }
                 }
             }
@@ -821,20 +849,13 @@ public class MEISongExporter implements ISongExporter {
 			}
 			processAtom(tabs, atom, staff); //TODO ¿Siempre vale?				
 		}
-		
+
+
 		// process non durational symbols
 		/*FRACCIONES List<StaffTimedPlaceHolder> placeHolders = layer.getStaffPlaceHoldersWithOnsetWithin(bar);
 		for (StaffTimedPlaceHolder staffTimedPlaceHolder : placeHolders) {
 			addConnectors(staffTimedPlaceHolder, staffTimedPlaceHolder.getLayer());
 		}*/
-	}
-	
-	private String generateTextForStaffMark(StaffMark staffMark) {
-		if (staffMark instanceof DynamicMark) {
-			return ((DynamicMark)staffMark).getText();
-		} else {
-			return null;
-		}
 	}
 
 	public static String generateTStamp(Measure bar, Time time) throws IM3Exception, ExportException {
@@ -911,6 +932,21 @@ public class MEISongExporter implements ISongExporter {
 			params.add("colored");
 			params.add(Boolean.toString(atomFigure.isColored()));			
 		}
+        /*if (atomFigure.getFermata() != null) {
+		    params.add("fermata");
+		    switch (atomFigure.getFermata().getPosition()) {
+                case UNDEFINED: //TODO Correcto?
+                case ABOVE:
+                    params.add("above");
+                    break;
+                case BELOW:
+                    params.add("below");
+                    break;
+                default:
+                    throw new ExportException("Unsupported fermata position: " + atomFigure.getFermata().getPosition());
+            }
+
+        }*/
 	}
 	
 	private void processAtom(int tabs, Atom atom, Staff defaultStaff) throws ExportException, IM3Exception {

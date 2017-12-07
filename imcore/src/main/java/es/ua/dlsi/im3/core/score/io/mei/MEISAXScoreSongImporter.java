@@ -164,6 +164,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		FIGURES.put("minima", Figures.MINIM);
 		FIGURES.put("semiminima", Figures.SEMIMINIM);
 		FIGURES.put("fusa", Figures.FUSA);
+        FIGURES.put("semifusa", Figures.SEMIFUSA);
 		FIGURES.put("long", Figures.QUADRUPLE_WHOLE);
 		FIGURES.put("breve", Figures.DOUBLE_WHOLE);
 		FIGURES.put("1", Figures.WHOLE);
@@ -223,6 +224,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
      */
 	private HashMap<Integer, Accidentals> previousAccidentals;
 
+    private Custos lastCustosWithoutPitch;
 
     private boolean inOssia = false;
 	private HashMap<String, Staff> staffNumbers;
@@ -537,8 +539,18 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 case "sb":
                     horizontalOrderInStaff = 0;
                     Time sbtime = getCurrentTime();
-                    if (!song.hasSystemBreak(sbtime )) { // it appears in different parts
-                        song.addSystemBreak(new SystemBreak(sbtime, true));
+                    // TODO: 17/11/17 A system en lugar de staff
+                    if (!lastStaff.hasSystemBreak(sbtime )) {
+                        lastStaff.addSystemBreak(new SystemBreak(sbtime, true));
+                    }
+                    break;
+                case "pb":
+                    // TODO: 17/11/17 A system en lugar de staff
+                    horizontalOrderInStaff = 0;
+                    Time pbtime = getCurrentTime();
+                    // TODO: 17/11/17 A system en lugar de staff
+                    if (!lastStaff.hasPageBreak(pbtime )) {
+                        lastStaff.addPageBreak(new PageBreak(pbtime, true));
                     }
                     break;
 				case "barLine":
@@ -558,6 +570,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					
 					staffCount++;	
 					layerCount=0;
+                    previousAccidentals = new HashMap<>();
 					number = getOptionalAttribute(attributesMap, "n");
 					lastStaff = findStaff(number);
 					break;
@@ -701,6 +714,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						//}
 
 					}
+
+					if (lastCustosWithoutPitch != null) {
+                        lastCustosWithoutPitch.setDiatonicPitch(lastAtomPitch.getScientificPitch().getPitchClass().getNoteName());
+                        lastCustosWithoutPitch.setOctave(lastAtomPitch.getScientificPitch().getOctave());
+                        lastCustosWithoutPitch = null;
+                    }
                     // TODO: 18/10/17 Comprobar Fermata con chords
 					processPossibleMensuralImperfection(attributesMap, currentAtomFigure);
 					String tie = getOptionalAttribute(attributesMap, "tie");
@@ -719,7 +738,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					updateCurrentTime();
 
 					// after the note has time
-                    processFermata(currentAtomFigure, attributesMap);
+                    processFermata(currentAtomFigure, attributesMap); // fermata as an attribute - it can be also added as an element
 
 
                     break;
@@ -841,6 +860,22 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                             getOptionalAttribute(attributesMap, "dis.place"));
                     horizontalOrderInStaff++;
                     break;
+                case "custos":
+                    oct = getOptionalAttribute(attributesMap, "oct");
+                    pname = getOptionalAttribute(attributesMap, "pname");
+                    Custos custos;
+                    if (oct != null && pname != null) {
+                        octave = Integer.parseInt(oct);
+                        DiatonicPitch dp = DiatonicPitch.valueOf(pname.toUpperCase());
+                        custos = new Custos(lastStaff, getCurrentTime(), dp, octave);
+                        lastCustosWithoutPitch = null;
+                    } else {
+                        custos = new Custos(lastStaff, getCurrentTime());
+                        lastCustosWithoutPitch = custos;
+                    }
+
+                    lastStaff.addCustos(custos);
+                    break;
 				case "tie":
 					staffNumber = getOptionalAttribute(attributesMap, "staff");
 					pendingConnectorOrMark = new PendingConnectorOrMark();
@@ -853,6 +888,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					}
 					pendingConnectorOrMarks.add(pendingConnectorOrMark);
 					break;
+                case "fermata":
                 case "trill":
 				case "phrase": 
 				case "slur":
@@ -879,7 +915,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					}
 					if (element.equals("hairpin")) {
 						pendingConnectorOrMark.content = getAttribute(attributesMap, "form");
-					}
+					} else if (element.equals("fermata")) {
+                        pendingConnectorOrMark.content = getAttribute(attributesMap, "place");
+                    }
 					if (pendingConnectorOrMarks.contains(pendingConnectorOrMark)) {
 						throw new ImportException("Duplicating pending connector: " + pendingConnectorOrMark);
 					}
@@ -1065,9 +1103,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				throw new ImportException("Unimplemented staves with " + lines + " lines");
 		}
 		staffNumbers.put(number, staff);
-		staff.setName(label);
+        staff.setName(label);
 		staff.setOssia(inOssia);
 		song.addStaff(staff);
+        staff.addPart(currentScorePart); // TODO: 20/11/17 Parts when two parts in a staff
         return staff;
 	}
 
@@ -1305,6 +1344,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		case "n":
 			return Accidentals.NATURAL;
 		case "ss":
+		case "x":
 			return Accidentals.DOUBLE_SHARP;
 		case "ff":
 			return Accidentals.DOUBLE_FLAT;
@@ -1500,7 +1540,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			case "measure":
 			    //TODO Check there are not any notes or rests
                 if (pendingMeasureRestsToSetDuration != null && !pendingMeasureRestsToSetDuration.isEmpty()
-                && pendingMultiMeasureRestsToSetDuration != null && !pendingMultiMeasureRestsToSetDuration.isEmpty()) {
+                    && pendingMultiMeasureRestsToSetDuration != null && !pendingMultiMeasureRestsToSetDuration.isEmpty()) {
                     throw new ImportException("Cannot create both multimeasure rests and measure rests");
                 }
 
@@ -1516,11 +1556,18 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 								measureDuration = ts.getDuration();
 								currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
                             } else {
-                                if (maximumVoicesTime.isZero()) {
-                                    throw new ImportException("Cannot infer the measure duration for mRest or multiRest " + mrest);
+                                if (maximumVoicesTime.isZero()) { // for multimeasure rests starting the staff
+                                    TimeSignature ts = mrest.getStaff().getRunningTimeSignatureAt(mrest);
+                                    if (ts == null) {
+                                        throw new ImportException("Cannot infer the measure duration without time signatures at element " + mrest);
+                                    }
+                                    measureDuration = ts.getDuration();
+                                    currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
+                                    //throw new ImportException("Cannot infer the measure duration for mRest or multiRest " + mrest);
+                                } else {
+                                    measureDuration = maximumVoicesTime.substract(currentMeasure.getTime());
+                                    currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
                                 }
-                                measureDuration = maximumVoicesTime.substract(currentMeasure.getTime());
-                                currentMeasure.setEndTime(currentMeasure.getTime().add(measureDuration));
                             }
                             mrest.setDuration(measureDuration);
                             lastVoice = mrest.getLayer();
@@ -1647,12 +1694,22 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				fromStr = pendingConnectorOrMark.startid;
 			} else if (pendingConnectorOrMark.tstamp != null) {
 				fromElement = getPlaceHolderFromTStamp(pendingConnectorOrMark.measure, pendingConnectorOrMark.tstamp, pendingConnectorOrMark.staff, pendingConnectorOrMark.layer);
-				fromStr = pendingConnectorOrMark.tstamp;
+                fromStr = pendingConnectorOrMark.tstamp;
+
+                if (pendingConnectorOrMark.tag.equals("trill") || pendingConnectorOrMark.tag.equals("fermata")) {
+                    // look for a single figure atom in the time stamp
+                    Atom atom = pendingConnectorOrMark.staff.getAtomWithOnset(((ITimedSymbolWithConnectors)fromElement).getTime());
+                    if (atom != null && !(atom instanceof SingleFigureAtom)) {
+                        throw new ImportException("Cannot add a trill to other thing than SingleFigureAtom, it is " + atom.getClass());
+                    }
+                    fromElement = atom;
+                }
+
 			} else {
 				throw new ImportException("Missing either startid or endif for connector " + pendingConnectorOrMark.tag);
 			}
             Object toElement = null;
-			if (!pendingConnectorOrMark.tag.equals("trill")) {
+			if (!pendingConnectorOrMark.tag.equals("trill") && !pendingConnectorOrMark.tag.equals("fermata")) {
                 if (pendingConnectorOrMark.endid != null) {
                     toElement = findXMLID(pendingConnectorOrMark.endid);
                     toStr = pendingConnectorOrMark.endid;
@@ -1660,13 +1717,38 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     toElement = getPlaceHolderFromTStamp2(pendingConnectorOrMark.staff, pendingConnectorOrMark.layer, pendingConnectorOrMark.measure, measures, pendingConnectorOrMark.tstamp2);
                     toStr = pendingConnectorOrMark.tstamp2;
                 } else {
-                    throw new ImportException("Missing either startid or endif for connector " + pendingConnectorOrMark.tag);
+                    throw new ImportException("Missing either endif for connector " + pendingConnectorOrMark.tag);
                 }
             }
 
-            ITimedSymbolWithConnectors from;
+            ITimedSymbolWithConnectors from = null;
             ITimedSymbolWithConnectors to;
-			
+            PositionAboveBelow positionAboveBelow = PositionAboveBelow.UNDEFINED;
+            if (pendingConnectorOrMark.tag.equals("trill") || pendingConnectorOrMark.tag.equals("fermata")) {
+                if (!(fromElement instanceof SingleFigureAtom)) {
+                    throw new ImportException("Cannot add a trill to other thing than SingleFigureAtom, and it is " + fromElement.getClass());
+                }
+                SingleFigureAtom sfa = (SingleFigureAtom) fromElement;
+                from = sfa;
+                if (pendingConnectorOrMark.staff == null) {
+                    pendingConnectorOrMark.staff = sfa.getStaff();
+                }
+
+                if (pendingConnectorOrMark.content != null) {
+                    switch (pendingConnectorOrMark.content) {
+                        case "above":
+                            positionAboveBelow = PositionAboveBelow.ABOVE;
+                            break;
+                        case "below":
+                            positionAboveBelow = PositionAboveBelow.BELOW;
+                            break;
+                        default:
+                            throw new ImportException("Unknown fermata position: '" + pendingConnectorOrMark.content + "'");
+                    }
+                }
+
+            }
+
 			switch (pendingConnectorOrMark.tag) {
 			/*case "slur":
 				case "phrase": // TODO - deberían ser semánticamente diferentes
@@ -1680,19 +1762,14 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					fromElement.addConnector(slur);
 					toElement.addConnector(slur);
 					break;*/
+                case "fermata":
+                    SingleFigureAtom sfa = (SingleFigureAtom) from;
+                    pendingConnectorOrMark.staff.addFermata(sfa.getAtomFigure(), positionAboveBelow);
+                    break;
                 case "trill":
-                    if (!(fromElement instanceof SingleFigureAtom)) {
-                        throw new ImportException("Cannot add a trill to other thing than SingleFigureAtom, and it is " + fromElement.getClass());
-                    }
-                    SingleFigureAtom sfa = (SingleFigureAtom) fromElement;
-                    Staff staff;
-                    if (pendingConnectorOrMark.staff == null) {
-                        staff = sfa.getStaff();
-                    } else {
-                        staff = pendingConnectorOrMark.staff;
-                    }
-                    Trill trill = new Trill(staff, sfa);
-                    sfa.addMark(trill); // TODO: 18/10/17 Normalizar dónde añadimos los objetos
+                    SingleFigureAtom sfa2 = (SingleFigureAtom) from;
+                    Trill trill = new Trill(pendingConnectorOrMark.staff, positionAboveBelow, sfa2);
+                    sfa2.addMark(trill); // TODO: 18/10/17 Normalizar dónde añadimos los objetos
                     lastStaff.addMark(trill);
                     break;
                 case "slur":

@@ -41,6 +41,10 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 * Used to be able to quick locate a clef given a time. 
 	 */
 	TreeMap<Time, Clef> clefs;
+    /**
+     * Used to be able to quick locate custos
+     */
+    TreeMap<Time, Custos> custos;
 	/**
 	 * This is the only place there the instrumentKey signatures are stored
 	 */
@@ -81,6 +85,21 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
 	protected ConnectorCollection connectorCollection;
 
+    // TODO: 17/11/17 A system
+    /**
+     * Explicit system breaks
+     */
+    HashMap<Time, SystemBreak> systemBreaks;
+    // TODO: 17/11/17 A system
+    /**
+     * Explicit system breaks
+     */
+    HashMap<Time, PageBreak> pageBreaks;
+
+    /**
+     * Parts represented in this staff, usually it will be just 1 part
+     */
+    List<ScorePart> parts;
 	/**
 	 *
 	 * @param hierarchicalOrder
@@ -93,6 +112,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			int nlines) {
 		super(song, hierarchicalOrder, numberIdentifier);
 		init(nlines);
+        parts = new LinkedList<>();
 		fermate = new TreeMap<>();
 		this.marks = new ArrayList<>();
 		this.attachments = new ArrayList<>();
@@ -109,9 +129,20 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		this.timeSignatures = new TreeMap<>();
 		this.keySignatures = new TreeMap<>();
 		this.markBarlines = new TreeMap<>();
-	}
+        this.systemBreaks = new HashMap<>();
+        this.pageBreaks = new HashMap<>();
+        this.custos = new TreeMap<>();
+    }
 
-	// ----------------------------------------------------------------------
+    public void addPart(ScorePart part) {
+	    parts.add(part);
+    }
+
+    public List<ScorePart> getParts() {
+        return parts;
+    }
+
+    // ----------------------------------------------------------------------
 	// ----------------------- General --------------------------------
 	// ----------------------------------------------------------------------
 	public StaffGroup getParentSystem() {
@@ -221,6 +252,16 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	public Collection<Clef> getClefs() {
 		return this.clefs.values();
 	}
+
+    public Collection<Custos> getCustos() {
+        return this.custos.values();
+    }
+
+    public void addCustos(Custos custos) {
+	    this.custos.put(custos.getTime(), custos);
+        this.coreSymbols.add(custos);
+        custos.setStaff(this);
+    }
 
 	public Collection<TimeSignature> getTimeSignatures() {
 		return this.timeSignatures.values();
@@ -431,6 +472,21 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return marks;
 	}
 
+    public ArrayList<StaffMark> getMarksOrderedByTime() {
+	    ArrayList<StaffMark> ordered = new ArrayList<>(marks);
+	    ordered.sort(new Comparator<StaffMark>() {
+            @Override
+            public int compare(StaffMark o1, StaffMark o2) {
+                int diff = o1.getTime().substract(o2.getTime()).intValue();
+                if (diff == 0) {
+                    diff = o1.hashCode() - o2.hashCode();
+                }
+                return diff;
+            }
+        });
+        return marks;
+    }
+
 	public ArrayList<AttachmentInStaff<?>> getAttachments() {
 		return attachments;
 	}
@@ -596,7 +652,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      * @throws IM3Exception
      */
 	public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow(Time fromTime, Time toTime) throws IM3Exception {
-		TreeMap<DiatonicPitch, ScientificPitch> alteredDiatonicPitchInBar = new TreeMap<>();
+		TreeMap<DiatonicPitchAndOctave, PitchClass> alteredDiatonicPitchInBar = new TreeMap<>();
 		TreeMap<DiatonicPitch, PitchClass> alteredDiatonicPitchInKeySignature = new TreeMap<>();
         HashMap<AtomPitch, Accidentals> result = new HashMap<>();
 		KeySignature currentKeySignature = null; // getRunningKeySignatureAt(fromTime);
@@ -612,7 +668,9 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
                 lastMeasure = measure;
             }
 
-            if (symbol instanceof KeySignature) {
+            if (symbol instanceof MarkBarline) {
+                alteredDiatonicPitchInBar.clear();
+            } else  if (symbol instanceof KeySignature) {
                 alteredDiatonicPitchInKeySignature = ((KeySignature)symbol).getAlteredDiatonicPitchSet();
             } else if (symbol instanceof SingleFigureAtom) {
                 SingleFigureAtom singleFigureAtom = (SingleFigureAtom) symbol;
@@ -628,18 +686,45 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         return result;
 	}
 
-    void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitch, ScientificPitch> alteredNoteNamesInBar,
+    void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitchAndOctave, PitchClass> alteredNoteNamesInBar,
 											TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature,
                                             HashMap<AtomPitch, Accidentals> result, AtomPitch ps) throws IM3Exception {
-		ScientificPitch pc = ps.getScientificPitch();
-		if (!alteredNoteNamesInBar.containsValue(pc)) { // if not previously altered
-			Accidentals requiredAccidental = computeRequiredAccidental(alteredNoteNamesInKeySignature,
-					pc.getPitchClass());
 
-            result.put(ps, requiredAccidental);
-		}
+	    ScientificPitch pc = ps.getScientificPitch();
+        DiatonicPitchAndOctave diatonicPitchAndOctave = new DiatonicPitchAndOctave(pc.getPitchClass().getNoteName(), pc.getOctave());
+
+	    PitchClass alteredNoteInBar = alteredNoteNamesInBar.get(diatonicPitchAndOctave);
+	    if (alteredNoteInBar == null) {
+	        // check key signature
+            Accidentals requiredAccidental = computeRequiredAccidental(alteredNoteNamesInKeySignature,
+                    pc.getPitchClass());
+
+            if (requiredAccidental != null) {
+                result.put(ps, requiredAccidental);
+                alteredNoteNamesInBar.put(diatonicPitchAndOctave, pc.getPitchClass());
+            }
+        } else {
+            if (!alteredNoteInBar.equals(pc.getPitchClass())) {
+                // TODO: 5/12/17 Mensural # is a natural of previous b
+                Accidentals realAccidental = pc.getPitchClass().getAccidental(); // the one that will sound, not the represented
+                Accidentals writtenAccidental;
+                if (realAccidental == null || realAccidental == Accidentals.NATURAL) {
+                    writtenAccidental = Accidentals.NATURAL;
+                } else {
+                    writtenAccidental = realAccidental;
+                }
+                result.put(ps, writtenAccidental);
+                alteredNoteNamesInBar.put(diatonicPitchAndOctave, pc.getPitchClass()); // if will change the previous value
+            }
+        }
 	}
 
+    /**
+     *
+     * @param alteredSet
+     * @param pc
+     * @return null if no explicit accidental is required
+     */
 	private Accidentals computeRequiredAccidental(TreeMap<DiatonicPitch, PitchClass> alteredSet, PitchClass pc) {
 		// needs accidental?
 		Accidentals requiredAccidental = null;
@@ -745,5 +830,45 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      */
     public Fermate getFermateWithOnset(Time time) {
         return fermate.get(time);
+    }
+
+
+    public void addSystemBreak(SystemBreak sb) throws IM3Exception {
+        if (sb.getTime() == null) {
+            throw new IM3Exception("System break has not time set");
+        }
+        systemBreaks.put(sb.getTime(), sb);
+    }
+
+    public HashMap<Time, SystemBreak> getSystemBreaks() {
+        return systemBreaks;
+    }
+
+    public boolean hasSystemBreak(Time time) {
+        return systemBreaks.containsKey(time);
+    }
+
+    public void addPageBreak(PageBreak sb) throws IM3Exception {
+        if (sb.getTime() == null) {
+            throw new IM3Exception("Page break has not time set");
+        }
+        pageBreaks.put(sb.getTime(), sb);
+    }
+
+    public HashMap<Time, PageBreak> getPageBreaks() {
+        return pageBreaks;
+    }
+
+    public boolean hasPageBreak(Time time) {
+        return pageBreaks.containsKey(time);
+    }
+
+    public Atom getAtomWithOnset(Time time) {
+        for (ITimedElementInStaff symbol: coreSymbols) {
+            if (symbol instanceof Atom && symbol.getTime().equals(time)) {
+                return (Atom) symbol;
+            }
+        }
+        return null;
     }
 }

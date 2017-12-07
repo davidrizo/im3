@@ -209,6 +209,7 @@ public class KernImporter implements IScoreSongImporter {
                 // if an analysis spine, it is not added to the song
                 scoreSong.addStaffAt(0, staff); // kern begins from bottom
             }
+            staff.addPart(globalPart); // TODO: 20/11/17 Parts when two parts in a staff - ahora está todo en el mismo part!!!!
             return staff;
         }
 

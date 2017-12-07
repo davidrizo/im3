@@ -13,24 +13,6 @@ import java.util.List;
  * Created by drizo on 13/6/17.
  */
 public class RhythmUtils {
-    static public class FigureAndDots {
-        Figures figure;
-        int dots;
-
-        public FigureAndDots(Figures figure, int dots) {
-            this.figure = figure;
-            this.dots = dots;
-        }
-
-        public Figures getFigure() {
-            return figure;
-        }
-
-        public int getDots() {
-            return dots;
-        }
-    }
-
     /**
      *
      * @param notationType

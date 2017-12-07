@@ -27,10 +27,11 @@ public class OMRApp extends Application {
         Scene scene = new Scene(new Group());
         primaryStage.setScene(scene);
 
+        //Parent root = FXMLLoader.load(getClass().getResource("/fxml/omrmainmensuraltagger.fxml"));
+
         //Parent root = FXMLLoader.load(getClass().getResource("/fxml/omrmain.fxml"));
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
         scene.setRoot(root);
-        primaryStage.setTitle("MURET");
         primaryStage.setMaximized(true);
         primaryStage.show();
     }

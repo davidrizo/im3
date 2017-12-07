@@ -334,6 +334,9 @@ public class LilypondExporter implements ISongExporter {
                 case FUSA:
                     sb.append("8"); // TODO: 28/9/17 Ver duraciones
                     break;
+                case SEMIFUSA:
+                    sb.append("16");
+                    break;
                 default:
                     throw new ExportException("Unsupported mensural figure: " + atomFigure.getFigure());
             }

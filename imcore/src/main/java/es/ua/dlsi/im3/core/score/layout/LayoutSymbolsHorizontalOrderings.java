@@ -15,12 +15,14 @@ public class LayoutSymbolsHorizontalOrderings {
     {
         orders.put(LayoutCoreBarline.class, 0);
         orders.put(LayoutCoreMarkBarline.class, 0);
-        orders.put(LayoutSystemBreak.class, 1);
-        orders.put(LayoutCoreClef.class, 2);
-        orders.put(LayoutCoreKeySignature.class, 3);
-        orders.put(LayoutCoreTimeSignature.class, 4);
-        orders.put(LayoutCoreSymbolWithDuration.class, 5);
-        orders.put(LayoutCoreDisplacedDot.class, 5); // equal to symbol with duration
+        orders.put(LayoutCoreCustos.class, 1);
+        orders.put(LayoutSystemBreak.class, 2);
+        orders.put(LayoutPageBreak.class, 3);
+        orders.put(LayoutCoreClef.class, 4);
+        orders.put(LayoutCoreKeySignature.class, 5);
+        orders.put(LayoutCoreTimeSignature.class, 6);
+        orders.put(LayoutCoreSymbolWithDuration.class, 7);
+        orders.put(LayoutCoreDisplacedDot.class, 7); // equal to symbol with duration
     }
 
     private LayoutSymbolsHorizontalOrderings() {

@@ -5,7 +5,6 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutDashedBarlineAcrossStaves;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
@@ -23,6 +22,7 @@ import java.util.*;
  */
 public abstract class ScoreLayout {
     protected final ScoreSong scoreSong;
+    protected TreeSet<Staff> staves;
     protected LayoutSymbolFactory layoutSymbolFactory;
     protected Simultaneities simultaneities;
     protected HashMap<Staff, List<LayoutCoreSymbolInStaff>> coreSymbolsInStaves;
@@ -35,27 +35,56 @@ public abstract class ScoreLayout {
     /**
      * Used for building connectors
      */
-    HashMap<ITimedSymbolWithConnectors, IConnectableWithSlur> layoutConnectorEnds;
+    HashMap<ITimedSymbolWithConnectors, IConnectableWithSlurInStaff> layoutConnectorEnds;
 
-    protected HashMap<Staff, HashMap<Measure, LayoutCoreBarline>> barlines;
+    protected HashMap<Staff, List<LayoutCoreBarline>> barlines;
     protected List<LayoutConnector> connectors;
     protected List<LayoutBeamGroup> beams;
 
 
+    // TODO: 20/11/17 mejor que el parámetro staves esté en el método abstract layout() y que toda la inicialización se haga ahí
     /**
      * @param song
      * @param font Same font for all staves
      * @throws IM3Exception
      */
-    public ScoreLayout(ScoreSong song, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+    public ScoreLayout(ScoreSong song, Collection<Staff> staves, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         this.scoreSong = song;
         layoutFonts = new HashMap<>();
-        for (Staff staff: scoreSong.getStaves()) {
+        initStaves(staves);
+        for (Staff staff: staves) {
             LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
             layoutFonts.put(staff, layoutFont);
         }
         init();
     }
+
+    private void initStaves(Collection<Staff> staves) {
+        this.staves = new TreeSet<>(new Comparator<Staff>() {
+            @Override
+            public int compare(Staff o1, Staff o2) {
+                return o1.getHierarchicalOrder().compareTo(o2.getHierarchicalOrder());
+            }
+        });
+        this.staves.addAll(staves);
+
+    }
+
+    public ScoreLayout(ScoreSong song, Collection<Staff> staves, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+        this.scoreSong = song;
+        layoutFonts = new HashMap<>();
+        initStaves(staves);
+        for (Staff staff: staves) {
+            LayoutFonts font = fonts.get(staff);
+            if (font == null) {
+                throw new IM3Exception("Cannot find the staff " + staff + " in the parameter");
+            }
+            LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
+            layoutFonts.put(staff, layoutFont);
+        }
+        init();
+    }
+
 
     private void init() throws IM3Exception {
         layoutSymbolFactory = new LayoutSymbolFactory();
@@ -91,20 +120,6 @@ public abstract class ScoreLayout {
         layoutFonts.put(layoutStaff.getStaff(), layoutFont);
     }
 
-    public ScoreLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
-        this.scoreSong = song;
-        layoutFonts = new HashMap<>();
-        for (Staff staff: scoreSong.getStaves()) {
-            LayoutFonts font = fonts.get(staff);
-            if (font == null) {
-                throw new IM3Exception("Cannot find the staff " + staff + " in the parameter");
-            }
-            LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
-            layoutFonts.put(staff, layoutFont);
-        }
-        init();
-    }
-
     private void createLayoutSymbols() throws IM3Exception {
         // TODO: 1/10/17 Beaming - parámetro para que se pueda deshabilitar
         //layoutStaff.createBeaming();
@@ -112,7 +127,7 @@ public abstract class ScoreLayout {
         singleLayoutFigureAtomsInBeam = new HashMap<>();
         coreSymbolsInStaves = new HashMap<>();
         layoutConnectorEnds = new HashMap<>();
-        for (Staff staff: scoreSong.getStaves()) {
+        for (Staff staff: staves) {
             ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff = new ArrayList<>();
             coreSymbolsInStaves.put(staff, coreSymbolsInStaff);
             // add contents of staff
@@ -125,20 +140,20 @@ public abstract class ScoreLayout {
                 throw new IM3Exception("The staff " + staff+  " has not a notation type");
             }
 
-            HashMap<Measure, LayoutCoreBarline> staffBarLines = new HashMap<>();
+            List<LayoutCoreBarline> staffBarLines = new LinkedList<>();
             barlines.put(staff, staffBarLines);
             if (staff.getNotationType().equals(NotationType.eModern)) {
                 // create barlines
                 // TODO: 21/9/17 Deberíamos poder crear barlines de system
                 for (Measure measure : scoreSong.getMeasures()) {
-                    LayoutCoreBarline barline = new LayoutCoreBarline(staff, getLayoutFont(staff), measure.getEndTime());
+                    LayoutCoreBarline barline = new LayoutCoreBarline(staff, getLayoutFont(staff), measure);
                     simultaneities.add(barline);
-                    staffBarLines.put(measure, barline);
+                    staffBarLines.add(barline);
                 }
             }
 
-            createConnectors();
-            createBeams();
+            //createConnectors();
+            //createBeams();
             //System.out.println("Staff " + staff.getNumberIdentifier());
             //simultaneities.printDebug();
         }
@@ -153,34 +168,6 @@ public abstract class ScoreLayout {
                     throw new IM3Exception("Cannot find the view of the attached to object: " + coreSymbol.getAttachedTo());
                 }
                 layoutAttachmentInStaff.setAttachedToView(attachedToView);
-            }
-
-        }
-    }
-
-    protected void createStaffConnectors() throws IM3Exception {
-        // create staff connectors
-        for (Staff staff: this.scoreSong.getStaves()) {
-            for (Connector connector: staff.getConnectors()) {
-                if (connector.getFrom() == staff) {
-                    // avoid creating twice
-                    if (connector instanceof DashedBarlineAcrossStaves) {
-                        DashedBarlineAcrossStaves dashedBarlineAcrossStaves = (DashedBarlineAcrossStaves) connector;
-                        HashMap<Measure, LayoutCoreBarline> staffBarLines = barlines.get(dashedBarlineAcrossStaves.getFrom());
-                        LayoutCoreBarline barline = staffBarLines.get(dashedBarlineAcrossStaves.getMeasure());
-                        if (barline == null) {
-                            throw new IM3Exception("Cannot find a barline for measure " + dashedBarlineAcrossStaves.getMeasure() + " while creating LayoutDashedBarlineAcrossStaves");
-                        } else {
-                            LayoutStaff toLayoutStaff = layoutStaves.get(dashedBarlineAcrossStaves.getTo());
-                            if (toLayoutStaff == null) {
-                                throw new IM3RuntimeException("Cannot find a LayoutStaff for staff " + dashedBarlineAcrossStaves.getTo() + " while creating LayoutDashedBarlineAcrossStaves");
-                            }
-
-                            LayoutDashedBarlineAcrossStaves layoutDashedBarlineAcrossStaves = new LayoutDashedBarlineAcrossStaves(barline, toLayoutStaff);
-                            addConnector(layoutDashedBarlineAcrossStaves);
-                        }
-                    }
-                }
             }
 
         }
@@ -210,10 +197,10 @@ public abstract class ScoreLayout {
             }
 
             if (symbol instanceof ITimedSymbolWithConnectors) {
-                if (!(layoutCoreSymbol instanceof IConnectableWithSlur)) { // TODO: 31/10/17 Esto no está bien diseñado
-                    throw new IM3Exception("Design Inconsistency, " + layoutCoreSymbol + " should implement IConnectableWithSlur because "+ symbol + " is a ITimedSymbolWithConnectors");
+                if (!(layoutCoreSymbol instanceof IConnectableWithSlurInStaff)) { // TODO: 31/10/17 Esto no está bien diseñado
+                    throw new IM3Exception("Design Inconsistency, " + layoutCoreSymbol + " should implement IConnectableWithSlurInStaff because "+ symbol + " is a ITimedSymbolWithConnectors");
                 }
-                layoutConnectorEnds.put((ITimedSymbolWithConnectors)symbol, (IConnectableWithSlur)layoutCoreSymbol);
+                layoutConnectorEnds.put((ITimedSymbolWithConnectors)symbol, (IConnectableWithSlurInStaff)layoutCoreSymbol);
             }
             addCoreSymbolToSimultaneities(coreSymbolsInStaff, layoutCoreSymbol);
 
@@ -309,8 +296,9 @@ public abstract class ScoreLayout {
                                 throw new IM3Exception("Atom pitches to tie are not the same");
                             }
 
-                            LayoutSlur slur = new LayoutSlur(previousNotePitch, notePitch);
-                            addConnector(slur);
+                            createSlur(previousNotePitch, notePitch);
+                            //LayoutSlur slur = new LayoutSlur(previousNotePitch, notePitch);
+                            //addConnector(slur);
                         }
 
                         // create slurs and other connectors
@@ -329,25 +317,28 @@ public abstract class ScoreLayout {
         }
     }
 
-    private void createConnectors(IConnectableWithSlur layoutCoreSymbolInStaff, ITimedSymbolWithConnectors symbolWithConnectors) throws IM3Exception {
+    protected void createSlur(IConnectableWithSlurInStaff from, IConnectableWithSlurInStaff to) throws IM3Exception {
+        if (from == null) {
+            throw new IM3Exception("Cannot find a layout symbol for core symbol " + from + " for connector " + to);
+        }
+
+        LayoutSlur layoutSlur = new LayoutSlur(from, to);
+        addConnector(layoutSlur);
+    }
+
+    protected void createConnectors(IConnectableWithSlurInStaff layoutCoreSymbolInStaff, ITimedSymbolWithConnectors symbolWithConnectors) throws IM3Exception {
         Collection<Connector> atomPitchConnectors = symbolWithConnectors.getConnectors();
 
         if (atomPitchConnectors != null) {
             for (Connector connector: atomPitchConnectors) {
-                // just create "to" connectors to avoid duplicate in both directions
-                if (connector.getTo() == symbolWithConnectors) {
-
-                    IConnectableWithSlur from = layoutConnectorEnds.get(connector.getFrom());
-                    if (from == null) {
-                        throw new IM3Exception("Cannot find a layout symbol for core symbol " + connector.getFrom() + " for connector " + connector);
+                if (connector instanceof Slur) {
+                    // just create "to" connectors to avoid duplicate in both directions
+                    if (connector.getTo() == symbolWithConnectors) {
+                        IConnectableWithSlurInStaff from = layoutConnectorEnds.get(connector.getFrom());
+                        createSlur(from, layoutCoreSymbolInStaff);
                     }
-
-                    if (connector instanceof Slur) {
-                        LayoutSlur layoutSlur = new LayoutSlur(from, layoutCoreSymbolInStaff);
-                        addConnector(layoutSlur);
-                    } else {
-                        System.err.println("CONNECTOR NON SUPPORTED: " + connector.getClass());
-                    }
+                } else {
+                    System.err.println("CONNECTOR NON SUPPORTED: " + connector.getClass());
                 }
             }
         }
@@ -367,6 +358,7 @@ public abstract class ScoreLayout {
 
 
     public abstract void layout() throws IM3Exception;
+
     public abstract Collection<Canvas> getCanvases();
 
     protected void addConnector(LayoutConnector connector) {

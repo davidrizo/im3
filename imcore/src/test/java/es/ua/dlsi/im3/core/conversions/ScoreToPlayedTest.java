@@ -4,8 +4,10 @@ import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.played.*;
 import es.ua.dlsi.im3.core.played.PlayedNote;
 import es.ua.dlsi.im3.core.played.io.MidiSongExporter;
+import es.ua.dlsi.im3.core.played.io.MidiSongImporterTest;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
+import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.junit.Test;
@@ -53,10 +55,10 @@ public class ScoreToPlayedTest {
         ScoreToPlayed conversor = new ScoreToPlayed();
         PlayedSong played = conversor.createPlayedSongFromScore(scoreSong);
 
-        assertEquals("Tracks", 1, played.getTracks().size());
-        SongTrack track = played.getTracks().get(0);
+        assertEquals("Tracks", 2, played.getTracks().size());
+        assertEquals("Global track wih 0 notes", 0, played.getTracks().get(0).getNumNotes());
+        SongTrack track = played.getTracks().get(1);
         assertEquals("Notes", 4, track.getNumNotes());
-
         ArrayList<PlayedNote> notes = track.getNotesAsArray();
         assertEquals("Note #0 pitch", 60, notes.get(0).getMidiPitch());
         assertEquals("Note #0 onset", 0, notes.get(0).getTime());
@@ -77,4 +79,27 @@ public class ScoreToPlayedTest {
         exporter.exportSong(file, played);
     }
 
+    @Test
+    public void createPlayedSongFromScoreKeyChanges() throws Exception {
+        MusicXMLImporter importer = new MusicXMLImporter();
+        ScoreSong scoreSong = importer.importSong(TestFileUtils.getFile("/testdata/core/io/keys.xml"));
+
+        ScoreToPlayed conversor = new ScoreToPlayed();
+        PlayedSong played = conversor.createPlayedSongFromScore(scoreSong);
+
+        MidiSongImporterTest midiSongImporterTest = new MidiSongImporterTest();
+        midiSongImporterTest.doTest(MidiSongImporterTest::assertTimeKeyChanges, played);
+    }
+
+    @Test
+    public void createPlayedSongFromScoreMeterChanges() throws Exception {
+        MusicXMLImporter importer = new MusicXMLImporter();
+        ScoreSong scoreSong = importer.importSong(TestFileUtils.getFile("/testdata/core/io/meters.xml"));
+
+        ScoreToPlayed conversor = new ScoreToPlayed();
+        PlayedSong played = conversor.createPlayedSongFromScore(scoreSong);
+
+        MidiSongImporterTest midiSongImporterTest = new MidiSongImporterTest();
+        midiSongImporterTest.doTest(MidiSongImporterTest::assertTimeSignatureChanges, played);
+    }
 }

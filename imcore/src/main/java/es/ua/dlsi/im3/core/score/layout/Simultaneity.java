@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutPageBreak;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSystemBreak;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 
@@ -193,7 +194,18 @@ public class Simultaneity implements Comparable<Simultaneity> {
         return false;
     }
 
+    public boolean isPageBreak() {
+        boolean result = false;
+        for (LayoutCoreSymbol layoutCoreSymbol : symbols) {
+            if (layoutCoreSymbol instanceof LayoutPageBreak) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public double getX() {
         return x;
     }
+
 }

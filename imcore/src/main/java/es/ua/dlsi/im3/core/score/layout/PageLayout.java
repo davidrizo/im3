@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 
@@ -12,16 +13,19 @@ import java.util.*;
 public class PageLayout extends ScoreLayout {
     private final CoordinateComponent height;
     private final CoordinateComponent width;
+    private final boolean includePageAndSystemBreaks;
     private ArrayList<Page> pages;
 
-    public PageLayout(ScoreSong song, LayoutFonts font, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
-        super(song, font);
+    public PageLayout(ScoreSong song, Collection<Staff> staves, boolean includePageAndSystemBreaks, LayoutFonts font, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
+        super(song, staves, font);
+        this.includePageAndSystemBreaks = includePageAndSystemBreaks;
         this.width = width;
         this.height = height;
     }
 
-    public PageLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
-        super(song, fonts);
+    public PageLayout(ScoreSong song, Collection<Staff> staves, boolean includePageAndSystemBreaks, HashMap<Staff, LayoutFonts> fonts, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
+        super(song, staves, fonts);
+        this.includePageAndSystemBreaks = includePageAndSystemBreaks;
         this.width = width;
         this.height = height;
     }
@@ -32,6 +36,32 @@ public class PageLayout extends ScoreLayout {
         System.err.println("TO-DO CONNECTORS IN PAGE LAYOUT"); // TODO: 1/10/17 Connectors en Page Layout
     }
 
+    /**
+     * It a connector spans two layout systems it must be split into two
+     * @param from
+     * @param to
+     * @throws IM3Exception
+     */
+    @Override
+    protected void createSlur(IConnectableWithSlurInStaff from, IConnectableWithSlurInStaff to) throws IM3Exception {
+        if (from == null) {
+            throw new IM3Exception("Cannot find a layout symbol for core symbol " + from + " for connector " + to);
+        }
+
+        if (from.getLayoutStaff() == to.getLayoutStaff()) {
+            LayoutSlur layoutSlur = new LayoutSlur(from, to);
+            addConnector(layoutSlur);
+        } else {
+            // create two broken slurs
+            LayoutSlur layoutSlurFrom = new LayoutSlur(from, null);
+            addConnector(layoutSlurFrom);
+
+            LayoutSlur layoutSlurTo = new LayoutSlur(null, to);
+            addConnector(layoutSlurTo);
+        }
+    }
+
+
     @Override
     public void layout() throws IM3Exception {
         // TODO: 19/9/17 En esta versión creamos todos los símbolos cada vez - habría que crear sólo los necesarios
@@ -41,28 +71,46 @@ public class PageLayout extends ScoreLayout {
         // TODO: 25/9/17 Intentar unificar código con HorizontalLayout
 
         // add the system breaks, with a default duration that will be able to fit the new clef and new key signature
-        for (SystemBreak sb: scoreSong.getSystemBreaks().values()) {
-            // use the first layout font, it can be any one
-            LayoutSystemBreak lsb = new LayoutSystemBreak(layoutFonts.values().iterator().next(), sb);
-            simultaneities.add(lsb);
-        }
+        if (includePageAndSystemBreaks) {
+            for (SystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
+                // use the first layout font, it can be any one
+                LayoutSystemBreak lsb = new LayoutSystemBreak(layoutFonts.values().iterator().next(), sb);
+                simultaneities.add(lsb);
+            }
+            // TODO: 20/11/17 He quitado los page breaks
+            /*for (PageBreak sb: staves.iterator().next().getPageBreaks().values()) {
+                // use the first layout font, it can be any one
+                LayoutPageBreak lsb = new LayoutPageBreak(layoutFonts.values().iterator().next(), sb);
+                simultaneities.add(lsb);
+            }*/
+            //--------
+        } // else discard system breaks
 
         // perform a first horizontal layout
         doHorizontalLayout(simultaneities);
 
         // now locate the points where insert line and page breaks and create LayoutStaff
         //TODO Page breaks - ahora todo en un page
-        Page page = new Page(new CoordinateComponent(width), new CoordinateComponent(height)); //TOOD
-        pages.add(page);
+        Page lastPage = new Page(new CoordinateComponent(width), new CoordinateComponent(height)); //TODO
+        pages.add(lastPage);
         double layoutStaffStartingX = 0;
         double nextY = LayoutConstants.TOP_MARGIN;
+
         LayoutStaffSystem lastSystem = null;
         Simultaneities lastLayoutSimultaneities = null;
 
         //TODO Calcular por dónde partir, por donde no quepa - ahora sólo miro los system breaks manuales
         ArrayList<LayoutCoreSymbol> newSimultaneitiesToAdd = new ArrayList<>(); // breaks, clefs, key signatures
         for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {
-            if (lastSystem == null || simultaneity.isSystemBreak()) { // TODO que sea también porque no quepan
+            boolean pageBreak = simultaneity.isPageBreak();
+            if (pageBreak) {
+                lastPage = new Page(new CoordinateComponent(width), new CoordinateComponent(height)); //TODO
+                pages.add(lastPage);
+                layoutStaffStartingX = 0;
+                nextY = LayoutConstants.TOP_MARGIN;
+            }
+
+            if (lastSystem == null || simultaneity.isSystemBreak() || pageBreak) { // TODO que sea también porque no quepan
                 layoutStaffStartingX = simultaneity.getX();
                 if (lastSystem != null) {
                     lastSystem.setEndingTime(simultaneity.getTime());
@@ -71,25 +119,25 @@ public class PageLayout extends ScoreLayout {
                 lastLayoutSimultaneities = new Simultaneities();
                 lastSystem.setStartingTime(simultaneity.getTime());
                 lastSystem.setStartingX(layoutStaffStartingX);
-                page.addSystem(lastSystem);
+                lastPage.addSystem(lastSystem);
 
-                if (scoreSong.getStaves().size() > 1) {
+                if (staves.size() > 1) {
                     nextY += LayoutConstants.SYSTEM_SEPARATION;
                 } // if not do not need to separate more
                 // TODO - si no cabe en página que se cree otra
 
-                for (Staff staff : scoreSong.getStaves()) {
+                for (Staff staff : staves) {
                     CoordinateComponent y = new CoordinateComponent(nextY);
                     Coordinate staffLeftTopCoordinate = new Coordinate(null, y);
-                    Coordinate staffRightTopCoordinate = new Coordinate(page.getCanvas().getWidthCoordinateComponent(), y);
+                    Coordinate staffRightTopCoordinate = new Coordinate(lastPage.getCanvas().getWidthCoordinateComponent(), y);
                     LayoutStaff layoutStaff = new LayoutStaff(this, staffLeftTopCoordinate, staffRightTopCoordinate, staff);
                     layoutStaves.put(staff, layoutStaff);
                     lastSystem.addLayoutStaff(layoutStaff);
-                    page.getCanvas().add(layoutStaff.getGraphics());// TODO: 25/9/17 ¿Realmente hace falta el canvas?
+                    lastPage.getCanvas().add(layoutStaff.getGraphics());// TODO: 25/9/17 ¿Realmente hace falta el canvas?
                     nextY += LayoutConstants.STAFF_SEPARATION;
 
                     // in not first system, add clefs and key signatures
-                    if (page.getSystemsInPage().size() > 1) {
+                    if (lastPage.getSystemsInPage().size() > 1) {
                         Time time = simultaneity.getTime();
                         Clef clef = staff.getClefAtTime(time);
                         if (clef == null) {
@@ -142,10 +190,10 @@ public class PageLayout extends ScoreLayout {
                         } else {
                             LayoutStaff layoutStaff = lastSystem.get(staff);
                             layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
+                            lastPage.getCanvas().getElements().add(layoutCoreBarline.getGraphics());
+
+                            lastSystem.addLayoutCoreBarline(layoutCoreBarline);
                         }
-
-
-
                     }
                     //TODO Quizás mejor en el system
                    // page.getCanvas().add(coreSymbol.getGraphics());
@@ -163,14 +211,20 @@ public class PageLayout extends ScoreLayout {
             simultaneities.add(coreSymbol);
         }
 
-        for (LayoutStaffSystem staffSystem: page.getSystemsInPage()) {
-            for (LayoutStaff layoutStaff: staffSystem.getStaves()) {
-                //layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
-                layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+        for (Page page: pages) {
+            for (LayoutStaffSystem staffSystem : page.getSystemsInPage()) {
+                for (LayoutStaff layoutStaff : staffSystem.getStaves()) {
+                    //layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+                    layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+                }
             }
         }
 
-        createStaffConnectors();
+        for (Page page: pages) {
+            for (LayoutStaffSystem system: page.getSystemsInPage()) {
+               system.createStaffConnectors(connectors); //TODO ¿Qué pasa si un conector salta de página?
+            }
+        }
 
         //simultaneities.printDebug();
 
@@ -202,13 +256,23 @@ public class PageLayout extends ScoreLayout {
             }
         }
 
-        // add the connectors to the canvas
-        for (LayoutConnector connector: connectors) {
-            page.getCanvas().add(connector.getGraphics());
-        }
+        createConnectors();
+        createBeams();
 
-        for (LayoutBeamGroup beam: beams) {
-            page.getCanvas().add(beam.getGraphicsElement());
+
+        for (Page page: pages) {
+            // add the connectors to the canvas
+            for (LayoutConnector connector : connectors) {
+                if (connector.getGraphics().getCanvas() == null) {
+                    page.getCanvas().add(connector.getGraphics());
+                }
+            }
+
+            for (LayoutBeamGroup beam : beams) {
+                if (beam.getGraphicsElement().getCanvas() == null) {
+                    page.getCanvas().add(beam.getGraphicsElement());
+                }
+            }
         }
 
     }
