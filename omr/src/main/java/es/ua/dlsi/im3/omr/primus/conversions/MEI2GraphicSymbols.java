@@ -154,7 +154,7 @@ public class MEI2GraphicSymbols {
             SimpleNote note = (SimpleNote) symbol;
 
             if (note.getAtomFigure().getFermata() != null && note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), PositionsInStaff.SPACE_6));
             }
 
             PositionInStaff positionInStaff = symbol.getStaff().computePositionInStaff(note.getTime(),
@@ -182,7 +182,7 @@ public class MEI2GraphicSymbols {
             if (note.getMarks() != null) {
                 for (StaffMark mark : note.getMarks()) {
                     if (mark instanceof Trill) {
-                        graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, null));
+                        graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, PositionsInStaff.SPACE_6));
                     } else {
                         throw new IM3Exception("Unsupported mark: " + mark.getClass());
                     }
@@ -192,7 +192,8 @@ public class MEI2GraphicSymbols {
             graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
 
             if (note.getAtomFigure().getFermata() != null && note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPosition().toString().toLowerCase(),
+                        PositionsInStaff.SPACE_MINUS_1));
             }
 
             PositionInStaff dotPositionInStaff;

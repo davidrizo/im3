@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.omr.interactive;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.gui.command.CommandManager;
+import es.ua.dlsi.im3.gui.javafx.ViewLoader;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.interactive.documentanalysis.DocumentAnalysisController;
