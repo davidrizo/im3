@@ -2,9 +2,12 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.omr.model.pojo.Region;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageFile;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 
@@ -22,7 +25,7 @@ public class OMRPage {
 
     int order;
     Set<OMRInstrument> instrumentList;
-    List<OMRRegion> regionList;
+    ObservableList<OMRRegion> regionList;
 
     /**
      * Used for unit tests
@@ -50,7 +53,7 @@ public class OMRPage {
 
     public OMRPage(OMRProject omrProject, File imagesFolder, String imageRelativeFileName, ScoreSong scoreSong) throws IM3Exception {
         this.instrumentList = new TreeSet<>(); // we mantain it ordered
-        this.regionList = new ArrayList<>();
+        this.regionList = FXCollections.observableList(new LinkedList<>());
         this.imagesFolder = imagesFolder;
         this.omrProject = omrProject;
         this.imageRelativeFileName = imageRelativeFileName;
@@ -140,7 +143,9 @@ public class OMRPage {
     public void removeRetion(OMRRegion region) {
         this.regionList.remove(region);
     }
-
+    public ObservableList<OMRRegion> regionListProperty() {
+        return regionList;
+    }
 
 
 
@@ -186,5 +191,29 @@ public class OMRPage {
 
     public boolean containsInstrument(OMRInstrument instrument) {
         return instrumentList.contains(instrument);
+    }
+
+    public void clearRegions() {
+        this.regionList.clear();
+    }
+
+    public void addRegions(List<Region> regions) {
+        for (Region region: regions) {
+            this.regionList.add(new OMRRegion(region));
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OMRPage page = (OMRPage) o;
+        return Objects.equals(imageFile, page.imageFile);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(imageFile);
     }
 }

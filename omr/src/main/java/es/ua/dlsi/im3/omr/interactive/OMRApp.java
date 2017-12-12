@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 
 public class OMRApp extends Application {
     private static Stage mainStage;
+    private static KeyEventManager keyEventManager;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -27,6 +29,7 @@ public class OMRApp extends Application {
         Scene scene = new Scene(new Group());
         primaryStage.setScene(scene);
 
+        keyEventManager = new KeyEventManager(scene);
         //Parent root = FXMLLoader.load(getClass().getResource("/fxml/omrmainmensuraltagger.fxml"));
 
         //Parent root = FXMLLoader.load(getClass().getResource("/fxml/omrmain.fxml"));
@@ -39,4 +42,5 @@ public class OMRApp extends Application {
     public static Stage getMainStage() {
         return mainStage;
     }
+    public static KeyEventManager getKeyEventManager() {return keyEventManager; }
 }

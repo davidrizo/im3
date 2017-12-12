@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.interactive.model.pojo;
+package es.ua.dlsi.im3.omr.model.pojo;
 
 public class Instrument implements Comparable<Instrument> {
     String name;

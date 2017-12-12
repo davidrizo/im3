@@ -1,6 +1,4 @@
-package es.ua.dlsi.im3.omr.interactive.model.pojo;
-
-import es.ua.dlsi.im3.omr.segmentation.RegionType;
+package es.ua.dlsi.im3.omr.model.pojo;
 
 public class Region {
     double fromX;
@@ -9,7 +7,7 @@ public class Region {
     double toY;
     RegionType regionType;
 
-    public Region(double fromX, double fromY, double toX, double toY, RegionType regionType) {
+    public Region(RegionType regionType, double fromX, double fromY, double toX, double toY) {
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;

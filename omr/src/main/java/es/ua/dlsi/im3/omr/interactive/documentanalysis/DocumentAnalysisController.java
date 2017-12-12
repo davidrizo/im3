@@ -2,9 +2,14 @@ package es.ua.dlsi.im3.omr.interactive.documentanalysis;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.gui.javafx.JavaFXUtils;
 import es.ua.dlsi.im3.omr.interactive.DashboardController;
 import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
+import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
+import es.ua.dlsi.im3.omr.model.pojo.Region;
+import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
+import es.ua.dlsi.im3.omr.segmentation.PageSegmenterFactory;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,7 +21,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class DocumentAnalysisController implements Initializable {
@@ -32,7 +39,8 @@ public class DocumentAnalysisController implements Initializable {
     ToggleGroup tgInstruments;
 
     private DashboardController dashboard;
-    private List<OMRPage> pages;
+
+    private HashMap<OMRPage, PageView> pages;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,11 +56,11 @@ public class DocumentAnalysisController implements Initializable {
     }
 
     public void setPages(OMRPage omrPage, List<OMRPage> pagesToOpen) {
-        pages = pagesToOpen;
+        pages = new HashMap<>();
 
         // create the buttons
         createInstrumentButtons(omrPage);
-        createImageViews(omrPage);
+        createImageViews(pagesToOpen, omrPage);
     }
 
     private void createInstrumentButtons(OMRPage selectedOMRPage) {
@@ -65,14 +73,15 @@ public class DocumentAnalysisController implements Initializable {
         }
     }
 
-    private void createImageViews(OMRPage selectedOMRPage) {
+    private void createImageViews(List<OMRPage> pagesToOpen, OMRPage selectedOMRPage) {
         Separator sep = new Separator(Orientation.VERTICAL);
         sep.setMaxWidth(20);
         toolbar.getItems().add(sep);
 
         PageView selectedPageView = null;
-        for (OMRPage omrPage: pages) {
+        for (OMRPage omrPage: pagesToOpen) {
             PageView pageView = new PageView(omrPage, this, vboxPages.widthProperty());
+            pages.put(omrPage, pageView);
             vboxPages.getChildren().add(pageView);
             if (omrPage == selectedOMRPage) {
                 selectedPageView = pageView;
@@ -92,7 +101,7 @@ public class DocumentAnalysisController implements Initializable {
         boolean found = false;
         for (Node node: vboxPages.getChildren()) {
             if (node == selectedPageView) {
-                ensureVisible(scrollPane, node);
+                JavaFXUtils.ensureVisible(scrollPane, node);
                 found = true;
                 break;
             }
@@ -103,24 +112,16 @@ public class DocumentAnalysisController implements Initializable {
     }
 
 
-    //TODO A utilidades de JavaFX
-    private static void ensureVisible(ScrollPane scrollPane, Node node) {
-        Bounds viewport = scrollPane.getViewportBounds();
-        double contentHeight = scrollPane.getContent().localToScene(scrollPane.getContent().getBoundsInLocal()).getHeight();
-        double nodeMinY = node.localToScene(node.getBoundsInLocal()).getMinY();
-        double nodeMaxY = node.localToScene(node.getBoundsInLocal()).getMaxY();
 
-        double vValueDelta = 0;
-        double vValueCurrent = scrollPane.getVvalue();
-
-        if (nodeMaxY < 0) {
-            // currently located above (remember, top left is (0,0))
-            vValueDelta = (nodeMinY - viewport.getHeight()) / contentHeight;
-        } else if (nodeMinY > viewport.getHeight()) {
-            // currently located below
-            vValueDelta = (nodeMinY + viewport.getHeight()) / contentHeight;
+    @FXML
+    public void handleRecognizeRegions() {
+        //TODO Comandos
+        IPageSegmenter pageSegmenter = PageSegmenterFactory.getInstance().create();
+        for (Map.Entry<OMRPage, PageView> pageEntry: pages.entrySet()) {
+            OMRPage omrPage = pageEntry.getKey();
+            List<Region> regions = pageSegmenter.segment(omrPage.getImageFile());
+            omrPage.clearRegions();
+            omrPage.addRegions(regions);
         }
-        scrollPane.setVvalue(vValueCurrent + vValueDelta);
     }
-
 }

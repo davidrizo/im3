@@ -4,11 +4,10 @@ import com.thoughtworks.xstream.XStream;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.interactive.OMRMainController;
-import es.ua.dlsi.im3.omr.interactive.model.pojo.Instrument;
-import es.ua.dlsi.im3.omr.interactive.model.pojo.Page;
-import es.ua.dlsi.im3.omr.interactive.model.pojo.Project;
-import es.ua.dlsi.im3.omr.interactive.model.pojo.Staff;
+import es.ua.dlsi.im3.omr.model.pojo.Instrument;
+import es.ua.dlsi.im3.omr.model.pojo.Page;
+import es.ua.dlsi.im3.omr.model.pojo.Project;
+import es.ua.dlsi.im3.omr.model.pojo.Staff;
 
 import java.io.File;
 import java.io.FileNotFoundException;

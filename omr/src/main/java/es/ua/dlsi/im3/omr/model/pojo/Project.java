@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.interactive.model.pojo;
+package es.ua.dlsi.im3.omr.model.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
