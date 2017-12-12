@@ -22,16 +22,16 @@ public class DummySymbolRecognizer implements ISymbolsRecognizer {
     private void recognize(Page page) {
         Symbol [][] symbols = new Symbol[][] { // an array for each region
                 {
-                    new Symbol(new GraphicalToken(GraphicalSymbol.text, "Tiple 1º Coro a/2", PositionsInStaff.SPACE_6), 1782, 57),
+                    new Symbol(new GraphicalToken(GraphicalSymbol.text, "Tiple 1º Coro a/2", PositionsInStaff.SPACE_6), 1782, 58, 57, 72),
                 },
                 {
-                        new Symbol(new GraphicalToken(GraphicalSymbol.text, "Jalon", PositionsInStaff.SPACE_6), 2633, 239),
+                        new Symbol(new GraphicalToken(GraphicalSymbol.text, "Jalon", PositionsInStaff.SPACE_6), 2633, 29, 239, 107),
                 },
                 {
-                        new Symbol(new GraphicalToken(GraphicalSymbol.clef, "g", PositionsInStaff.LINE_2), 1605, 135),
-                        new Symbol(new GraphicalToken(GraphicalSymbol.metersign, "c", PositionsInStaff.LINE_2), 1695, 212),
-                        new Symbol(new GraphicalToken(GraphicalSymbol.rest, "minima", PositionsInStaff.LINE_4), 1761, 164),
-                        new Symbol(new GraphicalToken(GraphicalSymbol.rest, "semibreve", PositionsInStaff.SPACE_4), 1788, 180)
+                        new Symbol(new GraphicalToken(GraphicalSymbol.clef, "g", PositionsInStaff.LINE_2), 1605, 207, 135, 191),
+                        new Symbol(new GraphicalToken(GraphicalSymbol.metersign, "c", PositionsInStaff.LINE_2), 1695, 162, 212, 128),
+                        new Symbol(new GraphicalToken(GraphicalSymbol.rest, "minima", PositionsInStaff.LINE_4), 1761, 162, 164, 128),
+                        new Symbol(new GraphicalToken(GraphicalSymbol.rest, "semibreve", PositionsInStaff.SPACE_4), 1788,162,  180, 128)
                         //TODO El resto
                 }
         };

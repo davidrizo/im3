@@ -1,13 +1,17 @@
 package es.ua.dlsi.im3.omr.interactive.pageedit;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.gui.javafx.JavaFXUtils;
 import es.ua.dlsi.im3.omr.interactive.DashboardController;
-import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
-import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
+import es.ua.dlsi.im3.omr.interactive.model.*;
+import es.ua.dlsi.im3.omr.model.pojo.Page;
 import es.ua.dlsi.im3.omr.model.pojo.Region;
+import es.ua.dlsi.im3.omr.model.pojo.Symbol;
 import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
 import es.ua.dlsi.im3.omr.segmentation.PageSegmenterFactory;
+import es.ua.dlsi.im3.omr.symbolrecognition.ISymbolsRecognizer;
+import es.ua.dlsi.im3.omr.symbolrecognition.SymbolRecognizerFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -17,10 +21,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class PageEditController implements Initializable {
     @FXML
@@ -159,7 +160,39 @@ public class PageEditController implements Initializable {
 
     // --------- Symbols step
     @FXML
-    public void handleRecognizeSymbols() {
+    public void handleRecognizeSymbols() throws IM3Exception {
+        ISymbolsRecognizer recognizer = SymbolRecognizerFactory.getInstance().create();
+        //TODO decir que hemos guardado con un splash screen
+        dashboard.save();
+        HashMap<Page, OMRPage> pagesMap = new HashMap<>();
+        ArrayList<Page> pojoPages = new ArrayList<>();
+        //TODO ¿Mejor en modelo?
+        for (OMRPage omrPage: pages.keySet()) {
+            Page pojoPage = omrPage.createPOJO();
+            pagesMap.put(pojoPage, omrPage);
+            pojoPages.add(pojoPage);
+        }
 
+        // recognize
+        recognizer.recognize(pojoPages);
+
+        // load results in OMRPage / OMRRegion
+        for (Page pojoPage: pojoPages) {
+            OMRPage omrPage = pagesMap.get(pojoPage);
+            if (omrPage == null) {
+                throw new IM3RuntimeException("Cannot find omrPage for POJO " + pojoPage);
+            }
+            for (Region pojoRegion: pojoPage.getRegions()) {
+                OMRRegion omrRegion = omrPage.findRegion(pojoRegion);
+                if (omrRegion == null) {
+                    throw new IM3RuntimeException("OMRRegion not found for POJO region " + pojoRegion);
+                }
+                omrRegion.clearSymbols();
+                for (Symbol symbol: pojoRegion.getSymbols()) {
+                    // use the y and height from the region
+                    omrRegion.addSymbol(new OMRSymbol(symbol));
+                }
+            }
+        }
     }
 }

@@ -2,7 +2,10 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.omr.model.pojo.Instrument;
+import es.ua.dlsi.im3.omr.model.pojo.Page;
 import es.ua.dlsi.im3.omr.model.pojo.Region;
+import es.ua.dlsi.im3.omr.model.pojo.Staff;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageFile;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
@@ -215,5 +218,41 @@ public class OMRPage {
     public int hashCode() {
 
         return Objects.hash(imageFile);
+    }
+
+    public Page createPOJO() {
+        Page pojoPage = new Page(getImageRelativeFileName());
+        pojoPage.setOrder(getOrder());
+        for (OMRInstrument instrument: getInstrumentList()) {
+            // no need to have the same object, just need to have the same name
+            pojoPage.getInstruments().add(new Instrument(instrument.getName()));
+        }
+        for (OMRRegion region: getRegionList()) {
+            pojoPage.getRegions().add(new Region(region.getRegionType(), region.getFromX(), region.getFromY(), region.getFromX() + region.getWidth(), region.getFromY() + region.getHeight()));
+        }
+        for (OMRStaff staff: getStaves()) {
+            Staff pojoStaff = new Staff();
+            pojoPage.getStaves().add(pojoStaff);
+        }
+
+        return pojoPage;
+    }
+
+    /**
+     *
+     * @param pojoRegion
+     * @return null if not found
+     */
+    public OMRRegion findRegion(Region pojoRegion) {
+        for (OMRRegion region: regionList) {
+            if (region.getFromX() == pojoRegion.getFromX()
+                && region.getFromY() == pojoRegion.getFromY()
+                && region.getWidth() == pojoRegion.getToX() - pojoRegion.getFromX()
+                && region.getHeight() == pojoRegion.getToY() - pojoRegion.getFromY()
+                    && region.getRegionType() == pojoRegion.getRegionType()) {
+                return region;
+            }
+        }
+        return null;
     }
 }

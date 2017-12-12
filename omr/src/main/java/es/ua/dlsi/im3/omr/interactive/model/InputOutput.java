@@ -21,29 +21,7 @@ public class InputOutput {
     }
 
     public void save(OMRProject project) throws ExportException {
-        Project pojoProject = new Project();
-        for (OMRInstrument instrument: project.instrumentsProperty()) {
-            Instrument pojoInstrument = new Instrument(instrument.getName());
-            pojoProject.getInstruments().add(pojoInstrument);
-        }
-
-        for (OMRPage page: project.pagesProperty()) {
-            Page pojoPage = new Page(page.getImageRelativeFileName());
-            pojoPage.setOrder(page.getOrder());
-            for (OMRInstrument instrument: page.getInstrumentList()) {
-                // no need to have the same object, just need to have the same name
-                pojoPage.getInstruments().add(new Instrument(instrument.getName()));
-            }
-            for (OMRRegion region: page.getRegionList()) {
-                pojoPage.getRegions().add(new Region(region.getRegionType(), region.getFromX(), region.getFromY(), region.getFromX() + region.getWidth(), region.getFromY() + region.getHeight()));
-            }
-            pojoProject.getPages().add(pojoPage);
-            for (OMRStaff staff: page.getStaves()) {
-                Staff pojoStaff = new Staff();
-                pojoPage.getStaves().add(pojoStaff);
-            }
-        }
-
+        Project pojoProject = project.createPOJO();
         File projectFolder = project.getProjectFolder();
         File xmlFile = new File(projectFolder, createXMLFilename(projectFolder));
         XStream xStream = new XStream();

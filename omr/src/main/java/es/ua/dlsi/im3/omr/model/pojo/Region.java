@@ -14,13 +14,16 @@ public class Region implements Comparable<Region> {
     RegionType regionType;
     List<Symbol> symbols;
 
+    public Region() {
+        this.symbols = new LinkedList<>();
+    }
     public Region(RegionType regionType, double fromX, double fromY, double toX, double toY) {
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
         this.toY = toY;
         this.regionType = regionType;
-        symbols = new LinkedList<>();
+        this.symbols = new LinkedList<>();
     }
 
     public double getFromX() {
@@ -92,5 +95,16 @@ public class Region implements Comparable<Region> {
         } else {
             return regionType.compareTo(o.regionType);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Region{" +
+                "fromX=" + fromX +
+                ", fromY=" + fromY +
+                ", toX=" + toX +
+                ", toY=" + toY +
+                ", regionType=" + regionType +
+                '}';
     }
 }

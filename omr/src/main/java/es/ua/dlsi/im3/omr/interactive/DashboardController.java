@@ -105,6 +105,7 @@ public class DashboardController implements Initializable {
                 title.setValue(OMRModel.getInstance().getCurrentProject().getName());
                 openPagesView();
             } catch (Throwable e) {
+                e.printStackTrace();
                 ShowError.show(OMRApp.getMainStage(), "Cannot create project", e);
             }
             //borderPane.getScene().getRoot().setCursor(Cursor.DEFAULT);
@@ -121,6 +122,7 @@ public class DashboardController implements Initializable {
                 title.setValue(OMRModel.getInstance().getCurrentProject().getName());
                 openPagesView();
             } catch (Throwable e) {
+                e.printStackTrace();
                 ShowError.show(OMRApp.getMainStage(), "Cannot open project", e);
             }
         }

@@ -34,6 +34,6 @@ public enum GraphicalSymbol {
 
     @Override
     public String toString() {
-        return this.name(); // podemos sobreescribirlo
+        return this.name(); // usado en el GUI así
     }
 }

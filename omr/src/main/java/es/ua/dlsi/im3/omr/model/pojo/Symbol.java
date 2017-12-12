@@ -14,11 +14,16 @@ public class Symbol {
     double x;
     double width;
 
-    public Symbol(GraphicalToken graphicalToken, double x, double width) {
+    double y;
+    double height;
+
+    public Symbol(GraphicalToken graphicalToken, double x, double y, double width, double height) {
         this.graphicalToken = graphicalToken;
         this.accepted = false;
         this.x = x;
         this.width = width;
+        this.height = height;
+        this.y = y;
     }
 
     public boolean isAccepted() {
@@ -29,11 +34,11 @@ public class Symbol {
         this.accepted = accepted;
     }
 
-    public GraphicalToken getGraphicalSymbol() {
+    public GraphicalToken getGraphicalToken() {
         return graphicalToken;
     }
 
-    public void setGraphicalSymbol(GraphicalToken graphicalToken) {
+    public void setGraphicalToken(GraphicalToken graphicalToken) {
         this.graphicalToken = graphicalToken;
     }
 
@@ -51,5 +56,21 @@ public class Symbol {
 
     public void setWidth(double width) {
         this.width = width;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
     }
 }
