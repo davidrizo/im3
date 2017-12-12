@@ -32,7 +32,10 @@
                         <Label text="Draw a rectangle to create a region" />
                     </items>
                 </ToolBar>
-                <ToolBar fx:id="toolbarSymbols" prefHeight="40.0" HBox.hgrow="ALWAYS" />
+                <ToolBar fx:id="toolbarSymbols" prefHeight="40.0" HBox.hgrow="ALWAYS">
+               <items>
+                  <Button mnemonicParsing="false" onAction="#handleRecognizeSymbols" text="Recognize symbols" />
+               </items></ToolBar>
                 <ToolBar fx:id="toolbarMusic" prefHeight="40.0" HBox.hgrow="ALWAYS" />
             </children>
         </HBox>

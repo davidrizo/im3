@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.omr.primus.conversions;
 
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -5,7 +5,7 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.language.modern.GraphicalModernSymbolsAutomaton;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import es.ua.dlsi.im3.omr.primus.conversions.MEI2GraphicSymbols;
 import org.apache.commons.math3.fraction.BigFraction;
 

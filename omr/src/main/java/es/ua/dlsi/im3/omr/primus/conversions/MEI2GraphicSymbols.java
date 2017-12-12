@@ -8,6 +8,8 @@ import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 import java.io.*;
 import java.util.ArrayList;

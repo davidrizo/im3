@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.primus.conversions;
+package es.ua.dlsi.im3.omr.model.pojo;
 
 public enum GraphicalSymbol {
     dot,
@@ -16,7 +16,8 @@ public enum GraphicalSymbol {
     fermata,
     multirest,
     gracenote,
-    trill;
+    trill,
+    text;
 
 
     /*public static final String DOT = "dot-";

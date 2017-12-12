@@ -8,8 +8,8 @@ import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import es.ua.dlsi.im3.omr.language.mensural.GraphicalMensuralSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.language.modern.GraphicalModernSymbolsAutomaton;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import org.junit.Test;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.primus.conversions;
+package es.ua.dlsi.im3.omr.model.pojo;
 
 import es.ua.dlsi.im3.core.adt.dfa.Token;
 import es.ua.dlsi.im3.core.score.PositionInStaff;

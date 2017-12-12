@@ -59,7 +59,7 @@ public class PageEditController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tgInstruments = new ToggleGroup();
-        System.out.println("TBM="+toolbarMusic);
+        System.out.println("TBM=" + toolbarMusic);
     }
 
     public void setDashboard(DashboardController dashboard) {
@@ -80,8 +80,8 @@ public class PageEditController implements Initializable {
 
     private void createInstrumentButtons(OMRPage selectedOMRPage) {
         toolbarMusic.getItems().add(0, new Label("Select an instrument"));
-        int i=1;
-        for (OMRInstrument instrument: selectedOMRPage.getInstrumentList()) {
+        int i = 1;
+        for (OMRInstrument instrument : selectedOMRPage.getInstrumentList()) {
             ToggleButton button = new ToggleButton(instrument.getName());
             button.setToggleGroup(tgInstruments);
             toolbarMusic.getItems().add(i++, button); // add before other buttons and separator
@@ -90,7 +90,7 @@ public class PageEditController implements Initializable {
 
     private void createImageViews(List<OMRPage> pagesToOpen, OMRPage selectedOMRPage) {
         PageView selectedPageView = null;
-        for (OMRPage omrPage: pagesToOpen) {
+        for (OMRPage omrPage : pagesToOpen) {
             PageView pageView = new PageView(omrPage, this, vboxPages.widthProperty());
             pages.put(omrPage, pageView);
             vboxPages.getChildren().add(pageView);
@@ -110,7 +110,7 @@ public class PageEditController implements Initializable {
 
     private void focus(PageView selectedPageView) {
         boolean found = false;
-        for (Node node: vboxPages.getChildren()) {
+        for (Node node : vboxPages.getChildren()) {
             if (node == selectedPageView) {
                 JavaFXUtils.ensureVisible(scrollPane, node);
                 found = true;
@@ -143,12 +143,13 @@ public class PageEditController implements Initializable {
         toolbarMusic.setVisible(true);
     }
 
+    // --------- Regions step
 
     @FXML
     public void handleRecognizeRegions() {
         //TODO Comandos
         IPageSegmenter pageSegmenter = PageSegmenterFactory.getInstance().create();
-        for (Map.Entry<OMRPage, PageView> pageEntry: pages.entrySet()) {
+        for (Map.Entry<OMRPage, PageView> pageEntry : pages.entrySet()) {
             OMRPage omrPage = pageEntry.getKey();
             List<Region> regions = pageSegmenter.segment(omrPage.getImageFile());
             omrPage.clearRegions();
@@ -156,4 +157,9 @@ public class PageEditController implements Initializable {
         }
     }
 
+    // --------- Symbols step
+    @FXML
+    public void handleRecognizeSymbols() {
+
+    }
 }

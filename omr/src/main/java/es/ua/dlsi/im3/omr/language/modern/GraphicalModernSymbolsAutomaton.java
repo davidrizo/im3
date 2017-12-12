@@ -9,7 +9,7 @@ import es.ua.dlsi.im3.omr.language.GraphicalSymbolAlphabet;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.language.mensural.states.EndBarState;
 import es.ua.dlsi.im3.omr.language.modern.states.*;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import org.apache.commons.math3.fraction.Fraction;
 
 import java.util.HashMap;
