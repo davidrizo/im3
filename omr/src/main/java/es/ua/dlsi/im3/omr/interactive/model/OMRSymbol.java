@@ -85,4 +85,10 @@ public class OMRSymbol {
     public void setHeight(double height) {
         this.height.set(height);
     }
+
+
+    public Symbol createPOJO() {
+        Symbol pojoSymbol = new Symbol(getGraphicalToken(), getX(), getY(), getWidth(), getHeight());
+        return pojoSymbol;
+    }
 }

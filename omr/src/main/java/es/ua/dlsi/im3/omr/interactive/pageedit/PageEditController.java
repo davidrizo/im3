@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.gui.javafx.JavaFXUtils;
 import es.ua.dlsi.im3.omr.interactive.DashboardController;
 import es.ua.dlsi.im3.omr.interactive.model.*;
+import es.ua.dlsi.im3.omr.interactive.pageedit.events.PageEditStepEvent;
 import es.ua.dlsi.im3.omr.model.pojo.Page;
 import es.ua.dlsi.im3.omr.model.pojo.Region;
 import es.ua.dlsi.im3.omr.model.pojo.Symbol;
@@ -48,6 +49,8 @@ public class PageEditController implements Initializable {
     @FXML
     ToggleGroup tgPageViewStep;
 
+    @FXML
+    Toggle toggleRegions;
     /**
      * Music editing
      */
@@ -60,7 +63,6 @@ public class PageEditController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tgInstruments = new ToggleGroup();
-        System.out.println("TBM=" + toolbarMusic);
     }
 
     public void setDashboard(DashboardController dashboard) {
@@ -77,6 +79,9 @@ public class PageEditController implements Initializable {
         // create the buttons
         createInstrumentButtons(omrPage);
         createImageViews(pagesToOpen, omrPage);
+
+        tgPageViewStep.selectToggle(toggleRegions);
+        handleRegionsStep();
     }
 
     private void createInstrumentButtons(OMRPage selectedOMRPage) {
@@ -123,25 +128,57 @@ public class PageEditController implements Initializable {
         }
     }
 
+    private void showRegions(boolean show) {
+        toolbarRegions.setVisible(show);
+        if (show) {
+            for (PageView pageView : pages.values()) {
+                pageView.handleEvent(new PageEditStepEvent(PageEditStep.regions));
+            }
+        }
+    }
+
+    private void showSymbols(boolean show) {
+        toolbarSymbols.setVisible(show);
+        if (show) {
+            if (pages != null && pages.values() != null) {
+                for (PageView pageView : pages.values()) {
+                    pageView.handleEvent(new PageEditStepEvent(PageEditStep.symbols));
+                }
+            }
+        }
+    }
+
+    private void showMusic(boolean show) {
+        toolbarMusic.setVisible(show);
+        if (show) {
+            if (pages != null && pages.values() != null) {
+                for (PageView pageView : pages.values()) {
+                    pageView.handleEvent(new PageEditStepEvent(PageEditStep.music));
+                }
+            }
+        }
+    }
+
+
     @FXML
     public void handleRegionsStep() {
-        toolbarRegions.setVisible(true);
-        toolbarSymbols.setVisible(false);
-        toolbarMusic.setVisible(false);
+        showRegions(true);
+        showSymbols(false);
+        showMusic(false);
     }
 
     @FXML
     public void handleSymbolsStep() {
-        toolbarRegions.setVisible(false);
-        toolbarSymbols.setVisible(true);
-        toolbarMusic.setVisible(false);
+        showRegions(false);
+        showSymbols(true);
+        showMusic(false);
     }
 
     @FXML
     public void handleMusicStep() {
-        toolbarRegions.setVisible(false);
-        toolbarSymbols.setVisible(false);
-        toolbarMusic.setVisible(true);
+        showRegions(false);
+        showSymbols(false);
+        showMusic(true);
     }
 
     // --------- Regions step

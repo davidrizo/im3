@@ -17,7 +17,7 @@
             <children>
                 <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="224.0" HBox.hgrow="NEVER">
                     <items>
-                        <ToggleButton mnemonicParsing="false" onAction="#handleRegionsStep" text="Regions">
+                        <ToggleButton fx:id="toggleRegions" mnemonicParsing="false" onAction="#handleRegionsStep" text="Regions">
                             <toggleGroup>
                                 <ToggleGroup fx:id="tgPageViewStep" />
                             </toggleGroup></ToggleButton>

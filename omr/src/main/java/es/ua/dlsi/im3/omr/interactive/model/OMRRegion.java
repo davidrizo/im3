@@ -38,8 +38,7 @@ public class OMRRegion {
         this.symbolList = FXCollections.observableList(new LinkedList<>());
         if (region.getSymbols() != null) {
             for (Symbol symbol : region.getSymbols()) {
-                // use the height of the region
-                this.symbolList.add(new OMRSymbol(symbol.getGraphicalToken(), symbol.getX(), fromY.get(), symbol.getWidth(), height.get()));
+                this.symbolList.add(new OMRSymbol(symbol.getGraphicalToken(), symbol.getX(), symbol.getY(), symbol.getWidth(), symbol.getHeight()));
             }
         }
     }
@@ -114,5 +113,17 @@ public class OMRRegion {
 
     public void addSymbol(OMRSymbol s) {
         symbolList.add(s);
+    }
+
+    public void removeSymbol(OMRSymbol omrSymbol) {
+        symbolList.remove(omrSymbol);
+    }
+
+    public Region createPOJO() {
+        Region pojoRegion = new Region(getRegionType(), getFromX(), getFromY(), getFromX() + getWidth(), getFromY() + getHeight());
+        for (OMRSymbol omrSymbol: symbolList) {
+            pojoRegion.addSymbol(omrSymbol.createPOJO());
+        }
+        return pojoRegion;
     }
 }

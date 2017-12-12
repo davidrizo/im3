@@ -107,4 +107,8 @@ public class Region implements Comparable<Region> {
                 ", regionType=" + regionType +
                 '}';
     }
+
+    public void addSymbol(Symbol symbol) {
+        this.symbols.add(symbol);
+    }
 }

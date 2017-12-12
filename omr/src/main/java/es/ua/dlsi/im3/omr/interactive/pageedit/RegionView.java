@@ -109,7 +109,7 @@ public class RegionView extends Group {
     }
 
     private void createSymbolView(OMRSymbol omrSymbol) {
-        SymbolView symbolView = new SymbolView(omrSymbol);
+        SymbolView symbolView = new SymbolView(pageView, this, omrSymbol);
         symbolViewHashMap.put(omrSymbol, symbolView);
         getChildren().add(symbolView);
     }
@@ -128,7 +128,7 @@ public class RegionView extends Group {
     }
 
     public void beginEdit() {
-        this.getParent().requestFocus();
+        //this.getParent().requestFocus();
         rectangle.setStrokeWidth(3);
         rectangle.beginEdit();
     }
@@ -145,5 +145,22 @@ public class RegionView extends Group {
 
     public OMRRegion getOmrRegion() {
         return omrRegion;
+    }
+
+    public void showRegionBoundingBox(boolean show) {
+        rectangle.setVisible(show);
+        label.setVisible(show);
+    }
+
+    public void showSymbols(boolean show) {
+        for (SymbolView symbolView: symbolViewHashMap.values()) {
+            symbolView.setVisible(show);
+        }
+    }
+
+    public void bringToTop(SymbolView symbolView) {
+        this.getChildren().remove(symbolView);
+        this.getChildren().add(symbolView); // put on top
+
     }
 }

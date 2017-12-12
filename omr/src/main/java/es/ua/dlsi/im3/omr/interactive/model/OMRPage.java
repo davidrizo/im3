@@ -228,7 +228,7 @@ public class OMRPage {
             pojoPage.getInstruments().add(new Instrument(instrument.getName()));
         }
         for (OMRRegion region: getRegionList()) {
-            pojoPage.getRegions().add(new Region(region.getRegionType(), region.getFromX(), region.getFromY(), region.getFromX() + region.getWidth(), region.getFromY() + region.getHeight()));
+            pojoPage.getRegions().add(region.createPOJO());
         }
         for (OMRStaff staff: getStaves()) {
             Staff pojoStaff = new Staff();
