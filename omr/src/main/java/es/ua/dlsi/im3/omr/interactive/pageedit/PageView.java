@@ -1,11 +1,11 @@
-package es.ua.dlsi.im3.omr.interactive.documentanalysis;
+package es.ua.dlsi.im3.omr.interactive.pageedit;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.javafx.SelectionRectangle;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowChoicesDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.interactive.OMRApp;
-import es.ua.dlsi.im3.omr.interactive.documentanalysis.events.RegionEditEvent;
+import es.ua.dlsi.im3.omr.interactive.pageedit.events.RegionEditEvent;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
 import es.ua.dlsi.im3.omr.model.pojo.RegionType;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 public class PageView extends Group {
     OMRPage omrPage;
-    DocumentAnalysisController documentAnalysisController;
+    PageEditController documentAnalysisController;
     ImageView imageView;
     private SelectionRectangle selectingRectangle;
 
@@ -35,9 +35,9 @@ public class PageView extends Group {
      */
     private RegionView editingRegion;
 
-    public PageView(OMRPage omrPage, DocumentAnalysisController documentAnalysisController, ReadOnlyDoubleProperty widthProperty) {
+    public PageView(OMRPage omrPage, PageEditController documentAnalysisController, ReadOnlyDoubleProperty widthProperty) {
         this.setFocusTraversable(true); // to receive key events
-        state = PageViewState.idle;
+        state = PageViewState.idleRegion;
         regions = new HashMap<>();
         this.omrPage = omrPage;
         this.documentAnalysisController = documentAnalysisController;
@@ -142,7 +142,7 @@ public class PageView extends Group {
                 keyEvent = (KeyEvent) t.getContent();
             }
             switch (state) {
-                case idle:
+                case idleRegion:
                     if (mouseEvent != null && mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED && mouseEvent.isPrimaryButtonDown() && mouseEvent.getClickCount() == 1) {
                         mouseEvent.consume();
                         createNewRegionRectangle(mouseEvent);
@@ -163,27 +163,27 @@ public class PageView extends Group {
                         } else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED) {
                             endNewRegionRectangle();
                             mouseEvent.consume();
-                            changeState(PageViewState.idle);
+                            changeState(PageViewState.idleRegion);
                         }
                     }
                     break;
                 case editingRegion:
                     if (mouseEvent != null && mouseEvent.isPrimaryButtonDown()) {
                         editingRegion.acceptEdit();
-                        changeState(PageViewState.idle);
+                        changeState(PageViewState.idleRegion);
                         mouseEvent.consume();
                     } else if (keyEvent != null) {
                         if (keyEvent.getCode() == KeyCode.ENTER) {
                             editingRegion.acceptEdit(); //TODO Comando
-                            changeState(PageViewState.idle);
+                            changeState(PageViewState.idleRegion);
                             keyEvent.consume();
                         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
                             editingRegion.cancelEdit();
-                            changeState(PageViewState.idle);
+                            changeState(PageViewState.idleRegion);
                             keyEvent.consume();
                         } else if (keyEvent.getCode() == KeyCode.DELETE) {
                             omrPage.removeRegion(editingRegion.getOmrRegion());
-                            changeState(PageViewState.idle);
+                            changeState(PageViewState.idleRegion);
                             keyEvent.consume();
                         }
                     }

@@ -1,17 +1,15 @@
-package es.ua.dlsi.im3.omr.interactive.documentanalysis;
+package es.ua.dlsi.im3.omr.interactive.pageedit;
 
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
-import es.ua.dlsi.im3.omr.interactive.documentanalysis.events.RegionEditEvent;
+import es.ua.dlsi.im3.omr.interactive.pageedit.events.RegionEditEvent;
 import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
 import es.ua.dlsi.im3.omr.model.pojo.RegionType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;

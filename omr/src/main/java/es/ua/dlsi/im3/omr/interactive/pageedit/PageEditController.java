@@ -1,23 +1,19 @@
-package es.ua.dlsi.im3.omr.interactive.documentanalysis;
+package es.ua.dlsi.im3.omr.interactive.pageedit;
 
-import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.gui.javafx.JavaFXUtils;
 import es.ua.dlsi.im3.omr.interactive.DashboardController;
 import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
-import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import es.ua.dlsi.im3.omr.model.pojo.Region;
 import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
 import es.ua.dlsi.im3.omr.segmentation.PageSegmenterFactory;
-import javafx.embed.swing.SwingFXUtils;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -26,9 +22,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class DocumentAnalysisController implements Initializable {
+public class PageEditController implements Initializable {
     @FXML
     ToolBar toolbar;
+
+    @FXML
+    ToolBar toolbarImages;
+
+    @FXML
+    ToolBar toolbarRegions;
+
+    @FXML
+    ToolBar toolbarSymbols;
+
+    @FXML
+    ToolBar toolbarMusic;
 
     @FXML
     VBox vboxPages;
@@ -36,6 +44,12 @@ public class DocumentAnalysisController implements Initializable {
     @FXML
     ScrollPane scrollPane;
 
+    @FXML
+    ToggleGroup tgPageViewStep;
+
+    /**
+     * Music editing
+     */
     ToggleGroup tgInstruments;
 
     private DashboardController dashboard;
@@ -45,6 +59,7 @@ public class DocumentAnalysisController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tgInstruments = new ToggleGroup();
+        System.out.println("TBM="+toolbarMusic);
     }
 
     public void setDashboard(DashboardController dashboard) {
@@ -64,20 +79,16 @@ public class DocumentAnalysisController implements Initializable {
     }
 
     private void createInstrumentButtons(OMRPage selectedOMRPage) {
-        toolbar.getItems().add(0, new Label("Select an instrument"));
+        toolbarMusic.getItems().add(0, new Label("Select an instrument"));
         int i=1;
         for (OMRInstrument instrument: selectedOMRPage.getInstrumentList()) {
             ToggleButton button = new ToggleButton(instrument.getName());
             button.setToggleGroup(tgInstruments);
-            toolbar.getItems().add(i++, button); // add before other buttons and separator
+            toolbarMusic.getItems().add(i++, button); // add before other buttons and separator
         }
     }
 
     private void createImageViews(List<OMRPage> pagesToOpen, OMRPage selectedOMRPage) {
-        Separator sep = new Separator(Orientation.VERTICAL);
-        sep.setMaxWidth(20);
-        toolbar.getItems().add(sep);
-
         PageView selectedPageView = null;
         for (OMRPage omrPage: pagesToOpen) {
             PageView pageView = new PageView(omrPage, this, vboxPages.widthProperty());
@@ -88,7 +99,7 @@ public class DocumentAnalysisController implements Initializable {
             }
 
             Button btn = new Button(omrPage.toString());
-            toolbar.getItems().add(btn);
+            toolbarImages.getItems().add(btn);
             btn.setOnAction(event -> {
                 focus(pageView);
             });
@@ -111,6 +122,26 @@ public class DocumentAnalysisController implements Initializable {
         }
     }
 
+    @FXML
+    public void handleRegionsStep() {
+        toolbarRegions.setVisible(true);
+        toolbarSymbols.setVisible(false);
+        toolbarMusic.setVisible(false);
+    }
+
+    @FXML
+    public void handleSymbolsStep() {
+        toolbarRegions.setVisible(false);
+        toolbarSymbols.setVisible(true);
+        toolbarMusic.setVisible(false);
+    }
+
+    @FXML
+    public void handleMusicStep() {
+        toolbarRegions.setVisible(false);
+        toolbarSymbols.setVisible(false);
+        toolbarMusic.setVisible(true);
+    }
 
 
     @FXML
@@ -124,4 +155,5 @@ public class DocumentAnalysisController implements Initializable {
             omrPage.addRegions(regions);
         }
     }
+
 }

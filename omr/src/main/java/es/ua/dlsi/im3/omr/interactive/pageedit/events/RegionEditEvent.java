@@ -1,7 +1,7 @@
-package es.ua.dlsi.im3.omr.interactive.documentanalysis.events;
+package es.ua.dlsi.im3.omr.interactive.pageedit.events;
 
-import es.ua.dlsi.im3.omr.interactive.documentanalysis.Event;
-import es.ua.dlsi.im3.omr.interactive.documentanalysis.RegionView;
+import es.ua.dlsi.im3.omr.interactive.pageedit.Event;
+import es.ua.dlsi.im3.omr.interactive.pageedit.RegionView;
 import javafx.scene.input.MouseEvent;
 
 

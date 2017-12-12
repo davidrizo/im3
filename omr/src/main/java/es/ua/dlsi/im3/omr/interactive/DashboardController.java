@@ -6,7 +6,7 @@ import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.javafx.ViewLoader;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.omr.interactive.documentanalysis.DocumentAnalysisController;
+import es.ua.dlsi.im3.omr.interactive.pageedit.PageEditController;
 import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
@@ -25,7 +25,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import sun.plugin.javascript.navig.Anchor;
 
 import java.io.IOException;
 import java.net.URL;
@@ -244,7 +243,7 @@ public class DashboardController implements Initializable {
             }
             tgDashboardButtons.selectToggle(tbSelectedPage);
 
-            Pair<DocumentAnalysisController, Parent> pair = ViewLoader.loadView("documentanalysis.fxml");
+            Pair<PageEditController, Parent> pair = ViewLoader.loadView("editpage.fxml");
             setMainPane(pair.getY());
             pair.getX().setDashboard(this);
             pair.getX().setPages(pageView.getOmrPage(), pagesToOpen);

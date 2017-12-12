@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.interactive.documentanalysis;
+package es.ua.dlsi.im3.omr.interactive.pageedit;
 
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.omr.model.pojo.RegionType;
