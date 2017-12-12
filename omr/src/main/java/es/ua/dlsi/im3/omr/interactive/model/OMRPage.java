@@ -140,7 +140,7 @@ public class OMRPage {
     public void addRegion(OMRRegion region) {
         this.regionList.add(region);
     }
-    public void removeRetion(OMRRegion region) {
+    public void removeRegion(OMRRegion region) {
         this.regionList.remove(region);
     }
     public ObservableList<OMRRegion> regionListProperty() {

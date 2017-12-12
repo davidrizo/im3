@@ -91,4 +91,7 @@ public class RegionView extends Group {
         rectangle.endEdit(false);
     }
 
+    public OMRRegion getOmrRegion() {
+        return omrRegion;
+    }
 }

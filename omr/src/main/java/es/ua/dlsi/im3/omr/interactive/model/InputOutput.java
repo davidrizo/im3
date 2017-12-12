@@ -4,10 +4,7 @@ import com.thoughtworks.xstream.XStream;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.model.pojo.Instrument;
-import es.ua.dlsi.im3.omr.model.pojo.Page;
-import es.ua.dlsi.im3.omr.model.pojo.Project;
-import es.ua.dlsi.im3.omr.model.pojo.Staff;
+import es.ua.dlsi.im3.omr.model.pojo.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,7 +32,10 @@ public class InputOutput {
             pojoPage.setOrder(page.getOrder());
             for (OMRInstrument instrument: page.getInstrumentList()) {
                 // no need to have the same object, just need to have the same name
-                pojoPage.getInstrumentList().add(new Instrument(instrument.getName()));
+                pojoPage.getInstruments().add(new Instrument(instrument.getName()));
+            }
+            for (OMRRegion region: page.getRegionList()) {
+                pojoPage.getRegions().add(new Region(region.getRegionType(), region.getFromX(), region.getFromY(), region.getFromX() + region.getWidth(), region.getFromY() + region.getHeight()));
             }
             pojoProject.getPages().add(pojoPage);
             for (OMRStaff staff: page.getStaves()) {
@@ -89,10 +89,13 @@ public class InputOutput {
             page.setOrder(pojoPage.getOrder());
             omrProject.addPage(page);
 
-            for (Instrument instrument: pojoPage.getInstrumentList()) {
+            for (Instrument instrument: pojoPage.getInstruments()) {
                 page.addInstrument(omrProject.findInstrument(instrument.getName()));
             }
 
+            for (Region region: pojoPage.getRegions()) {
+                page.addRegion(new OMRRegion(region));
+            }
             page.loadImageFile();
 
             for (Staff pojoStaff: pojoPage.getStaves()) {

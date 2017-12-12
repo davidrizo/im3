@@ -9,19 +9,19 @@ public class Page {
     String imageRelativeFileName;
     List<Staff> staves;
     int order;
-    Set<Instrument> instrumentList;
+    Set<Instrument> instruments;
     List<Region> regions;
 
     public Page() {
         staves = new ArrayList<>();
-        instrumentList = new TreeSet<>();
+        instruments = new TreeSet<>();
         regions = new ArrayList<>();
     }
 
     public Page(String imageRelativeFileName) {
         this.imageRelativeFileName = imageRelativeFileName;
         staves = new ArrayList<>();
-        instrumentList = new TreeSet<>();
+        instruments = new TreeSet<>();
         regions = new ArrayList<>();
     }
 
@@ -49,12 +49,12 @@ public class Page {
         this.order = order;
     }
 
-    public Set<Instrument> getInstrumentList() {
-        return instrumentList;
+    public Set<Instrument> getInstruments() {
+        return instruments;
     }
 
-    public void setInstrumentList(Set<Instrument> instrumentList) {
-        this.instrumentList = instrumentList;
+    public void setInstruments(Set<Instrument> instruments) {
+        this.instruments = instruments;
     }
 
     public List<Region> getRegions() {

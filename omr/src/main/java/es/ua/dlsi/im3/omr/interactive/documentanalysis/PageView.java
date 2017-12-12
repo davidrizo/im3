@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.omr.interactive.documentanalysis;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.gui.javafx.SelectionRectangle;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowChoicesDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
@@ -21,8 +20,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class PageView extends Group {
     OMRPage omrPage;
@@ -50,7 +47,14 @@ public class PageView extends Group {
         imageView.setImage(SwingFXUtils.toFXImage(omrPage.getBufferedImage(), null));
         this.getChildren().add(imageView);
         initInteraction();
+        loadRegions();
         initRegionBinding();
+    }
+
+    private void loadRegions() {
+        for (OMRRegion omrRegion : omrPage.getRegionList()) {
+            createRegionView(omrRegion);
+        }
     }
 
     private void initRegionBinding() {
@@ -64,10 +68,10 @@ public class PageView extends Group {
                         //update item - no lo necesitamos de momento porque lo tenemos todo con binding, si no podríamos actualizar aquí
                     } else {
                         for (OMRRegion remitem : c.getRemoved()) {
-                            removeRegion(remitem);
+                            removeRegionView(remitem);
                         }
                         for (OMRRegion additem : c.getAddedSubList()) {
-                            addRegion(additem);
+                            createRegionView(additem);
                         }
                     }
                 }
@@ -75,7 +79,7 @@ public class PageView extends Group {
         });
     }
 
-    private void removeRegion(OMRRegion remitem) {
+    private void removeRegionView(OMRRegion remitem) {
         RegionView regionView = regions.remove(remitem);
         /*if (regionView == null) {
             throw new IM3RuntimeException("Item " + remitem + " not found");
@@ -83,7 +87,7 @@ public class PageView extends Group {
         this.getChildren().remove(regionView);
     }
 
-    public void addRegion(OMRRegion region) {
+    public void createRegionView(OMRRegion region) {
         RegionView regionView = new RegionView(this, region);
         regions.put(region, regionView);
         this.getChildren().add(regionView);
@@ -177,6 +181,10 @@ public class PageView extends Group {
                             editingRegion.cancelEdit();
                             changeState(PageViewState.idle);
                             keyEvent.consume();
+                        } else if (keyEvent.getCode() == KeyCode.DELETE) {
+                            omrPage.removeRegion(editingRegion.getOmrRegion());
+                            changeState(PageViewState.idle);
+                            keyEvent.consume();
                         }
                     }
                     break;
@@ -214,18 +222,18 @@ public class PageView extends Group {
         if (selectingRectangle != null) {
             selectingRectangle.changeState();
             onRegionIdentified(selectingRectangle.getSelectionRectangle().getX(), selectingRectangle.getSelectionRectangle().getY(),
-                    selectingRectangle.getSelectionRectangle().getX() + selectingRectangle.getSelectionRectangle().getWidth(),
-                    selectingRectangle.getSelectionRectangle().getY() + selectingRectangle.getSelectionRectangle().getHeight());
+                    selectingRectangle.getSelectionRectangle().getWidth(),
+                    selectingRectangle.getSelectionRectangle().getHeight());
             getChildren().remove(selectingRectangle.getRoot());
             selectingRectangle = null;
         }
     }
 
-    private void onRegionIdentified(double fromX, double fromY, double toX, double toY) {
+    private void onRegionIdentified(double fromX, double fromY, double width, double height) {
         ShowChoicesDialog<RegionType> dlg = new ShowChoicesDialog<>();
         RegionType regionType = dlg.show(OMRApp.getMainStage(),"New region added", "Choose the region type", RegionType.values(), RegionType.staff); // default value, staff
         if (regionType != null) {
-            addRegion(new OMRRegion(fromX, fromY, toX, toY, regionType));
+            omrPage.addRegion(new OMRRegion(fromX, fromY, width, height, regionType));
         }
     }
 }
