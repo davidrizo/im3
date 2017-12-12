@@ -1,8 +1,16 @@
 package es.ua.dlsi.im3.gui.javafx;
 
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+
+import java.util.Arrays;
 
 public class JavaFXUtils {
     public static void ensureVisible(ScrollPane scrollPane, Node node) {
@@ -23,4 +31,6 @@ public class JavaFXUtils {
         }
         scrollPane.setVvalue(vValueCurrent + vValueDelta);
     }
+
+
 }
