@@ -30,6 +30,14 @@ public class GraphicalToken extends Token<GraphicalSymbol> {
         return positionInStaff;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public void setPositionInStaff(PositionInStaff positionInStaff) {
+        this.positionInStaff = positionInStaff;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

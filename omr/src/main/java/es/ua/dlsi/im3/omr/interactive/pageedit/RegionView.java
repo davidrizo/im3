@@ -46,7 +46,7 @@ public class RegionView extends Group {
         label.xProperty().bind(rectangle.xProperty().add(20)); // don't overlap with rectangle
         label.yProperty().bind(rectangle.yProperty().add(20)); // don't overlap with rectangle
         this.getChildren().add(label);
-        label.setOnMouseClicked(event -> {
+        label.setOnContextMenuRequested(event -> {
             showRegionTypeContextMenu(event.getScreenX(), event.getScreenY());
         });
 

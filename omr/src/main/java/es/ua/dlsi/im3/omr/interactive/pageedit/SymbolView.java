@@ -4,11 +4,14 @@ import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
 import es.ua.dlsi.im3.omr.interactive.model.OMRSymbol;
 import es.ua.dlsi.im3.omr.interactive.pageedit.events.SymbolEditEvent;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import es.ua.dlsi.im3.omr.model.pojo.Symbol;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -28,7 +31,6 @@ public class SymbolView extends Group {
         this.pageView = pageView;
         label = new Text();
         label.setFont(Font.font("Arial", FontWeight.BOLD, 10));
-        label.setRotate(-90);
         label.textProperty().bind(symbol.graphicalTokenProperty().asString());
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.xProperty().bindBidirectional(symbol.xProperty());
@@ -44,8 +46,9 @@ public class SymbolView extends Group {
                 rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalToken().getSymbol(), 0.2));
             }
         });
-        label.xProperty().bind(rectangle.xProperty().add(3));
+        label.xProperty().bind(rectangle.xProperty());
         label.yProperty().bind(rectangle.yProperty().add(rectangle.heightProperty()).add(3));
+        label.setRotate(-25);
 
         this.getChildren().add(label);
         this.getChildren().add(rectangle);
@@ -54,6 +57,25 @@ public class SymbolView extends Group {
         rectangle.setOnMouseClicked(event -> {
             pageView.handleEvent(new SymbolEditEvent(event, this));
         });
+
+        label.setOnContextMenuRequested(event -> {
+            showSymbolTypeContextMenu(event.getScreenX(), event.getScreenY());
+        });
+
+    }
+
+    private void showSymbolTypeContextMenu(double screenX, double screenY) {
+        ContextMenu contextMenu = new ContextMenu();
+        for (GraphicalSymbol symbolType: GraphicalSymbol.values()) {
+            MenuItem menuItem = new MenuItem(symbolType.name());
+            contextMenu.getItems().add(menuItem);
+            menuItem.setOnAction(event -> {
+                symbol.setGraphicalToken(new GraphicalToken(symbolType, symbol.getGraphicalToken().getValue(), symbol.getGraphicalToken().getPositionInStaff()));
+                symbol.setAccepted(true);
+                contextMenu.hide();
+            });
+        }
+        contextMenu.show(label, screenX, screenY);
 
     }
 
