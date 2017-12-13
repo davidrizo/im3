@@ -2,13 +2,10 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.io.ExportException;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.io.File;
-
-import static com.sun.deploy.util.SessionState.save;
 
 public class OMRModel {
     public static OMRModel instance = null;
