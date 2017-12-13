@@ -17,20 +17,11 @@ public class NotesState extends OMRState {
     public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
         Accidentals accidental = null;
         if (previousState instanceof AccNoteState) {
-            accidental = ((AccNoteState)previousState).getAccidental();
+            accidental = ((AccNoteState)previousState).getAccidental(); //Ojo, si en el mismo compas hay otra nota alterada no lo ve
         }
 
         // TODO: 5/10/17 Dots en la gramática - no aqui 
-        if (token.getSymbol() == GraphicalSymbol.rest) {
-            //TODO No valdría tener antes un accidental
-            SimpleRest rest = new SimpleRest(parseFigure(token.getValue()), 0);
-            try {
-                transduction.getStaff().addCoreSymbol(rest);
-                transduction.getLayer().add(rest);
-            } catch (IM3Exception e) {
-                throw new IM3RuntimeException(e);
-            }
-        } else if (token.getSymbol() == GraphicalSymbol.note) {
+       if ((token.getSymbol() == GraphicalSymbol.note)) {
             // TODO: 5/10/17 Chords
             Staff staff = transduction.getStaff();
             Clef clef = transduction.getStaff().getLastClef();
@@ -53,9 +44,37 @@ public class NotesState extends OMRState {
                 throw new IM3RuntimeException(e);
             }
 
-        } else {
-            throw new IM3RuntimeException("Symbol should be rest or note");
+        /*} else {
+            throw new IM3RuntimeException("Symbol should be note");*/
         }
+        else {
+           if (token.getSymbol() == GraphicalSymbol.dot && previousState.toString() == "notes") { //TODO como lo agrego
+
+               /*System.out.println("El estado anterior es:");
+               System.out.println(previousState.toString());
+               Staff staff = transduction.getStaff();
+               Clef clef = transduction.getStaff().getLastClef();
+               ScientificPitch pitch = null;
+               try {
+                   pitch = parsePitch(staff, clef, token.getPositionInStaff(), accidental);
+               } catch (IM3Exception e) {
+                   transduction.setZeroProbability();
+                   return;
+               }
+               SimpleNote note = new SimpleNote(parseFigure(token.getValue()), 0, pitch);
+               try {
+                   transduction.getStaff().addCoreSymbol(note);
+                   transduction.getLayer().add(note);
+               } catch (IM3Exception e) {
+                   throw new IM3RuntimeException(e);
+               }*/
+
+               //TODO dobles puntillos ¿Otro estado?
+           }
+           else {
+               throw new IM3RuntimeException("Symbol should be note or dot");
+           }
+       }
     }
 
     private ScientificPitch parsePitch(Staff staff, Clef clef, PositionInStaff positionInStaff, Accidentals accidental) throws IM3Exception {

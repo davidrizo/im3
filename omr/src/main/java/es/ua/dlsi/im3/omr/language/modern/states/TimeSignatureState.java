@@ -15,29 +15,44 @@ public class TimeSignatureState extends OMRState {
     Integer denominator;
 
     public TimeSignatureState(int number) {
-        super(number, "keySig");
+        super(number, "timeSig");
     }
 
     @Override
     public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
-        if (!token.getSymbol().equals(GraphicalSymbol.digit)) {
+        if ((!token.getSymbol().equals(GraphicalSymbol.digit)) && (!token.getSymbol().equals(GraphicalSymbol.metersign))) {
             // the automaton has an error
-            throw new IM3RuntimeException("Expected an accidental and found a " + token.getSymbol());
+            throw new IM3RuntimeException("Expected a digit or metersign and found a " + token.getSymbol());
         }
 
-        if (token.getPositionInStaff().getLine() == 4) {
-            numerator = Integer.parseInt(token.getValue()); // TODO: 4/10/17 Comprobar que es un valor válido
-        } else if (token.getPositionInStaff().getLine() == 2) {
+
+        if (token.getPositionInStaff().getLine() == 2) {
             denominator = Integer.parseInt(token.getValue()); // TODO: 4/10/17 Comprobar que es un valor válido
+            numerator = DigitTimeSignatureState.getNumerator();
+            TimeSignature timeSignature = new FractionalTimeSignature(numerator, denominator);
+            try {
+                transduction.getStaff().addTimeSignature(timeSignature);
+            } catch (IM3Exception e) {
+                throw new IM3RuntimeException(e);
+            }
+        } else if ((token.getPositionInStaff().getLine() == 3) && token.getSymbol().equals(GraphicalSymbol.metersign)){ //Comprobacion de compasillo
+            numerator = 4;
+            denominator = 4;
+            TimeSignature timeSignature = new FractionalTimeSignature(numerator, denominator);
+            try {
+                transduction.getStaff().addTimeSignature(timeSignature);
+            } catch (IM3Exception e) {
+                throw new IM3RuntimeException(e);
+            }
         } else {
-            throw new IM3RuntimeException("TO-DO: si es línea 3 podría ser un C"); // TODO: 4/10/17 CommonTime...
+            throw new IM3RuntimeException("Error reading Time Signature");
         }
     }
 
     @Override
     public void onExit(State nextState, boolean isStateChange, OMRTransduction transduction) {
         if (isStateChange) {
-            if (numerator == null || denominator == null) {
+            /*if (numerator == null || denominator == null) {
                 throw new IM3RuntimeException("Invalid grammar for Time Signature, numerator or denominator are null"); //TODO C, C/..
             }
 
@@ -49,7 +64,14 @@ public class TimeSignatureState extends OMRState {
             }
 
             denominator = null;
-            numerator = null;
+            numerator = null; */
+            //TimeSignature timeSignature = new FractionalTimeSignature(4, 4); //ELIMINAR, NO ES CORRECTO
+            //try {
+             //   transduction.getStaff().addTimeSignature(timeSignature);
+            //} catch (IM3Exception e) {
+            //    throw new IM3RuntimeException(e);
+            //}
+
         }
     }
 }

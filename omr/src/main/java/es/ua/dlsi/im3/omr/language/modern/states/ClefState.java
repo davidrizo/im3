@@ -37,6 +37,7 @@ public class ClefState extends OMRState {
 
         try {
             transduction.getStaff().addClef(clef);
+
         } catch (IM3Exception e) {
             throw new IM3RuntimeException(e);
         }

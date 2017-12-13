@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.omr.language.modern.states;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.Accidentals;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
@@ -23,17 +24,21 @@ public class AccNoteState extends OMRState {
         }
         // TODO: 5/10/17 Que el mapa de valores sea común con el generador de PRIMUS
         switch (token.getValue()) {
-            case "b":
+            case "flat":
                 accidental = Accidentals.FLAT;
                 break;
-            case "#":
+            case "sharp":
                 accidental = Accidentals.SHARP;
                 break;
-            case "x":
+            case "double_sharp":
                 accidental = Accidentals.DOUBLE_SHARP;
                 break;
-            case "n":
-                accidental = Accidentals.NATURAL;
+                //TODO 22-11-17  El natural falla en el test 9 No lo reconoce el sistema
+            case "natural":
+                accidental = Accidentals.NATURAL; //el becuadro no funciona ATENCION
+                break;
+            case "double_flat":
+                accidental = Accidentals.DOUBLE_FLAT;
                 break;
             default:
                 transduction.setZeroProbability();
