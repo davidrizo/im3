@@ -54,7 +54,6 @@ public class LanguageChecker {
     }
 
     private void run(ArrayList<File> files, File outputFolder) throws IM3Exception, IOException {
-        GraphicalModernSymbolsAutomaton automaton = new GraphicalModernSymbolsAutomaton();
         MEI2GraphicSymbols converter = new MEI2GraphicSymbols();
 
         PrintStream errors = new PrintStream(new FileOutputStream(new File(outputFolder, "errors.txt")));
@@ -72,9 +71,11 @@ public class LanguageChecker {
 
             MEISongImporter importer = new MEISongImporter();
             try {
+                GraphicalModernSymbolsAutomaton automaton = new GraphicalModernSymbolsAutomaton();
+
                 ScoreSong scoreSong = importer.importSong(file);
                 List<GraphicalToken> graphicalTokenList = converter.convert(scoreSong).getTokens();
-                BigFraction p = automaton.probabilityOf(graphicalTokenList, true).getProbability();
+                BigFraction p = automaton.probabilityOf(graphicalTokenList, false).getProbability();
                 if (p.getNumeratorAsLong() == 0) {
                     notAccepted.println(file.getAbsolutePath() + "\t" + graphicalTokenList);
                     nko++;
@@ -87,8 +88,6 @@ public class LanguageChecker {
                 e.printStackTrace(errors);
                 errors.println("\n------\n");
                 nerrorsImport++;
-                e.printStackTrace();
-                throw e;
             }
         }
 

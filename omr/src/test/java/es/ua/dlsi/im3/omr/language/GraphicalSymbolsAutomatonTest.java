@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.language;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
+import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
@@ -37,7 +38,10 @@ public class GraphicalSymbolsAutomatonTest {
                 );
 
         OMRTransduction t1 = gspa.probabilityOf(sequence1, true);
+        assertEquals("Key signature", -2, t1.getSong().getUniqueKeyWithOnset(Time.TIME_ZERO).getFifths());
+
         System.out.println("Probability of " + sequence1 + "\n\t=" + t1.getProbability());
+
         assertTrue(t1.getProbability().getNumeratorAsLong() > 0);
 
         List<GraphicalToken> sequence2 = Arrays.asList(
