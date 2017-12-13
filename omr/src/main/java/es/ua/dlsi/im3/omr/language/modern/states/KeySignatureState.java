@@ -119,13 +119,15 @@ public class KeySignatureState extends OMRState {
                     for(int i=0; i<positions.size();i++){
                         //System.out.println(positions.get(i).toString());
                         if(!positions.get(i).toString().equals(flatOrder.get(i).toString()))
-                            throw new IM3RuntimeException("Flat order is not correct"); //Lanzo excepcion o probabilidad 0?
+                            throw new IM3RuntimeException("Flat order is not correct, expected " +
+                                    flatOrder.get(i).toString() + ", found " + positions.get(i).toString()); //Lanzo excepcion o probabilidad 0?
                     }
                 } else {
                     key = new Key(accidentals.size(), Mode.UNKNOWN);
                     for(int i=0; i<positions.size();i++){
                         if(!positions.get(i).toString().equals(sharpOrder.get(i).toString()))
-                            throw new IM3RuntimeException("Sharp order is not correct");
+                            throw new IM3RuntimeException("Sharp order is not correct, expected " +
+                                    sharpOrder.get(i).toString() + ", found " + positions.get(i).toString()); //Lanzo excepcion o probabilidad 0?
                     }
 
                 }
@@ -133,6 +135,7 @@ public class KeySignatureState extends OMRState {
                 //System.out.println(transduction.getStaff().getLastClef().getLine()); //linea, entero
                 transduction.getStaff().addKeySignature(new KeySignature(transduction.getStaff().getNotationType(), key));
             } catch (IM3Exception e) {
+                e.printStackTrace();
                 throw new IM3RuntimeException(e);
             }
 
