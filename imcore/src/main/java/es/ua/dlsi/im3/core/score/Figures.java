@@ -123,6 +123,14 @@ public enum Figures {
 		throw new IM3Exception("Cannot find a figure with meter unit " + meterUnit + " and notation type " + notationType);
 	}
 
+    public static Figures findFigureWithFlags(int flags, NotationType notationType) throws IM3Exception {
+        for (Figures fig: Figures.values()) {
+            if (fig.notationType == notationType && flags == fig.numFlags) {
+                return fig;
+            }
+        }
+        throw new IM3Exception("Cannot find a figure with flags " + flags + " and notation type " + notationType);
+    }
 	public int getNumFlags() {
 		return numFlags;
 	}
