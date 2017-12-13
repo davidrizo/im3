@@ -1,11 +1,17 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
+import es.ua.dlsi.im3.core.score.PositionInStaff;
+import es.ua.dlsi.im3.core.score.PositionsInStaff;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import es.ua.dlsi.im3.omr.model.pojo.Symbol;
 import javafx.beans.property.*;
 
 public class OMRSymbol {
-    ObjectProperty<GraphicalToken> graphicalToken;
+    ObjectProperty<GraphicalSymbol> graphicalSymbol;
+    StringProperty value;
+    ObjectProperty<PositionInStaff> positionInStaff;
+
     DoubleProperty x;
     DoubleProperty y;
     DoubleProperty width;
@@ -16,9 +22,10 @@ public class OMRSymbol {
     private BooleanProperty accepted;
 
 
-
-    public OMRSymbol(GraphicalToken graphicalToken, double x, double y, double width, double height) {
-        this.graphicalToken = new SimpleObjectProperty<>(graphicalToken);
+    public OMRSymbol(GraphicalSymbol graphicalSymbol, PositionInStaff positionInStaff, String value, double x, double y, double width, double height) {
+        this.graphicalSymbol = new SimpleObjectProperty<>(graphicalSymbol);
+        this.positionInStaff = new SimpleObjectProperty<>(positionInStaff);
+        this.value = new SimpleStringProperty(value);
         this.x = new SimpleDoubleProperty(x);
         this.y = new SimpleDoubleProperty(y);
         this.width = new SimpleDoubleProperty(width);
@@ -27,20 +34,8 @@ public class OMRSymbol {
     }
 
     public OMRSymbol(Symbol symbol) {
-        this(symbol.getGraphicalToken(), symbol.getX(), symbol.getY(), symbol.getWidth(), symbol.getHeight());
+        this(symbol.getGraphicalToken().getSymbol(), symbol.getGraphicalToken().getPositionInStaff(), symbol.getGraphicalToken().getValue(), symbol.getX(), symbol.getY(), symbol.getWidth(), symbol.getHeight());
         this.accepted.setValue(symbol.isAccepted());
-    }
-
-    public ObjectProperty<GraphicalToken> graphicalTokenProperty() {
-        return graphicalToken;
-    }
-
-    public GraphicalToken getGraphicalToken() {
-        return graphicalToken.get();
-    }
-
-    public void setGraphicalToken(GraphicalToken graphicalToken) {
-        this.graphicalToken.set(graphicalToken);
     }
 
     public double getX() {
@@ -103,8 +98,44 @@ public class OMRSymbol {
         this.accepted.set(accepted);
     }
 
+    public GraphicalSymbol getGraphicalSymbol() {
+        return graphicalSymbol.get();
+    }
+
+    public ObjectProperty<GraphicalSymbol> graphicalSymbolProperty() {
+        return graphicalSymbol;
+    }
+
+    public void setGraphicalSymbol(GraphicalSymbol graphicalSymbol) {
+        this.graphicalSymbol.set(graphicalSymbol);
+    }
+
+    public String getValue() {
+        return value.get();
+    }
+
+    public StringProperty valueProperty() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value.set(value);
+    }
+
+    public PositionInStaff getPositionInStaff() {
+        return positionInStaff.get();
+    }
+
+    public ObjectProperty<PositionInStaff> positionInStaffProperty() {
+        return positionInStaff;
+    }
+
+    public void setPositionInStaff(PositionInStaff positionInStaff) {
+        this.positionInStaff.set(positionInStaff);
+    }
+
     public Symbol createPOJO() {
-        Symbol pojoSymbol = new Symbol(getGraphicalToken(), getX(), getY(), getWidth(), getHeight());
+        Symbol pojoSymbol = new Symbol(new GraphicalToken(graphicalSymbol.get(), value.get(), positionInStaff.get()), getX(), getY(), getWidth(), getHeight());
         pojoSymbol.setAccepted(accepted.get());
         return pojoSymbol;
     }

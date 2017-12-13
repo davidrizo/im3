@@ -38,7 +38,7 @@ public class OMRRegion {
         this.symbolList = FXCollections.observableList(new LinkedList<>());
         if (region.getSymbols() != null) {
             for (Symbol symbol : region.getSymbols()) {
-                this.symbolList.add(new OMRSymbol(symbol.getGraphicalToken(), symbol.getX(), symbol.getY(), symbol.getWidth(), symbol.getHeight()));
+                this.symbolList.add(new OMRSymbol(symbol.getGraphicalToken().getSymbol(), symbol.getGraphicalToken().getPositionInStaff(), symbol.getGraphicalToken().getValue(), symbol.getX(), symbol.getY(), symbol.getWidth(), symbol.getHeight()));
             }
         }
     }

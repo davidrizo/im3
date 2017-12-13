@@ -1,23 +1,24 @@
 package es.ua.dlsi.im3.omr.model.pojo;
 
 public enum GraphicalSymbol {
-    dot,
-    clef,
-    note,
-    rest,
+    // keep sorted for GUI
     accidental,
-    separator,
     barline,
-    thickbarline,
+    clef,
+    digit,
+    dot,
+    fermata,
+    gracenote,
     line,
     metersign,
-    digit,
-    slur,
-    fermata,
     multirest,
-    gracenote,
-    trill,
-    text;
+    note,
+    rest,
+    separator,
+    slur,
+    text,
+    thickbarline,
+    trill;
 
 
     /*public static final String DOT = "dot-";
@@ -36,4 +37,5 @@ public enum GraphicalSymbol {
     public String toString() {
         return this.name(); // usado en el GUI así
     }
+
 }

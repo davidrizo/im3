@@ -1,56 +1,71 @@
 package es.ua.dlsi.im3.omr.interactive.pageedit;
 
+import es.ua.dlsi.im3.core.score.PositionInStaff;
+import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
-import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
 import es.ua.dlsi.im3.omr.interactive.model.OMRSymbol;
 import es.ua.dlsi.im3.omr.interactive.pageedit.events.SymbolEditEvent;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
-import es.ua.dlsi.im3.omr.model.pojo.Symbol;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class SymbolView extends Group {
+    private static final String FONT_FAMILY = "Arial";
     private final PageView pageView;
     OMRSymbol symbol;
     RegionView region;
-    Text label;
+    VBox labels;
+    Text labelSymbolType;
+    Text labelPosition;
     DraggableRectangle rectangle;
 
     public SymbolView(PageView pageView, RegionView region, OMRSymbol symbol) {
         this.symbol = symbol;
         this.region = region;
         this.pageView = pageView;
-        label = new Text();
-        label.setFont(Font.font("Arial", FontWeight.BOLD, 10));
-        label.textProperty().bind(symbol.graphicalTokenProperty().asString());
+
+        labels = new VBox(5);
+        labelSymbolType = new Text();
+        labelPosition = new Text();
+        labels.getChildren().add(labelSymbolType);
+        labels.getChildren().add(labelPosition);
+        getChildren().add(labels);
+
+        labelSymbolType.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 10));
+        labelSymbolType.textProperty().bind(symbol.graphicalSymbolProperty().asString());
+        labelPosition.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 9));
+        labelPosition.textProperty().bind(symbol.positionInStaffProperty().asString());
+
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.xProperty().bindBidirectional(symbol.xProperty());
         rectangle.yProperty().bindBidirectional(symbol.yProperty());
         rectangle.widthProperty().bindBidirectional(symbol.widthProperty());
         rectangle.heightProperty().bindBidirectional(symbol.heightProperty());
-        rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalToken().getSymbol(), 0.2));
-        rectangle.setStroke(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalToken().getSymbol(), 1));
+        rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 0.2));
+        rectangle.setStroke(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 1));
         rectangle.setStrokeWidth(0);
-        symbol.graphicalTokenProperty().addListener(new ChangeListener<GraphicalToken>() {
+        symbol.graphicalSymbolProperty().addListener(new ChangeListener<GraphicalSymbol>() {
             @Override
-            public void changed(ObservableValue<? extends GraphicalToken> observable, GraphicalToken oldValue, GraphicalToken newValue) {
-                rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalToken().getSymbol(), 0.2));
+            public void changed(ObservableValue<? extends GraphicalSymbol> observable, GraphicalSymbol oldValue, GraphicalSymbol newValue) {
+                rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 0.2));
             }
         });
-        label.xProperty().bind(rectangle.xProperty());
-        label.yProperty().bind(rectangle.yProperty().add(rectangle.heightProperty()).add(3));
-        label.setRotate(-25);
+        labels.layoutXProperty().bind(rectangle.xProperty().add(-5)); // avoid problems to select
+        //labelSymbolType.yProperty().bind(rectangle.yProperty().add(rectangle.heightProperty()).add(3));
+        labels.layoutYProperty().bind(rectangle.yProperty().add(5)); // avoid overlap on rectangle handles
+        labelSymbolType.setRotate(-15);
+        labelPosition.setRotate(-15);
 
-        this.getChildren().add(label);
+
         this.getChildren().add(rectangle);
         rectangle.hideHandles();
 
@@ -58,10 +73,27 @@ public class SymbolView extends Group {
             pageView.handleEvent(new SymbolEditEvent(event, this));
         });
 
-        label.setOnContextMenuRequested(event -> {
+        labelSymbolType.setOnContextMenuRequested(event -> {
             showSymbolTypeContextMenu(event.getScreenX(), event.getScreenY());
         });
+        labelPosition.setOnContextMenuRequested(event -> {
+            showPositionContextMenu(event.getScreenX(), event.getScreenY());
+        });
+    }
 
+    private void showPositionContextMenu(double screenX, double screenY) {
+        ContextMenu contextMenu = new ContextMenu();
+
+        for (int i=-10; i<15; i++) {
+            PositionInStaff positionInStaff = new PositionInStaff(i);
+            MenuItem menuItem = new MenuItem(positionInStaff.toString());
+            contextMenu.getItems().add(menuItem);
+            menuItem.setOnAction(event -> {
+                symbol.setPositionInStaff(positionInStaff);
+                contextMenu.hide();
+            });
+        }
+        contextMenu.show(labelSymbolType, screenX, screenY);
     }
 
     private void showSymbolTypeContextMenu(double screenX, double screenY) {
@@ -70,12 +102,12 @@ public class SymbolView extends Group {
             MenuItem menuItem = new MenuItem(symbolType.name());
             contextMenu.getItems().add(menuItem);
             menuItem.setOnAction(event -> {
-                symbol.setGraphicalToken(new GraphicalToken(symbolType, symbol.getGraphicalToken().getValue(), symbol.getGraphicalToken().getPositionInStaff()));
+                symbol.setGraphicalSymbol(symbolType);
                 symbol.setAccepted(true);
                 contextMenu.hide();
             });
         }
-        contextMenu.show(label, screenX, screenY);
+        contextMenu.show(labelSymbolType, screenX, screenY);
 
     }
 
