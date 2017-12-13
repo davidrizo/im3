@@ -41,9 +41,11 @@ public class KeySignatureState extends OMRState {
         }
         //System.out.println(token.getValue());
         switch (token.getValue()) {
+            case "b":
             case "flat":
                 accidentals.add(Accidentals.FLAT);
                 break;
+            case "#":
             case "sharp":
                 accidentals.add(Accidentals.SHARP);
                 break;
