@@ -26,11 +26,11 @@ public class GraphicalSymbolsAutomatonTest {
 
         List<GraphicalToken> sequence1 = Arrays.asList(
                 new GraphicalToken(GraphicalSymbol.clef, "g", PositionsInStaff.LINE_2),
-                new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.LINE_3),
-                new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.SPACE_4),
+                new GraphicalToken(GraphicalSymbol.accidental, "flat", PositionsInStaff.LINE_3),
+                new GraphicalToken(GraphicalSymbol.accidental, "flat", PositionsInStaff.SPACE_4),
                 new GraphicalToken(GraphicalSymbol.digit, "3", PositionsInStaff.LINE_4),
                 new GraphicalToken(GraphicalSymbol.digit, "4", PositionsInStaff.LINE_2),
-                new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.SPACE_2),
+                new GraphicalToken(GraphicalSymbol.accidental, "flat", PositionsInStaff.SPACE_2),
                 new GraphicalToken(GraphicalSymbol.note, "HALF", PositionsInStaff.SPACE_2),
                 new GraphicalToken(GraphicalSymbol.rest, "QUARTER", PositionsInStaff.LINE_3),
                 new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1)
