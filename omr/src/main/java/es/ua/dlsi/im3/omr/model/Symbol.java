@@ -28,8 +28,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//TODO Cambiar de paquete
 /**
- *
+ * @deprecated Use model.pojo.Symbol
  * @author drizo
  */
 public class Symbol<SymbolType> {

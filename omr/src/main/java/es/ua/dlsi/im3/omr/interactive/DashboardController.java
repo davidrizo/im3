@@ -3,9 +3,10 @@ package es.ua.dlsi.im3.omr.interactive;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.gui.command.CommandManager;
+import es.ua.dlsi.im3.gui.javafx.ViewLoader;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.omr.interactive.documentanalysis.DocumentAnalysisController;
+import es.ua.dlsi.im3.omr.interactive.pageedit.PageEditController;
 import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
@@ -21,13 +22,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import sun.plugin.javascript.navig.Anchor;
 
 import java.io.IOException;
 import java.net.URL;
@@ -107,7 +104,8 @@ public class DashboardController implements Initializable {
                 OMRModel.getInstance().createProject(dlg.getProjectFolder(), dlg.getTrainingFile());
                 title.setValue(OMRModel.getInstance().getCurrentProject().getName());
                 openPagesView();
-            } catch (IM3Exception e) {
+            } catch (Throwable e) {
+                e.printStackTrace();
                 ShowError.show(OMRApp.getMainStage(), "Cannot create project", e);
             }
             //borderPane.getScene().getRoot().setCursor(Cursor.DEFAULT);
@@ -123,7 +121,8 @@ public class DashboardController implements Initializable {
                 OMRModel.getInstance().openProject(dlg.getProjectFolder(), dlg.getTrainingFile());
                 title.setValue(OMRModel.getInstance().getCurrentProject().getName());
                 openPagesView();
-            } catch (IM3Exception e) {
+            } catch (Throwable e) {
+                e.printStackTrace();
                 ShowError.show(OMRApp.getMainStage(), "Cannot open project", e);
             }
         }
@@ -223,12 +222,30 @@ public class DashboardController implements Initializable {
                 throw new IM3Exception("At least this page (" + pageView.getOmrPage() + ") should be opened");
             }
 
-            tbSelectedPage = new ToggleButton(pageView.getOmrPage().toString());
-            tgDashboardButtons.getToggles().add(tbSelectedPage);
-            toolbar.getItems().add(tbSelectedPage);
+
+            // look if we have opened it first
+            Toggle found = null;
+            for (Toggle toggle: tgDashboardButtons.getToggles()) {
+                if (toggle.getUserData() == pageView) {
+                    found = toggle;
+                    break;
+                }
+            }
+
+            if (found != null) {
+                tbSelectedPage = (ToggleButton) found;
+            } else {
+                tbSelectedPage = new ToggleButton(pageView.getOmrPage().toString());
+                tbSelectedPage.setUserData(pageView);
+                tgDashboardButtons.getToggles().add(tbSelectedPage);
+                toolbar.getItems().add(tbSelectedPage);
+                tbSelectedPage.setOnAction(event -> {
+                    openPage(pageView);
+                });
+            }
             tgDashboardButtons.selectToggle(tbSelectedPage);
 
-            Pair<DocumentAnalysisController, Parent> pair = ViewLoader.loadView("documentanalysis.fxml");
+            Pair<PageEditController, Parent> pair = ViewLoader.loadView("editpage.fxml");
             setMainPane(pair.getY());
             pair.getX().setDashboard(this);
             pair.getX().setPages(pageView.getOmrPage(), pagesToOpen);

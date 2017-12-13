@@ -36,7 +36,7 @@ public class MEI2GraphicSymbolsTest {
 
     @Test
     public void convertPrimusSampleWithAccidentalsAndFermata() throws Exception {
-        String expectedAgnostic = "[clef.C-L1, metersign.C-L3, note.quarter-S3, barline-L1, note.quarter-S3, note.beamedRight2-L3, note.beamedBoth2-S2, note.beamedBoth2-L2, note.beamedLeft2-S2, note.quarter-L2, note.beamedRight1-S3, dot-S3, accidental.flat-L4, note.beamedLeft2-L4, barline-L1, note.quarter-L3, slur.start-L3, slur.end-L3, note.beamedRight3-L3, accidental.flat-L4, note.beamedBoth3-L4, note.beamedBoth3-S3, note.beamedBoth3-L3, note.beamedBoth1-S2, note.beamedBoth3-L3, note.beamedLeft3-L2, fermata.above, note.eighth-S2]";
+        String expectedAgnostic = "[clef.C-L1, metersign.C-L3, note.quarter-S3, barline-L1, note.quarter-S3, note.beamedRight2-L3, note.beamedBoth2-S2, note.beamedBoth2-L2, note.beamedLeft2-S2, note.quarter-L2, note.beamedRight1-S3, dot-S3, accidental.flat-L4, note.beamedLeft2-L4, barline-L1, note.quarter-L3, slur.start-L3, slur.end-L3, note.beamedRight3-L3, accidental.flat-L4, note.beamedBoth3-L4, note.beamedBoth3-S3, note.beamedBoth3-L3, note.beamedBoth1-S2, note.beamedBoth3-L3, note.beamedLeft3-L2, fermata.above-S6, note.eighth-S2]";
         String expectedSemantic = "[clef-C1, timeSignature-C, note-A4_quarter, barline, note-A4_quarter, note-G4_sixteenth, note-F4_sixteenth, note-E4_sixteenth, note-F4_sixteenth, note-E4_quarter, note-A4_eighth., note-Bb4_sixteenth, barline, note-G4_quarter, tie, note-G4_thirty_second, note-Bb4_thirty_second, note-A4_thirty_second, note-G4_thirty_second, note-F4_eighth, note-G4_thirty_second, note-E4_thirty_second, note-F4_eighth_fermata]";
         test("/testdata/primus/000051806-1_1_1/000051806-1_1_1.mei", expectedAgnostic, expectedSemantic);
     }
@@ -57,7 +57,7 @@ public class MEI2GraphicSymbolsTest {
 
     @Test
     public void convertPrimusMultimeasureDoubleWholeGlyph() throws Exception {
-        String expectedAgnostic = "[clef.C-L1, accidental.flat-L4, accidental.flat-L2, accidental.flat-S3, metersign.C-L3, fermata.above, rest.whole-L4, barline-L1, note.half-S5, note.quarter-L4, dot-S4, note.eighth-L3, barline-L1, note.quarter-L2, note.quarter-L2, fermata.above, rest.half-L3, barline-L1, digit.2-S5, multirest-L3, barline-L1, note.half-L6, note.quarter-L5, dot-S5, note.eighth-L4, barline-L1, note.quarter-S3, note.quarter-S3, fermata.above, rest.half-L3, barline-L1]";
+        String expectedAgnostic = "[clef.C-L1, accidental.flat-L4, accidental.flat-L2, accidental.flat-S3, metersign.C-L3, fermata.above-S6, rest.whole-L4, barline-L1, note.half-S5, note.quarter-L4, dot-S4, note.eighth-L3, barline-L1, note.quarter-L2, note.quarter-L2, fermata.above-S6, rest.half-L3, barline-L1, digit.2-S5, multirest-L3, barline-L1, note.half-L6, note.quarter-L5, dot-S5, note.eighth-L4, barline-L1, note.quarter-S3, note.quarter-S3, fermata.above-S6, rest.half-L3, barline-L1]";
         String expectedSemantic = "[clef-C1, keySignature-EbM, timeSignature-C, rest-whole_fermata, barline, note-Eb5_half, note-Bb4_quarter., note-G4_eighth, barline, note-Eb4_quarter, note-Eb4_quarter, rest-half_fermata, barline, multirest-2, barline, note-F5_half, note-D5_quarter., note-Bb4_eighth, barline, note-Ab4_quarter, note-Ab4_quarter, rest-half_fermata, barline]";
         test("/testdata/primus/000051653-1_2_1/000051653-1_2_1.mei", expectedAgnostic, expectedSemantic);
     }
@@ -71,7 +71,7 @@ public class MEI2GraphicSymbolsTest {
 
     @Test
     public void convertPrimusTrill() throws Exception {
-        String expectedAgnostic = "[clef.G-L2, accidental.sharp-L5, metersign.C-L3, note.half-L4, slur.start-L4, slur.end-L4, note.eighth-L4, note.quarter-L4, note.beamedRight2-L4, note.beamedLeft2-S5, barline-L1, rest.sixteenth-L3, trill, note.beamedRight1-L6, note.beamedLeft1-S5, note.quarter-S7, slur.start-S7, barline-L1, slur.end-S7, note.beamedRight1-S7, note.beamedLeft1-L7, note.quarter-S6, note.eighth-L6, slur.start-L6, slur.end-L6, note.beamedRight2-L6, note.beamedLeft2-S5, note.quarter-L4, slur.start-L4, slur.end-L4, note.eighth-L4]";
+        String expectedAgnostic = "[clef.G-L2, accidental.sharp-L5, metersign.C-L3, note.half-L4, slur.start-L4, slur.end-L4, note.eighth-L4, note.quarter-L4, note.beamedRight2-L4, note.beamedLeft2-S5, barline-L1, rest.sixteenth-L3, trill-S6, note.beamedRight1-L6, note.beamedLeft1-S5, note.quarter-S7, slur.start-S7, barline-L1, slur.end-S7, note.beamedRight1-S7, note.beamedLeft1-L7, note.quarter-S6, note.eighth-L6, slur.start-L6, slur.end-L6, note.beamedRight2-L6, note.beamedLeft2-S5, note.quarter-L4, slur.start-L4, slur.end-L4, note.eighth-L4]";
         String expectedSemantic = "[clef-G2, keySignature-GM, timeSignature-C, note-D5_half, tie, note-D5_eighth, note-D5_quarter, note-D5_sixteenth, note-G5_sixteenth, barline, rest-sixteenth, note-A5_eighth_trill, note-G5_eighth, note-D6_quarter, tie, barline, note-D6_eighth, note-C6_eighth, note-B5_quarter, note-A5_eighth, tie, note-A5_sixteenth, note-G5_sixteenth, note-D5_quarter, tie, note-D5_eighth]";
         test("/testdata/primus/000100001-1_1_1/000100001-1_1_1.mei", expectedAgnostic, expectedSemantic);
     }

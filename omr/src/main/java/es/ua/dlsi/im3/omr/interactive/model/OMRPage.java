@@ -2,9 +2,15 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.omr.model.pojo.Instrument;
+import es.ua.dlsi.im3.omr.model.pojo.Page;
+import es.ua.dlsi.im3.omr.model.pojo.Region;
+import es.ua.dlsi.im3.omr.model.pojo.Staff;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageFile;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 
@@ -22,7 +28,7 @@ public class OMRPage {
 
     int order;
     Set<OMRInstrument> instrumentList;
-    List<OMRRegion> regionList;
+    ObservableList<OMRRegion> regionList;
 
     /**
      * Used for unit tests
@@ -50,7 +56,7 @@ public class OMRPage {
 
     public OMRPage(OMRProject omrProject, File imagesFolder, String imageRelativeFileName, ScoreSong scoreSong) throws IM3Exception {
         this.instrumentList = new TreeSet<>(); // we mantain it ordered
-        this.regionList = new ArrayList<>();
+        this.regionList = FXCollections.observableList(new LinkedList<>());
         this.imagesFolder = imagesFolder;
         this.omrProject = omrProject;
         this.imageRelativeFileName = imageRelativeFileName;
@@ -137,10 +143,12 @@ public class OMRPage {
     public void addRegion(OMRRegion region) {
         this.regionList.add(region);
     }
-    public void removeRetion(OMRRegion region) {
+    public void removeRegion(OMRRegion region) {
         this.regionList.remove(region);
     }
-
+    public ObservableList<OMRRegion> regionListProperty() {
+        return regionList;
+    }
 
 
 
@@ -186,5 +194,65 @@ public class OMRPage {
 
     public boolean containsInstrument(OMRInstrument instrument) {
         return instrumentList.contains(instrument);
+    }
+
+    public void clearRegions() {
+        this.regionList.clear();
+    }
+
+    public void addRegions(List<Region> regions) {
+        for (Region region: regions) {
+            this.regionList.add(new OMRRegion(region));
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OMRPage page = (OMRPage) o;
+        return Objects.equals(imageFile, page.imageFile);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(imageFile);
+    }
+
+    public Page createPOJO() {
+        Page pojoPage = new Page(getImageRelativeFileName());
+        pojoPage.setOrder(getOrder());
+        for (OMRInstrument instrument: getInstrumentList()) {
+            // no need to have the same object, just need to have the same name
+            pojoPage.getInstruments().add(new Instrument(instrument.getName()));
+        }
+        for (OMRRegion region: getRegionList()) {
+            pojoPage.getRegions().add(region.createPOJO());
+        }
+        for (OMRStaff staff: getStaves()) {
+            Staff pojoStaff = new Staff();
+            pojoPage.getStaves().add(pojoStaff);
+        }
+
+        return pojoPage;
+    }
+
+    /**
+     *
+     * @param pojoRegion
+     * @return null if not found
+     */
+    public OMRRegion findRegion(Region pojoRegion) {
+        for (OMRRegion region: regionList) {
+            if (region.getFromX() == pojoRegion.getFromX()
+                && region.getFromY() == pojoRegion.getFromY()
+                && region.getWidth() == pojoRegion.getToX() - pojoRegion.getFromX()
+                && region.getHeight() == pojoRegion.getToY() - pojoRegion.getFromY()
+                    && region.getRegionType() == pojoRegion.getRegionType()) {
+                return region;
+            }
+        }
+        return null;
     }
 }

@@ -4,7 +4,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 public class AccNoteState extends OMRState {
     private Accidentals accidental;

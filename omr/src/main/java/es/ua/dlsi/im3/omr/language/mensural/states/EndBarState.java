@@ -3,15 +3,11 @@ package es.ua.dlsi.im3.omr.language.mensural.states;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
-import es.ua.dlsi.im3.core.io.ImportException;
-import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.Measure;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.TimeSignature;
-import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 public class EndBarState extends OMRState {
     public EndBarState(int number) {

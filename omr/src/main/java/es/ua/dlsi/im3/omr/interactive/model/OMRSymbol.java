@@ -1,89 +1,142 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
-import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.omr.model.Symbol;
-import es.ua.dlsi.im3.omr.old.mensuraltagger.components.StrokeView;
-import es.ua.dlsi.im3.omr.traced.Stroke;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
+import es.ua.dlsi.im3.core.score.PositionInStaff;
+import es.ua.dlsi.im3.core.score.PositionsInStaff;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
+import es.ua.dlsi.im3.omr.model.pojo.Symbol;
+import javafx.beans.property.*;
 
-import java.util.List;
+public class OMRSymbol {
+    ObjectProperty<GraphicalSymbol> graphicalSymbol;
+    StringProperty value;
+    ObjectProperty<PositionInStaff> positionInStaff;
 
-public class OMRSymbol<SymbolType> extends Group {
-    private static final double DEFAULT_WIDTH = 2;
-    private final SimpleDoubleProperty strokeWidth;
-    private final ObjectProperty<Symbol<SymbolType>> symbol;
-    private StrokeView currentStrokeView;
-    private ImageView imageView;
-    private final ObjectProperty<Color> color;
-    private final Color unselectedColor;
+    DoubleProperty x;
+    DoubleProperty y;
+    DoubleProperty width;
+    DoubleProperty height;
+    /**
+     * Whether it has been accepted by the user
+     */
+    private BooleanProperty accepted;
 
-    public OMRSymbol(Symbol<SymbolType> symbol, Color color) throws IM3Exception {
-        this.strokeWidth = new SimpleDoubleProperty(DEFAULT_WIDTH);
-        this.symbol = new SimpleObjectProperty<>(symbol);
-        currentStrokeView = null;
-        this.color = new SimpleObjectProperty<>(color);
-        unselectedColor = color;
 
-        List<Stroke> strokes = symbol.getStrokes();
-        for (Stroke stroke : strokes) {
-            addStroke(stroke);
-        }
-
-        createImageView();
-        createInteraction();
+    public OMRSymbol(GraphicalSymbol graphicalSymbol, PositionInStaff positionInStaff, String value, double x, double y, double width, double height) {
+        this.graphicalSymbol = new SimpleObjectProperty<>(graphicalSymbol);
+        this.positionInStaff = new SimpleObjectProperty<>(positionInStaff);
+        this.value = new SimpleStringProperty(value);
+        this.x = new SimpleDoubleProperty(x);
+        this.y = new SimpleDoubleProperty(y);
+        this.width = new SimpleDoubleProperty(width);
+        this.height = new SimpleDoubleProperty(height);
+        this.accepted = new SimpleBooleanProperty(false);
     }
 
-    private void createImageView() {
-        if (symbol.get().getSymbolImage() != null) {
-            WritableImage fxImage = new WritableImage((int) symbol.get().getWidth(), (int) symbol.get().getHeight());
-            imageView = new ImageView(SwingFXUtils.toFXImage(symbol.get().getSymbolImage(), fxImage));
-        }
+    public OMRSymbol(Symbol symbol) {
+        this(symbol.getGraphicalToken().getSymbol(), symbol.getGraphicalToken().getPositionInStaff(), symbol.getGraphicalToken().getValue(), symbol.getX(), symbol.getY(), symbol.getWidth(), symbol.getHeight());
+        this.accepted.setValue(symbol.isAccepted());
     }
 
-    public void addNewStroke() {
-        Stroke stroke = new Stroke();
-        symbol.get().addStroke(stroke);
-        addStroke(stroke);
+    public double getX() {
+        return x.get();
     }
 
-    public final void addStroke(Stroke stroke) {
-        currentStrokeView = createStrokeView(stroke);
-        StrokeView miniaturePath = createStrokeView(stroke);
-        getChildren().add(currentStrokeView);
+    public DoubleProperty xProperty() {
+        return x;
     }
 
-    private StrokeView createStrokeView(Stroke stroke) {
-        StrokeView result = new StrokeView(stroke);
-        result.strokeWidthProperty().bind(strokeWidth);
-        result.strokeProperty().bind(color);
-
-        return result;
-    }
-    private void createInteraction() {
-        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                color.set(Color.GREENYELLOW);
-
-            }
-        });
-        this.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                color.set(unselectedColor);
-            }
-        });
-
+    public void setX(double x) {
+        this.x.set(x);
     }
 
+    public double getY() {
+        return y.get();
+    }
+
+    public DoubleProperty yProperty() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y.set(y);
+    }
+
+    public double getWidth() {
+        return width.get();
+    }
+
+    public DoubleProperty widthProperty() {
+        return width;
+    }
+
+    public void setWidth(double width) {
+        this.width.set(width);
+    }
+
+    public double getHeight() {
+        return height.get();
+    }
+
+    public DoubleProperty heightProperty() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height.set(height);
+    }
+
+    public boolean isAccepted() {
+        return accepted.get();
+    }
+
+    public BooleanProperty acceptedProperty() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted.set(accepted);
+    }
+
+    public GraphicalSymbol getGraphicalSymbol() {
+        return graphicalSymbol.get();
+    }
+
+    public ObjectProperty<GraphicalSymbol> graphicalSymbolProperty() {
+        return graphicalSymbol;
+    }
+
+    public void setGraphicalSymbol(GraphicalSymbol graphicalSymbol) {
+        this.graphicalSymbol.set(graphicalSymbol);
+    }
+
+    public String getValue() {
+        return value.get();
+    }
+
+    public StringProperty valueProperty() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value.set(value);
+    }
+
+    public PositionInStaff getPositionInStaff() {
+        return positionInStaff.get();
+    }
+
+    public ObjectProperty<PositionInStaff> positionInStaffProperty() {
+        return positionInStaff;
+    }
+
+    public void setPositionInStaff(PositionInStaff positionInStaff) {
+        this.positionInStaff.set(positionInStaff);
+    }
+
+    public Symbol createPOJO() {
+        Symbol pojoSymbol = new Symbol(new GraphicalToken(graphicalSymbol.get(), value.get(), positionInStaff.get()), getX(), getY(), getWidth(), getHeight());
+        pojoSymbol.setAccepted(accepted.get());
+        return pojoSymbol;
+    }
 }

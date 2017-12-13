@@ -6,8 +6,8 @@ import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 public class TimeSignatureState extends OMRState {
     // TODO: 4/10/17 C3, C, C/...

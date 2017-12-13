@@ -8,6 +8,8 @@ import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ public class MEI2GraphicSymbols {
     private static final String BELOW = "below";
     private static final String TRILL = "trill";
     private static final String FERMATA = "fermata";
+    private static final PositionInStaff FERMATA_POSITION_ABOVE = PositionsInStaff.SPACE_6;
+    private static final PositionInStaff FERMATA_POSITION_BELOW = PositionsInStaff.SPACE_MINUS_1;
 
     /**
      *
@@ -153,8 +157,8 @@ public class MEI2GraphicSymbols {
         } else if (symbol instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) symbol;
 
-            if (note.getAtomFigure().getFermata() != null && note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+            if (note.getAtomFigure().getFermata() != null && (note.getAtomFigure().getFermata().getPosition() == null  || note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
             }
 
             PositionInStaff positionInStaff = symbol.getStaff().computePositionInStaff(note.getTime(),
@@ -182,7 +186,7 @@ public class MEI2GraphicSymbols {
             if (note.getMarks() != null) {
                 for (StaffMark mark : note.getMarks()) {
                     if (mark instanceof Trill) {
-                        graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, null));
+                        graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, FERMATA_POSITION_ABOVE));
                     } else {
                         throw new IM3Exception("Unsupported mark: " + mark.getClass());
                     }
@@ -192,7 +196,8 @@ public class MEI2GraphicSymbols {
             graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
 
             if (note.getAtomFigure().getFermata() != null && note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPosition().toString().toLowerCase(),
+                        FERMATA_POSITION_BELOW));
             }
 
             PositionInStaff dotPositionInStaff;
@@ -237,13 +242,13 @@ public class MEI2GraphicSymbols {
                 graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(digit), PositionsInStaff.SPACE_5));
             }
             if (multiMeasureRest.getAtomFigure().getFermata() != null && multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), FERMATA_POSITION_ABOVE));
             }
 
             graphicalTokens.add(new GraphicalToken(GraphicalSymbol.multirest, null, PositionsInStaff.LINE_3));
 
-            if (multiMeasureRest.getAtomFigure().getFermata() != null && multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+            if (multiMeasureRest.getAtomFigure().getFermata() != null && (multiMeasureRest.getAtomFigure().getFermata().getPosition() == null || multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW)) {
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), FERMATA_POSITION_BELOW));
             }
 
             semanticTokens.add(new SemanticToken(SemanticSymbol.multirest, Integer.toString(multiMeasureRest.getNumMeasures())));
@@ -251,8 +256,8 @@ public class MEI2GraphicSymbols {
 
         } else if (symbol instanceof SimpleRest) {
             SimpleRest rest = (SimpleRest) symbol;
-            if (rest.getAtomFigure().getFermata() != null && rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+            if (rest.getAtomFigure().getFermata() != null && (rest.getAtomFigure().getFermata().getPosition() == null || rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), FERMATA_POSITION_ABOVE));
             }
 
             PositionInStaff positionsInStaff;
@@ -264,7 +269,7 @@ public class MEI2GraphicSymbols {
             graphicalTokens.add(new GraphicalToken(GraphicalSymbol.rest, rest.getAtomFigure().getFigure().toString().toLowerCase(), positionsInStaff));
 
             if (rest.getAtomFigure().getFermata() != null && rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
-                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), null));
+                graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPosition().toString().toLowerCase(), FERMATA_POSITION_BELOW));
             }
 
 

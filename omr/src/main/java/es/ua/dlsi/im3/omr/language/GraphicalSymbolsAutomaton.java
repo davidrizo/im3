@@ -4,8 +4,8 @@ package es.ua.dlsi.im3.omr.language;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.*;
 import es.ua.dlsi.im3.core.score.NotationType;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.primus.conversions.GraphicalToken;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 import java.util.*;
 

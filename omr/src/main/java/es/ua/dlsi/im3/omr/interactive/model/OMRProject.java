@@ -10,6 +10,9 @@ import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.IGraphicalToScoreSymbolFactory;
 import es.ua.dlsi.im3.omr.interactive.OMRMainController;
 import es.ua.dlsi.im3.omr.mensuralspanish.*;
+import es.ua.dlsi.im3.omr.model.pojo.Instrument;
+import es.ua.dlsi.im3.omr.model.pojo.Page;
+import es.ua.dlsi.im3.omr.model.pojo.Project;
 import es.ua.dlsi.im3.omr.segmentation.DummyPageSegmenter;
 import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
 import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
@@ -192,5 +195,19 @@ public class OMRProject {
             }
         }
         throw new IM3Exception("Instrument " + name + " not found");
+    }
+
+    public Project createPOJO() {
+        Project pojoProject = new Project();
+        for (OMRInstrument instrument: instrumentsProperty()) {
+            Instrument pojoInstrument = new Instrument(instrument.getName());
+            pojoProject.getInstruments().add(pojoInstrument);
+        }
+
+        for (OMRPage page: pagesProperty()) {
+            Page pojoPage = page.createPOJO();
+            pojoProject.getPages().add(pojoPage);
+        }
+        return pojoProject;
     }
 }
