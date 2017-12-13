@@ -46,6 +46,10 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
         TransductionType bestTransduction = null;
 
         for (Map.Entry<StateType, BigFraction> entry: startProbabilities.entrySet()) {
+            if (debug) { // TODO: 5/10/17 Mejor niveles de log
+                logger.info("----- New automaton traversal ----");
+            }
+
             ArrayList outputTokensFromThisState = new ArrayList();
             if (entry.getValue().getNumeratorAsLong() != 0) {
                 TransductionType transduction = probabilityOf(sequence, entry.getKey(), transductionFactory);

@@ -484,7 +484,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
                 return diff;
             }
         });
-        return marks;
+        return ordered;
     }
 
 	public ArrayList<AttachmentInStaff<?>> getAttachments() {
