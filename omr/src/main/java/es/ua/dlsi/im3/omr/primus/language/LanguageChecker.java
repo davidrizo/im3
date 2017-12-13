@@ -87,6 +87,8 @@ public class LanguageChecker {
                 e.printStackTrace(errors);
                 errors.println("\n------\n");
                 nerrorsImport++;
+                e.printStackTrace();
+                throw e;
             }
         }
 

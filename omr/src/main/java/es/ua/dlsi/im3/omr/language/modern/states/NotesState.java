@@ -9,6 +9,8 @@ import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 public class NotesState extends OMRState {
+    private static final String BEAMED = "BEAMED";
+
     public NotesState(int number, String name) {
         super(number, "notes");
     }
@@ -36,8 +38,8 @@ public class NotesState extends OMRState {
                 return;
             }
 
-            SimpleNote note = new SimpleNote(parseFigure(token.getValue()), 0, pitch);
             try {
+                SimpleNote note = new SimpleNote(parseFigure(token.getValue()), 0, pitch);
                 transduction.getStaff().addCoreSymbol(note);
                 transduction.getLayer().add(note);
             } catch (IM3Exception e) {
@@ -85,8 +87,19 @@ public class NotesState extends OMRState {
         return sp;
     }
 
-    private Figures parseFigure(String value) {
-        // TODO: 5/10/17 Valores válidos
-        return Figures.valueOf(value.toUpperCase());
+    private Figures parseFigure(String value) throws IM3Exception {
+        String upperCaseValue = value.toUpperCase();
+        if (upperCaseValue.startsWith(BEAMED)) { // it is a beam
+            String beams = value.substring(value.length()-1); // we'll not have more than 9 beams
+            int nbeams;
+            try {
+                nbeams = Integer.parseInt(beams);
+            } catch (Throwable t) {
+                throw new IM3RuntimeException("Invalid beam number: '" + beams + "' for value " + value);
+            }
+            return Figures.findFigureWithFlags(nbeams, NotationType.eModern);
+        } else { // it is a figure
+            return Figures.valueOf(upperCaseValue);
+        }
     }
 }
