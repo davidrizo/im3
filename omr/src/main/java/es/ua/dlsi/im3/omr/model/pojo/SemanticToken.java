@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.primus.conversions;
+package es.ua.dlsi.im3.omr.model.pojo;
 
 public class SemanticToken {
     private static final char VALUE_SEPARATOR = '-';

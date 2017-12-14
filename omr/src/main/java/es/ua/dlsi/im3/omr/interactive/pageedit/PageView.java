@@ -40,6 +40,8 @@ public class PageView extends Group {
     private RegionView editingRegion;
     private SymbolView editingSymbol;
 
+
+
     public PageView(OMRPage omrPage, PageEditController documentAnalysisController, ReadOnlyDoubleProperty widthProperty) {
         this.setFocusTraversable(true); // to receive key events
         state = PageViewState.idleRegion;
@@ -54,6 +56,10 @@ public class PageView extends Group {
         initInteraction();
         loadRegions();
         initRegionBinding();
+    }
+
+    public OMRPage getOmrPage() {
+        return omrPage;
     }
 
     private void loadRegions() {

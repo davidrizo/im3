@@ -2,17 +2,21 @@ package es.ua.dlsi.im3.omr.interactive.pageedit;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.io.NotationBuilder;
+import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.gui.javafx.JavaFXUtils;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.interactive.DashboardController;
+import es.ua.dlsi.im3.omr.interactive.OMRApp;
 import es.ua.dlsi.im3.omr.interactive.model.*;
 import es.ua.dlsi.im3.omr.interactive.pageedit.events.PageEditStepEvent;
-import es.ua.dlsi.im3.omr.model.pojo.Page;
-import es.ua.dlsi.im3.omr.model.pojo.Region;
-import es.ua.dlsi.im3.omr.model.pojo.Symbol;
+import es.ua.dlsi.im3.omr.model.pojo.*;
 import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
 import es.ua.dlsi.im3.omr.segmentation.PageSegmenterFactory;
 import es.ua.dlsi.im3.omr.symbolrecognition.ISymbolsRecognizer;
 import es.ua.dlsi.im3.omr.symbolrecognition.SymbolRecognizerFactory;
+import es.ua.dlsi.im3.omr.transduction.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -197,7 +201,7 @@ public class PageEditController implements Initializable {
 
     // --------- Symbols step
     @FXML
-    public void handleRecognizeSymbols() throws IM3Exception {
+    public void handleRecognizeSymbols() {
         ISymbolsRecognizer recognizer = SymbolRecognizerFactory.getInstance().create();
         //TODO decir que hemos guardado con un splash screen
         dashboard.save();
@@ -211,7 +215,12 @@ public class PageEditController implements Initializable {
         }
 
         // recognize
-        recognizer.recognize(pojoPages);
+        try {
+            recognizer.recognize(pojoPages);
+        } catch (IM3Exception e) {
+            e.printStackTrace();
+            ShowError.show(OMRApp.getMainStage(), "Cannot recognize symbols", e);
+        }
 
         // load results in OMRPage / OMRRegion
         for (Page pojoPage: pojoPages) {
@@ -230,6 +239,40 @@ public class PageEditController implements Initializable {
                     omrRegion.addSymbol(new OMRSymbol(symbol));
                 }
             }
+        }
+    }
+
+    // Music step
+    @FXML
+    public void handleGenerateMusicNotation() {
+        try {
+            //TODO Mover todas las operaciones no presenter a servicios (para hacer luego la web)
+            // Convert agnostic sequence to semantic sequence
+            IAgnosticToSemanticTransducer agnosticToSemanticTransducer = AgnosticToSemanticTransducerFactory.getInstance().create();
+            List<GraphicalToken> agnosticSequence = new LinkedList<>();
+            for (PageView pageView : pages.values()) {
+                List<OMRRegion> regions = pageView.getOmrPage().getRegionList();
+                for (OMRRegion region : regions) {
+                    agnosticSequence.add(new GraphicalToken(GraphicalSymbol.systemBreak, null, null));
+                }
+                agnosticSequence.add(new GraphicalToken(GraphicalSymbol.pageBreak, null, null));
+            }
+            List<SemanticToken> semanticSequence = agnosticToSemanticTransducer.transduce(agnosticSequence);
+
+            // Now convert semantic sequence to IMCore
+            //TODO Pasarle el instrumento y la jerarquía
+            ISemanticToScoreSongTransducer semanticToScoreSongTransducer = SemanticToScoreSongTransducerFactory.getInstance().create(NotationType.eMensural);
+            ScoreSong scoreSong = new ScoreSong();
+            ScorePart part = scoreSong.addPart();
+            Pentagram staff = new Pentagram(scoreSong, "1", 1);
+            part.addStaff(staff);
+            ScoreLayer scoreLayer = part.addScoreLayer();
+            scoreLayer.setStaff(staff);
+
+            semanticToScoreSongTransducer.transduceInto(semanticSequence, staff, scoreLayer);
+        } catch (IM3Exception e) {
+            e.printStackTrace();
+            ShowError.show(OMRApp.getMainStage(), "Cannot generate music notation", e);
         }
     }
 }
