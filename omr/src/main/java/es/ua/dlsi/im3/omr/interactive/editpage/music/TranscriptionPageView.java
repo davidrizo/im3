@@ -1,7 +1,9 @@
 package es.ua.dlsi.im3.omr.interactive.editpage.music;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.PageLayout;
@@ -12,6 +14,7 @@ import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
 import es.ua.dlsi.im3.omr.model.pojo.RegionType;
 import javafx.scene.layout.VBox;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,7 +51,19 @@ public class TranscriptionPageView extends VBox {
         // TODO: 19/12/17 Estomos usando sólo el HorizontalLayout en ScoreView
         /*PageLayout layout = new PageLayout(scoreSong, scoreSong.getStaves(), true, LayoutFonts.capitan,
                 new CoordinateComponent(1500), new CoordinateComponent(1000));*/
-        HorizontalLayout layout = new HorizontalLayout(scoreSong, LayoutFonts.capitan,
+
+        HashMap<Staff, LayoutFonts> fontsHashMap = new HashMap<>();
+        for (Staff astaff: scoreSong.getStaves()) {
+            if (astaff.getNotationType() == NotationType.eMensural) {
+                fontsHashMap.put(astaff, LayoutFonts.capitan);
+            } else if (astaff.getNotationType() == NotationType.eModern) {
+                fontsHashMap.put(astaff, LayoutFonts.bravura);
+            } else {
+                throw new IM3Exception("The staff " + astaff + " has not a notation type");
+            }
+        }
+
+        HorizontalLayout layout = new HorizontalLayout(scoreSong, fontsHashMap,
                 new CoordinateComponent(1500), new CoordinateComponent(1000));
 
 

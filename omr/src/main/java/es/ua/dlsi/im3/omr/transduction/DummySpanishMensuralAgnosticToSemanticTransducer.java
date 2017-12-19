@@ -31,7 +31,7 @@ public class DummySpanishMensuralAgnosticToSemanticTransducer implements IAgnost
                             regionsResult.add(new SemanticToken(SemanticSymbol.rest, "minima"));
                             break;
                         case note:
-                            regionsResult.add(new SemanticToken(SemanticSymbol.note, "E4_semibreve"));
+                            regionsResult.add(new SemanticToken(SemanticSymbol.note, "E5_semibreve"));
                             break;
                     }
                 }

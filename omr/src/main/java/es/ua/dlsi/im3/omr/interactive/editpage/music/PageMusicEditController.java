@@ -1,10 +1,11 @@
 package es.ua.dlsi.im3.omr.interactive.editpage.music;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.NotationType;
-import es.ua.dlsi.im3.core.score.ScoreLayer;
-import es.ua.dlsi.im3.core.score.ScorePart;
-import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.conversions.MensuralToModern;
+import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.Staff;
+import es.ua.dlsi.im3.core.score.clefs.ClefG2;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.interactive.DashboardController;
@@ -69,23 +70,33 @@ public class PageMusicEditController extends PageBasedController<TranscriptionPa
             // Now convert semantic sequence to IMCore
             //TODO Pasarle el instrumento y la jerarquía
             ISemanticToScoreSongTransducer semanticToScoreSongTransducer = SemanticToScoreSongTransducerFactory.getInstance().create(NotationType.eMensural);
-            ScoreSong scoreSong = new ScoreSong();
-            ScorePart part = scoreSong.addPart();
-            Pentagram staff = new Pentagram(scoreSong, "1", 1);
+            ScoreSong mensural = new ScoreSong();
+            ScorePart part = mensural.addPart();
+            part.setName("Soprano"); //TODO - es importante !!! - nombre del instrumento
+            Pentagram staff = new Pentagram(mensural, "1", 1);
             staff.setNotationType(NotationType.eMensural);
+            staff.setName("Soprano"); //TODO - es importante !!!
             //TODO Crear elementos visuales - o mejor poner aquí los system break y que se genere
             part.addStaff(staff); // TODO: 19/12/17 Esto debería añadir el staff al scoreSong
-            scoreSong.addStaff(staff);
+            mensural.addStaff(staff);
             ScoreLayer scoreLayer = part.addScoreLayer();
             scoreLayer.setStaff(staff);
             // TODO: 19/12/17 Cogiendo sólo el primero (2 porque es el staff)
             semanticToScoreSongTransducer.transduceInto(semanticSequence.get(0).get(2), staff, scoreLayer);
 
-            //TODO Añadir traducción a moderno
+            //TODO Traducción a moderno con valores de claves... a piñón - mejor en clase modelo
+            Clef [] modernClefs = new Clef [] {
+                    new ClefG2()
+            };
+            MensuralToModern mensuralToModern = new MensuralToModern(modernClefs);
+            //TODO Parámetro
+            //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC); // ésta genera más sostenidos
+            ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FIFTH_PERFECT_DESC);
+            mensuralToModern.merge(mensural, modern);
 
             // TODO: 19/12/17 Estoy poniendo todo en el primer pentagrama
             TranscriptionPageView transcriptionPageView = pages.entrySet().iterator().next().getValue();
-            transcriptionPageView.setScoreSong(scoreSong);
+            transcriptionPageView.setScoreSong(mensural);
         } catch (IM3Exception e) {
             e.printStackTrace();
             ShowError.show(OMRApp.getMainStage(), "Cannot generate music notation", e);
