@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.interactive.pageedit;
+package es.ua.dlsi.im3.omr.interactive;
 
 public class Event<ContentType> {
     ContentType content;

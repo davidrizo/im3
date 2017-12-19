@@ -1,12 +1,9 @@
-package es.ua.dlsi.im3.omr.interactive.pageedit;
+package es.ua.dlsi.im3.omr.interactive.editpage.symbols;
 
 import es.ua.dlsi.im3.core.score.PositionInStaff;
-import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.omr.interactive.model.OMRSymbol;
-import es.ua.dlsi.im3.omr.interactive.pageedit.events.SymbolEditEvent;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -20,15 +17,15 @@ import javafx.scene.text.Text;
 
 public class SymbolView extends Group {
     private static final String FONT_FAMILY = "Arial";
-    private final PageView pageView;
+    private final SymbolsPageView pageView;
     OMRSymbol symbol;
-    RegionView region;
+    SymbolsRegionView region;
     VBox labels;
     Text labelSymbolType;
     Text labelPosition;
     DraggableRectangle rectangle;
 
-    public SymbolView(PageView pageView, RegionView region, OMRSymbol symbol) {
+    public SymbolView(SymbolsPageView pageView, SymbolsRegionView region, OMRSymbol symbol) {
         this.symbol = symbol;
         this.region = region;
         this.pageView = pageView;
@@ -130,7 +127,7 @@ public class SymbolView extends Group {
         return symbol;
     }
 
-    public RegionView getRegionView() {
+    public SymbolsRegionView getRegionView() {
         return region;
     }
 }

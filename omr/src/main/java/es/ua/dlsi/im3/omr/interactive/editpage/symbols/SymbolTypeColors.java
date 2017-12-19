@@ -1,8 +1,7 @@
-package es.ua.dlsi.im3.omr.interactive.pageedit;
+package es.ua.dlsi.im3.omr.interactive.editpage.symbols;
 
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.RegionType;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;

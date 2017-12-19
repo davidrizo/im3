@@ -1,7 +1,6 @@
-package es.ua.dlsi.im3.omr.interactive.pageedit.events;
+package es.ua.dlsi.im3.omr.interactive.editpage.symbols;
 
-import es.ua.dlsi.im3.omr.interactive.pageedit.Event;
-import es.ua.dlsi.im3.omr.interactive.pageedit.SymbolView;
+import es.ua.dlsi.im3.omr.interactive.Event;
 import javafx.scene.input.MouseEvent;
 
 public class SymbolEditEvent extends Event<MouseEvent> {

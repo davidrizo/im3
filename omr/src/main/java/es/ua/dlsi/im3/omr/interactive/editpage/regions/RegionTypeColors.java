@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.interactive.pageedit;
+package es.ua.dlsi.im3.omr.interactive.editpage.regions;
 
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.omr.model.pojo.RegionType;
