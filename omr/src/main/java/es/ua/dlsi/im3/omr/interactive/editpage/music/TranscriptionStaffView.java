@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -20,7 +21,7 @@ public class TranscriptionStaffView extends VBox {
     private ImageView manuscriptStaffExcerptView;
     private Pane staffScoreViewPane;
     private ImageView manuscriptLyricsExcerptView;
-    private Pane manuscriptScoreViewPane;
+    private Pane staffLyricsPane;
     private OMRPage page;
     private OMRRegion staffRegion;
     private OMRRegion lyricsRegion;
@@ -31,7 +32,8 @@ public class TranscriptionStaffView extends VBox {
         manuscriptStaffExcerptView = extractRegion(region);
         this.getChildren().add(manuscriptStaffExcerptView);
         staffScoreViewPane = new Pane();
-        staffScoreViewPane.setPrefHeight(300); //TODO
+        staffScoreViewPane.getChildren().add(new Label("TO-DO QUITAR: aquí el scoreView, que se vean arriba los símbolos indentificados y alineados con éstos"));
+        staffScoreViewPane.setMinHeight(300); //TODO
         this.getChildren().add(staffScoreViewPane);
     }
 
@@ -39,9 +41,10 @@ public class TranscriptionStaffView extends VBox {
         this.lyricsRegion = lyricsRegion;
         manuscriptLyricsExcerptView = extractRegion(lyricsRegion);
         this.getChildren().add(manuscriptLyricsExcerptView);
-        manuscriptScoreViewPane = new Pane();
-        staffScoreViewPane.setPrefHeight(100); //TODO
-        this.getChildren().add(manuscriptScoreViewPane);
+        staffLyricsPane = new Pane();
+        staffLyricsPane.getChildren().add(new Label("TO-DO QUITAR: aquí el lyrics"));
+        staffLyricsPane.setMinHeight(100); //TODO
+        this.getChildren().add(staffLyricsPane);
     }
 
     private ImageView extractRegion(OMRRegion region) {
@@ -52,5 +55,11 @@ public class TranscriptionStaffView extends VBox {
                 (int)region.getWidth(), (int)region.getHeight());
         imageView.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
         return imageView;
+    }
+
+    public void setScoreView(ScoreSongView scoreSongView) {
+        this.scoreSongView = scoreSongView;
+        staffScoreViewPane.getChildren().clear();
+        staffScoreViewPane.getChildren().add(scoreSongView.getMainPanel()); //// TODO: 19/12/17 Debería ser el pentagrama seleccionado sólo
     }
 }

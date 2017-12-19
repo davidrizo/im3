@@ -13,6 +13,7 @@ import es.ua.dlsi.im3.omr.interactive.editpage.IPagesController;
 import es.ua.dlsi.im3.omr.interactive.editpage.PageBasedController;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
+import es.ua.dlsi.im3.omr.interactive.model.OMRSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.*;
 import es.ua.dlsi.im3.omr.transduction.AgnosticToSemanticTransducerFactory;
 import es.ua.dlsi.im3.omr.transduction.IAgnosticToSemanticTransducer;
@@ -49,15 +50,21 @@ public class PageMusicEditController extends PageBasedController<TranscriptionPa
             //TODO Mover todas las operaciones no presenter a servicios (para hacer luego la web)
             // Convert agnostic sequence to semantic sequence
             IAgnosticToSemanticTransducer agnosticToSemanticTransducer = AgnosticToSemanticTransducerFactory.getInstance().create();
-            List<GraphicalToken> agnosticSequence = new LinkedList<>();
-            for (OMRPage page: pages.keySet()) {
+            List<List<List<GraphicalToken>>> agnosticSequence = new LinkedList<>();
+            for (Map.Entry<OMRPage, TranscriptionPageView> entry : pages.entrySet()) {
+                List<List<GraphicalToken>> pagesAgnosticSequence = new LinkedList<>();
+                OMRPage page = entry.getKey();
                 List<OMRRegion> regions = page.getRegionList();
                 for (OMRRegion region : regions) {
-                    agnosticSequence.add(new GraphicalToken(GraphicalSymbol.systemBreak, null, null));
+                    List<GraphicalToken> regionAgnosticSequence = new LinkedList<>();
+                    for (OMRSymbol symbol: region.symbolListProperty()) {
+                        regionAgnosticSequence.add(new GraphicalToken(symbol.getGraphicalSymbol(), symbol.getValue(), symbol.getPositionInStaff()));
+                    }
+                    pagesAgnosticSequence.add(regionAgnosticSequence);
                 }
-                agnosticSequence.add(new GraphicalToken(GraphicalSymbol.pageBreak, null, null));
+                agnosticSequence.add(pagesAgnosticSequence);
             }
-            List<SemanticToken> semanticSequence = agnosticToSemanticTransducer.transduce(agnosticSequence);
+            List<List<List<SemanticToken>>> semanticSequence = agnosticToSemanticTransducer.transduce(agnosticSequence);
 
             // Now convert semantic sequence to IMCore
             //TODO Pasarle el instrumento y la jerarquía
@@ -65,11 +72,20 @@ public class PageMusicEditController extends PageBasedController<TranscriptionPa
             ScoreSong scoreSong = new ScoreSong();
             ScorePart part = scoreSong.addPart();
             Pentagram staff = new Pentagram(scoreSong, "1", 1);
-            part.addStaff(staff);
+            staff.setNotationType(NotationType.eMensural);
+            //TODO Crear elementos visuales - o mejor poner aquí los system break y que se genere
+            part.addStaff(staff); // TODO: 19/12/17 Esto debería añadir el staff al scoreSong
+            scoreSong.addStaff(staff);
             ScoreLayer scoreLayer = part.addScoreLayer();
             scoreLayer.setStaff(staff);
+            // TODO: 19/12/17 Cogiendo sólo el primero (2 porque es el staff)
+            semanticToScoreSongTransducer.transduceInto(semanticSequence.get(0).get(2), staff, scoreLayer);
 
-            semanticToScoreSongTransducer.transduceInto(semanticSequence, staff, scoreLayer);
+            //TODO Añadir traducción a moderno
+
+            // TODO: 19/12/17 Estoy poniendo todo en el primer pentagrama
+            TranscriptionPageView transcriptionPageView = pages.entrySet().iterator().next().getValue();
+            transcriptionPageView.setScoreSong(scoreSong);
         } catch (IM3Exception e) {
             e.printStackTrace();
             ShowError.show(OMRApp.getMainStage(), "Cannot generate music notation", e);

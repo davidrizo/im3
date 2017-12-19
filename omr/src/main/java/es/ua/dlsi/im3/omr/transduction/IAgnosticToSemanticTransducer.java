@@ -7,5 +7,10 @@ import es.ua.dlsi.im3.omr.model.pojo.SemanticToken;
 import java.util.List;
 
 public interface IAgnosticToSemanticTransducer {
-    List<SemanticToken> transduce(List<GraphicalToken> agnosticSequence);
+    /**
+     *
+     * @param agnosticSequence First list = pages, second list = regions, third list = graphical tokens
+     * @return First list = pages, second list = regions, third list = semantic tokens
+     */
+    List<List<List<SemanticToken>>> transduce(List<List<List<GraphicalToken>>> agnosticSequence);
 }

@@ -12,24 +12,34 @@ import java.util.List;
  */
 public class DummySpanishMensuralAgnosticToSemanticTransducer implements IAgnosticToSemanticTransducer {
     @Override
-    public List<SemanticToken> transduce(List<GraphicalToken> agnosticSequence) {
-        LinkedList<SemanticToken> result = new LinkedList<>();
-        for (GraphicalToken graphicalToken: agnosticSequence) {
-            switch (graphicalToken.getSymbol()) {
-                case clef:
-                    result.add(new SemanticToken(SemanticSymbol.clef, "G2"));
-                    break;
-                case metersign:
-                    result.add(new SemanticToken(SemanticSymbol.timeSignature, "C"));
-                    break;
-                case rest:
-                    result.add(new SemanticToken(SemanticSymbol.rest, "minima"));
-                    break;
-                case note:
-                    result.add(new SemanticToken(SemanticSymbol.note, "E4_semibreve"));
-                    break;
+    public List<List<List<SemanticToken>>> transduce(List<List<List<GraphicalToken>>> agnosticSequence) {
+        List<List<List<SemanticToken>>> result = new LinkedList<>();
+
+        for (List<List<GraphicalToken>> pagesList: agnosticSequence) {
+            List<List<SemanticToken>> pagesResult = new LinkedList<>();
+            for (List<GraphicalToken> regionsList : pagesList) {
+                LinkedList<SemanticToken> regionsResult = new LinkedList<>();
+                for (GraphicalToken graphicalToken : regionsList) {
+                    switch (graphicalToken.getSymbol()) {
+                        case clef:
+                            regionsResult.add(new SemanticToken(SemanticSymbol.clef, "G2"));
+                            break;
+                        case metersign:
+                            regionsResult.add(new SemanticToken(SemanticSymbol.timeSignature, "C"));
+                            break;
+                        case rest:
+                            regionsResult.add(new SemanticToken(SemanticSymbol.rest, "minima"));
+                            break;
+                        case note:
+                            regionsResult.add(new SemanticToken(SemanticSymbol.note, "E4_semibreve"));
+                            break;
+                    }
+                }
+                pagesResult.add(regionsResult);
             }
+            result.add(pagesResult);
         }
         return result;
     }
+
 }
