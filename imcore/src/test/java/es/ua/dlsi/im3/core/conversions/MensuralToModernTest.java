@@ -36,8 +36,10 @@ public class MensuralToModernTest {
         //ScoreSong song = new ScoreSong(new DurationEvaluator()); // TODO: 7/10/17 ¿Sería mejor cambiar las Figures o sólo en la traducción?
         Staff staff = new Pentagram(song, "1", 1);
         staff.setNotationType(NotationType.eMensural);
+        staff.setName("Soprano");
         song.addStaff(staff);
         ScorePart part = song.addPart();
+        part.setName("Soprano");
         part.addStaff(staff);
         ScoreLayer layer = part.addScoreLayer(staff);
         TimeSignatureCommonTime ts = new TimeSignatureCommonTime(NotationType.eMensural);

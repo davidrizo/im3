@@ -70,6 +70,9 @@ public class PageLayout extends ScoreLayout {
 
         // TODO: 25/9/17 Intentar unificar código con HorizontalLayout
 
+        if (staves.isEmpty()) {
+            throw new IM3Exception("No staves found");
+        }
         // add the system breaks, with a default duration that will be able to fit the new clef and new key signature
         if (includePageAndSystemBreaks) {
             for (SystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
