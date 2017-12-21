@@ -92,7 +92,7 @@ public class JSONGlyphNamesReader {
 	 *            e.g. U+E06D
 	 * @return \uE06D
 	 */
-	private static final String getJavaUnicodeString(String input) {
+	public static final String getJavaUnicodeString(String input) {
 		/*
 		 * StringBuilder sb = new StringBuilder(); sb.append(UNICODE_PREFIX);
 		 * sb.append(input.substring(2)); return sb.toString();

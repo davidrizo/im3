@@ -34,7 +34,9 @@ public class ShowError {
 
     public static void show(Stage stage, String message, Throwable e) {
         Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(stage.getTitle());
+        if (stage != null) {
+            alert.setTitle(stage.getTitle());
+        }
         alert.initOwner(stage);
         alert.setHeaderText(message);
         alert.setContentText(e.getLocalizedMessage());
