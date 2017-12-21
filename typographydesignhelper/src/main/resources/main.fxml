@@ -3,14 +3,13 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -18,15 +17,7 @@
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-            <RadioButton fx:id="cbModernNotation" mnemonicParsing="false" text="Modern notation">
-               <toggleGroup>
-                  <ToggleGroup fx:id="tgNotationType" />
-               </toggleGroup>
-            </RadioButton>
-            <RadioButton fx:id="cbMensuralNotation" mnemonicParsing="false" selected="true" text="Mensural notation" toggleGroup="$tgNotationType" />
-            <Separator orientation="VERTICAL" prefHeight="20.0" />
             <Label text="Kerning" />
-            <Separator layoutX="279.0" layoutY="10.0" orientation="VERTICAL" prefHeight="20.0" />
             <Spinner fx:id="spinnerKerning" editable="true" />
             <Separator layoutX="279.0" layoutY="10.0" orientation="VERTICAL" prefHeight="20.0" />
             <Label text="Font size" />
@@ -34,15 +25,18 @@
             <Separator layoutX="522.0" layoutY="10.0" orientation="VERTICAL" prefHeight="20.0" />
             <Label text="Staff line tickness" />
             <Spinner fx:id="spinnerStaffLineThickness" editable="true" />
+            <Separator layoutX="474.0" layoutY="10.0" orientation="VERTICAL" prefHeight="20.0" />
+            <Label text="Vertical position" />
+            <Spinner fx:id="spinnerVerticalPosition" editable="true" />
         </items>
       </ToolBar>
    </top>
    <left>
-      <VBox prefHeight="397.0" prefWidth="275.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="660.0" prefWidth="383.0" BorderPane.alignment="CENTER">
          <children>
             <ToolBar prefHeight="40.0" prefWidth="200.0">
                <items>
-                <Button mnemonicParsing="false" text="Open font" />
+                <Button mnemonicParsing="false" onAction="#handleOpenFont" text="Open font" />
                   <Label fx:id="labelCurrentFontFileName" text="&lt;Current font file name&gt;" />
                </items>
             </ToolBar>
@@ -52,20 +46,25 @@
                   <Label fx:id="labelJSONFilename" text="&lt;json file name&gt;" />
               </items>
             </ToolBar>
-            <TableView fx:id="tbSymbols" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tbSymbols" editable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn fx:id="colSymbol" prefWidth="131.0" text="Symbol" />
-                <TableColumn fx:id="colUnicode" prefWidth="142.0" text="Unicode" />
+                <TableColumn fx:id="colUnicode" prefWidth="103.0" text="Unicode" />
+                <TableColumn fx:id="colSymbol" prefWidth="274.0" text="Symbol" />
               </columns>
             </TableView>
+            <Label disable="true" text="Filter symbol name" />
+            <TextField fx:id="textInputFilter" disable="true" />
          </children>
       </VBox>
    </left>
    <center>
-      <AnchorPane fx:id="scorePane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
          </BorderPane.margin>
-      </AnchorPane>
+         <padding>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+         </padding>
+      </ScrollPane>
    </center>
 </BorderPane>
