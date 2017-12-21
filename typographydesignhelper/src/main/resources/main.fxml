@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.grfia.im3.typographydesignhelper.Controller">
+   <top>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+            <RadioButton fx:id="cbModernNotation" mnemonicParsing="false" text="Modern notation">
+               <toggleGroup>
+                  <ToggleGroup fx:id="tgNotationType" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="cbMensuralNotation" mnemonicParsing="false" selected="true" text="Mensural notation" toggleGroup="$tgNotationType" />
+            <Separator orientation="VERTICAL" prefHeight="20.0" />
+            <Label text="Kerning" />
+            <Separator layoutX="279.0" layoutY="10.0" orientation="VERTICAL" prefHeight="20.0" />
+            <Spinner fx:id="spinnerKerning" editable="true" />
+            <Separator layoutX="279.0" layoutY="10.0" orientation="VERTICAL" prefHeight="20.0" />
+            <Label text="Font size" />
+            <Spinner fx:id="spinnerFontSize" editable="true" />
+            <Separator layoutX="522.0" layoutY="10.0" orientation="VERTICAL" prefHeight="20.0" />
+            <Label text="Staff line tickness" />
+            <Spinner fx:id="spinnerStaffLineThickness" editable="true" />
+        </items>
+      </ToolBar>
+   </top>
+   <left>
+      <VBox prefHeight="397.0" prefWidth="275.0" BorderPane.alignment="CENTER">
+         <children>
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+               <items>
+                <Button mnemonicParsing="false" text="Open font" />
+                  <Label fx:id="labelCurrentFontFileName" text="&lt;Current font file name&gt;" />
+               </items>
+            </ToolBar>
+            <ToolBar prefHeight="41.0" prefWidth="275.0">
+              <items>
+                <Button mnemonicParsing="false" text="Save JSON" />
+                  <Label fx:id="labelJSONFilename" text="&lt;json file name&gt;" />
+              </items>
+            </ToolBar>
+            <TableView fx:id="tbSymbols" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="colSymbol" prefWidth="131.0" text="Symbol" />
+                <TableColumn fx:id="colUnicode" prefWidth="142.0" text="Unicode" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <AnchorPane fx:id="scorePane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+         </BorderPane.margin>
+      </AnchorPane>
+   </center>
+</BorderPane>
