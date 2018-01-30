@@ -49,31 +49,32 @@ public class ImportFactories {
 				result = new ClefG1();
 			} else if (line != 2) {
 				throw new ImportException("Invalid line " + line + " for G clef");
-			}
-			if (octaveChange != null) {
-				switch (octaveChange) {
-				case -2:
-					result = new ClefG2QuindicesimaBassa();
-					break;
-				case -1:
-					result = new ClefG2OttavaBassa();
-					break;
-				case 0:
-					result = new ClefG2();
-					break;
-				case 2:
-					result = new ClefG2QuindicesimaAlta();
-					break;
-				case 1:
-					result = new ClefG2OttavaAlta();
-					break;
-				default:
-					throw new ImportException("Invalid octave change " + octaveChange + " for G clef");
-				}
 			} else {
-				// if no clef octave change
-				result = new ClefG2();
-			}
+                if (octaveChange != null) {
+                    switch (octaveChange) {
+                        case -2:
+                            result = new ClefG2QuindicesimaBassa();
+                            break;
+                        case -1:
+                            result = new ClefG2OttavaBassa();
+                            break;
+                        case 0:
+                            result = new ClefG2();
+                            break;
+                        case 2:
+                            result = new ClefG2QuindicesimaAlta();
+                            break;
+                        case 1:
+                            result = new ClefG2OttavaAlta();
+                            break;
+                        default:
+                            throw new ImportException("Invalid octave change " + octaveChange + " for G clef");
+                    }
+                } else {
+                    // if no clef octave change
+                    result = new ClefG2();
+                }
+            }
 			break;
 		case "F":
 			switch (line) {
