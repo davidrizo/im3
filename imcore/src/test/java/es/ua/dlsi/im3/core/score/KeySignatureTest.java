@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
+/**
+ * @author drizo
+ */
 public class KeySignatureTest {
 
     @Before
@@ -51,32 +54,32 @@ public class KeySignatureTest {
     }
     @Test
     public void testComputePositionsOfAccidentals() throws IM3Exception {
-        Key key1 = new Key(1, Mode.MAJOR); // GMajor
+        Key key1 = new Key(4, Mode.MAJOR); // eMajor
 
-        checkPositionsOfAccitentals(new ClefG2(), key1, new PositionInStaff[] {PositionsInStaff.LINE_5});
-        checkPositionsOfAccitentals(new ClefG2OttavaAlta(), key1, new PositionInStaff[] {PositionsInStaff.LINE_5});
-        checkPositionsOfAccitentals(new ClefG2OttavaBassa(), key1, new PositionInStaff[] {PositionsInStaff.LINE_5});
-        checkPositionsOfAccitentals(new ClefF3(), key1, new PositionInStaff[] {PositionsInStaff.LINE_3});
-        checkPositionsOfAccitentals(new ClefF4(), key1, new PositionInStaff[] {PositionsInStaff.LINE_4});
-        checkPositionsOfAccitentals(new ClefF4OttavaAlta(), key1, new PositionInStaff[] {PositionsInStaff.LINE_4});
-        checkPositionsOfAccitentals(new ClefF4OttavaBassa(), key1, new PositionInStaff[] {PositionsInStaff.LINE_4});
-        checkPositionsOfAccitentals(new ClefC1(), key1, new PositionInStaff[] {PositionsInStaff.SPACE_2});
-        checkPositionsOfAccitentals(new ClefC2(), key1, new PositionInStaff[] {PositionsInStaff.SPACE_3});
-        checkPositionsOfAccitentals(new ClefC3(), key1, new PositionInStaff[] {PositionsInStaff.SPACE_4});
-        checkPositionsOfAccitentals(new ClefC4(), key1, new PositionInStaff[] {PositionsInStaff.LINE_2});
-        checkPositionsOfAccitentals(new ClefC5(), key1, new PositionInStaff[] {PositionsInStaff.LINE_3});
+        checkPositionsOfAccitentals(new ClefG2(), key1, new PositionInStaff[] {PositionsInStaff.LINE_5, PositionsInStaff.SPACE_3, PositionsInStaff.SPACE_5, PositionsInStaff.LINE_4});
+        checkPositionsOfAccitentals(new ClefG2OttavaAlta(), key1, new PositionInStaff[] {PositionsInStaff.LINE_5, PositionsInStaff.SPACE_3, PositionsInStaff.SPACE_5, PositionsInStaff.LINE_4});
+        checkPositionsOfAccitentals(new ClefG2OttavaBassa(), key1, new PositionInStaff[] {PositionsInStaff.LINE_5, PositionsInStaff.SPACE_3, PositionsInStaff.SPACE_5, PositionsInStaff.LINE_4});
+        checkPositionsOfAccitentals(new ClefF3(), key1, new PositionInStaff[] {PositionsInStaff.LINE_3, PositionsInStaff.SPACE_1, PositionsInStaff.SPACE_3, PositionsInStaff.LINE_2});
+        checkPositionsOfAccitentals(new ClefF4(), key1, new PositionInStaff[] {PositionsInStaff.LINE_4, PositionsInStaff.SPACE_2, PositionsInStaff.SPACE_4, PositionsInStaff.LINE_3});
+        checkPositionsOfAccitentals(new ClefF4OttavaAlta(), key1, new PositionInStaff[] {PositionsInStaff.LINE_4, PositionsInStaff.SPACE_2, PositionsInStaff.SPACE_4, PositionsInStaff.LINE_3});
+        checkPositionsOfAccitentals(new ClefF4OttavaBassa(), key1, new PositionInStaff[] {PositionsInStaff.LINE_4, PositionsInStaff.SPACE_2, PositionsInStaff.SPACE_4, PositionsInStaff.LINE_3});
+        checkPositionsOfAccitentals(new ClefC1(), key1, new PositionInStaff[] {PositionsInStaff.SPACE_2, PositionsInStaff.LINE_1, PositionsInStaff.LINE_3, PositionsInStaff.SPACE_1});
+        checkPositionsOfAccitentals(new ClefC2(), key1, new PositionInStaff[] {PositionsInStaff.SPACE_3, PositionsInStaff.LINE_2, PositionsInStaff.LINE_4, PositionsInStaff.SPACE_2});
+        checkPositionsOfAccitentals(new ClefC3(), key1, new PositionInStaff[] {PositionsInStaff.SPACE_4, PositionsInStaff.LINE_3, PositionsInStaff.LINE_5, PositionsInStaff.SPACE_3});
+        checkPositionsOfAccitentals(new ClefC4(), key1, new PositionInStaff[] {PositionsInStaff.LINE_2, PositionsInStaff.LINE_4, PositionsInStaff.SPACE_2, PositionsInStaff.SPACE_4});
+        checkPositionsOfAccitentals(new ClefC5(), key1, new PositionInStaff[] {PositionsInStaff.LINE_3, PositionsInStaff.SPACE_1, PositionsInStaff.SPACE_3, PositionsInStaff.LINE_2});
 
-        Key key = new Key(-1, Mode.MAJOR); // FMajor
+        Key key = new Key(-4, Mode.MAJOR); // AbMajor
 
-        checkPositionsOfAccitentals(new ClefG2(), key, new PositionInStaff[] {PositionsInStaff.LINE_3});
-        checkPositionsOfAccitentals(new ClefG2OttavaBassa(), key, new PositionInStaff[] {PositionsInStaff.LINE_3});
-        checkPositionsOfAccitentals(new ClefF3(), key, new PositionInStaff[] {PositionsInStaff.SPACE_4});
-        checkPositionsOfAccitentals(new ClefF4(), key, new PositionInStaff[] {PositionsInStaff.LINE_2});
-        checkPositionsOfAccitentals(new ClefC1(), key, new PositionInStaff[] {PositionsInStaff.LINE_4});
-        checkPositionsOfAccitentals(new ClefC2(), key, new PositionInStaff[] {PositionsInStaff.LINE_5});
-        checkPositionsOfAccitentals(new ClefC3(), key, new PositionInStaff[] {PositionsInStaff.SPACE_2});
-        checkPositionsOfAccitentals(new ClefC4(), key, new PositionInStaff[] {PositionsInStaff.SPACE_3});
-        checkPositionsOfAccitentals(new ClefC5(), key, new PositionInStaff[] {PositionsInStaff.SPACE_4});
+        checkPositionsOfAccitentals(new ClefG2(), key, new PositionInStaff[] {PositionsInStaff.LINE_3, PositionsInStaff.SPACE_4, PositionsInStaff.SPACE_2, PositionsInStaff.LINE_4});
+        checkPositionsOfAccitentals(new ClefG2OttavaBassa(), key, new PositionInStaff[] {PositionsInStaff.LINE_3, PositionsInStaff.SPACE_4, PositionsInStaff.SPACE_2, PositionsInStaff.LINE_4});
+        checkPositionsOfAccitentals(new ClefF3(), key, new PositionInStaff[] {PositionsInStaff.SPACE_4, PositionsInStaff.SPACE_2, PositionsInStaff.LINE_4, PositionsInStaff.LINE_2});
+        checkPositionsOfAccitentals(new ClefF4(), key, new PositionInStaff[] {PositionsInStaff.LINE_2, PositionsInStaff.SPACE_3, PositionsInStaff.SPACE_1, PositionsInStaff.LINE_3});
+        checkPositionsOfAccitentals(new ClefC1(), key, new PositionInStaff[] {PositionsInStaff.LINE_4, PositionsInStaff.LINE_2, PositionsInStaff.SPACE_3, PositionsInStaff.SPACE_1});
+        checkPositionsOfAccitentals(new ClefC2(), key, new PositionInStaff[] {PositionsInStaff.LINE_5, PositionsInStaff.LINE_3, PositionsInStaff.SPACE_4, PositionsInStaff.SPACE_2});
+        checkPositionsOfAccitentals(new ClefC3(), key, new PositionInStaff[] {PositionsInStaff.SPACE_2, PositionsInStaff.LINE_4, PositionsInStaff.LINE_2, PositionsInStaff.SPACE_3});
+        checkPositionsOfAccitentals(new ClefC4(), key, new PositionInStaff[] {PositionsInStaff.SPACE_3, PositionsInStaff.LINE_5, PositionsInStaff.LINE_3, PositionsInStaff.SPACE_4});
+        checkPositionsOfAccitentals(new ClefC5(), key, new PositionInStaff[] {PositionsInStaff.SPACE_4, PositionsInStaff.SPACE_2, PositionsInStaff.LINE_4, PositionsInStaff.LINE_2});
     }
 
 

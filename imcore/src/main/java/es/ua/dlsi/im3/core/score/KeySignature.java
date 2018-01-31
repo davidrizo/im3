@@ -276,6 +276,9 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
             if (positionInStaff.getLineSpace() <= 0) {
                 // if falls below bottom line
                 positionInStaff = new PositionInStaff(positionInStaff.getLineSpace() + 7);
+            } else if (positionInStaff.getLineSpace() >= 10) {
+                // if falls above top space
+                positionInStaff = new PositionInStaff(positionInStaff.getLineSpace() - 7);
             }
             result[i-1] = positionInStaff;
             i++;

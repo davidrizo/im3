@@ -759,7 +759,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						if (writtenAccidental != null && acc != writtenAccidental) {
 							throw new ImportException("Written accidental (" + writtenAccidental + ") inconsistent with performed accidental (" + acc + ")");
 						}
-						currentNote.setAccidental(acc);						
+						currentNote.setWrittenExplicitAccidental(acc);
 					}
 					break;
 					

@@ -75,7 +75,7 @@ public class SimpleNote extends SingleFigureAtom {
 	}
 	
 	/**
-	 * @param fromPitch Pitch at left of this one
+	 * @param to Pitch at left of this one
 	 * @throws IM3Exception 
 	 */
 	public void tieToNext(AtomPitch to) throws IM3Exception {
@@ -85,7 +85,7 @@ public class SimpleNote extends SingleFigureAtom {
 		this.atomPitch.setTiedToNext(to.getAtomPitch());
 	}
 	/**
-	 * @param toPitch fromPitch Pitch at right of this one
+	 * @param from fromPitch Pitch at right of this one
 	 * @throws IM3Exception 
 	 */
 	public void tieFromPrevious(AtomPitch from) throws IM3Exception {
@@ -100,8 +100,6 @@ public class SimpleNote extends SingleFigureAtom {
 	}
 	/**
 	 * It creates a new successor note tied to this one 
-	 * @param quarter
-	 * @param i
 	 * @return
 	 */
 	public SimpleNote createTiedNote(Figures figure, int dots) {

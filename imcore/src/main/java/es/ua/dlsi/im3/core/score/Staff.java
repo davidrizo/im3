@@ -679,6 +679,9 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
                     for (AtomPitch atomPitch : atomPitches) {
                         computeRequiredAccidentalsForPitch(alteredDiatonicPitchInBar, alteredDiatonicPitchInKeySignature,
                                 result, atomPitch);
+                        if (atomPitch.getWrittenExplicitAccidental() != null) {
+                            result.put(atomPitch, atomPitch.getWrittenExplicitAccidental());
+                        }
                     }
                 }
             }
