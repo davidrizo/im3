@@ -1,0 +1,9 @@
+Using font  Leipzig
+RISM ID:  000108149
+Incipit:  1.1.1
+Author:  Porpora, Nicola
+Title:  Scuote la guercia
+@clef:  G-1
+@keysig:  bB
+@timesig:  c
+@data:  {''6F'AGF}!{FAGF}!f{FGAnB}/

@@ -75,4 +75,19 @@ public class MEI2GraphicSymbolsTest {
         String expectedSemantic = "[clef-G2, keySignature-GM, timeSignature-C, note-D5_half, tie, note-D5_eighth, note-D5_quarter, note-D5_sixteenth, note-G5_sixteenth, barline, rest-sixteenth, note-A5_eighth_trill, note-G5_eighth, note-D6_quarter, tie, barline, note-D6_eighth, note-C6_eighth, note-B5_quarter, note-A5_eighth, tie, note-A5_sixteenth, note-G5_sixteenth, note-D5_quarter, tie, note-D5_eighth]";
         test("/testdata/primus/000100001-1_1_1/000100001-1_1_1.mei", expectedAgnostic, expectedSemantic);
     }
+
+    @Test
+    public void convertG1() throws Exception {
+        String expectedAgnostic = "[clef.G-L1, accidental.flat-L2, metersign.C-L3, note.beamedRight2-L4, note.beamedBoth2-S1, note.beamedBoth2-L1, note.beamedLeft2-S0, note.beamedRight2-S0, note.beamedBoth2-S1, note.beamedBoth2-L1, note.beamedLeft2-S0, note.beamedRight2-S0, note.beamedBoth2-S1, note.beamedBoth2-L1, note.beamedLeft2-S0, note.beamedRight2-S0, note.beamedBoth2-L1, note.beamedBoth2-S1, accidental.natural-L2, note.beamedLeft2-L2, barline-L1]";
+        String expectedSemantic = "[clef-G1, keySignature-FM, timeSignature-C, note-F5_sixteenth, note-A4_sixteenth, note-G4_sixteenth, note-F4_sixteenth, note-F4_sixteenth, note-A4_sixteenth, note-G4_sixteenth, note-F4_sixteenth, note-F4_sixteenth, note-A4_sixteenth, note-G4_sixteenth, note-F4_sixteenth, note-F4_sixteenth, note-G4_sixteenth, note-A4_sixteenth, note-B4_sixteenth, barline]";
+        test("/testdata/primus/000108149-1_1_1/000108149-1_1_1.mei", expectedAgnostic, expectedSemantic);
+    }
+
+    @Test
+    public void convertC1KeySignatureAndExplicitAccidentals() throws Exception {
+        String expectedAgnostic = "[clef.C-L1, accidental.sharp-S2, accidental.sharp-L1, accidental.sharp-L3, metersign.C/-L3, rest.eighth-L3, accidental.sharp-L3, note.eighth-L3, accidental.sharp-S4, note.eighth-S4, note.eighth-S4, rest.quarter-L3, accidental.sharp-S4, note.quarter-S4, accidental.sharp-L3, note.quarter-L3, barline-L1, note.quarter-S3, rest.quarter-L3, note.quarter-S3, note.eighth-L4, accidental.sharp-S4, note.eighth-S4, barline-L1, note.eighth-L4, note.eighth-L4]";
+        String expectedSemantic = "[clef-C1, keySignature-AM, timeSignature-C/, rest-eighth, note-G#4_eighth, note-C#5_eighth, note-C#5_eighth, rest-quarter, note-C#5_quarter, note-G#4_quarter, barline, note-A4_quarter, rest-quarter, note-A4_quarter, note-B4_eighth, note-C#5_eighth, barline, note-B4_eighth, note-B4_eighth]";
+        test("/testdata/primus/000102277-1_2_1/000102277-1_2_1.mei", expectedAgnostic, expectedSemantic);
+    }
+
 }

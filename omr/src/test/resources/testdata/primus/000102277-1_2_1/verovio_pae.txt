@@ -1,0 +1,8 @@
+@start:000102277-1_2_1
+@clef:C-1
+@keysig:xFCG
+@key:
+@timesig:c/
+@data:8-'xG''xCC4-xC'xG/4A-A8B''xC/'BB
+@end:000102277-1_2_1
+
