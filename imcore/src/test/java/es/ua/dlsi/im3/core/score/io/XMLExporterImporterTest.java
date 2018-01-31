@@ -943,7 +943,6 @@ public class XMLExporterImporterTest {
 	}
 
 
-
 	//TODO Grace notes, slurs, tuplet dentro de tuplet
 	// tuplet con elementos en distintos staves, tuplet con acordes con notas en distintos staves
 	// tuplet: negra_puntillo + corchea?: https://i.stack.imgur.com/OLiOH.png

@@ -27,7 +27,7 @@ import es.ua.dlsi.im3.core.score.DiatonicPitch;
 public class ClefC2 extends Clef {
     
     public ClefC2() {
-    		super(DiatonicPitch.C, 2, 4, 4, 3);
+    		super(DiatonicPitch.C, 2, 4, 4, 4);
 	//super(DiatonicPitch.C, 3, 4, 4, 3);
     }
     @Override

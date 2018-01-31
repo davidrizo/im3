@@ -283,11 +283,18 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
         return result;
     }
 
-    private int getStartingOctave() {
+    private int getStartingOctave() throws IM3Exception {
         if (accidental.equals(Accidentals.NATURAL)) {
             return 0;
         } else {
+            if (staff == null) {
+                throw new IM3Exception("Cannot compute the starting octave without a staff set");
+            }
+            Time time = getTime();
             Clef clef = staff.getClefAtTime(getTime());
+            if (clef == null) {
+                throw new IM3Exception("No active clef at time " + time);
+            }
             return clef.getStartingOctave(accidental);
         }
     }

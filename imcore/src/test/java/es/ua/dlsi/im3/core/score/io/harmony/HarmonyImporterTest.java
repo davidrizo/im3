@@ -1,10 +1,12 @@
 package es.ua.dlsi.im3.core.score.io.harmony;
 
-import es.ua.dlsi.im3.core.score.Key;
-import es.ua.dlsi.im3.core.score.Mode;
-import es.ua.dlsi.im3.core.score.PitchClasses;
-import es.ua.dlsi.im3.core.score.TonalFunction;
+import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
+import es.ua.dlsi.im3.core.utils.FileUtils;
 import org.junit.Test;
+
+import java.io.File;
 
 import static org.junit.Assert.*;
 
@@ -14,7 +16,6 @@ import static org.junit.Assert.*;
 public class HarmonyImporterTest {
     @Test
     public void readKey() throws Exception {
-
         HarmonyImporter importer = new HarmonyImporter();
 
         Key[] key = importer.readKey("CM");
@@ -39,10 +40,6 @@ public class HarmonyImporterTest {
         assertEquals(2, key.length);
         assertEquals(new Key(PitchClasses.G, Mode.MAJOR), key[0]);
         assertEquals(new Key(PitchClasses.F, Mode.MAJOR), key[1]);
-
-
-
-
     }
 
     @Test
@@ -71,5 +68,13 @@ public class HarmonyImporterTest {
         assertEquals(TonalFunction.TONIC, tf[1]);
 
     }
+
+    // TODO: 2/1/18  
+    /*@Test
+    public void readHarm() throws Exception {
+        File file = TestFileUtils.getFile("/testdata/core/score/io/stella_by_starlight.xml");
+        MusicXMLImporter importer = new MusicXMLImporter();
+        ScoreSong song = importer.importSong(file);
+    }*/
 
 }
