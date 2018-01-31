@@ -15,17 +15,17 @@ public class ScaleMajor extends ScaleWithNeapolitan {
 
     @Override
     protected ScaleMembership noteBelongsToScale(int degree, int semitones, boolean isLastNote) throws IM3Exception {
-	if (degree == 6) {
-	    if (semitones == 8) {
-		return NEAPOLITAN.buildFromThis(this);
-	    } else if (semitones == 9) {
-		    return REGULAR_HIGH.buildFromThis(this);
-	    } else {
-		    return REGULAR_LOW.buildFromThis(this);
-	    }
-	} else {
-	    return super.noteBelongsToScale(degree, semitones, isLastNote);
+        if (degree == 6) {
+            if (semitones == 8) {
+            return NEAPOLITAN.buildFromThis(this);
+            } else if (semitones == 9) {
+                return REGULAR_HIGH.buildFromThis(this);
+            } else {
+                return REGULAR_LOW.buildFromThis(this);
+            }
+        } else {
+            return super.noteBelongsToScale(degree, semitones, isLastNote);
+        }
 	}
-    }
 	
 }

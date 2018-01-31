@@ -27,27 +27,11 @@ public abstract class ScaleWithNeapolitan extends Scale {
 	public static final ScaleMembership NEAPOLITAN = new ScaleMembership("Neapolitan", ScaleMembershipDegree.medium);
 	// protected static final ScaleMembership SECONDARY_DOMINANT = new
 	// ScaleMembership("Secondary dominant", ScaleMembershipDegree.medium);
-	protected int[] expectedSemitones;
 
 	public ScaleWithNeapolitan(String name, int[] expectedSemitones) {
-		super(name);
-		this.expectedSemitones = expectedSemitones;
+		super(name, expectedSemitones);
 	}
 
-	//TODO ¿esto debe ir aquí o en instrumentKey? 
-	@Override
-	public ScaleMembership noteBelongsToScale(Key key, PitchClass note, boolean isLastNote) throws IM3Exception {
-		if (note.isRest()) {
-			throw new IM3Exception("A rest never belongs to a scale");
-		}
-
-		int degree = key.computeDegree(note);
-		int semitones = key.computeSemitonesFromKey(note);
-		
-		return noteBelongsToScale(degree, semitones, isLastNote);
-	}
-
-	// PLACIDO: TODO HABRÍA QUE VER ESTO CON EL RESTO DE GRADOS
 
 	/**
 	 * Used to allow the use of precomputed degree and semitones
@@ -57,6 +41,7 @@ public abstract class ScaleWithNeapolitan extends Scale {
 	 * @return
 	 * @throws IM3Exception
 	 */
+	@Override
 	protected ScaleMembership noteBelongsToScale(int degree, int semitones, boolean isLastNote) throws IM3Exception {
 		if (degree == 2) {
 			if (semitones == 2) {
@@ -87,22 +72,22 @@ public abstract class ScaleWithNeapolitan extends Scale {
 				return REGULAR_LOW.buildFromThis(this);
 			} // neapolitan for 6th is checked in the major and minor scales
 		} else {
-			return (semitones == expectedSemitones[degree - 1]) ? REGULAR_HIGH.buildFromThis(this)
-					: REGULAR_LOW.buildFromThis(this);
+		    return super.noteBelongsToScale(degree, semitones, isLastNote);
 		}
 	}
 
 	@Override
 	public HashMap<PitchClass, ScaleMembership> computeDegree(PitchClass tonic, Degree degree, boolean isLastNote) throws IM3Exception {
-		MotionDirection dir;
-		if (degree == Degree.I) {
-			dir = MotionDirection.EQUAL;
-		} else {
-			dir = MotionDirection.ASCENDING;
-		}
-
-		HashMap<PitchClass, ScaleMembership> result = new HashMap<>();
 		if (degree == Degree.II) {
+            MotionDirection dir;
+            if (degree == Degree.I) {
+                dir = MotionDirection.EQUAL;
+            } else {
+                dir = MotionDirection.ASCENDING;
+            }
+
+            HashMap<PitchClass, ScaleMembership> result = new HashMap<>();
+
 			result.put(Intervals.getInterval(degree.ordinal(), 2, dir).computePitchClassFrom(tonic),
 					REGULAR_HIGH.buildFromThis(this));
 			//Logger.getLogger(ScaleWithNeapolitan.class.getName()).log(Level.SEVERE,
@@ -113,16 +98,14 @@ public abstract class ScaleWithNeapolitan extends Scale {
 				//Logger.getLogger(ScaleWithNeapolitan.class.getName()).log(Level.WARNING, "TO-DO NEAPOLITAN error???", e);
 			//}
 			// TODO ¿otros acordes como belongs to scale?
+            return result;
 		} else {
-			int semitones = expectedSemitones[degree.ordinal() - 1];
-			result.put(Intervals.getInterval(degree.ordinal(), semitones, dir).computePitchClassFrom(tonic),
-					REGULAR_HIGH.buildFromThis(this));
+		    return super.computeDegree(tonic, degree, isLastNote);
 			// TODO ¿otros acordes como belongs to scale?
 			// return (semitones == expectedSemitones[degree-1]) ?
 			// REGULAR_HIGH.buildFromThis(this):
 			// REGULAR_LOW.buildFromThis(this);
 		}
-		return result;
 	}
 
 	@Override
