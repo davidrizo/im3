@@ -27,6 +27,7 @@ public class SVGExporter implements IGraphicsExporter {
                 unitsPerEM = layoutFont.getSVGFont().getUnitsPerEM();
             } else if (!unitsPerEM.equals(layoutFont.getSVGFont().getUnitsPerEM())) {
                 // TODO: 6/10/17 Could adjust to one of them
+                // We load several fonts in cases such as the rendering the mensural and modern transcription together
                 throw new IM3Exception("Cannot use fonts with different units per EM: " + unitsPerEM + " and " + layoutFont.getSVGFont().getUnitsPerEM() + " for " + layoutFont.getFont());
             }
         }

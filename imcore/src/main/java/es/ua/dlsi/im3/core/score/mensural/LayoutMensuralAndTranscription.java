@@ -80,7 +80,7 @@ public class LayoutMensuralAndTranscription {
         HashMap<Staff, LayoutFonts> fontsHashMap = new HashMap<>();
         for (Staff staff: mensural.getStaves()) {
             if (staff.getNotationType() == NotationType.eMensural) {
-                fontsHashMap.put(staff, LayoutFonts.capitan);
+                fontsHashMap.put(staff, LayoutFonts.patriarca);
             } else if (staff.getNotationType() == NotationType.eModern) {
                 fontsHashMap.put(staff, LayoutFonts.bravura);
             } else {
@@ -91,7 +91,7 @@ public class LayoutMensuralAndTranscription {
         mensural.debugPutIDsAsLyrics(); // FIXME: 17/10/17 Quitar
         // TODO: 16/10/17 Tamaño
         //PageLayout layout = new PageLayout(mensural, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
-        HorizontalLayout hlayout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(30000), new CoordinateComponent(2800));
+        HorizontalLayout hlayout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(40000), new CoordinateComponent(2800));
         hlayout.layout();
         //PDFExporter pdfExporter = new PDFExporter();
         //pdfExporter.exportLayout(new File(args[1]), layout);

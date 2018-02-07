@@ -59,4 +59,9 @@ public class SMuFLMap implements IFontMap {
         Line line = new Line(ID, fromPosition, toPosition);
         return line;
     }
+
+    @Override
+    public String getCustosCodePoint() {
+        return "mensuralCustosUp";
+    }
 }

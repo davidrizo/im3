@@ -13,7 +13,7 @@ public class LayoutCoreCustos extends LayoutCoreSymbolInStaff<Custos> {
         super(layoutFont, custos);
 
         //position.setY(layoutStaff.getYAtLine(coreSymbol.getLine()));
-        pictogram = new Pictogram("CUSTOS-", layoutFont, "custos", position);//TODO IDS
+        pictogram = new Pictogram("CUSTOS-", layoutFont, layoutFont.getFontMap().getCustosCodePoint(), position);//TODO IDS
     }
 
     @Override

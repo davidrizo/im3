@@ -19,4 +19,5 @@ public interface IFontMap {
     String getUnicodeNoteHeadWidth();
     boolean isGlyphIncludeStemAndFlag(Figures figures);
     GraphicsElement createBeam(String ID, Coordinate from, Coordinate to);
+    String getCustosCodePoint();
 }
