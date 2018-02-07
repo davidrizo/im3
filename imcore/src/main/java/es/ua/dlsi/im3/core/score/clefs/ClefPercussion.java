@@ -18,6 +18,7 @@
 package es.ua.dlsi.im3.core.score.clefs;
 
 import es.ua.dlsi.im3.core.score.Clef;
+import es.ua.dlsi.im3.core.score.PositionInStaff;
 
 /**
  *
@@ -26,7 +27,10 @@ import es.ua.dlsi.im3.core.score.Clef;
 public class ClefPercussion extends Clef {
     
     public ClefPercussion()  {
-    		super(null, 1, 0, 0, 0);
+        //20180207 super(null, 1, 0, 0, 0);
+        super(null, 1, 0,
+                new PositionInStaff[] {},
+                new PositionInStaff[] {});
     }
     @Override
     public Clef clone()  {

@@ -19,6 +19,10 @@ package es.ua.dlsi.im3.core.score.clefs;
 
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.DiatonicPitch;
+import es.ua.dlsi.im3.core.score.PositionInStaff;
+
+import static es.ua.dlsi.im3.core.score.PositionsInStaff.*;
+import static es.ua.dlsi.im3.core.score.PositionsInStaff.SPACE_0;
 
 /**
  *
@@ -27,7 +31,11 @@ import es.ua.dlsi.im3.core.score.DiatonicPitch;
 public class ClefF4QuindicesimaAlta extends Clef {
     
     public ClefF4QuindicesimaAlta() {
-    		super(DiatonicPitch.F, 4, 5, 3, 2, 2);
+        //20180207 	super(DiatonicPitch.F, 4, 5, 3, 2, 2);
+        super(DiatonicPitch.F, 4, 5, 2,
+                new PositionInStaff[] {LINE_4, SPACE_2, SPACE_4, LINE_3, SPACE_1, SPACE_3, LINE_2},
+                new PositionInStaff[] {LINE_2, SPACE_3, SPACE_1, LINE_3, LINE_1, SPACE_2, SPACE_0}
+        );
 	//super(DiatonicPitch.F, 4, 5, 3, 2);
     }
     @Override

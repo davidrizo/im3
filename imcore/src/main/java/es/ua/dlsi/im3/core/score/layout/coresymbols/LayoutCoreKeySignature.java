@@ -97,12 +97,12 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
         group.add(p.getGraphics());
     }
 
-    public int getStartingOctave() {
+    /*public int getStartingOctave() {
         if (coreSymbol.getAccidental().equals(Accidentals.NATURAL)) {
             return 0;
         } else {
             Clef clef = layoutStaff.getStaff().getClefAtTime(getTime());
             return clef.getStartingOctave(coreSymbol.getAccidental());
         }
-    }
+    }*/
 }

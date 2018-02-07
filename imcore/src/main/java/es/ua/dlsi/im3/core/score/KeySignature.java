@@ -244,7 +244,45 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
     }
 
     public PositionInStaff [] computePositionsOfAccidentals() throws IM3Exception {
+	    if (accidental.equals(Accidentals.NATURAL)) {
+            return new PositionInStaff[]{};
+        }
+
+        if (staff == null) {
+	        throw new IM3Exception("Cannot compute the positions of accidentals for a key signature not in a staff");
+        }
+
+        Clef clef = staff.getClefAtTime(this.getTime());
+        if (clef == null) {
+            throw new IM3Exception("Cannot compute positions of accidentals without a clef at time " + this.getTime());
+        }
+
         PositionInStaff [] result;
+        DiatonicPitch[] alteredNoteNames = getInstrumentKey().getAlteredNoteNames();
+        if (alteredNoteNames == null) {
+            return null;
+        } else {
+            result = new PositionInStaff[alteredNoteNames.length];
+        }
+
+        PositionInStaff [] clefPositions;
+
+        if (accidental == Accidentals.FLAT) {
+            clefPositions = clef.getFlatPositions();
+        } else if (accidental == Accidentals.SHARP) {
+            clefPositions = clef.getSharpPositions();
+        } else {
+            throw new IM3Exception("Accidental should be flat or sharp and it is " + accidental);
+        }
+
+        for (int i=0; i<result.length; i++) {
+            result[i] = clefPositions[i];
+        }
+        return result;
+    }
+
+    /*20180207 public PositionInStaff [] computePositionsOfAccidentals() throws IM3Exception {
+	    PositionInStaff [] result;
         int previousNoteOrder = 0;
         DiatonicPitch[] alteredNoteNames = getInstrumentKey().getAlteredNoteNames();
         if (alteredNoteNames == null) {
@@ -284,9 +322,9 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
             i++;
         }
         return result;
-    }
+    }*/
 
-    private int getStartingOctave() throws IM3Exception {
+    /*20180207 private int getStartingOctave() throws IM3Exception {
         if (accidental.equals(Accidentals.NATURAL)) {
             return 0;
         } else {
@@ -300,7 +338,7 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
             }
             return clef.getStartingOctave(accidental);
         }
-    }
+    }*/
 
     /**
      *

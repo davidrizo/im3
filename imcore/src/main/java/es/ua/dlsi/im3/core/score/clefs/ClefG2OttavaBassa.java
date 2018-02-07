@@ -19,6 +19,10 @@ package es.ua.dlsi.im3.core.score.clefs;
 
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.DiatonicPitch;
+import es.ua.dlsi.im3.core.score.PositionInStaff;
+
+import static es.ua.dlsi.im3.core.score.PositionsInStaff.*;
+import static es.ua.dlsi.im3.core.score.PositionsInStaff.SPACE_1;
 
 /**
  *
@@ -28,7 +32,10 @@ public class ClefG2OttavaBassa extends Clef {
    
     public ClefG2OttavaBassa() {
 	//super(DiatonicPitch.G, 2, 3, 5, 4);
-    		super(DiatonicPitch.G, 2, 3, 5, 4, -1);
+        //20180207 	super(DiatonicPitch.G, 2, 3, 5, 4, -1);
+        super(DiatonicPitch.G, 2, 3, -1,
+                new PositionInStaff[] {LINE_5, SPACE_3, SPACE_5, LINE_4, SPACE_2, SPACE_4, LINE_3},
+                new PositionInStaff[] {LINE_3, SPACE_4, SPACE_2, LINE_4, LINE_2, SPACE_3, SPACE_1});
     }
     @Override
     public Clef clone() {
