@@ -90,4 +90,11 @@ public class MEI2GraphicSymbolsTest {
         test("/testdata/primus/000102277-1_2_1/000102277-1_2_1.mei", expectedAgnostic, expectedSemantic);
     }
 
+    @Test
+    public void convertClefChanges() throws Exception {
+        String expectedAgnostic = "[clef.C-L4, accidental.flat-S3, metersign.C-L3, rest.eighth-L3, note.eighth-L4, note.beamedRight1-S5, note.beamedBoth2-L5, note.beamedLeft2-S4, note.beamedRight1-L4, note.beamedBoth2-S4, note.beamedLeft2-L4, note.beamedRight2-S3, note.beamedBoth2-S4, note.beamedBoth2-L4, note.beamedLeft2-S3, clef.F-L4, note.beamedRight1-L5, note.beamedBoth2-S5, note.beamedLeft2-L5, note.beamedRight2-S4, note.beamedBoth2-S5, note.beamedBoth2-L5, note.beamedLeft2-S4, note.beamedRight2-L4, note.beamedBoth2-L5, note.beamedBoth2-S4, note.beamedLeft2-L4, note.beamedRight1-L6, note.beamedLeft1-S2, barline-L1, note.quarter-L4]";
+        String expectedSemantic = "[clef-C4, keySignature-FM, timeSignature-C, rest-eighth, note-C4_eighth, note-F4_eighth, note-E4_sixteenth, note-D4_sixteenth, note-C4_eighth, note-D4_sixteenth, note-C4_sixteenth, note-Bb3_sixteenth, note-D4_sixteenth, note-C4_sixteenth, note-Bb3_sixteenth, clef-F4, note-A3_eighth, note-Bb3_sixteenth, note-A3_sixteenth, note-G3_sixteenth, note-Bb3_sixteenth, note-A3_sixteenth, note-G3_sixteenth, note-F3_sixteenth, note-A3_sixteenth, note-G3_sixteenth, note-F3_sixteenth, note-C4_eighth, note-C3_eighth, barline, note-F3_quarter]";
+        test("/testdata/primus/200021502-1_11_1/200021502-1_11_1.mei", expectedAgnostic, expectedSemantic);
+    }
+
 }
