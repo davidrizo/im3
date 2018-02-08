@@ -30,7 +30,7 @@ public class SMuFLMap implements IFontMap {
     }
 
     @Override
-    public String getUnicode(Figures figure) throws IM3Exception {
+    public String getUnicode(Figures figure, boolean stemUp) throws IM3Exception {
         String result = UNICODES.get(figure);
         if (result == null) {
             throw new IM3Exception("Cannot find an unicode for " + figure);
@@ -41,7 +41,7 @@ public class SMuFLMap implements IFontMap {
 
     @Override
     public String getUnicodeWihoutFlag(Figures figures) throws IM3Exception {
-        return getUnicode(figures); //TODO En mensural no será igual
+        return getUnicode(figures, false); //TODO En mensural no será igual
     }
 
     @Override

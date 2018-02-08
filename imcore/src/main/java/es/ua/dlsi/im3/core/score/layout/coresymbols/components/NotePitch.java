@@ -62,7 +62,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
                 new CoordinateComponent(position.getX()),
                 null
         );
-        noteHeadPictogram = new Pictogram("NOTE-HEAD-", layoutFont, getUnicode(), noteHeadPosition); //TODO IDS
+        noteHeadPictogram = new Pictogram("NOTE-HEAD-", layoutFont, getUnicode(positionInStaff), noteHeadPosition); //TODO IDS
         root.getChildren().add(noteHeadPictogram);
 
         if (ndots > 0) {
@@ -129,8 +129,10 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
         }
     }
 
-    private String getUnicode() throws IM3Exception {
-        String unicode = layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure());
+    private String getUnicode(PositionInStaff positionInStaff) throws IM3Exception {
+        boolean stemUp = positionInStaff.getLineSpace() < PositionsInStaff.LINE_3.getLineSpace();
+
+        String unicode = layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp);
         if (unicode == null) {
             throw new IM3Exception("Cannot find a font unicode for " + parent.getCoreSymbol().getAtomFigure().getFigure());
         }
@@ -138,7 +140,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     }
 
     public boolean headIncludesFlag() throws IM3Exception {
-        return !layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure()).equals(
+        return !layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), false).equals(
                 layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure())
         );
     }
@@ -166,7 +168,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     public PositionInStaff getPositionInStaff() {
         return positionInStaff;
     }
-    
+
     public double getNoteHeadWidth() {
         return noteHeadPictogram.getWidth();
     }
