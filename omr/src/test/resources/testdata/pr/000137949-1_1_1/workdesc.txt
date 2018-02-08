@@ -1,0 +1,9 @@
+Using font  Bravura
+RISM ID:  000137949
+Incipit:  1.1.1
+Author:  Stratico, Michele
+Title:  Duets
+@clef:  G-2
+@keysig:  xF
+@timesig:  12/8
+@data:  ''4.D+{6DGB'''D''BG}{8.E6D8C}{'8.B6A8G}/{6FDDDDD}{D^CD^CD^CD^CD^CD^C}{,8B+6.B'3CDC,BA}4.G/

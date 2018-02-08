@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="3.0.0">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title>Test</title>
+                <composer>Test</composer>
+                <respStmt>
+                    <persName role="encoder">David Rizo</persName>
+                </respStmt>                
+            </titleStmt>
+            <pubStmt/>
+            <seriesStmt>
+                <title>Test</title>
+            </seriesStmt>
+        </fileDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <score>
+                    <scoreDef>
+                        <staffGrp symbol="bracket">
+                            <staffDef n="1" lines="5" clef.line="2" clef.shape="G" meter.sym="common" key.sig="2f" notationtype="mensural" label="Soprano">
+                                <instrDef n="1" label="Soprano"/>
+                            </staffDef>
+                        </staffGrp>
+                    </scoreDef>
+                    <section>
+                        <staff n="1">
+                            <layer>
+                                <note pname="b" dur="minima" oct="4" accid.ges="f"/> <!-- sound expected: Bb, written B without flat -->
+                                <note pname="e" dur="minima" oct="4"/> <!-- sound expected Eb because accid.ges is optional, written E without flat -->
+                                <note pname="b" dur="minima" oct="4" accid="n"/> <!-- sound expected natural B, written B with natural -->
+                                <note pname="b" dur="minima" oct="4" accid="f"/> <!-- sound expected flat B, written B with flat -->                                
+                                <barLine/>
+                                <note pname="b" dur="semibrevis" oct="4"/> <!-- sound expected: Bb, written B without flat -->
+                                <barLine/>
+                                <note pname="f" dur="minima" oct="4"/> <!-- sound expected: F, written F without any accidental -->
+                                <note pname="f" dur="minima" oct="4" accid="s"/> <!-- sound expected: F#, written F with a sharp -->
+                                <note pname="f" dur="minima" oct="4"/> <!-- sound expected: F#, written F without a sharp -->
+                                <note pname="f" dur="minima" oct="4" accid.ges="s"/> <!-- sound expected: F#, written F without a sharp -->                                
+                                <barLine/>
+                                <note pname="f" dur="semibrevis" oct="4"/> <!-- sound expected: F, written F without any accidental -->                           
+                            </layer>
+                        </staff>                            
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>

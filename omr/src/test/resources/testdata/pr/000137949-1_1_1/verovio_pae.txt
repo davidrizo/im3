@@ -1,0 +1,8 @@
+@start:000137949-1_1_1
+@clef:G-2
+@keysig:xF
+@key:
+@timesig:12/8
+@data:''4.D+{6DGB'''D''BG}{8.E6D8C}{'8.B6A8G}/{6FDDDDD}{D^CD^CD^CD^CD^CD^C}{,8B+6.B'3CDC,BA}4.G/
+@end:000137949-1_1_1
+

@@ -1,0 +1,8 @@
+@start:000125797-1_1_1
+@clef:G-2
+@keysig:bBE
+@key:
+@timesig:c
+@data:'2B^D{''3DC'8.B}{8BB}/''2F^C{3AG8.F}{8FF}/2.B^'B{''8B'''D}/{C''A}{GB}{AF}{EG}/2F^'B
+@end:000125797-1_1_1
+

@@ -522,7 +522,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					break;				
 				case "measure":
 					staffCount=0;
-                    previousAccidentals = new HashMap<>();
+                    previousAccidentals.clear();
 					number = getOptionalAttribute(attributesMap, "n");
 					xmlid = getOptionalAttribute(attributesMap, "xml:id");
 					//updateMeasure = true;
@@ -554,6 +554,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     }
                     break;
 				case "barLine":
+                    previousAccidentals.clear();
                     horizontalOrderInStaff++;
                     //updateTimesGivenMeasure();
 					Time markTime = getCurrentTime();
@@ -570,7 +571,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					
 					staffCount++;	
 					layerCount=0;
-                    previousAccidentals = new HashMap<>();
+                    previousAccidentals.clear();
 					number = getOptionalAttribute(attributesMap, "n");
 					lastStaff = findStaff(number);
 					break;

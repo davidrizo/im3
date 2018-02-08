@@ -1,0 +1,8 @@
+@start:000127873-1_1_1
+@clef:G-2
+@keysig:bBE
+@key:
+@timesig:6/8
+@data:g''C{'8B^DAB}g''C{'8BAB}/{nB''CC}4C8-/gD{8C'nB''C}g''D{8C'B''C}/{xCDD}4D8-/
+@end:000127873-1_1_1
+

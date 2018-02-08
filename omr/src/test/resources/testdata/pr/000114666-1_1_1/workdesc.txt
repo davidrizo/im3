@@ -1,0 +1,9 @@
+Using font  Bravura
+RISM ID:  000114666
+Incipit:  1.1.1
+Author:  Galuppi, Baldassare
+Title:  Siroe. Excerpts
+@clef:  G-2
+@keysig: 
+@timesig:  3/4
+@data:  '4G/''C+({8CEG})q6G({8FED})/qD{C'6B''C}4C8-C/{D'B}''4C+({8CEG})/4G

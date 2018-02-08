@@ -172,4 +172,6 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         }
         //return position;
     }
+
+
 }

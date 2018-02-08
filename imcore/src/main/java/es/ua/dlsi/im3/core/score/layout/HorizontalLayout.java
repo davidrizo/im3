@@ -113,4 +113,8 @@ public class HorizontalLayout extends ScoreLayout {
     public List<Canvas> getCanvases() {
         return Arrays.asList(canvas);
     }
+
+    public LayoutStaffSystem getSystem() {
+        return system;
+    }
 }

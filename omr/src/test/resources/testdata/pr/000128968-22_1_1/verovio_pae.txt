@@ -1,0 +1,8 @@
+@start:000128968-22_1_1
+@clef:G-2
+@keysig:bBEA
+@key:
+@timesig:3/4
+@data:'2.B^E/B^D/''4.E{6FG}{8.F6E}/({8DC'B})2B/{''6CEC'A}{8FFFF}/
+@end:000128968-22_1_1
+
