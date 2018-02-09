@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols.connectors;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.IConnectableWithSlurInStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.Bezier;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
@@ -22,6 +23,26 @@ public class LayoutSlur extends LayoutConnector {
         }
         Direction directionFrom = from == null?to.getDefaultSlurDirection():from.getDefaultSlurDirection();
         Direction directionTo = to == null?from.getDefaultSlurDirection():to.getDefaultSlurDirection();
+
+        /*if (from != null) {
+            if (from instanceof LayoutCoreSingleFigureAtom) {
+                LayoutCoreSingleFigureAtom f = (LayoutCoreSingleFigureAtom) from;
+                System.out.println("FROM: " + f.getCoreSymbol().__getID() + " " + f.isStemUp() + " " + directionFrom);
+            }
+
+        }
+
+        if (to != null) {
+            if (to instanceof LayoutCoreSingleFigureAtom) {
+                LayoutCoreSingleFigureAtom f = (LayoutCoreSingleFigureAtom) to;
+                System.out.println("TO: " + f.getCoreSymbol().__getID() + " " + f.isStemUp() + " " + directionFrom);
+
+                if ("B80".equals(f.getCoreSymbol().__getID())) {
+                    System.out.println("PARO");
+                }
+            }
+
+        }*/
 
         Coordinate fromPoint;
         if (from == null) {

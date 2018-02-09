@@ -15,7 +15,7 @@ public interface IFontMap {
      * @throws IM3Exception
      */
 
-    String getUnicodeWihoutFlag(Figures figures) throws IM3Exception;
+    String getUnicodeWihoutFlag(Figures figures, boolean stemUp) throws IM3Exception;
     String getUnicodeNoteHeadWidth();
     boolean isGlyphIncludeStemAndFlag(Figures figures);
     GraphicsElement createBeam(String ID, Coordinate from, Coordinate to);

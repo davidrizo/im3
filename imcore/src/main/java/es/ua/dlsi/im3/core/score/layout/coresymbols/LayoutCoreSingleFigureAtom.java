@@ -129,8 +129,8 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
                 ydisplacement = -refHead.getNoteHeadPictogram().getHeight();
                 xdisplacement = 0;
             } else {
-                ydisplacement = refHead.getNoteHeadPictogram().getHeight();
-                xdisplacement = refHead.getNoteHeadWidth();
+                ydisplacement = refHead.getNoteHeadPictogram().getHeight() - 4; //TODO A piñón el -4;
+                xdisplacement = refHead.getNoteHeadWidth() / 2; //TODO A piñón el /2
             }
             Coordinate result = new Coordinate(
                     new CoordinateComponent(refHead.getNoteHeadPosition().getX(), xdisplacement),
@@ -169,11 +169,15 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         if (notePitches == null || notePitches.isEmpty()) {
             return position;
         } else {
+            double ydisplacement;
+            if (stemUp) {
+                ydisplacement = LayoutConstants.SEPARATION_NOTE_SLUR;
+            } else {
+                ydisplacement = -LayoutConstants.SEPARATION_NOTE_SLUR;
+            }
             Coordinate connectionPoint = new Coordinate(
                     notePitches.get(0).getNoteHeadPosition().getX(),
-                    // TODO: 31/10/17 Negativo puesto a piñón 
-                    new CoordinateComponent(notePitches.get(0).getNoteHeadPosition().getY(), -LayoutConstants.SEPARATION_NOTE_SLUR)
-            );
+                    new CoordinateComponent(notePitches.get(0).getNoteHeadPosition().getY(), ydisplacement));
             return connectionPoint;
         }
         //return position;

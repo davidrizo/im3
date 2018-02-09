@@ -2,8 +2,6 @@ package es.ua.dlsi.im3.core.score.layout.fonts;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Figures;
-import es.ua.dlsi.im3.core.score.PositionInStaff;
-import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
@@ -47,17 +45,30 @@ public class PatriarcaMap implements IFontMap {
         //mensuralBlackSemiminima
     }
 
-    private static final HashMap<Figures, String> UNICODES_WITHOUT_FLAG = new HashMap<>();
+    private static final HashMap<Figures, String> UNICODES_WITHOUT_FLAG_STEM_UP = new HashMap<>();
     {
         //TODO Mensural
         // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
-        UNICODES_WITHOUT_FLAG.put(Figures.SEMIBREVE, "mensuralBlackSemibrevisVoid");
-        UNICODES_WITHOUT_FLAG.put(Figures.MINIM, "mensuralWhiteMinima");
+        UNICODES_WITHOUT_FLAG_STEM_UP.put(Figures.SEMIBREVE, "mensuralBlackSemibrevisVoid");
+        UNICODES_WITHOUT_FLAG_STEM_UP.put(Figures.MINIM, "mensuralWhiteMinima");
         //UNICODES_STEM_UP.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
-        UNICODES_WITHOUT_FLAG.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        UNICODES_WITHOUT_FLAG_STEM_UP.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
         // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
-        UNICODES_WITHOUT_FLAG.put(Figures.FUSA, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        UNICODES_WITHOUT_FLAG_STEM_UP.put(Figures.FUSA, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
     }
+
+    private static final HashMap<Figures, String> UNICODES_WITHOUT_FLAG_STEM_DOWN = new HashMap<>();
+    {
+        //TODO Mensural
+        // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
+        UNICODES_WITHOUT_FLAG_STEM_DOWN.put(Figures.SEMIBREVE, "mensuralBlackSemibrevisVoid");
+        UNICODES_WITHOUT_FLAG_STEM_DOWN.put(Figures.MINIM, "mensuralWhiteMinimaDown");
+        //UNICODES_STEM_UP.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
+        UNICODES_WITHOUT_FLAG_STEM_DOWN.put(Figures.SEMIMINIM, "mensuralWhiteSemiminimaDown"); //TODO Ver esto - ¿igual en proporción ternaria?
+        // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
+        UNICODES_WITHOUT_FLAG_STEM_DOWN.put(Figures.FUSA, "mensuralWhiteSemiminimaDown"); //TODO Ver esto - ¿igual en proporción ternaria?
+    }
+
 
     @Override
     public String getUnicode(Figures figure, boolean stemUp) throws IM3Exception {
@@ -78,10 +89,19 @@ public class PatriarcaMap implements IFontMap {
     }
 
     @Override
-    public String getUnicodeWihoutFlag(Figures figure) throws IM3Exception {
-        String result = UNICODES_WITHOUT_FLAG.get(figure);
+    public String getUnicodeWihoutFlag(Figures figure, boolean stemUp) throws IM3Exception {
+        HashMap<Figures, String> unicodes;
+
+        if (stemUp) {
+            unicodes = UNICODES_WITHOUT_FLAG_STEM_UP;
+        } else {
+            unicodes = UNICODES_WITHOUT_FLAG_STEM_DOWN;
+        }
+
+
+        String result = unicodes.get(figure);
         if (result == null) {
-            throw new IM3Exception("Cannot find an unicode (without flag) for " + figure);
+            throw new IM3Exception("Cannot find an unicode (without flag) for " + figure + " and stemUp = " + stemUp);
         }
 
         return result;

@@ -50,7 +50,7 @@ public class CapitanMap implements IFontMap {
     }
 
     @Override
-    public String getUnicodeWihoutFlag(Figures figure) throws IM3Exception {
+    public String getUnicodeWihoutFlag(Figures figure, boolean stemUp) throws IM3Exception {
         String result = UNICODES_WITHOUT_FLAG.get(figure);
         if (result == null) {
             throw new IM3Exception("Cannot find an unicode (without flag) for " + figure);

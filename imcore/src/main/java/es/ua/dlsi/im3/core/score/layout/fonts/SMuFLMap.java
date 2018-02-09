@@ -40,8 +40,8 @@ public class SMuFLMap implements IFontMap {
     }
 
     @Override
-    public String getUnicodeWihoutFlag(Figures figures) throws IM3Exception {
-        return getUnicode(figures, false); //TODO En mensural no será igual
+    public String getUnicodeWihoutFlag(Figures figures, boolean stemUp) throws IM3Exception {
+        return getUnicode(figures, stemUp); //TODO En mensural no será igual
     }
 
     @Override

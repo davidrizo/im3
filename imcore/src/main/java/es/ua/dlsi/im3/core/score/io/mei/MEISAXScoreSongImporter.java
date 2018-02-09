@@ -683,8 +683,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
                     //System.out.println("SP=" + sp);
                     AtomFigure currentAtomFigure;
+					SingleFigureAtom lastSingleFigureAtom;
 					if (lastChord != null) {
 						currentAtomFigure = lastChord.getAtomFigure();
+                        lastSingleFigureAtom = lastChord;
 						if (figure != null && (!currentAtomFigure.getFigure().equals(figure) || currentAtomFigure.getDots() != dots)) {
 							throw new ImportException("Cannot import a chord with different figure durations");
 						}
@@ -702,6 +704,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						}
 
 						currentNote = new SimpleNote(figure, dots, sp);
+						lastSingleFigureAtom = currentNote;
 						currentAtomFigure = currentNote.getAtomFigure();
 						lastAtomPitch = currentNote.getAtomPitch();
                         horizontalOrderInStaff++;
@@ -745,7 +748,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
                     String stemDir = getOptionalAttribute(attributesMap, "stem.dir");
 					if (stemDir != null) {
-					    currentNote.setExplicitStemDirection(parseStemDir(stemDir));
+                        lastSingleFigureAtom.setExplicitStemDirection(parseStemDir(stemDir));
                     }
 
 					updateCurrentTime();

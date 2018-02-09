@@ -62,7 +62,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
                 new CoordinateComponent(position.getX()),
                 null
         );
-        noteHeadPictogram = new Pictogram("NOTE-HEAD-", layoutFont, getUnicode(positionInStaff), noteHeadPosition); //TODO IDS
+        noteHeadPictogram = new Pictogram("NOTE-HEAD-", layoutFont, getUnicode(), noteHeadPosition); //TODO IDS
         root.getChildren().add(noteHeadPictogram);
 
         if (ndots > 0) {
@@ -129,8 +129,8 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
         }
     }
 
-    private String getUnicode(PositionInStaff positionInStaff) throws IM3Exception {
-        boolean stemUp = positionInStaff.getLineSpace() < PositionsInStaff.LINE_3.getLineSpace();
+    private String getUnicode() throws IM3Exception {
+        boolean stemUp = parent.isStemUp();
 
         String unicode = layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp);
         if (unicode == null) {
@@ -140,14 +140,18 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     }
 
     public boolean headIncludesFlag() throws IM3Exception {
+        boolean stemUp = parent.isStemUp();
+
         return !layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), false).equals(
-                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure())
+                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp)
         );
     }
 
     public void useHeadWithoutFlag() throws IM3Exception {
+        boolean stemUp = parent.isStemUp();
+
         Pictogram newNoteHeadPictogram = new Pictogram(noteHeadPictogram.getID(), layoutFont,
-                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure()),
+                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp),
                 noteHeadPictogram.getPosition());
 
         root.remove(noteHeadPictogram);
