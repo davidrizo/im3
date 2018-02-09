@@ -261,7 +261,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     private String lastAccidGes;
     private String lastAccid;
     private Staff lastNoteStaff; // used for accidental processing on closing note element
-    private HashMap<AtomPitch, AtomPitch> pendingTieTo; // key = toPitch, value = fromPitch
+    // we use identity hash code because it has not been constructed yet the complete AtomPitch
+    private HashMap<Integer, AtomPitch> pendingTieTo; // key = toPitch.identityHashCode, value = fromPitch
 
     @Override
 	protected void init() throws ParserConfigurationException, SAXException, IM3Exception {
@@ -1347,12 +1348,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				//SimpleNote tiedNote = new SimpleNote(figure, dots, tiedFrom.getScientificPitch());
 				//tiedNote.getAtomPitch().setTiedFromPrevious(tiedFrom);
 				//20180208 tiedFrom.setTiedToNext(lastAtomPitch);
-				pendingTieTo.put(lastAtomPitch, tiedFrom);
+				pendingTieTo.put(System.identityHashCode(lastAtomPitch), tiedFrom);
 				currentTies.remove(tieCode);
 				//addElementToVoiceStaffOrTuplet(tiedNote, xmlid, attributesMap);
 			} else if (type.equals("m")) { // middle
                 //20180208 tiedFrom.setTiedToNext(lastAtomPitch);
-                pendingTieTo.put(lastAtomPitch, tiedFrom);
+                pendingTieTo.put(System.identityHashCode(lastAtomPitch), tiedFrom);
 				currentTies.remove(tieCode);
 				
 				currentTies.put(tieCode, lastAtomPitch);
@@ -1709,13 +1710,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 lastAccid = null;
                 lastAccidGes = null;
 
-                AtomPitch pendingTieFrom = pendingTieTo.get(lastAtomPitch);
+                Integer idHashCode = System.identityHashCode(lastAtomPitch);
+                AtomPitch pendingTieFrom = pendingTieTo.get(idHashCode);
 
                 if (pendingTieFrom != null) {
                     pendingTieFrom.setTiedToNext(lastAtomPitch);
-
+                    pendingTieTo.remove(idHashCode);
                 }
-                pendingTieTo.remove(lastAtomPitch);
 
                 break;
 			}
