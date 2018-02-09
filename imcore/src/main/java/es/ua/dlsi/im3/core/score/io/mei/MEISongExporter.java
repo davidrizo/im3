@@ -1167,7 +1167,7 @@ public class MEISongExporter implements ISongExporter {
         }
 
         String accidGes = null;
-        if (atomPitch.getWrittenExplicitAccidental() != null || previousAccidental != pitchAccidental) {
+        if (atomPitch.getWrittenExplicitAccidental() != null || previousAccidental != pitchAccidental && !(previousAccidental == null && pitchAccidental == Accidentals.NATURAL)) {
             String accid;
             Accidentals acc;
             if (atomPitch.getWrittenExplicitAccidental() != null) {
@@ -1181,7 +1181,7 @@ public class MEISongExporter implements ISongExporter {
 
             params.add("accid");
             params.add(accid);
-        } else if (pitchAccidental != null) {
+        } else if (pitchAccidental != null && pitchAccidental != Accidentals.NATURAL) {
             String accid = generateAccidental(pitchAccidental);
             previousAccidentals.put(prevAccMapKey, pitchAccidental);
 

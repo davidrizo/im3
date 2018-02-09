@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score;
 //import es.ua.dlsi.im3.model.score.cmn.CMNNote;
 import java.util.Objects;
 
+import com.sun.xml.internal.rngom.parse.host.Base;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 
@@ -429,7 +430,10 @@ public class Interval implements Comparable<Interval> {
 	 * @throws IM3Exception
 	 */
 	public static Interval compute(ScientificPitch from, ScientificPitch to) throws IM3Exception {
-		int diff = to.getBase40() - from.getBase40();
+		//int diff = to.getBase40() - from.getBase40();
+        Base40 toB40 = to.computeBase40();
+        Base40 fromB40 = from.computeBase40();
+        int diff = toB40.getBase40() - fromB40.getBase40();
 		int diffInOctave = diff % 40;
 		int octaves = diff / 40;
 		MotionDirection direction;
@@ -543,7 +547,9 @@ public class Interval implements Comparable<Interval> {
 	 * @throws IM3Exception
 	 */
 	public ScientificPitch computeScientificPitchFrom(ScientificPitch from) throws IM3Exception {
-		int newPCBase40 = (from.getBase40() + base40Difference + 40 * additionalOctaves);
+        Base40 fromB40 = from.computeBase40();
+
+		int newPCBase40 = (fromB40.getBase40() + base40Difference + 40 * additionalOctaves);
 
 		int newPCBase40_folded = newPCBase40 % 40;
 		int octave = newPCBase40 / 40;

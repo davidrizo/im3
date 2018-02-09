@@ -16,7 +16,8 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
 	 * Pitch class
 	 */
 	PitchClass pitchClass;
-	/**
+
+    /**
 	 * Octave name
 	 */
 	int octave;
@@ -24,20 +25,19 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
 	/**
 	 * Computed
 	 */
-	int base40;
-
-	private int base40Chroma;
+	//CANNOT COMPUTE AND SAVE, IF PITCH CLASS CHANGES IT IS NO LONGER VALID int base40;
+	//private int base40Chroma;
 		
 	public ScientificPitch(PitchClass pc, int oct) {
 		this.pitchClass = pc;
 		this.octave = oct;
-		computeBase40();
+		//computeBase40();
 	}
 
 	public ScientificPitch(PitchClasses pc, int oct) {
 		this.pitchClass = pc.getPitchClass();
 		this.octave = oct;
-		computeBase40();
+		//computeBase40();
 	}
 	
 	public ScientificPitch(DiatonicPitch noteName, Accidentals accidental, Integer octave) {
@@ -56,7 +56,7 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
 	 */
 	public final void setPitchClass(PitchClass pitchClass) {
 		this.pitchClass = pitchClass;
-		computeBase40();
+		//computeBase40();
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
 	 */
 	public final void setOctave(int octave) {
 		this.octave = octave;
-		computeBase40();
+		//computeBase40();
 	}
 	public int computeMidiPitch()  {
 		int result = pitchClass.getSemitonesFromC() + (octave+1)*12;
@@ -161,7 +161,11 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
 	public ScientificPitch transpose(Interval interval) throws IM3Exception {
 	    return interval.computeScientificPitchFrom(this);
 	}
-	
+
+	public Base40 computeBase40() {
+	    return new Base40(this);
+    }
+	/*
 	public int getBase40() {
 	    return base40;
 	}
@@ -175,5 +179,5 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
                 base40Chroma = pitchClass.getBase40Chroma();
                 base40 = octave * 40 + base40Chroma;
             }
-	}
+	}*/
 }

@@ -1697,6 +1697,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 }
 
                 if (lastAccid == null && lastAccidGes == null && previousAccidental != null) {
+
                     pc.setAccidental(previousAccidental); // TODO: 24/9/17 Diferenciar explicit e implicit. Igual en MEIExporter que aún lo exporta todo
                 }
 

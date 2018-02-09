@@ -14,6 +14,7 @@ import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.core.score.io.lilypond.LilypondExporter;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.PageLayout;
@@ -74,6 +75,11 @@ public class LayoutMensuralAndTranscription {
         exporter.addResetEWSCWordBuilderMessage(); // TODO: 29/10/17 Generalizar esto
         exporter.exportSong(new File(midiFile), played);
 
+        File outMEIFile = new File("/tmp/moderno.mei"); //TODO Quitar
+        MEISongExporter meiSongExporter = new MEISongExporter();
+        meiSongExporter.exportSong(outMEIFile, modern);
+
+
         mensuralToModern.merge(mensural, modern);
 
         // TODO: 16/10/17 Poder cambiar esto
@@ -117,8 +123,13 @@ public class LayoutMensuralAndTranscription {
                 svgExporterPage.exportLayout(pageFile, canvas, pageLayout);
                 pageNumber++;
             }
-
-
         }
+
+        //TODO Not working yet with two concert pitches
+        /*
+        File outMEIFile = new File(svgHorizontalFile.getParent(), svgFileName + "_mensural_modern.mei");
+        MEISongExporter meiSongExporter = new MEISongExporter();
+        meiSongExporter.exportSong(outMEIFile, mensural);
+        */
     }
 }
