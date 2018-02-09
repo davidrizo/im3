@@ -51,6 +51,9 @@
                                 <note pname="a" dur="semibrevis" oct="4"/> <!-- sound expected: Ab, written A without flat -->
                                 <barLine/>
                                 <note pname="a" dur="semibrevis" oct="4"/> <!-- sound expected: Ab, written A without flat -->
+                                <barLine/>
+                                <note pname="b" dur="minima" oct="4" accid.ges="n" accid="s"/> <!-- sound expected: B, written #B  --> <!-- see (https://github.com/music-encoding/music-encoding/issues/497) -->
+                                
                             </layer>
                         </staff>                            
                     </section>
