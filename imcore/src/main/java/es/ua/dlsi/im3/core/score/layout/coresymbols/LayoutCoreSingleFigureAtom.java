@@ -85,7 +85,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         for (NotePitch notePitch: notePitches) {
             // TODO: 24/9/17 ¿Y si ya las tenía?
             notePitch.setLayoutStaff(layoutStaff);
-            layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getWidth());
+            layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getNoteHeadWidth());
             stemYPosition = notePitch.getNoteHeadPosition().getY();
         }
 
