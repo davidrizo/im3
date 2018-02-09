@@ -218,7 +218,8 @@ public class PageLayout extends ScoreLayout {
             for (LayoutStaffSystem staffSystem : page.getSystemsInPage()) {
                 for (LayoutStaff layoutStaff : staffSystem.getStaves()) {
                     //layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
-                    layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+                    //20180208 layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+                    layoutStaff.createNoteAccidentals();
                 }
             }
         }

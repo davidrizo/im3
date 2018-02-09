@@ -192,12 +192,12 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 	    if (ID != null) {
 	        return ID.hashCode();
         } else {
-            int result = atomFigure.hashCode();
+	        return System.identityHashCode(this); // because we use it for building pitches that may not be constructed yet
+            /*20180208 int result = atomFigure.hashCode();
 
             result = 31 * result + scientificPitch.hashCode();
-            result = 31 * result + (writtenExplicitAccidental != null ? writtenExplicitAccidental.hashCode() : 0);
             result = 31 * result + (staffChange != null ? staffChange.hashCode() : 0);
-            return result;
+            return result;*/
         }
 	}
 

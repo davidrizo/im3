@@ -642,22 +642,25 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 * @return A map with each note and the accidental to be drawn
 	 * @throws IM3Exception
 	 */
-	public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow() throws IM3Exception {
+    /*//20180208 public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow() throws IM3Exception {
 	    return createNoteAccidentalsToShow(Time.TIME_ZERO, Time.TIME_MAX);
-	}
+	}*/
 
     /**
      * It tells the accidental that must be drawn for each note in the given range
      * @return A map with each note and the accidental to be drawn
      * @throws IM3Exception
      */
-	public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow(Time fromTime, Time toTime) throws IM3Exception {
+	//20180208 This cannot be computed fromTime - toTime to take into account previous context - public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow(Time fromTime, Time toTime) throws IM3Exception {
+    public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow() throws IM3Exception {
 		TreeMap<DiatonicPitchAndOctave, PitchClass> alteredDiatonicPitchInBar = new TreeMap<>();
 		TreeMap<DiatonicPitch, PitchClass> alteredDiatonicPitchInKeySignature = new TreeMap<>();
         HashMap<AtomPitch, Accidentals> result = new HashMap<>();
 		KeySignature currentKeySignature = null; // getRunningKeySignatureAt(fromTime);
-        List<ITimedElementInStaff> symbols = this.getCoreSymbolsOrderedWithOnsets(fromTime, toTime);
+        //20180208 List<ITimedElementInStaff> symbols = this.getCoreSymbolsOrderedWithOnsets(fromTime, toTime);
+        List<ITimedElementInStaff> symbols = this.getCoreSymbolsOrdered();
         Measure lastMeasure = null;
+
         for (ITimedElementInStaff symbol: symbols) {
             Measure measure = null;
             if (getScoreSong().hasMeasures()) {
