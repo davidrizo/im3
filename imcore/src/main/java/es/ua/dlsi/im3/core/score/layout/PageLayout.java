@@ -63,7 +63,7 @@ public class PageLayout extends ScoreLayout {
 
 
     @Override
-    public void layout() throws IM3Exception {
+    public void layout(boolean computeProportionalSpacing) throws IM3Exception {
         // TODO: 19/9/17 En esta versión creamos todos los símbolos cada vez - habría que crear sólo los necesarios
         //TODO scoreSong.getStaffGroups()
         pages = new ArrayList<>(); //TODO supongo que no habrá que rehacerlo siempre
@@ -90,7 +90,7 @@ public class PageLayout extends ScoreLayout {
         } // else discard system breaks
 
         // perform a first horizontal layout
-        doHorizontalLayout(simultaneities);
+        doHorizontalLayout(simultaneities, computeProportionalSpacing);
 
         // now locate the points where insert line and page breaks and create LayoutStaff
         //TODO Page breaks - ahora todo en un page
@@ -232,7 +232,7 @@ public class PageLayout extends ScoreLayout {
 
         //simultaneities.printDebug();
 
-        doHorizontalLayout(simultaneities); // TODO: 26/9/17 ¿Y si cambia la anchura y hay que volver a bajar elementos de línea?
+        doHorizontalLayout(simultaneities, computeProportionalSpacing); // TODO: 26/9/17 ¿Y si cambia la anchura y hay que volver a bajar elementos de línea?
         for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {
             for (LayoutCoreSymbol coreSymbol: simultaneity.getSymbols()) {
                 LayoutStaffSystem system = coreSymbol.getSystem();

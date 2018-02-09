@@ -92,7 +92,7 @@ public class LayoutMensuralAndTranscription {
         // TODO: 16/10/17 Tamaño
         //PageLayout layout = new PageLayout(mensural, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
         HorizontalLayout hlayout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(40000), new CoordinateComponent(2800));
-        hlayout.layout();
+        hlayout.layout(true);
         //PDFExporter pdfExporter = new PDFExporter();
         //pdfExporter.exportLayout(new File(args[1]), layout);
         SVGExporter svgExporter = new SVGExporter();
@@ -107,7 +107,7 @@ public class LayoutMensuralAndTranscription {
             String partSVGNamePrefix = svgFileName + "_" + FileUtils.leaveValidCaracters(part.getName());
             PageLayout pageLayout = new PageLayout(mensural, part.getStaves(), true, fontsHashMap,
                     new CoordinateComponent(30000), new CoordinateComponent(4800));
-            pageLayout.layout();
+            pageLayout.layout(false);
             int pageNumber = 1;
             for (Canvas canvas: pageLayout.getCanvases()) {
                 SVGExporter svgExporterPage = new SVGExporter();

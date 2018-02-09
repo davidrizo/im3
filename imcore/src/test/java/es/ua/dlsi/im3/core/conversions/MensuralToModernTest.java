@@ -23,7 +23,7 @@ public class MensuralToModernTest {
     private void printSVG(ScoreSong song, LayoutFonts font, String filename) throws IM3Exception {
         HorizontalLayout layout = new HorizontalLayout(song, font,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter msvgExporter = new SVGExporter();
         File msvgFile = TestFileUtils.createTempFile(filename);
@@ -114,7 +114,7 @@ public class MensuralToModernTest {
         fonts.put(newModernStaff, LayoutFonts.bravura);
         HorizontalLayout layout2 = new HorizontalLayout(song, fonts,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout2.layout();
+        layout2.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("mensuralAndmodern.svg");

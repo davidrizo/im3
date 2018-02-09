@@ -29,7 +29,7 @@ public class LayoutElementsTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         TreeSet<LayoutCoreSymbolInStaff> layoutSymbols = layout.getSystem().getTopStaff().getLayoutSymbolsInStaff();
         ArrayList<LayoutCoreSingleFigureAtom> v = new ArrayList<>();

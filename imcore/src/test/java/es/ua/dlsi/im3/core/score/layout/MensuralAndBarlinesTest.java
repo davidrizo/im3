@@ -45,7 +45,7 @@ public class MensuralAndBarlinesTest {
 
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         TreeSet<LayoutCoreSymbolInStaff> layoutSymbols = layout.getSystem().getTopStaff().getLayoutSymbolsInStaff();
         assertEquals("Number of layout symbols", 20, layoutSymbols.size()); // clef, key signature, time signature, notes and barlines

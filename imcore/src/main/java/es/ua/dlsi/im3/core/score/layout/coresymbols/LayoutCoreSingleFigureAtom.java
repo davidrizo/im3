@@ -34,17 +34,24 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         double stemXDisplacement = 0;
         CoordinateComponent stemYPosition = null;
         for (AtomPitch atomPitch: coreSymbol.getAtomPitches()) {
-            NotePitch notePitch = new NotePitch(layoutFont, this, atomPitch, position);
-            notePitches.add(notePitch);
-            addComponent(notePitch); // TODO: 28/10/17 Añadir todos los demás componentes !!!!
-            group.add(notePitch.getGraphics());
+            // Computed here and not inside NodePitch because the position is required to compute the stem direction
+            // and the stem is required for computing some notePitch elements at constructor such as the unicode for
+            // some mensural glyphs
+            PositionInStaff positionInStaff = getCoreSymbol().getStaff().computePositionInStaff(getTime(), atomPitch.getScientificPitch().getPitchClass().getNoteName(),
+                    atomPitch.getScientificPitch().getOctave());
 
             // FIXME: 22/9/17 Esto funciona cuando es una nota, en acordes?
             if (coreSymbol.getExplicitStemDirection() != null) {
                 stemUp = coreSymbol.getExplicitStemDirection() == StemDirection.up;
             } else {
-                stemUp = notePitch.getPositionInStaff().getLine() <= 2; // TODO actually we should check surrounding notes (Behind bars book)
+                stemUp = positionInStaff.getLine() <= 2; // TODO actually we should check surrounding notes (Behind bars book)
             }
+
+
+            NotePitch notePitch = new NotePitch(layoutFont, this, atomPitch, position, positionInStaff);
+            notePitches.add(notePitch);
+            addComponent(notePitch); // TODO: 28/10/17 Añadir todos los demás componentes !!!!
+            group.add(notePitch.getGraphics());
 
             if (stemUp) {
                 stemXDisplacement = notePitch.getNoteHeadWidth();

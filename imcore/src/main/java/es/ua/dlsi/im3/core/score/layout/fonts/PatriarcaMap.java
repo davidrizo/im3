@@ -98,7 +98,6 @@ public class PatriarcaMap implements IFontMap {
             unicodes = UNICODES_WITHOUT_FLAG_STEM_DOWN;
         }
 
-
         String result = unicodes.get(figure);
         if (result == null) {
             throw new IM3Exception("Cannot find an unicode (without flag) for " + figure + " and stemUp = " + stemUp);

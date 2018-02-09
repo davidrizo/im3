@@ -11,6 +11,7 @@ import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
+import es.ua.dlsi.im3.core.score.layout.layoutengines.NaiveEngine;
 
 import java.util.*;
 
@@ -344,20 +345,28 @@ public abstract class ScoreLayout {
         }
     }
 
-    protected void doHorizontalLayout(Simultaneities simultaneities) throws IM3Exception {
+    protected void doHorizontalLayout(Simultaneities simultaneities, boolean computeProportionalSpacing) throws IM3Exception {
         // Replace for a factory if required
         // use the maximum noteHeadWidth among all the staves
         double noteHeadWidth = 0;
         for (Double nh: noteHeadWidths.values()) {
             noteHeadWidth = Math.max(noteHeadWidth, nh);
         }
-        ILayoutEngine layoutEngine = new BelliniLayoutEngine(1, 1, noteHeadWidth/2); // TODO: 22/9/17 ¿qué valor ponemos?
+        ILayoutEngine layoutEngine;
+        if (computeProportionalSpacing) {
+            layoutEngine = new BelliniLayoutEngine(1, 1, noteHeadWidth / 2); // TODO: 22/9/17 ¿qué valor ponemos?
+        } else {
+            layoutEngine = new NaiveEngine();
+        }
         layoutEngine.reset(simultaneities);
         layoutEngine.doHorizontalLayout(simultaneities);
     }
 
-
-    public abstract void layout() throws IM3Exception;
+    /**
+     * @param computeProportionalSpacing If false just the physical width of symbols is used, if true longer notes take more space than short ones
+     * @throws IM3Exception
+     */
+    public abstract void layout(boolean computeProportionalSpacing) throws IM3Exception;
 
     public abstract Collection<Canvas> getCanvases();
 
