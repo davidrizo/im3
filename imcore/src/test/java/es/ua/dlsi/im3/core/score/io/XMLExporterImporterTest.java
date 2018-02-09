@@ -942,6 +942,38 @@ public class XMLExporterImporterTest {
 		//doTest(XMLExporterImporterTest::assertSimpleBeam, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.xml")));
 	}
 
+    // ------------------------------------------------------------------------------------------
+    private static Void assertStemDir(ScoreSong song) {
+        try {
+            assertEquals(1, song.getStaves().size());
+            List<Atom> atoms = song.getStaves().get(0).getAtoms();
+            assertEquals(2, atoms.size());
+
+            assertTrue(atoms.get(0) instanceof  SimpleNote);
+            assertTrue(atoms.get(1) instanceof  SimpleNote);
+
+            SimpleNote s0 = (SimpleNote) atoms.get(0);
+            SimpleNote s1 = (SimpleNote) atoms.get(1);
+
+            assertNull("S0 explicit stem", s0.getExplicitStemDirection());
+            assertNotNull("S1 explicit stem", s1.getExplicitStemDirection());
+
+            assertEquals("Stem 1 direction up", StemDirection.up, s1.getExplicitStemDirection());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+
+    // TODO: 1/10/17 Import beams in MusicXML
+    @Test
+    public void stemDir() throws Exception {
+        doTest(XMLExporterImporterTest::assertStemDir, importMEI(TestFileUtils.getFile("/testdata/core/score/io/stemdir.mei")));
+        doTest(XMLExporterImporterTest::assertStemDir, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/stemdir.xml")));
+    }
+
+
 
 	//TODO Grace notes, slurs, tuplet dentro de tuplet
 	// tuplet con elementos en distintos staves, tuplet con acordes con notas en distintos staves

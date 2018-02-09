@@ -743,6 +743,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						lastAtomPitch.setMelodicFunction(mf);
 					}
 
+                    String stemDir = getOptionalAttribute(attributesMap, "stem.dir");
+					if (stemDir != null) {
+					    currentNote.setExplicitStemDirection(parseStemDir(stemDir));
+                    }
 
 					updateCurrentTime();
 
@@ -980,6 +984,17 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			throw new ImportException(e);
 		}
 	}
+
+    private StemDirection parseStemDir(String stemDir) throws ImportException {
+        switch (stemDir) {
+            case "up":
+                return StemDirection.up;
+            case "down":
+                return StemDirection.down;
+            default:
+                    throw new ImportException("Invalid stemDir: '" + stemDir + "'");
+        }
+    }
 
     private void processFermata(AtomFigure atomFigure, HashMap<String, String> attributesMap) throws IM3Exception {
         String fermata = getOptionalAttribute(attributesMap, "fermata");

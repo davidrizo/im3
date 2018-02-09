@@ -997,6 +997,12 @@ public class MEISongExporter implements ISongExporter {
                 skipMeasures = mrest.getNumMeasures();
 			} else {
 				fillDurationParams(sfatom.getAtomFigure(), params);
+
+				if (sfatom.getExplicitStemDirection() != null) {
+                    params.add("stem.dir");
+                    params.add(sfatom.getExplicitStemDirection().name().toLowerCase());
+                }
+
 				if (atom instanceof SimpleRest) {			
 					XMLExporterHelper.startEnd(sb, tabs, "rest", params); 
 				} else if (atom instanceof SimpleChord) {

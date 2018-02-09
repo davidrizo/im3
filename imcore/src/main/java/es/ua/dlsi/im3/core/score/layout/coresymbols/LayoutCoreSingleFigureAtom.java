@@ -1,10 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.AtomPitch;
-import es.ua.dlsi.im3.core.score.PositionInStaff;
-import es.ua.dlsi.im3.core.score.SingleFigureAtom;
-import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Flag;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
@@ -43,7 +40,12 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
             group.add(notePitch.getGraphics());
 
             // FIXME: 22/9/17 Esto funciona cuando es una nota, en acordes?
-            stemUp = notePitch.getPositionInStaff().getLine() <= 2;
+            if (coreSymbol.getExplicitStemDirection() != null) {
+                stemUp = coreSymbol.getExplicitStemDirection() == StemDirection.up;
+            } else {
+                stemUp = notePitch.getPositionInStaff().getLine() <= 2; // TODO actually we should check surrounding notes (Behind bars book)
+            }
+
             if (stemUp) {
                 stemXDisplacement = notePitch.getNoteHeadWidth();
             }
@@ -154,7 +156,11 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
 
     @Override
     public Direction getDefaultSlurDirection() {
-        return Direction.up; // TODO: 31/10/17
+        if (stemUp) {
+            return Direction.down;
+        } else {
+            return Direction.up;
+        }
     }
 
     @Override
