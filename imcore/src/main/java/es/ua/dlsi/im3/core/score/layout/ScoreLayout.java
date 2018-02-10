@@ -12,6 +12,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.NaiveEngine;
+import es.ua.dlsi.im3.core.score.layout.layoutengines.NonProportionalLayoutEngine;
 
 import java.util.*;
 
@@ -356,7 +357,7 @@ public abstract class ScoreLayout {
         if (computeProportionalSpacing) {
             layoutEngine = new BelliniLayoutEngine(1, 1, noteHeadWidth / 2); // TODO: 22/9/17 ¿qué valor ponemos?
         } else {
-            layoutEngine = new NaiveEngine();
+            layoutEngine = new NonProportionalLayoutEngine();
         }
         layoutEngine.reset(simultaneities);
         layoutEngine.doHorizontalLayout(simultaneities);

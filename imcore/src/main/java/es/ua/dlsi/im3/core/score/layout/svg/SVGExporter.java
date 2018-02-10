@@ -2,13 +2,9 @@ package es.ua.dlsi.im3.core.score.layout.svg;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
-import es.ua.dlsi.im3.core.score.layout.FontFactory;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
-import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
-import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.*;
 
 import java.io.*;
@@ -36,7 +32,7 @@ public class SVGExporter implements IGraphicsExporter {
 
         XMLExporterHelper.start(sb, tabs, "defs");
         for (Glyph glyph: usedGlyphs) {
-            XMLExporterHelper.start(sb, tabs+1, "symbol", "id", glyph.getEscapedUnicode(),
+            XMLExporterHelper.start(sb, tabs+1, "symbol", "id", glyph.getEscapedUnicodeFontUnique(),
                     "viewBox", viewbox,
                     "overflow", "visible");
             XMLExporterHelper.startEnd(sb, tabs+2, "path", "d", glyph.getPath(),

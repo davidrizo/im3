@@ -9,13 +9,13 @@
         "codepoint": "U+E4C1"
     },                
     "gClef": {
-        "codepoint": "U+0E050"
+        "codepoint": "U+E050"
     }
     "cClef": {
-        "codepoint": "U+0E060"
+        "codepoint": "U+E060"
     },
     "fClef": {
-        "codepoint": "U+0E062"
+        "codepoint": "U+E062"
     },
     "timeSigCommon": {
         "codepoint": "U+E08A"

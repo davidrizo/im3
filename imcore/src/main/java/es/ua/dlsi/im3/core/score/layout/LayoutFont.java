@@ -55,7 +55,7 @@ public class LayoutFont {
             throw new ImportException("Music font svg resource stream is null");
         }
 
-        SVGFontImporter importer = new SVGFontImporter();
+        SVGFontImporter importer = new SVGFontImporter(name);
         svgFont = importer.importStream(svgFontResource);
         mapping = new JSONGlyphNamesReader(mappingResource);
         this.mapping = mapping;

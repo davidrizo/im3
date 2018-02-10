@@ -97,13 +97,14 @@ public class MensuralToModern {
 
         for (ITimedElementInStaff symbol: mensuralStaff.getCoreSymbolsOrdered()) {
             if (symbol instanceof Clef) {
-                if (symbol.getTime().isZero()) {
+                /*if (symbol.getTime().isZero()) {
                     modernClef.setNotationType(NotationType.eModern);
                     modernClef.setTime(Time.TIME_ZERO);
                     modernStaff.addClef(modernClef);
                 } else {
-                    modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
-                }
+                    modernStaff.addClef(convert((Clef) symbol));
+                }*/
+                modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
             } else if (symbol instanceof TimeSignature) {
                 activeTimeSignature = convert((TimeSignature) symbol);
                 pendingMensureDuration = activeTimeSignature.getDuration();
