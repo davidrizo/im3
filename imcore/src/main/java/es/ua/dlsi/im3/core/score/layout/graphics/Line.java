@@ -129,7 +129,7 @@ public class Line extends Shape {
 
     @Override
     public double getWidth() {
-        return to.getAbsoluteX() - from.getAbsoluteX();
+        return to.getAbsoluteX() - from.getAbsoluteX() + thickness;
     }
 
     @Override

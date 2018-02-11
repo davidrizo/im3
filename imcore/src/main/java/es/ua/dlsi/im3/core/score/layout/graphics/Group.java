@@ -117,7 +117,7 @@ public class Group extends GraphicsElement {
             for (GraphicsElement child : children) {
                 BoundingBox childBB = child.computeBoundingBox();
                 maxLeftDisplacement = Math.min(maxLeftDisplacement, childBB.getLeftEnd());
-                maxRightDisplacement = Math.max(maxLeftDisplacement, childBB.getRightEnd());
+                maxRightDisplacement = Math.max(maxRightDisplacement, childBB.getRightEnd());
             }
 
             return new BoundingBox(maxLeftDisplacement, maxRightDisplacement);

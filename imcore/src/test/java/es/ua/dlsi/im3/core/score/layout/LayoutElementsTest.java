@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.SimpleNote;
 import es.ua.dlsi.im3.core.score.StemDirection;
 import es.ua.dlsi.im3.core.score.io.XMLExporterImporterTest;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
+import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
@@ -46,5 +47,29 @@ public class LayoutElementsTest {
 
     }
 
+    @Test
+    public void widthTest() throws Exception {
+        MusicXMLImporter importer = new MusicXMLImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/io/accidentals.xml");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(960), new CoordinateComponent(700));
+        layout.layout(true);
+
+        TreeSet<LayoutCoreSymbolInStaff> layoutSymbols = layout.getSystem().getTopStaff().getLayoutSymbolsInStaff();
+
+        assertEquals("Layout symbols in staff", 12, layoutSymbols.size());
+        ArrayList<LayoutCoreSymbolInStaff> v = new ArrayList<>();
+        Iterator<LayoutCoreSymbolInStaff> iter = layoutSymbols.iterator();
+        for (int i=0; i<layoutSymbols.size(); i++) {
+            LayoutCoreSymbolInStaff coreSymbolInStaff = iter.next();
+            v.add(coreSymbolInStaff);
+            assertTrue("Width of element > 0, #" + i + " " + coreSymbolInStaff, coreSymbolInStaff.getWidth() > 0.0);
+        }
+
+        assertTrue("Quarter without accidental less than with accidental", v.get(6).getWidth() < v.get(7).getWidth());
+        assertEquals("Quarters with accidentals width", v.get(8).getWidth(), v.get(9).getWidth(), 0.0001);
+
+    }
 
 }
