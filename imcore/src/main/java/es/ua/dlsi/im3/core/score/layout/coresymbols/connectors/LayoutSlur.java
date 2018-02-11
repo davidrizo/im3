@@ -44,6 +44,7 @@ public class LayoutSlur extends LayoutConnector {
 
         }*/
 
+        // TODO: 11/2/18 todo ABOVE BELOW
         Coordinate fromPoint;
         if (from == null) {
             fromPoint = new Coordinate(

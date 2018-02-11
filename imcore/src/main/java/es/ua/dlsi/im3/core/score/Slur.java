@@ -37,4 +37,8 @@ public class Slur extends Connector {
 	public final PositionAboveBelow getPosition() {
 		return position;
 	}
+
+    public void setPosition(PositionAboveBelow position) {
+        this.position = position;
+    }
 }

@@ -73,6 +73,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		String content;
 		Staff staff;
 		public ScoreLayer layer;
+        public String curvedir;
 
         @Override
 		public int hashCode() {
@@ -942,6 +943,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					pendingConnectorOrMark.tstamp2 = getOptionalAttribute(attributesMap, "tstamp2");
 					pendingConnectorOrMark.startid = getOptionalAttribute(attributesMap, "startid");
 					pendingConnectorOrMark.endid = getOptionalAttribute(attributesMap, "endid");
+                    pendingConnectorOrMark.curvedir = getOptionalAttribute(attributesMap, "curvedir");
 					if (staffNumber != null) {
 						pendingConnectorOrMark.staff = findStaff(staffNumber);
 					}
@@ -1897,6 +1899,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     }
 
                     Slur slur = new Slur(from, to);
+                    if (pendingConnectorOrMark.curvedir != null) {
+                        slur.setPosition(parseCurveDir(pendingConnectorOrMark.curvedir));
+                    }
                     from.addConnector(slur);
                     to.addConnector(slur);
                     break;
@@ -1954,7 +1959,16 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 	}
 
-	protected ITimedSymbolWithConnectors getPlaceHolderFromTStamp2(Staff staff, ScoreLayer layer, Measure fromMeasure, List<Measure> measures, String tstamp2) throws ImportException, IM3Exception {
+    private PositionAboveBelow parseCurveDir(String curvedir) throws ImportException {
+	    switch (curvedir) {
+            case "above": return PositionAboveBelow.ABOVE;
+            case "below": return PositionAboveBelow.BELOW;
+            default:
+                throw new ImportException("Invalid curvedir: '" + curvedir + "'");
+        }
+    }
+
+    protected ITimedSymbolWithConnectors getPlaceHolderFromTStamp2(Staff staff, ScoreLayer layer, Measure fromMeasure, List<Measure> measures, String tstamp2) throws ImportException, IM3Exception {
 		String [] strings = tstamp2.split("m\\+");
 		
 		int nmeasure;
