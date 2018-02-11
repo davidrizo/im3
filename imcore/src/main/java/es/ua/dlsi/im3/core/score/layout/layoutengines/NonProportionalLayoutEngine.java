@@ -9,6 +9,8 @@ import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
  * It just guaranties the symbols are not overlapped
  */
 public class NonProportionalLayoutEngine implements ILayoutEngine {
+    private static final double SPACING = LayoutConstants.EM/8;
+
     public NonProportionalLayoutEngine() {
     }
 
@@ -54,7 +56,7 @@ public class NonProportionalLayoutEngine implements ILayoutEngine {
             }
             s.setX(x);
             //System.out.println(boundingBox + ", width " + s.getLayoutWidth() + ", \t"+s.toString());
-            x += (s.getLayoutWidth() + boundingBox.getRightEnd());
+            x += (s.getLayoutWidth() + boundingBox.getRightEnd() + SPACING);
             //System.out.println("\tx=" + x);
         }
     }
