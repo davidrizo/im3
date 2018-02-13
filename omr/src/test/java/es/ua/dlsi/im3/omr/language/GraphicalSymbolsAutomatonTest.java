@@ -56,7 +56,7 @@ public class GraphicalSymbolsAutomatonTest {
         // draw first transduction
         HorizontalLayout layout = new HorizontalLayout(t1.getSong(), LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("transduction_modern.svg");
@@ -103,7 +103,7 @@ public class GraphicalSymbolsAutomatonTest {
         // draw first transduction
         HorizontalLayout layout = new HorizontalLayout(t1.getSong(), LayoutFonts.capitan,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("transduction_mensural.svg");
