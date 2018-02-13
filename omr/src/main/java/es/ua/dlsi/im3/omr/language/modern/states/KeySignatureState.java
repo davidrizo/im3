@@ -69,6 +69,7 @@ public class KeySignatureState extends OMRState {
             int clefLine = transduction.getStaff().getLastClef().getLine();
             switch (clefName) {
                 case "G":
+                    //System.out.println("clave de sol");
                     if (clefLine == 2){
                         //Lo dejamos por defecto
                         sharpOrder = new ArrayList<String>(Arrays.asList("L5","S3","S5","L4","S2","S4","L3"));
@@ -82,7 +83,7 @@ public class KeySignatureState extends OMRState {
                     if (clefLine == 4){
                         //System.out.println("clave de fa en 4a");
                         sharpOrder = new ArrayList<String>(Arrays.asList("L4","S2","S4","L3","S1","S3","L2"));
-                        flatOrder = new ArrayList<String>(Arrays.asList("L2","S3","S1","L3","S4","S2","L4"));
+                        flatOrder = new ArrayList<String>(Arrays.asList("L2","S3","S1","L3","L1","S2","S0")); //David - he cambiado S4 por L1 que había puesto Jordi y L4 por S0
                     } else if (clefLine == 3) {
 
                     } else
@@ -93,11 +94,7 @@ public class KeySignatureState extends OMRState {
                     switch (clefLine) {
                         case 1: //TODO 30/11/17 Pueden haber alternativas
                             sharpOrder = new ArrayList<String>(Arrays.asList("S2","S4","L3","L5","S3","S5","L4"));
-                            flatOrder = new ArrayList<String>(Arrays.asList("L4","L2","S3","S1","L3","L1","S2"));
-                            break;
-                        case 2: //Pueden haber alternativas
-                            flatOrder = new ArrayList<String>(Arrays.asList("S1","L3","L1","S2","S0","L2","S3"));
-                            sharpOrder = new ArrayList<String>(Arrays.asList("S3","L2","L4","S2","S4","L3","L5"));
+                            flatOrder = new ArrayList<String>(Arrays.asList("L4","S5","S3","L5","L3","S4","S2"));
                             break;
                         case 3:
                             flatOrder = new ArrayList<String>(Arrays.asList("S2","L4","L2","S3","S1","L3","L1"));
@@ -108,7 +105,7 @@ public class KeySignatureState extends OMRState {
                             flatOrder = new ArrayList<String>(Arrays.asList("S3","L5","L3","S4","S2","L4","L2"));
                             break;
                         default:
-                            throw new IM3RuntimeException("C clef is not on 1st, 2nd, 3rd or 4th line");
+                            throw new IM3RuntimeException("C clef is not on 1st, 3rd or 4th line");
                     }
                     break;
 
@@ -122,7 +119,7 @@ public class KeySignatureState extends OMRState {
                     for(int i=0; i<positions.size();i++){
                         //System.out.println(positions.get(i).toString());
                         if(!positions.get(i).toString().equals(flatOrder.get(i).toString()))
-                            throw new IM3RuntimeException("Flat order is not correct, expected " +
+                            throw new IM3RuntimeException("Flat order at position #" + i + " for " + key + " is not correct, expected " + // David pongo la clave y la posición que falla
                                     flatOrder.get(i).toString() + ", found " + positions.get(i).toString()); //Lanzo excepcion o probabilidad 0?
                     }
                 } else {
