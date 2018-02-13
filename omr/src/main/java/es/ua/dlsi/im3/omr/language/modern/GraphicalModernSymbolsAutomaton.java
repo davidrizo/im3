@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Modified by Jordi Aracil 2
+ * Modified by Jorge Aracil
  * Versión 1
  */
 public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
@@ -39,6 +39,7 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         State multirestdigit = new MultirestDigitState(15,"multirestdigit");
         State multirest = new MultirestState(16,"multirest");
         State trill = new TrillState(17,"trill");
+        State gracenote = new GracenoteState(18, "gracenote");
 
         states.add(start);
         states.add(clef);
@@ -56,6 +57,7 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         states.add(multirestdigit);
         states.add(multirest);
         states.add(trill);
+        states.add(gracenote);
 
         HashMap<State, Fraction> endStates = new HashMap<>();
         endStates.put(notes, Fraction.ONE_THIRD);
@@ -103,7 +105,7 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
 
         transitions.add(new Transition<>(noteacc, GraphicalSymbol.note, notes));
         transitions.add(new Transition<>(rest, GraphicalSymbol.accidental, noteacc));
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.accidental, noteacc)); //OJO despues de barline como diferencio entre armadura y accidentalnote
+        transitions.add(new Transition<>(endbar, GraphicalSymbol.accidental, noteacc));
 
         transitions.add(new Transition<>(rest, GraphicalSymbol.rest, rest));
         transitions.add(new Transition<>(rest, GraphicalSymbol.note, notes));
@@ -129,6 +131,12 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         transitions.add(new Transition<>(notes, GraphicalSymbol.trill, trill));
         transitions.add(new Transition<>(timesig, GraphicalSymbol.trill, trill));
         transitions.add(new Transition<>(noteacc,GraphicalSymbol.trill, trill));
+
+        transitions.add(new Transition<>(timesig,GraphicalSymbol.gracenote, gracenote));
+        transitions.add(new Transition<>(notes, GraphicalSymbol.gracenote, gracenote));
+        transitions.add(new Transition<>(rest, GraphicalSymbol.gracenote, gracenote));
+        transitions.add(new Transition<>(endbar, GraphicalSymbol.gracenote, gracenote));
+        transitions.add(new Transition<>(gracenote, GraphicalSymbol.note, notes ));
 
         transitions.add(new Transition<>(endbar, GraphicalSymbol.rest, rest));
         transitions.add(new Transition<>(endbar, GraphicalSymbol.note, notes));

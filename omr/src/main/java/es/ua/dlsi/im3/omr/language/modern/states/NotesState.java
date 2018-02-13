@@ -50,28 +50,9 @@ public class NotesState extends OMRState {
             throw new IM3RuntimeException("Symbol should be note");*/
         }
         else {
-           if (token.getSymbol() == GraphicalSymbol.dot && previousState.toString() == "notes") { //TODO como lo agrego
+           if (token.getSymbol() == GraphicalSymbol.dot && previousState.toString() == "notes") {
+               //TODO En futuras implementaciones se cambiara la forma de añadir notas a partituras
 
-               /*System.out.println("El estado anterior es:");
-               System.out.println(previousState.toString());
-               Staff staff = transduction.getStaff();
-               Clef clef = transduction.getStaff().getLastClef();
-               ScientificPitch pitch = null;
-               try {
-                   pitch = parsePitch(staff, clef, token.getPositionInStaff(), accidental);
-               } catch (IM3Exception e) {
-                   transduction.setZeroProbability();
-                   return;
-               }
-               SimpleNote note = new SimpleNote(parseFigure(token.getValue()), 0, pitch);
-               try {
-                   transduction.getStaff().addCoreSymbol(note);
-                   transduction.getLayer().add(note);
-               } catch (IM3Exception e) {
-                   throw new IM3RuntimeException(e);
-               }*/
-
-               //TODO dobles puntillos ¿Otro estado?
            }
            else {
                throw new IM3RuntimeException("Symbol should be note or dot");

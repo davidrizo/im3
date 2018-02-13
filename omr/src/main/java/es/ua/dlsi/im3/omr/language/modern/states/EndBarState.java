@@ -28,15 +28,15 @@ public class EndBarState extends OMRState {
             }
         }
         if (transduction.getSong().getMeasureWithOnset(time) == null) {
-            //TODO Generación Measure measure = new Measure(transduction.getSong());
-           /*TODO  try {
-
+            //TODO Modifgicar mas adelante implementacion para adicion de compases
+            // Generación Measure measure = new Measure(transduction.getSong());
+            /*
+                try {
                 transduction.getSong().addMeasure(time, measure);
                 measure.setEndTime(transduction.getLayer().getDuration());
                 //System.out.println(transduction.getLayer().getDuration());
                 //TODO: 7/12/17 Problema con los multirest. obtengo IM3Exeption: Cannot set an end time
-
-                // TODO: 5/10/17 Comprobar que el endtime coincide con la duración esperada del compás
+                //TODO: 5/10/17 Comprobar que el endtime coincide con la duración esperada del compás
                 TimeSignature lastTimeSignature = transduction.getStaff().getLastTimeSignature();
                 if (lastTimeSignature.getDuration().equals(measure.getDuration())) {
                     System.err.println("TO-DO Bajar probabilidad porque la duración del compás: " +

@@ -33,7 +33,6 @@ public class AccNoteState extends OMRState {
             case "double_sharp":
                 accidental = Accidentals.DOUBLE_SHARP;
                 break;
-                //TODO 22-11-17  El natural falla en el test 9 No lo reconoce el sistema
             case "natural":
                 accidental = Accidentals.NATURAL; //el becuadro no funciona ATENCION
                 break;

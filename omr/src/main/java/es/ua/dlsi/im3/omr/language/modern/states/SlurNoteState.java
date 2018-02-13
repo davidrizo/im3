@@ -13,7 +13,6 @@ public class SlurNoteState extends OMRState {
         super(number, "Slurnote");
     }
 
-
     @Override
     public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
         //Compruebo que vengo de notes y tengo una ligadura que comienza
@@ -25,20 +24,13 @@ public class SlurNoteState extends OMRState {
                 //transduction.getLayer().getLastAtom().getAtomPitches().get(0).setTiedToNext();
                 //chord.getAtomPitches().get(i).setTiedToNext(secondChord.getAtomPitches().get(i));
                 //transduction.getLayer().getAtomPitches().get(1).setTiedToNext();
-
             }catch (IM3Exception e) {
                 throw new IM3RuntimeException(e);
             }
-
         }
-
         if (previousState.getName() == "Slurnote" && token.getSymbol() == GraphicalSymbol.slur && token.getValue() == "end"){
             //termina la ligadura
             isSlurStarted = false;
-
         }
-
     }
-
-
 }

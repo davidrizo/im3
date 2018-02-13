@@ -24,8 +24,6 @@ public class TimeSignatureState extends OMRState {
             // the automaton has an error
             throw new IM3RuntimeException("Expected a digit or metersign and found a " + token.getSymbol());
         }
-
-
         if (token.getPositionInStaff().getLine() == 2) {
             denominator = Integer.parseInt(token.getValue()); // TODO: 4/10/17 Comprobar que es un valor válido
             numerator = DigitTimeSignatureState.getNumerator();

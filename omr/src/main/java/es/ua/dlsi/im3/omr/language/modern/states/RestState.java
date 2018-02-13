@@ -21,7 +21,6 @@ public class RestState extends OMRState{
             try {
                 transduction.getStaff().addCoreSymbol(rest);
                 transduction.getLayer().add(rest);
-                //System.out.println(rest.toString()); //Solo para comprobar el tipo de silencio que reconozco
             } catch (IM3Exception e) {
                 throw new IM3RuntimeException(e);
             }
