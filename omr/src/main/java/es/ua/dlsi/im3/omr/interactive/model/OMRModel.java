@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.NotationType;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -42,8 +43,9 @@ public class OMRModel {
         currentProject.setValue(null);
     }
 
-    public void createProject(File projectFolder, File trainingFile) throws IM3Exception {
+    public void createProject(File projectFolder, File trainingFile, NotationType notationType) throws IM3Exception {
         OMRProject project = new OMRProject(projectFolder, trainingFile);
+        project.setNotationType(notationType);
         currentProject.setValue(project);
         InputOutput io = new InputOutput();
         save(); // create structure

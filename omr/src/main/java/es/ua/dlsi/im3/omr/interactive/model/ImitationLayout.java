@@ -35,7 +35,7 @@ public class ImitationLayout extends ScoreLayout {
     }
 
     @Override
-    public void layout() throws IM3Exception {
+    public void layout(boolean proportionalSpacing) throws IM3Exception {
 
         //createStaffConnectors(); // FIXME: 29/11/17
         // add the connectors to the canvas

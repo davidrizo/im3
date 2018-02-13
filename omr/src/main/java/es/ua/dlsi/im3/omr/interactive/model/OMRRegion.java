@@ -126,4 +126,8 @@ public class OMRRegion {
         }
         return pojoRegion;
     }
+
+    public String toString() {
+        return "[(" + fromX.get() + ", " + fromY.get() + "), w=" + width.get() + ", h= " + height.get() + "]";
+    }
 }

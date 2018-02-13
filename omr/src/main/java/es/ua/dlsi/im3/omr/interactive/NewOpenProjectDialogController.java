@@ -1,11 +1,15 @@
 package es.ua.dlsi.im3.omr.interactive;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.gui.javafx.dialogs.FXMLDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.RadioButton;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -19,13 +23,19 @@ public class NewOpenProjectDialogController extends FXMLDialog {
     Label labelProjectFolder;
     @FXML
     Label labelTrainingSetFile;
+    @FXML
+    RadioButton rbNotationTypeMensural;
+    @FXML
+    RadioButton rbNotationTypeModern;
+    @FXML
+    HBox hboxNotationType;
 
     File projectFolder;
 
     File trainingFile;
     private Preferences prefs;
 
-    public NewOpenProjectDialogController(Stage stage, String title) {
+    public NewOpenProjectDialogController(Stage stage, String title, boolean newProject) {
         super(stage, title, "/fxml/newopenproject.fxml");
         labelProjectFolder.setText("");
         labelTrainingSetFile.setText("");
@@ -51,6 +61,8 @@ public class NewOpenProjectDialogController extends FXMLDialog {
         this.btnOKNode.disableProperty().bind(labelTrainingSetFile.textProperty().isEmpty().or(
                 labelProjectFolder.textProperty().isEmpty()
         ));
+
+        hboxNotationType.setDisable(!newProject);
     }
 
     @FXML
@@ -79,5 +91,15 @@ public class NewOpenProjectDialogController extends FXMLDialog {
 
     public File getTrainingFile() {
         return trainingFile;
+    }
+
+    public NotationType getNotationType() throws IM3Exception {
+        if (rbNotationTypeMensural.isSelected()) {
+            return NotationType.eMensural;
+        } else if (rbNotationTypeModern.isSelected()) {
+            return NotationType.eModern;
+        } else {
+            throw new IM3Exception("Notation type not selected");
+        }
     }
 }

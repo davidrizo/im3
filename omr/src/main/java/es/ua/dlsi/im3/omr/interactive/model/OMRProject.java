@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
@@ -34,6 +35,7 @@ public class OMRProject {
     File imagesFolder;
     File xmlFile;
 
+    NotationType notationType;
 
     ScoreSong scoreSong;
     //OMRMainController omrController;
@@ -41,7 +43,7 @@ public class OMRProject {
     private ImitationLayout imitationLayout;
     private ScoreSongView scoreSongView;
     IGraphicalToScoreSymbolFactory graphicalToScoreSymbolFactory;
-    IPageSegmenter pageSegmenter;
+    //IPageSegmenter pageSegmenter;
 
     /**
      * Used by GUI for binding
@@ -78,14 +80,15 @@ public class OMRProject {
         readTrainingFile(this.trainingFile);
 
         // FIXME: 11/10/17 Esto debe ser interactivo
+        //TODO el tipo de notationType debe ser como el del proyecto
         scoreSong = new ScoreSong(new BinaryDurationEvaluator(new Time(2)));
         createScoreView();*/
     }
 
     private void createScoreView() throws IM3Exception {
         //TODO Fonts
-        imitationLayout = new ImitationLayout(scoreSong, LayoutFonts.capitan);
-        scoreSongView = new ScoreSongView(scoreSong, imitationLayout);
+       // imitationLayout = new ImitationLayout(scoreSong, LayoutFonts.capitan);
+        // scoreSongView = new ScoreSongView(scoreSong, imitationLayout);
     }
 
     public OMRPage addPage(File file) throws IM3Exception {
@@ -163,6 +166,7 @@ public class OMRProject {
         return imitationLayout;
     }
 
+    // TODO No lo estamos usando
     private void readTrainingFile(File trainingFile) throws IM3Exception {
         // TODO: 7/10/17 Factory con tipos de símbolos
         BimodalDatasetReader<MensuralSymbols> reader = new BimodalDatasetReader<>();
@@ -199,6 +203,7 @@ public class OMRProject {
 
     public Project createPOJO() {
         Project pojoProject = new Project();
+        pojoProject.setNotationType(notationType);
         for (OMRInstrument instrument: instrumentsProperty()) {
             Instrument pojoInstrument = new Instrument(instrument.getName());
             pojoProject.getInstruments().add(pojoInstrument);
@@ -209,5 +214,13 @@ public class OMRProject {
             pojoProject.getPages().add(pojoPage);
         }
         return pojoProject;
+    }
+
+    public NotationType getNotationType() {
+        return notationType;
+    }
+
+    public void setNotationType(NotationType notationType) {
+        this.notationType = notationType;
     }
 }

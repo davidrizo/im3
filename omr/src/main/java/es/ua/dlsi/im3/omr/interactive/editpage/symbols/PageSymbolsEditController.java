@@ -46,7 +46,7 @@ public class PageSymbolsEditController extends PageBasedController<SymbolsPageVi
                 boundingBoxMode = newValue == rbDrawBoundingBoxes;
             }
         });
-        ShowMessage.show(OMRApp.getMainStage(), "TO-DO Dibujar símbolos con bounding box o calcando");
+        ShowMessage.show(OMRApp.getMainStage(), "TO-DO Dibujar símbolos con bounding box o calcandos");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.interactive.editpage.music;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
@@ -50,10 +51,14 @@ public class TranscriptionStaffView extends VBox {
     private ImageView extractRegion(OMRRegion region) {
         ImageView imageView = new ImageView();
         imageView.setPreserveRatio(true);
-        BufferedImage bufferedImage = page.getBufferedImage().getSubimage(
-                (int)region.getFromX(), (int)region.getFromY(),
-                (int)region.getWidth(), (int)region.getHeight());
-        imageView.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+        try {
+            BufferedImage bufferedImage = page.getBufferedImage().getSubimage(
+                    (int) region.getFromX(), (int) region.getFromY(),
+                    (int) region.getWidth(), (int) region.getHeight());
+            imageView.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+        } catch (Throwable t) {
+            throw new IM3RuntimeException("Cannot extract image from region " + region.toString() + ": " + t.getMessage());
+        }
         return imageView;
     }
 

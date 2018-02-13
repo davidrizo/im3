@@ -37,7 +37,7 @@ public abstract class RegionBaseView<PageViewType extends RegionBasedPageView> e
 
         label = new Text();
         label.setFont(Font.font("Arial", FontWeight.BOLD, 10));
-        label.textProperty().bind(omrRegion.regionTypeProperty().asString());
+        label.textProperty().bind(omrRegion.regionTypeProperty().asString().concat(" "+ omrRegion.toString()));
         label.fillProperty().bind(rectangle.strokeProperty());
         label.xProperty().bind(rectangle.xProperty().add(20)); // don't overlap with rectangle
         label.yProperty().bind(rectangle.yProperty().add(20)); // don't overlap with rectangle
@@ -45,6 +45,7 @@ public abstract class RegionBaseView<PageViewType extends RegionBasedPageView> e
         label.setOnContextMenuRequested(event -> {
             onLabelContextMenuRequested(event);
         });
+
 
         rectangle.setFill(RegionTypeColors.getInstance().getColor(omrRegion.getRegionType(), FILL_OPACITY));
         rectangle.setStroke(RegionTypeColors.getInstance().getColor(omrRegion.getRegionType(), 1));

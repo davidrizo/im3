@@ -78,7 +78,7 @@ public abstract class PageBasedController<PageViewType extends Node> implements 
         boolean found = false;
         for (Node node : vboxPages.getChildren()) {
             if (node == selectedPageView) {
-                JavaFXUtils.ensureVisible(scrollPane, node);
+                JavaFXUtils.ensureVisibleY(scrollPane, node);
                 found = true;
                 break;
             }

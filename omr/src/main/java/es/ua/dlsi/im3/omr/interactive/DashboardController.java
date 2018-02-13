@@ -139,11 +139,17 @@ public class DashboardController implements Initializable {
 
     @FXML
     public void handleNewProject(ActionEvent actionEvent) {
-        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "New project");
+        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "New project", true);
         if (dlg.show()) {
             //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
             try {
-                OMRModel.getInstance().createProject(dlg.getProjectFolder(), dlg.getTrainingFile());
+                if (dlg.getProjectFolder() == null) {
+                    throw new IM3Exception("Must select a project folder");
+                }
+                if (dlg.getTrainingFile() == null) {
+                    throw new IM3Exception("Must select a training file");
+                }
+                OMRModel.getInstance().createProject(dlg.getProjectFolder(), dlg.getTrainingFile(), dlg.getNotationType());
                 title.setValue(OMRModel.getInstance().getCurrentProject().getName());
                 openPagesView();
             } catch (Throwable e) {
@@ -156,7 +162,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     public void handleOpenProject(ActionEvent actionEvent) {
-        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "Open project");
+        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "Open project", false);
         if (dlg.show()) {
             //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
             try {
