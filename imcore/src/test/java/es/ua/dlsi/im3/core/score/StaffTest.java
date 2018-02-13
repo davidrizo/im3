@@ -3,7 +3,7 @@ package es.ua.dlsi.im3.core.score;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.io.ImportException;
-import es.ua.dlsi.im3.core.score.clefs.ClefG2;
+import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
@@ -33,6 +33,25 @@ public class StaffTest {
         test("C5 in ClefG2", pentagram, g2, PositionsInStaff.SPACE_3, DiatonicPitch.C, 5);
         test("E4 in ClefG2", pentagram, g2, PositionsInStaff.LINE_1, DiatonicPitch.E, 4);
         test("F5 in ClefG2", pentagram, g2, PositionsInStaff.LINE_5, DiatonicPitch.F, 5);
+
+        test("ClefG2OctAlta, G", pentagram, new ClefG2OttavaAlta(), PositionsInStaff.LINE_2, DiatonicPitch.G, 5);
+        test("ClefG2OctBassa, G", pentagram, new ClefG2OttavaBassa(), PositionsInStaff.LINE_2, DiatonicPitch.G, 3);
+        test("ClefG2QuindAlta, G", pentagram, new ClefG2QuindicesimaAlta(), PositionsInStaff.LINE_2, DiatonicPitch.G, 6);
+        test("ClefG2QuindBassa, G", pentagram, new ClefG2QuindicesimaBassa(), PositionsInStaff.LINE_2, DiatonicPitch.G, 2);
+        test("ClefF2, F", pentagram, new ClefF2(), PositionsInStaff.LINE_2, DiatonicPitch.F, 3);
+        test("ClefF3, F", pentagram, new ClefF3(), PositionsInStaff.LINE_3, DiatonicPitch.F, 3);
+        test("ClefF4, F", pentagram, new ClefF4(), PositionsInStaff.LINE_4, DiatonicPitch.F, 3);
+        test("ClefF4OctAlta, F", pentagram, new ClefF4OttavaAlta(), PositionsInStaff.LINE_4, DiatonicPitch.F, 4);
+        test("ClefF4OctBassa, F", pentagram, new ClefF4OttavaBassa(), PositionsInStaff.LINE_4, DiatonicPitch.F, 2);
+        test("ClefF4QuindBassa, F", pentagram, new ClefF4QuindicesimaBassa(), PositionsInStaff.LINE_4, DiatonicPitch.F, 1);
+        test("ClefF4QuindAlta, F", pentagram, new ClefF4QuindicesimaAlta(), PositionsInStaff.LINE_4, DiatonicPitch.F, 5);
+        test("ClefF5, F", pentagram, new ClefF5(), PositionsInStaff.LINE_5, DiatonicPitch.F, 3);
+        test("ClefC1, C", pentagram, new ClefC1(), PositionsInStaff.LINE_1, DiatonicPitch.C, 4);
+        test("ClefC2, C", pentagram, new ClefC2(), PositionsInStaff.LINE_2, DiatonicPitch.C, 4);
+        test("ClefC3, C", pentagram, new ClefC3(), PositionsInStaff.LINE_3, DiatonicPitch.C, 4);
+        test("ClefC4, C", pentagram, new ClefC4(), PositionsInStaff.LINE_4, DiatonicPitch.C, 4);
+        test("ClefC5, C", pentagram, new ClefC5(), PositionsInStaff.LINE_5, DiatonicPitch.C, 4);
+
     }
 
     @Test

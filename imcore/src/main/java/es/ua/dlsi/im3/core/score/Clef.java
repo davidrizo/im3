@@ -25,7 +25,9 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
  * @author drizo
  */
 public abstract class Clef implements INotationTypeDependant, ITimedElementInStaff {
-	DiatonicPitch note;
+    private final PositionInStaff[] flatPositions;
+    private final PositionInStaff[] sharpPositions;
+    DiatonicPitch note;
     /**
      * Bottom line is 1, in a pentagram, top line is 5
      */
@@ -36,8 +38,6 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 	 * e.g 4 for G2, 3 for F4
 	 */
 	int noteOctave;
-	private final int sharpKeySignatureStartingOctave;
-	private final int flatKeySignatureStartingOctave;
 	/**
 	 * 1 for ottava alta, -1 for ottava bassa
 	 */
@@ -52,22 +52,33 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
      */
     private int bottomLineOctave;
 
-	public Clef(DiatonicPitch note, int line, int noteOctave, int sharpKeySignatureStartingOctave,
-                int flatKeySignatureStartingOctave) {
-		this (note, line, noteOctave, sharpKeySignatureStartingOctave, flatKeySignatureStartingOctave, 0);
+	public Clef(DiatonicPitch note, int line, int noteOctave, PositionInStaff [] sharpPositions, PositionInStaff [] flatPositions
+                ) {
+        //20180207 this (note, line, noteOctave, sharpKeySignatureStartingOctave, flatKeySignatureStartingOctave, 0);
+        this (note, line, noteOctave, 0, sharpPositions, flatPositions);
 	}
 
-	public Clef(DiatonicPitch note, int line, int noteOctave, int sharpKeySignatureStartingOctave,
-                int flatKeySignatureStartingOctave, int octaveChange) {
+    /**
+     *
+     * @param note
+     * @param line
+     * @param noteOctave
+     * @param octaveChange
+     * @param sharpPositions For key signatures
+     * @param flatPositions For key signatures
+     */
+	public Clef(DiatonicPitch note, int line, int noteOctave,
+                int octaveChange, PositionInStaff [] sharpPositions, PositionInStaff [] flatPositions
+                ) {
 		this.time = new Time();
 		this.octaveChange = octaveChange;
 		this.note = note;
 		this.line = line;
 		this.noteOctave = noteOctave; // clef.getOctaveTransposition();
-		this.sharpKeySignatureStartingOctave = sharpKeySignatureStartingOctave;
-		this.flatKeySignatureStartingOctave = flatKeySignatureStartingOctave;
+        this.sharpPositions = sharpPositions;
+        this.flatPositions = flatPositions;
 
-		// 	private int computeBottomLineNoteOrder(Clef clef) {
+        // 	private int computeBottomLineNoteOrder(Clef clef) {
 
         // compute staff bottom line diatonic pitch
         int noteOrder = note.getOrder() + noteOctave * 7;
@@ -125,16 +136,6 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 		return "Clef{" + "note=" + note + ", line=" + line + ", noteOctave=" + noteOctave + '}';
 	}
 
-	public int getStartingOctave(Accidentals accidental) {
-		if (accidental == Accidentals.SHARP) {
-			return sharpKeySignatureStartingOctave;
-		} else if (accidental == Accidentals.FLAT) {
-			return flatKeySignatureStartingOctave;
-		} else {
-			throw new IM3RuntimeException("Invalid accidental here: " + accidental);
-		}
-	}
-
 	public int getOctaveChange() {
 		return octaveChange;
 	}
@@ -173,5 +174,13 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 
     public int getBottomLineOctave() {
         return bottomLineOctave;
+    }
+
+    public PositionInStaff[] getFlatPositions() {
+        return flatPositions;
+    }
+
+    public PositionInStaff[] getSharpPositions() {
+        return sharpPositions;
     }
 }

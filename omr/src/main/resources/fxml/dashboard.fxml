@@ -70,15 +70,30 @@
     </MenuBar>
       <BorderPane fx:id="borderPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <left>
-            <ToolBar fx:id="toolbar" orientation="VERTICAL" prefHeight="371.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-               <items>
-                  <ToggleButton fx:id="tbPages" mnemonicParsing="false" onAction="#handleOpenPages" text="Pages">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="tgDashboardButtons" />
-                     </toggleGroup>
-                  </ToggleButton>
-               </items>
-            </ToolBar>
+            <VBox spacing="20.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ToolBar fx:id="toolbarPages" orientation="VERTICAL" prefHeight="371.0" prefWidth="100.0">
+                     <items>
+                        <ToggleButton fx:id="tbPages" mnemonicParsing="false" onAction="#handleOpenPages" text="Pages">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="tgDashboardButtons" />
+                           </toggleGroup>
+                        </ToggleButton>
+                     </items>
+                  </ToolBar>
+                  <ToolBar fx:id="toolbarPageEditStep" layoutX="10.0" layoutY="10.0" orientation="VERTICAL" prefHeight="371.0" prefWidth="100.0">
+                     <items>
+                        <ToggleButton fx:id="tgRegions" mnemonicParsing="false" text="Regions">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="tgPageStep" />
+                           </toggleGroup>
+                        </ToggleButton>
+                        <ToggleButton fx:id="tgSymbols" mnemonicParsing="false" text="Symbols" toggleGroup="$tgPageStep" />
+                        <ToggleButton fx:id="tgMusic" mnemonicParsing="false" text="Music" toggleGroup="$tgPageStep" />
+                     </items>
+                  </ToolBar>
+               </children>
+            </VBox>
          </left>
          <center>
             <AnchorPane fx:id="centerPane" BorderPane.alignment="CENTER" />

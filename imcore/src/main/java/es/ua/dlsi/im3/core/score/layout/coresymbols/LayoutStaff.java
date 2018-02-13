@@ -217,8 +217,10 @@ public class LayoutStaff extends NotationSymbol {
         }
     }
 
-    public void createNoteAccidentals(Time from, Time to) throws IM3Exception {
-        HashMap<AtomPitch, Accidentals> requiredAccidentalsMap = staff.createNoteAccidentalsToShow(from, to);
+    //20180208 This cannot be computed fromTime - toTime to take into account previous context. public void createNoteAccidentals(Time from, Time to) throws IM3Exception {
+    public void createNoteAccidentals() throws IM3Exception {
+        //20180208 HashMap<AtomPitch, Accidentals> requiredAccidentalsMap = staff.createNoteAccidentalsToShow(from, to);
+        HashMap<AtomPitch, Accidentals> requiredAccidentalsMap = staff.createNoteAccidentalsToShow();
         for (LayoutCoreSymbol symbol : this.layoutSymbolsInStaff) {
             if (symbol instanceof LayoutCoreSingleFigureAtom) {
                 LayoutCoreSingleFigureAtom layoutSingleFigureAtom = (LayoutCoreSingleFigureAtom) symbol;
@@ -237,9 +239,9 @@ public class LayoutStaff extends NotationSymbol {
             }
         }
     }
-    public void createNoteAccidentals() throws IM3Exception {
+    /*//20180208 This cannot be computed fromTime - toTime to take into account previous context.  public void createNoteAccidentals() throws IM3Exception {
         createNoteAccidentals(Time.TIME_ZERO, Time.TIME_MAX);
-    }
+    }*/
 
     public TreeSet<LayoutCoreSymbolInStaff> getLayoutSymbolsInStaff() {
         return layoutSymbolsInStaff;

@@ -54,7 +54,7 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
 
 
     /**
-     * The space between the x of the symbol and its left end
+     * The space between the x of the symbol and its left end and its right end
      * @return
      */
     public BoundingBox computeBoundingBox() throws IM3Exception {

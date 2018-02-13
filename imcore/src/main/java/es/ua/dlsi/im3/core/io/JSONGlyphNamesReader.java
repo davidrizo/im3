@@ -92,7 +92,7 @@ public class JSONGlyphNamesReader {
 	 *            e.g. U+E06D
 	 * @return \uE06D
 	 */
-	private static final String getJavaUnicodeString(String input) {
+	public static final String getJavaUnicodeString(String input) {
 		/*
 		 * StringBuilder sb = new StringBuilder(); sb.append(UNICODE_PREFIX);
 		 * sb.append(input.substring(2)); return sb.toString();
@@ -135,6 +135,8 @@ public class JSONGlyphNamesReader {
                     //TODO '{"octaveLineThickness":0.16,"dashedBarlineGapLength":0.25,"beamSpacing":0.25,"thickBarlineThickness":0.5,"beamThickness":0.5,"bracketThickness":0.5,"repeatBarlineDotSeparation":0.16,"repeatEndingLineThickness":0.16,"thinBarlineThickness":0.16,"stemThickness":0.12,"staffLineThickness":0.13,"tieMidpointThickness":0.22,"textEnclosureThickness":0.16,"tupletBracketThickness":0.16,"legerLineThickness":0.16,"dashedBarlineDashLength":0.5,"subBracketThickness":0.16,"arrowShaftThickness":0.16,"barlineSeparation":0.4,"slurEndpointThickness":0.1,"pedalLineThickness":0.16,"slurMidpointThickness":0.22,"hairpinThickness":0.16,"dashedBarlineThickness":0.16,"lyricLineThickness":0.16,"legerLineExtension":0.4,"tieEndpointThickness":0.1}'
                     String unicode = (String) cp;
                     result.put(unicode, entry.getKey().toString());
+                } else {
+                    Logger.getLogger(JSONGlyphNamesReader.class.getName()).warning("Cannot find an unicode for JSON object " + jsono.toJSONString());
                 }
             }
 		}

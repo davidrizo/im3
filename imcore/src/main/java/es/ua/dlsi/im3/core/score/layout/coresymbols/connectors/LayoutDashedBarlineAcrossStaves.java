@@ -21,7 +21,7 @@ public class LayoutDashedBarlineAcrossStaves extends LayoutConnector {
             throw new IM3RuntimeException("To is null");
         }
 
-        if (from.getTopEnd().getAbsoluteY() > to.getBottomLine().getPosition().getAbsoluteY()) {
+        if (from.getTopEnd().getAbsoluteY() < to.getBottomLine().getPosition().getAbsoluteY()) {
             fromPoint = new Coordinate(from.getPosition().getX(),
                     from.getBottomEnd().getY());
             toPoint = new Coordinate(from.getPosition().getX(),

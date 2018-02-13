@@ -1,0 +1,9 @@
+Using font  Bravura
+RISM ID:  000102277
+Incipit:  1.2.1
+Author:  Agricola, Johann Friedrich
+Title:  Il Tempio d'amore
+@clef:  C-1
+@keysig:  xFCG
+@timesig:  c/
+@data:  8-'xG''xCC4-xC'xG/4A-A8B''xC/'BB

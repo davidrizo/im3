@@ -4,12 +4,13 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
+import es.ua.dlsi.im3.omr.model.Constants;
+import es.ua.dlsi.im3.omr.model.pojo.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ import java.util.List;
 
 public class MEI2GraphicSymbols {
     static final PositionInStaff CENTER_LINE = PositionInStaff.fromLine(3);
-    private static final char SEPARATOR = '\t';
     private static final String START = "start";
     private static final String END = "end";
     private static final String ABOVE = "above";
@@ -44,7 +44,7 @@ public class MEI2GraphicSymbols {
             List<GraphicalToken> graphicalTokens = convert(scoreSong).getTokens();
             for (int i = 0; i< graphicalTokens.size(); i++) {
                 if (i>0) {
-                    bw.write(SEPARATOR);
+                    bw.write(Constants.SEMANTIC_TOKEN_SEPARATOR);
                 }
                 bw.write(graphicalTokens.get(i).toString());
             }

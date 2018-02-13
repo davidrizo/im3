@@ -38,6 +38,7 @@ public class LayoutConstants {
      */
     public static final double STEM_SPACES = 3.5;
 
+    // TODO: 11/2/18 See Behind Bars, Gould for insets
     /**
      * The margin at left and right (the value is used for both sides)
      */

@@ -1,0 +1,8 @@
+@start:000127897-1_1_1
+@clef:G-2
+@keysig:xFCGDA
+@key:
+@timesig:2/4
+@data:!''4B^'B!f/''B^'B8.-''6G/{8G6-'B}{8B6-''G}/i/
+@end:000127897-1_1_1
+

@@ -39,7 +39,7 @@ public class LayoutMain {
 
         // TODO: 16/10/17 Tamaño
         PageLayout layout = new PageLayout(scoreSong, scoreSong.getStaves(), true, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
-        layout.layout();
+        layout.layout(true);
         PDFExporter pdfExporter = new PDFExporter();
         pdfExporter.exportLayout(new File(args[1]), layout);
         System.out.println("Done!");

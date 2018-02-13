@@ -1,0 +1,8 @@
+@start:000133020-1_1_1
+@clef:G-2
+@keysig:xFC
+@key:
+@timesig:
+@data:'1D^,A^F'2A^F^D''D^'A^F''E^D^'A''4C'G''1D^'A^F//{6BABG}{''C'B''C'A}{''DCEC}{FEDC}/'1B^G^D''2D^'A^F
+@end:000133020-1_1_1
+

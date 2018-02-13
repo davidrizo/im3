@@ -1,0 +1,9 @@
+Using font  Bravura
+RISM ID:  000115025
+Incipit:  1.1.2
+Author:  Paisiello, Giovanni
+Title:  Festa teatrale in musica. Excerpts
+@clef:  C-1
+@keysig:  bBE
+@timesig:  2/4
+@data:  =16/'4B8-{''6.F3D}/q6D{8C'B}-{6F''D}/8C4D({6EC}'A)/{8.B''3CD}8C-/

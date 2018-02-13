@@ -1,0 +1,8 @@
+@start:000107800-1_1_1
+@clef:G-2
+@keysig:xFCG
+@key:
+@timesig:c/
+@data:'4A/''E2E4({8FGA})/4F2E'4A/4({8B''CD})({DEF})4F({8ED})/
+@end:000107800-1_1_1
+

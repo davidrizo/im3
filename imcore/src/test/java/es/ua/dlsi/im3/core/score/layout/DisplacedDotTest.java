@@ -27,7 +27,7 @@ public class DisplacedDotTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("displaceddot.svg");
@@ -54,6 +54,7 @@ public class DisplacedDotTest {
 
         //TODO Comprobar posiciones relativas entre barlines
     }
+
 
 
 }

@@ -24,7 +24,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("simple.svg");
@@ -36,7 +36,7 @@ public class LayoutTest {
     }
 
     private void systemBreaks(ScoreSong scoreSong, ScoreLayout layout, String name) throws IM3Exception {
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile(name + ".svg");
@@ -72,7 +72,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("two_staves_homophonic_vertical_aligned.svg");
@@ -91,7 +91,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
                 new CoordinateComponent(1280), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("two_staves_non_homophonic.svg");
@@ -111,7 +111,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("nodiviertanllantoninyo_mensural_only.svg");
@@ -132,7 +132,7 @@ public class LayoutTest {
 
         PageLayout layout = new PageLayout(song, song.getStaves(), true, LayoutFonts.capitan,
                 new CoordinateComponent(3000), new CoordinateComponent(1700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("patriarca1_pages.svg");
@@ -144,7 +144,7 @@ public class LayoutTest {
 
         HorizontalLayout hlayout = new HorizontalLayout(song, LayoutFonts.capitan,
                 new CoordinateComponent(3000), new CoordinateComponent(1700));
-        hlayout.layout();
+        hlayout.layout(true);
 
         SVGExporter svgExporter2 = new SVGExporter();
         File svgFile2 = TestFileUtils.createTempFile("patriarca1_horizontal.svg");
@@ -163,7 +163,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("simple_tie.svg");
@@ -182,7 +182,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("simple_slur.svg");
@@ -201,7 +201,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("simple_beam.svg");
@@ -223,7 +223,7 @@ public class LayoutTest {
         HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan,
                 new Coordinate(new CoordinateComponent(0), new CoordinateComponent(0)),
                 new Coordinate(new CoordinateComponent(960), new CoordinateComponent(700)));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("nodiviertanllantoninyo.svg");

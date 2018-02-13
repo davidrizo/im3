@@ -1,0 +1,9 @@
+Using font  Gootville
+RISM ID:  000107800
+Incipit:  1.1.1
+Author:  Gregor, Christian Friedrich
+Title:  6 Sacred songs
+@clef:  G-2
+@keysig:  xFCG
+@timesig:  c/
+@data:  '4A/''E2E4({8FGA})/4F2E'4A/4({8B''CD})({DEF})4F({8ED})/

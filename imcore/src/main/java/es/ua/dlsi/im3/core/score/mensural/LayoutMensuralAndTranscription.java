@@ -14,6 +14,7 @@ import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.core.score.io.lilypond.LilypondExporter;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.PageLayout;
@@ -74,13 +75,18 @@ public class LayoutMensuralAndTranscription {
         exporter.addResetEWSCWordBuilderMessage(); // TODO: 29/10/17 Generalizar esto
         exporter.exportSong(new File(midiFile), played);
 
+        File outMEIFile = new File("/tmp/moderno.mei"); //TODO Quitar
+        MEISongExporter meiSongExporter = new MEISongExporter();
+        meiSongExporter.exportSong(outMEIFile, modern);
+
+
         mensuralToModern.merge(mensural, modern);
 
         // TODO: 16/10/17 Poder cambiar esto
         HashMap<Staff, LayoutFonts> fontsHashMap = new HashMap<>();
         for (Staff staff: mensural.getStaves()) {
             if (staff.getNotationType() == NotationType.eMensural) {
-                fontsHashMap.put(staff, LayoutFonts.capitan);
+                fontsHashMap.put(staff, LayoutFonts.patriarca);
             } else if (staff.getNotationType() == NotationType.eModern) {
                 fontsHashMap.put(staff, LayoutFonts.bravura);
             } else {
@@ -91,8 +97,8 @@ public class LayoutMensuralAndTranscription {
         mensural.debugPutIDsAsLyrics(); // FIXME: 17/10/17 Quitar
         // TODO: 16/10/17 Tamaño
         //PageLayout layout = new PageLayout(mensural, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
-        HorizontalLayout hlayout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(30000), new CoordinateComponent(2800));
-        hlayout.layout();
+        HorizontalLayout hlayout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(40000), new CoordinateComponent(2800));
+        hlayout.layout(true);
         //PDFExporter pdfExporter = new PDFExporter();
         //pdfExporter.exportLayout(new File(args[1]), layout);
         SVGExporter svgExporter = new SVGExporter();
@@ -107,7 +113,7 @@ public class LayoutMensuralAndTranscription {
             String partSVGNamePrefix = svgFileName + "_" + FileUtils.leaveValidCaracters(part.getName());
             PageLayout pageLayout = new PageLayout(mensural, part.getStaves(), true, fontsHashMap,
                     new CoordinateComponent(30000), new CoordinateComponent(4800));
-            pageLayout.layout();
+            pageLayout.layout(false);
             int pageNumber = 1;
             for (Canvas canvas: pageLayout.getCanvases()) {
                 SVGExporter svgExporterPage = new SVGExporter();
@@ -117,8 +123,13 @@ public class LayoutMensuralAndTranscription {
                 svgExporterPage.exportLayout(pageFile, canvas, pageLayout);
                 pageNumber++;
             }
-
-
         }
+
+        //TODO Not working yet with two concert pitches
+        /*
+        File outMEIFile = new File(svgHorizontalFile.getParent(), svgFileName + "_mensural_modern.mei");
+        MEISongExporter meiSongExporter = new MEISongExporter();
+        meiSongExporter.exportSong(outMEIFile, mensural);
+        */
     }
 }

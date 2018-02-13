@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * It returns fixed values based on a test page
+ * It returns fixed values based on a test page 12608.JPG
  */
 public class DummyPageSegmenter implements IPageSegmenter {
 

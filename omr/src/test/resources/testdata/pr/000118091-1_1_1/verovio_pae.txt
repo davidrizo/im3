@@ -1,0 +1,8 @@
+@start:000118091-1_1_1
+@clef:G-2
+@keysig:
+@key:
+@timesig:c
+@data:{''8.C'3BA}{8GA}{8.A3GA}{8G''6.C3C}/{8C'6B''C}({DC'B})({AGF})4F{8E''6.C3C}/
+@end:000118091-1_1_1
+

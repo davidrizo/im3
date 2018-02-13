@@ -11,7 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DisplacementMap;
 
-// TODO: 17/9/17 Ahora sólo usamos el HorizontalLayout
+// TODO: 17/9/17 Ahora sólo usamos el HorizontalLayout y siempre espaciando proporcionalmente
 public class ScoreSongView {
     private Group mainPanel;
     private ScoreLayout layout;
@@ -23,7 +23,7 @@ public class ScoreSongView {
     }
 
     private void init(ScoreLayout layout) throws IM3Exception {
-        layout.layout();
+        layout.layout(true);
         mainPanel = new Group();
         /*mainPanel = new Pane();
         mainPanel.setPrefWidth(canvas.getWidth());

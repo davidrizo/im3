@@ -30,7 +30,7 @@ public class SMuFLMap implements IFontMap {
     }
 
     @Override
-    public String getUnicode(Figures figure) throws IM3Exception {
+    public String getUnicode(Figures figure, boolean stemUp) throws IM3Exception {
         String result = UNICODES.get(figure);
         if (result == null) {
             throw new IM3Exception("Cannot find an unicode for " + figure);
@@ -40,8 +40,8 @@ public class SMuFLMap implements IFontMap {
     }
 
     @Override
-    public String getUnicodeWihoutFlag(Figures figures) throws IM3Exception {
-        return getUnicode(figures); //TODO En mensural no será igual
+    public String getUnicodeWihoutFlag(Figures figures, boolean stemUp) throws IM3Exception {
+        return getUnicode(figures, stemUp); //TODO En mensural no será igual
     }
 
     @Override
@@ -58,5 +58,10 @@ public class SMuFLMap implements IFontMap {
     public GraphicsElement createBeam(String ID, Coordinate fromPosition, Coordinate toPosition) {
         Line line = new Line(ID, fromPosition, toPosition);
         return line;
+    }
+
+    @Override
+    public String getCustosCodePoint() {
+        return "mensuralCustosUp";
     }
 }

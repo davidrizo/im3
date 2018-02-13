@@ -51,7 +51,11 @@ public class MensuralToModern {
             }
 
             Staff mensuralStaff = mensuralPart.getStaves().iterator().next();
+            if (mensuralStaff.getName() == null) {
+                throw new IM3Exception("Must give name to staff " + mensuralStaff.getNumberIdentifier());
+            }
             Pentagram modernPentagram = new Pentagram(modernSong, mensuralStaff.getHierarchicalOrder(), mensuralStaff.getNumberIdentifier());
+            modernPentagram.setName(mensuralStaff.getName());
             modernPentagram.setNotationType(NotationType.eModern);
             modernPart.addStaff(modernPentagram);
             modernPentagram.addPart(modernPart);
@@ -93,13 +97,14 @@ public class MensuralToModern {
 
         for (ITimedElementInStaff symbol: mensuralStaff.getCoreSymbolsOrdered()) {
             if (symbol instanceof Clef) {
-                if (symbol.getTime().isZero()) {
+                /*if (symbol.getTime().isZero()) {
                     modernClef.setNotationType(NotationType.eModern);
                     modernClef.setTime(Time.TIME_ZERO);
                     modernStaff.addClef(modernClef);
                 } else {
-                    modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
-                }
+                    modernStaff.addClef(convert((Clef) symbol));
+                }*/
+                modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
             } else if (symbol instanceof TimeSignature) {
                 activeTimeSignature = convert((TimeSignature) symbol);
                 pendingMensureDuration = activeTimeSignature.getDuration();
@@ -286,7 +291,7 @@ public class MensuralToModern {
 
             ScorePart song1Part = song1.getPartWithName(staff.getParts().get(0).getName());
             if (song1Part == null) {
-                throw new IM3Exception("Cannot find a part named '" + staff.getName() + "' in target song");
+                throw new IM3Exception("Cannot find a part named '" + staff.getName() + "' in target song, check all parts have a name");
             }
 
             staff.setHierarchicalOrder(staff.getHierarchicalOrder() + ".1"); //TODO

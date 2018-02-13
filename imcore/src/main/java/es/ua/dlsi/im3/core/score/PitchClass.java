@@ -91,7 +91,6 @@ public class PitchClass implements Comparable<PitchClass> {
 	 */
 	private void computeSemitonesFromC() {
 		this.semitonesFromC = noteName.getSemitonesFromC() + accidental.getAlteration();
-		
 	}
 	@Override
 	public int compareTo(PitchClass o) {

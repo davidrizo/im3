@@ -2,6 +2,8 @@ package es.ua.dlsi.im3.core.score.layout.svg;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import java.util.Objects;
+
 public class Glyph {
     /**
      * Optional
@@ -18,13 +20,23 @@ public class Glyph {
      * d parameter
      */
     String path;
+    /**
+     * It includes the font name to avoid confusions of same unicodes in SVG with several fonts
+     */
     private String escapedUnicode;
 
+    private String fontName;
 
-    public Glyph(String unicode, String path) {
+
+    public Glyph(String fontName, String unicode, String path) {
+        this.fontName = fontName;
         this.unicode = unicode;
-        this.escapedUnicode = StringEscapeUtils.escapeJson(unicode);
+        this.escapedUnicode = StringEscapeUtils.escapeJson(fontName + unicode);
         this.path = path;
+    }
+
+    public String getFontName() {
+        return fontName;
     }
 
     public String getName() {
@@ -63,18 +75,17 @@ public class Glyph {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Glyph glyph = (Glyph) o;
-
-        return unicode != null ? unicode.equals(glyph.unicode) : glyph.unicode == null;
+        return Objects.equals(escapedUnicode, glyph.escapedUnicode);
     }
 
     @Override
     public int hashCode() {
-        return unicode != null ? unicode.hashCode() : 0;
+
+        return Objects.hash(escapedUnicode);
     }
 
-    public String getEscapedUnicode() {
+    public String getEscapedUnicodeFontUnique() {
         return escapedUnicode;
     }
 }

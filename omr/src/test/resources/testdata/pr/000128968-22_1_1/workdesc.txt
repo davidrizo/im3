@@ -1,0 +1,9 @@
+Using font  Leipzig
+RISM ID:  000128968
+Incipit:  22.1.1
+Author:  Anonymus
+Title:  28 Minuets
+@clef:  G-2
+@keysig:  bBEA
+@timesig:  3/4
+@data:  '2.B^E/B^D/''4.E{6FG}{8.F6E}/({8DC'B})2B/{''6CEC'A}{8FFFF}/

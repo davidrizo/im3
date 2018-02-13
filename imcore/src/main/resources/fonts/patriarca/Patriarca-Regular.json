@@ -1,0 +1,105 @@
+{
+    "augmentationDot" : {
+	"codepoint": "U+E1FC"
+    },    
+    "fermataAbove": {
+        "codepoint": "U+E4C0"
+    },        
+    "fermataBelow": {
+        "codepoint": "U+E4C1"
+    },                
+    "gClef": {
+        "codepoint": "U+E050"
+    }
+    "cClef": {
+        "codepoint": "U+E060"
+    },
+    "fClef": {
+        "codepoint": "U+E062"
+    },
+    "timeSigCommon": {
+        "codepoint": "U+E08A"
+    },        
+    "timeSigCutTime": {
+        "codepoint": "U+E08B"
+    },    
+    "accidentalFlat" : {
+	"codepoint": "U+E260"
+    },
+    "accidentalNatural" : {
+	"codepoint": "U+E261"
+    },
+    "accidentalSharp" : {
+	"codepoint": "U+E262"
+    },
+    "mensuralWhiteMaxima" : {
+	"codepoint": "U+E95C"
+    },
+    "mensuralWhiteLonga" : {
+	"codepoint": "U+E95D"
+    },
+    "mensuralWhiteBrevis" : {
+	"codepoint": "U+E95E"
+    },
+    "mensuralBlackSemibrevisVoid" : {
+	"codepoint": "U+E957"
+    },
+    "mensuralWhiteMinima" : {
+	"codepoint": "U+E95F"
+    },
+    "mensuralWhiteMinimaDown" : {
+	"codepoint": "U+F95F"
+    },
+    "mensuralWhiteSemiminima" : {
+	"codepoint": "U+E960"
+    },
+    "mensuralWhiteSemiminimaDown" : {
+	"codepoint": "U+F960"
+    },
+    "mensuralWhiteFusa" : {
+	"codepoint": "U+E961"
+    },
+    "mensuralWhiteFusaDown" : {
+	"codepoint": "U+F961"
+    },
+    "mensuralWhiteSemifusa" : {
+	"codepoint": "U+F962"
+    },
+    "mensuralWhiteSemifusaDown" : {
+	"codepoint": "U+F963"
+    },
+    "mensuralRestMaxima" : {
+	"codepoint": "U+E9F0"
+    },
+    "mensuralRestLongaPerfecta" : {
+	"codepoint": "U+E9F1"
+    },
+    "mensuralRestLongaImperfecta" : {
+	"codepoint": "U+E9F2"
+    },
+    "mensuralRestBrevis" : {
+	"codepoint": "U+E9F3"
+    },
+    "mensuralRestSemibrevis" : {
+	"codepoint": "U+E9F4"
+    },
+    "mensuralRestMinima" : {
+	"codepoint": "U+E9F5"
+    },
+    "mensuralRestSemiminima" : {
+	"codepoint": "U+E9F6"
+    },
+    "mensuralRestFusa" : {
+	"codepoint": "U+E9F7"
+    },
+    "mensuralCustosUp" : {
+	"codepoint": "U+EA02"
+    },
+
+
+
+
+
+
+}
+

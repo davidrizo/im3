@@ -73,6 +73,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		String content;
 		Staff staff;
 		public ScoreLayer layer;
+        public String curvedir;
 
         @Override
 		public int hashCode() {
@@ -258,7 +259,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     private String beamedGroupXMLID;
     private ArrayList<SingleFigureAtom> beamedGroupElements;
 
-
+    private String lastAccidGes;
+    private String lastAccid;
+    private Staff lastNoteStaff; // used for accidental processing on closing note element
+    // we use identity hash code because it has not been constructed yet the complete AtomPitch
+    private HashMap<Integer, AtomPitch> pendingTieTo; // key = toPitch.identityHashCode, value = fromPitch
 
     @Override
 	protected void init() throws ParserConfigurationException, SAXException, IM3Exception {
@@ -275,6 +280,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		maximumVoicesTime = Time.TIME_ZERO;
 		lastMeasureEndTime = Time.TIME_ZERO;
         beamedGroupElements = null;
+        pendingTieTo = new HashMap<>();
 	}
 	
 	/*private String getLayerCode() throws ImportException {
@@ -379,7 +385,6 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			if (element.equals("music")) {
 				importingMusic = true; //TODO gestionar esto de otra forma - ¿estados? - ¿consume() como en eventos JavaFX?
 			} else if (importingMusic) { // avoid parse other MEI extensions such as the hierarchical analysis here
-				String accid;
 				switch (element) {
 				case "work":
 					//TODO song.setWo 
@@ -522,7 +527,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					break;				
 				case "measure":
 					staffCount=0;
-                    previousAccidentals = new HashMap<>();
+                    previousAccidentals.clear();
 					number = getOptionalAttribute(attributesMap, "n");
 					xmlid = getOptionalAttribute(attributesMap, "xml:id");
 					//updateMeasure = true;
@@ -554,6 +559,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     }
                     break;
 				case "barLine":
+                    previousAccidentals.clear();
                     horizontalOrderInStaff++;
                     //updateTimesGivenMeasure();
 					Time markTime = getCurrentTime();
@@ -570,7 +576,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					
 					staffCount++;	
 					layerCount=0;
-                    previousAccidentals = new HashMap<>();
+                    previousAccidentals.clear();
 					number = getOptionalAttribute(attributesMap, "n");
 					lastStaff = findStaff(number);
 					break;
@@ -615,21 +621,21 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					} else {
 						elementStaff = lastStaff;
 					}
+					lastNoteStaff = elementStaff;
+
 					dotsStr = getOptionalAttribute(attributesMap, "dots");
 					dots = dotsStr==null?0:Integer.parseInt(dotsStr);
 					dur = getOptionalAttribute(attributesMap, "dur");
 					
 					// scientific pitch
-					String accidGes = getOptionalAttribute(attributesMap, "accid.ges");
-					accid = getOptionalAttribute(attributesMap, "accid");
+					lastAccidGes = getOptionalAttribute(attributesMap, "accid.ges");
+                    lastAccid = getOptionalAttribute(attributesMap, "accid"); //TODO accid.vis
 					String oct = getOptionalAttribute(attributesMap, "oct");
 					int octave = Integer.parseInt(oct);
 					String pname = getOptionalAttribute(attributesMap, "pname");
 					
 					PitchClass pc = new PitchClass(DiatonicPitch.valueOf(pname.toUpperCase()));
-					Accidentals writtenAccidental = null;
-
-					Time time = getCurrentTime(); //TODO ¿También cuando hay cambio de pentagrama?
+					/*20180208 Time time = getCurrentTime(); //TODO ¿También cuando hay cambio de pentagrama?
 
 					int previousAccidentalMapKey = generatePreviousAccidentalMapKey(pc.getNoteName(), octave);
                     Accidentals previousAccidental = previousAccidentals.get(previousAccidentalMapKey);
@@ -646,19 +652,23 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         pc.setAccidental(previousAccidental); // TODO: 24/9/17 Diferenciar explicit e implicit. Igual en MEIExporter que aún lo exporta todo
                     } else {
                         if (accidGes != null) {
-                            writtenAccidental = accidToAccidental(accidGes);
-                            pc.setAccidental(writtenAccidental);
-                            previousAccidentals.put(previousAccidentalMapKey, writtenAccidental);
+                            //20180208 writtenAccidental = accidToAccidental(accidGes);
+                            Accidentals accidental = accidToAccidental(accidGes);
+                            //20180208 pc.setAccidental(writtenAccidental);
+                            pc.setAccidental(accidental);
+                            //20180208 previousAccidentals.put(previousAccidentalMapKey, writtenAccidental);
+                            previousAccidentals.put(previousAccidentalMapKey, accidental);
                         }
                         if (accid != null) {
                             Accidentals acc = accidToAccidental(accid);
                             if (writtenAccidental != null && acc != writtenAccidental) {
                                 throw new ImportException("Written accidental (" + writtenAccidental + ") inconsistent with performed accidental (" + acc + ")");
                             }
+                            writtenAccidental = acc; //20180208
                             pc.setAccidental(acc);
                             previousAccidentals.put(previousAccidentalMapKey, acc);
                         }
-                    }
+                    }*/
                     ScientificPitch sp = new ScientificPitch(pc, octave);
 
 
@@ -674,8 +684,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
                     //System.out.println("SP=" + sp);
                     AtomFigure currentAtomFigure;
+					SingleFigureAtom lastSingleFigureAtom;
 					if (lastChord != null) {
 						currentAtomFigure = lastChord.getAtomFigure();
+                        lastSingleFigureAtom = lastChord;
 						if (figure != null && (!currentAtomFigure.getFigure().equals(figure) || currentAtomFigure.getDots() != dots)) {
 							throw new ImportException("Cannot import a chord with different figure durations");
 						}
@@ -693,6 +705,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						}
 
 						currentNote = new SimpleNote(figure, dots, sp);
+						lastSingleFigureAtom = currentNote;
 						currentAtomFigure = currentNote.getAtomFigure();
 						lastAtomPitch = currentNote.getAtomPitch();
                         horizontalOrderInStaff++;
@@ -734,6 +747,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						lastAtomPitch.setMelodicFunction(mf);
 					}
 
+                    String stemDir = getOptionalAttribute(attributesMap, "stem.dir");
+					if (stemDir != null) {
+                        lastSingleFigureAtom.setExplicitStemDirection(parseStemDir(stemDir));
+                    }
 
 					updateCurrentTime();
 
@@ -744,10 +761,26 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     break;
 				case "accid":
 				    //TODO Posibilidad de poner horizontalPositionInStaff
-					accid = getOptionalAttribute(attributesMap, "accid");
-					accidGes = getOptionalAttribute(attributesMap, "accid.ges");
-					
-					writtenAccidental = null;
+                    String accid = getOptionalAttribute(attributesMap, "accid");
+                    String accidGes = getOptionalAttribute(attributesMap, "accid.ges");
+
+                    if (accid != null && lastAccid != null && !accid.equals(lastAccid)) {
+                        throw new ImportException("accid element (" + accid  + ") different from attribute (" + lastAccid + ")");
+                    }
+
+                    if (accidGes != null && lastAccidGes != null && !accidGes.equals(lastAccidGes)) {
+                        throw new ImportException("accidGes element (" + accidGes + ") different from attribute (" + lastAccidGes + ")");
+                    }
+
+                    if (accid != null) {
+                        lastAccid = accid;
+                    }
+
+                    if (accidGes != null) {
+                        lastAccidGes = accidGes;
+                    }
+
+					/*20180208 writtenAccidental = null;
 					
 					if (accidGes != null) {
 						writtenAccidental = accidToAccidental(accidGes);
@@ -759,8 +792,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						if (writtenAccidental != null && acc != writtenAccidental) {
 							throw new ImportException("Written accidental (" + writtenAccidental + ") inconsistent with performed accidental (" + acc + ")");
 						}
-						currentNote.setAccidental(acc);						
-					}
+						currentNote.setWrittenExplicitAccidental(acc);
+					}*/
 					break;
 					
 				case "rest":
@@ -910,6 +943,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					pendingConnectorOrMark.tstamp2 = getOptionalAttribute(attributesMap, "tstamp2");
 					pendingConnectorOrMark.startid = getOptionalAttribute(attributesMap, "startid");
 					pendingConnectorOrMark.endid = getOptionalAttribute(attributesMap, "endid");
+                    pendingConnectorOrMark.curvedir = getOptionalAttribute(attributesMap, "curvedir");
 					if (staffNumber != null) {
 						pendingConnectorOrMark.staff = findStaff(staffNumber);
 					}
@@ -955,6 +989,17 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			throw new ImportException(e);
 		}
 	}
+
+    private StemDirection parseStemDir(String stemDir) throws ImportException {
+        switch (stemDir) {
+            case "up":
+                return StemDirection.up;
+            case "down":
+                return StemDirection.down;
+            default:
+                    throw new ImportException("Invalid stemDir: '" + stemDir + "'");
+        }
+    }
 
     private void processFermata(AtomFigure atomFigure, HashMap<String, String> attributesMap) throws IM3Exception {
         String fermata = getOptionalAttribute(attributesMap, "fermata");
@@ -1322,11 +1367,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				//Atom fromAtom = tiedFrom.getAtomFigure().getAtom();
 				//SimpleNote tiedNote = new SimpleNote(figure, dots, tiedFrom.getScientificPitch());
 				//tiedNote.getAtomPitch().setTiedFromPrevious(tiedFrom);
-				tiedFrom.setTiedToNext(lastAtomPitch);
+				//20180208 tiedFrom.setTiedToNext(lastAtomPitch);
+				pendingTieTo.put(System.identityHashCode(lastAtomPitch), tiedFrom);
 				currentTies.remove(tieCode);
 				//addElementToVoiceStaffOrTuplet(tiedNote, xmlid, attributesMap);
 			} else if (type.equals("m")) { // middle
-				tiedFrom.setTiedToNext(lastAtomPitch);
+                //20180208 tiedFrom.setTiedToNext(lastAtomPitch);
+                pendingTieTo.put(System.identityHashCode(lastAtomPitch), tiedFrom);
 				currentTies.remove(tieCode);
 				
 				currentTies.put(tieCode, lastAtomPitch);
@@ -1626,6 +1673,73 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 //currentMeasure.setEndTime(maximumVoicesTime);
 				//updateTimesGivenMeasure(measure);
 				break;
+            case "note":
+                // handle accidentals
+                Time time = getCurrentTime(); //TODO ¿También cuando hay cambio de pentagrama?
+                PitchClass pc = lastAtomPitch.getScientificPitch().getPitchClass();
+                int octave = lastAtomPitch.getScientificPitch().getOctave();
+                int previousAccidentalMapKey = generatePreviousAccidentalMapKey(pc.getNoteName(), octave);
+                Staff elementStaff = lastNoteStaff;
+                Accidentals previousAccidental = previousAccidentals.get(previousAccidentalMapKey);
+                if (previousAccidental == null) {
+                    try {
+                        KeySignature ks = elementStaff.getRunningKeySignatureAt(time);
+                        previousAccidental = ks.getAccidentalOf(pc.getNoteName());
+                    } catch (IM3Exception e) {
+                        //noop - for non key scores
+                    }
+                }
+
+                if (lastAccid != null) {
+                    lastAtomPitch.setWrittenExplicitAccidental(accidToAccidental(lastAccid));
+                }
+
+                if (lastAccidGes != null) {
+                    lastAtomPitch.setAccidental(accidToAccidental(lastAccidGes)); // note the ges (performed) may be different from the written (e.g. mensural # may mean natural)
+                }
+
+                if (lastAccid == null && lastAccidGes == null && previousAccidental != null) {
+
+                    pc.setAccidental(previousAccidental); // TODO: 24/9/17 Diferenciar explicit e implicit. Igual en MEIExporter que aún lo exporta todo
+                }
+
+                if (pc.getAccidental() != null) {
+                    previousAccidentals.put(previousAccidentalMapKey, pc.getAccidental());
+                }
+
+                /*if (accid == null && accidGes == null && previousAccidental != null) {
+                    pc.setAccidental(previousAccidental); // TODO: 24/9/17 Diferenciar explicit e implicit. Igual en MEIExporter que aún lo exporta todo
+                } else {
+                    if (accidGes != null) {
+                        //20180208 writtenAccidental = accidToAccidental(accidGes);
+                        Accidentals accidental = accidToAccidental(accidGes);
+                        //20180208 pc.setAccidental(writtenAccidental);
+                        pc.setAccidental(accidental);
+                        //20180208 previousAccidentals.put(previousAccidentalMapKey, writtenAccidental);
+                        previousAccidentals.put(previousAccidentalMapKey, accidental);
+                    }
+                    if (accid != null) {
+                        Accidentals acc = accidToAccidental(accid);
+                        if (writtenAccidental != null && acc != writtenAccidental) {
+                            throw new ImportException("Written accidental (" + writtenAccidental + ") inconsistent with performed accidental (" + acc + ")");
+                        }
+                        writtenAccidental = acc; //20180208
+                        pc.setAccidental(acc);
+                        previousAccidentals.put(previousAccidentalMapKey, acc);
+                    }
+                }*/
+                lastAccid = null;
+                lastAccidGes = null;
+
+                Integer idHashCode = System.identityHashCode(lastAtomPitch);
+                AtomPitch pendingTieFrom = pendingTieTo.get(idHashCode);
+
+                if (pendingTieFrom != null) {
+                    pendingTieFrom.setTiedToNext(lastAtomPitch);
+                    pendingTieTo.remove(idHashCode);
+                }
+
+                break;
 			}
 		}
 	}
@@ -1785,6 +1899,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     }
 
                     Slur slur = new Slur(from, to);
+                    if (pendingConnectorOrMark.curvedir != null) {
+                        slur.setPosition(parseCurveDir(pendingConnectorOrMark.curvedir));
+                    }
                     from.addConnector(slur);
                     to.addConnector(slur);
                     break;
@@ -1842,7 +1959,16 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 	}
 
-	protected ITimedSymbolWithConnectors getPlaceHolderFromTStamp2(Staff staff, ScoreLayer layer, Measure fromMeasure, List<Measure> measures, String tstamp2) throws ImportException, IM3Exception {
+    private PositionAboveBelow parseCurveDir(String curvedir) throws ImportException {
+	    switch (curvedir) {
+            case "above": return PositionAboveBelow.ABOVE;
+            case "below": return PositionAboveBelow.BELOW;
+            default:
+                throw new ImportException("Invalid curvedir: '" + curvedir + "'");
+        }
+    }
+
+    protected ITimedSymbolWithConnectors getPlaceHolderFromTStamp2(Staff staff, ScoreLayer layer, Measure fromMeasure, List<Measure> measures, String tstamp2) throws ImportException, IM3Exception {
 		String [] strings = tstamp2.split("m\\+");
 		
 		int nmeasure;

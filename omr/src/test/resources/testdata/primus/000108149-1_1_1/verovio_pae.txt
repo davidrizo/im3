@@ -1,0 +1,8 @@
+@start:000108149-1_1_1
+@clef:G-1
+@keysig:bB
+@key:
+@timesig:c
+@data:{''6F'AGF}!{FAGF}!f{FGAnB}/
+@end:000108149-1_1_1
+

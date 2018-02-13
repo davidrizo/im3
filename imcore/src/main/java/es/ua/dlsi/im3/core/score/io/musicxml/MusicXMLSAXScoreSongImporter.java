@@ -100,6 +100,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
     private ArrayList<Pair<Atom, PositionAboveBelow>> pendingFermate; // don't use HashMap because atoms have not time yet
     private PositionAboveBelow lastTrillPosition;
     private ArrayList<Pair<Atom, PositionAboveBelow>> pendingTrills; // don't use HashMap because atoms have not time yet
+    private StemDirection lastStemDirection;
 
     /**
 	 * Used to disambiguate symbols like duration that can be found in note or backup symbols
@@ -690,6 +691,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				tupletNormalFigure = getFigure(content);
 				break;
 			case "stem":
+                lastStemDirection = parseStemDir(content);
 				//currentNote.setStemDirection(parseStemDir(content));
 				break;
 			case "notehead":
@@ -834,6 +836,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				createNoteRestOrChord();
 				lastLyrics = null;
 				lastLyricNumber = null;
+				lastStemDirection = null;
 				/*if (context == eContexts.eNote || context == eContexts.eRest) {
 					addToCurrentTime(lastDuration);					 
 				} else if (context == eContexts.eBackup) {
@@ -1072,6 +1075,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 }
             }
 
+            if (lastStemDirection != null) {
+                simpleNote.setExplicitStemDirection(lastStemDirection);
+            }
+
         } else if (context == eContexts.eChord) {
 			SimpleChord chord;
 
@@ -1129,6 +1136,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			} else {
 				throw new ImportException("Invalid type: " + lastAtom.getClass());
 			}
+            if (lastStemDirection != null) {
+                chord.setExplicitStemDirection(lastStemDirection);
+            }
 
         } else {
 			throw new IM3RuntimeException("Should not enter here");

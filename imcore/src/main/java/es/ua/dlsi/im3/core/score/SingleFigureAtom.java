@@ -18,6 +18,8 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
     private boolean grace;
     private HashSet<StaffMark> marks;
 
+    private StemDirection explicitStemDirection;
+
     public SingleFigureAtom(Figures figure, int dots) {
 		atomFigure = new AtomFigure(this, figure, dots);
 		addDuration(atomFigure.getDuration());
@@ -146,4 +148,11 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
     }
 
 
+    public StemDirection getExplicitStemDirection() {
+        return explicitStemDirection;
+    }
+
+    public void setExplicitStemDirection(StemDirection explicitStemDirection) {
+        this.explicitStemDirection = explicitStemDirection;
+    }
 }

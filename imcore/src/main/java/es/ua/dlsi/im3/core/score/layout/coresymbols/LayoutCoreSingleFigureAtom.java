@@ -1,9 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.AtomPitch;
-import es.ua.dlsi.im3.core.score.SingleFigureAtom;
-import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Flag;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
@@ -36,13 +34,25 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         double stemXDisplacement = 0;
         CoordinateComponent stemYPosition = null;
         for (AtomPitch atomPitch: coreSymbol.getAtomPitches()) {
-            NotePitch notePitch = new NotePitch(layoutFont, this, atomPitch, position);
+            // Computed here and not inside NodePitch because the position is required to compute the stem direction
+            // and the stem is required for computing some notePitch elements at constructor such as the unicode for
+            // some mensural glyphs
+            PositionInStaff positionInStaff = getCoreSymbol().getStaff().computePositionInStaff(getTime(), atomPitch.getScientificPitch().getPitchClass().getNoteName(),
+                    atomPitch.getScientificPitch().getOctave());
+
+            // FIXME: 22/9/17 Esto funciona cuando es una nota, en acordes?
+            if (coreSymbol.getExplicitStemDirection() != null) {
+                stemUp = coreSymbol.getExplicitStemDirection() == StemDirection.up;
+            } else {
+                stemUp = positionInStaff.getLine() <= 2; // TODO actually we should check surrounding notes (Behind bars book)
+            }
+
+
+            NotePitch notePitch = new NotePitch(layoutFont, this, atomPitch, position, positionInStaff);
             notePitches.add(notePitch);
             addComponent(notePitch); // TODO: 28/10/17 Añadir todos los demás componentes !!!!
             group.add(notePitch.getGraphics());
 
-            // FIXME: 22/9/17 Esto funciona cuando es una nota, en acordes?
-            stemUp = notePitch.getPositionInStaff().getLine() <= 2;
             if (stemUp) {
                 stemXDisplacement = notePitch.getNoteHeadWidth();
             }
@@ -82,7 +92,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         for (NotePitch notePitch: notePitches) {
             // TODO: 24/9/17 ¿Y si ya las tenía?
             notePitch.setLayoutStaff(layoutStaff);
-            layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getWidth());
+            layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getNoteHeadWidth());
             stemYPosition = notePitch.getNoteHeadPosition().getY();
         }
 
@@ -126,8 +136,8 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
                 ydisplacement = -refHead.getNoteHeadPictogram().getHeight();
                 xdisplacement = 0;
             } else {
-                ydisplacement = refHead.getNoteHeadPictogram().getHeight();
-                xdisplacement = refHead.getNoteHeadWidth();
+                ydisplacement = refHead.getNoteHeadPictogram().getHeight() - 4; //TODO A piñón el -4;
+                xdisplacement = refHead.getNoteHeadWidth() / 2; //TODO A piñón el /2
             }
             Coordinate result = new Coordinate(
                     new CoordinateComponent(refHead.getNoteHeadPosition().getX(), xdisplacement),
@@ -153,7 +163,11 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
 
     @Override
     public Direction getDefaultSlurDirection() {
-        return Direction.up; // TODO: 31/10/17
+        if (stemUp) {
+            return Direction.down;
+        } else {
+            return Direction.up;
+        }
     }
 
     @Override
@@ -162,13 +176,19 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         if (notePitches == null || notePitches.isEmpty()) {
             return position;
         } else {
+            double ydisplacement;
+            if (stemUp) {
+                ydisplacement = LayoutConstants.SEPARATION_NOTE_SLUR;
+            } else {
+                ydisplacement = -LayoutConstants.SEPARATION_NOTE_SLUR;
+            }
             Coordinate connectionPoint = new Coordinate(
                     notePitches.get(0).getNoteHeadPosition().getX(),
-                    // TODO: 31/10/17 Negativo puesto a piñón 
-                    new CoordinateComponent(notePitches.get(0).getNoteHeadPosition().getY(), -LayoutConstants.SEPARATION_NOTE_SLUR)
-            );
+                    new CoordinateComponent(notePitches.get(0).getNoteHeadPosition().getY(), ydisplacement));
             return connectionPoint;
         }
         //return position;
     }
+
+
 }

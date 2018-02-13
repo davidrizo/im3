@@ -6,7 +6,7 @@ import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.javafx.ViewLoader;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.omr.interactive.pageedit.PageEditController;
+import es.ua.dlsi.im3.omr.interactive.editpage.IPagesController;
 import es.ua.dlsi.im3.omr.interactive.model.OMRInstrument;
 import es.ua.dlsi.im3.omr.interactive.model.OMRModel;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
@@ -43,7 +43,10 @@ public class DashboardController implements Initializable {
     MenuItem menuItemRedo;
 
     @FXML
-    ToolBar toolbar;
+    ToolBar toolbarPages;
+
+    @FXML
+    ToolBar toolbarPageEditStep;
 
     @FXML
     ToggleGroup tgDashboardButtons;
@@ -59,13 +62,27 @@ public class DashboardController implements Initializable {
     @FXML
     AnchorPane centerPane;
 
+    @FXML
+    ToggleGroup tgPageStep;
+    @FXML
+    ToggleButton tgRegions;
+
+    @FXML
+    ToggleButton tgSymbols;
+
+    @FXML
+    ToggleButton tgMusic;
+
     StringProperty title;
 
     CommandManager commandManager;
+    private List<OMRPage> openedPages;
+    private OMRPage selectedPage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        toolbar.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
+        toolbarPageEditStep.setDisable(true);
+        toolbarPages.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
 
         tbPages.disableProperty().bind(tbPages.selectedProperty());
 
@@ -92,7 +109,32 @@ public class DashboardController implements Initializable {
                 }
             }
         });
+        initPageEditStepButtons();
 
+    }
+
+    private void initPageEditStepButtons() {
+        tgPageStep.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                try {
+                    if (newValue == tgRegions) {
+                        editPage("editregions.fxml");
+                    } else if (newValue == tgSymbols) {
+                        editPage("editsymbols.fxml");
+                    } else if (newValue == tgMusic) {
+                        editPage("editmusic.fxml");
+                    } else if (newValue == null) {
+                        closePage();
+                    } else {
+                        throw new IM3Exception("No step identified: " + newValue);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowError.show(OMRApp.getMainStage(), "Cannot edit page", e);
+                }
+            }
+        });
     }
 
     @FXML
@@ -238,17 +280,19 @@ public class DashboardController implements Initializable {
                 tbSelectedPage = new ToggleButton(pageView.getOmrPage().toString());
                 tbSelectedPage.setUserData(pageView);
                 tgDashboardButtons.getToggles().add(tbSelectedPage);
-                toolbar.getItems().add(tbSelectedPage);
+                toolbarPages.getItems().add(tbSelectedPage);
                 tbSelectedPage.setOnAction(event -> {
                     openPage(pageView);
                 });
             }
             tgDashboardButtons.selectToggle(tbSelectedPage);
 
-            Pair<PageEditController, Parent> pair = ViewLoader.loadView("editpage.fxml");
-            setMainPane(pair.getY());
-            pair.getX().setDashboard(this);
-            pair.getX().setPages(pageView.getOmrPage(), pagesToOpen);
+            openedPages = pagesToOpen;
+            selectedPage = pageView.getOmrPage();
+            tgRegions.setSelected(true); // it will open the regions page
+            // editRegions();
+
+            toolbarPageEditStep.setDisable(false);
         } catch (Exception e) {
             e.printStackTrace();
             ShowError.show(OMRApp.getMainStage(), "Cannot load pages screen", e);
@@ -257,14 +301,29 @@ public class DashboardController implements Initializable {
 
     private void setMainPane(Node node) {
         centerPane.getChildren().clear();
-        centerPane.getChildren().add(node);
-        AnchorPane.setTopAnchor(node, 0.0);
-        AnchorPane.setLeftAnchor(node, 0.0);
-        AnchorPane.setBottomAnchor(node, 0.0);
-        AnchorPane.setRightAnchor(node, 0.0);
+        if (node != null) {
+            centerPane.getChildren().add(node);
+            AnchorPane.setTopAnchor(node, 0.0);
+            AnchorPane.setLeftAnchor(node, 0.0);
+            AnchorPane.setBottomAnchor(node, 0.0);
+            AnchorPane.setRightAnchor(node, 0.0);
+        }
     }
 
     public CommandManager getCommandManager() {
         return commandManager;
     }
+
+    private <ControllerType extends IPagesController> void editPage(String fxml) throws IOException {
+        Pair<ControllerType, Parent> pair = ViewLoader.loadView(fxml);
+        setMainPane(pair.getY());
+        pair.getX().setDashboard(this);
+        pair.getX().setPages(selectedPage, openedPages);
+    }
+
+    private void closePage() {
+        setMainPane(null);
+    }
+
+
 }

@@ -41,7 +41,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
      * @param parent
      * @param position Important for allowing methods like getWidth() that will be used by the layout algorithms
      */
-    public NotePitch(LayoutFont layoutFont, LayoutCoreSingleFigureAtom parent, AtomPitch pitch, Coordinate position) throws IM3Exception {
+    public NotePitch(LayoutFont layoutFont, LayoutCoreSingleFigureAtom parent, AtomPitch pitch, Coordinate position, PositionInStaff positionInStaff) throws IM3Exception {
         super(pitch, parent, position);
         this.layoutFont = layoutFont;
 
@@ -53,11 +53,12 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
         int ndots = pitch.getAtomFigure().getDots();
 
         // accidentals are computed after all elements are drawn
-        Staff staff = parent.getCoreSymbol().getStaff();
+        /*Staff staff = parent.getCoreSymbol().getStaff();
         if (staff == null) {
             throw new IM3Exception("The symbol " + parent.getCoreSymbol() + " has not staff");
-        }
-        positionInStaff = parent.getCoreSymbol().getStaff().computePositionInStaff(pitch.getTime(), scientificPitch.getPitchClass().getNoteName(), scientificPitch.getOctave());
+        }*/
+        //positionInStaff = parent.getCoreSymbol().getStaff().computePositionInStaff(pitch.getTime(), scientificPitch.getPitchClass().getNoteName(), scientificPitch.getOctave());
+        this.positionInStaff = positionInStaff;
         Coordinate noteHeadPosition = new Coordinate(
                 new CoordinateComponent(position.getX()),
                 null
@@ -130,7 +131,9 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     }
 
     private String getUnicode() throws IM3Exception {
-        String unicode = layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure());
+        boolean stemUp = parent.isStemUp();
+
+        String unicode = layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp);
         if (unicode == null) {
             throw new IM3Exception("Cannot find a font unicode for " + parent.getCoreSymbol().getAtomFigure().getFigure());
         }
@@ -138,14 +141,18 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     }
 
     public boolean headIncludesFlag() throws IM3Exception {
-        return !layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure()).equals(
-                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure())
+        boolean stemUp = parent.isStemUp();
+
+        return !layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), false).equals(
+                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp)
         );
     }
 
     public void useHeadWithoutFlag() throws IM3Exception {
+        boolean stemUp = parent.isStemUp();
+
         Pictogram newNoteHeadPictogram = new Pictogram(noteHeadPictogram.getID(), layoutFont,
-                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure()),
+                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp),
                 noteHeadPictogram.getPosition());
 
         root.remove(noteHeadPictogram);
@@ -166,7 +173,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     public PositionInStaff getPositionInStaff() {
         return positionInStaff;
     }
-    
+
     public double getNoteHeadWidth() {
         return noteHeadPictogram.getWidth();
     }

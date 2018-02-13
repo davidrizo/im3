@@ -13,7 +13,13 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 public class SVGFontImporter extends XMLSAXImporter {
+    private final String fontName;
     private SVGFont svgFont;
+
+    public SVGFontImporter(String fontName) {
+        this.svgFont = svgFont;
+        this.fontName = fontName;
+    }
 
     @Override
     protected void init() throws ParserConfigurationException, SAXException, IM3Exception {
@@ -40,7 +46,7 @@ public class SVGFontImporter extends XMLSAXImporter {
                     String d = getOptionalAttribute(attributesMap, "d");
                     // if d is empty we don't import it
                     if (d != null) {
-                        Glyph glyph = new Glyph(unicode, d);
+                        Glyph glyph = new Glyph(fontName, unicode, d);
                         if (horiz_adv_x != null) {
                             glyph.setDefaultHorizontalAdvance(Integer.parseInt(horiz_adv_x));
                         }

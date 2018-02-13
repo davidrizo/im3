@@ -1,0 +1,8 @@
+@start:200021502-1_11_1
+@clef:C-4
+@keysig:bB
+@key:
+@timesig:c
+@data:8-'C{866FED}{CDC}{,6B'DC,B}%F-4 {8A6BA}{GBAG}{FAGF}{8'C,C}/4,F
+@end:200021502-1_11_1
+

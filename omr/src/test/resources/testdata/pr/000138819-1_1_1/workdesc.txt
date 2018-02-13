@@ -1,0 +1,9 @@
+Using font  Gootville
+RISM ID:  000138819
+Incipit:  1.1.1
+Author:  Tartini, Giuseppe
+Title:  Concertos
+@clef:  G-2
+@keysig: 
+@timesig:  c
+@data:  ''8E/{(6C'BA)8AAA}{''6ExDq8DE}+{6EEAE}/{DxC8D}+{6DDBD}{C'B}4A

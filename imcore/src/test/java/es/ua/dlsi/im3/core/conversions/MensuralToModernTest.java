@@ -23,7 +23,7 @@ public class MensuralToModernTest {
     private void printSVG(ScoreSong song, LayoutFonts font, String filename) throws IM3Exception {
         HorizontalLayout layout = new HorizontalLayout(song, font,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout.layout();
+        layout.layout(true);
 
         SVGExporter msvgExporter = new SVGExporter();
         File msvgFile = TestFileUtils.createTempFile(filename);
@@ -36,8 +36,10 @@ public class MensuralToModernTest {
         //ScoreSong song = new ScoreSong(new DurationEvaluator()); // TODO: 7/10/17 ¿Sería mejor cambiar las Figures o sólo en la traducción?
         Staff staff = new Pentagram(song, "1", 1);
         staff.setNotationType(NotationType.eMensural);
+        staff.setName("Soprano");
         song.addStaff(staff);
         ScorePart part = song.addPart();
+        part.setName("Soprano");
         part.addStaff(staff);
         ScoreLayer layer = part.addScoreLayer(staff);
         TimeSignatureCommonTime ts = new TimeSignatureCommonTime(NotationType.eMensural);
@@ -112,7 +114,7 @@ public class MensuralToModernTest {
         fonts.put(newModernStaff, LayoutFonts.bravura);
         HorizontalLayout layout2 = new HorizontalLayout(song, fonts,
                 new CoordinateComponent(960), new CoordinateComponent(700));
-        layout2.layout();
+        layout2.layout(true);
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("mensuralAndmodern.svg");

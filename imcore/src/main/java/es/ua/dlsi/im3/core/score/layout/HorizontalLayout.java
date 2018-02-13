@@ -38,7 +38,7 @@ public class HorizontalLayout extends ScoreLayout {
     }
 
     @Override
-    public void layout() throws IM3Exception {
+    public void layout(boolean computeProportionalSpacing) throws IM3Exception {
         // TODO: 19/9/17 En esta versión creamos todos los símbolos cada vez - habría que crear sólo los necesarios
         canvas.clear();
 
@@ -91,7 +91,7 @@ public class HorizontalLayout extends ScoreLayout {
 
         system.createStaffConnectors(connectors); //TODO ¿Qué pasa si un conector salta de página?
 
-        doHorizontalLayout(simultaneities);
+        doHorizontalLayout(simultaneities, computeProportionalSpacing);
 
         createConnectors();
         createBeams();
@@ -112,5 +112,9 @@ public class HorizontalLayout extends ScoreLayout {
     @Override
     public List<Canvas> getCanvases() {
         return Arrays.asList(canvas);
+    }
+
+    public LayoutStaffSystem getSystem() {
+        return system;
     }
 }

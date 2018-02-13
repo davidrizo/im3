@@ -997,6 +997,12 @@ public class MEISongExporter implements ISongExporter {
                 skipMeasures = mrest.getNumMeasures();
 			} else {
 				fillDurationParams(sfatom.getAtomFigure(), params);
+
+				if (sfatom.getExplicitStemDirection() != null) {
+                    params.add("stem.dir");
+                    params.add(sfatom.getExplicitStemDirection().name().toLowerCase());
+                }
+
 				if (atom instanceof SimpleRest) {			
 					XMLExporterHelper.startEnd(sb, tabs, "rest", params); 
 				} else if (atom instanceof SimpleChord) {
@@ -1161,25 +1167,26 @@ public class MEISongExporter implements ISongExporter {
         }
 
         String accidGes = null;
-        if (atomPitch.getWrittenExplicitAccidental() != null) {
-            String accid = generateAccidental(atomPitch.getWrittenExplicitAccidental());
+        if (atomPitch.getWrittenExplicitAccidental() != null || previousAccidental != pitchAccidental && !(previousAccidental == null && pitchAccidental == Accidentals.NATURAL)) {
+            String accid;
+            Accidentals acc;
+            if (atomPitch.getWrittenExplicitAccidental() != null) {
+                acc =  atomPitch.getWrittenExplicitAccidental();
+            } else {
+                acc = pitchAccidental;
+            }
+            accid = generateAccidental(acc);
             previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
                     pitchAccidental);
 
-            params.add("accid.ges");
-            accidGes = generateAccidental(atomPitch.getWrittenExplicitAccidental());
-            params.add(accidGes);
-        }
-
-
-        if (previousAccidental != pitchAccidental ) {
+            params.add("accid");
+            params.add(accid);
+        } else if (pitchAccidental != null && pitchAccidental != Accidentals.NATURAL) {
             String accid = generateAccidental(pitchAccidental);
             previousAccidentals.put(prevAccMapKey, pitchAccidental);
 
-            if (accidGes == null || !accidGes.equals(accid)) { // if not explicitly written
-                params.add("accid");
-                params.add(accid);
-            }
+            params.add("accid.ges");
+            params.add(accid);
 
         }
 

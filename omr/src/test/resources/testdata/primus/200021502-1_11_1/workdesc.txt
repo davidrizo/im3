@@ -1,0 +1,9 @@
+Using font  Gootville
+RISM ID:  200021502
+Incipit:  1.11.1
+Author:  Bononcini, Giovanni
+Title:  Mario fuggitivo
+@clef:  C-4
+@keysig:  bB
+@timesig:  c
+@data:  8-'C{866FED}{CDC}{,6B'DC,B}%F-4 {8A6BA}{GBAG}{FAGF}{8'C,C}/4,F

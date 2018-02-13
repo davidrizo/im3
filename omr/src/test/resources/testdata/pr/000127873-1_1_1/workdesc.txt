@@ -1,0 +1,9 @@
+Using font  Gootville
+RISM ID:  000127873
+Incipit:  1.1.1
+Author:  Guglielmi, Pietro Alessandro
+Title:  Clori la pastorella
+@clef:  G-2
+@keysig:  bBE
+@timesig:  6/8
+@data:  g''C{'8B^DAB}g''C{'8BAB}/{nB''CC}4C8-/gD{8C'nB''C}g''D{8C'B''C}/{xCDD}4D8-/

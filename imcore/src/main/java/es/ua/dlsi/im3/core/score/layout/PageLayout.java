@@ -63,13 +63,16 @@ public class PageLayout extends ScoreLayout {
 
 
     @Override
-    public void layout() throws IM3Exception {
+    public void layout(boolean computeProportionalSpacing) throws IM3Exception {
         // TODO: 19/9/17 En esta versión creamos todos los símbolos cada vez - habría que crear sólo los necesarios
         //TODO scoreSong.getStaffGroups()
         pages = new ArrayList<>(); //TODO supongo que no habrá que rehacerlo siempre
 
         // TODO: 25/9/17 Intentar unificar código con HorizontalLayout
 
+        if (staves.isEmpty()) {
+            throw new IM3Exception("No staves found");
+        }
         // add the system breaks, with a default duration that will be able to fit the new clef and new key signature
         if (includePageAndSystemBreaks) {
             for (SystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
@@ -87,7 +90,7 @@ public class PageLayout extends ScoreLayout {
         } // else discard system breaks
 
         // perform a first horizontal layout
-        doHorizontalLayout(simultaneities);
+        doHorizontalLayout(simultaneities, computeProportionalSpacing);
 
         // now locate the points where insert line and page breaks and create LayoutStaff
         //TODO Page breaks - ahora todo en un page
@@ -215,7 +218,8 @@ public class PageLayout extends ScoreLayout {
             for (LayoutStaffSystem staffSystem : page.getSystemsInPage()) {
                 for (LayoutStaff layoutStaff : staffSystem.getStaves()) {
                     //layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
-                    layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+                    //20180208 layoutStaff.createNoteAccidentals(staffSystem.getStartingTime(), staffSystem.getEndingTime());
+                    layoutStaff.createNoteAccidentals();
                 }
             }
         }
@@ -228,7 +232,7 @@ public class PageLayout extends ScoreLayout {
 
         //simultaneities.printDebug();
 
-        doHorizontalLayout(simultaneities); // TODO: 26/9/17 ¿Y si cambia la anchura y hay que volver a bajar elementos de línea?
+        doHorizontalLayout(simultaneities, computeProportionalSpacing); // TODO: 26/9/17 ¿Y si cambia la anchura y hay que volver a bajar elementos de línea?
         for (Simultaneity simultaneity: simultaneities.getSimiltaneities()) {
             for (LayoutCoreSymbol coreSymbol: simultaneity.getSymbols()) {
                 LayoutStaffSystem system = coreSymbol.getSystem();

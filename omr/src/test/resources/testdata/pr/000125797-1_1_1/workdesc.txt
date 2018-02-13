@@ -1,0 +1,9 @@
+Using font  Gootville
+RISM ID:  000125797
+Incipit:  1.1.1
+Author:  Paisiello, Giovanni
+Title:  La Frascatana
+@clef:  G-2
+@keysig:  bBE
+@timesig:  c
+@data:  '2B^D{''3DC'8.B}{8BB}/''2F^C{3AG8.F}{8FF}/2.B^'B{''8B'''D}/{C''A}{GB}{AF}{EG}/2F^'B

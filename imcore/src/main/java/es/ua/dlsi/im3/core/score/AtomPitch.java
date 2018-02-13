@@ -195,7 +195,7 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
             int result = atomFigure.hashCode();
 
             result = 31 * result + scientificPitch.hashCode();
-            result = 31 * result + (writtenExplicitAccidental != null ? writtenExplicitAccidental.hashCode() : 0);
+           // result = 31 * result + (writtenExplicitAccidental != null ? writtenExplicitAccidental.hashCode() : 0);
             result = 31 * result + (staffChange != null ? staffChange.hashCode() : 0);
             return result;
         }

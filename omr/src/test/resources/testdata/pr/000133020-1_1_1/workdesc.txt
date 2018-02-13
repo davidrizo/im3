@@ -1,0 +1,9 @@
+Using font  Leipzig
+RISM ID:  000133020
+Incipit:  1.1.1
+Author:  Anonymus
+Title:  Keyboard pieces
+@clef:  G-2
+@keysig:  xFC
+@timesig: 
+@data:  '1D^,A^F'2A^F^D''D^'A^F''E^D^'A''4C'G''1D^'A^F//{6BABG}{''C'B''C'A}{''DCEC}{FEDC}/'1B^G^D''2D^'A^F

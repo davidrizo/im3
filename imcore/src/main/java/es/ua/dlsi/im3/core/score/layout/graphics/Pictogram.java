@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
@@ -11,16 +10,11 @@ import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,7 +64,7 @@ public class Pictogram extends GraphicsElement {
     public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         try {
             XMLExporterHelper.startEnd(sb, tabs, "use",
-                    "xlink:href", "#" + glyph.getEscapedUnicode(),
+                    "xlink:href", "#" + glyph.getEscapedUnicodeFontUnique(),
                     "height", SIZE,
                     "width", SIZE,
                     "x", position.getAbsoluteX() + "px",
