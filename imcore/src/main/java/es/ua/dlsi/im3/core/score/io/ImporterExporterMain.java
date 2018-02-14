@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernImporter;
+import es.ua.dlsi.im3.core.score.io.lilypond.LilypondExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
@@ -18,8 +19,8 @@ import java.io.File;
 public class ImporterExporterMain {
     public static void main(String [] args) throws ImportException, ExportException {
         if (args.length != 4) {
-            System.err.println("Use: es.ua.dlsi.im3.core.score.io.ImporterExporterMain <fromfile> <type> <tofile> <type>\n"+
-            " where <type> is [musicxml,mei]");
+            System.err.println("Use: es.ua.dlsi.im3.core.score.io.ImporterExporterMain <fromfile> <input type> <tofile> <export type>\n"+
+            " where <input type> is [musicxml,mei,krn] and export type is [mei, ly, krn]");
             return;
         }
 
@@ -34,6 +35,9 @@ public class ImporterExporterMain {
             exporter.exportSong(new File(filename), from);
         } else if (type.equals("krn")) {
             KernExporter exporter = new KernExporter();
+            exporter.exportSong(new File(filename), from);
+        } else if (type.equals("ly")) {
+            LilypondExporter exporter = new LilypondExporter();
             exporter.exportSong(new File(filename), from);
         } else {
             throw new ImportException("Export type " + type + " no available");
