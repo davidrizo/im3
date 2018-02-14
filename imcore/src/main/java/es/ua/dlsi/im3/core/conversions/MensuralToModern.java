@@ -2,11 +2,18 @@ package es.ua.dlsi.im3.core.conversions;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.clefs.ClefC4;
+import es.ua.dlsi.im3.core.score.clefs.ClefF4;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +111,11 @@ public class MensuralToModern {
                 } else {
                     modernStaff.addClef(convert((Clef) symbol));
                 }*/
-                modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
+                if (modernClef == null) {
+                    modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
+                } else {
+                    modernStaff.addClef(modernClef);
+                }
             } else if (symbol instanceof TimeSignature) {
                 activeTimeSignature = convert((TimeSignature) symbol);
                 pendingMensureDuration = activeTimeSignature.getDuration();
@@ -305,4 +316,19 @@ public class MensuralToModern {
 
     }
 
+    public static final void main(String [] args) throws Exception {
+        if (args.length != 2) { // TODO: 14/2/18 Pasar también la transposición que queremos y las claves
+            System.err.println("Use MensuralToModern <input file.mei> <output file.mei>");
+            return;
+        }
+
+        MEISongImporter importer = new MEISongImporter(new BinaryDurationEvaluator(new Time(2)));
+        ScoreSong mensural = importer.importSong(new File(args[0]));
+
+        MensuralToModern mensuralToModern = new MensuralToModern(new Clef[] {new ClefF4()});
+        ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.UNISON_PERFECT);
+        MEISongExporter exporter = new MEISongExporter();
+        exporter.exportSong(new File(args[1]), modern);
+        System.out.println("Correctly exported");
+    }
 }
