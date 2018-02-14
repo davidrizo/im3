@@ -3,7 +3,6 @@ package es.ua.dlsi.im3.core.score;
 //import es.ua.dlsi.im3.model.score.cmn.CMNNote;
 import java.util.Objects;
 
-import com.sun.xml.internal.rngom.parse.host.Base;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 
