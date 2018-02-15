@@ -43,6 +43,9 @@ public class InputOutput {
     public OMRProject load(File projectFolder, File trainingFile) throws IM3Exception {
         XStream xStream = new XStream();
         File xmlFile = new File(projectFolder, createXMLFilename(projectFolder));
+        if (!xmlFile.exists()) {
+            throw new IM3Exception("Cannot open project file '" + xmlFile.getAbsolutePath() + "'");
+        }
         Project pojoProject = (Project) xStream.fromXML(xmlFile);
 
         OMRProject omrProject = new OMRProject(projectFolder, trainingFile);

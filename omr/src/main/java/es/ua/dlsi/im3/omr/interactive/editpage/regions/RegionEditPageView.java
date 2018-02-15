@@ -13,6 +13,7 @@ import es.ua.dlsi.im3.omr.model.pojo.RegionType;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 
@@ -43,23 +44,30 @@ public class RegionEditPageView extends RegionBasedPageView<PageRegionsEditContr
         try {
             KeyEvent keyEvent = null;
             MouseEvent mouseEvent = null;
+            boolean mouseClicked = false;
             if (t.getContent() instanceof MouseEvent) {
                 mouseEvent = (MouseEvent) t.getContent();
+                mouseClicked = mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED || mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED;
             } else if (t.getContent() instanceof KeyEvent) {
                 keyEvent = (KeyEvent) t.getContent();
             }
             switch (state) {
                 case idle:
-                    if (mouseEvent != null && mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED && mouseEvent.isPrimaryButtonDown() && mouseEvent.getClickCount() == 1) {
+                    if (!(t instanceof RegionEditEvent) && mouseEvent != null && mouseClicked && mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getClickCount() == 1) {
                         mouseEvent.consume();
                         createNewRectangle(mouseEvent);
                         changeState(RegionViewState.creating);
                     } else if (t instanceof RegionEditEvent) {
+
                         editingRegion = ((RegionEditEvent)t).getRegionView();
-                        bringToTop(editingRegion); // if not, the handlers do not receive drag events when overlapped with other region
-                        editingRegion.beginEdit();
-                        ((RegionEditEvent)t).getContent().consume();
-                        changeState(RegionViewState.editing);
+                        if (mouseEvent != null && mouseClicked && mouseEvent.getButton() == MouseButton.SECONDARY) {
+                            editingRegion.showRegionTypeContextMenu(mouseEvent.getScreenX(), mouseEvent.getScreenY());
+                        } else {
+                            bringToTop(editingRegion); // if not, the handlers do not receive drag events when overlapped with other region
+                            editingRegion.beginEdit();
+                            ((RegionEditEvent)t).getContent().consume();
+                            changeState(RegionViewState.editing);
+                        }
                     }
                     break;
                 case creating:

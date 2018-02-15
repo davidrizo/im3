@@ -23,12 +23,13 @@ public class RegionEditView extends RegionBaseView<RegionEditPageView> {
         showRegionTypeContextMenu(event.getScreenX(), event.getScreenY());
     }
 
-    private void showRegionTypeContextMenu(double screenX, double screenY) {
+    public void showRegionTypeContextMenu(double screenX, double screenY) {
         ContextMenu contextMenu = new ContextMenu();
         for (RegionType regionType: RegionType.values()) {
             MenuItem menuItem = new MenuItem(regionType.name());
             contextMenu.getItems().add(menuItem);
             menuItem.setOnAction(event -> {
+                //TODO Comando para poder deshacer
                 omrRegion.setRegionType(regionType);
                 contextMenu.hide();
             });
