@@ -47,6 +47,9 @@ public class Pictogram extends GraphicsElement {
         this.codepoint = codepoint;
         this.layoutFont = layoutFont;
         this.position = position;
+        if (layoutFont == null) {
+            throw new IM3Exception("layoutFont cannot be null");
+        }
         glyph = layoutFont.getGlyph(this);
 
         path = new SVGPath();

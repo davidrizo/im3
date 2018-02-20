@@ -47,4 +47,5 @@ public abstract class NotationSymbol {
     public void move(double offset) {
         position.setDisplacementX(position.getX().getDisplacement()+offset);
     }
+
 }

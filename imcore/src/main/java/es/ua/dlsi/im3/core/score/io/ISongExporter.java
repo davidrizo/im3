@@ -7,7 +7,6 @@ import es.ua.dlsi.im3.core.io.ExportException;
 
 /**
 @author drizo
- * @param <SongType>
 @date 24/06/2011
  **/
 public interface ISongExporter {

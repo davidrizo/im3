@@ -46,7 +46,6 @@ public class MusicXMLExporter implements ISongExporter {
         XMLExporterHelper.startEndTextContentSingleLine(sb, 3, "software", "IM3");
         //XMLExporterHelper.startEndTextContentSingleLine(sb, 3, "encoding-date", new Date()); //TODO Con este formato: 2016-11-15
 
-        XMLExporterHelper.end(sb, 3, "encoding");
         XMLExporterHelper.end(sb, 2, "encoding");
         XMLExporterHelper.end(sb, 1, "identification");
         XMLExporterHelper.end(sb, 0, "score-partwise");

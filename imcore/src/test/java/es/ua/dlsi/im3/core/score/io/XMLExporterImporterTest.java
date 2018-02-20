@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLExporter;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import org.apache.commons.lang3.math.Fraction;
 import org.junit.Before;
@@ -29,9 +30,10 @@ import es.ua.dlsi.im3.core.io.ImportException;
  * @author drizo
  */
 public class XMLExporterImporterTest {
-	boolean testExportImport = true;
+	boolean testMEIExportImport = true;
+    private boolean testMusicXMLExportImport = false;
 
-	@Before
+    @Before
 	public void setUp() throws Exception {
 	}
 
@@ -49,15 +51,28 @@ public class XMLExporterImporterTest {
 	
 	private void doTest(Function<ScoreSong, Void> validationFunction, ScoreSong song) throws Exception {		
 		validationFunction.apply(song);
-		MEISongExporter exporter = new MEISongExporter();
-		//File file = File.createTempFile("export", "mei");
-		File file = TestFileUtils.createTempFile("aa.mei");
-		exporter.exportSong(file, song);
 
-		if (testExportImport) {
+		if (testMEIExportImport) {
+            MEISongExporter exporter = new MEISongExporter();
+            //File file = File.createTempFile("export", "mei");
+            File file = TestFileUtils.createTempFile("aa.mei");
+            exporter.exportSong(file, song);
+
 			ScoreSong importedSong = importMEI(file);
 			validationFunction.apply(importedSong);
 		}
+
+        if (testMusicXMLExportImport) {
+            MusicXMLExporter exporter = new MusicXMLExporter();
+            //File file = File.createTempFile("export", "mei");
+            File file = TestFileUtils.createTempFile("aa.xml");
+            exporter.exportSong(file, song);
+
+            ScoreSong importedSong = importMusicXML(file);
+            validationFunction.apply(importedSong);
+        }
+
+
 	}
 		
 	// ------------------------------------------------------------------------------------------
@@ -113,6 +128,7 @@ public class XMLExporterImporterTest {
 
 	@Test
 	public void testSingle1() throws Exception {
+        testMusicXMLExportImport = false; // TODO: 20/2/18 Para Pierre - ponerlo a true para probar el MusicXML 
 		doTest(XMLExporterImporterTest::assertSimple1, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple1.xml")));
 		doTest(XMLExporterImporterTest::assertSimple1, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple1.mei")));
 	}

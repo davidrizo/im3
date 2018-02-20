@@ -29,7 +29,6 @@ public class DraggableRectangle extends Group {
     double prevWidth;
     double prevHeight;
 
-
     IDraggableRectangleChangeHandler changeHandler;
 
     public DraggableRectangle(Paint handlesColor) {
