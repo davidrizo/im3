@@ -35,6 +35,12 @@ public class MusicXMLExporter implements ISongExporter {
         }
     }
 
+    /**
+     * TODO PIERRE
+     * @return
+     * @throws IM3Exception
+     * @throws ExportException
+     */
     public String exportSong() throws IM3Exception, ExportException {
         sb = new StringBuilder();
 
