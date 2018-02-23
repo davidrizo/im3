@@ -1,5 +1,8 @@
 package es.ua.dlsi.im3.core;
 
+/**
+ * Identifier generation
+ */
 public class IDGenerator {
 	private static long nextID = 1;
 	
