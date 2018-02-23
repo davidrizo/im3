@@ -1,33 +1,29 @@
 package es.ua.dlsi.im3.omr.wrimus;
 
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
-import es.ua.dlsi.im3.omr.traced.BimodalSymbol;
-import es.ua.dlsi.im3.omr.traced.Coordinate;
+import es.ua.dlsi.im3.omr.classifiers.traced.Coordinate;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class HomusReader {
     HomusDataset homusDataset;
     public HomusDataset read(List<File> files) throws IOException {
         homusDataset = new HomusDataset();
         for (File file : files) {
-            InputStream is = new FileInputStream(file);
-            read(is);
+            Glyph glyph = read(file);
+            homusDataset.addGlyph(glyph);
         }
         return homusDataset;
     }
-    public HomusDataset read(InputStream is) throws IOException {
+
+    public Glyph read(File file) throws IOException {
+        InputStream is = new FileInputStream(file);
+        return read(is);
+    }
+    public Glyph read(InputStream is) throws IOException {
         if (is == null) {
             throw new IOException("Inputstream is null");
         }
-        if (homusDataset == null) {
-            homusDataset = new HomusDataset();
-        }
-
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
         String line;
@@ -50,8 +46,7 @@ public class HomusReader {
             }
             iline++;
         }
-        homusDataset.addGlyph(glyph);
-        return homusDataset;
+        return glyph;
 
     }
 }

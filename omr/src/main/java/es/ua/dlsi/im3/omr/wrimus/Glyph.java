@@ -1,18 +1,7 @@
 package es.ua.dlsi.im3.omr.wrimus;
 
-import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.io.ExportException;
-import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
-import es.ua.dlsi.im3.core.score.layout.graphics.Shape;
-import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
-import es.ua.dlsi.im3.gui.javafx.GUIException;
-import es.ua.dlsi.im3.omr.traced.Coordinate;
-import javafx.scene.Node;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import es.ua.dlsi.im3.omr.classifiers.traced.Coordinate;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,6 +9,7 @@ public class Glyph  {
     Symbol symbol;
     LinkedList<Stroke> strokes;
     Double width;
+    Double horizontalCentroid;
 
     public Glyph(Symbol symbol) {
         this.symbol = symbol;
@@ -50,7 +40,15 @@ public class Glyph  {
                 }
             }
             width = maxX - minX;
+            horizontalCentroid = (maxX + minX) / 2;
         }
         return width;
+    }
+
+    public Double getHorizontalCentroid() {
+        if (horizontalCentroid == null) {
+            getWidth(); // it computes it
+        }
+        return horizontalCentroid;
     }
 }

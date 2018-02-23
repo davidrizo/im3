@@ -18,14 +18,13 @@ package es.ua.dlsi.im3.omr.mensuralspanish;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
 import es.ua.dlsi.im3.omr.PositionedSymbolType;
 import es.ua.dlsi.im3.omr.model.Symbol;
-import es.ua.dlsi.im3.omr.traced.ClassifierFactory;
-import es.ua.dlsi.im3.omr.traced.IBimodalDatasetReader;
-import es.ua.dlsi.im3.omr.traced.IClassifier;
-import es.ua.dlsi.im3.omr.traced.utils.ImageUtils;
+import es.ua.dlsi.im3.omr.classifiers.traced.BimodalClassifierFactory;
+import es.ua.dlsi.im3.omr.classifiers.traced.IBimodalDatasetReader;
+import es.ua.dlsi.im3.omr.classifiers.traced.IBimodalClassifier;
+import es.ua.dlsi.im3.omr.classifiers.traced.utils.ImageUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -43,10 +42,10 @@ import java.util.logging.Logger;
 public class TracedSymbolRecognizer<SymbolType> extends SymbolRecognizer {
 	private final static int RESIZE_W = 30;
 	private final static int RESIZE_H = 30;
-	IClassifier classifier;
+	IBimodalClassifier classifier;
 
 	public TracedSymbolRecognizer(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) throws IM3Exception {
-		classifier = ClassifierFactory.getInstance().createClassifier(reader, symbolFactory);
+		classifier = BimodalClassifierFactory.getInstance().createClassifier(reader, symbolFactory);
 	}
 
 	/**

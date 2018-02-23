@@ -6,6 +6,9 @@ import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 
+/**
+ * @deprecated Using stripe colors (interleaved colors)
+ */
 public class SymbolTypeColors {
     private HashMap<GraphicalSymbol, Color> colors;
 

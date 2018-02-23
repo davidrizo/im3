@@ -3,7 +3,7 @@ package es.ua.dlsi.im3.omr.interactive.model;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.model.Symbol;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.StrokeView;
-import es.ua.dlsi.im3.omr.traced.Stroke;
+import es.ua.dlsi.im3.omr.classifiers.traced.Stroke;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,7 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 import java.util.List;
 

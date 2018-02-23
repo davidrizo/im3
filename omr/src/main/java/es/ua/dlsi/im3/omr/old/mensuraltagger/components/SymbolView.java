@@ -25,7 +25,7 @@ import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.omr.PositionedSymbolType;
 import es.ua.dlsi.im3.omr.model.Symbol;
-import es.ua.dlsi.im3.omr.traced.Stroke;
+import es.ua.dlsi.im3.omr.classifiers.traced.Stroke;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;

@@ -14,7 +14,7 @@ import es.ua.dlsi.im3.omr.mensuralspanish.StringToMensuralSymbolFactory;
 import es.ua.dlsi.im3.omr.mensuralspanish.SymbolRecognizerFactory;
 import es.ua.dlsi.im3.omr.model.ScoreImageTagsFileParser;
 import es.ua.dlsi.im3.omr.model.Symbol;
-import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
+import es.ua.dlsi.im3.omr.classifiers.traced.BimodalDatasetReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

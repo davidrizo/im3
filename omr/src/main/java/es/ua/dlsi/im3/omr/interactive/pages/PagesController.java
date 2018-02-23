@@ -45,12 +45,10 @@ public class PagesController implements Initializable {
         state = State.idle; //TODO cambiar estado en drag & drop
         iconAdd = new IconAdd();
         pagePageThumbnailViewHashMap = new HashMap<>();
-        loadProjectPages();
-        listenToPagesChanges();
     }
 
     private void listenToPagesChanges() {
-        OMRModel.getInstance().getCurrentProject().pagesProperty().addListener(new ListChangeListener<OMRPage>() {
+        dashboard.getModel().getCurrentProject().pagesProperty().addListener(new ListChangeListener<OMRPage>() {
             @Override
             public void onChanged(Change<? extends OMRPage> c) {
                 while (c.next()) {
@@ -75,7 +73,7 @@ public class PagesController implements Initializable {
 
     private void loadProjectPages() {
         try {
-            for (OMRPage omrPage: OMRModel.getInstance().getCurrentProject().pagesProperty()) {
+            for (OMRPage omrPage: dashboard.getModel().getCurrentProject().pagesProperty()) {
                 createPageView(omrPage, false);
             }
             addPageAddIcon();
@@ -305,7 +303,7 @@ public class PagesController implements Initializable {
 
                     private void doExecute() throws IM3Exception {
                         for (File file: sortedFiles) {
-                            addedPages.add(OMRModel.getInstance().getCurrentProject().addPage(file));
+                            addedPages.add(dashboard.getModel().getCurrentProject().addPage(file));
                         }
                     }
 
@@ -317,7 +315,7 @@ public class PagesController implements Initializable {
                     @Override
                     public void undo() throws Exception {
                         for (OMRPage page: addedPages) {
-                            OMRModel.getInstance().getCurrentProject().deletePage(page);
+                            dashboard.getModel().getCurrentProject().deletePage(page);
                         }
                     }
 
@@ -356,7 +354,7 @@ public class PagesController implements Initializable {
                     }
 
                     private void doExecute() throws IM3Exception {
-                        OMRModel.getInstance().getCurrentProject().deletePage(pageView.getOmrPage());
+                        dashboard.getModel().getCurrentProject().deletePage(pageView.getOmrPage());
                     }
 
                     @Override
@@ -366,7 +364,7 @@ public class PagesController implements Initializable {
 
                     @Override
                     public void undo() throws Exception {
-                        OMRModel.getInstance().getCurrentProject().addPage(pageView.getOmrPage());
+                        dashboard.getModel().getCurrentProject().addPage(pageView.getOmrPage());
                     }
 
                     @Override
@@ -398,6 +396,8 @@ public class PagesController implements Initializable {
 
     public void setDashboard(DashboardController dashboard) {
         this.dashboard = dashboard;
+        loadProjectPages();
+        listenToPagesChanges();
     }
 
     public DashboardController getDashboard() {
@@ -407,4 +407,6 @@ public class PagesController implements Initializable {
     public CommandManager getCommandManager() {
         return dashboard.getCommandManager();
     }
+
+    public OMRModel getModel() { return dashboard.getModel();}
 }

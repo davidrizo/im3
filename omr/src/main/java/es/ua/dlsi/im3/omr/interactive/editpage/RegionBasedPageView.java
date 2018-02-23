@@ -18,7 +18,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Contains a page view
+ * Contains a page view with a list of identified regions on top of an image. When the user interacts with the region
+ * the interaction is passed as an abstract method to the children of this class
  * @param <PageBasedControllerType>
  * @param <RegionViewType>
  * @param <StateType>
@@ -143,123 +144,6 @@ public abstract class RegionBasedPageView<PageBasedControllerType extends PageBa
     }
 
     public abstract void handleEvent(Event t);
-        //TODO Que no deje pulsar el botón de cambio de estado hasta que no esté en idle...
-        /*        if (t instanceof PageEditStepEvent) {
-            PageEditStepEvent pageEditStepEvent = (PageEditStepEvent) t;
-            switch (pageEditStepEvent.getContent()) {
-                case regions:
-                    changeState(SymbolViewState.idleRegion);
-                    showRegions(true);
-                    showSymbols(false);
-                    showMusic(false);
-                    break;
-                case symbols:
-                    changeState(SymbolViewState.idleSymbolRecognition);
-                    showRegions(false);
-                    showSymbols(true);
-                    showMusic(false);
-                    break;
-                case music:
-                    changeState(SymbolViewState.idleMusicEditing);
-                    showRegions(false);
-                    showSymbols(false);
-                    showMusic(true);
-                    break;
-            }
-            return;
-        }
-
-        try {
-            KeyEvent keyEvent = null;
-            MouseEvent mouseEvent = null;
-            if (t.getContent() instanceof MouseEvent) {
-                mouseEvent = (MouseEvent) t.getContent();
-            } else if (t.getContent() instanceof KeyEvent) {
-                keyEvent = (KeyEvent) t.getContent();
-            }
-            switch (state) {
-                case idleRegion:
-                    if (mouseEvent != null && mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED && mouseEvent.isPrimaryButtonDown() && mouseEvent.getClickCount() == 1) {
-                        mouseEvent.consume();
-                        createNewRegionRectangle(mouseEvent);
-                        changeState(SymbolViewState.creatingRegion);
-                    } else if (t instanceof RegionEditEvent) {
-                        editingRegion = ((RegionEditEvent)t).getRegionView();
-                        bringToTop(editingRegion); // if not, the handlers do not receive drag events when overlapped with other region
-                        editingRegion.beginEdit();
-                        ((RegionEditEvent)t).getContent().consume();
-                        changeState(SymbolViewState.editingRegion);
-                    }
-                    break;
-                case creatingRegion:
-                    if (mouseEvent != null) {
-                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                            resizeNewRegionRectangle(mouseEvent);
-                            mouseEvent.consume();
-                        } else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED) {
-                            endNewRegionRectangle();
-                            mouseEvent.consume();
-                            changeState(SymbolViewState.idleRegion);
-                        }
-                    }
-                    break;
-                case editingRegion:
-                    if (mouseEvent != null && mouseEvent.isPrimaryButtonDown()) {
-                        editingRegion.acceptEdit();
-                        changeState(SymbolViewState.idleRegion);
-                        mouseEvent.consume();
-                    } else if (keyEvent != null) {
-                        if (keyEvent.getCode() == KeyCode.ENTER) {
-                            editingRegion.acceptEdit(); //TODO Comando
-                            changeState(SymbolViewState.idleRegion);
-                            keyEvent.consume();
-                        } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
-                            editingRegion.cancelEdit();
-                            changeState(SymbolViewState.idleRegion);
-                            keyEvent.consume();
-                        } else if (keyEvent.getCode() == KeyCode.DELETE) {
-                            omrPage.removeRegion(editingRegion.getOmrRegion());
-                            changeState(SymbolViewState.idleRegion);
-                            keyEvent.consume();
-                        }
-                    }
-                    break;
-                case idleSymbolRecognition:
-                    if (t instanceof SymbolEditEvent) {
-                        editingSymbol = ((SymbolEditEvent)t).getSymbolView();
-                        RegionView regionView = (RegionView) editingSymbol.getParent();
-                        regionView.bringToTop(editingSymbol); // if not, the handlers do not receive drag events when overlapped with other region
-                        editingSymbol.beginEdit();
-                        ((SymbolEditEvent)t).getContent().consume();
-                        changeState(SymbolViewState.editingSymbol);
-                    }
-                    break;
-                case editingSymbol:
-                    if (mouseEvent != null && mouseEvent.isPrimaryButtonDown()) {
-                        editingSymbol.acceptEdit();
-                        changeState(SymbolViewState.idleSymbolRecognition);
-                        mouseEvent.consume();
-                    } else if (keyEvent != null) {
-                        if (keyEvent.getCode() == KeyCode.ENTER) {
-                            editingSymbol.acceptEdit(); //TODO Comando
-                            changeState(SymbolViewState.idleSymbolRecognition);
-                            keyEvent.consume();
-                        } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
-                            editingSymbol.cancelEdit();
-                            changeState(SymbolViewState.idleSymbolRecognition);
-                            keyEvent.consume();
-                        } else if (keyEvent.getCode() == KeyCode.DELETE) {
-                            editingSymbol.getRegionView().getOmrRegion().removeSymbol(editingSymbol.getOmrSymbol());
-                            changeState(SymbolViewState.idleSymbolRecognition);
-                            keyEvent.consume();
-                        }
-                    }
-                    break;
-            }
-        } catch (IM3Exception e) {
-            ShowError.show(OMRApp.getMainStage(), "Cannot handle event " + e, e);
-        }
-    }*/
 
     protected void bringToTop(RegionViewType editingRegion) {
         this.getChildren().remove(editingRegion);

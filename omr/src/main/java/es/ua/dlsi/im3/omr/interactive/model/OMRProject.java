@@ -1,28 +1,28 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
-import es.ua.dlsi.im3.core.score.Time;
-import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
-import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
+import es.ua.dlsi.im3.core.score.layout.fonts.PatriarcaFont;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.IGraphicalToScoreSymbolFactory;
-import es.ua.dlsi.im3.omr.interactive.OMRMainController;
 import es.ua.dlsi.im3.omr.mensuralspanish.*;
 import es.ua.dlsi.im3.omr.model.pojo.Instrument;
 import es.ua.dlsi.im3.omr.model.pojo.Page;
 import es.ua.dlsi.im3.omr.model.pojo.Project;
-import es.ua.dlsi.im3.omr.segmentation.DummyPageSegmenter;
-import es.ua.dlsi.im3.omr.segmentation.IPageSegmenter;
-import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
+import es.ua.dlsi.im3.omr.classifiers.traced.BimodalDatasetReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class OMRProject {
     /**
@@ -30,20 +30,19 @@ public class OMRProject {
      */
     static final String IMAGES_FOLDER = "images";
 
-    private File trainingFile;
     File projectFolder;
     File imagesFolder;
-    File xmlFile;
-
-    NotationType notationType;
 
     ScoreSong scoreSong;
-    //OMRMainController omrController;
-    private ISymbolRecognizer recognizer;
-    private ImitationLayout imitationLayout;
-    private ScoreSongView scoreSongView;
-    IGraphicalToScoreSymbolFactory graphicalToScoreSymbolFactory;
-    //IPageSegmenter pageSegmenter;
+    /**
+     * Default notation type used for the staff creation
+     */
+    NotationType notationType;
+
+    /**
+     * Default layout font for manuscript
+     */
+    LayoutFont manuscriptLayoutFont;
 
     /**
      * Used by GUI for binding
@@ -52,9 +51,17 @@ public class OMRProject {
     private ObservableSet<OMRInstrument> instrumentsProperty;
 
 
-    public OMRProject(File projectXMLFile) throws IM3Exception {
-        //TODO - loading
-    }
+    //TODO No sé si esto de bajo se usa
+    //OMRMainController omrController;
+    private ISymbolRecognizer recognizer;
+    private ImitationLayout imitationLayout;
+    private ScoreSongView scoreSongView;
+    IGraphicalToScoreSymbolFactory graphicalToScoreSymbolFactory;
+    private File trainingFile;
+
+
+    //IPageSegmenter pageSegmenter;
+
 
     public OMRProject(File projectFolder, File trainingFile) throws IM3Exception {
         //this.omrController = controller;
@@ -64,10 +71,11 @@ public class OMRProject {
         }
         imagesFolder = new File(projectFolder, IMAGES_FOLDER);
         imagesFolder.mkdirs();
-        this.xmlFile = new File(projectFolder, InputOutput.createXMLFilename(projectFolder));
 
         pagesProperty = FXCollections.observableArrayList();
         instrumentsProperty = FXCollections.observableSet();
+
+        scoreSong = new ScoreSong();
 
         //-- POR AQUI
         /*TODO YA
@@ -84,6 +92,7 @@ public class OMRProject {
         scoreSong = new ScoreSong(new BinaryDurationEvaluator(new Time(2)));
         createScoreView();*/
     }
+
 
     private void createScoreView() throws IM3Exception {
         //TODO Fonts
@@ -150,8 +159,20 @@ public class OMRProject {
         return imagesFolder;
     }
 
+    public URL getImagesFolderURL() {
+        try {
+            return imagesFolder.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new IM3RuntimeException(e);
+        }
+    }
+
     public ScoreSong getScoreSong() {
         return scoreSong;
+    }
+
+    public void setScoreSong(ScoreSong scoreSong) {
+        this.scoreSong = scoreSong;
     }
 
     /*public OMRMainController getOMRController() {
@@ -220,7 +241,20 @@ public class OMRProject {
         return notationType;
     }
 
-    public void setNotationType(NotationType notationType) {
+    public void setNotationType(NotationType notationType) throws IM3Exception {
         this.notationType = notationType;
+        if (notationType == NotationType.eMensural) {
+            manuscriptLayoutFont = new PatriarcaFont();
+        } else if (notationType == NotationType.eModern) {
+            manuscriptLayoutFont = new BravuraFont();
+        } else {
+            throw new IM3Exception("Unuspported notation type '" + notationType + "'");
+        }
+
+    }
+
+
+    public LayoutFont getManuscriptLayoutFont() {
+        return manuscriptLayoutFont;
     }
 }

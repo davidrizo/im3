@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.interactive.OMRMainController;
 import org.junit.Test;
 
@@ -104,7 +105,7 @@ public class OMRInputOutputTest {
         }
         File trainFile = TestFileUtils.getFile("/testdata/bimodal/bimodal_tiny.train");
         OMRProject project = new OMRProject(projectFolder, trainFile);
-
+        project.setNotationType(NotationType.eMensural);
         File image1 = TestFileUtils.createTempFile("img1.jpg");
         File image2 = TestFileUtils.createTempFile("img2.jpg");
         generate(image1);

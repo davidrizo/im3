@@ -3,16 +3,13 @@ package es.ua.dlsi.im3.omr.interactive.editpage.symbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
 import es.ua.dlsi.im3.omr.interactive.OMRApp;
 import es.ua.dlsi.im3.omr.interactive.editpage.PageBasedController;
 import es.ua.dlsi.im3.omr.interactive.model.*;
 import es.ua.dlsi.im3.omr.model.pojo.*;
-import es.ua.dlsi.im3.omr.symbolrecognition.ISymbolsRecognizer;
-import es.ua.dlsi.im3.omr.symbolrecognition.SymbolRecognizerFactory;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.ISymbolsRecognizer;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolRecognizerFactory;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -24,15 +21,6 @@ public class PageSymbolsEditController extends PageBasedController<SymbolsPageVi
     @FXML
     ToolBar toolbarSymbols;
 
-    @FXML
-    RadioButton rbDrawBoundingBoxes;
-
-    @FXML
-    RadioButton rbDrawSymbols;
-
-    @FXML
-    ToggleGroup tgCreateSymbolMode;
-
     /**
      * It true, the symbol
      */
@@ -40,18 +28,12 @@ public class PageSymbolsEditController extends PageBasedController<SymbolsPageVi
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tgCreateSymbolMode.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                boundingBoxMode = newValue == rbDrawBoundingBoxes;
-            }
-        });
-        ShowMessage.show(OMRApp.getMainStage(), "TO-DO Dibujar símbolos con bounding box o calcandos");
     }
 
     @Override
-    protected SymbolsPageView createPageView(OMRPage omrPage, PageBasedController<SymbolsPageView> symbolsPageViewPageBasedController, ReadOnlyDoubleProperty widthProperty) {
-        return new SymbolsPageView(omrPage, this, widthProperty);
+    protected SymbolsPageView createPageView(OMRPage omrPage, PageBasedController<SymbolsPageView> symbolsPageViewPageBasedController, ReadOnlyDoubleProperty widthProperty) throws IM3Exception {
+        //return new SymbolsPageView(omrPage, this, widthProperty);
+        return new SymbolsPageView(omrPage);
     }
 
 
@@ -72,7 +54,7 @@ public class PageSymbolsEditController extends PageBasedController<SymbolsPageVi
 
         // recognize
         try {
-            recognizer.recognize(pojoPages);
+            recognizer.recognize(dashboard.getModel().getCurrentProject().getImagesFolderURL(), pojoPages);
         } catch (IM3Exception e) {
             e.printStackTrace();
             ShowError.show(OMRApp.getMainStage(), "Cannot recognize symbols", e);
@@ -87,11 +69,11 @@ public class PageSymbolsEditController extends PageBasedController<SymbolsPageVi
             for (Region pojoRegion: pojoPage.getRegions()) {
                 OMRRegion omrRegion = omrPage.findRegion(pojoRegion);
                 if (omrRegion == null) {
-                    throw new IM3RuntimeException("OMRRegion not found for POJO region " + pojoRegion);
+                    throw new IM3RuntimeException("OMRRegion not found for POJO symbolsRegionView " + pojoRegion);
                 }
                 omrRegion.clearSymbols();
                 for (Symbol symbol: pojoRegion.getSymbols()) {
-                    // use the y and height from the region
+                    // use the y and height from the symbolsRegionView
                     omrRegion.addSymbol(new OMRSymbol(symbol));
                 }
             }

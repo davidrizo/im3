@@ -18,9 +18,8 @@ package es.ua.dlsi.im3.omr.mensuralspanish;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
-import es.ua.dlsi.im3.omr.traced.IBimodalDatasetReader;
+import es.ua.dlsi.im3.omr.classifiers.traced.IBimodalDatasetReader;
 
 /**
  *

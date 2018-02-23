@@ -3,14 +3,10 @@ package es.ua.dlsi.im3.omr.interactive.editpage.music;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.conversions.MensuralToModern;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
-import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.omr.interactive.DashboardController;
 import es.ua.dlsi.im3.omr.interactive.OMRApp;
-import es.ua.dlsi.im3.omr.interactive.editpage.IPagesController;
 import es.ua.dlsi.im3.omr.interactive.editpage.PageBasedController;
 import es.ua.dlsi.im3.omr.interactive.model.OMRPage;
 import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
@@ -22,15 +18,13 @@ import es.ua.dlsi.im3.omr.transduction.ISemanticToScoreSongTransducer;
 import es.ua.dlsi.im3.omr.transduction.SemanticToScoreSongTransducerFactory;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.*;
 
-public class PageMusicEditController extends PageBasedController<TranscriptionPageView> {
+public class PageMusicEditController extends PageBasedController<MusicEditPageView> {
 
     @FXML
     ToolBar toolbarMusic;
@@ -52,7 +46,7 @@ public class PageMusicEditController extends PageBasedController<TranscriptionPa
             // Convert agnostic sequence to semantic sequence
             IAgnosticToSemanticTransducer agnosticToSemanticTransducer = AgnosticToSemanticTransducerFactory.getInstance().create();
             List<List<List<GraphicalToken>>> agnosticSequence = new LinkedList<>();
-            for (Map.Entry<OMRPage, TranscriptionPageView> entry : pages.entrySet()) {
+            for (Map.Entry<OMRPage, MusicEditPageView> entry : pages.entrySet()) {
                 List<List<GraphicalToken>> pagesAgnosticSequence = new LinkedList<>();
                 OMRPage page = entry.getKey();
                 List<OMRRegion> regions = page.getRegionList();
@@ -95,7 +89,7 @@ public class PageMusicEditController extends PageBasedController<TranscriptionPa
             mensuralToModern.merge(mensural, modern);
 
             // TODO: 19/12/17 Estoy poniendo todo en el primer pentagrama
-            TranscriptionPageView transcriptionPageView = pages.entrySet().iterator().next().getValue();
+            MusicEditPageView transcriptionPageView = pages.entrySet().iterator().next().getValue();
             transcriptionPageView.setScoreSong(mensural);
         } catch (IM3Exception e) {
             e.printStackTrace();
@@ -104,8 +98,8 @@ public class PageMusicEditController extends PageBasedController<TranscriptionPa
     }
 
     @Override
-    protected TranscriptionPageView createPageView(OMRPage omrPage, PageBasedController pageBasedController, ReadOnlyDoubleProperty widthProperty) {
-        return new TranscriptionPageView(omrPage);
+    protected MusicEditPageView createPageView(OMRPage omrPage, PageBasedController pageBasedController, ReadOnlyDoubleProperty widthProperty) throws IM3Exception {
+        return new MusicEditPageView(omrPage);
     }
 
 }

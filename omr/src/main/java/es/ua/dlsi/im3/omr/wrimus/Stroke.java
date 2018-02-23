@@ -1,6 +1,6 @@
 package es.ua.dlsi.im3.omr.wrimus;
 
-import es.ua.dlsi.im3.omr.traced.Coordinate;
+import es.ua.dlsi.im3.omr.classifiers.traced.Coordinate;
 
 import java.util.LinkedList;
 import java.util.List;

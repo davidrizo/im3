@@ -174,7 +174,7 @@ public class PageThumbnailView extends BorderPane {
             });
 
             //TODo Modelo
-            Set<OMRInstrument> omrInstruments = OMRModel.getInstance().getCurrentProject().instrumentsProperty();
+            Set<OMRInstrument> omrInstruments = pagesController.getModel().getCurrentProject().instrumentsProperty();
 
             for (OMRInstrument instrument: omrInstruments) {
                 MenuItem menuInstrument = new MenuItem(instrument.getName());
@@ -189,7 +189,7 @@ public class PageThumbnailView extends BorderPane {
             addInstrument.setOnAction(event1 -> {
                 String name = ShowInput.show(OMRApp.getMainStage(), "New instrument", "Introduce the instrument name");
                 if (name != null) {
-                    OMRInstrument instrument = OMRModel.getInstance().getCurrentProject().addInstrument(name);
+                    OMRInstrument instrument = pagesController.getModel().getCurrentProject().addInstrument(name);
                     addInstrumentToPage(instrument);
                 }
             });

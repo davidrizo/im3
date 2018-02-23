@@ -15,16 +15,16 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 
-public abstract class RegionBaseView<PageViewType extends RegionBasedPageView> extends Group {
+public abstract class RegionBaseView<OwnerType> extends Group {
     protected static final double FILL_OPACITY = 0.2;
     protected final Text label;
-    protected final PageViewType pageView;
+    protected final OwnerType ownerView;
     protected OMRRegion omrRegion;
     protected DraggableRectangle rectangle;
 
-    public RegionBaseView(PageViewType pageView, OMRRegion omrRegion) {
+    public RegionBaseView(OwnerType ownerView, OMRRegion omrRegion) {
         this.setFocusTraversable(true); // to receive key events
-        this.pageView = pageView;
+        this.ownerView = ownerView;
         this.omrRegion = omrRegion;
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.hideHandles();

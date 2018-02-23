@@ -75,6 +75,7 @@ public class DashboardController implements Initializable {
 
     StringProperty title;
 
+    OMRModel omrModel;
     CommandManager commandManager;
     private List<OMRPage> openedPages;
     private OMRPage selectedPage;
@@ -82,12 +83,13 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         toolbarPageEditStep.setDisable(true);
-        toolbarPages.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
+        omrModel = new OMRModel();
+        toolbarPages.disableProperty().bind(omrModel.currentProjectProperty().isNull());
 
         tbPages.disableProperty().bind(tbPages.selectedProperty());
 
-        menuSave.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
-        //menuProject.disableProperty().bind(OMRModel.getInstance().currentProjectProperty().isNull());
+        menuSave.disableProperty().bind(omrModel.currentProjectProperty().isNull());
+        //menuProject.disableProperty().bind(omrModel.currentProjectProperty().isNull());
         //TODO menuAddImage.disableProperty().bind(tbPages.selectedProperty().not());
         //TODO menuDeleteImage.disableProperty().bind(lvPages.getSelectionModel().selectedItemProperty().isNull());
 
@@ -149,8 +151,8 @@ public class DashboardController implements Initializable {
                 if (dlg.getTrainingFile() == null) {
                     throw new IM3Exception("Must select a training file");
                 }
-                OMRModel.getInstance().createProject(dlg.getProjectFolder(), dlg.getTrainingFile(), dlg.getNotationType());
-                title.setValue(OMRModel.getInstance().getCurrentProject().getName());
+                omrModel.createProject(dlg.getProjectFolder(), dlg.getTrainingFile(), dlg.getNotationType());
+                title.setValue(omrModel.getCurrentProject().getName());
                 openPagesView();
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -162,16 +164,22 @@ public class DashboardController implements Initializable {
 
     @FXML
     public void handleOpenProject(ActionEvent actionEvent) {
-        NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "Open project", false);
-        if (dlg.show()) {
-            //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
-            try {
-                OMRModel.getInstance().openProject(dlg.getProjectFolder(), dlg.getTrainingFile());
-                title.setValue(OMRModel.getInstance().getCurrentProject().getName());
-                openPagesView();
-            } catch (Throwable e) {
-                e.printStackTrace();
-                ShowError.show(OMRApp.getMainStage(), "Cannot open project", e);
+        boolean open = true;
+        if (omrModel.getCurrentProject() != null) {
+            open = doClose();
+        }
+        if (open) {
+            NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "Open project", false);
+            if (dlg.show()) {
+                //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
+                try {
+                    omrModel.openProject(dlg.getProjectFolder(), dlg.getTrainingFile());
+                    title.setValue(omrModel.getCurrentProject().getName());
+                    openPagesView();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    ShowError.show(OMRApp.getMainStage(), "Cannot open project", e);
+                }
             }
         }
     }
@@ -198,8 +206,8 @@ public class DashboardController implements Initializable {
         tgDashboardButtons.selectToggle(tbPages);
         try {
             Pair<PagesController, Parent> pair = ViewLoader.loadView("pages.fxml");
-            setMainPane(pair.getY());
             pair.getX().setDashboard(this);
+            setMainPane(pair.getY());
             //pair.getX().initMenus(menuItemUndo, menuItemRedo);
         } catch (IOException e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot load pages screen", e);
@@ -214,7 +222,7 @@ public class DashboardController implements Initializable {
 
     public void save() {
         try {
-            OMRModel.getInstance().save();
+            omrModel.save();
             commandManager.resetNeedsSave();
         } catch (IM3Exception e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot save project", e);
@@ -227,15 +235,37 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void handleClose() {
+        doClose();
+    }
+
+    /**
+     * @return True if closed
+     */
+    private boolean doClose() {
+        boolean close = false;
         //TODO Preguntar si salvar
         if (commandManager.commandAppliedProperty().get()) {
             if (ShowConfirmation.show(OMRApp.getMainStage(), "This project has been modified, do you really want to close without save?")) {
-                borderPane.setCenter(null);
-                tgDashboardButtons.selectToggle(null);
-                OMRModel.getInstance().clearProject();
-                OMRApp.getMainStage().setTitle("MURET");
+                close = true;
             }
+        } else {
+            close = true;
         }
+
+        if (close) {
+            borderPane.setCenter(null);
+            tgDashboardButtons.selectToggle(null);
+            omrModel.clearProject();
+            OMRApp.getMainStage().setTitle("MURET");
+
+            if (openedPages != null) {
+                openedPages.clear();
+            }
+            selectedPage = null;
+            toolbarPages.getItems().clear();
+            toolbarPages.getItems().add(tbPages);
+        }
+        return close;
     }
 
 
@@ -257,7 +287,7 @@ public class DashboardController implements Initializable {
 
             // ask for all pages containing the same instruments in this page view
             List<OMRPage> pagesToOpen = new ArrayList<>();
-            for (OMRPage page: OMRModel.getInstance().getCurrentProject().pagesProperty()) {
+            for (OMRPage page: omrModel.getCurrentProject().pagesProperty()) {
                 for (OMRInstrument instrument: pageView.getOmrPage().getInstrumentList()) {
                     if (page.containsInstrument(instrument)) {
                         pagesToOpen.add(page);
@@ -320,7 +350,7 @@ public class DashboardController implements Initializable {
         return commandManager;
     }
 
-    private <ControllerType extends IPagesController> void editPage(String fxml) throws IOException {
+    private <ControllerType extends IPagesController> void editPage(String fxml) throws IOException, IM3Exception {
         Pair<ControllerType, Parent> pair = ViewLoader.loadView(fxml);
         setMainPane(pair.getY());
         pair.getX().setDashboard(this);
@@ -332,4 +362,7 @@ public class DashboardController implements Initializable {
     }
 
 
+    public OMRModel getModel() {
+        return omrModel;
+    }
 }

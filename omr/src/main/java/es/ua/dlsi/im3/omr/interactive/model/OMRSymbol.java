@@ -12,6 +12,9 @@ public class OMRSymbol {
     StringProperty value;
     ObjectProperty<PositionInStaff> positionInStaff;
 
+    /**
+     * Relative to the retion
+     */
     DoubleProperty x;
     DoubleProperty y;
     DoubleProperty width;

@@ -17,20 +17,22 @@ import javafx.scene.text.Text;
 
 public class SymbolView extends Group {
     private static final String FONT_FAMILY = "Arial";
-    private final SymbolsPageView pageView;
+    private final SymbolsStaffView symbolsStaffView;
     OMRSymbol symbol;
-    SymbolsRegionView region;
-    VBox labels;
+    SymbolsRegionView symbolsRegionView;
+    /*VBox labels;
     Text labelSymbolType;
-    Text labelPosition;
+    Text labelPosition;*/
     DraggableRectangle rectangle;
+    Color color;
 
-    public SymbolView(SymbolsPageView pageView, SymbolsRegionView region, OMRSymbol symbol) {
+    public SymbolView(SymbolsStaffView symbolsStaffView, SymbolsRegionView region, OMRSymbol symbol, Color color) {
         this.symbol = symbol;
-        this.region = region;
-        this.pageView = pageView;
+        this.symbolsRegionView = region;
+        this.symbolsStaffView = symbolsStaffView;
+        this.color = color;
 
-        labels = new VBox(5);
+        /*labels = new VBox(5);
         labelSymbolType = new Text();
         labelPosition = new Text();
         labels.getChildren().add(labelSymbolType);
@@ -40,42 +42,49 @@ public class SymbolView extends Group {
         labelSymbolType.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 10));
         labelSymbolType.textProperty().bind(symbol.graphicalSymbolProperty().asString());
         labelPosition.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 9));
-        labelPosition.textProperty().bind(symbol.positionInStaffProperty().asString());
+        labelPosition.textProperty().bind(symbol.positionInStaffProperty().asString());*/
 
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.xProperty().bindBidirectional(symbol.xProperty());
         rectangle.yProperty().bindBidirectional(symbol.yProperty());
         rectangle.widthProperty().bindBidirectional(symbol.widthProperty());
         rectangle.heightProperty().bindBidirectional(symbol.heightProperty());
-        rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 0.2));
-        rectangle.setStroke(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 1));
+        //rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 0.2));
+        rectangle.setFill(buildColor(color, 0.2));
+        //rectangle.setStroke(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 1));
+        rectangle.setStroke(buildColor(color, 1));
         rectangle.setStrokeWidth(0);
         symbol.graphicalSymbolProperty().addListener(new ChangeListener<GraphicalSymbol>() {
             @Override
             public void changed(ObservableValue<? extends GraphicalSymbol> observable, GraphicalSymbol oldValue, GraphicalSymbol newValue) {
-                rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 0.2));
+                //rectangle.setFill(SymbolTypeColors.getInstance().getColor(symbol.getGraphicalSymbol(), 0.2));
+                rectangle.setFill(buildColor(color, 0.2));
             }
         });
-        labels.layoutXProperty().bind(rectangle.xProperty().add(-5)); // avoid problems to select
+        /*labels.layoutXProperty().bind(rectangle.xProperty().add(-5)); // avoid problems to select
         //labelSymbolType.yProperty().bind(rectangle.yProperty().add(rectangle.heightProperty()).add(3));
         labels.layoutYProperty().bind(rectangle.yProperty().add(5)); // avoid overlap on rectangle handles
         labelSymbolType.setRotate(-15);
-        labelPosition.setRotate(-15);
+        labelPosition.setRotate(-15);*/
 
 
         this.getChildren().add(rectangle);
         rectangle.hideHandles();
 
         rectangle.setOnMouseClicked(event -> {
-            pageView.handleEvent(new SymbolEditEvent(event, this));
+            symbolsStaffView.handleEvent(new SymbolEditEvent(event, this));
         });
 
-        labelSymbolType.setOnContextMenuRequested(event -> {
+        /*labelSymbolType.setOnContextMenuRequested(event -> {
             showSymbolTypeContextMenu(event.getScreenX(), event.getScreenY());
         });
         labelPosition.setOnContextMenuRequested(event -> {
             showPositionContextMenu(event.getScreenX(), event.getScreenY());
-        });
+        });*/
+    }
+
+    private Color buildColor(Color color, double opacity) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), opacity);
     }
 
     private void showPositionContextMenu(double screenX, double screenY) {
@@ -90,7 +99,7 @@ public class SymbolView extends Group {
                 contextMenu.hide();
             });
         }
-        contextMenu.show(labelSymbolType, screenX, screenY);
+        contextMenu.show(this, screenX, screenY);
     }
 
     private void showSymbolTypeContextMenu(double screenX, double screenY) {
@@ -104,7 +113,7 @@ public class SymbolView extends Group {
                 contextMenu.hide();
             });
         }
-        contextMenu.show(labelSymbolType, screenX, screenY);
+        contextMenu.show(this, screenX, screenY);
 
     }
 
@@ -128,6 +137,10 @@ public class SymbolView extends Group {
     }
 
     public SymbolsRegionView getRegionView() {
-        return region;
+        return symbolsRegionView;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

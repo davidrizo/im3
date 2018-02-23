@@ -9,20 +9,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.io.File;
 
 public class OMRModel {
-    public static OMRModel instance = null;
-
-    public static final OMRModel getInstance() {
-        synchronized (OMRModel.class) {
-            if (instance == null) {
-                instance = new OMRModel();
-            }
-        }
-        return instance;
-    }
-
     ObjectProperty<OMRProject> currentProject;
 
-    private OMRModel() {
+    public OMRModel() {
         currentProject = new SimpleObjectProperty<>();
     }
 

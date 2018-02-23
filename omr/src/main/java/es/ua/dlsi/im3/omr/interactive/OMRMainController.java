@@ -136,12 +136,12 @@ public class OMRMainController implements Initializable {
     }
 
     public void onStaffIdentified(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY) throws IM3Exception {
-        OMRPage page = getSelectedPage();
+        //20180215 OMRPage page = getSelectedPage();
         // we use the same pane for all marks, symbols, etc... to use absolute coordinates in all cases
-        OMRStaff staff = new OMRStaff(OMRModel.getInstance().getCurrentProject(), page, topLeftX, topLeftY, bottomRightX, bottomRightY);
-        page.addStaff(staff);
-        marksPane.getChildren().add(staff.getRoot());
-        btnIdentifyStaves.setSelected(false);
+        //20180215 OMRStaff staff = new OMRStaff(OMRModel.getInstance().getCurrentProject(), page, topLeftX, topLeftY, bottomRightX, bottomRightY);
+        //20180215 page.addStaff(staff);
+        //20180215 marksPane.getChildren().add(staff.getRoot());
+        //20180215 btnIdentifyStaves.setSelected(false);
     }
 
     private OMRPage getSelectedPage() {

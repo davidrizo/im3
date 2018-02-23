@@ -1,38 +1,43 @@
 package es.ua.dlsi.im3.omr.interactive.editpage.symbols;
 
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.interactive.editpage.RegionBaseView;
 import es.ua.dlsi.im3.omr.interactive.model.OMRRegion;
 import es.ua.dlsi.im3.omr.interactive.model.OMRSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.RegionType;
 import javafx.collections.ListChangeListener;
+import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SymbolsRegionView extends RegionBaseView<SymbolsPageView> {
+public class SymbolsRegionView extends Group {
+    //TODO Poner stripeColors como privado - que funcione symbolViewArrayList que ahora está vacío
+    /**
+     * Used to visually distinguish adjacent symbols
+     */
+    public static Color[] stripeColors = {Color.RED, Color.GREEN, Color.BLUE};
+    private static Color changedColor = Color.YELLOW;
+    private final OMRRegion omrRegion;
+    private final SymbolsStaffView symbolsStaffView;
     HashMap<OMRSymbol, SymbolView> symbolViewHashMap;
+    private ArrayList<SymbolView> symbolViewArrayList;
 
-    public SymbolsRegionView(SymbolsPageView pageView, OMRRegion omrRegion) {
-        super(pageView, omrRegion);
+    public SymbolsRegionView(SymbolsStaffView symbolsStaffView, OMRRegion omrRegion) {
+        this.symbolsStaffView = symbolsStaffView;
+        this.omrRegion = omrRegion;
         // symbols
         symbolViewHashMap = new HashMap<>();
+        symbolViewArrayList = new ArrayList<>();
         loadSymbols();
         initSymbolBinding();
     }
 
-
-    @Override
-    protected void onLabelContextMenuRequested(ContextMenuEvent event) {
-
-    }
-
-    @Override
-    protected void onRegionMouseClicked(MouseEvent event) {
-
-    }
 
     private void initSymbolBinding() {
         omrRegion.symbolListProperty().addListener(new ListChangeListener<OMRSymbol>() {
@@ -48,7 +53,7 @@ public class SymbolsRegionView extends RegionBaseView<SymbolsPageView> {
                             removeSymbolView(remitem);
                         }
                         for (OMRSymbol additem : c.getAddedSubList()) {
-                            createSymbolView(additem);
+                            createSymbolView(additem, changedColor);
                         }
                     }
                 }
@@ -58,61 +63,29 @@ public class SymbolsRegionView extends RegionBaseView<SymbolsPageView> {
 
     private void removeSymbolView(OMRSymbol remitem) {
         SymbolView symbolView = symbolViewHashMap.remove(remitem);
-        /*if (regionView == null) {
-            throw new IM3RuntimeException("Item " + remitem + " not found");
-        }*/
+        symbolViewArrayList.remove(symbolView);
         this.getChildren().remove(symbolView);
 
     }
 
     private void loadSymbols() {
+        int i=0;
         for (OMRSymbol omrSymbol: omrRegion.symbolListProperty()) {
-            createSymbolView(omrSymbol);
+            Color color = stripeColors[i % stripeColors.length];
+            createSymbolView(omrSymbol, color);
+            i++;
         }
     }
 
-    private void createSymbolView(OMRSymbol omrSymbol) {
-        SymbolView symbolView = new SymbolView(pageView, this, omrSymbol);
+    private void createSymbolView(OMRSymbol omrSymbol, Color color) {
+        SymbolView symbolView = new SymbolView(symbolsStaffView, this, omrSymbol, color);
         symbolViewHashMap.put(omrSymbol, symbolView);
+        symbolViewArrayList.add(symbolView);
         getChildren().add(symbolView);
-    }
-
-    private void showRegionTypeContextMenu(double screenX, double screenY) {
-        ContextMenu contextMenu = new ContextMenu();
-        for (RegionType regionType: RegionType.values()) {
-            MenuItem menuItem = new MenuItem(regionType.name());
-            contextMenu.getItems().add(menuItem);
-            menuItem.setOnAction(event -> {
-                omrRegion.setRegionType(regionType);
-                contextMenu.hide();
-            });
-        }
-        contextMenu.show(label, screenX, screenY);
-    }
-
-    public void beginEdit() {
-        //this.getParent().requestFocus();
-        rectangle.setStrokeWidth(3);
-        rectangle.beginEdit();
-    }
-
-    public void acceptEdit() {
-        rectangle.setStrokeWidth(0);
-        rectangle.endEdit(true);
-    }
-
-    public void cancelEdit() {
-        rectangle.setStrokeWidth(0);
-        rectangle.endEdit(false);
     }
 
     public OMRRegion getOmrRegion() {
         return omrRegion;
-    }
-
-    public void showRegionBoundingBox(boolean show) {
-        rectangle.setVisible(show);
-        label.setVisible(show);
     }
 
     public void showSymbols(boolean show) {
@@ -125,5 +98,9 @@ public class SymbolsRegionView extends RegionBaseView<SymbolsPageView> {
         this.getChildren().remove(symbolView);
         this.getChildren().add(symbolView); // put on top
 
+    }
+
+    public ArrayList<SymbolView> getSymbolViewArrayList() {
+        return symbolViewArrayList;
     }
 }

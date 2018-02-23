@@ -10,6 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>typographydesignhelper</artifactId>
+    <properties>
+        <mainClass>es.ua.dlsi.grfia.im3.typographydesignhelper.TypographyDesignHelperApp</mainClass>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -20,8 +23,8 @@
     </dependencies>
 
     <build>
+        <!-- add all JARS in target JAR -->
         <plugins>
-            <!-- add all JARS in target JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -33,6 +36,11 @@
                     </descriptorRefs>
                     <finalName>${project.artifactId}-${project.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
+                    <archive>
+                        <manifest>
+                            <mainClass>${mainClass}</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
                 <executions>
                     <execution>

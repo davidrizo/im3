@@ -19,8 +19,8 @@ package es.ua.dlsi.im3.omr.model;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.PositionedSymbolType;
-import es.ua.dlsi.im3.omr.traced.Point;
-import es.ua.dlsi.im3.omr.traced.Stroke;
+import es.ua.dlsi.im3.omr.classifiers.traced.Point;
+import es.ua.dlsi.im3.omr.classifiers.traced.Stroke;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

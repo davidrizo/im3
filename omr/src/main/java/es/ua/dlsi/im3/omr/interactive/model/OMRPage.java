@@ -1,7 +1,10 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.omr.model.pojo.Instrument;
 import es.ua.dlsi.im3.omr.model.pojo.Page;
 import es.ua.dlsi.im3.omr.model.pojo.Region;
@@ -19,6 +22,8 @@ import javax.imageio.ImageReader;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -254,5 +259,21 @@ public class OMRPage {
             }
         }
         return null;
+    }
+
+    public URL getImageFileURL() {
+        try {
+            return imageFile.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new IM3RuntimeException(e);
+        }
+    }
+
+    public LayoutFont getManuscriptLayoutFont() {
+        return omrProject.getManuscriptLayoutFont();
+    }
+
+    public NotationType getNotationType() {
+        return omrProject.getNotationType();
     }
 }

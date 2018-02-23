@@ -6,7 +6,7 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.graphics.Shape;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
-import es.ua.dlsi.im3.omr.traced.Coordinate;
+import es.ua.dlsi.im3.omr.classifiers.traced.Coordinate;
 import javafx.scene.Node;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;

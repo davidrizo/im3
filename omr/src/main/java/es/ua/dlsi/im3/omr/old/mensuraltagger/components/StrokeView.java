@@ -16,8 +16,8 @@
  */
 package es.ua.dlsi.im3.omr.old.mensuraltagger.components;
 
-import es.ua.dlsi.im3.omr.traced.Point;
-import es.ua.dlsi.im3.omr.traced.Stroke;
+import es.ua.dlsi.im3.omr.classifiers.traced.Point;
+import es.ua.dlsi.im3.omr.classifiers.traced.Stroke;
 import javafx.collections.ListChangeListener;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;

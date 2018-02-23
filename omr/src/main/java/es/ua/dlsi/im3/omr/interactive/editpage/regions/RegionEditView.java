@@ -16,7 +16,7 @@ public class RegionEditView extends RegionBaseView<RegionEditPageView> {
     }
 
     protected void onRegionMouseClicked(MouseEvent event) {
-        pageView.handleEvent(new RegionEditEvent(event, this));
+        ownerView.handleEvent(new RegionEditEvent(event, this));
     }
 
     protected void onLabelContextMenuRequested(ContextMenuEvent event) {

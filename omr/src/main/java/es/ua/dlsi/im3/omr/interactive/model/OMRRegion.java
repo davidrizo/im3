@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.interactive.model;
 
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.model.pojo.Region;
 import es.ua.dlsi.im3.omr.model.pojo.RegionType;
 import es.ua.dlsi.im3.omr.model.pojo.Symbol;

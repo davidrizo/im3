@@ -2,12 +2,11 @@ package es.ua.dlsi.im3.omr.language.modern;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
+import es.ua.dlsi.im3.omr.io.AgnosticExporter;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
-import es.ua.dlsi.im3.omr.primus.conversions.MEI2GraphicSymbols;
 import es.ua.dlsi.im3.omr.primus.conversions.ScoreGraphicalDescription;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public class GraphicalModernSymbolsAutomatonTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         ScoreSong song = importer.importSong(file);
 
-        MEI2GraphicSymbols mei2GraphicSymbols = new MEI2GraphicSymbols();
+        AgnosticExporter mei2GraphicSymbols = new AgnosticExporter();
         ScoreGraphicalDescription scoreGraphicalDescription = mei2GraphicSymbols.convert(song);
         List<GraphicalToken> graphicalSymbols = scoreGraphicalDescription.getTokens();
 

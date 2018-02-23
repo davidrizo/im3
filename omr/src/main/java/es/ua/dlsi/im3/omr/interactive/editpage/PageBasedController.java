@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.interactive.editpage;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.gui.javafx.JavaFXUtils;
 import es.ua.dlsi.im3.omr.interactive.DashboardController;
@@ -17,7 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Contains a list of polymorphic PageViews inside a ScrollPane with the possibility of focusing a page
+ * Contains a list of polymorphic PageViews inside a ScrollPane with the possibility of focusing a page.
+ * A PageView may be anything (inheriting JavaFX Node)
  * @param <PageViewType>
  */
 public abstract class PageBasedController<PageViewType extends Node> implements Initializable, IPagesController {
@@ -44,14 +46,14 @@ public abstract class PageBasedController<PageViewType extends Node> implements 
     }
 
     @Override
-    public void setPages(OMRPage omrPage, List<OMRPage> pagesToOpen) {
+    public void setPages(OMRPage omrPage, List<OMRPage> pagesToOpen) throws IM3Exception {
         pages = new HashMap<>();
 
         // create the buttons
         createImageViews(pagesToOpen, omrPage);
     }
 
-    private void createImageViews(List<OMRPage> pagesToOpen, OMRPage selectedOMRPage) {
+    private void createImageViews(List<OMRPage> pagesToOpen, OMRPage selectedOMRPage) throws IM3Exception {
         selectedPageView = null;
         for (OMRPage omrPage : pagesToOpen) {
             PageViewType pageView = createPageView(omrPage, this, vboxPages.widthProperty());
@@ -72,7 +74,7 @@ public abstract class PageBasedController<PageViewType extends Node> implements 
         focus(selectedPageView);
     }
 
-    protected abstract PageViewType createPageView(OMRPage omrPage, PageBasedController<PageViewType> pageViewTypePageBasedController, ReadOnlyDoubleProperty widthProperty);
+    protected abstract PageViewType createPageView(OMRPage omrPage, PageBasedController<PageViewType> pageViewTypePageBasedController, ReadOnlyDoubleProperty widthProperty) throws IM3Exception;
 
     private void focus(PageViewType selectedPageView) {
         boolean found = false;

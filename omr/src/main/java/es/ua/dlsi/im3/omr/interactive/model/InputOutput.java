@@ -3,6 +3,9 @@ package es.ua.dlsi.im3.omr.interactive.model;
 import com.thoughtworks.xstream.XStream;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.model.pojo.*;
 
@@ -18,6 +21,10 @@ import java.util.logging.Logger;
 public class InputOutput {
     static String createXMLFilename(File projectFolder) {
         return FileUtils.getFileWithoutPath(projectFolder.getName()) + ".mrt";
+    }
+
+    static String createMEIFilename(File projectFolder) {
+        return FileUtils.getFileWithoutPath(projectFolder.getName()) + ".mei";
     }
 
     public void save(OMRProject project) throws ExportException {
@@ -38,6 +45,12 @@ public class InputOutput {
         } catch (IOException e) {
             throw new ExportException(e);
         }
+
+        if (project.getScoreSong() != null) {
+            File meiFile = new File(projectFolder, createMEIFilename(projectFolder));
+            MEISongExporter meiSongExporter = new MEISongExporter();
+            meiSongExporter.exportSong(meiFile, project.getScoreSong());
+        }
     }
 
     public OMRProject load(File projectFolder, File trainingFile) throws IM3Exception {
@@ -49,6 +62,7 @@ public class InputOutput {
         Project pojoProject = (Project) xStream.fromXML(xmlFile);
 
         OMRProject omrProject = new OMRProject(projectFolder, trainingFile);
+        omrProject.setNotationType(pojoProject.getNotationType());
         ArrayList<Page> pagesList = new ArrayList<>(pojoProject.getPages());
         pagesList.sort(new Comparator<Page>() {
             @Override
@@ -84,6 +98,16 @@ public class InputOutput {
                 page.addStaff(staff);
             }
         }
+
+        String meiFilename = createMEIFilename(projectFolder);
+        File meiFile = new File(projectFolder, meiFilename);
+        if (meiFile.exists()) {
+            // just read it if it exists
+            MEISongImporter meiSongImporter = new MEISongImporter();
+            ScoreSong scoreSong = meiSongImporter.importSong(meiFile);
+            omrProject.setScoreSong(scoreSong);
+        }
         return omrProject;
     }
+
 }

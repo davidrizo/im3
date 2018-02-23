@@ -42,7 +42,7 @@
             </ToolBar>
             <ToolBar prefHeight="41.0" prefWidth="275.0">
               <items>
-                <Button mnemonicParsing="false" text="Save JSON" />
+                <Button disable="true" mnemonicParsing="false" text="Save JSON" />
                   <Label fx:id="labelJSONFilename" text="&lt;json file name&gt;" />
               </items>
             </ToolBar>
