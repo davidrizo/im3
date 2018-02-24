@@ -2,8 +2,7 @@ package es.ua.dlsi.im3.core.score.io.musicxml;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
-import es.ua.dlsi.im3.core.score.ScorePart;
-import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.ISongExporter;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 
@@ -14,6 +13,7 @@ import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 public class MusicXMLExporter implements ISongExporter {
@@ -193,7 +193,7 @@ public class MusicXMLExporter implements ISongExporter {
 				 // TODO: get the real instrument for the part
 				  XMLExporterHelper.startEndTextContentSingleLine(sb,4,"instrument-name","Piano");
                  XMLExporterHelper.end(sb,3,"score-instrument");
-                // TODO: MIDI stuff here, if available: channel, program, volume, pan (see simple1.xml)
+                // No MIDI stuff : channel, program, volume, pan (see simple1.xml)
                 XMLExporterHelper.end(sb, 2, "score-part");
             }
         }
@@ -201,32 +201,30 @@ public class MusicXMLExporter implements ISongExporter {
     }
 
     private void exportParts() throws Exception {
-        TreeSet<Bar> bars = scoreSong.getMeasures();
-        //ScorePart part = movement.getScorePart(ip);
+        Collection<Measure> measures = scoreSong.getMeasures();
+        //ScorePart part = movement.getScorePart(ip); // PIERRE: what is this??
         boolean harmoniesExported = false;
-        for (ScorePart part: song.getPartsSortedByNumberAsc()) {
-			/*if (!part.isMonophonic()) {
-				throw new Exception("The voice is not monophonic");
-			}*/
+        for (ScorePart part: scoreSong.getPartsSortedByNumberAsc()) {
+            /* TODO
             if (!harmoniesExported) {
                 // in order to export the harmonies, we create a PlayedNote decorator that contains the harmony. This object is
                 // set only for the first note just after (or at) the onset of a given harmony
-                for (Harmony harmony : song.getHarmonies()) {
-                    ScoreSoundingElement snote = part.getFirstScoreSoundingElementAtTime(harmony.getTime());
-                    snote.addDecoration(new _HarmomyNoteDecoration(harmony));
-                    //System.out.println("Dec " + harmony.toString());
+                for (Harmony harmony : scoreSong.getHarmonies()) {
+                    // TODO: not very clear this will work... was
+                    // ScoreSoundingElement snote = part.getFirstScoreSoundingElementAtTime(harmony.getTime());
+                    AtomFigure snote = part.getAtomFiguresWithOnsetWithin(harmony.getTime(),harmony.getTime()).get(0);
+                    // TODO im2 : snote.addDecoration(new _HarmomyNoteDecoration(harmony));
                 }
                 harmoniesExported = true;
-            }
+            } */
 
-            if (!part.getScoreSoundingElements().isEmpty()) {
-                out.print("<part id=\"");
-                out.print(computePartID(part));
-                out.println("\">");
-                boolean F4Clef = part.needsF4Clef();
-                for (Bar bar : bars) {
-                    openBar(F4Clef, bar, part);
-                    TreeSet<ScoreSoundingElement> snotes = part.getScoreSoundingElementsWithOnsetWithin(bar);
+            // part.getAtomFigures()? part.getAtomPitches()? part.getAtomsSortedByTime()?
+            if (!part. getAtomsSortedByTime().isEmpty()) {
+                XMLExporterHelper.start(sb, 1,"part","id",computePartID(part));
+                // TODO im2 : boolean F4Clef = part.needsF4Clef();
+                for (Measure measure : measures) {
+                    openBar(F4Clef, measure, part);
+                    TreeSet<ScoreSoundingElement> snotes = part.getScoreSoundingElementsWithOnsetWithin(measure);
                     //System.err.println("Bar " + bar.toString() + " onset " + snotes.toString());
                     for (ScoreSoundingElement note: snotes) {
                         _HarmomyNoteDecoration hnd = (_HarmomyNoteDecoration) note.getDecoration(_HarmomyNoteDecoration.class);
@@ -289,6 +287,90 @@ public class MusicXMLExporter implements ISongExporter {
             }
         }
     }
+
+        /**
+         * @param bar
+         * @param part
+         * @return Divisor
+         * @throws IM2Exception
+         */
+        private void openBar(boolean useFClef, Bar bar, ScorePart part) throws IM2Exception {
+            out.print("<measure number=\"");
+            out.print(bar.getNumber());
+            out.println("\">");
+
+            out.println("<attributes>");
+            out.print("<divisions>");
+            //int divisions = (int) ((double)ts.getNumerator() / (double)song.findMinimumFigure(bar).getRatio()); //TODO Ver qu� pasa con compases compuestos
+            out.print( divisions );
+            out.println("</divisions>"); // use always the same resolution (divisions of quarter note)
+            out.println("</attributes>");
+
+            KeySignature ks = song.getKeySignatureAtBar(bar);
+            out.println("<attributes>");
+
+            if (ks != null) {
+                //System.out.println("SACANDO " + ks.toString());
+                out.println("<key>");
+                out.print("<fifths>");
+                out.print(ks.getFifths());
+                out.println("</fifths>");
+                out.print("<mode>");
+                if (ks.getMode() == Mode.MAJOR) {
+                    out.print("major");
+                } else {
+                    out.print("minor");
+                }
+                out.println("</mode>");
+                out.println("</key>");
+
+                // staves
+                int nst=part.getNumStaves();
+                out.println("<staves>" + nst + "</staves>");
+                for (ScoreStaff s: part.getStaves()) {
+                    out.print("\t<clef number=\"");
+                    out.print(s.getNumber());
+                    out.println("\">");
+                    out.print("\t\t<sign>");
+                    out.print(s.getClef().getNote().toString());
+                    out.println("</sign>");
+                    out.print("\t\t<line>");
+                    out.print(s.getClef().getLine());
+                    out.println("</line>");
+                    out.println("\t</clef>");
+                }
+
+            }
+            TimeSignature ts = song.getTimeSignatureAtBar(bar);
+            if (ts != null) {
+                //out.println("<attributes>");
+                out.println("<time>");
+                out.print("<beats>");
+                out.print(ts.getNumerator());
+                out.println("</beats>");
+                out.print("<beat-type>");
+                out.print(ts.getDenominator());
+                out.println("</beat-type>");
+                out.println("</time>");
+
+			/*out.println("<clef>");
+			if (useFClef) {
+				out.println("<sign>F</sign>");
+				out.println("<line>4</line>");
+			} else {
+				out.println("<sign>G</sign>");
+				out.println("<line>2</line>");
+			}
+			out.println("</clef>");		*/ //TODO Revisar
+            }
+            out.println("</attributes>");
+
+        }
+
+        private void closeBar() {
+            XMLExporterHelper.end(sb,2,"measure");
+        }
+
 
 }
 
