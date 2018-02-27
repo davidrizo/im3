@@ -4,14 +4,11 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.ISongExporter;
-import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 
 import java.io.File;
 import java.io.PrintStream;
 import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -95,7 +92,7 @@ public class MusicXMLExporter implements ISongExporter {
      * @param part the score part
      * @return a score part name
      */
-    String computePartID(ScorePart part) {
+    private String computePartID(ScorePart part) {
         return "P" + part.getNumber();
     }
 
@@ -111,7 +108,7 @@ public class MusicXMLExporter implements ISongExporter {
 
     @Override
     public void exportSong(File file, ScoreSong song) throws ExportException {
-        this.scoreSong = scoreSong;
+        this.scoreSong = song;
         sb = new StringBuilder();
 
         PrintStream ps = null;
@@ -187,6 +184,7 @@ public class MusicXMLExporter implements ISongExporter {
          end(sb, 1, "credit");
 
         exportPartList();
+        exportParts();
 
         end(sb, 0, "score-partwise");
 
@@ -195,9 +193,9 @@ public class MusicXMLExporter implements ISongExporter {
 
     /**
      * Exports the list of parts in the score
-     * @throws IM3Exception
+     *
      */
-    private void exportPartList() throws IM3Exception {
+    private void exportPartList() {
         start(sb,1, "<part-list>");
         ArrayList<ScorePart> parts = scoreSong.getParts();
         for (int i=0; i<parts.size(); i++) {
@@ -205,7 +203,7 @@ public class MusicXMLExporter implements ISongExporter {
             ScorePart voice = parts.get(i);
             // TODO: not sure: was voice.getAtomFigures() in im2
             if (voice.getAtomFigures().size() > 0) {
-                start(sb, 2,"score-part", "id",computePartID(voice);
+                start(sb, 2,"score-part", "id",computePartID(voice));
                  startEndTextContentSingleLine(sb,3,"part-name",(printVoiceNames ? (voice.getName()!=null ? voice.getName() :  "Voice " + (i+1)) : ""));
 				 start(sb, 3, "score-instrument", "id",computePartID(voice)+"-"+voice.__getID());
 				 // TODO: get the real instrument for the part
@@ -218,7 +216,7 @@ public class MusicXMLExporter implements ISongExporter {
         end(sb,1,"part-list");
     }
 
-    private void exportParts() throws Exception {
+    private void exportParts() throws IM3Exception {
         Collection<Measure> measures = scoreSong.getMeasures();
         //ScorePart part = movement.getScorePart(ip); // PIERRE: what is this??
         boolean harmoniesExported = false;
@@ -291,24 +289,24 @@ public class MusicXMLExporter implements ISongExporter {
                             boolean firstInChord=true;
                             SimpleChord chord = (SimpleChord) note.getAtom();
                             for (ScientificPitch pitch: chord.getPitches()) {
-                                AtomPitch temp = ScoreNote.createTempScoreNote(note.getVoice(), song.getResolution(), chord.getTime(), pitch, chord.getRhythm());
-                                //for (ScoreNote cnote : ((ScoreChord)note).getScoreNotes()) {
-                                //System.out.println("\tExporting " + temp);
-                                exportNoteOrRest(temp, !firstInChord, chord.getBelongsToTuplet());
+                                AtomFigure afigure = chord.getAtomFigure();
+                                SimpleNote snote = new SimpleNote(afigure.getFigure(), afigure.getDots(), pitch);
+                                //was im2: ScoreNote.createTempScoreNote(note.getVoice(), song.getResolution(), chord.getTime(), pitch, chord.getRhythm());
+                                exportNoteOrRest(snote, !firstInChord, chord.getParentAtom());
                                 firstInChord=false;
                             }
                         } else {
-                            exportNoteOrRest(note, false, note.getBelongsToTuplet());
+                            exportNoteOrRest(note.getAtom(), false, note.getAtom().getParentAtom());
                         }
                     }
                     closeBar();
                 }
-                out.println("</part>");
+                end(sb,1,"part");
             }
         }
     }
 
-    private void exportNoteOrRest(Atom atom, boolean inChord, SimpleTuplet tuplet) throws IM3Exception {
+    private void exportNoteOrRest(Atom atom, boolean inChord, CompoundAtom tuplet) {
         boolean needsBackup = false;
         start(sb,3,"note");
         if (inChord) {
@@ -365,10 +363,11 @@ public class MusicXMLExporter implements ISongExporter {
             startEnd(sb,5,"staff",String.valueOf(atom.getStaff().getNumberIdentifier()));
         }
 
-        if (tuplet != null) {
+        if (tuplet instanceof SimpleTuplet) {
+            SimpleTuplet simpleTuplet = (SimpleTuplet) tuplet;
             start(sb,5,"time-modification");
-            startEnd(sb,6,"actual-notes",String.valueOf(tuplet.getCardinality()));
-            startEnd(sb,6,"normal-notes",String.valueOf(tuplet.getInSpaceOfAtoms()));
+            startEnd(sb,6,"actual-notes",String.valueOf(simpleTuplet.getCardinality()));
+            startEnd(sb,6,"normal-notes",String.valueOf(simpleTuplet.getInSpaceOfAtoms()));
             end(sb,5,"time-modification");
         }
 
@@ -431,7 +430,7 @@ public class MusicXMLExporter implements ISongExporter {
                 FractionalTimeSignature fts = (FractionalTimeSignature) ts;
                 start(sb,4,"time");
                   startEndTextContentSingleLine(sb,5,"beats", String.valueOf(fts.getNumerator()));
-                  startEndTextContentSingleLine(sb,5,"beat-type",fts.getDenominator());
+                  startEndTextContentSingleLine(sb,5,"beat-type",String.valueOf(fts.getDenominator()));
                 end(sb,4,"time");
 
 			/*out.println("<clef>");
@@ -455,4 +454,3 @@ public class MusicXMLExporter implements ISongExporter {
 
 }
 
-}

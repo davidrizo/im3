@@ -31,7 +31,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
  */
 public class XMLExporterImporterTest {
 	boolean testMEIExportImport = true;
-    private boolean testMusicXMLExportImport = false;
+    private boolean testMusicXMLExportImport = true;
 
     @Before
 	public void setUp() throws Exception {
