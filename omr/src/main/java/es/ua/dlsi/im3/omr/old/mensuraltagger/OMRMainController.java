@@ -15,7 +15,7 @@ import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.gui.useractionlogger.actions.Coordinate;
 import es.ua.dlsi.im3.gui.useractionlogger.actions.MouseClickAction;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
-import es.ua.dlsi.im3.omr.interactive.OMRApp;
+import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.*;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.loggeractions.UserActionsPool;
 import es.ua.dlsi.im3.gui.useractionlogger.ActionLogger;
