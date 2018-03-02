@@ -60,7 +60,7 @@ THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
     descent="-410"
     bbox="-889 -3574 4749 4096"
     underline-thickness="102"
-    underline-position="-102"
+    underline-positionInStaff="-102"
     unicode-range="U+0020-1D1DD"
   />
 <missing-glyph horiz-adv-x="608" 
