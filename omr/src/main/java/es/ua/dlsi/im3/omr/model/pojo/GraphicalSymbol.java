@@ -1,5 +1,8 @@
 package es.ua.dlsi.im3.omr.model.pojo;
 
+/**
+ * @deprecated Use AgosticSymbolType
+ */
 public enum GraphicalSymbol {
     // keep sorted for GUI
     accidental,

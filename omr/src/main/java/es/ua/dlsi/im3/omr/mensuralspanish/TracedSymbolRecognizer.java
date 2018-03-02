@@ -18,8 +18,7 @@ package es.ua.dlsi.im3.omr.mensuralspanish;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.model.Symbol;
 import es.ua.dlsi.im3.omr.classifiers.traced.BimodalClassifierFactory;
 import es.ua.dlsi.im3.omr.classifiers.traced.IBimodalDatasetReader;
@@ -39,13 +38,13 @@ import java.util.logging.Logger;
  *
  * @author drizo
  */
-public class TracedSymbolRecognizer<SymbolType> extends SymbolRecognizer {
+public class TracedSymbolRecognizer extends SymbolRecognizer {
 	private final static int RESIZE_W = 30;
 	private final static int RESIZE_H = 30;
 	IBimodalClassifier classifier;
 
-	public TracedSymbolRecognizer(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) throws IM3Exception {
-		classifier = BimodalClassifierFactory.getInstance().createClassifier(reader, symbolFactory);
+	public TracedSymbolRecognizer(IBimodalDatasetReader reader) throws IM3Exception {
+		classifier = BimodalClassifierFactory.getInstance().createClassifier(reader);
 	}
 
 	/**
@@ -66,8 +65,8 @@ public class TracedSymbolRecognizer<SymbolType> extends SymbolRecognizer {
 	}
 
 	@Override
-	public ArrayList<PositionedSymbolType> recognize(Symbol symbol) throws IM3Exception {
-		List<PositionedSymbolType> recognizedSymbolTypes;
+	public ArrayList<AgnosticSymbol> recognize(Symbol symbol) throws IM3Exception {
+		List<AgnosticSymbol> recognizedSymbolTypes;
 		try {
 			recognizedSymbolTypes = classifier.classify(symbolImageToMat(symbol), symbol.getStrokes());
 		} catch (IOException ex) {
@@ -75,8 +74,8 @@ public class TracedSymbolRecognizer<SymbolType> extends SymbolRecognizer {
 			throw new IM3Exception(ex);
 		}
 
-		ArrayList<PositionedSymbolType> result = new ArrayList<>();
-		for (PositionedSymbolType recognizedSymbolType : recognizedSymbolTypes) {
+		ArrayList<AgnosticSymbol> result = new ArrayList<>();
+		for (AgnosticSymbol recognizedSymbolType : recognizedSymbolTypes) {
 			result.add(recognizedSymbolType);
 		}
 

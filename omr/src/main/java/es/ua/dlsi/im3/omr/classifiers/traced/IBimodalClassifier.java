@@ -17,7 +17,7 @@
 package es.ua.dlsi.im3.omr.classifiers.traced;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +34,6 @@ public interface IBimodalClassifier {
 
     // TODO: 15/2/18 Tenemos que ver si tiene sentido devolver SymbolType + posición en pentagrama cuando queramos devolver semántico
     // Quizás deberíamos devolver symbol type y que en su caso que éste se sustituya por PositionedSymbolType
-    List<PositionedSymbolType> classify(int[][] grayscaleImage, List<Stroke> strokes) throws IM3Exception;
+    List<AgnosticSymbol> classify(int[][] grayscaleImage, List<Stroke> strokes) throws IM3Exception;
     Long getNumberOfTrainingSymbols();
 }

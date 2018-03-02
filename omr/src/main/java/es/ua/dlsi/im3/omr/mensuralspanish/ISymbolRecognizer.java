@@ -17,7 +17,7 @@
 package es.ua.dlsi.im3.omr.mensuralspanish;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.model.Symbol;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public interface ISymbolRecognizer {
      * @param symbol
      * @return Notation symbols sorted as they have to be shown to the user
      */
-    ArrayList<PositionedSymbolType> recognize(Symbol symbol) throws IM3Exception;
+    ArrayList<AgnosticSymbol> recognize(Symbol symbol) throws IM3Exception;
     public void learn(File file) throws IOException;
     public void learn(InputStream is) throws IOException;
     public Long getNumberOfTrainingSymbols();

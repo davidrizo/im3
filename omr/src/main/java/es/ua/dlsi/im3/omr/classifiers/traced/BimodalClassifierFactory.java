@@ -16,7 +16,6 @@
  */
 package es.ua.dlsi.im3.omr.classifiers.traced;
 
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
 
 /**
  *
@@ -36,7 +35,7 @@ public class BimodalClassifierFactory<SymbolType> {
     }
     
     
-    public IBimodalClassifier createClassifier(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) {
-    	return new TracedClassifier(reader, symbolFactory);
+    public IBimodalClassifier createClassifier(IBimodalDatasetReader reader) {
+    	return new TracedClassifier(reader);
     }
 }

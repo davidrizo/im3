@@ -1,6 +1,9 @@
 package es.ua.dlsi.im3.omr.model.pojo;
 
-public enum SemanticSymbol {
+/**
+ * @deprecated
+ */
+public enum SemanticSymbolEnum {
     clef,
     note,
     rest,

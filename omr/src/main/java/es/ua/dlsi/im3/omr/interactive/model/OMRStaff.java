@@ -3,16 +3,14 @@ package es.ua.dlsi.im3.omr.interactive.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.clefs.ClefC3;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
-import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.FontFactory;
 import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.interactive.OMRMainController;
 import es.ua.dlsi.im3.omr.model.Symbol;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.SymbolView;
@@ -23,7 +21,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -31,13 +28,12 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class OMRStaff<SymbolType> {
+public class OMRStaff {
     private final OMRPage page;
     private final OMRProject project;
-    private List<SymbolView<SymbolType>> symbols;
+    private List<SymbolView> symbols;
     private Group root;
     private Rectangle boundingBox;
     private BooleanProperty selected;
@@ -47,7 +43,7 @@ public class OMRStaff<SymbolType> {
     //private ScoreLayer transducedLayer;
     private AnchorPane scoreViewPane;
     private StaffSymbolsInteraction staffSymbolsInteraction;
-    private SymbolView<SymbolType> currentSymbolView;
+    private SymbolView currentSymbolView;
     /**
      * Used for assigning different colors to successive symbols
      */
@@ -177,7 +173,7 @@ public class OMRStaff<SymbolType> {
         return page;
     }
 
-    public List<SymbolView<SymbolType>> getSymbols() {
+    public List<SymbolView> getSymbols() {
         return symbols;
     }
 
@@ -225,19 +221,19 @@ public class OMRStaff<SymbolType> {
         return boundingBox.contains(x, y);
     }
 
-    public SymbolView<SymbolType> getCurrentSymbolView() {
+    public SymbolView getCurrentSymbolView() {
         return currentSymbolView;
     }
 
     public void createNewSymbol() throws IM3Exception {
-        Symbol<SymbolType> symbol = new Symbol<>(page.getBufferedImage());
-        currentSymbolView = new SymbolView<>(symbol, interleavingColors[root.getChildren().size() % 2]);
+        Symbol symbol = new Symbol<>(page.getBufferedImage());
+        currentSymbolView = new SymbolView(symbol, interleavingColors[root.getChildren().size() % 2]);
         root.getChildren().add(currentSymbolView);
         //currentSymbolView =
     }
 
-    public SymbolView<SymbolType> newSymbolComplete() throws IM3Exception {
-        SymbolView<SymbolType> result = currentSymbolView;
+    public SymbolView newSymbolComplete() throws IM3Exception {
+        SymbolView result = currentSymbolView;
         currentSymbolView.finishSymbol();
         this.symbols.add(currentSymbolView);
         identifySymbol(currentSymbolView);
@@ -245,14 +241,14 @@ public class OMRStaff<SymbolType> {
         return result;
     }
 
-    private void identifySymbol(SymbolView<SymbolType> currentSymbolView) throws IM3Exception {
-        ArrayList<PositionedSymbolType> recognizedSymbols = project.getRecognizer().recognize(currentSymbolView.getSymbol());
+    private void identifySymbol(SymbolView currentSymbolView) throws IM3Exception {
+        ArrayList<AgnosticSymbol> recognizedSymbols = project.getRecognizer().recognize(currentSymbolView.getSymbol());
 
         if (recognizedSymbols.isEmpty()) {
             throw new IM3Exception("No symbol identified");
         }
 
-        PositionedSymbolType best = recognizedSymbols.get(0);
+        AgnosticSymbol best = recognizedSymbols.get(0);
 
 
 
@@ -280,11 +276,11 @@ public class OMRStaff<SymbolType> {
 
     }
 
-    public void addSymbolView(SymbolView<SymbolType> symbol) {
+    public void addSymbolView(SymbolView symbol) {
         this.symbols.add(currentSymbolView);
     }
 
-    public void removeSymbolView(SymbolView<SymbolType> symbol) {
+    public void removeSymbolView(SymbolView symbol) {
         this.symbols.remove(currentSymbolView);
     }
 }

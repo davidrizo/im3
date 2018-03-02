@@ -18,7 +18,7 @@ package es.ua.dlsi.im3.omr.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.classifiers.traced.Point;
 import es.ua.dlsi.im3.omr.classifiers.traced.Stroke;
 
@@ -37,12 +37,12 @@ public class Symbol<SymbolType> {
 	private static final int MARGIN = 5;
 	boolean symbolFinished;
 	ArrayList<Stroke> strokes;
-	PositionedSymbolType positionedSymbolType;
+	AgnosticSymbol positionedSymbolType;
 
 	BufferedImage symbolImage;
 	// falta imagen de lo que hay bajo + margen (5px todos los lados):
 	// imagen en OpenCV - mat - me envía correo
-	ArrayList<PositionedSymbolType<SymbolType>> sortedPossibleNotationSymbols;
+	ArrayList<Symbol> sortedPossibleNotationSymbols;
 	private int minX;
 	private int maxX;
 	private int minY;
@@ -87,19 +87,19 @@ public class Symbol<SymbolType> {
 		}
 	}
 
-	public void setPositionedSymbolType(PositionedSymbolType pst) {
+	public void setPositionedSymbolType(AgnosticSymbol pst) {
 		this.positionedSymbolType = pst;
 	}
 
-	public PositionedSymbolType getPositionedSymbolType() {
+	public AgnosticSymbol getPositionedSymbolType() {
 		return positionedSymbolType;
 	}
 
-	public ArrayList<PositionedSymbolType<SymbolType>> getSortedPossibleNotationSymbols() {
+	public ArrayList<Symbol> getSortedPossibleNotationSymbols() {
 		return sortedPossibleNotationSymbols;
 	}
 
-	public void setSortedPossibleNotationSymbols(ArrayList<PositionedSymbolType<SymbolType>> sortedPossibleNotationSymbols) {
+	public void setSortedPossibleNotationSymbols(ArrayList<Symbol> sortedPossibleNotationSymbols) {
 		this.sortedPossibleNotationSymbols = sortedPossibleNotationSymbols;
 	}
 
@@ -175,11 +175,11 @@ public class Symbol<SymbolType> {
 	}
 
 	public PositionInStaff getPositionInStaff() {
-		return positionedSymbolType.getPosition();
+		return positionedSymbolType.getPositionInStaff();
 	}
 
 	public void setPositionInStaff(PositionInStaff positionInStaff) {
-		this.positionedSymbolType.setPosition(positionInStaff);
+		this.positionedSymbolType.setPositionInStaff(positionInStaff);
 	}
 
 	

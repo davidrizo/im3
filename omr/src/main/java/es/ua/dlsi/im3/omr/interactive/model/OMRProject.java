@@ -190,8 +190,8 @@ public class OMRProject {
     // TODO No lo estamos usando
     private void readTrainingFile(File trainingFile) throws IM3Exception {
         // TODO: 7/10/17 Factory con tipos de símbolos
-        BimodalDatasetReader<MensuralSymbols> reader = new BimodalDatasetReader<>();
-        recognizer = SymbolRecognizerFactory.getInstance().buildRecognizer(reader, new StringToMensuralSymbolFactory());
+        BimodalDatasetReader reader = new BimodalDatasetReader();
+        recognizer = SymbolRecognizerFactory.getInstance().buildRecognizer(reader);
         try {
             recognizer.learn(trainingFile);
         } catch (IOException e) {

@@ -6,7 +6,9 @@ import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.io.AgnosticExporter;
+import es.ua.dlsi.im3.omr.encoding.Encoder;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticExporter;
 import es.ua.dlsi.im3.omr.model.Constants;
 import es.ua.dlsi.im3.omr.model.pojo.*;
 
@@ -15,10 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MEI2GraphicSymbols {
-    private final AgnosticExporter export = new AgnosticExporter();
-
     /**
-     *
+     * @deprecated
      * @param inputFile MEI File
      * @param outputFile
      */
@@ -26,18 +26,22 @@ public class MEI2GraphicSymbols {
         MEISongImporter importer = new MEISongImporter();
         ScoreSong scoreSong = importer.importSong(inputFile);
 
-        FileWriter fw = null;
+        //FileWriter fw = null;
         try {
-            fw = new FileWriter(outputFile);
-            BufferedWriter bw = new BufferedWriter(fw);
-            List<GraphicalToken> graphicalTokens = export.convert(scoreSong).getTokens();
+            //fw = new FileWriter(outputFile);
+            //BufferedWriter bw = new BufferedWriter(fw);
+            Encoder encoder = new Encoder();
+            encoder.encode(scoreSong);
+            SemanticExporter exporter = new SemanticExporter();
+            exporter.export(encoder.getSemanticEncoding(), outputFile);
+            /*List<GraphicalToken> graphicalTokens = export.convert(scoreSong).getTokens();
             for (int i = 0; i< graphicalTokens.size(); i++) {
                 if (i>0) {
                     bw.write(Constants.SEMANTIC_TOKEN_SEPARATOR);
                 }
                 bw.write(graphicalTokens.get(i).toString());
             }
-            bw.close();
+            bw.close();*/
         } catch (IOException | IM3Exception e) {
             throw new ExportException(e);
         }
@@ -52,17 +56,20 @@ public class MEI2GraphicSymbols {
             i++;
 
             MEISongImporter importer = new MEISongImporter();
-            ScoreGraphicalDescriptionWriter writer = new ScoreGraphicalDescriptionWriter();
-            AgnosticExporter export = new AgnosticExporter();
+            //ScoreGraphicalDescriptionWriter writer = new ScoreGraphicalDescriptionWriter();
+            Encoder encoder = new Encoder();
+            AgnosticExporter agnosticExporter = new AgnosticExporter();
+            SemanticExporter semanticExporter = new SemanticExporter();
             try {
                 ScoreSong scoreSong = importer.importSong(file);
-                ScoreGraphicalDescription graficalDescription = export.convert(scoreSong);
+                encoder.encode(scoreSong);
+
                 File outputFile = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".agnostic");
-                writer.write(outputFile, graficalDescription.getTokens());
+                agnosticExporter.export(encoder.getAgnosticEncoding());
+                //writer.write(outputFile, graficalDescription);
 
                 File outputFileSemantic = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".semantic");
-                writer.write(outputFileSemantic, graficalDescription.getSemanticTokens());
-
+                semanticExporter.export(encoder.getSemanticEncoding(), outputFileSemantic);
             } catch (Exception e) {
                 System.err.print("---------------------------------------------------------------");
                 System.err.print("Error processing " + file.getAbsolutePath());

@@ -1,7 +1,7 @@
 package es.ua.dlsi.im3.omr.transduction;
 
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
-import es.ua.dlsi.im3.omr.model.pojo.SemanticSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.SemanticSymbolEnum;
 import es.ua.dlsi.im3.omr.model.pojo.SemanticToken;
 
 import java.util.LinkedList;
@@ -22,16 +22,16 @@ public class DummySpanishMensuralAgnosticToSemanticTransducer implements IAgnost
                 for (GraphicalToken graphicalToken : regionsList) {
                     switch (graphicalToken.getSymbol()) {
                         case clef:
-                            regionsResult.add(new SemanticToken(SemanticSymbol.clef, "G2"));
+                            regionsResult.add(new SemanticToken(SemanticSymbolEnum.clef, "G2"));
                             break;
                         case metersign:
-                            regionsResult.add(new SemanticToken(SemanticSymbol.timeSignature, "C"));
+                            regionsResult.add(new SemanticToken(SemanticSymbolEnum.timeSignature, "C"));
                             break;
                         case rest:
-                            regionsResult.add(new SemanticToken(SemanticSymbol.rest, "minima"));
+                            regionsResult.add(new SemanticToken(SemanticSymbolEnum.rest, "minima"));
                             break;
                         case note:
-                            regionsResult.add(new SemanticToken(SemanticSymbol.note, "E5_semibreve"));
+                            regionsResult.add(new SemanticToken(SemanticSymbolEnum.note, "E5_semibreve"));
                             break;
                     }
                 }

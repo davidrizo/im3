@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.language.mensural.states.OMRState;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
@@ -14,7 +15,7 @@ public class BarLineState extends OMRState {
     }
 
     @Override
-    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
         try {
             transduction.getStaff().addCoreSymbol(new MarkBarline(transduction.getLayer().getDuration()));
         } catch (IM3Exception e) {

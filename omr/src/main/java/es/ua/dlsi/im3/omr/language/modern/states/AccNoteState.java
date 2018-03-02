@@ -4,10 +4,10 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
-// TODO: 5/10/17 Dos bb --> doble bemol También en el automáta
 public class AccNoteState extends OMRState {
     private Accidentals accidental;
 
@@ -16,28 +16,43 @@ public class AccNoteState extends OMRState {
     }
 
     @Override
-    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
         super.onEnter(token, previousState, transduction);
 
-        if (token.getValue() == null) {
+        if (!(token.getSymbol() instanceof es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidental)) {
+            // the automaton has an error
+            throw new IM3RuntimeException("Expected an accidental and found a " + token.getSymbol());
+        }
+        es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidental symbol = (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidental) token.getSymbol();
+
+        if (symbol.getAccidentals() == null) {
             throw new IM3RuntimeException("Token value cannot be null");
         }
-        // TODO: 5/10/17 Que el mapa de valores sea común con el generador de PRIMUS
-        switch (token.getValue()) {
-            case "flat":
-                accidental = Accidentals.FLAT;
+        //TODO Alteraciones que anulen las anteriores - y contar nº máximo accidentals
+        Accidentals prevAccidental = null;
+        if (previousState instanceof AccNoteState) {
+            prevAccidental = ((AccNoteState)previousState).accidental;
+        }
+
+        switch (symbol.getAccidentals()) {
+            case flat:
+                if (prevAccidental != null) {
+                    if (prevAccidental != Accidentals.FLAT) {
+                        throw new IM3RuntimeException("Invalid accidentals sequence");
+                    }
+                    accidental = Accidentals.DOUBLE_FLAT;
+                } else {
+                    accidental = Accidentals.FLAT;
+                }
                 break;
-            case "sharp":
+            case sharp:
                 accidental = Accidentals.SHARP;
                 break;
-            case "double_sharp":
+            case double_sharp:
                 accidental = Accidentals.DOUBLE_SHARP;
                 break;
-            case "natural":
+            case natural:
                 accidental = Accidentals.NATURAL; //el becuadro no funciona ATENCION
-                break;
-            case "double_flat":
-                accidental = Accidentals.DOUBLE_FLAT;
                 break;
             default:
                 transduction.setZeroProbability();

@@ -9,18 +9,26 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
+import es.ua.dlsi.im3.omr.model.StringToSymbolFactory;
 
-public class BimodalDatasetReader<SymbolType> implements IBimodalDatasetReader<SymbolType> {
-	public List<BimodalSymbol<SymbolType>> read(File file, IStringToSymbolFactory<SymbolType> stringToSymbol) throws IOException {
+public class BimodalDatasetReader implements IBimodalDatasetReader {
+    StringToSymbolFactory stringToSymbolFactory;
+
+    public BimodalDatasetReader() {
+        this.stringToSymbolFactory = new StringToSymbolFactory();
+    }
+
+    @Override
+    public List<BimodalSymbol> read(File file) throws IOException {
 		InputStream is = new FileInputStream(file);
-		return read(is, stringToSymbol);
+		return read(is);
 	}
-	public List<BimodalSymbol<SymbolType>> read(InputStream is, IStringToSymbolFactory<SymbolType> stringToSymbol) throws IOException {
+	@Override
+	public List<BimodalSymbol> read(InputStream is) throws IOException {
 		if (is == null) {
 			throw new IOException("Inputstream is null");
 		}
-		ArrayList<BimodalSymbol<SymbolType>> result = new ArrayList<>();
+		ArrayList<BimodalSymbol> result = new ArrayList<>();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
 		String line;
@@ -33,7 +41,7 @@ public class BimodalDatasetReader<SymbolType> implements IBimodalDatasetReader<S
 			String strokes = components[1];
 			String grayscalePixels = components[2];
 			
-			BimodalSymbol<SymbolType> symbol = new BimodalSymbol<>(stringToSymbol.parseString(label));
+			BimodalSymbol symbol = new BimodalSymbol(stringToSymbolFactory.parseString(label));
 			
 			String [] strokeList = strokes.split(";");
 			for (String sl : strokeList) {

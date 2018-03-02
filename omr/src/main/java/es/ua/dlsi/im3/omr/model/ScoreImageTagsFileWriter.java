@@ -56,7 +56,7 @@ public class ScoreImageTagsFileWriter {
 					ps.print(';');
 					ps.print(symbol.getPositionedSymbolType().getSymbol().toString());
 					ps.print(';');
-					ps.println(symbol.getPositionedSymbolType().getPosition().toString());
+					ps.println(symbol.getPositionedSymbolType().getPositionInStaff().toString());
 				} else {
 					ps.println(symbol.getStrokes().size());
 				}

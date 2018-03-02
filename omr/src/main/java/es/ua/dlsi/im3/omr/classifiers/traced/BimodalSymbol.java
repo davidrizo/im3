@@ -1,13 +1,15 @@
 package es.ua.dlsi.im3.omr.classifiers.traced;
 
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+
 import java.util.ArrayList;
 
-public class BimodalSymbol<SymbolType> {
-	SymbolType label;
+public class BimodalSymbol {
+	AgnosticSymbolType label;
 	ArrayList<Coordinate> points;
 	ArrayList<Integer> grayscalePixels;
 
-	public BimodalSymbol(SymbolType label) {
+	public BimodalSymbol(AgnosticSymbolType label) {
 		this.label = label;
 		points = new ArrayList<>();
 		grayscalePixels = new ArrayList<>();
@@ -26,7 +28,7 @@ public class BimodalSymbol<SymbolType> {
 		grayscalePixels.add(gs);
 	}
 
-	public SymbolType getLabel() {
+	public AgnosticSymbolType getLabel() {
 		return label;
 	}
 

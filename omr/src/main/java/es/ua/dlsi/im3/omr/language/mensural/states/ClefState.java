@@ -6,7 +6,9 @@ import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.io.ImportFactories;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
+import es.ua.dlsi.im3.omr.language.modern.states.OMRState;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
@@ -16,19 +18,22 @@ public class ClefState extends OMRState {
     }
 
     @Override
-    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction)  {
-        if (!token.getSymbol().equals(GraphicalSymbol.clef)) {
-            throw new IM3RuntimeException("Expected a clef and found a " + token.getSymbol());
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction)  {
+        if (!(token.getSymbol() instanceof es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef)) {
+            // the automaton has an error
+            throw new IM3RuntimeException("Expected an clef and found a " + token.getSymbol());
         }
 
-        if (token.getValue() == null) {
+        es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef symbol = (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef) token.getSymbol();
+
+        if (symbol.getClefNote() == null) {
             throw new IM3RuntimeException("Value of clef is null");
         }
 
         // TODO: 3/10/17 NotationType
-        Clef clef = null; // TODO: 3/10/17 Octave change
+        es.ua.dlsi.im3.core.score.Clef clef = null; // TODO: 3/10/17 Octave change
         try {
-            clef = ImportFactories.createClef(transduction.getStaff().getNotationType(), token.getValue().toUpperCase(), token.getPositionInStaff().getLine(), 0);
+            clef = ImportFactories.createClef(transduction.getStaff().getNotationType(), symbol.getClefNote().name(), token.getPositionInStaff().getLine(), 0);
         } catch (ImportException e) {
             transduction.setZeroProbability();
         }
@@ -37,8 +42,10 @@ public class ClefState extends OMRState {
 
         try {
             transduction.getStaff().addClef(clef);
+
         } catch (IM3Exception e) {
             throw new IM3RuntimeException(e);
         }
     }
 }
+

@@ -4,7 +4,9 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.io.AgnosticExporter;
+import es.ua.dlsi.im3.omr.encoding.Encoder;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
 import es.ua.dlsi.im3.omr.language.modern.GraphicalModernSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import es.ua.dlsi.im3.omr.primus.conversions.MEI2GraphicSymbols;
@@ -75,14 +77,17 @@ public class LanguageChecker {
                 GraphicalModernSymbolsAutomaton automaton = new GraphicalModernSymbolsAutomaton();
 
                 ScoreSong scoreSong = importer.importSong(file);
-                AgnosticExporter export = new AgnosticExporter();
-                List<GraphicalToken> graphicalTokenList = export.convert(scoreSong).getTokens();
-                BigFraction p = automaton.probabilityOf(graphicalTokenList, false).getProbability();
+                Encoder encoder = new Encoder();
+                encoder.encode(scoreSong);
+                AgnosticEncoding agnosticEncoding = encoder.getAgnosticEncoding();
+                //List<GraphicalToken> graphicalTokenList = export.convert(scoreSong).getTokens();
+
+                BigFraction p = automaton.probabilityOf(agnosticEncoding.getSymbols(), false).getProbability();
                 if (p.getNumeratorAsLong() == 0) {
-                    notAccepted.println(file.getAbsolutePath() + "\t" + graphicalTokenList);
+                    notAccepted.println(file.getAbsolutePath() + "\t" + agnosticEncoding.getSymbols());
                     nko++;
                 } else {
-                    ok.println(p + "\t" + file.getAbsolutePath() + "\t" + graphicalTokenList);
+                    ok.println(p + "\t" + file.getAbsolutePath() + "\t" + agnosticEncoding.getSymbols());
                     nok++;
                 }
             } catch (Throwable e) {

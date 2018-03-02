@@ -21,15 +21,15 @@ import java.util.logging.Logger;
 /**
  * It contains the trace interaction of the symbols to copy from the source score
  */
-public class StaffSymbolsInteraction<SymbolType> {
-    private final OMRStaff<SymbolType> omrStaff;
+public class StaffSymbolsInteraction {
+    private final OMRStaff omrStaff;
     private final DoubleProperty symbolCompleteTimerValue;
     private Timer timer;
     private final Pane marksPane;
     private boolean enabled;
     private boolean drawing;
 
-    public StaffSymbolsInteraction(OMRStaff<SymbolType> omrStaff, DoubleProperty symbolCompleteTimerValue) {
+    public StaffSymbolsInteraction(OMRStaff omrStaff, DoubleProperty symbolCompleteTimerValue) {
         this.omrStaff = omrStaff;
         this.marksPane = omrStaff.getOMRController().getMarksPane();
         enabled = true;
@@ -143,7 +143,7 @@ public class StaffSymbolsInteraction<SymbolType> {
 
     private void doSymbolComplete() {
         ICommand cmd = new ICommand() {
-            SymbolView<SymbolType> symbolView = null;
+            SymbolView symbolView = null;
 
             @Override
             public void execute(IObservableTaskRunner observer) throws Exception {

@@ -5,11 +5,12 @@ import es.ua.dlsi.im3.core.adt.dfa.DeterministicProbabilisticAutomaton;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.adt.dfa.Transition;
 import es.ua.dlsi.im3.core.score.NotationType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolAlphabet;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
 //import es.ua.dlsi.im3.omr.language.mensural.states.EndBarState;
 import es.ua.dlsi.im3.omr.language.modern.states.*;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import org.apache.commons.math3.fraction.Fraction;
 
 import java.util.HashMap;
@@ -63,84 +64,85 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         endStates.put(notes, Fraction.ONE_THIRD);
         endStates.put(endbar, Fraction.TWO_THIRDS);
 
-        HashSet<Transition<State, GraphicalSymbol>> transitions = new HashSet<>();
+        HashSet<Transition<State, AgnosticSymbolType>> transitions = new HashSet<>();
 
-        transitions.add(new Transition<>(start, GraphicalSymbol.clef, clef));
+        transitions.add(new Transition<>(start, new Clef(), clef));
 
-        transitions.add(new Transition<>(clef, GraphicalSymbol.metersign, timesig));
+        transitions.add(new Transition<>(clef, new MeterSign(), timesig));
 
-        transitions.add(new Transition<>(clef, GraphicalSymbol.accidental, keysig));
+        transitions.add(new Transition<>(clef, new Accidental(), keysig));
 
-        transitions.add(new Transition<>(clef, GraphicalSymbol.digit, digittimesignature));
+        transitions.add(new Transition<>(clef, new Digit(), digittimesignature));
 
-        transitions.add(new Transition<>(keysig, GraphicalSymbol.accidental, keysig));
-        transitions.add(new Transition<>(keysig, GraphicalSymbol.digit, digittimesignature));
-        transitions.add(new Transition<>(keysig, GraphicalSymbol.metersign, timesig));
+        transitions.add(new Transition<>(keysig, new Accidental(), keysig));
+        transitions.add(new Transition<>(keysig, new Digit(), digittimesignature));
+        transitions.add(new Transition<>(keysig, new MeterSign(), timesig));
 
-        transitions.add(new Transition<>(digittimesignature,GraphicalSymbol.digit, timesig));
-
-
-        transitions.add(new Transition<>(timesig, GraphicalSymbol.rest, rest));
-        transitions.add(new Transition<>(timesig, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(timesig, GraphicalSymbol.accidental, noteacc));
-
-        transitions.add(new Transition<>(timesig, GraphicalSymbol.digit, multirestdigit));
-        transitions.add(new Transition<>(multirestdigit, GraphicalSymbol.digit, multirestdigit));
-        transitions.add(new Transition<>(multirestdigit,GraphicalSymbol.multirest, multirest));
-        transitions.add(new Transition<>(multirest, GraphicalSymbol.barline, endbar));
-
-        transitions.add(new Transition<>(notes, GraphicalSymbol.rest, rest));
-        transitions.add(new Transition<>(notes, GraphicalSymbol.note, notes));
-
-        transitions.add(new Transition<>(notes, GraphicalSymbol.accidental, noteacc));
-        transitions.add(new Transition<>(notes, GraphicalSymbol.dot, notes));
-
-        transitions.add(new Transition<>(notes,GraphicalSymbol.slur, slurnote));
-        transitions.add(new Transition<>(slurnote, GraphicalSymbol.slur, slurnoteend));
-        transitions.add(new Transition<>(slurnoteend,GraphicalSymbol.note,notes));
-        transitions.add(new Transition<>(slurnote, GraphicalSymbol.barline, slurbarlinenote));
-
-        transitions.add(new Transition<>(slurbarlinenote, GraphicalSymbol.slur, slurnoteend));
+        transitions.add(new Transition<>(digittimesignature, new Digit(), timesig));
 
 
-        transitions.add(new Transition<>(noteacc, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(rest, GraphicalSymbol.accidental, noteacc));
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.accidental, noteacc));
+        transitions.add(new Transition<>(timesig, new Rest(), rest));
+        transitions.add(new Transition<>(timesig, new Note(), notes));
+        transitions.add(new Transition<>(timesig, new Accidental(), noteacc));
 
-        transitions.add(new Transition<>(rest, GraphicalSymbol.rest, rest));
-        transitions.add(new Transition<>(rest, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(rest, GraphicalSymbol.barline, endbar));
-        transitions.add(new Transition<>(rest, GraphicalSymbol.dot, rest));
-        transitions.add(new Transition<>(rest, GraphicalSymbol.accidental, noteacc));
+        transitions.add(new Transition<>(timesig, new Digit(), multirestdigit));
+        transitions.add(new Transition<>(multirestdigit, new Digit(), multirestdigit));
+        transitions.add(new Transition<>(multirestdigit, new Multirest(), multirest));
+        transitions.add(new Transition<>(multirest, new VerticalLine(), endbar));
 
-        transitions.add(new Transition<>(notes, GraphicalSymbol.barline, endbar));
+        transitions.add(new Transition<>(notes, new Rest(), rest));
+        transitions.add(new Transition<>(notes, new Note(), notes));
 
-        transitions.add(new Transition<>(timesig, GraphicalSymbol.fermata, fermata));
-        transitions.add(new Transition<>(rest, GraphicalSymbol.fermata, fermata));
-        transitions.add(new Transition<>(notes, GraphicalSymbol.fermata, fermata));
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.fermata, fermata));
-        transitions.add(new Transition<>(fermata, GraphicalSymbol.barline, endbar));
-        transitions.add(new Transition<>(fermata, GraphicalSymbol.rest, rest));
-        transitions.add(new Transition<>(fermata, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(fermata, GraphicalSymbol.accidental, noteacc));
+        transitions.add(new Transition<>(notes, new Accidental(), noteacc));
+        transitions.add(new Transition<>(notes, new Dot(), notes));
 
-        transitions.add(new Transition<>(trill, GraphicalSymbol.accidental, noteacc));
-        transitions.add(new Transition<>(trill, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.trill, trill));
-        transitions.add(new Transition<>(rest, GraphicalSymbol.trill, trill));
-        transitions.add(new Transition<>(notes, GraphicalSymbol.trill, trill));
-        transitions.add(new Transition<>(timesig, GraphicalSymbol.trill, trill));
-        transitions.add(new Transition<>(noteacc,GraphicalSymbol.trill, trill));
+        transitions.add(new Transition<>(notes, new Slur(), slurnote));
+        transitions.add(new Transition<>(slurnote, new Slur(), slurnoteend));
+        transitions.add(new Transition<>(slurnoteend, new Note(),notes));
+        transitions.add(new Transition<>(slurnote, new VerticalLine(), slurbarlinenote));
 
-        transitions.add(new Transition<>(timesig,GraphicalSymbol.gracenote, gracenote));
-        transitions.add(new Transition<>(notes, GraphicalSymbol.gracenote, gracenote));
-        transitions.add(new Transition<>(rest, GraphicalSymbol.gracenote, gracenote));
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.gracenote, gracenote));
-        transitions.add(new Transition<>(gracenote, GraphicalSymbol.note, notes ));
+        transitions.add(new Transition<>(slurbarlinenote, new Slur(), slurnoteend));
 
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.rest, rest));
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(endbar, GraphicalSymbol.digit, multirestdigit));
+
+        transitions.add(new Transition<>(noteacc, new Note(), notes));
+        transitions.add(new Transition<>(rest, new Accidental(), noteacc));
+        transitions.add(new Transition<>(endbar, new Accidental(), noteacc));
+
+        transitions.add(new Transition<>(rest, new Rest(), rest));
+        transitions.add(new Transition<>(rest, new Note(), notes));
+        transitions.add(new Transition<>(rest, new VerticalLine(), endbar));
+        transitions.add(new Transition<>(rest, new Dot(), rest));
+        transitions.add(new Transition<>(rest, new Accidental(), noteacc));
+
+        transitions.add(new Transition<>(notes, new VerticalLine(), endbar));
+
+        transitions.add(new Transition<>(timesig, new Fermata(), fermata));
+        transitions.add(new Transition<>(rest, new Fermata(), fermata));
+        transitions.add(new Transition<>(notes, new Fermata(), fermata));
+        transitions.add(new Transition<>(endbar, new Fermata(), fermata));
+        transitions.add(new Transition<>(fermata, new VerticalLine(), endbar));
+        transitions.add(new Transition<>(fermata, new Rest(), rest));
+        transitions.add(new Transition<>(fermata, new Note(), notes));
+        transitions.add(new Transition<>(fermata, new Accidental(), noteacc));
+        transitions.add(new Transition<>(noteacc, new Accidental(), noteacc)); // for double flat
+
+        transitions.add(new Transition<>(trill, new Accidental(), noteacc));
+        transitions.add(new Transition<>(trill, new Note(), notes));
+        transitions.add(new Transition<>(endbar, new Trill(), trill));
+        transitions.add(new Transition<>(rest, new Trill(), trill));
+        transitions.add(new Transition<>(notes, new Trill(), trill));
+        transitions.add(new Transition<>(timesig, new Trill(), trill));
+        transitions.add(new Transition<>(noteacc,new Trill(), trill));
+
+        transitions.add(new Transition<>(timesig, new GraceNote(), gracenote));
+        transitions.add(new Transition<>(notes, new GraceNote(), gracenote));
+        transitions.add(new Transition<>(rest, new GraceNote(), gracenote));
+        transitions.add(new Transition<>(endbar, new GraceNote(), gracenote));
+        transitions.add(new Transition<>(gracenote, new Note(), notes ));
+
+        transitions.add(new Transition<>(endbar, new Rest(), rest));
+        transitions.add(new Transition<>(endbar, new Note(), notes));
+        transitions.add(new Transition<>(endbar, new Digit(), multirestdigit));
 
 
         GraphicalSymbolAlphabet alphabet = new GraphicalSymbolAlphabet();

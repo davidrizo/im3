@@ -14,7 +14,7 @@ import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.gui.useractionlogger.actions.Coordinate;
 import es.ua.dlsi.im3.gui.useractionlogger.actions.MouseClickAction;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.interactive.OMRApp;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.*;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.loggeractions.UserActionsPool;
@@ -515,7 +515,7 @@ public class OMRMainController implements Initializable{
     private void loadPossibleCorrections(final SymbolView item) {
         try {
             toolbarCorrectionSymbols.getItems().clear();
-            ArrayList<PositionedSymbolType> notationSymbols = model.get().recognize(item.getSymbol());
+            ArrayList<AgnosticSymbol> notationSymbols = model.get().recognize(item.getSymbol());
             item.setSortedPossibleNotationSymbols(notationSymbols);
             item.setPositionedSymbolType(notationSymbols.get(0));
 
@@ -564,19 +564,20 @@ public class OMRMainController implements Initializable{
     }
 
     private void doChangeSymbol(MensuralSymbols st, int positionInList) {
-        try {
+        //try
+        //{
             if (symbolViewToChange != null) {
                 ActionLogger.log(UserActionsPool.symbolSelect, currentScoreImageTags.getName(), symbolViewToChange.hashCode(), positionInList, symbolViewToChange.getSymbol().getPositionedSymbolType().getSymbol(), st);
-                symbolViewToChange.setSymbolType(st);
+                //TODO symbolViewToChange.setSymbolType(st);
                 symbolViewToChange.check();
                 lvSymbols.refresh();
                 lvSymbols.getSelectionModel().select(symbolViewToChange);
                 //lvSymbols.getSelectionModel().selectNext();
             }
-        } catch (IM3Exception ex) {
-            Logger.getLogger(OMRMainController.class.getName()).log(Level.SEVERE, null, ex);
-            ShowError.show(OMRApp.getMainStage(), "Cannot set the notation symbol", ex);
-        }
+        //} catch (IM3Exception ex)
+            //Logger.getLogger(OMRMainController.class.getName()).log(Level.SEVERE, null, ex);
+            //ShowError.show(OMRApp.getMainStage(), "Cannot set the notation symbol", ex);
+
     }
 
 
@@ -711,7 +712,7 @@ public class OMRMainController implements Initializable{
                             SymbolView selectedSymbolView = lvSymbols.getSelectionModel().getSelectedItem();
                             if (selectedSymbolView != null) {
                                 try {
-                                    ArrayList<PositionedSymbolType> notationSymbols = model.get().recognize(selectedSymbolView.getSymbol());
+                                    ArrayList<AgnosticSymbol> notationSymbols = model.get().recognize(selectedSymbolView.getSymbol());
                                     selectedSymbolView.setSortedPossibleNotationSymbols(notationSymbols);
                                     selectedSymbolView.setPositionedSymbolType(notationSymbols.get(0));
 

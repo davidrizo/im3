@@ -4,14 +4,15 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefC2;
 import es.ua.dlsi.im3.omr.IGraphicalToScoreSymbolFactory;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 
 // TODO: 9/11/17 Esto debería integrarse con el transductor
 // TODO: 9/11/17 Alturas
 public class MensuralGraphicalToScoreSymbolFactory implements IGraphicalToScoreSymbolFactory<MensuralSymbols> {
     @Override
-    public ITimedElementInStaff convert(PositionedSymbolType<MensuralSymbols> positionedSymbolType) throws IM3Exception {
-        switch (positionedSymbolType.getSymbol()) {
+    public ITimedElementInStaff convert(AgnosticSymbol positionedSymbolType) throws IM3Exception {
+        return null;
+        /*switch (positionedSymbolType.getSpecificSymbol()) {
             case c_clef:
                 return new ClefC2();
             case minima:
@@ -19,7 +20,7 @@ public class MensuralGraphicalToScoreSymbolFactory implements IGraphicalToScoreS
             case semibrevis:
                 return new SimpleNote(Figures.SEMIBREVE, 0, new ScientificPitch(PitchClasses.B, 4));
             default:
-                throw new IM3Exception("Unsupported symbol type: " + positionedSymbolType.getSymbol().getClass());
-        }
+                throw new IM3Exception("Unsupported symbol type: " + positionedSymbolType.getSpecificSymbol().getClass());
+        }*/
     }
 }

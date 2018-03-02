@@ -4,23 +4,23 @@ public class SemanticToken {
     private static final char VALUE_SEPARATOR = '-';
     public static final char SUBVALUE_SEPARATOR = '_';
 
-    SemanticSymbol symbol;
+    SemanticSymbolEnum symbol;
     String value;
 
-    public SemanticToken(SemanticSymbol symbol, String value) {
+    public SemanticToken(SemanticSymbolEnum symbol, String value) {
         this.symbol = symbol;
         this.value = value;
     }
 
-    public SemanticToken(SemanticSymbol symbol) {
+    public SemanticToken(SemanticSymbolEnum symbol) {
         this.symbol = symbol;
     }
 
-    public SemanticSymbol getSymbol() {
+    public SemanticSymbolEnum getSymbol() {
         return symbol;
     }
 
-    public void setSymbol(SemanticSymbol symbol) {
+    public void setSymbol(SemanticSymbolEnum symbol) {
         this.symbol = symbol;
     }
 

@@ -4,7 +4,9 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
-import es.ua.dlsi.im3.omr.io.AgnosticExporter;
+import es.ua.dlsi.im3.omr.encoding.Encoder;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import es.ua.dlsi.im3.omr.primus.conversions.ScoreGraphicalDescription;
@@ -21,13 +23,14 @@ public class GraphicalModernSymbolsAutomatonTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         ScoreSong song = importer.importSong(file);
 
-        AgnosticExporter mei2GraphicSymbols = new AgnosticExporter();
-        ScoreGraphicalDescription scoreGraphicalDescription = mei2GraphicSymbols.convert(song);
-        List<GraphicalToken> graphicalSymbols = scoreGraphicalDescription.getTokens();
+        Encoder encoder = new Encoder();
+        encoder.encode(song);
+        AgnosticEncoding scoreGraphicalDescription = encoder.getAgnosticEncoding();
+        //List<GraphicalToken> graphicalSymbols = scoreGraphicalDescription.getTokens();
 
         GraphicalModernSymbolsAutomaton automaton = new GraphicalModernSymbolsAutomaton();
-        System.out.println(scoreGraphicalDescription.getTokens().toString());
-        OMRTransduction transduction = automaton.probabilityOf(graphicalSymbols);
+        //System.out.println(scoreGraphicalDescription.getTokens().toString());
+        OMRTransduction transduction = automaton.probabilityOf(scoreGraphicalDescription.getSymbols());
         assertTrue("File " + filename + " has non 0 probability", transduction.getProbability().getNumerator().longValue() != 0);
         //sacamos el listado de los elementos
 

@@ -19,8 +19,8 @@ package es.ua.dlsi.im3.omr.classifiers.traced;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,22 +32,20 @@ import java.util.logging.Logger;
 /**
  * @author drizo
  */
-public class TracedClassifier<SymbolType extends Comparable<SymbolType>> implements IBimodalClassifier {
-    private final IStringToSymbolFactory<SymbolType> symbolFactory;
-    private List<BimodalSymbol<SymbolType>> trainSet;
-	IBimodalDatasetReader<SymbolType> datasetReader;
+public class TracedClassifier implements IBimodalClassifier {
+    private List<BimodalSymbol> trainSet;
+	IBimodalDatasetReader datasetReader;
 	
-	public TracedClassifier(IBimodalDatasetReader reader, IStringToSymbolFactory<SymbolType> symbolFactory) {
+	public TracedClassifier(IBimodalDatasetReader reader) {
 		this.datasetReader = reader;
-		this.symbolFactory = symbolFactory;
 	}
 	public void learn(File file) throws IOException {
-		trainSet = datasetReader.read(file, symbolFactory);
+		trainSet = datasetReader.read(file);
 		Logger.getLogger(TracedClassifier.class.getName()).log(Level.INFO, "Learnt with {0} symbols", trainSet.size());
 	}
 
 	public void learn(InputStream is) throws IOException {
-		trainSet = datasetReader.read(is, symbolFactory);
+		trainSet = datasetReader.read(is);
 		Logger.getLogger(TracedClassifier.class.getName()).log(Level.INFO, "Learnt with {0} symbols", trainSet.size());
 	}
 
@@ -57,7 +55,7 @@ public class TracedClassifier<SymbolType extends Comparable<SymbolType>> impleme
     }
 
     @Override
-	public List<PositionedSymbolType> classify(int[][] grayscaleImage, List<Stroke> strokes) throws IM3Exception {
+	public List<AgnosticSymbol> classify(int[][] grayscaleImage, List<Stroke> strokes) throws IM3Exception {
 		BimodalSymbol bs = new BimodalSymbol();
 		for (int i=0; i<grayscaleImage.length; i++) {
 			for (int j=0; j<grayscaleImage[i].length; j++) {
@@ -71,25 +69,25 @@ public class TracedClassifier<SymbolType extends Comparable<SymbolType>> impleme
 		}
 		
 		TreeSet<Ranking> ranking = classify(bs);
-		ArrayList<PositionedSymbolType> result = new ArrayList<>();
+		ArrayList<AgnosticSymbol> result = new ArrayList<>();
 		for (Ranking item : ranking) {
             //TODO Hacer Javi - clasificar altura
-			result.add(new PositionedSymbolType(item.getSymbol(), PositionsInStaff.LINE_3));
+			result.add(new AgnosticSymbol(item.getSymbol(), PositionsInStaff.LINE_3));
 		}
 		return result;
 	}
 	
-	class Ranking<SymbolType extends Comparable<SymbolType>> implements Comparable<Ranking<SymbolType>>{
-		SymbolType symbol;
+	class Ranking implements Comparable<Ranking>{
+		AgnosticSymbolType symbol;
 		double distance;
 		
-		public Ranking(SymbolType symbol, double distance) {
+		public Ranking(AgnosticSymbolType symbol, double distance) {
 			super();
 			this.symbol = symbol;
 			this.distance = distance;
 		}
 		
-		public SymbolType getSymbol() {
+		public AgnosticSymbolType getSymbol() {
 			return symbol;
 		}
 
@@ -98,7 +96,7 @@ public class TracedClassifier<SymbolType extends Comparable<SymbolType>> impleme
 		}
 
 		@Override
-		public int compareTo(Ranking<SymbolType> o) {
+		public int compareTo(Ranking o) {
 			if (distance < o.distance) {
 				return -1;
 			} else if (distance > o.distance) {
@@ -109,11 +107,11 @@ public class TracedClassifier<SymbolType extends Comparable<SymbolType>> impleme
 		}
 	}
 	public TreeSet<Ranking> classify(BimodalSymbol x) throws IM3Exception {
-		TreeMap<SymbolType, Double> symbols = new TreeMap<>(); 
+		TreeMap<AgnosticSymbolType, Double> symbols = new TreeMap<>();
 		
-		for(BimodalSymbol<SymbolType> symbol : trainSet) {
+		for(BimodalSymbol symbol : trainSet) {
 			double distance = distance2(x,symbol);
-			SymbolType symbolType = symbol.getLabel();
+			AgnosticSymbolType symbolType = symbol.getLabel();
 			if (symbolType == null) {
 				throw new IM3Exception("Uknown symbol type: " + symbol.getLabel());
 			}
@@ -123,7 +121,7 @@ public class TracedClassifier<SymbolType extends Comparable<SymbolType>> impleme
 			}
 		}
 		TreeSet<Ranking> result = new TreeSet<>();
-		for (Map.Entry<SymbolType, Double> symbolEntry: symbols.entrySet()) {
+		for (Map.Entry<AgnosticSymbolType, Double> symbolEntry: symbols.entrySet()) {
 			result.add(new Ranking(symbolEntry.getKey(), symbolEntry.getValue()));
 		} 
 		
