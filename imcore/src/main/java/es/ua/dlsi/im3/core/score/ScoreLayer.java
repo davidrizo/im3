@@ -98,6 +98,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	//TODO añadir con huecos, he quitado el VoiceGap
 	public void add(Time time, Atom atom) throws IM3Exception {
 		atom.setTime(time);
+		atom.setLayer(this); //drizo 20180302
         evaluateDurationBeforeAdd(atom, atoms.size());
 		atoms.add(atom);
 	}
