@@ -3,7 +3,7 @@ package es.ua.dlsi.im3.core.score;
 import es.ua.dlsi.im3.core.IM3Exception;
 
 /**
- * Line or space in the staff. Invariant
+ * Line or space in the staff. Invariant.
  * @author drizo
  */
 public class PositionInStaff implements Comparable<PositionInStaff> {
@@ -107,6 +107,11 @@ public class PositionInStaff implements Comparable<PositionInStaff> {
         }
     }
 
+    /**
+     * Lower values are below, and higher on the top part of the staff
+     * @param position
+     * @return
+     */
     public int compareTo(PositionInStaff position) {
         return lineSpace - position.lineSpace;
     }
