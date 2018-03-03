@@ -468,9 +468,9 @@ public class Encoder {
                 case QUARTER: return NoteFigures.quarter;
                 case EIGHTH: return NoteFigures.eighth;
                 case SIXTEENTH: return NoteFigures.sixteenth;
-                case THIRTY_SECOND: return NoteFigures.thirty_second;
-                case SIXTY_FOURTH: return NoteFigures.sixty_fourth;
-                case HUNDRED_TWENTY_EIGHTH: return NoteFigures.hundred_twenty_eighth;
+                case THIRTY_SECOND: return NoteFigures.thirtySecond;
+                case SIXTY_FOURTH: return NoteFigures.sixtyFourth;
+                case HUNDRED_TWENTY_EIGHTH: return NoteFigures.hundredTwentyEighth;
                 default: throw new IM3Exception("Unsupported note figure: " + note.getAtomFigure().getFigure());
             }
             //return note.getAtomFigure().getFigure().toString().toLowerCase();
@@ -484,9 +484,9 @@ public class Encoder {
             case QUARTER: return RestFigures.quarter;
             case EIGHTH: return RestFigures.eighth;
             case SIXTEENTH: return RestFigures.sixteenth;
-            case THIRTY_SECOND: return RestFigures.thirty_second;
-            case SIXTY_FOURTH: return RestFigures.sixty_fourth;
-            case HUNDRED_TWENTY_EIGHTH: return RestFigures.hundred_twenty_eighth;
+            case THIRTY_SECOND: return RestFigures.thirtySecond;
+            case SIXTY_FOURTH: return RestFigures.sixtyFourth;
+            case HUNDRED_TWENTY_EIGHTH: return RestFigures.hundredTwentyEighth;
             default: throw new IM3Exception("Unsupported rest figure: " + figure);
         }
     }

@@ -36,6 +36,17 @@ public class RestState extends OMRState{
 
     private Figures parseFigure(RestFigures restFigures) {
         // TODO: 5/10/17 Valores válidos
-        return Figures.valueOf(restFigures.toAgnosticString().toUpperCase());
+        switch (restFigures) {
+            case hundredTwentyEighth:
+                return Figures.HUNDRED_TWENTY_EIGHTH;
+            case sixtyFourth:
+                return Figures.SIXTY_FOURTH;
+            case thirtySecond:
+                return Figures.THIRTY_SECOND;
+            case twoHundredFiftySix:
+                return Figures.TWO_HUNDRED_FIFTY_SIX;
+            default:
+                return Figures.valueOf(restFigures.toAgnosticString().toUpperCase());
+        }
     }
 }

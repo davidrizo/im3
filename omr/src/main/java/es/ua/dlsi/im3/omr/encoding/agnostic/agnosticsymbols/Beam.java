@@ -12,6 +12,10 @@ public class Beam implements INoteDurationSpecification {
         this.beams = beams;
     }
 
+    public Beam(int beams) {
+        this.beams = 1;
+    }
+
     public BeamType getBeamType() {
         return beamType;
     }

@@ -84,8 +84,6 @@ public class NotesState extends OMRState {
                 return Figures.BREVE;
             case eighth:
                 return Figures.FUSA;
-            case eighth_cut:
-                return Figures.FUSA;
             case half:
                 return Figures.MINIM;
             case longa:
@@ -106,7 +104,7 @@ public class NotesState extends OMRState {
                 return Figures.BREVE;
             case eighth:
                 return Figures.FUSA;
-            case eighth_cut:
+            case eighthCut:
                 return Figures.FUSA;
             case half:
                 return Figures.MINIM;

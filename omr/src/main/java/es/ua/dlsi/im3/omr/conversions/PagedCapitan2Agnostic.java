@@ -32,49 +32,42 @@ public class PagedCapitan2Agnostic {
         restFigures = new HashMap<>();
 
         // TODO: 2/3/18 Acabar figuras
+        noteFigures.put("MAXIMA3", NoteFigures.quadrupleWholeStem);
+        noteFigures.put("MAXIMA3", NoteFigures.tripleWholeStem);
+        noteFigures.put("MAXIMA2", NoteFigures.doubleWholeStem);
+        noteFigures.put("COLOUREDMAXIMA2", NoteFigures.doubleWholeBlackStem);
+        noteFigures.put("MAXIMA", NoteFigures.longa);
+        noteFigures.put("BREVIS", NoteFigures.breve);
+        noteFigures.put("COLOUREDBREVIS", NoteFigures.breveBlack);
+        noteFigures.put("SEMIBREVIS", NoteFigures.whole);
+        noteFigures.put("COLOUREDSEMIBREVIS", NoteFigures.wholeBlack);
         noteFigures.put("MINIMA", NoteFigures.half);
         noteFigures.put("COLOUREDMINIMA", NoteFigures.quarter);
-        restFigures.put("MINIMAREST", RestFigures.half);
+        noteFigures.put("COLOUREDSEMIMINIMA", NoteFigures.eighth);
+
+
+        //restFigures.put("MAXIMAREST", RestFigures.); // tagged as vertical line
+        restFigures.put("LONGAREST", RestFigures.longa);
         restFigures.put("BREVISREST", RestFigures.breve);
+        restFigures.put("MINIMAREST", RestFigures.half);
+        restFigures.put("SEMIBREVISREST", RestFigures.whole);
+        restFigures.put("MINIMAREST", RestFigures.half);
+        restFigures.put("SEMIMINIMAREST", RestFigures.seminima);
 
-
-        /*noteFigures.put("MAXIMA", FiguresMensural.MAXIMA_WHITE);
-        noteFigures.put("COLOUREDMAXIMA", FiguresMensural.MAXIMA_BLACK);
-        restFigures.put("MAXIMAREST", FiguresMensural.MAXIMA_WHITE);
-
-        noteFigures.put("COLOUREDMAXIMA2", FiguresMensural.DUPLEXLONGA_BLACK);
-
-        noteFigures.put("LONGA", FiguresMensural.LONGA_WHITE);
-        noteFigures.put("COLOUREDLONGA", FiguresMensural.LONGA_BLACK);
-        restFigures.put("LONGAREST", FiguresMensural.LONGA_WHITE);
-
-        noteFigures.put("BREVIS", FiguresMensural.BREVE_WHITE);
-        noteFigures.put("COLOUREDBREVIS", FiguresMensural.BREVE_BLACK);
-        restFigures.put("BREVISREST", FiguresMensural.BREVE_WHITE);
-
-        noteFigures.put("SEMIBREVIS", FiguresMensural.SEMIBREVE_WHITE);
-        noteFigures.put("COLOUREDSEMIBREVIS", FiguresMensural.SEMIBREVE_BLACK);
-        restFigures.put("SEMIBREVISREST", FiguresMensural.SEMIBREVE_WHITE);
-
-        noteFigures.put("MINIMA", FiguresMensural.MINIMA_WHITE);
-        noteFigures.put("COLOUREDMINIMA", FiguresMensural.MINIMA_BLACK);
-        restFigures.put("MINIMAREST", FiguresMensural.MINIMA_WHITE);
-
-        noteFigures.put("SEMIMINIMA", FiguresMensural.SEMINIMA_WHITE);
-        noteFigures.put("COLOUREDSEMIMINIMA", FiguresMensural.SEMINIMA_BLACK);
+        /*
+        noteFigures.put("SEMIMINIMA", FiguresMensural.SEMINIMA_WHITE); // no existe
         noteFigures.put("BCOLOUREDSEMIMINIMA", FiguresMensural.SEMINIMA_BLACK); // with
         // beam
-        restFigures.put("SEMIMINIMAREST", FiguresMensural.SEMINIMA_WHITE);
-
-        noteFigures.put("FUSA", FiguresMensural.FUSA_WHITE);
-        noteFigures.put("COLOUREDFUSA", FiguresMensural.FUSA_BLACK);
+        noteFigures.put("FUSA", FiguresMensural.FUSA_WHITE); // no existe
+        noteFigures.put("COLOUREDFUSA", FiguresMensural.FUSA_BLACK); // no existe
         noteFigures.put("BCOLOUREDFUSA", FiguresMensural.FUSA_BLACK);
-        restFigures.put("FUSAREST", FiguresMensural.FUSA_WHITE);
+        restFigures.put("FUSAREST", FiguresMensural.FUSA_WHITE); // no existe
 
-        noteFigures.put("SEMIFUSA", FiguresMensural.SEMIFUSA_WHITE);
-        noteFigures.put("COLOUREDSEMIFUSA", FiguresMensural.SEMIFUSA_BLACK);
-        noteFigures.put("BCOLOUREDSEMIFUSA", FiguresMensural.SEMIFUSA_BLACK);
-        restFigures.put("SEMIFUSAREST", FiguresMensural.SEMIFUSA_WHITE);    */
+        noteFigures.put("SEMIFUSA", FiguresMensural.SEMIFUSA_WHITE); // no existe
+        noteFigures.put("COLOUREDSEMIFUSA", FiguresMensural.SEMIFUSA_BLACK); // no existe
+        noteFigures.put("BCOLOUREDSEMIFUSA", FiguresMensural.SEMIFUSA_BLACK); // no existe
+        restFigures.put("SEMIFUSAREST", FiguresMensural.SEMIFUSA_WHITE); // no existe
+        */
     }
 
     /**
@@ -139,12 +132,44 @@ public class PagedCapitan2Agnostic {
                 agnosticEncoding.add(agnosticSymbol);
             }
         }
+
+        correctBeams(agnosticEncoding);
         return agnosticEncoding;
+    }
+
+    /**
+     * Change just beams for left, both and right
+     * @param agnosticEncoding
+     */
+    private void correctBeams(AgnosticEncoding agnosticEncoding) {
+        AgnosticSymbol lastSymbol = null;
+        for (AgnosticSymbol agnosticSymbol: agnosticEncoding.getSymbols()) {
+            Note lastNoteBeamedSymbol = null;
+            Note noteBeamedSymbol = null;
+
+            if (lastSymbol != null && lastSymbol.getSymbol() instanceof Note && ((Note) lastSymbol.getSymbol()).getDurationSpecification() instanceof Beam) {
+                lastNoteBeamedSymbol = (Note) lastSymbol.getSymbol();
+            }
+
+            if (agnosticSymbol != null && agnosticSymbol.getSymbol() instanceof Note && ((Note) agnosticSymbol.getSymbol()).getDurationSpecification() instanceof Beam) {
+                noteBeamedSymbol = (Note) lastSymbol.getSymbol();
+            }
+
+            if (lastNoteBeamedSymbol == null && noteBeamedSymbol != null) {
+                ((Beam)noteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.left);
+            } else if (lastNoteBeamedSymbol != null && noteBeamedSymbol == null) {
+                ((Beam)lastNoteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.right);// (2)
+            } else if (lastNoteBeamedSymbol != null && noteBeamedSymbol != null) {
+                ((Beam)lastNoteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.both); // it may be corrected by condition above (2)
+            }
+
+            lastSymbol = agnosticSymbol;
+        }
     }
 
     private AgnosticSymbolType parseNotationSymbol(String symbol) throws ImportException {
         switch (symbol) {
-            case "BARLINE":
+            case "BARLINE": case "MAXIMAREST":
                 return new VerticalLine();
             case "CUSTOS":
                 return new Custos();
@@ -154,9 +179,7 @@ public class PagedCapitan2Agnostic {
                 return new Clef(ClefNote.C);
             case "FCLEF":
                 return new Clef(ClefNote.F);
-            case "C32":
-                return new MeterSign(MeterSigns.CZ);
-            case "C/32":
+            case "PROPORTIOMINOR": // it was a mistake in Capitán
                 return new MeterSign(MeterSigns.CcutZ);
             case "COMMONTIME":
                 return new MeterSign(MeterSigns.C);
@@ -172,10 +195,13 @@ public class PagedCapitan2Agnostic {
                 return new Accidental(Accidentals.sharp);
             case "GREGORIAN":
                 return new Ligature(); //TODO
-            case "GREGORIANC":
-                return new Ligature(true); //TODO
             case "SMUDGE":
                 return new Smudge();
+            case "BCOLOUREDSEMIMINIMA":
+                // we leave it empty to change it later
+                return new Note(new Beam(1));
+            case "BCOLOUREDFUSA":
+                return new Note(new Beam(2));
             default:
                 return parseFigure(symbol);
         }

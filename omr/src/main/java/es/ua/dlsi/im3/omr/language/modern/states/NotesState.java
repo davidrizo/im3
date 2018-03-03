@@ -77,7 +77,7 @@ public class NotesState extends OMRState {
             return Figures.findFigureWithFlags(beam.getBeams(), NotationType.eModern);
         } else if (durationSpecification instanceof NoteFigures) {
             NoteFigures noteFigures = (NoteFigures) durationSpecification;
-            return Figures.valueOf(noteFigures.toAgnosticString().toUpperCase());
+            return convert(noteFigures);
         } else {
             throw new IM3Exception("Unsupported durationSpecification: " + durationSpecification);
         }
@@ -95,5 +95,20 @@ public class NotesState extends OMRState {
         } else { // it is a figure
             return Figures.valueOf(upperCaseValue);
         }*/
+    }
+
+    private Figures convert(NoteFigures noteFigures) {
+        switch (noteFigures) {
+            case hundredTwentyEighth:
+                return Figures.HUNDRED_TWENTY_EIGHTH;
+            case sixtyFourth:
+                return Figures.SIXTY_FOURTH;
+            case thirtySecond:
+                return Figures.THIRTY_SECOND;
+            case twoHundredFiftySix:
+                return Figures.TWO_HUNDRED_FIFTY_SIX;
+            default:
+                return Figures.valueOf(noteFigures.toAgnosticString().toUpperCase());
+    }
     }
 }
