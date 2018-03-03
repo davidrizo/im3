@@ -28,6 +28,10 @@ public class Fermata extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        return FERMATA + positions.toAgnosticString();
+        if (positions == null) {
+            return FERMATA;
+        } else {
+            return FERMATA + positions.toAgnosticString();
+        }
     }
 }

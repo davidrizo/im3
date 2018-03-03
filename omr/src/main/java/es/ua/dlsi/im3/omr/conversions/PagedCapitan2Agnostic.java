@@ -3,7 +3,9 @@ package es.ua.dlsi.im3.omr.conversions;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
+import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
@@ -107,15 +109,37 @@ public class PagedCapitan2Agnostic {
             String[] compound = token.split(SLASH);
             ArrayList<AgnosticSymbol> psts = new ArrayList<>();
             for (String symbol: compound) {
-                String [] subsymbols = token.split(SYMBOL_SEPARATOR);
-                if (subsymbols.length != 2) {
-                    throw new ImportException("Expected two subsymbols at '" + token  + "' and found " + subsymbols.length);
-                }
+                if (symbol.equals("BARLINE")) {
+                    psts.add(new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1));
+                } else {
+                    String[] subsymbols = symbol.split(SYMBOL_SEPARATOR);
+                    if (subsymbols.length != 2) {
+                        throw new ImportException("Expected two subsymbols at '" + token + "' and found " + subsymbols.length);
+                    }
 
-                AgnosticSymbolType symbolType = parseNotationSymbol(subsymbols[0]);
-                PositionInStaff positionInStaff = parsePosition(subsymbols[1]);
-                AgnosticSymbol pst = new AgnosticSymbol(symbolType, positionInStaff);
-                psts.add(pst);
+                    AgnosticSymbolType symbolType = parseNotationSymbol(subsymbols[0]);
+                    PositionInStaff positionInStaff = parsePosition(subsymbols[1]);
+
+                    if (symbolType.toAgnosticString().equals("clef.G") && subsymbols[1].equals("5")) {
+                        // correct mistake in dataset
+                        positionInStaff = PositionsInStaff.LINE_2;
+                    } else if (symbolType instanceof Rest) {
+                        if (!positionInStaff.laysOnLine()) { // Jorge codified in spaces
+                            // put in line below
+                            positionInStaff = new PositionInStaff(positionInStaff.getLineSpace()-1);
+                        }
+                    } else if (symbolType.toAgnosticString().equals("fermata.")) {
+                        Fermata fermata = (Fermata) symbolType;
+                        if (positionInStaff.compareTo(PositionsInStaff.LINE_3) < 0) {
+                            fermata.setPositions(Positions.below);
+                        } else {
+                            fermata.setPositions(Positions.above);
+                        }
+                    }
+
+                    AgnosticSymbol pst = new AgnosticSymbol(symbolType, positionInStaff);
+                    psts.add(pst);
+                }
             }
             psts.sort(new Comparator<AgnosticSymbol>() {
                 @Override
@@ -152,7 +176,7 @@ public class PagedCapitan2Agnostic {
             }
 
             if (agnosticSymbol != null && agnosticSymbol.getSymbol() instanceof Note && ((Note) agnosticSymbol.getSymbol()).getDurationSpecification() instanceof Beam) {
-                noteBeamedSymbol = (Note) lastSymbol.getSymbol();
+                noteBeamedSymbol = (Note) agnosticSymbol.getSymbol();
             }
 
             if (lastNoteBeamedSymbol == null && noteBeamedSymbol != null) {
@@ -160,7 +184,7 @@ public class PagedCapitan2Agnostic {
             } else if (lastNoteBeamedSymbol != null && noteBeamedSymbol == null) {
                 ((Beam)lastNoteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.right);// (2)
             } else if (lastNoteBeamedSymbol != null && noteBeamedSymbol != null) {
-                ((Beam)lastNoteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.both); // it may be corrected by condition above (2)
+                ((Beam)noteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.both); // it may be corrected by condition above (2)
             }
 
             lastSymbol = agnosticSymbol;
@@ -230,10 +254,14 @@ public class PagedCapitan2Agnostic {
                 return PositionsInStaff.LINE_5;
             case "01":
                 return PositionsInStaff.SPACE_4;
+            case "02": // used for longa rests
+                return PositionsInStaff.LINE_3;
             case "1":
                 return PositionsInStaff.LINE_4;
             case "12":
                 return PositionsInStaff.SPACE_3;
+            case "13": // used for longa rests
+                return PositionsInStaff.LINE_2;
             case "2":
                 return PositionsInStaff.LINE_3;
             case "23":
@@ -261,7 +289,7 @@ public class PagedCapitan2Agnostic {
             case "8":
                 return PositionsInStaff.FOURTH_BOTTOM_LEDGER_LINE;
             default:
-                throw new ImportException("Unkown position " + positionStr);
+                throw new ImportException("Unkown position '" + positionStr + "'");
         }
     }
 
@@ -276,5 +304,38 @@ public class PagedCapitan2Agnostic {
         }
     }
 
+    private void convert(File input, File output) throws ImportException, FileNotFoundException {
+        System.out.println("Converting " + input.getName());
+
+        List<AgnosticEncoding> agnosticEncodingList = convert(input);
+        PrintStream ps = new PrintStream(output);
+        for (AgnosticEncoding agnosticEncoding: agnosticEncodingList) {
+            AgnosticExporter exporter = new AgnosticExporter();
+            ps.println(exporter.export(agnosticEncoding));
+        }
+        ps.close();
+    }
+
+    /**
+     * It converts all files in <input folder> to an agnostic representation in <output folder></output>
+     * @param args
+     * @throws Exception
+     */
+    public static final void main(String [] args) throws Exception {
+        if (args.length != 2) {
+            throw new Exception("Use: PagedCapitan2Agnostic <input folder> <output folder>");
+        }
+
+        File inputFolder = new File(args[0]);
+        File outputFolder = new File(args[1]);
+
+        PagedCapitan2Agnostic pagedCapitan2Agnostic = new PagedCapitan2Agnostic();
+        ArrayList<File> inputFiles = new ArrayList<>();
+        FileUtils.readFiles(inputFolder, inputFiles, "txt");
+        for (File inputFile: inputFiles) {
+            File outputFile = new File(outputFolder, FileUtils.getFileWithoutPathOrExtension(inputFile.getName())+".agnostic");
+            pagedCapitan2Agnostic.convert(inputFile, outputFile);
+        }
+    }
 
 }

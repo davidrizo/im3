@@ -34,6 +34,10 @@ public class Beam implements INoteDurationSpecification {
 
     @Override
     public String toAgnosticString() {
-        return beamType.toAgnosticString() + beams;
+        if (beamType != null) {
+            return beamType.toAgnosticString() + beams;
+        } else {
+            return "<UNSETBEAM> " + beams;
+        }
     }
 }
