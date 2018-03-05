@@ -4,10 +4,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.*;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
@@ -28,6 +25,10 @@ public class PagedCapitan2Agnostic {
     private static final String SLASH = "/";
     private final HashMap<String, NoteFigures> noteFigures;
     private final HashMap<String, RestFigures> restFigures;
+
+    private static final VerticalSeparator verticalSeparator = new VerticalSeparator();
+    private static final JuxtapositionSeparator juxtapositionSeparator = new JuxtapositionSeparator();
+    private static final HorizontalSeparator horizontalSeparator = new HorizontalSeparator();
 
     public PagedCapitan2Agnostic() {
         noteFigures = new HashMap<>();
@@ -83,7 +84,7 @@ public class PagedCapitan2Agnostic {
         try (BufferedReader br = new BufferedReader(new FileReader(input))) {
             for (String line; (line = br.readLine()) != null;) {
                 if (!line.trim().isEmpty()) {
-                    result.add(parseLine(line));
+                    result.add(parseLine(line.trim()));
                 }
             }
         } catch (Exception e) {
@@ -105,13 +106,16 @@ public class PagedCapitan2Agnostic {
         AgnosticEncoding agnosticEncoding = new AgnosticEncoding();
         for (String token: tokens) {
             // in Capitan encoding, when a symbol lies on the same horizontal position, it is denoted with a /
-            // In AgnosticEncoding we encode it using top-down
             String[] compound = token.split(SLASH);
-            ArrayList<AgnosticSymbol> psts = new ArrayList<>();
+            boolean first = true;
             for (String symbol: compound) {
                 if (symbol.equals("BARLINE")) {
-                    psts.add(new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1));
+                    agnosticEncoding.add(new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1));
                 } else {
+                    if (!first) {
+                        agnosticEncoding.add(verticalSeparator);
+                    }
+
                     String[] subsymbols = symbol.split(SYMBOL_SEPARATOR);
                     if (subsymbols.length != 2) {
                         throw new ImportException("Expected two subsymbols at '" + token + "' and found " + subsymbols.length);
@@ -124,7 +128,10 @@ public class PagedCapitan2Agnostic {
                         // correct mistake in dataset
                         positionInStaff = PositionsInStaff.LINE_2;
                     } else if (symbolType instanceof Rest) {
-                        if (!positionInStaff.laysOnLine()) { // Jorge codified in spaces
+                        Rest rest = (Rest) symbolType;
+                        if (subsymbols[1].equals("01") && rest.getRestFigures() == RestFigures.breve) {
+                            positionInStaff = PositionsInStaff.LINE_3;
+                        } else if (!positionInStaff.laysOnLine()) { // Jorge codified in spaces
                             // put in line below
                             positionInStaff = new PositionInStaff(positionInStaff.getLineSpace()-1);
                         }
@@ -138,10 +145,12 @@ public class PagedCapitan2Agnostic {
                     }
 
                     AgnosticSymbol pst = new AgnosticSymbol(symbolType, positionInStaff);
-                    psts.add(pst);
+                    agnosticEncoding.add(pst);
                 }
+                first = false;
             }
-            psts.sort(new Comparator<AgnosticSymbol>() {
+            agnosticEncoding.add(horizontalSeparator);
+            /*psts.sort(new Comparator<AgnosticSymbol>() {
                 @Override
                 public int compare(AgnosticSymbol o1, AgnosticSymbol o2) {
                     // position in staff is lower for bottom elements, this is why we sort reverse
@@ -154,8 +163,9 @@ public class PagedCapitan2Agnostic {
             });
             for (AgnosticSymbol agnosticSymbol: psts) {
                 agnosticEncoding.add(agnosticSymbol);
-            }
+            }*/
         }
+        agnosticEncoding.removeLastSymbolIfSeparator();
 
         correctBeams(agnosticEncoding);
         return agnosticEncoding;
@@ -166,28 +176,30 @@ public class PagedCapitan2Agnostic {
      * @param agnosticEncoding
      */
     private void correctBeams(AgnosticEncoding agnosticEncoding) {
-        AgnosticSymbol lastSymbol = null;
-        for (AgnosticSymbol agnosticSymbol: agnosticEncoding.getSymbols()) {
-            Note lastNoteBeamedSymbol = null;
-            Note noteBeamedSymbol = null;
+        AgnosticToken lastSymbol = null;
+        for (AgnosticToken agnosticSymbol: agnosticEncoding.getSymbols()) {
+            if (!(agnosticSymbol instanceof AgnosticSeparator)) {
+                Note lastNoteBeamedSymbol = null;
+                Note noteBeamedSymbol = null;
 
-            if (lastSymbol != null && lastSymbol.getSymbol() instanceof Note && ((Note) lastSymbol.getSymbol()).getDurationSpecification() instanceof Beam) {
-                lastNoteBeamedSymbol = (Note) lastSymbol.getSymbol();
+                if (lastSymbol != null && lastSymbol.getSymbol() instanceof Note && ((Note) lastSymbol.getSymbol()).getDurationSpecification() instanceof Beam) {
+                    lastNoteBeamedSymbol = (Note) lastSymbol.getSymbol();
+                }
+
+                if (agnosticSymbol != null && agnosticSymbol.getSymbol() instanceof Note && ((Note) agnosticSymbol.getSymbol()).getDurationSpecification() instanceof Beam) {
+                    noteBeamedSymbol = (Note) agnosticSymbol.getSymbol();
+                }
+
+                if (lastNoteBeamedSymbol == null && noteBeamedSymbol != null) {
+                    ((Beam) noteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.left);
+                } else if (lastNoteBeamedSymbol != null && noteBeamedSymbol == null) {
+                    ((Beam) lastNoteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.right);// (2)
+                } else if (lastNoteBeamedSymbol != null && noteBeamedSymbol != null) {
+                    ((Beam) noteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.both); // it may be corrected by condition above (2)
+                }
+
+                lastSymbol = agnosticSymbol;
             }
-
-            if (agnosticSymbol != null && agnosticSymbol.getSymbol() instanceof Note && ((Note) agnosticSymbol.getSymbol()).getDurationSpecification() instanceof Beam) {
-                noteBeamedSymbol = (Note) agnosticSymbol.getSymbol();
-            }
-
-            if (lastNoteBeamedSymbol == null && noteBeamedSymbol != null) {
-                ((Beam)noteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.left);
-            } else if (lastNoteBeamedSymbol != null && noteBeamedSymbol == null) {
-                ((Beam)lastNoteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.right);// (2)
-            } else if (lastNoteBeamedSymbol != null && noteBeamedSymbol != null) {
-                ((Beam)noteBeamedSymbol.getDurationSpecification()).setBeamType(BeamType.both); // it may be corrected by condition above (2)
-            }
-
-            lastSymbol = agnosticSymbol;
         }
     }
 

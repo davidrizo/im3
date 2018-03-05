@@ -6,15 +6,19 @@ import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.adt.dfa.Transition;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolAlphabet;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
-//import es.ua.dlsi.im3.omr.language.mensural.states.EndBarState;
+import es.ua.dlsi.im3.omr.language.OMRTransduction;
+import es.ua.dlsi.im3.omr.language.modern.states.*;
 import es.ua.dlsi.im3.omr.language.modern.states.*;
 import org.apache.commons.math3.fraction.Fraction;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Modified by Jorge Aracil
@@ -148,5 +152,26 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         GraphicalSymbolAlphabet alphabet = new GraphicalSymbolAlphabet();
         dpa = new DeterministicProbabilisticAutomaton(states, start,endStates, alphabet, transitions);
         dpa.normalizeProbabilities();
+    }
+
+    // TODO: 5/3/18 El autómata de Jordi Aracil aún no usaba separadores, hay que ponerlos en lugar de hacer esto
+    private List<AgnosticToken> getSequenceWithoutSeparators(List<AgnosticToken> sequence) {
+        List<AgnosticToken> result = new LinkedList<>();
+        for (AgnosticToken token: sequence) {
+            if (!(token instanceof AgnosticSeparator)) {
+                result.add(token);
+            }
+        }
+        return result;
+    }
+    
+    @Override
+    public OMRTransduction probabilityOf(List<AgnosticToken> sequence) throws IM3Exception {
+        return super.probabilityOf(getSequenceWithoutSeparators(sequence));
+    }
+
+    @Override
+    public OMRTransduction probabilityOf(List<AgnosticToken> sequence, boolean debug) throws IM3Exception {
+        return super.probabilityOf(getSequenceWithoutSeparators(sequence), debug);
     }
 }

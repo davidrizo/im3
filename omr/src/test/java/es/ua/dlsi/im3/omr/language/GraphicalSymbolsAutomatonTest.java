@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
@@ -27,7 +28,7 @@ public class GraphicalSymbolsAutomatonTest {
         GraphicalModernSymbolsAutomaton gspa = new GraphicalModernSymbolsAutomaton();
         gspa.getDeterministicProbabilisticAutomaton().writeDot(TestFileUtils.createTempFile("modern.dot"));
 
-        List<AgnosticSymbol> sequence1 = Arrays.asList(
+        List<AgnosticToken> sequence1 = Arrays.asList(
                 new AgnosticSymbol(new Clef(ClefNote.G), PositionsInStaff.LINE_2),
                 new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.LINE_3),
                 new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.SPACE_4),
@@ -46,7 +47,7 @@ public class GraphicalSymbolsAutomatonTest {
 
         assertTrue(t1.getProbability().getNumeratorAsLong() > 0);
 
-        List<AgnosticSymbol> sequence2 = Arrays.asList(
+        List<AgnosticToken> sequence2 = Arrays.asList(
                 new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.SPACE_4),
                 new AgnosticSymbol(new Digit(3), PositionsInStaff.LINE_4)
         );
@@ -69,7 +70,7 @@ public class GraphicalSymbolsAutomatonTest {
         GraphicalMensuralSymbolsAutomaton gspa = new GraphicalMensuralSymbolsAutomaton();
         gspa.getDeterministicProbabilisticAutomaton().writeDot(TestFileUtils.createTempFile("mensural.dot"));
 
-        List<AgnosticSymbol> sequence1 = Arrays.asList(
+        List<AgnosticToken> sequence1 = Arrays.asList(
                 new AgnosticSymbol(new Clef(ClefNote.G), PositionsInStaff.LINE_2),
                 new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.LINE_3),
                 new AgnosticSymbol(new MeterSign(MeterSigns.C), PositionsInStaff.LINE_3),
@@ -93,7 +94,7 @@ public class GraphicalSymbolsAutomatonTest {
         System.out.println("Probability of " + sequence1 + "\n\t=" + t1.getProbability());
         assertTrue(t1.getProbability().getNumeratorAsLong() > 0);
 
-        List<AgnosticSymbol> sequence2 = Arrays.asList(
+        List<AgnosticToken> sequence2 = Arrays.asList(
                 new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.SPACE_4),
                 new AgnosticSymbol(new Digit(3), PositionsInStaff.LINE_4)
         );

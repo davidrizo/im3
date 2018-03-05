@@ -8,7 +8,7 @@ import java.util.List;
  * @param <SymbolType>
  */
 public class Sequence<SymbolType> {
-    List<SymbolType> symbols;
+    protected List<SymbolType> symbols;
 
     public Sequence() {
         symbols = new LinkedList<>();

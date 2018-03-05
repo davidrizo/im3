@@ -8,7 +8,7 @@ import java.io.PrintStream;
  * @autor drizo
  */
 public abstract class Exporter<SymbolType> {
-    private static final char SEP = '\t';
+    private static final char SEP = ' ';
     private static final char SEPVERTICALPOS = '-';
     private StringBuilder sb;
     private Sequence<SymbolType> encoding;
@@ -30,16 +30,17 @@ public abstract class Exporter<SymbolType> {
     }
 
     private void doExport() {
-        boolean first = true;
-        for (SymbolType symbol: encoding.getSymbols()) {
-            if (first) {
-                first = false;
-            } else {
+        int size = encoding.getSymbols().size();
+        for (int i=0; i<size; i++) {
+            SymbolType symbol = encoding.getSymbols().get(i);
+            sb.append(export(symbol));
+            if (i<size-1 && requiresSeparator(symbol)) {
                 sb.append(SEP);
             }
-            sb.append(export(symbol));
         }
     }
+
+    protected abstract boolean requiresSeparator(SymbolType symbol);
 
     protected abstract String export(SymbolType symbol);
 }

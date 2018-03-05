@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.adt.dfa.*;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 
 import java.util.*;
 
@@ -24,11 +25,11 @@ public class GraphicalSymbolsAutomaton {
         return dpa;
     }
 
-    public OMRTransduction probabilityOf(List<AgnosticSymbol> sequence, boolean debug) throws IM3Exception {
+    public OMRTransduction probabilityOf(List<AgnosticToken> sequence, boolean debug) throws IM3Exception {
         dpa.setDebug(debug);
         return dpa.probabilityOf(sequence, new OMRTransductionFactory(notationType));
     }
-    public OMRTransduction probabilityOf(List<AgnosticSymbol> sequence) throws IM3Exception {
+    public OMRTransduction probabilityOf(List<AgnosticToken> sequence) throws IM3Exception {
         dpa.setDebug(false);
         return dpa.probabilityOf(sequence, new OMRTransductionFactory(notationType));
     }
