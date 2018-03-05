@@ -38,6 +38,7 @@ public class PagedCapitan2Agnostic {
         noteFigures.put("MAXIMA4", NoteFigures.quadrupleWholeStem);
         noteFigures.put("MAXIMA3", NoteFigures.tripleWholeStem);
         noteFigures.put("MAXIMA2", NoteFigures.doubleWholeStem);
+        noteFigures.put("MAXIMA2b", NoteFigures.doubleWhole);
         noteFigures.put("COLOUREDMAXIMA2", NoteFigures.doubleWholeBlackStem);
         noteFigures.put("MAXIMA", NoteFigures.longa);
         noteFigures.put("BREVIS", NoteFigures.breve);

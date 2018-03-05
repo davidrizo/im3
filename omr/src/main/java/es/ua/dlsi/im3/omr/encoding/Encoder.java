@@ -506,7 +506,7 @@ public class Encoder {
             }
         } else {
             switch (note.getAtomFigure().getFigure()) {
-                case DOUBLE_WHOLE: return NoteFigures.double_whole;
+                case DOUBLE_WHOLE: return NoteFigures.doubleWhole;
                 case WHOLE: return NoteFigures.whole;
                 case HALF: return NoteFigures.half;
                 case QUARTER: return NoteFigures.quarter;
