@@ -120,15 +120,19 @@ public class PagedCapitan2Agnostic {
                     agnosticEncoding.add(new AgnosticSymbol(new Smudge(), PositionsInStaff.LINE_1));
                 } else if (symbol.equals("GREGORIAN.12.2")) {
                     agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.SPACE_3));
+                    agnosticEncoding.add(juxtapositionSeparator);
                     agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.LINE_3));
                 } else if (symbol.equals("GREGORIAN.01.-1")) {
                     agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.SPACE_4));
+                    agnosticEncoding.add(juxtapositionSeparator);
                     agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.FIRST_TOP_LEDGER_LINE));
                 } else if (symbol.equals("GREGORIAN.223")) {
                     agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.LINE_3));
+                    agnosticEncoding.add(juxtapositionSeparator);
                     agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.SPACE_2));
                 } else if (symbol.equals("GREGORIAN.2.C01")) {
                     agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.LINE_3));
+                    agnosticEncoding.add(juxtapositionSeparator);
                     agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longaBlack), PositionsInStaff.SPACE_4));
                 } else {
                     if (!first) {

@@ -7,7 +7,7 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
  * @autor drizo
  */
 public class JuxtapositionSeparator extends AgnosticSeparator {
-    private static final String AGNOSTIC = "|";
+    private static final String AGNOSTIC = "+";
 
     public JuxtapositionSeparator() {
         super(null);
