@@ -99,4 +99,31 @@ public class XMLExporterImporter2Test {
         doTest(XMLExporterImporter2Test::assertAtomsInLayers, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/cross-staff.xml")));
 
 	}
+	
+	// ----
+// ------------------------------------------------------------------------------------------	
+    private static Void assertCrossStaffMultilayer(ScoreSong song) {
+        try {
+            assertEquals("One part", 1, song.getParts().size());
+            assertEquals(2, song.getStaves().size());
+            assertEquals(5, song.getStaves().get(0).getAtoms().size());
+            assertEquals(3, song.getStaves().get(0).getAtomPitches().size());
+            assertEquals(4, song.getStaves().get(1).getAtoms().size());
+            assertEquals(2, song.getStaves().get(1).getAtomPitches().size());
+        } catch (IM3Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+
+    // TODO: 6/3/18 Ponerlo con XMLExporterImporterTest
+    @Test
+    public void testCrossStaffMultilayer() throws Exception {
+        testMEIExportImport = false;
+        testMusicXMLExportImport = false;
+        doTest(XMLExporterImporter2Test::assertCrossStaffMultilayer, importMEI(TestFileUtils.getFile("/testdata/core/score/io/cross-staff-multilayer.mei")));
+        //doTest(XMLExporterImporter2Test::assertCrossStaffMultilayer, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/cross-staff-multilayer.xml")));
+    }
+
 }
