@@ -112,10 +112,7 @@ Parameters:
       return false;
     MusicSection ms=getGeneralData().getSection(getGeneralData().getNumSections()-1);
     VoiceEventListData v=ms.getVoice(getNum()-1);
-    if (v==null || v.getNumEvents()<2)
-      return false;
-
-    return true;
+      return v != null && v.getNumEvents() >= 2;
   }
 
 /*------------------------------------------------------------------------

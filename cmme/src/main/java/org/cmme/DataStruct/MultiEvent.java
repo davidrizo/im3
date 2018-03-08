@@ -291,7 +291,7 @@ Parameters:
       }
     else
       /* no more multi-event (only one event left) */
-      return (Event)(eventList.getFirst());
+      return eventList.getFirst();
   }
 
 /*------------------------------------------------------------------------

@@ -261,7 +261,7 @@ public class MelodicAnalyzerWeka extends MelodicAnalyzerMachineLearning {
     private void buildInstances(Instances data, ScoreSong lsong, List<Segment> sonorities, HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features) throws MelodicAnalysisException {
         ArrayList<AtomPitch> notes = lsong.getAtomPitches();
         for (AtomPitch n : notes) {
-            AtomPitch scoreNote = (AtomPitch) n;
+            AtomPitch scoreNote = n;
             NoteMelodicAnalysisFeatures noteFeatures = features.get(scoreNote);
             Instance instanceWithoutHarmonies = buildInstance(lsong, sonorities, scoreNote, noteFeatures, data, true);
             if (instanceWithoutHarmonies != null) {
@@ -272,8 +272,7 @@ public class MelodicAnalyzerWeka extends MelodicAnalyzerMachineLearning {
         }
     }
 
-    private Instance buildInstance(ScoreSong song, List<Segment> sonorities, AtomPitch note, NoteMelodicAnalysisFeatures features, Instances dataset, boolean setClassValue)
-            throws MelodicAnalysisException {
+    private Instance buildInstance(ScoreSong song, List<Segment> sonorities, AtomPitch note, NoteMelodicAnalysisFeatures features, Instances dataset, boolean setClassValue) {
         //NoteMelodicAnalysisFeatures features = Utils.getComputedMelodicAnalysis(scoreNote).getFeatures();
         //NoteMelodicAnalysisFeatures features = featuresExtractor.computeFeatures(song, sonorities, currentAnalysis);
         if (features != null) {
@@ -412,7 +411,7 @@ public class MelodicAnalyzerWeka extends MelodicAnalyzerMachineLearning {
      * @return
      */
     private boolean violatesConditionsFor(ScoreSong song, MelodicAnalysisNoteKinds noteKind, Instance instance,
-                                          MelodicAnalysisNoteKinds prev, AtomPitch note) throws IM3Exception {
+                                          MelodicAnalysisNoteKinds prev, AtomPitch note) {
         //TODO 2017
         return false;
 		/*if (debug) {

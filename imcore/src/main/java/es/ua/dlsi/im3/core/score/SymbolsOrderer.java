@@ -51,7 +51,7 @@ public class SymbolsOrderer {
 	// order them, the order of classes will be:
 	// first clefs, next instrumentKey signature, then time signature, finally sounding
 	// symbols
-	static int compareClasses(ITimedElementInStaff o1, ITimedElementInStaff o2) throws IM3Exception {
+	static int compareClasses(ITimedElementInStaff o1, ITimedElementInStaff o2) {
         int order1 = getClassOrder(o1);
         int order2 = getClassOrder(o2);
 		if (order1 == order2) {
@@ -71,7 +71,7 @@ public class SymbolsOrderer {
 			@Override
 			public int compare(ITimedElementInStaff o1, ITimedElementInStaff o2) {
 					int diff;
-					try {
+					//try {
 					    if (o1.getTime() == null) {
 					        throw new IM3RuntimeException("Null time in " + o1);
                         }
@@ -90,9 +90,9 @@ public class SymbolsOrderer {
 								return o1.toString().compareTo(o2.toString()); 
 							}
 						}
-					} catch (IM3Exception e) {
+					/*} catch (IM3Exception e) {
 						throw new IM3RuntimeException(e);
-					}
+					}*/
 			}
 		});
 	}

@@ -12,7 +12,7 @@ import es.ua.dlsi.im3.core.score.layout.LayoutFont;
  */
 public abstract class LayoutCoreSymbolInStaff<CoreSymbolType extends ITimedElementInStaff> extends LayoutCoreSymbol<CoreSymbolType> {
     protected LayoutStaff layoutStaff;
-    public LayoutCoreSymbolInStaff(LayoutFont layoutFont, CoreSymbolType coreSymbol) throws IM3Exception {
+    public LayoutCoreSymbolInStaff(LayoutFont layoutFont, CoreSymbolType coreSymbol) {
         super(layoutFont, coreSymbol);
     }
 
@@ -21,7 +21,7 @@ public abstract class LayoutCoreSymbolInStaff<CoreSymbolType extends ITimedEleme
     }
 
     public Staff getCoreStaff() {
-        return ((ITimedElementInStaff)coreSymbol).getStaff();
+        return coreSymbol.getStaff();
     }
 
     public LayoutStaff getLayoutStaff() {

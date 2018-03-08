@@ -114,7 +114,7 @@ public class PlayedSong {
 	 * @return PlayedSong figureAndDots in ticks
 	 * @throws IM3Exception
 	 */
-	public long getSongDuration() throws IM3Exception {
+	public long getSongDuration() {
 		long max = 0;
 		for (SongTrack track : tracks) {
 			max = Math.max(max, track.computePlayedDuration());
@@ -164,7 +164,7 @@ public class PlayedSong {
 		return this.tracks.remove(track);
 	}
 
-	public SortedSet<PlayedNote> getAllPlayedNotes() throws IM3Exception {
+	public SortedSet<PlayedNote> getAllPlayedNotes() {
 		TreeSet<PlayedNote> result = new TreeSet<>();
 		for (SongTrack track : tracks) {
 			result.addAll(track.getPlayedNotes());

@@ -109,7 +109,7 @@ public class HarmonyDegree implements Comparable<HarmonyDegree> {
 	 *         VII(V)
 	 * @throws IM3Exception 
 	 */
-	public RomanChord getActualChord() throws IM3Exception {
+	public RomanChord getActualChord() {
 		return edegree[0]; // 20160429
 		//return edegree[edegree.length - 1]; // 20160411
 		//return lastChord;

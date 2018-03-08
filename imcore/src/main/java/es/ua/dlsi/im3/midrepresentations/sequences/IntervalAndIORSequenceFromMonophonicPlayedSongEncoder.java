@@ -39,7 +39,7 @@ public class IntervalAndIORSequenceFromMonophonicPlayedSongEncoder implements IM
     }
 
     @Override
-    public List<CoupledNoteSequence<Integer, Double>> encode(PlayedSong input, int windowSize, int windowStep) throws IM3Exception {
+    public List<CoupledNoteSequence<Integer, Double>> encode(PlayedSong input, int windowSize, int windowStep) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

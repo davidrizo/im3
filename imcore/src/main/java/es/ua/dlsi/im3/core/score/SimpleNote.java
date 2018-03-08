@@ -56,7 +56,7 @@ public class SimpleNote extends SingleFigureAtom {
 		atomPitch.setAccidental(accidental);
 	}
 	@Override
-	public List<PlayedScoreNote> computePlayedNotes() throws IM3Exception {
+	public List<PlayedScoreNote> computePlayedNotes() {
 		if (atomPitch.isTiedFromPrevious()) {
 			return null;
 		} else {

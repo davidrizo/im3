@@ -27,7 +27,7 @@ import java.util.List;
  * @param <MidLevelRepresentationType>
  */
 public interface IMidLevelRepresentationEncoder<InputType, MidLevelRepresentationType extends IMidLevelRepresentation> {
-    public MidLevelRepresentationType encode(InputType input) throws IM3Exception;
+    MidLevelRepresentationType encode(InputType input) throws IM3Exception;
     /**
      * 
      * @param input
@@ -36,5 +36,5 @@ public interface IMidLevelRepresentationEncoder<InputType, MidLevelRepresentatio
      * @return
      * @throws IM3Exception
      */
-    public List<MidLevelRepresentationType> encode(InputType input, int windowSize, int windowStep) throws IM3Exception;
+    List<MidLevelRepresentationType> encode(InputType input, int windowSize, int windowStep) throws IM3Exception;
 }

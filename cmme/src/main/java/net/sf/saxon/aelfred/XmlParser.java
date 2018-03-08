@@ -2442,9 +2442,7 @@ loop:
     {
 	if (c > 0x20)
 	    return false;
-	if (c == 0x20 || c == 0x0a || c == 0x09 || c == 0x0d)
-	    return true;
-	return false;	// illegal ...
+        return c == 0x20 || c == 0x0a || c == 0x09 || c == 0x0d;
     }
 
 
@@ -2813,9 +2811,7 @@ loop:
      *  [2] attribute hash table
      */
     private void setElement (String name, int contentType,
-		      String contentModel, Hashtable attributes)
-    throws Exception
-    {
+		      String contentModel, Hashtable attributes) {
 	Object element[] = (Object []) elementInfo.get (name);
 
 	// first <!ELEMENT ...> or <!ATTLIST ...> for this type?
@@ -3328,9 +3324,7 @@ loop:
      * - public id
      * - system id
      */
-    private void setNotation (String nname, String pubid, String sysid)
-    throws Exception
-    {
+    private void setNotation (String nname, String pubid, String sysid) {
 	Object notation[];
 
 	if (notationInfo.get (nname) == null) {
@@ -3426,8 +3420,8 @@ loop:
 	    column = 0;
 	} else {
 	    if (c == '<') {
-		/* the most common  return to parseContent () .. NOP */ ;
-	    } else if ((c < 0x0020 && (c != '\t') && (c != '\r')) || c > 0xFFFD)
+		/* the most common  return to parseContent () .. NOP */
+        } else if ((c < 0x0020 && (c != '\t') && (c != '\r')) || c > 0xFFFD)
 		error ("illegal XML character U+"
 			+ Integer.toHexString (c));
 

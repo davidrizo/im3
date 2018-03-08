@@ -16,7 +16,7 @@ public class SAXParserImpl extends SAXParser {
     }
     
     public Object getProperty(String name)
-    throws SAXNotRecognizedException, SAXNotSupportedException {
+    throws SAXNotRecognizedException {
         return parser.getProperty(name);
     }
     

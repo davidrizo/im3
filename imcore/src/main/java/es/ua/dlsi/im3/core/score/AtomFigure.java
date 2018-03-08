@@ -186,11 +186,8 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		} else if (!duration.equals(other.duration))
 			return false;
 		if (onsetRelativeToAtom == null) {
-			if (other.onsetRelativeToAtom != null)
-				return false;
-		} else if (!onsetRelativeToAtom.equals(other.onsetRelativeToAtom))
-			return false;
-		return true;
+			return other.onsetRelativeToAtom == null;
+		} else return onsetRelativeToAtom.equals(other.onsetRelativeToAtom);
 	}
 
 	public final Atom getAtom() {

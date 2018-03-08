@@ -199,11 +199,9 @@ Parameters:
         default:
           return true;
       }
-    if (mensInfo.modus_minor==Mensuration.MENS_TERNARY ||
-        mensInfo.modus_maior==Mensuration.MENS_TERNARY)
-      return true;
+      return mensInfo.modus_minor == Mensuration.MENS_TERNARY ||
+              mensInfo.modus_maior == Mensuration.MENS_TERNARY;
 
-    return false;
   }
 
 /*------------------------------------------------------------------------
@@ -227,7 +225,7 @@ Parameters:
 
   public MensSignElement getMainSign()
   {
-    return (MensSignElement)signs.getFirst();
+    return signs.getFirst();
   }
 
   public int getStaffLoc()

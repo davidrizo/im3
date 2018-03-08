@@ -238,7 +238,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return c.getValue();
 	}
 
-	public Clef getRunningClefAtOrNull(Time time) throws IM3Exception {
+	public Clef getRunningClefAtOrNull(Time time) {
 		// The treeset with all clefs ordered by onsets is built after
 		// computeOnsets
 		Map.Entry<Time, Clef> c = this.clefs.floorEntry(time);
@@ -351,7 +351,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return c.getValue();
 	}
 
-	public KeySignature getRunningKeySignatureOrNullAt(Time time) throws IM3Exception {
+	public KeySignature getRunningKeySignatureOrNullAt(Time time) {
 		// The treeset with all clefs ordered by onsets is built after
 		// computeOnsets
 		Map.Entry<Time, KeySignature> c = this.keySignatures.floorEntry(time);
@@ -438,7 +438,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 * @return
 	 * @throws IM3Exception 
 	 */
-	public List<ITimedElementInStaff> getCoreSymbolsOrderedWithOnsets(Time fromTime, Time toTime) throws IM3Exception {
+	public List<ITimedElementInStaff> getCoreSymbolsOrderedWithOnsets(Time fromTime, Time toTime) {
 		if (!fromTime.isZero() || !toTime.isMaxValue()) { // to avoid doing the loop when all possible elements fit
             ArrayList<ITimedElementInStaff> symbols = new ArrayList<>();
 
@@ -459,7 +459,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		SymbolsOrderer.sortList(symbols);
 		return symbols;
 	}	
-	public void addMark(StaffMark mark) throws IM3Exception {
+	public void addMark(StaffMark mark) {
 		this.marks.add(mark);
 	}
 
@@ -491,7 +491,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return attachments;
 	}
 	
-	public void addCoreSymbol(ITimedElementInStaff e) throws IM3Exception {
+	public void addCoreSymbol(ITimedElementInStaff e) {
 		e.setStaff(this);
         this.coreSymbols.add(e);
     }
@@ -505,7 +505,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 *         is D in G2 clef
 	 * @throws IM3Exception
 	 */
-	public PositionInStaff computePositionInStaff(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
+	public PositionInStaff computePositionInStaff(Clef clef, DiatonicPitch noteName, int octave) {
 		DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
 		int bottomClefOctave = clef.getBottomLineOctave();
 
@@ -528,7 +528,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      * @return
      * @throws IM3Exception When no possible pitch is found
      */
-    public ScientificPitch computeScientificPitch(Clef clef, PositionInStaff positionInStaff) throws IM3Exception {
+    public ScientificPitch computeScientificPitch(Clef clef, PositionInStaff positionInStaff) {
         int bottomClefOctave = clef.getBottomLineOctave();
         DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
         int intervalWithC = bottomClefNoteName.getOrder() - DiatonicPitch.C.getOrder();
@@ -575,7 +575,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return layers;
 	}
 	
-	public List<AtomPitch> getAtomPitches() throws IM3Exception {
+	public List<AtomPitch> getAtomPitches() {
 		ArrayList<AtomPitch> result = new ArrayList<>();
 		
 		for (ITimedElementInStaff symbol: coreSymbols) {
@@ -596,7 +596,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return result;
 	}
 
-	public List<Atom> getAtoms() throws IM3Exception {
+	public List<Atom> getAtoms() {
 		ArrayList<Atom> result = new ArrayList<>();
 		
 		for (ITimedElementInStaff symbol: coreSymbols) {
@@ -694,7 +694,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
     void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitchAndOctave, PitchClass> alteredNoteNamesInBar,
 											TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature,
-                                            HashMap<AtomPitch, Accidentals> result, AtomPitch ps) throws IM3Exception {
+                                            HashMap<AtomPitch, Accidentals> result, AtomPitch ps) {
 
 	    ScientificPitch pc = ps.getScientificPitch();
         DiatonicPitchAndOctave diatonicPitchAndOctave = new DiatonicPitchAndOctave(pc.getPitchClass().getNoteName(), pc.getOctave());

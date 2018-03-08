@@ -58,10 +58,7 @@ public class EditOperation {
         if (this.from != other.from) {
             return false;
         }
-        if (this.to != other.to) {
-            return false;
-        }
-        return true;
+        return this.to == other.to;
     }
 
     @Override

@@ -52,7 +52,7 @@ public class SelkowTreeEdit {
 	 * @return
 	 * @throws Exception 
 	 */
-	protected double substitutionCost(ITreeLabel a, ITreeLabel b) throws Exception {
+	protected double substitutionCost(ITreeLabel a, ITreeLabel b) {
 		if (a.equals(b)) {
 			return 0;
 		} else {

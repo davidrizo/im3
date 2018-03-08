@@ -54,7 +54,7 @@ public enum KeysEnum {
     
 	Key key;
 
-	private KeysEnum(int fifths, PitchClasses pc, Mode mode) {
+	KeysEnum(int fifths, PitchClasses pc, Mode mode) {
 		key = new Key(fifths, pc, mode);
 	}
 

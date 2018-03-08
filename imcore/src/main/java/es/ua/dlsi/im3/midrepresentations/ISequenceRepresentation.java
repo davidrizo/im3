@@ -25,6 +25,6 @@ import java.util.List;
  * @param <ItemType> Type of each of the items in the sequence
  */
 public interface ISequenceRepresentation<ItemType> extends IMidLevelRepresentation {
-    public int size();
-    public List<ItemType> getItems();
+    int size();
+    List<ItemType> getItems();
 }

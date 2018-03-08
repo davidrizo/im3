@@ -206,7 +206,7 @@ Parameters:
 
   public void recalcEventParams()
   {
-    recalcEventParams((EventListData)null);
+    recalcEventParams(null);
   }
 
   public void recalcEventParams(EventListData lastv)
@@ -247,7 +247,7 @@ Parameters:
         else if (curevent.geteventtype()==Event.EVENT_MODERNKEYSIGNATURE)
           curModKeySig=((ModernKeySignatureEvent)curevent).getSigInfo();
         else if (curevent.geteventtype()==Event.EVENT_PROPORTION)
-          curProportion=((ProportionEvent)curevent).getProportion();
+          curProportion= curevent.getProportion();
         else if (curevent.geteventtype()==Event.EVENT_LACUNA)
           displayEditorial=true;
         else if (curevent.geteventtype()==Event.EVENT_LACUNA_END)

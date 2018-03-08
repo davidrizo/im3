@@ -15,10 +15,10 @@ public class SAXParserFactoryImpl extends SAXParserFactory {
     public SAXParserFactoryImpl() {
         setNamespaceAware(true);
         setValidating(false);
-    };
-    
+    }
+
     public boolean getFeature(String name)
-    throws SAXNotRecognizedException, SAXNotSupportedException {
+    throws SAXNotRecognizedException {
         return new SAXDriver().getFeature(name);
     }
 

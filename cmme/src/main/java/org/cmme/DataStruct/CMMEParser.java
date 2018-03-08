@@ -1905,7 +1905,7 @@ Parameters:
         case Event.EVENT_DOT:
           curevel=new Element("Dot",cmmens);
           curevel.addContent(
-            addLocusData(new Element("Pitch",cmmens),((DotEvent)cure).getPitch()));
+            addLocusData(new Element("Pitch",cmmens), cure.getPitch()));
 
 /*        -- deprecated --
           curevel.addContent(new Element("StaffLoc",cmmens).setText(
@@ -1954,7 +1954,7 @@ Parameters:
           curevel=new Element("Custos",cmmens);
 
           /* need to add support for StaffLoc with no Locus */
-          addLocusData(curevel,((CustosEvent)cure).getPitch());
+          addLocusData(curevel, cure.getPitch());
           break;
 
         case Event.EVENT_LINEEND:

@@ -49,7 +49,7 @@ public class MultipleMidRepresentationsFromSongTrackExtractor {
             if (lastIOI == null) {
                 ior = 0;
             } else {
-                ior = (double)lastIOI / (double)ioi;
+                ior = lastIOI / (double)ioi;
             }
 
             IORs.add(ior);

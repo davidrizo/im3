@@ -362,7 +362,7 @@ public class MelodicAnalyzerFeaturesExtractor {
         }
     }
 
-    private double computeRD(AtomPitch note) throws IM3Exception {
+    private double computeRD(AtomPitch note) {
         return note.getDuration().getComputedTime();
     }
 

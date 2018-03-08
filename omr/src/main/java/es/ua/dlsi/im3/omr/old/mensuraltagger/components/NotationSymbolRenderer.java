@@ -37,7 +37,7 @@ public class NotationSymbolRenderer<SymbolType> {
         //textFont = Font.loadFont(mappingFactory.getLyricsFontStream(), 48);
 	}
 
-	public Text render(SymbolType symbolType, boolean useStaffMappingInRests) throws IM3Exception {
+	public Text render(SymbolType symbolType, boolean useStaffMappingInRests) {
 		Text result;
 		/*IFontMapping mapping = mappingFactory.getFontMapping();
 		Font font = null;

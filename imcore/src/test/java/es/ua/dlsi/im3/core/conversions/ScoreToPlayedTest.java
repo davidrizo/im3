@@ -88,7 +88,7 @@ public class ScoreToPlayedTest {
         PlayedSong played = conversor.createPlayedSongFromScore(scoreSong);
 
         MidiSongImporterTest midiSongImporterTest = new MidiSongImporterTest();
-        midiSongImporterTest.doTest(MidiSongImporterTest::assertTimeKeyChanges, played);
+        MidiSongImporterTest.doTest(MidiSongImporterTest::assertTimeKeyChanges, played);
     }
 
     @Test
@@ -100,6 +100,6 @@ public class ScoreToPlayedTest {
         PlayedSong played = conversor.createPlayedSongFromScore(scoreSong);
 
         MidiSongImporterTest midiSongImporterTest = new MidiSongImporterTest();
-        midiSongImporterTest.doTest(MidiSongImporterTest::assertTimeSignatureChanges, played);
+        MidiSongImporterTest.doTest(MidiSongImporterTest::assertTimeSignatureChanges, played);
     }
 }

@@ -48,7 +48,7 @@ public class AnalysisStaff extends Staff {
 		return "AS";
 	}
 
-	public void addAnalysisHook(ScoreAnalysisHook e) throws IM3Exception {
+	public void addAnalysisHook(ScoreAnalysisHook e) {
 		analysisHooks.put(e.getTime(), e);
 	}
 

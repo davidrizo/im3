@@ -70,12 +70,9 @@ public class GraphEdge<LabelEdgeType extends IEdgeLabel> {
 		} else if (!sourceNode.equals(other.sourceNode))
 			return false;
 		if (targetNode == null) {
-			if (other.targetNode != null)
-				return false;
-		} else if (!targetNode.equals(other.targetNode))
-			return false;
-		return true;
-	}
+            return other.targetNode == null;
+		} else return targetNode.equals(other.targetNode);
+    }
 
 	
 	

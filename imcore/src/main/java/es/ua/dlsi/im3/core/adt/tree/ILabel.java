@@ -11,12 +11,12 @@ public interface ILabel {
 	 * Returns the label in string format
 	 * @return
 	 */
-	public String getStringLabel();
+    String getStringLabel();
 	/**
 	 * Used to print the instrumentKey in GraphvizTreeExporter
 	 * @return
 	 * @throws Exception 
 	 */
-	public String getColor() throws Exception;
-	public ILabel clone();
+    String getColor() throws Exception;
+	ILabel clone();
 }

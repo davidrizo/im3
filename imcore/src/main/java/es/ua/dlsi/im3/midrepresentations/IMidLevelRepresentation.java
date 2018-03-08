@@ -21,5 +21,5 @@ package es.ua.dlsi.im3.midrepresentations;
  * @author drizo
  */
 public interface IMidLevelRepresentation {
-    public String getName();
+    String getName();
 }

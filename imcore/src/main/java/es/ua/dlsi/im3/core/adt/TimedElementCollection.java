@@ -54,13 +54,13 @@ public class TimedElementCollection<TimedElementType extends ITimedElement> {
 		this.map.put(value.getTime(), value);
 	}
 
-	public void addValueOverride(TimedElementType value) throws IM3Exception {
+	public void addValueOverride(TimedElementType value) {
 		Logger.getLogger(TimedElementCollection.class.getName()).log(Level.FINEST, "Adding {0} at time {1}",
 				new Object[] { value, value.getTime() });
 		this.map.put(value.getTime(), value);
 	}
 
-	public void remove(TimedElementType value) throws IM3Exception {
+	public void remove(TimedElementType value) {
 		this.map.remove(value.getTime());
 		map.tailMap(value.getTime());
 	}
@@ -134,7 +134,7 @@ public class TimedElementCollection<TimedElementType extends ITimedElement> {
 	 * @param songDuration
 	 * @return
 	 */
-	public Time computeElementDurationFromIOI(TimedElementType h, Time songDuration) throws IM3Exception {
+	public Time computeElementDurationFromIOI(TimedElementType h, Time songDuration) {
 		Map.Entry<Time, TimedElementType> succ = this.map.higherEntry(h.getTime());
 		// System.out.println(h + " --- " + succ);
 		if (succ == null) {

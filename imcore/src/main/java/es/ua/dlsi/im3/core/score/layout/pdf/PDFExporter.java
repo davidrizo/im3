@@ -37,11 +37,11 @@ public class PDFExporter implements IGraphicsExporter {
         //PDPage page = new PDPage(new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()));
 
         PDPage page = null;
-        try {
+        //try {
             page = new PDPage(new PDRectangle((float)canvas.getWidth(), (float)canvas.getHeight()));
-        } catch (IM3Exception e) {
+        /*} catch (IM3Exception e) {
             throw new ExportException(e);
-        }
+        }*/
 
         document.addPage(page);
 

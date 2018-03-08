@@ -107,7 +107,7 @@ public class Tempo implements ITimedElement, Comparable<Tempo>, IUniqueIDObject 
 	 */
 	@Override
 	public int compareTo(Tempo o) {
-		return (int) (this.tempo - o.tempo);
+		return this.tempo - o.tempo;
 	}
 
 	/**

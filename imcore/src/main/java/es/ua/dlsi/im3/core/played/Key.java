@@ -1,9 +1,9 @@
 package es.ua.dlsi.im3.core.played;
 
 public class Key implements IPlayedEvent {
-	public enum Mode {MAJOR, MINOR};
-	
-	private Mode mode;
+	public enum Mode {MAJOR, MINOR}
+
+    private Mode mode;
 	/**
 	 * 0 = C major or A minor, negative = flats, positive = sharps
 	 */

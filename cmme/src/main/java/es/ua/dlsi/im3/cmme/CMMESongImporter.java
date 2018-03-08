@@ -49,7 +49,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         }
     }
 
-    private ScoreSong convert(PieceData piece) throws ImportException, IM3Exception {
+    private ScoreSong convert(PieceData piece) throws IM3Exception {
         scoreSong = new ScoreSong();
 
         scoreSong.addTitle(piece.getFullTitle()); // TODO Separar title de section
@@ -85,7 +85,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         layers.put(voice.getNum(), layer);
     }
 
-    private void importSection(MusicSection section) throws ImportException, IM3Exception {
+    private void importSection(MusicSection section) throws IM3Exception {
         //TODO Importante Dividir secciones - ahora las estoy poniendo todas juntas
         System.err.println("TODO Importante Dividir secciones - ahora las estoy poniendo todas juntas");
 
@@ -108,7 +108,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         }
     }
 
-    private void importVoice(VoiceEventListData voice, Staff staff, ScoreLayer layer) throws ImportException, IM3Exception {
+    private void importVoice(VoiceEventListData voice, Staff staff, ScoreLayer layer) throws IM3Exception {
         lastFigureAtom = null;
         if (voice.getEvents() != null) {
             for (Event event : voice.getEvents()) {
@@ -300,7 +300,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         return new Time(Fraction.getFraction(proportion.i1, proportion.i2));
     }
 
-    private void importNote(Staff staff, ScoreLayer layer, NoteEvent event) throws ImportException, IM3Exception {
+    private void importNote(Staff staff, ScoreLayer layer, NoteEvent event) throws IM3Exception {
         Figures figure = convertFigure(event.getnotetype());
         DiatonicPitch noteName = DiatonicPitch.noteFromName(Character.toUpperCase(event.getPitch().noteletter));
         int octave = event.getPitch().octave;
@@ -352,7 +352,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         staff.addTimeSignature(ts);
     }
 
-    private void importClef(Staff staff, ScoreLayer layer, ClefEvent event) throws ImportException, IM3Exception {
+    private void importClef(Staff staff, ScoreLayer layer, ClefEvent event) throws IM3Exception {
         es.ua.dlsi.im3.core.score.Clef clef = null;
         switch (event.getClef().getcleftype()) {
             case Clef.CLEF_C:

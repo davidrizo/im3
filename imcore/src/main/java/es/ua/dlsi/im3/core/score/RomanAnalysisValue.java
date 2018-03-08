@@ -89,10 +89,8 @@ public class RomanAnalysisValue {
 			return false;
 		if (mode != other.mode)
 			return false;
-		if (seventh != other.seventh)
-			return false;
-		return true;
-	}
+        return seventh == other.seventh;
+    }
 
 
 	@Override

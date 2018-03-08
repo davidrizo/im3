@@ -131,12 +131,9 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
 		if (octave != other.octave)
 			return false;
 		if (pitchClass == null) {
-			if (other.pitchClass != null)
-				return false;
-		} else if (!pitchClass.equals(other.pitchClass))
-			return false;
-		return true;
-	}
+            return other.pitchClass == null;
+		} else return pitchClass.equals(other.pitchClass);
+    }
 
 	public MotionDirection computeDirection(ScientificPitch previous) {
 		if (previous == null) {

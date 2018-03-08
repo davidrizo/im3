@@ -158,11 +158,8 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 		} else if (!duration.equals(other.duration))
 			return false;
 		if (onset == null) {
-			if (other.onset != null)
-				return false;
-		} else if (!onset.equals(other.onset))
-			return false;
-		return true;
+			return other.onset == null;
+		} else return onset.equals(other.onset);
 	}
 
 	@Override

@@ -445,11 +445,9 @@ Parameters:
       return other.issharp() && pitch.equals(other.pitch);
     else if (isflat())
       return other.isflat() && pitch.equals(other.pitch);
-    else if (this.cleftype==other.cleftype &&//ClefLetters[cleftype]==ClefLetters[other.cleftype] &&
-             linespacenum==other.linespacenum &&
-             pitch.equals(other.pitch))
-      return true;
-    return false;
+    else return this.cleftype == other.cleftype &&//ClefLetters[cleftype]==ClefLetters[other.cleftype] &&
+                linespacenum == other.linespacenum &&
+                pitch.equals(other.pitch);
   }
 
 /*------------------------------------------------------------------------

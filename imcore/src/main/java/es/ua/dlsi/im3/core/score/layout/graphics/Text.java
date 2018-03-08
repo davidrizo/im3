@@ -39,17 +39,17 @@ public class Text extends Shape {
     }
 
     @Override
-    public double getWidth() throws IM3Exception {
+    public double getWidth() {
         return width;
     }
 
     @Override
-    public Coordinate getPosition() throws IM3Exception {
+    public Coordinate getPosition() {
         return position;
     }
 
     @Override
-    public Node getJavaFXRoot() throws GUIException, ExportException {
+    public Node getJavaFXRoot() {
         return this.javaFXText;
     }
 

@@ -47,7 +47,7 @@ public class ScoreImageFile {
      */
     BufferedImage bufferedImage;
 
-    public ScoreImageFile(File file) throws MalformedURLException, IOException {
+    public ScoreImageFile(File file) throws IOException {
         this.file = file;
         this.name = new SimpleObjectProperty<>(file.getName());
         Image img = new Image(file.toURI().toURL().toString());

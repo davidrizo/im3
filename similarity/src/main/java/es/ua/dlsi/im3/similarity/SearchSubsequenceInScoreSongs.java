@@ -34,17 +34,17 @@ public class SearchSubsequenceInScoreSongs {
 
     class NoteNamesComparer implements ISymbolComparer<DiatonicPitch> {
         @Override
-        public double computeInsertCost(DiatonicPitch a) throws IM3Exception {
+        public double computeInsertCost(DiatonicPitch a) {
             return 1;
         }
 
         @Override
-        public double computeDeleteCost(DiatonicPitch a) throws IM3Exception {
+        public double computeDeleteCost(DiatonicPitch a) {
             return 1;
         }
 
         @Override
-        public double computeSymbolDistance(DiatonicPitch a, DiatonicPitch b) throws IM3Exception {
+        public double computeSymbolDistance(DiatonicPitch a, DiatonicPitch b) {
             if (a.equals(b)) {
                 return 0;
             } else {

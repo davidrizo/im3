@@ -14,7 +14,7 @@ public class PatriarcaFont extends LayoutFont {
     private static final String SVGFONT = "/fonts/patriarca/Patriarca-Regular.svg";
     private static final String METADATA = "/fonts/patriarca/Patriarca-Regular.json";
 
-    public PatriarcaFont() throws ImportException, IM3Exception {
+    public PatriarcaFont() throws IM3Exception {
         super("Patriarca", LayoutFonts.patriarca, PatriarcaFont.class.getResourceAsStream(SVGFONT),
                 PatriarcaFont.class.getResourceAsStream(OTFMUSICFONT),
                 PatriarcaFont.class.getResourceAsStream(OTFTEXTCFONT),

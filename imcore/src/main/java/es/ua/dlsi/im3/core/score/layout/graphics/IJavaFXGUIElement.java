@@ -6,5 +6,5 @@ import es.ua.dlsi.im3.gui.javafx.GUIException;
 import javafx.scene.Node;
 
 public interface IJavaFXGUIElement {
-    public abstract Node getJavaFXRoot() throws GUIException, ExportException;
+    Node getJavaFXRoot() throws GUIException, ExportException;
 }

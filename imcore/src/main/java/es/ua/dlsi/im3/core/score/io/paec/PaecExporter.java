@@ -36,7 +36,7 @@ public class PaecExporter implements ISongExporter {
 	    exportInitialKeySignature();
 	    printSeparator();
 	    exportMusicalContent();
-	} catch (IM3Exception | NoMeterException e) {
+	} catch (IM3Exception /* never thrown: | NoMeterException */ e) {
 	    throw new ExportException(e);
 	} 	
 	return export;
@@ -70,7 +70,7 @@ public class PaecExporter implements ISongExporter {
 
     }
 
-    private void exportInitialClef() throws ExportException {
+    private void exportInitialClef() {
 	/*ScoreClef clef;
 	if (part.getStaves() == null) {
 	    Logger.getLogger(PaecExporter.class.getName()).log(Level.INFO, "No clef specified, detecting which is the best");	    
@@ -110,11 +110,11 @@ public class PaecExporter implements ISongExporter {
 	//TODO REFACTORIZACION
     }
 
-    private void exportInitialTimeSignature() throws NoMeterException, ExportException {
+    private void exportInitialTimeSignature() {
 	   //TODO exportTimeSignature(scoreSong.getUniqueMeterWithOnset(Time.TIME_ZERO));
     }
     
-    private void exportInitialKeySignature() throws NoKeyException, ExportException {
+    private void exportInitialKeySignature() {
 		//TODO exportKeySignature(scoreSong.getUniqueKeyWithOnset(Time.TIME_ZERO));
     }    
 
@@ -155,7 +155,7 @@ public class PaecExporter implements ISongExporter {
 	export.append(' ');
     }
 
-    private void exportMusicalContent() throws IM3Exception, ExportException {
+    private void exportMusicalContent() throws IM3Exception {
         if (scoreSong.getMeaureCount() > 0) {
             for (Measure measure: scoreSong.getMeasuresSortedAsArray()) {
                 exportBar(measure);
@@ -169,7 +169,7 @@ public class PaecExporter implements ISongExporter {
 	export.append('/');
     }
 
-    private void exportBar(Measure bar) throws IM3Exception, ExportException {
+    private void exportBar(Measure bar) {
 	//TODO keytimechange, irregular group, triplet, repetgroup
 	/*TODO ArrayList<ScoreDurationalSymbol> elements = voice.getDurationalSymbolsWithOnsetWithin(bar);
 	for (ScoreDurationalSymbol<FiguresModern> scoreSoundingElement : elements) {

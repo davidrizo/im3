@@ -119,7 +119,7 @@ Parameters:
     boolean done=i>=size();
     while (!done)
       {
-        Clef ic=(Clef)get(i);
+        Clef ic= get(i);
         if (ic.equals(c))
           {
             remove(i);
@@ -188,7 +188,7 @@ Parameters:
 
   public Clef getprincipalclef()
   {
-    return (Clef)(get(0));
+    return get(0);
   }
 
   public boolean hasPrincipalClef()

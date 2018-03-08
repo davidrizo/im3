@@ -42,7 +42,7 @@ public class KernExporter {
         }
     }
 
-    public String exportSong(ScoreSong song) throws ExportException, IM3Exception {
+    public String exportSong(ScoreSong song) throws IM3Exception {
         sb = new StringBuilder();
         this.song = song;
         stavesReversed = new ArrayList<>();
@@ -206,7 +206,7 @@ public class KernExporter {
         }
     }
 
-    private void printContent() throws IM3Exception, ExportException {
+    private void printContent() throws IM3Exception {
         List<Segment> segments = new SonoritySegmenter().segmentSonorities(song);
 
         // Now, for each segment and each layer, fill the segments. Later, layers not always present will be trimmed
@@ -370,7 +370,7 @@ public class KernExporter {
      * @throws IM3Exception
      * @throws ExportException
      */
-    private void encodeAtom(ArrayList<String> record, Atom atom) throws IM3Exception, ExportException {
+    private void encodeAtom(ArrayList<String> record, Atom atom) throws IM3Exception {
         if (atom instanceof SingleFigureAtom) {
             Fraction multiplier;
             if (atom.getParentAtom() != null && atom.getParentAtom() instanceof SimpleTuplet) {

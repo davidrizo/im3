@@ -20,7 +20,7 @@ public class LSTMDiatonicPitchSequenceModelTest {
 
     // We just test it compiles and works, not the result
     @Test
-    public void testLearn() throws ImportException, IM3Exception {
+    public void testLearn() throws IM3Exception {
         if (train) {
             Alphabet<DiatonicPitch> alphabet = new Alphabet<DiatonicPitch>(DiatonicPitch.values(), DiatonicPitch.NONE);
             LSTMDiatonicPitchSequenceModel model = new LSTMDiatonicPitchSequenceModel(alphabet, 1, 1);

@@ -40,7 +40,7 @@ public class MigrateKernHarmFiles2MEI {
         }
     }
 
-    private void run(File fromFolder, File toFolder) throws IM3Exception, IOException, ExportException, ImportException {
+    private void run(File fromFolder, File toFolder) throws IM3Exception, IOException {
         if (!fromFolder.exists()) {
             throw new IM3Exception("The source folder " + fromFolder.getAbsolutePath() + " does not exist");
         }

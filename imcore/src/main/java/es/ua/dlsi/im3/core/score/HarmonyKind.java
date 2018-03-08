@@ -120,5 +120,5 @@ public enum HarmonyKind {
 	SUSPENDED_FOURTH,
 	SUSPENDED_SECOND, 
 	
-	MAJOR_OR_MINOR; // without the 3rd
+	MAJOR_OR_MINOR // without the 3rd
 }

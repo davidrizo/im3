@@ -65,12 +65,9 @@ public class GraphNode<LabelNodeType extends INodeLabel, LabelEdgeType extends I
 			return false;
 		GraphNode<?,?> other = (GraphNode<?,?>) obj;
 		if (ID == null) {
-			if (other.ID != null)
-				return false;
-		} else if (!ID.equals(other.ID))
-			return false;
-		return true;
-	}
+            return other.ID == null;
+		} else return ID.equals(other.ID);
+    }
 
 	public LabelNodeType getLabel() {
 		return label;

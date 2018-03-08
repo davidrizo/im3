@@ -143,7 +143,7 @@ public abstract class MelodicAnalyzerMachineLearning extends MelodicAnalyzer {
      * @throws IM3Exception
      * @throws ImportException
      */
-    public void learn(List<File> fileList, File excludeSong) throws MelodicAnalysisException, IM3Exception, ImportException {
+    public void learn(List<File> fileList, File excludeSong) throws IM3Exception {
         initLearning();
         for (File file : fileList) {
             ImporterExporter io = new ImporterExporter();
@@ -198,7 +198,7 @@ public abstract class MelodicAnalyzerMachineLearning extends MelodicAnalyzer {
         return ma;
     }
     protected abstract void initLearning();
-    protected abstract void readTrainingFeatures(ScoreSong lsong, List<Segment> sonorities, HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features, TonalAnalysis tonalAnalysis) throws IM3Exception, MelodicAnalysisException;
+    protected abstract void readTrainingFeatures(ScoreSong lsong, List<Segment> sonorities, HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features, TonalAnalysis tonalAnalysis) throws IM3Exception;
     protected abstract void learnWithReadTrainingFeatures() throws MelodicAnalysisException;
     protected abstract MelodicAnalysis doMelodicAnalysis(ScoreSong song, List<Segment> sonorities, HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features, IProgressObserver o) throws MelodicAnalysisException;
 

@@ -6,8 +6,8 @@ package es.ua.dlsi.im3.core;
  * @author drizo
  */
 public interface IProgressObserver {
-    public void logText(String text);
-    public void setCurrentProgress(long workDone, long totalWork);
-    public void onEnd();
+    void logText(String text);
+    void setCurrentProgress(long workDone, long totalWork);
+    void onEnd();
     
 }

@@ -80,7 +80,7 @@ public abstract class XMLSAXImporter {
                 }
             }
 
-            public void characters(char ch[], int start, int length) throws SAXException {
+            public void characters(char ch[], int start, int length) {
                 if (currentStringBuilder == null) {
                     currentStringBuilder = new StringBuilder();
                 }
@@ -94,7 +94,7 @@ public abstract class XMLSAXImporter {
     protected void init() throws ParserConfigurationException, SAXException, IM3Exception {
     }
 
-    protected void postProcess() throws ImportException, IM3Exception {
+    protected void postProcess() throws IM3Exception {
     }
 
     public HashMap<String, String> getAttributes(String element, Attributes saxAttributes) {
@@ -113,7 +113,7 @@ public abstract class XMLSAXImporter {
         return result;
     }
 
-    protected String getOptionalAttribute(HashMap<String, String> attributes, String key) throws ImportException {
+    protected String getOptionalAttribute(HashMap<String, String> attributes, String key) {
         String result = attributes.get(key);
         return result;
     }
@@ -152,7 +152,7 @@ public abstract class XMLSAXImporter {
         }
     }
 
-    protected abstract void handleElementClose(String closingElement) throws ImportException, IM3Exception;
+    protected abstract void handleElementClose(String closingElement) throws IM3Exception;
 
     public void handleOpenElement(String element, HashMap<String, String> attributesMap) throws ImportException {
         //System.out.println("Element:  " + element);

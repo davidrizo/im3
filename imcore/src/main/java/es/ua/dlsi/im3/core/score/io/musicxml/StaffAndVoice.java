@@ -57,12 +57,9 @@ public class StaffAndVoice implements Comparable<StaffAndVoice> {
 		} else if (!staffNumber.equals(other.staffNumber))
 			return false;
 		if (voiceNumber == null) {
-			if (other.voiceNumber != null)
-				return false;
-		} else if (!voiceNumber.equals(other.voiceNumber))
-			return false;
-		return true;
-	}
+            return other.voiceNumber == null;
+		} else return voiceNumber.equals(other.voiceNumber);
+    }
 
 	public Time getTime() {
 		return currentTime;

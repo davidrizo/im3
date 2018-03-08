@@ -124,7 +124,7 @@ public class JSONGlyphNamesReader {
 	 * @return
 	 * @throws IM3Exception
 	 */
-	public HashMap<String, String> readCodepointToGlyphMap() throws IM3Exception {
+	public HashMap<String, String> readCodepointToGlyphMap() {
 		HashMap<String, String> result = new HashMap<>();
 		Set<Map.Entry<?,?>> entrySet = jsonObject.entrySet();
 		for (Map.Entry<?,?> entry: entrySet) {

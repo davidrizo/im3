@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 public class TimeSignatureMensuralTest {
     @Test
-    public void testDurations() throws Exception {
+    public void testDurations() {
         // See La Polifonia Clásica. Samuel Rubio. Page 28 (Interpretación de Tirabassi)
         // In any case, the importance of the durations is the relative durations of the figures, not the absolute one
         TempusPerfectumCumProlationeImperfecta pm = new TempusPerfectumCumProlationeImperfecta();

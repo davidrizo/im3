@@ -176,7 +176,7 @@ public class ImportFactories {
 	}*/
 
 	public static TimeSignature processMeter(String meterSym, String meterCount, 
-			String meterUnit) throws ImportException, IM3Exception {
+			String meterUnit) throws IM3Exception {
 		TimeSignature ts = null;
 		
 		if (meterSym != null) {
@@ -202,7 +202,7 @@ public class ImportFactories {
 		return ts;
 	}
 
-	public static Measure processMeasure(ScoreSong song, Time currentMeasureTime, String currentMeasureNumber) throws ImportException, IM3Exception {
+	public static Measure processMeasure(ScoreSong song, Time currentMeasureTime, String currentMeasureNumber) throws IM3Exception {
 		Measure prevMeasure = song.getMeasureWithOnset(currentMeasureTime);
 		Measure currentMeasure;
 		if (prevMeasure != null) {

@@ -125,12 +125,9 @@ public class Time implements Comparable<Time> {
 			return false;
 		Time other = (Time) obj;
 		if (exactTime == null) {
-			if (other.exactTime != null)
-				return false;
-		} else if (!exactTime.equals(other.exactTime))
-			return false;
-		return true;
-	}
+            return other.exactTime == null;
+		} else return exactTime.equals(other.exactTime);
+    }
 
 
 	public static Time max(Time a, Time b) {

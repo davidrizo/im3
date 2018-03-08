@@ -27,7 +27,7 @@ public class MidiSongExporterTest {
 	
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		importer = new MidiSongImporter(); 
 		exporter = new MidiSongExporter();
 	}

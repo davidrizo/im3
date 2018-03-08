@@ -27,7 +27,7 @@ import es.ua.dlsi.im3.core.score.Staff;
  * @author drizo
  */
 public abstract class SymbolRecognizer implements ISymbolRecognizer {
-    public SymbolRecognizer() throws IM3Exception {
+    public SymbolRecognizer() {
     }
 
     

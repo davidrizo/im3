@@ -372,14 +372,9 @@ public final class Key implements Comparable<Key> {
 			return false;
 		}
 		if (pitchClass == null) {
-			if (other.pitchClass != null) {
-				return false;
-			}
-		} else if (!pitchClass.equals(other.pitchClass)) {
-			return false;
-		}
-		return true;
-	}
+            return other.pitchClass == null;
+		} else return pitchClass.equals(other.pitchClass);
+    }
 
 	public PitchClass getPitchClass() {
 		return this.pitchClass;

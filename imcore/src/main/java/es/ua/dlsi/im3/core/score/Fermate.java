@@ -38,7 +38,7 @@ public class Fermate extends StaffMark implements INotationTypeDependant {
 	 *            True if above, false if belog
 	 * @throws IM3Exception 
 	 */
-	public Fermate(NotationType notationType, Staff staff, AtomFigure snr, PositionAboveBelow position) throws IM3Exception {
+	public Fermate(NotationType notationType, Staff staff, AtomFigure snr, PositionAboveBelow position) {
 		super(staff, snr.getTime());
 		this.notationType = notationType;
 		associatedDurationalSymbols = new HashSet<>();

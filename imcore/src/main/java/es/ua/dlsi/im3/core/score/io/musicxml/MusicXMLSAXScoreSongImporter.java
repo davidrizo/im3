@@ -150,7 +150,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private TimeSignature lastTimeSignature;
 
 	@Override
-	protected void init() throws ParserConfigurationException, SAXException {
+	protected void init() {
 		song = new ScoreSong();
 		currentDivisions = null;
 		partNumbers  = new HashMap<>();
@@ -938,7 +938,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 
 
-	private void processTransposition() throws IM3Exception, ImportException {
+	private void processTransposition() throws IM3Exception {
 		if (keyTransposeDiatonic != null || keyTransposeChromatic != null) {
 			if (keyTransposeDiatonic == null || keyTransposeChromatic == null) {
 				throw new ImportException("Missing transpose>diatonic or transpose>chromatic");
@@ -965,7 +965,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}		
 	}
 
-	private void createTimeSignature() throws ImportException, IM3Exception {
+	private void createTimeSignature() throws IM3Exception {
 		lastTimeSignature = ImportFactories.processMeter(meterSymbol, meterBeats, meterBeatType);
 		addElementToMeasure(lastTimeSignature);		
 		meterBeatType = null;
@@ -973,7 +973,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		meterSymbol = null;
 	}
 
-	private void createClef() throws ImportException, IM3Exception {
+	private void createClef() throws IM3Exception {
 		Clef clef = ImportFactories.createClef(NotationType.eModern, clefSign, clefLine, clefOctaveChange);
 		addElementToMeasure(clef);
 	}
@@ -989,12 +989,12 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		return v;
 	}
 	
-	private void addElementToMeasure(ITimedElementInStaff element) throws ImportException, IM3Exception {
+	private void addElementToMeasure(ITimedElementInStaff element) {
 		getMeasureElementsToInsert().add(element);		
 	}
 
 	
-	private void createNoteRestOrChord() throws ImportException, IM3Exception {
+	private void createNoteRestOrChord() throws IM3Exception {
 		ArrayList<ITimedElementInStaff> lastContainer;
 		if (tupletActualNotes != null) {			
 			if (tupletAtoms == null) {
@@ -1261,7 +1261,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		return duration;
 	}*/
 
-	private Staff getOrCreateStaff(String number) throws ImportException, IM3Exception {
+	private Staff getOrCreateStaff(String number) throws IM3Exception {
 	    if (noNumberStaffNumber != null) {
 	        number = noNumberStaffNumber;
         }
@@ -1282,7 +1282,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 	}
 
-	private Staff createStaff(String number, Integer staffLines) throws ImportException, IM3Exception {
+	private Staff createStaff(String number, Integer staffLines) throws IM3Exception {
 		Staff staff;
         if (staffLines == null || staffLines == 5) {
 				staff = new Pentagram(song, hierarchicalIdGenerator.nextStaffHierarchicalOrder(null),
@@ -1311,7 +1311,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	}
 
 
-	private void createKey() throws ImportException, IM3Exception {
+	private void createKey() throws IM3Exception {
 		if (keyFifiths == null) {
 			throw new ImportException("Missing key fifths");
 		}
@@ -1411,7 +1411,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 	}
 
-	private void processMeasureElements(Measure currentMeasure) throws IM3Exception, ImportException {
+	private void processMeasureElements(Measure currentMeasure) throws IM3Exception {
 		/*Histogram<StaffAndVoice> atomsInVoice = new Histogram<>();
 		for (Entry<StaffAndVoice, ArrayList<ITimedElementInStaff>> entry: measureElementsToInsert.entrySet()) {
 			for (ITimedElementInStaff element: entry.getValue()) {
@@ -1565,7 +1565,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	
 	//TODO Ver cambios de tonalidad o compás por enmedio ...
 	@Override
-	protected void postProcess() throws ImportException, IM3Exception {
+	protected void postProcess() throws IM3Exception {
 		// check all staves have a time signature and key signature - they may have been inserted just
 		// in the first staff
 		if (!song.getStaves().isEmpty()) {

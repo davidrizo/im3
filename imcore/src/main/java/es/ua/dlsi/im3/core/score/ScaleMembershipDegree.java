@@ -13,7 +13,7 @@ public enum ScaleMembershipDegree {
 	 * Numeric tempo that conceptually represents the membership degree
 	 */
 	float value;
-	private ScaleMembershipDegree(float degreeValue) {
+	ScaleMembershipDegree(float degreeValue) {
 		this.value = degreeValue;
 	}
 	/**

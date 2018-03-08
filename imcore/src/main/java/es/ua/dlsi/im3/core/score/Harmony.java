@@ -442,14 +442,9 @@ public class Harmony implements ITimedElement, Comparable<Harmony>, IUniqueIDObj
 			return false;
 		}
 		if (root == null) {
-			if (other.root != null) {
-				return false;
-			}
-		} else if (!root.equals(other.root)) {
-			return false;
-		}
-		return true;
-	}
+            return other.root == null;
+		} else return root.equals(other.root);
+    }
 
 	/**
 	 * * It does not take into account the time

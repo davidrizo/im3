@@ -70,7 +70,7 @@ public class Interval implements Comparable<Interval> {
 		}
 	}
 
-	private Interval(Intervals itv, int additionalOctaves) throws IM3Exception {
+	private Interval(Intervals itv, int additionalOctaves) {
 		this.name = itv.getName() + (7 * additionalOctaves);
 		this.simpleName = itv.getName();
 		this.direction = itv.getDirection();

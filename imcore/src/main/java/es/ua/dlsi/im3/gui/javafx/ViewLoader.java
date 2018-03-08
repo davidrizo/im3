@@ -10,7 +10,7 @@ public class ViewLoader {
     public static final <T> Pair<T, Parent> loadView(String fxml) throws IOException {
         FXMLLoader loader = new FXMLLoader(ViewLoader.class.getResource("/fxml/" + fxml));
         Parent sceneMain = loader.load();
-        T controller = loader.<T>getController();
+        T controller = loader.getController();
         return new Pair<>(controller, sceneMain);
     }
 }

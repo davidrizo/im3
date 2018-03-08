@@ -279,7 +279,7 @@ Parameters:
 
   public boolean isDefaultVersion()
   {
-    return section==null ? false : section.isDefaultVersion();
+    return section != null && section.isDefaultVersion();
   }
 
 /*------------------------------------------------------------------------

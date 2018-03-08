@@ -17,8 +17,9 @@ public class SelectionRectangle {
 		firstClick, // until it has some width and height it is not really created 
 		creating,  // from the first click to the click release, while dragging
 		created // after mouse release
-		}; 
-	State state;
+		}
+
+    State state;
 	Rectangle selectionRectangle;
 	Group selectingRectangleGroup;
 

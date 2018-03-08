@@ -49,7 +49,7 @@ public class KernImporter implements IScoreSongImporter {
     }
 
     @Override
-    public ScoreSong importSong(InputStream is) throws ImportException {
+    public ScoreSong importSong(InputStream is) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -258,7 +258,7 @@ public class KernImporter implements IScoreSongImporter {
             return voiceTemp.get(currentSpineIndex);
         }
 
-        private TimeSignature currentTimeSignature() throws NoMeterException, IM3Exception {
+        private TimeSignature currentTimeSignature() throws IM3Exception {
             Staff staff = getStaff(currentSpineIndex);
             return staff.getRunningTimeSignatureAt(lastTime);
 
@@ -1400,14 +1400,14 @@ public class KernImporter implements IScoreSongImporter {
                     measureInserted = true;
                     int barNumber;
                     if (ctx.NUMBER() == null) {
-                        try {
+                        //try {
                             barNumber = scoreSong.getMeaureCount() + 1;
                             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                     "Barline without number, assigning {0}", barNumber);
-                        } catch (IM3Exception ex) {
+                        /*} catch (IM3Exception ex) {
                             Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
                             throw new GrammarParseRuntimeException(ex);
-                        }
+                        }*/
                     } else {
                         barNumber = new Integer(ctx.NUMBER().getText());
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Barline with number {0}",
@@ -1776,7 +1776,7 @@ public class KernImporter implements IScoreSongImporter {
         }
     }
 
-    private void postProcess(ScoreSong scoreSong) throws IM3Exception, ImportException {
+    private void postProcess(ScoreSong scoreSong) throws IM3Exception {
         TimeSignature ts = scoreSong.getUniqueMeterWithOnset(Time.TIME_ZERO);
 
         if (scoreSong.hasMeasures()) {
@@ -1925,7 +1925,7 @@ public class KernImporter implements IScoreSongImporter {
 		song.getAnalysisVoice().clearElementsWithRhythm();
 		song.createAnalysisHooks(staffLayer);
 	}*/
-    public static void main(String[] args) throws ImportException, IM3Exception {
+    public static void main(String[] args) {
 		/*
 		 * Logger.getLogger(KernImporter.class.getName()).info(
 		 * "Changing level to FINEST to the stderr"); // LOG this level to the

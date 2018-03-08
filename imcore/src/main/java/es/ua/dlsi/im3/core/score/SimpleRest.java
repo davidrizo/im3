@@ -27,7 +27,7 @@ public class SimpleRest extends SingleFigureAtom {
 	}
 
 	@Override
-	public List<PlayedScoreNote> computePlayedNotes() throws IM3Exception {
+	public List<PlayedScoreNote> computePlayedNotes() {
 		return null;
 	}
 

@@ -26,7 +26,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
 public class MidiSongImporterTest {
 	private static boolean testExportImport = true;
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 	}
 
     public static void doTest(Function<PlayedSong, Void> validationFunction, PlayedSong song) throws Exception {

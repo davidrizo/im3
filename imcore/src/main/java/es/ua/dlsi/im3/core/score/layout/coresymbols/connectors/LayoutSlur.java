@@ -52,7 +52,7 @@ public class LayoutSlur extends LayoutConnector {
                     to.getConnectionPoint(directionTo).getY());
 
         } else {
-            fromPoint = from.getConnectionPoint(directionFrom);;
+            fromPoint = from.getConnectionPoint(directionFrom);
         }
         Coordinate toPoint;
         if (to == null) {
@@ -67,7 +67,7 @@ public class LayoutSlur extends LayoutConnector {
 
         init(fromPoint, directionFrom, toPoint, directionTo);
     }
-    private void init(Coordinate from, Direction directionFrom, Coordinate to, Direction directionTo) throws IM3Exception {
+    private void init(Coordinate from, Direction directionFrom, Coordinate to, Direction directionTo) {
         Coordinate controlFrom = null;
         Coordinate controlTo = null;
 

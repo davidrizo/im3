@@ -121,8 +121,7 @@ public abstract class MelodicAnalyzer {
     }
 
     //TODO
-    public double computeSuccessRateAndInitAccuracyManager(ScoreSong song, MelodicAnalysis melodicAnalysis, MelodicAnalysis expectedAnalysis)
-            throws MelodicAnalysisException {
+    public double computeSuccessRateAndInitAccuracyManager(ScoreSong song, MelodicAnalysis melodicAnalysis, MelodicAnalysis expectedAnalysis) {
         confusionMatrix = new int[MelodicAnalysisNoteKinds.values().length][MelodicAnalysisNoteKinds.values().length];
         errors = new int[MelodicAnalysisNoteKinds.values().length];
         long count = 0;

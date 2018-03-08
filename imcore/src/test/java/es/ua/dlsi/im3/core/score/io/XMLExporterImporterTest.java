@@ -128,9 +128,9 @@ public class XMLExporterImporterTest {
 
 	@Test
 	public void testSingle1() throws Exception {
-        testMusicXMLExportImport = false; // TODO: 20/2/18 Para Pierre - ponerlo a true para probar el MusicXML 
-		doTest(XMLExporterImporterTest::assertSimple1, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple1.xml")));
+        testMusicXMLExportImport = true; // TODO: 20/2/18 Para Pierre - ponerlo a true para probar el MusicXML
 		doTest(XMLExporterImporterTest::assertSimple1, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple1.mei")));
+		doTest(XMLExporterImporterTest::assertSimple1, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple1.xml")));
 	}
 	
 	// ------------------------------------------------------------------------------------------

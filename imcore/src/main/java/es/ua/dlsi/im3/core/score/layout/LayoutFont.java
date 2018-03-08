@@ -41,7 +41,7 @@ public class LayoutFont {
      * @param svgFontResource Typically a file with the font
      * @param mappingResource Typically a file with the mapping (usually SMuFL)
      */
-    public LayoutFont(String name, LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
+    public LayoutFont(String name, LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws IM3Exception {
         this.name = name;
         this.font = font;
         this.fontMap = fontMap;

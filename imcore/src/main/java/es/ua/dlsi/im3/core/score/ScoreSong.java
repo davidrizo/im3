@@ -231,14 +231,9 @@ public class ScoreSong {
 		}
 		ScoreSong other = (ScoreSong) obj;
 		if (parts == null) {
-			if (other.parts != null) {
-				return false;
-			}
-		} else if (!parts.equals(other.parts)) {
-			return false;
-		}
-		return true;
-	}
+            return other.parts == null;
+		} else return parts.equals(other.parts);
+    }
 
 	/**
 	 * It does not contain notes in any part
@@ -302,7 +297,7 @@ public class ScoreSong {
 		return res;
 	}*/
 
-	public int getNumDurationalSymbols() throws IM3Exception {
+	public int getNumDurationalSymbols() {
 		int n = 0;
 		for (ScorePart part : parts) {
 			n += part.size();
@@ -390,7 +385,7 @@ public class ScoreSong {
 		return result;
 	}*/
 
-	public TreeSet<ScientificPitch> getAllPitches() throws IM3Exception {
+	public TreeSet<ScientificPitch> getAllPitches() {
 		TreeSet<ScientificPitch> result = new TreeSet<>();
 		for (ScorePart part : this.parts) {
 			Collection<ScoreLayer> voices = part.getLayers();
@@ -820,7 +815,7 @@ public class ScoreSong {
 		return connectors;
 	}*/
 
-	public void createVisualElementsIfNeeded() throws IM3Exception {
+	public void createVisualElementsIfNeeded() {
 		throw new UnsupportedOperationException("FRACTIONS");
 		/*FRACTIONS for (StaffSystem staffGroup : this.getStaffGroups()) {
 			staffGroup.createVisualElementsIfNeeded();
@@ -990,7 +985,7 @@ public class ScoreSong {
 	public void clearMeasures() {
 		this.measures.clear();
 	}
-	public final int getMeaureCount() throws IM3Exception {
+	public final int getMeaureCount() {
 		return measures.getCount();
 	}
 
@@ -1061,7 +1056,7 @@ public class ScoreSong {
 	// ----------------------- Harmony related information
 	// --------------------------------
 	// ----------------------------------------------------------------------
-	public void replace(Harmony oldValue, Harmony newValue) throws IM3Exception {
+	public void replace(Harmony oldValue, Harmony newValue) {
 		throw new UnsupportedOperationException("TO-DO After fractions");
 		/*if (oldValue != null) {
 			this.removeHarmony(oldValue);
@@ -1148,7 +1143,7 @@ public class ScoreSong {
 	 * @param harmony
 	 * @throws IM3Exception
 	 */
-	public void addHarmony(Time time, Harmony harmony) throws IM3Exception {
+	public void addHarmony(Time time, Harmony harmony) {
 		harmony.setTime(time);
 		harmony.setSong(this);
 		try {
@@ -1171,16 +1166,16 @@ public class ScoreSong {
 	 * @param h
 	 * @para
 	 */
-	public void removeHarmony(Harmony h) throws IM3Exception {
-		try {
+	public void removeHarmony(Harmony h) /*throws IM3Exception*/ {
+		//try {
 			this.harmonies.remove(h);
 			/*FRACTIONS if (h.getAnalysisHook() != null) {
 				h.getAnalysisHook().removeHarmony(h);
 			}*/
-		} catch (IM3Exception ex) {
+		/*} catch (IM3Exception ex) {
 			Logger.getLogger(ScoreSong.class.getName()).log(Level.SEVERE, null, ex);
 			throw new IM3Exception(ex);
-		}
+		}*/
 	}
 
 	/*
@@ -1303,7 +1298,7 @@ public class ScoreSong {
 	 *
 	 * @param harmony
 	 */
-	private void updateHarmoniesAfter(Harmony harmony) throws IM3Exception {
+	private void updateHarmoniesAfter(Harmony harmony) {
 		if (harmonies != null) {
 			NavigableMap<Time, Harmony> hs = harmonies.getOrderdValuesWithTimeHigherThan(harmony.getTime());
 			hs.firstEntry().getValue().setPreviousHarmony(harmony);
@@ -1348,23 +1343,23 @@ public class ScoreSong {
 	 */
 	public void addTempoChange(Time time, Tempo t) {
 		t.setTime(time);
-		try {
+		//try {
 			this.tempoChanges.addValueOverride(t);
 			idManager.assignNextID(t);
-		} catch (IM3Exception ex) {
+		/*} catch (IM3Exception ex) {
 			Logger.getLogger(ScoreSong.class.getName()).log(Level.SEVERE, null, ex);
 			throw new IM3RuntimeException(ex);
-		}
+		}*/
 	}
 
 	public void removeTempoChange(Tempo t) {
-		try {
+		//try {
 			this.tempoChanges.remove(t);
-		} catch (IM3Exception ex) {
+		/*} catch (IM3Exception ex) {
 			Logger.getLogger(ScoreSong.class.getName()).log(Level.SEVERE, null, ex);
 			throw new IM3RuntimeException(
 					"The element has not time and it has been already set when it was inserted: " + ex.toString());
-		}
+		}*/
 	}
 
 	/**

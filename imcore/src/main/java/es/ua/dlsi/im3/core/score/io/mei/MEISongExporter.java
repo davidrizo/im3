@@ -160,11 +160,11 @@ public class MEISongExporter implements ISongExporter {
         this.useHarmTypes = useHarmTypes;
     }
 
-    public String exportSong(ScoreSong song) throws IM3Exception, ExportException {
+    public String exportSong(ScoreSong song) throws IM3Exception {
     		this.song = song;
     		return exportSong();
     }
-    public String exportSong() throws IM3Exception, ExportException {
+    public String exportSong() throws IM3Exception {
 		sb = new StringBuilder();
 
 
@@ -179,7 +179,7 @@ public class MEISongExporter implements ISongExporter {
 		return sb.toString();
 	}
 
-	protected void processBeforeMusic(int tabs) throws ExportException {		
+	protected void processBeforeMusic(int tabs) {
 	}
 
 	private void processHead(int tabs) {
@@ -231,7 +231,7 @@ public class MEISongExporter implements ISongExporter {
 		
 	}
 	
-	private void processMusic(int tabs) throws IM3Exception, ExportException {
+	private void processMusic(int tabs) throws IM3Exception {
 		XMLExporterHelper.start(sb, tabs, "music");
 		XMLExporterHelper.start(sb, tabs+1, "body");
 		XMLExporterHelper.start(sb, tabs+2, "mdiv");
@@ -291,7 +291,7 @@ public class MEISongExporter implements ISongExporter {
 		return ks;
 	}
 
-	private void processScoreDef(ArrayList<String> params, TimeSignature ts, Key key, Interval transpositionInterval) throws IM3Exception, ExportException {
+	private void processScoreDef(ArrayList<String> params, TimeSignature ts, Key key, Interval transpositionInterval) throws IM3Exception {
 		if (ts != null) {
 			//TODO symbol (C, C/...) meters
 			if (ts instanceof FractionalTimeSignature) {
@@ -336,7 +336,7 @@ public class MEISongExporter implements ISongExporter {
 			params.add(Integer.toString(transpositionInterval.getSemitones()));
 		}
 	}
-	private void processSections(int tabs) throws IM3Exception, ExportException {		
+	private void processSections(int tabs) throws IM3Exception {
 		XMLExporterHelper.start(sb, tabs, "section");
 		processSongWithoutBars(tabs+1); // e.g. mensural
 		processMeasures(tabs+1); // CWMN
@@ -351,7 +351,7 @@ public class MEISongExporter implements ISongExporter {
 		processClef(clef, params, "");
 	}
 
-	private void processClef(Clef clef, ArrayList<String> params, String prefix) throws ExportException {
+	private void processClef(Clef clef, ArrayList<String> params, String prefix) {
 		if (clef == null) {
 			//throw new ExportException("Clef is null");
             Logger.getLogger(MEISongExporter.class.getName()).log(Level.WARNING, "Clef is null");
@@ -372,7 +372,7 @@ public class MEISongExporter implements ISongExporter {
             }
         }
 	}
-	private void processStaffDef(int tabs) throws ExportException, IM3Exception {
+	private void processStaffDef(int tabs) throws IM3Exception {
 		lastClef = new HashMap<>();
 		XMLExporterHelper.start(sb, tabs, "staffGrp");
 		for (Staff staff: song.getStaves()) {
@@ -493,7 +493,7 @@ public class MEISongExporter implements ISongExporter {
 		return bar.getNumber();
 	}*/
 	
-	private void processMeasures(int tabs) throws IM3Exception, ExportException {
+	private void processMeasures(int tabs) throws IM3Exception {
 		if (song.hasMeasures()) {
 			ArrayList<Measure> bars = song.getMeasuresSortedAsArray();
 			Key lastKey = null;
@@ -633,7 +633,7 @@ public class MEISongExporter implements ISongExporter {
 		}
 	}
 
-	private void processBar(int tabs, Measure bar, Staff staff) throws IM3Exception, ExportException {
+	private void processBar(int tabs, Measure bar, Staff staff) throws IM3Exception {
 		// now add all marks
         if (marksPerBar != null) {
             HashMap<Staff, ArrayList<StaffMark>> mpb = marksPerBar.get(bar);
@@ -744,7 +744,7 @@ public class MEISongExporter implements ISongExporter {
 		}
 	}
 	
-	private void processSongWithoutBars(int tabs) throws ExportException, IM3Exception {
+	private void processSongWithoutBars(int tabs) throws IM3Exception {
 		// order notes, key changes and meter changes, then process them		
 		for (int il=0; il<song.getStaves().size(); il++) {
             previousAccidentals = new HashMap<>();
@@ -832,7 +832,7 @@ public class MEISongExporter implements ISongExporter {
 		}
 	}
 
-	private void processBarLayer(int tabs, Measure bar, Staff staff, ScoreLayer layer) throws ExportException, IM3Exception {		
+	private void processBarLayer(int tabs, Measure bar, Staff staff, ScoreLayer layer) throws IM3Exception {
 		//TODO se podría optimizar más, pero no sé si vale la pena para 10 símbolos por compás...
 		List<Atom> atoms = layer.getAtomsWithOnsetWithin(bar);
 		for (Atom atom: atoms) {
@@ -858,7 +858,7 @@ public class MEISongExporter implements ISongExporter {
 		}*/
 	}
 
-	public static String generateTStamp(Measure bar, Time time) throws IM3Exception, ExportException {
+	public static String generateTStamp(Measure bar, Time time) throws IM3Exception {
 		double tstamp = time.substract(bar.getTime()).getComputedTime(); 
 		if (tstamp < 0) {
 			throw new ExportException("Invalid negative tstamp: " + tstamp + ", from time=" + time + " in bar " + bar + " of time " + bar.getTime());
@@ -871,7 +871,7 @@ public class MEISongExporter implements ISongExporter {
 		return decimalFormat.format(tstamp+1);
 	}
 
-	public static String generateTStamp2(Measure bar, Time time) throws IM3Exception, ExportException {
+	public static String generateTStamp2(Measure bar, Time time) throws IM3Exception {
 		Measure destBar = bar.getSong().getMeasureActiveAtTime(time);
 		int barsCrossed = destBar.getNumber() - bar.getNumber();
 		StringBuilder sb = new StringBuilder();
@@ -949,7 +949,7 @@ public class MEISongExporter implements ISongExporter {
         }*/
 	}
 	
-	private void processAtom(int tabs, Atom atom, Staff defaultStaff) throws ExportException, IM3Exception {
+	private void processAtom(int tabs, Atom atom, Staff defaultStaff) throws IM3Exception {
 		ArrayList<String> params = new ArrayList<>();
 		params.add("xml:id");
 		params.add(generateID(atom, false));

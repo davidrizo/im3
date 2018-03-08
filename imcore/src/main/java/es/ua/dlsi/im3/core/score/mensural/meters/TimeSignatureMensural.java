@@ -153,12 +153,9 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
 		} else if (!maximaDuration.equals(other.maximaDuration))
 			return false;
 		if (semibreveDuration == null) {
-			if (other.semibreveDuration != null)
-				return false;
-		} else if (!semibreveDuration.equals(other.semibreveDuration))
-			return false;
-		return true;
-	}
+            return other.semibreveDuration == null;
+		} else return semibreveDuration.equals(other.semibreveDuration);
+    }
 
 	@Override
 	public String toString() {

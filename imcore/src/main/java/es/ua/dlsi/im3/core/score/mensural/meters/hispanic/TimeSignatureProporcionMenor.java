@@ -28,7 +28,7 @@ import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
  */
 public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
 
-    public TimeSignatureProporcionMenor() throws IM3Exception {
+    public TimeSignatureProporcionMenor() {
     		super(Perfection.perfectum, Perfection.imperfectum);
     }
 

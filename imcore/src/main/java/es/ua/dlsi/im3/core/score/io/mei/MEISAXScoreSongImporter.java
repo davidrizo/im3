@@ -1351,7 +1351,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	 * @throws ImportException
 	 * @throws IM3Exception
 	 */
-	private void handleTie(String type, Figures figure, int dots, ScientificPitch sp, String xmlid, HashMap<String, String> attributesMap) throws ImportException, IM3Exception {		
+	private void handleTie(String type, Figures figure, int dots, ScientificPitch sp, String xmlid, HashMap<String, String> attributesMap) throws ImportException, IM3Exception {
 		String tieCode = lastStaff.hashCode() + "_" + lastVoice.hashCode() + "_" + sp.hashCode();
 
 		if (lastAtomPitch == null) {

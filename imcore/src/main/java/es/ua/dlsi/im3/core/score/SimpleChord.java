@@ -59,7 +59,7 @@ public class SimpleChord extends SingleFigureAtom {
 	}
 	
 	@Override
-	public List<PlayedScoreNote> computePlayedNotes() throws IM3Exception {
+	public List<PlayedScoreNote> computePlayedNotes() {
 		ArrayList<PlayedScoreNote> result = new ArrayList<>();
 		Time time = getTime();
 		Time duration = getDuration();

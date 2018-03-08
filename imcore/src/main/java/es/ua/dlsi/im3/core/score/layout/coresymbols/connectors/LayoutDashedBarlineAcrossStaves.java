@@ -37,7 +37,7 @@ public class LayoutDashedBarlineAcrossStaves extends LayoutConnector {
         init(fromPoint, toPoint);
     }
 
-    private void init(Coordinate from, Coordinate to) throws IM3Exception {
+    private void init(Coordinate from, Coordinate to) {
         line = new Line("DASHED-", from, to); //TODO ID
         line.setStrokeType(StrokeType.eDashed);
     }

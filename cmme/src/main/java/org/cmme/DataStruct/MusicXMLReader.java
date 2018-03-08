@@ -267,8 +267,7 @@ dot=false;
       {
         tieEl=tieEl.getChild("tied");
         if (tieEl!=null)
-          if (tieEl.getAttribute("type").getValue().equals("start"))
-            return true;
+            return tieEl.getAttribute("type").getValue().equals("start");
       }
     return false;
   }

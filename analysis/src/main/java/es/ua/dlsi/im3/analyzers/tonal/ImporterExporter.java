@@ -46,7 +46,7 @@ public class ImporterExporter {
     public ScoreSong readMusicXML(File file, boolean inferMelodicAnalysisFromHarmonies) throws ImportException {
         try {
             MusicXMLImporter importer = new MusicXMLImporter();
-            ScoreSong song = (ScoreSong) importer.importSong(file);
+            ScoreSong song = importer.importSong(file);
             readManualAnalysis(song, inferMelodicAnalysisFromHarmonies);
             removeInputAnalysisPart(song);
             // harmoniesToAnalyses(song);
@@ -74,7 +74,7 @@ public class ImporterExporter {
      * @param inferMelodicAnalysisFromHarmonies
      */
     private void readManualAnalysis(ScoreSong song, boolean inferMelodicAnalysisFromHarmonies)
-            throws IM3Exception, ImportException {
+            throws IM3Exception {
 
         Key previousKey = song.getUniqueKeyWithOnset(Time.TIME_ZERO);
         KernImporter harmImporter = new KernImporter();
@@ -191,7 +191,7 @@ public class ImporterExporter {
         }
     }
 
-    public void writeXML(ScoreSong song, File file) throws IM3Exception, ExportException {
+    public void writeXML(ScoreSong song, File file) {
 		/*HashMap<Staff, ScoreLyricVerse> lyricLines = new HashMap<>();
 		// create lyrics for the analyses
 		ArrayList<AtomPitch> atomPitches = song.getAtomPitches();

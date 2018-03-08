@@ -31,7 +31,7 @@ public class Canvas {
         elementList.add(shape);
     }
 
-    public double getHeight() throws IM3Exception {
+    public double getHeight() {
         return height.getAbsoluteValue();
     }
 

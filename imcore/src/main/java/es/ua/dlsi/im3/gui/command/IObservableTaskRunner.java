@@ -7,11 +7,11 @@ import javafx.beans.property.ReadOnlyStringProperty;
  * @author drizo
  */
 public interface IObservableTaskRunner {
-    public void updateMessage(String text);
-    public void updateTitle(String text);
-    public void updateProgress(long workDone, long totalWork);
-    public boolean isCancelled();
-    public boolean cancelTask();    
+    void updateMessage(String text);
+    void updateTitle(String text);
+    void updateProgress(long workDone, long totalWork);
+    boolean isCancelled();
+    boolean cancelTask();
     ReadOnlyDoubleProperty taskProgressProperty();
     ReadOnlyStringProperty taskMessageProperty();
 }

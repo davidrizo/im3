@@ -67,12 +67,9 @@ public class ScaleMembership {
 		if (degree != other.degree)
 			return false;
 		if (label == null) {
-			if (other.label != null)
-				return false;
-		} else if (!label.equals(other.label))
-			return false;
-		return true;
-	}
+            return other.label == null;
+		} else return label.equals(other.label);
+    }
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

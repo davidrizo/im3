@@ -143,12 +143,12 @@ Parameters:
         Voice             curmdata=new Voice(piece,i+1,"Voice "+(i+1),false);
         VoiceMensuralData curv=new VoiceMensuralData(curmdata,curSec);
 
-        Clef curclef=chooseClef(((Integer)tracksPitchAvg.get(i)).intValue());
+        Clef curclef=chooseClef(tracksPitchAvg.get(i).intValue());
         curv.addEvent(new ClefEvent(curclef,null,null));
 
         /* traverse pitch/rhythm lists */
-        LinkedList pitchList=(LinkedList)tracksPitches.get(i);
-        LinkedList rhythmList=(LinkedList)tracksRhythms.get(i);
+        LinkedList pitchList= tracksPitches.get(i);
+        LinkedList rhythmList= tracksRhythms.get(i);
         Iterator pi=pitchList.iterator(),
                  ri=rhythmList.iterator();
         while (pi.hasNext())

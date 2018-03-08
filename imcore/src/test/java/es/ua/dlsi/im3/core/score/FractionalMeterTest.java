@@ -10,7 +10,7 @@ import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 public class FractionalMeterTest {
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 	}
 
 	@Test

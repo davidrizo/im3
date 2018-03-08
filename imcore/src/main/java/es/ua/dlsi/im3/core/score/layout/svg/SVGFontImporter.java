@@ -22,12 +22,12 @@ public class SVGFontImporter extends XMLSAXImporter {
     }
 
     @Override
-    protected void init() throws ParserConfigurationException, SAXException, IM3Exception {
+    protected void init() {
         svgFont = new SVGFont();
     }
 
     @Override
-    protected void handleElementClose(String closingElement) throws ImportException, IM3Exception {
+    protected void handleElementClose(String closingElement) {
     }
 
     @Override
@@ -86,7 +86,7 @@ public class SVGFontImporter extends XMLSAXImporter {
     }
 
     @Override
-    protected void handleElementContent(String currentElement, String content) throws ImportException {
+    protected void handleElementContent(String currentElement, String content) {
 
     }
 }
