@@ -50,6 +50,23 @@
             <artifactId>stream</artifactId>
             <version>2.7.0</version>
         </dependency>
+        
+	<!-- im4java used to link to imageMagick in Primus Distorions (not used in execution, but used in compilation)-->
+        <!-- https://mvnrepository.com/artifact/org.im4java/im4java -->
+        <dependency>
+            <groupId>org.im4java</groupId>
+            <artifactId>im4java</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
+	<!-- im4java used to link to GraphicsMagick in Primus Distorions-->
+        <!-- https://mvnrepository.com/artifact/com.sharneng/gm4java -->
+        <dependency>
+            <groupId>com.sharneng</groupId>
+            <artifactId>gm4java</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        
     </dependencies>
 
     <build>

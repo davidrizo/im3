@@ -1,8 +1,11 @@
 package es.ua.dlsi.im3.omr.primus.conversions;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.conversions.ScoreToPlayed;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.io.ImportException;
+import es.ua.dlsi.im3.core.played.PlayedSong;
+import es.ua.dlsi.im3.core.played.io.MidiSongExporter;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
@@ -70,6 +73,12 @@ public class MEI2GraphicSymbols {
 
                 File outputFileSemantic = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".semantic");
                 semanticExporter.export(encoder.getSemanticEncoding(), outputFileSemantic);
+
+                ScoreToPlayed scoreToPlayed = new ScoreToPlayed();
+                PlayedSong played = scoreToPlayed.createPlayedSongFromScore(scoreSong);
+                MidiSongExporter midiSongExporter = new MidiSongExporter();
+                File midiOutput = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".mid");
+                midiSongExporter.exportSong(midiOutput, played);
             } catch (Exception e) {
                 System.err.print("---------------------------------------------------------------");
                 System.err.print("Error processing " + file.getAbsolutePath());
