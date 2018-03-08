@@ -22,6 +22,10 @@ public class CameraSimulator {
     //TODO Poner como properties configurable
 
     private static final String TEXTURAS = "/Users/drizo/Documents/investigacion/PRIMUS/camera-distorted/texturas/";
+    public static final String DISTORTED_JPG = "_distorted.jpg";
+    public static final String DISTORTED_TXT = "_distorted.txt";
+    public static final String SEP = "/";
+    public static final String SYMBOLS = "symbols";
     private final String magicGraphicsBinPath;
     private final String imageMagicBinPath;
 
@@ -714,7 +718,7 @@ public class CameraSimulator {
             op.median(var1);
         }
 
-        System.out.println(effects.toString());
+        //System.out.println(effects.toString());
 
         op.addImage(output);
         // execute the operation
@@ -751,13 +755,20 @@ public class CameraSimulator {
 
         ArrayList<File> pngFiles = new ArrayList<>();
         FileUtils.readFiles(inputFolder, pngFiles,"png");
-        for (File inputFile: pngFiles) {
-            String name = FileUtils.getFileNameWithoutExtension(inputFile.getName());
-            if (!name.endsWith("symbols")) {
-                File output = new File(inputFile.getParent(), name + "_distorted.jpg");
-                File outputDescription = new File(inputFile.getParent(), name + "_distorted.txt");
+        int i=0;
+        int n = pngFiles.size();
 
-                System.out.println("----- " + inputFile.getName() + "-------");
+        for (File inputFile: pngFiles) {
+            String s = "Processing ";
+            System.out.println(s + i + SEP + n);
+            i++;
+
+            String name = FileUtils.getFileNameWithoutExtension(inputFile.getName());
+            if (!name.endsWith(SYMBOLS)) {
+                File output = new File(inputFile.getParent(), name + DISTORTED_JPG);
+                File outputDescription = new File(inputFile.getParent(), name + DISTORTED_TXT);
+
+                //System.out.println("----- " + inputFile.getName() + "-------");
                 boolean notGenerated = true;
                 while (notGenerated) {
                     try {
