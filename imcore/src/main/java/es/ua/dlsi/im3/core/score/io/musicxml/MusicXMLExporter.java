@@ -26,7 +26,7 @@ public class MusicXMLExporter implements ISongExporter {
     /**
      * Easier to set it fixed than compute it
      */
-    private static final int divisions = 64;
+    private static final Time divisions = new Time(64,1);
 
     // some flags
     private boolean printVoiceNames;
@@ -129,7 +129,7 @@ public class MusicXMLExporter implements ISongExporter {
      * @throws IM3Exception
      * @throws ExportException
      */
-    public String exportSong() throws IM3Exception, ExportException {
+    public String exportSong() throws IM3Exception {
         sb = new StringBuilder();
 
         sb.append(XML);
@@ -152,6 +152,8 @@ public class MusicXMLExporter implements ISongExporter {
           end(sb, 2, "encoding");
          end(sb, 1, "identification");
 
+         /* Currently not needed
+
          start(sb, 1, "defaults");
           start(sb, 2, "scaling");
           end(sb, 2, "scaling");
@@ -167,14 +169,7 @@ public class MusicXMLExporter implements ISongExporter {
           end(sb, 2, "staff-layout");
 
          end(sb, 1, "defaults");
-
-         // credits
-         // <credit page="1">
-         //    <credit-words default-x="595.44" default-y="1626.67" justify="center" valign="top" font-size="24">Single test 1</credit-words>
-         // </credit>
-         // <credit page="1">
-         //   <credit-words default-x="1134.19" default-y="1526.67" justify="right" valign="bottom" font-size="12">David Rizo</credit-words>
-         // </credit>
+    */
 
          start(sb, 1, "credit", "page", "1");
           startEndTextContentSingleLine(sb, 3, "credit-words", scoreSong.getTitle(),"justify","center","valign","top","font-size","24");
@@ -196,7 +191,7 @@ public class MusicXMLExporter implements ISongExporter {
      *
      */
     private void exportPartList() {
-        start(sb,1, "<part-list>");
+        start(sb,1, "part-list");
         ArrayList<ScorePart> parts = scoreSong.getParts();
         for (int i=0; i<parts.size(); i++) {
             //ScorePart part = movement.getScorePart(i);
@@ -238,7 +233,9 @@ public class MusicXMLExporter implements ISongExporter {
             if (!part. getAtomsSortedByTime().isEmpty()) {
                 start(sb, 1,"part","id",computePartID(part));
                 // TODO im2 : boolean F4Clef = part.needsF4Clef();
-                for (Measure measure : measures) {
+                Iterator<Measure> itm = measures.iterator();
+                while (itm.hasNext()) {
+                    Measure measure = itm.next();
                     openBar(false, measure, part);
                     List<AtomFigure> snotes = part.getAtomFiguresWithOnsetWithin(measure.getTime(),measure.getEndTime());
                     for (AtomFigure note: snotes) {
@@ -299,7 +296,8 @@ public class MusicXMLExporter implements ISongExporter {
                             exportNoteOrRest(note.getAtom(), false, note.getAtom().getParentAtom());
                         }
                     }
-                    closeBar();
+
+                    closeBar( ! itm.hasNext());
                 }
                 end(sb,1,"part");
             }
@@ -319,12 +317,13 @@ public class MusicXMLExporter implements ISongExporter {
             start(sb,5,"pitch");
             PitchClass pc = note.getPitch().getPitchClass();
             startEndTextContentSingleLine(sb,6,"step",pc.getNoteName().toString());
-            startEndTextContentSingleLine(sb,6,"alter",String.valueOf(pc.getAccidental().getAlteration()));
+            if (pc.getAccidental() != Accidentals.NATURAL)
+                startEndTextContentSingleLine(sb,6,"alter",String.valueOf(pc.getAccidental().getAlteration()));
             startEndTextContentSingleLine(sb,6,"octave",String.valueOf(note.getPitch().getOctave()));
             end(sb,5,"pitch");
         } /* TODO else { what else? } */
 
-        startEndTextContentSingleLine(sb,5,"duration",String.valueOf(atom.getDuration().intValue()));
+        startEndTextContentSingleLine(sb,5,"duration",String.valueOf(atom.getDuration().multiplyBy(divisions).intValue()));
         /* In im2 it was computed like this:
         double duration=64.0*atom.getFigure().getRatio();
         double durwithdots = duration;
@@ -360,14 +359,14 @@ public class MusicXMLExporter implements ISongExporter {
 
 
         if (atom.getStaff() != null) {
-            startEnd(sb,5,"staff",String.valueOf(atom.getStaff().getNumberIdentifier()));
+            startEndTextContentSingleLine(sb,5,"staff",String.valueOf(atom.getStaff().getNumberIdentifier()));
         }
 
         if (tuplet instanceof SimpleTuplet) {
             SimpleTuplet simpleTuplet = (SimpleTuplet) tuplet;
             start(sb,5,"time-modification");
-            startEnd(sb,6,"actual-notes",String.valueOf(simpleTuplet.getCardinality()));
-            startEnd(sb,6,"normal-notes",String.valueOf(simpleTuplet.getInSpaceOfAtoms()));
+            startEndTextContentSingleLine(sb,6,"actual-notes",String.valueOf(simpleTuplet.getCardinality()));
+            startEndTextContentSingleLine(sb,6,"normal-notes",String.valueOf(simpleTuplet.getInSpaceOfAtoms()));
             end(sb,5,"time-modification");
         }
 
@@ -388,7 +387,7 @@ public class MusicXMLExporter implements ISongExporter {
 
         if (needsBackup) {
             start(sb,3,"backup");
-            startEndTextContentSingleLine(sb,4,"duration",String.valueOf(atom.getDuration().intValue()));
+            startEndTextContentSingleLine(sb,4,"duration",String.valueOf(atom.getDuration().multiplyBy(divisions).intValue()));
             end(sb,3,"backup");
         }
     }
@@ -403,35 +402,38 @@ public class MusicXMLExporter implements ISongExporter {
             start(sb, 2,"measure","number",measure.getNumber().toString());
              start(sb,3,"attributes");
                 //int divisions = (int) ((double)ts.getNumerator() / (double)song.findMinimumFigure(bar).getRatio()); //TODO Ver qu� pasa con compases compuestos
-                startEndTextContentSingleLine(sb,4,"divisions", String.valueOf(divisions));
+                startEndTextContentSingleLine(sb,4,"divisions", String.valueOf(divisions.intValue()));
 
             // ks was KeySignature in im2, I think it is Key in im3 (not KeySignature)
-            Key ks = scoreSong.getUniqueKeyActiveAtTime(measure.getTime());
+            Key ks = scoreSong.getUniqueKeyWithOnset(measure.getTime());
             if (ks != null) {
                 start(sb, 4, "key");
                 startEndTextContentSingleLine(sb,5,"fifths",String.valueOf(ks.getFifths()));
                 startEndTextContentSingleLine(sb,5,"mode",ks.getMode() == Mode.MAJOR ? "major" : "minor");
                 end(sb,4,"key");
 
-                // staves
-                List<Staff> staves = part.getStaves();
-                startEndTextContentSingleLine(sb,4,"staves",String.valueOf(staves.size()));
-                for (Staff s: part.getStaves()) {
-                    start(sb,4,"clef","number",String.valueOf(s.getNumberIdentifier()));
-                    startEndTextContentSingleLine(sb,5,"sign", s.getClefAtTime(measure.getTime()).getNote().toString());
-                    startEndTextContentSingleLine(sb,5,"line",String.valueOf(s.getClefAtTime(measure.getTime()).getLine()));
-                    end(sb,4,"clef");
-                }
 
             }
+
             TimeSignature ts = scoreSong.getUniqueMeterWithOnset(measure.getTime());
             // TODO: Only modern notation time signatures, for now
             if (ts instanceof FractionalTimeSignature) {
                 FractionalTimeSignature fts = (FractionalTimeSignature) ts;
                 start(sb,4,"time");
-                  startEndTextContentSingleLine(sb,5,"beats", String.valueOf(fts.getNumerator()));
-                  startEndTextContentSingleLine(sb,5,"beat-type",String.valueOf(fts.getDenominator()));
+                startEndTextContentSingleLine(sb,5,"beats", String.valueOf(fts.getNumerator()));
+                startEndTextContentSingleLine(sb,5,"beat-type",String.valueOf(fts.getDenominator()));
                 end(sb,4,"time");
+
+            // staves
+            List<Staff> staves = part.getStaves();
+            startEndTextContentSingleLine(sb,4,"staves",String.valueOf(staves.size()));
+            for (Staff s: part.getStaves()) {
+                start(sb,4,"clef","number",String.valueOf(s.getNumberIdentifier()));
+                startEndTextContentSingleLine(sb,5,"sign", s.getRunningClefAt(measure.getTime()).getNote().toString());
+                startEndTextContentSingleLine(sb,5,"line",String.valueOf(s.getRunningClefAt(measure.getTime()).getLine()));
+                end(sb,4,"clef");
+            }
+
 
 			/*out.println("<clef>");
 			if (useFClef) {
@@ -447,7 +449,16 @@ public class MusicXMLExporter implements ISongExporter {
 
         }
 
-        private void closeBar() {
+        private void closeBar(boolean lastMeasure) {
+            if (lastMeasure) {
+                // <barline location="right">
+                // <bar-style>light-heavy</bar-style>
+                // </barline>
+
+                start(sb, 3,"barline", "location", "right");
+                startEndTextContentSingleLine(sb,4,"bar-style","light-heavy");
+                end(sb,3,"barline");
+            }
             end(sb,2,"measure");
         }
 
