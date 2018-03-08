@@ -1,6 +1,10 @@
 package es.ua.dlsi.im3.omr.mensuralspanish;
 
 // TODO: 7/10/17 Esto debe parametrizarse según el tipo de notación - además debería ser lo mismo que PRIMUS
+
+/**
+ * @deprecated Use AgnosticSymbols
+ */
 public enum MensuralSymbols implements Comparable<MensuralSymbols> {
 	longa, longa_rest, 
 	brevis, coloured_brevis, brevis_rest,

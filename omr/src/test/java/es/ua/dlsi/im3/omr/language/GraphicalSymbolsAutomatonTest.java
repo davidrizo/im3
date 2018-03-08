@@ -7,10 +7,13 @@ import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
+import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
+import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 import es.ua.dlsi.im3.omr.language.mensural.GraphicalMensuralSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.language.modern.GraphicalModernSymbolsAutomaton;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,16 +28,16 @@ public class GraphicalSymbolsAutomatonTest {
         GraphicalModernSymbolsAutomaton gspa = new GraphicalModernSymbolsAutomaton();
         gspa.getDeterministicProbabilisticAutomaton().writeDot(TestFileUtils.createTempFile("modern.dot"));
 
-        List<GraphicalToken> sequence1 = Arrays.asList(
-                new GraphicalToken(GraphicalSymbol.clef, "g", PositionsInStaff.LINE_2),
-                new GraphicalToken(GraphicalSymbol.accidental, "flat", PositionsInStaff.LINE_3),
-                new GraphicalToken(GraphicalSymbol.accidental, "flat", PositionsInStaff.SPACE_4),
-                new GraphicalToken(GraphicalSymbol.digit, "3", PositionsInStaff.LINE_4),
-                new GraphicalToken(GraphicalSymbol.digit, "4", PositionsInStaff.LINE_2),
-                new GraphicalToken(GraphicalSymbol.accidental, "flat", PositionsInStaff.SPACE_2),
-                new GraphicalToken(GraphicalSymbol.note, "HALF", PositionsInStaff.SPACE_2),
-                new GraphicalToken(GraphicalSymbol.rest, "QUARTER", PositionsInStaff.LINE_3),
-                new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1)
+        List<AgnosticToken> sequence1 = Arrays.asList(
+                new AgnosticSymbol(new Clef(ClefNote.G), PositionsInStaff.LINE_2),
+                new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.LINE_3),
+                new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.SPACE_4),
+                new AgnosticSymbol(new Digit(3), PositionsInStaff.LINE_4),
+                new AgnosticSymbol(new Digit(4), PositionsInStaff.LINE_2),
+                new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.SPACE_2),
+                new AgnosticSymbol(new Note(NoteFigures.half), PositionsInStaff.SPACE_2),
+                new AgnosticSymbol(new Rest(RestFigures.quarter), PositionsInStaff.LINE_3),
+                new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1)
                 );
 
         OMRTransduction t1 = gspa.probabilityOf(sequence1, true);
@@ -44,9 +47,9 @@ public class GraphicalSymbolsAutomatonTest {
 
         assertTrue(t1.getProbability().getNumeratorAsLong() > 0);
 
-        List<GraphicalToken> sequence2 = Arrays.asList(
-                new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.SPACE_4),
-                new GraphicalToken(GraphicalSymbol.digit, "3", PositionsInStaff.LINE_4)
+        List<AgnosticToken> sequence2 = Arrays.asList(
+                new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.SPACE_4),
+                new AgnosticSymbol(new Digit(3), PositionsInStaff.LINE_4)
         );
 
         OMRTransduction t2 = gspa.probabilityOf(sequence2, true);
@@ -67,33 +70,33 @@ public class GraphicalSymbolsAutomatonTest {
         GraphicalMensuralSymbolsAutomaton gspa = new GraphicalMensuralSymbolsAutomaton();
         gspa.getDeterministicProbabilisticAutomaton().writeDot(TestFileUtils.createTempFile("mensural.dot"));
 
-        List<GraphicalToken> sequence1 = Arrays.asList(
-                new GraphicalToken(GraphicalSymbol.clef, "g", PositionsInStaff.LINE_2),
-                new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.LINE_3),
-                new GraphicalToken(GraphicalSymbol.metersign, "C", PositionsInStaff.LINE_3),
-                new GraphicalToken(GraphicalSymbol.rest, "MINIM", PositionsInStaff.LINE_4),
-                new GraphicalToken(GraphicalSymbol.note, "MINIM", PositionsInStaff.LINE_4),
-                new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1),
-                new GraphicalToken(GraphicalSymbol.note, "SEMIMINIM", PositionsInStaff.SPACE_4),
-                new GraphicalToken(GraphicalSymbol.note, "SEMIMINIM", PositionsInStaff.LINE_5),
-                new GraphicalToken(GraphicalSymbol.note, "SEMIBREVE", PositionsInStaff.SPACE_5),
-                new GraphicalToken(GraphicalSymbol.accidental, "#", PositionsInStaff.LINE_5),
-                new GraphicalToken(GraphicalSymbol.note, "MINIM", PositionsInStaff.LINE_5),
-                new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1),
-                new GraphicalToken(GraphicalSymbol.note, "MINIM", PositionsInStaff.SPACE_5),
-                new GraphicalToken(GraphicalSymbol.note, "MINIM", PositionsInStaff.SPACE_5),
-                new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1),
-                new GraphicalToken(GraphicalSymbol.note, "SEMIBREVE", PositionsInStaff.FIRST_TOP_LEDGER_LINE), // TODO: 5/10/17 ¿De entrada tenemos el ledger line?
-                new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1)
+        List<AgnosticToken> sequence1 = Arrays.asList(
+                new AgnosticSymbol(new Clef(ClefNote.G), PositionsInStaff.LINE_2),
+                new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.LINE_3),
+                new AgnosticSymbol(new MeterSign(MeterSigns.C), PositionsInStaff.LINE_3),
+                new AgnosticSymbol(new Rest(RestFigures.half), PositionsInStaff.LINE_4), // minim
+                new AgnosticSymbol(new Note(NoteFigures.half), PositionsInStaff.LINE_4), // minim
+                new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1),
+                new AgnosticSymbol(new Note(NoteFigures.quarter), PositionsInStaff.SPACE_4), // seminim
+                new AgnosticSymbol(new Note(NoteFigures.quarter), PositionsInStaff.LINE_5), // seminim
+                new AgnosticSymbol(new Note(NoteFigures.whole), PositionsInStaff.SPACE_5), // SEMIBREVE
+                new AgnosticSymbol(new Accidental(Accidentals.sharp), PositionsInStaff.LINE_5),
+                new AgnosticSymbol(new Note(NoteFigures.half), PositionsInStaff.LINE_5), // minim
+                new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1),
+                new AgnosticSymbol(new Note(NoteFigures.half), PositionsInStaff.SPACE_5), // minim
+                new AgnosticSymbol(new Note(NoteFigures.half), PositionsInStaff.SPACE_5), // minim
+                new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1),
+                new AgnosticSymbol(new Note(NoteFigures.whole), PositionsInStaff.FIRST_TOP_LEDGER_LINE), // SEMIBREVE - // TODO: 5/10/17 ¿De entrada tenemos el ledger line?
+                new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1)
         );
 
         OMRTransduction t1 = gspa.probabilityOf(sequence1, true);
         System.out.println("Probability of " + sequence1 + "\n\t=" + t1.getProbability());
         assertTrue(t1.getProbability().getNumeratorAsLong() > 0);
 
-        List<GraphicalToken> sequence2 = Arrays.asList(
-                new GraphicalToken(GraphicalSymbol.accidental, "b", PositionsInStaff.SPACE_4),
-                new GraphicalToken(GraphicalSymbol.digit, "3", PositionsInStaff.LINE_4)
+        List<AgnosticToken> sequence2 = Arrays.asList(
+                new AgnosticSymbol(new Accidental(Accidentals.flat), PositionsInStaff.SPACE_4),
+                new AgnosticSymbol(new Digit(3), PositionsInStaff.LINE_4)
         );
 
         OMRTransduction t2 = gspa.probabilityOf(sequence2, true);

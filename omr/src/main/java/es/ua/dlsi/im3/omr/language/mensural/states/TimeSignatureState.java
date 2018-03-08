@@ -6,6 +6,10 @@ import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.TimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Digit;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.MeterSign;
+import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
@@ -14,27 +18,28 @@ public class TimeSignatureState extends OMRState {
     public TimeSignatureState(int number) {
         super(number, "keySig");
     }
-    String text;
+    MeterSigns meterSigns;
 
     @Override
-    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
-        if (!token.getSymbol().equals(GraphicalSymbol.metersign)) {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
+        if (!(token.getSymbol() instanceof MeterSign)) {
             // the automaton has an error
-            throw new IM3RuntimeException("Expected an accidental and found a " + token.getSymbol());
+            throw new IM3RuntimeException("Expected a metersign and found a " + token.getSymbol());
         }
 
+        MeterSign symbol = (MeterSign) token.getSymbol();
+        meterSigns = symbol.getMeterSigns();
         // TODO: 5/10/17 C3 escrito como C 3 ... Quizás habrá que hacer varios estados del autómata
-        text = token.getValue();
     }
 
     @Override
     public void onExit(State nextState, boolean isStateChange, OMRTransduction transduction) {
-        if (text == null) {
-            throw new IM3RuntimeException("Token value cannot be null");
+        if (meterSigns == null) {
+            throw new IM3RuntimeException("Meter signs cannot be null");
         }
         TimeSignature ts = null;
-        switch (text) {
-            case "C":
+        switch (meterSigns) {
+            case C:
                 ts = new TimeSignatureCommonTime(NotationType.eMensural);
                 break;
             // TODO: 5/10/17 Los demás compases 

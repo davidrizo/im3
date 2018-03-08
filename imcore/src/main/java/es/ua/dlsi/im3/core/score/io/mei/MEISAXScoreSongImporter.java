@@ -421,7 +421,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					song.addPart(currentScorePart);					
 					break;*/
 				case "instrDef":
-                    label = getOptionalAttribute(attributesMap, "label");
+                    /*20180306 label = getOptionalAttribute(attributesMap, "label");
                     String instrNumber = getOptionalAttribute(attributesMap, "n");
 
                     ScorePart p = null;
@@ -436,12 +436,14 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         currentScorePart = new ScorePart(song, song.getParts().size() + 1); //TODO
                         currentScorePart.setName(label);
                         song.addPart(currentScorePart);
-                    }
+                    }*/
                     break;
 				case "staffDef": 
 					lastStaff = processStaff(attributesMap);
 					label = getOptionalAttribute(attributesMap, "label");
 					lastStaff.setName(label);
+
+					processPossibleNewScorePart(label); // 20180302
 					
 					clefLine = getOptionalAttribute(attributesMap, "clef.line");
 					clefShape = getOptionalAttribute(attributesMap, "clef.shape");
@@ -989,6 +991,19 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			throw new ImportException(e);
 		}
 	}
+
+    private void processPossibleNewScorePart(String label) {
+        if (label == null) {
+            currentScorePart = song.addPart();
+        } else {
+            ScorePart part = song.getPartWithName(label);
+            if (part == null) {
+                part = song.addPart();
+                part.setName(label);
+            }
+            currentScorePart = part;
+        }
+    }
 
     private StemDirection parseStemDir(String stemDir) throws ImportException {
         switch (stemDir) {

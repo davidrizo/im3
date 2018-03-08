@@ -162,7 +162,6 @@ public class XMLExporterImporterTest {
 				} else {
 					assertEquals("Last meter time at " + staff.getName(), lastMeterChangeTime, lastTS.getTime());
 				}
-				
 			}
 			
 			//assertEquals("Time signatures", 3, song.getMeters().size());

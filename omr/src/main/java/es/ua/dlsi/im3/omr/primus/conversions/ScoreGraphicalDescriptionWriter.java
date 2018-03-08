@@ -5,6 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @deprecated
+ */
 public class ScoreGraphicalDescriptionWriter {
     private static final char TAB = '\t';
 

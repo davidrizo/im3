@@ -23,7 +23,7 @@ clef
 	:	
 	PERCENT shape 
 	(MINUS | PLUS)	// - modern, + mensural
-	DIGIT // position, starting from bottom STAFFLINE 
+	DIGIT // positionInStaff, starting from bottom STAFFLINE
 	;
 
 

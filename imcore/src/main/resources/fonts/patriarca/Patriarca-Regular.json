@@ -10,19 +10,28 @@
     },                
     "gClef": {
         "codepoint": "U+E050"
-    }
+    },
     "cClef": {
         "codepoint": "U+E060"
     },
     "fClef": {
         "codepoint": "U+E062"
     },
+    "mensuralFclefPetrucci": {
+      "codepoint": "U+E902"
+    },
     "timeSigCommon": {
         "codepoint": "U+E08A"
     },        
     "timeSigCutTime": {
         "codepoint": "U+E08B"
-    },    
+    },
+    "timeSigProporcionMenor": {
+      "codepoint": "U+F08A"
+    },
+    "timeSigProporcionMayor": {
+      "codepoint": "U+F08B"
+    },
     "accidentalFlat" : {
 	"codepoint": "U+E260"
     },
@@ -94,12 +103,7 @@
     },
     "mensuralCustosUp" : {
 	"codepoint": "U+EA02"
-    },
-
-
-
-
-
+    }
 
 }
 

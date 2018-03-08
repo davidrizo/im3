@@ -17,8 +17,8 @@
 package es.ua.dlsi.im3.omr.model;
 
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageTags;
-import es.ua.dlsi.im3.omr.traced.Point;
-import es.ua.dlsi.im3.omr.traced.Stroke;
+import es.ua.dlsi.im3.omr.classifiers.traced.Point;
+import es.ua.dlsi.im3.omr.classifiers.traced.Stroke;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,7 +56,7 @@ public class ScoreImageTagsFileWriter {
 					ps.print(';');
 					ps.print(symbol.getPositionedSymbolType().getSymbol().toString());
 					ps.print(';');
-					ps.println(symbol.getPositionedSymbolType().getPosition().toString());
+					ps.println(symbol.getPositionedSymbolType().getPositionInStaff().toString());
 				} else {
 					ps.println(symbol.getStrokes().size());
 				}

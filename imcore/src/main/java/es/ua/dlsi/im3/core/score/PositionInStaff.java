@@ -3,10 +3,10 @@ package es.ua.dlsi.im3.core.score;
 import es.ua.dlsi.im3.core.IM3Exception;
 
 /**
- * Line or space in the staff. Invariant
+ * Line or space in the staff. Invariant.
  * @author drizo
  */
-public class PositionInStaff {
+public class PositionInStaff implements Comparable<PositionInStaff> {
     public static final String LINE_STR = "L";
     public static final String SPACE_STR = "S";
     /**
@@ -105,5 +105,14 @@ public class PositionInStaff {
         } catch (NumberFormatException e) {
             throw new IM3Exception("Cannot parse '" + val + "' as a PositionInStaff");
         }
+    }
+
+    /**
+     * Lower values are below, and higher on the top part of the staff
+     * @param position
+     * @return
+     */
+    public int compareTo(PositionInStaff position) {
+        return lineSpace - position.lineSpace;
     }
 }

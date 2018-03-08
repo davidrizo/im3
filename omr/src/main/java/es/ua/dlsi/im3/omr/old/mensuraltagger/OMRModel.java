@@ -6,15 +6,13 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefC3;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageFile;
 import es.ua.dlsi.im3.omr.mensuralspanish.ISymbolRecognizer;
-import es.ua.dlsi.im3.omr.mensuralspanish.MensuralSymbols;
-import es.ua.dlsi.im3.omr.mensuralspanish.StringToMensuralSymbolFactory;
 import es.ua.dlsi.im3.omr.mensuralspanish.SymbolRecognizerFactory;
 import es.ua.dlsi.im3.omr.model.ScoreImageTagsFileParser;
 import es.ua.dlsi.im3.omr.model.Symbol;
-import es.ua.dlsi.im3.omr.traced.BimodalDatasetReader;
+import es.ua.dlsi.im3.omr.classifiers.traced.BimodalDatasetReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -87,8 +85,8 @@ public class OMRModel {
 
     private void readTrainingFile(File trainingFile) throws IM3Exception {
         // TODO: 7/10/17 Factory con tipos de símbolos
-        BimodalDatasetReader<MensuralSymbols> reader = new BimodalDatasetReader<>();
-        recognizer = SymbolRecognizerFactory.getInstance().buildRecognizer(reader, new StringToMensuralSymbolFactory());
+        BimodalDatasetReader reader = new BimodalDatasetReader();
+        recognizer = SymbolRecognizerFactory.getInstance().buildRecognizer(reader);
         try {
             recognizer.learn(trainingFile);
         } catch (IOException e) {
@@ -112,7 +110,7 @@ public class OMRModel {
         ScoreImageFile sif = new ScoreImageFile(imageFile);
         File txtFile = new File(imageFile.getParentFile(), imageFile.getName() + ".txt");
         if (txtFile.exists()) {
-            sif.addTagsFile(parser.parse(txtFile, sif.getBufferedImage(), new StringToMensuralSymbolFactory()));
+            sif.addTagsFile(parser.parse(txtFile, sif.getBufferedImage()));
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Loaded tags file");
         }
         files.add(sif);
@@ -131,20 +129,21 @@ public class OMRModel {
         return Long.toString(recognizer.getNumberOfTrainingSymbols());
     }
 
-    public ArrayList<PositionedSymbolType> recognize(Symbol symbol) throws IM3Exception {
-        ArrayList<PositionedSymbolType> recognized = recognizer.recognize(symbol);
-        ArrayList<PositionedSymbolType> result = new ArrayList<>();
+    public ArrayList<AgnosticSymbol> recognize(Symbol symbol) throws IM3Exception {
+        ArrayList<AgnosticSymbol> result = new ArrayList<>();
+        /*TODO ArrayList<AgnosticSymbol> recognized = recognizer.recognize(symbol);
         // add all symbols not recognized
         TreeSet<MensuralSymbols> symbols = new TreeSet<>();
-        for (PositionedSymbolType<MensuralSymbols> positionedSymbolType : recognized) {
-            symbols.add(positionedSymbolType.getSymbol());
+        for (AgnosticSymbol positionedSymbolType : recognized) {
+            symbols.add(positionedSymbolType.getSpecificSymbol());
             result.add(positionedSymbolType);
         }
         for (MensuralSymbols st: MensuralSymbols.values()) {
             if (!symbols.contains(st)) {
-                result.add(new PositionedSymbolType(st, PositionsInStaff.LINE_3));
+                result.add(new AgnosticSymbol(st, PositionsInStaff.LINE_3));
             }
         }
-
+*/
         return result;
-    }}
+    }
+ }

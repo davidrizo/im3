@@ -19,11 +19,11 @@ package es.ua.dlsi.im3.omr.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.old.mensuraltagger.components.ScoreImageTags;
-import es.ua.dlsi.im3.omr.traced.Point;
-import es.ua.dlsi.im3.omr.traced.Stroke;
+import es.ua.dlsi.im3.omr.classifiers.traced.Point;
+import es.ua.dlsi.im3.omr.classifiers.traced.Stroke;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -37,12 +37,18 @@ import java.util.logging.Logger;
  *
  * @author drizo
  */
-public class ScoreImageTagsFileParser<SymbolType> {
-	static enum State {
+public class ScoreImageTagsFileParser {
+    StringToSymbolFactory factory;
+
+    public ScoreImageTagsFileParser() {
+        this.factory = new StringToSymbolFactory();
+    }
+
+    static enum State {
 		eReadingSymbol, eReadingStrokes
 	};
 
-	public ScoreImageTags parse(File file, BufferedImage pageImage, IStringToSymbolFactory<SymbolType> factory) throws Exception {
+	public ScoreImageTags parse(File file, BufferedImage pageImage) throws Exception {
 		ScoreImageTags result = new ScoreImageTags(file);
 		State state = State.eReadingSymbol;
 
@@ -60,12 +66,12 @@ public class ScoreImageTagsFileParser<SymbolType> {
 						// #stroke[;symbol;position]
 						String[] strokesLineElements = line.split(";");
 						expectedStrokes = Integer.parseInt(strokesLineElements[0]);
-						PositionedSymbolType pst = null;
+						AgnosticSymbol pst = null;
 						PositionInStaff positionInStaff;
 						if (strokesLineElements.length == 3) {
 							positionInStaff = parsePositionInStaff(strokesLineElements[2]);
-							SymbolType symbolType = parseNotationSymbol(strokesLineElements[1], factory);
-							pst = new PositionedSymbolType(symbolType, positionInStaff);
+							AgnosticSymbolType symbolType = parseNotationSymbol(strokesLineElements[1]);
+							pst = new AgnosticSymbol(symbolType, positionInStaff);
 						} else if (strokesLineElements.length != 1) {
 							throw new Exception("Expected 1 or 3 symbols in symbol description in line " + lineNumber + " in file " + file.getName());
 						}
@@ -125,7 +131,7 @@ public class ScoreImageTagsFileParser<SymbolType> {
 		return result;
 	}
 
-	private SymbolType parseNotationSymbol(String string, IStringToSymbolFactory<SymbolType> factory) {
+	private AgnosticSymbolType parseNotationSymbol(String string) {
 		return factory.parseString(string);
 	}
 

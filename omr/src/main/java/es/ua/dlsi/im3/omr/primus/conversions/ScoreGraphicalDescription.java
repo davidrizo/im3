@@ -6,6 +6,9 @@ import es.ua.dlsi.im3.omr.model.pojo.SemanticToken;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated Use AgnosticEncoding
+ */
 public class ScoreGraphicalDescription {
     /**
      * Currently we use a list of tokens

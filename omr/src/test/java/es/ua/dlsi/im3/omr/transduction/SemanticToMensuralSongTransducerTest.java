@@ -5,7 +5,7 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
-import es.ua.dlsi.im3.omr.model.pojo.SemanticSymbol;
+import es.ua.dlsi.im3.omr.model.pojo.SemanticSymbolEnum;
 import es.ua.dlsi.im3.omr.model.pojo.SemanticToken;
 import org.junit.Test;
 
@@ -20,10 +20,10 @@ public class SemanticToMensuralSongTransducerTest {
     @Test
     public void transduceInto() throws IM3Exception {
         LinkedList<SemanticToken> tokenLinkedList = new LinkedList<SemanticToken>();
-        tokenLinkedList.add(new SemanticToken(SemanticSymbol.clef, "G2"));
-        tokenLinkedList.add(new SemanticToken(SemanticSymbol.timeSignature, "C"));
-        tokenLinkedList.add(new SemanticToken(SemanticSymbol.rest, "minim"));
-        tokenLinkedList.add(new SemanticToken(SemanticSymbol.note, "E4_minim"));
+        tokenLinkedList.add(new SemanticToken(SemanticSymbolEnum.clef, "G2"));
+        tokenLinkedList.add(new SemanticToken(SemanticSymbolEnum.timeSignature, "C"));
+        tokenLinkedList.add(new SemanticToken(SemanticSymbolEnum.rest, "minim"));
+        tokenLinkedList.add(new SemanticToken(SemanticSymbolEnum.note, "E4_minim"));
 
         SemanticToMensuralSongTransducer toMensuralSongTransducer = new SemanticToMensuralSongTransducer();
         ScoreSong scoreSong = new ScoreSong();

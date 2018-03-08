@@ -1,0 +1,9 @@
+Using font  Gootville
+RISM ID:  000100196
+Incipit:  1.2.2
+Author:  Hiller, Johann Adam
+Title:  Der Krieg. Arr
+@clef:  C-2
+@keysig:  xFCG
+@timesig:  2/4
+@data:  =20/'4AE/=/AE/-/''CC/4.C8D/{C'B}{AG}/

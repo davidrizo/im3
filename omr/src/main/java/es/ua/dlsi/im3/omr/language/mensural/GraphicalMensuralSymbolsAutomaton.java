@@ -5,10 +5,11 @@ import es.ua.dlsi.im3.core.adt.dfa.DeterministicProbabilisticAutomaton;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.adt.dfa.Transition;
 import es.ua.dlsi.im3.core.score.NotationType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolAlphabet;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.language.mensural.states.*;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import org.apache.commons.math3.fraction.Fraction;
 
 import java.util.HashMap;
@@ -37,25 +38,25 @@ public class GraphicalMensuralSymbolsAutomaton extends GraphicalSymbolsAutomaton
         endStates.put(notes, Fraction.ONE_THIRD);
         endStates.put(barline, Fraction.TWO_THIRDS);
 
-        HashSet<Transition<State, GraphicalSymbol>> transitions = new HashSet<>();
-        transitions.add(new Transition<>(start, GraphicalSymbol.clef, clef));
-        transitions.add(new Transition<>(clef, GraphicalSymbol.accidental, keysig));
-        transitions.add(new Transition<>(keysig, GraphicalSymbol.accidental, keysig));
-        transitions.add(new Transition<>(clef, GraphicalSymbol.metersign, timesig));
-        transitions.add(new Transition<>(keysig, GraphicalSymbol.metersign, timesig));
+        HashSet<Transition<State, AgnosticSymbolType>> transitions = new HashSet<>();
+        transitions.add(new Transition<>(start, new Clef(), clef));
+        transitions.add(new Transition<>(clef, new Accidental(), keysig));
+        transitions.add(new Transition<>(keysig, new Accidental(), keysig));
+        transitions.add(new Transition<>(clef, new MeterSign(), timesig));
+        transitions.add(new Transition<>(keysig, new MeterSign(), timesig));
 
-        transitions.add(new Transition<>(timesig, GraphicalSymbol.rest, notes));
+        transitions.add(new Transition<>(timesig, new Rest(), notes));
 
-        transitions.add(new Transition<>(timesig, GraphicalSymbol.accidental, noteacc));
-        transitions.add(new Transition<>(notes, GraphicalSymbol.accidental, noteacc));
-        transitions.add(new Transition<>(barline, GraphicalSymbol.accidental, noteacc));
+        transitions.add(new Transition<>(timesig, new Accidental(), noteacc));
+        transitions.add(new Transition<>(notes, new Accidental(), noteacc));
+        transitions.add(new Transition<>(barline, new Accidental(), noteacc));
 
-        transitions.add(new Transition<>(notes, GraphicalSymbol.rest, notes));
-        transitions.add(new Transition<>(notes, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(barline, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(barline, GraphicalSymbol.rest, notes));
-        transitions.add(new Transition<>(noteacc, GraphicalSymbol.note, notes));
-        transitions.add(new Transition<>(notes, GraphicalSymbol.barline, barline));
+        transitions.add(new Transition<>(notes, new Rest(), notes));
+        transitions.add(new Transition<>(notes, new Note(), notes));
+        transitions.add(new Transition<>(barline, new Note(), notes));
+        transitions.add(new Transition<>(barline, new Rest(), notes));
+        transitions.add(new Transition<>(noteacc, new Note(), notes));
+        transitions.add(new Transition<>(notes, new VerticalLine(), barline));
 
 
         GraphicalSymbolAlphabet alphabet = new GraphicalSymbolAlphabet();

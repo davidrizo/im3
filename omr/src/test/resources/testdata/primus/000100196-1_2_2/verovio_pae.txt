@@ -1,0 +1,8 @@
+@start:000100196-1_2_2
+@clef:C-2
+@keysig:xFCG
+@key:
+@timesig:2/4
+@data:=20/'4AE/=/AE/-/''CC/4.C8D/{C'B}{AG}/
+@end:000100196-1_2_2
+

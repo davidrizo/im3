@@ -4,6 +4,8 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidental;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
@@ -23,11 +25,12 @@ public class KeySignatureState extends OMRState {
     }
 
     @Override
-    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
-        if (!token.getSymbol().equals(GraphicalSymbol.accidental)) {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
+        if (!(token.getSymbol() instanceof Accidental)) {
             // the automaton has an error
             throw new IM3RuntimeException("Expected an accidental and found a " + token.getSymbol());
         }
+        Accidental symbol = (Accidental) token.getSymbol();
 
         if (accidentals == null) {
             accidentals = new ArrayList<>();
@@ -36,15 +39,16 @@ public class KeySignatureState extends OMRState {
             flatOrder = new ArrayList<>();
         }
 
-        if (token.getValue() == null) {
+        es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals value = symbol.getAccidentals();
+        if (value == null) {
             throw new IM3RuntimeException("Value of accidental is null");
         }
         //System.out.println(token.getValue());
-        switch (token.getValue()) {
-            case "flat":
+        switch (value) {
+            case flat:
                 accidentals.add(Accidentals.FLAT);
                 break;
-            case "sharp":
+            case sharp:
                 accidentals.add(Accidentals.SHARP);
                 break;
             default:

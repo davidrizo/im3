@@ -2,7 +2,11 @@ package es.ua.dlsi.im3.omr.model.pojo;
 
 import es.ua.dlsi.im3.core.adt.dfa.Token;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 
+/**
+ * @deprecated Use AgnosticSymbol
+ */
 public class GraphicalToken extends Token<GraphicalSymbol> {
     public static final char LINE_SEPARATOR = '-';
     private static final char VALUE_SEPARATOR = '.';

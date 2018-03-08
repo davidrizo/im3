@@ -4,8 +4,9 @@ package es.ua.dlsi.im3.omr.language;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.*;
 import es.ua.dlsi.im3.core.score.NotationType;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 
 import java.util.*;
 
@@ -14,21 +15,21 @@ import java.util.*;
  */
 public class GraphicalSymbolsAutomaton {
     private final NotationType notationType;
-    protected DeterministicProbabilisticAutomaton<State, GraphicalSymbol, OMRTransduction> dpa;
+    protected DeterministicProbabilisticAutomaton<State, AgnosticSymbolType, OMRTransduction> dpa;
 
     public GraphicalSymbolsAutomaton(NotationType notationType) throws IM3Exception {
         this.notationType = notationType;
     }
 
-    public DeterministicProbabilisticAutomaton<State, GraphicalSymbol, OMRTransduction> getDeterministicProbabilisticAutomaton() {
+    public DeterministicProbabilisticAutomaton<State, AgnosticSymbolType, OMRTransduction> getDeterministicProbabilisticAutomaton() {
         return dpa;
     }
 
-    public OMRTransduction probabilityOf(List<GraphicalToken> sequence, boolean debug) throws IM3Exception {
+    public OMRTransduction probabilityOf(List<AgnosticToken> sequence, boolean debug) throws IM3Exception {
         dpa.setDebug(debug);
         return dpa.probabilityOf(sequence, new OMRTransductionFactory(notationType));
     }
-    public OMRTransduction probabilityOf(List<GraphicalToken> sequence) throws IM3Exception {
+    public OMRTransduction probabilityOf(List<AgnosticToken> sequence) throws IM3Exception {
         dpa.setDebug(false);
         return dpa.probabilityOf(sequence, new OMRTransductionFactory(notationType));
     }

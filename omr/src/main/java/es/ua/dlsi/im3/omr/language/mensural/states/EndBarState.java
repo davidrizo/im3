@@ -6,8 +6,8 @@ import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.Measure;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.TimeSignature;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 public class EndBarState extends OMRState {
     public EndBarState(int number) {
@@ -15,7 +15,7 @@ public class EndBarState extends OMRState {
     }
 
     @Override
-    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction)  {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction)  {
         // TODO: 5/10/17 Tipo de barra?
 
         Time time = Time.TIME_ZERO;

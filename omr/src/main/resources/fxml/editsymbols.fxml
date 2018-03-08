@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.interactive.editpage.symbols.PageSymbolsEditController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.editpage.symbols.PageSymbolsEditController">
     <top>
         <HBox spacing="20.0" BorderPane.alignment="CENTER">
             <children>
@@ -18,12 +18,6 @@
                 <ToolBar fx:id="toolbarSymbols" prefHeight="40.0" HBox.hgrow="ALWAYS">
                <items>
                   <Button mnemonicParsing="false" onAction="#handleRecognizeSymbols" text="Recognize symbols" />
-                  <RadioButton fx:id="rbDrawBoundingBoxes" mnemonicParsing="false" selected="true" text="Draw bounding boxes">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="tgCreateSymbolMode" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <RadioButton fx:id="rbDrawSymbols" mnemonicParsing="false" text="Draw symbols" toggleGroup="$tgCreateSymbolMode" />
                </items></ToolBar>
             </children>
         </HBox>

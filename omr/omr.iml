@@ -38,5 +38,11 @@
     <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-openiconic-pack:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.clearspring.analytics:stream:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: it.unimi.dsi:fastutil:6.5.7" level="project" />
+    <orderEntry type="library" name="Maven: org.im4java:im4java:1.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.sharneng:gm4java:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven:maven-artifact:3.0.3" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.2" level="project" />
   </component>
 </module>

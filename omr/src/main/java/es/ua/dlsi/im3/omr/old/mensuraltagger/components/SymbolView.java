@@ -20,12 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
-import es.ua.dlsi.im3.core.score.PositionsInStaff;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.model.Symbol;
-import es.ua.dlsi.im3.omr.traced.Stroke;
+import es.ua.dlsi.im3.omr.classifiers.traced.Stroke;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -46,11 +44,11 @@ import javafx.scene.text.Text;
  * 
  * @author drizo
  */
-public class SymbolView<SymbolType> extends Group {
+public class SymbolView extends Group {
 	private static final double DEFAULT_WIDTH = 2;
 	private static final double SELECTED_WIDTH = 5;
 	
-	ObjectProperty<Symbol<SymbolType>> symbol;
+	ObjectProperty<Symbol> symbol;
 	StrokeView currentStrokeView;
 	private final ObjectProperty<Color> color;
 	private final Color unselectedColor;
@@ -116,7 +114,7 @@ public class SymbolView<SymbolType> extends Group {
 		
 	}
 
-	public ObjectProperty<Symbol<SymbolType>> symbolProperty() {
+	public ObjectProperty<Symbol> symbolProperty() {
 		return symbol;
 	}
 
@@ -186,27 +184,27 @@ public class SymbolView<SymbolType> extends Group {
 	
 	private void drawNotationSymbolView() throws IM3Exception {
         // TODO: 7/10/17 Usando sólo mensural
-        PositionedSymbolType<SymbolType> pst = this.symbol.get().getPositionedSymbolType();
+        AgnosticSymbol pst = this.symbol.get().getPositionedSymbolType();
 		if (pst != null) {
             notationSymbolView = NotationSymbolRenderer.getInstance().render(pst.getSymbol(), false);
 			notationSymbolView.fillProperty().bind(musicalContentColor);
-			currentPosition = pst.getPosition();
+			currentPosition = pst.getPositionInStaff();
 			drawInStaff();
 		}
 	}
 	
-	public void setPositionedSymbolType(PositionedSymbolType pst) throws IM3Exception {
+	public void setPositionedSymbolType(AgnosticSymbol pst) throws IM3Exception {
 		this.symbol.get().setPositionedSymbolType(pst);
 		drawNotationSymbolView();
 	}
 	
-	public void setSymbolType(SymbolType st) throws IM3Exception {
+	/*public void setSymbolType(SymbolType st) throws IM3Exception {
 		if (this.symbol.isNull().get()) {
-			setPositionedSymbolType(new PositionedSymbolType(st, PositionsInStaff.LINE_3));
+			setPositionedSymbolType(new AgnosticSymbol(st, PositionsInStaff.LINE_3));
 		} else {
-			setPositionedSymbolType(new PositionedSymbolType(st, this.symbol.get().getPositionInStaff()));
+			setPositionedSymbolType(new AgnosticSymbol(st, this.symbol.get().getPositionInStaff()));
 		}		
-	}
+	}*/
 
 	// see Pentagram.computeYPositionForLinespace for more information
 	private static final double spaceHeight = 0.25;
@@ -271,23 +269,23 @@ public class SymbolView<SymbolType> extends Group {
 		return currentStrokeView;
 	}
 
-	public void setSortedPossibleNotationSymbols(ArrayList<PositionedSymbolType<SymbolType>> notationSymbols) {
+	public void setSortedPossibleNotationSymbols(ArrayList<AgnosticSymbol> notationSymbols) {
 		this.symbol.get().setSortedPossibleNotationSymbols(notationSymbols);
 	}
 
 	public List<Text> getSortedPossibleNotationSymbols() throws IM3Exception {
 		ArrayList<Text> result = new ArrayList<>();
-		for (PositionedSymbolType<SymbolType> ns : this.symbol.get().getSortedPossibleNotationSymbols()) {
+		/*for (AgnosticSymbol<SymbolType> ns : this.symbol.get().getSortedPossibleNotationSymbols()) {
 			try {
-                SymbolType symbol = ns.getSymbol();
+                SymbolType symbol = ns.getSpecificSymbol();
 				Text graphic = NotationSymbolRenderer.getInstance().render(symbol, true);
-				graphic.setUserData(ns.getSymbol());
+				graphic.setUserData(ns.getSpecificSymbol());
 				result.add(graphic);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new IM3RuntimeException(e);
 			}
-		}
+		}*/
 		return result;
 	}
 

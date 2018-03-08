@@ -4,6 +4,10 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.Accidentals;
+import es.ua.dlsi.im3.core.score.Clef;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
@@ -16,14 +20,14 @@ public class NotesState extends OMRState {
     }
 
     @Override
-    public void onEnter(GraphicalToken token, State previousState, OMRTransduction transduction) {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
         Accidentals accidental = null;
         if (previousState instanceof AccNoteState) {
             accidental = ((AccNoteState)previousState).getAccidental(); //Ojo, si en el mismo compas hay otra nota alterada no lo ve
         }
 
-        // TODO: 5/10/17 Dots en la gramática - no aqui 
-       if ((token.getSymbol() == GraphicalSymbol.note)) {
+        // TODO: 5/10/17 Dots en la gramática - no aqui
+        if (token.getSymbol() instanceof Note) {
             // TODO: 5/10/17 Chords
             Staff staff = transduction.getStaff();
             Clef clef = transduction.getStaff().getLastClef();
@@ -39,7 +43,8 @@ public class NotesState extends OMRState {
             }
 
             try {
-                SimpleNote note = new SimpleNote(parseFigure(token.getValue()), 0, pitch);
+                Note value = ((Note) token.getSymbol());
+                SimpleNote note = new SimpleNote(parseFigure(value.getDurationSpecification()), 0, pitch);
                 transduction.getStaff().addCoreSymbol(note);
                 transduction.getLayer().add(note);
             } catch (IM3Exception e) {
@@ -49,14 +54,12 @@ public class NotesState extends OMRState {
         /*} else {
             throw new IM3RuntimeException("Symbol should be note");*/
         }
-        else {
-           if (token.getSymbol() == GraphicalSymbol.dot && previousState.toString() == "notes") {
+        else if (token.getSymbol() instanceof Dot && previousState.getName().equals("notes")) {
                //TODO En futuras implementaciones se cambiara la forma de añadir notas a partituras
-
-           }
-           else {
-               throw new IM3RuntimeException("Symbol should be note or dot");
-           }
+        }
+        else {
+               throw new IM3RuntimeException("Symbol should be note or dot from previous state 'notes', and it is a " + token.getSymbol() +
+               " coming from state " + previousState.getName());
        }
     }
 
@@ -68,8 +71,18 @@ public class NotesState extends OMRState {
         return sp;
     }
 
-    private Figures parseFigure(String value) throws IM3Exception {
-        String upperCaseValue = value.toUpperCase();
+    private Figures parseFigure(INoteDurationSpecification durationSpecification) throws IM3Exception {
+        if (durationSpecification instanceof Beam) {
+            Beam beam = (Beam) durationSpecification;
+            return Figures.findFigureWithFlags(beam.getBeams(), NotationType.eModern);
+        } else if (durationSpecification instanceof NoteFigures) {
+            NoteFigures noteFigures = (NoteFigures) durationSpecification;
+            return convert(noteFigures);
+        } else {
+            throw new IM3Exception("Unsupported durationSpecification: " + durationSpecification);
+        }
+
+        /*String upperCaseValue = value.toUpperCase();
         if (upperCaseValue.startsWith(BEAMED)) { // it is a beam
             String beams = value.substring(value.length()-1); // we'll not have more than 9 beams
             int nbeams;
@@ -81,6 +94,21 @@ public class NotesState extends OMRState {
             return Figures.findFigureWithFlags(nbeams, NotationType.eModern);
         } else { // it is a figure
             return Figures.valueOf(upperCaseValue);
-        }
+        }*/
+    }
+
+    private Figures convert(NoteFigures noteFigures) {
+        switch (noteFigures) {
+            case hundredTwentyEighth:
+                return Figures.HUNDRED_TWENTY_EIGHTH;
+            case sixtyFourth:
+                return Figures.SIXTY_FOURTH;
+            case thirtySecond:
+                return Figures.THIRTY_SECOND;
+            case twoHundredFiftySix:
+                return Figures.TWO_HUNDRED_FIFTY_SIX;
+            default:
+                return Figures.valueOf(noteFigures.toAgnosticString().toUpperCase());
+    }
     }
 }

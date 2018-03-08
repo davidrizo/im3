@@ -18,14 +18,12 @@ package es.ua.dlsi.im3.omr.mensuralspanish;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Staff;
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
-import es.ua.dlsi.im3.omr.PositionedSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.model.Symbol;
-import es.ua.dlsi.im3.omr.traced.ClassifierFactory;
-import es.ua.dlsi.im3.omr.traced.IBimodalDatasetReader;
-import es.ua.dlsi.im3.omr.traced.IClassifier;
-import es.ua.dlsi.im3.omr.traced.utils.ImageUtils;
+import es.ua.dlsi.im3.omr.classifiers.traced.BimodalClassifierFactory;
+import es.ua.dlsi.im3.omr.classifiers.traced.IBimodalDatasetReader;
+import es.ua.dlsi.im3.omr.classifiers.traced.IBimodalClassifier;
+import es.ua.dlsi.im3.omr.classifiers.traced.utils.ImageUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -40,13 +38,13 @@ import java.util.logging.Logger;
  *
  * @author drizo
  */
-public class TracedSymbolRecognizer<SymbolType> extends SymbolRecognizer {
+public class TracedSymbolRecognizer extends SymbolRecognizer {
 	private final static int RESIZE_W = 30;
 	private final static int RESIZE_H = 30;
-	IClassifier classifier;
+	IBimodalClassifier classifier;
 
-	public TracedSymbolRecognizer(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) throws IM3Exception {
-		classifier = ClassifierFactory.getInstance().createClassifier(reader, symbolFactory);
+	public TracedSymbolRecognizer(IBimodalDatasetReader reader) throws IM3Exception {
+		classifier = BimodalClassifierFactory.getInstance().createClassifier(reader);
 	}
 
 	/**
@@ -67,8 +65,8 @@ public class TracedSymbolRecognizer<SymbolType> extends SymbolRecognizer {
 	}
 
 	@Override
-	public ArrayList<PositionedSymbolType> recognize(Symbol symbol) throws IM3Exception {
-		List<PositionedSymbolType> recognizedSymbolTypes;
+	public ArrayList<AgnosticSymbol> recognize(Symbol symbol) throws IM3Exception {
+		List<AgnosticSymbol> recognizedSymbolTypes;
 		try {
 			recognizedSymbolTypes = classifier.classify(symbolImageToMat(symbol), symbol.getStrokes());
 		} catch (IOException ex) {
@@ -76,8 +74,8 @@ public class TracedSymbolRecognizer<SymbolType> extends SymbolRecognizer {
 			throw new IM3Exception(ex);
 		}
 
-		ArrayList<PositionedSymbolType> result = new ArrayList<>();
-		for (PositionedSymbolType recognizedSymbolType : recognizedSymbolTypes) {
+		ArrayList<AgnosticSymbol> result = new ArrayList<>();
+		for (AgnosticSymbol recognizedSymbolType : recognizedSymbolTypes) {
 			result.add(recognizedSymbolType);
 		}
 

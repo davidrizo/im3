@@ -9,7 +9,7 @@ public class Symbol {
     GraphicalToken graphicalToken;
 
     /**
-     * Absolute to the image
+     * Relative to the region
      */
     double x;
     double width;

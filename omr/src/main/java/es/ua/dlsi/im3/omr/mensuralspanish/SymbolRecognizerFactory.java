@@ -18,9 +18,7 @@ package es.ua.dlsi.im3.omr.mensuralspanish;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Staff;
-import es.ua.dlsi.im3.omr.IStringToSymbolFactory;
-import es.ua.dlsi.im3.omr.traced.IBimodalDatasetReader;
+import es.ua.dlsi.im3.omr.classifiers.traced.IBimodalDatasetReader;
 
 /**
  *
@@ -39,8 +37,8 @@ public class SymbolRecognizerFactory<SymbolType> {
 	return instance;
     }
     
-    public ISymbolRecognizer buildRecognizer(IBimodalDatasetReader<SymbolType> reader, IStringToSymbolFactory<SymbolType> symbolFactory) throws IM3Exception {
+    public ISymbolRecognizer buildRecognizer(IBimodalDatasetReader reader) throws IM3Exception {
     	//return new RandomSymbolRecognizer(staff);
-        return new TracedSymbolRecognizer(reader, symbolFactory);
+        return new TracedSymbolRecognizer(reader);
     }
 }
