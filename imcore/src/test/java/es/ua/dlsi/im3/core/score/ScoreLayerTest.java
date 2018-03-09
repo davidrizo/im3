@@ -1,38 +1,58 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static org.junit.Assert.*;
 
 public class ScoreLayerTest {
-    @Test
-    public void createBeaming() throws Exception {
-        ScoreSong song = new ScoreSong();
-        Staff staff = new Pentagram(song, "1", 1);
+
+    ScoreSong song;
+    Staff staff;
+    ScoreLayer layer;
+    SimpleNote n0, n1, n2;
+    SimpleNote n0_m2, n1_m2, n2_m2; // second measure notes
+    SimpleRest rest;
+    Measure first_measure, second_measure;
+    TimeSignatureCommonTime ts;
+
+    @Before
+    public void setUp() throws Exception {
+        song = new ScoreSong();
+        staff = new Pentagram(song, "1", 1);
         staff.setNotationType(NotationType.eModern);
-        TimeSignatureCommonTime ts = new TimeSignatureCommonTime(NotationType.eModern);
-        Measure measure = new Measure(song);
-        song.addMeasure(Time.TIME_ZERO, measure);
-        measure.setEndTime(ts.getDuration()); // TODO: 23/9/17 ¿No se debería poner sólo? Hay que verlo y que no choque con los importadores
+        ts = new TimeSignatureCommonTime(NotationType.eModern);
+        first_measure = new Measure(song);
+        song.addMeasure(Time.TIME_ZERO, first_measure);
+        first_measure.setEndTime(ts.getDuration()); // TODO: 23/9/17 ¿No se debería poner sólo? Hay que verlo y que no choque con los importadores
+
 
         staff.addTimeSignature(ts);
         song.addStaff(staff);
-        ScoreLayer layer = song.addPart().addScoreLayer();
+        layer = song.addPart().addScoreLayer();
         staff.addLayer(layer);
-        SimpleNote n0 = new SimpleNote(Figures.QUARTER, 0, new ScientificPitch(PitchClasses.A, 4));
+        n0 = new SimpleNote(Figures.QUARTER, 0, new ScientificPitch(PitchClasses.A, 4));
         staff.addCoreSymbol(n0);
         layer.add(n0);
-        SimpleNote n1 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.B, 4));
+        n1 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.B, 4));
         staff.addCoreSymbol(n1);
         layer.add(n1);
-        SimpleNote n2 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.C, 5));
+        n2 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.C, 5));
         staff.addCoreSymbol(n2);
         layer.add(n2);
+
+    }
+
+    @Test
+    public void createBeaming() throws Exception {
 
         assertEquals(3, layer.size());
 
@@ -49,4 +69,39 @@ public class ScoreLayerTest {
         assertEquals(3, layer.getAtomPitches().size());
     }
 
+    @Test
+    public void getAtomFiguresWithOnsetWithinTest() {
+
+        try {
+            second_measure = new Measure(song);
+            song.addMeasure(ts.getDuration(), second_measure);
+            second_measure.setEndTime(ts.getDuration().add(ts.getDuration()));
+            rest = new SimpleRest(Figures.HALF,0); // to complete first_measure
+            staff.addCoreSymbol(rest);
+            layer.add(rest);
+
+            // Second measure
+            n0_m2= new SimpleNote(Figures.QUARTER, 0, new ScientificPitch(PitchClasses.C, 5));
+            staff.addCoreSymbol(n0_m2);
+            layer.add(n0_m2);
+            n1_m2 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.B, 4));
+            staff.addCoreSymbol(n1_m2);
+            layer.add(n1_m2);
+            n2_m2 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.C, 5));
+            staff.addCoreSymbol(n2_m2);
+            layer.add(n2_m2);
+
+            SortedSet<AtomFigure> atoms = layer.getAtomFiguresSortedByTimeWithin(first_measure);
+            assertEquals("First measure, first note",n0.getAtomFigure(),atoms.first());
+            assertEquals("First measure, last note",rest.getAtomFigure(),atoms.last());
+
+            atoms = layer.getAtomFiguresSortedByTimeWithin(second_measure);
+            assertEquals("Second measure, first note",n0_m2.getAtomFigure(),atoms.first());
+            assertEquals("Second measure, last note",n2_m2.getAtomFigure(),atoms.last());
+        } catch (IM3Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+    }
 }

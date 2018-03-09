@@ -316,7 +316,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	 * @param fromTime Included
 	 * @param toTime Not included
 	 * @return
-	 * @throws IM3Exception 
+	 *
 	 */
 	public List<AtomFigure> getAtomFiguresWithOnsetWithin(Time fromTime, Time toTime)  {
 		ArrayList<AtomFigure> result = new ArrayList<>();
@@ -341,7 +341,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	 * @param fromTime Included
 	 * @param toTime Not included
 	 * @return
-	 * @throws IM3Exception 
+	 *
 	 */	
 	public List<Atom> getAtomsWithOnsetWithin(Time fromTime, Time toTime) {
 		ArrayList<Atom> result = new ArrayList<>();
@@ -406,6 +406,27 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		return result;
 	}
 
+	/**
+	 * Gets the figures within a measure, sorted by onset time.
+	 * @param measure the measure
+	 * @return a sorted set of figures
+	 * @throws IM3Exception
+	 */
+	public SortedSet<AtomFigure> getAtomFiguresSortedByTimeWithin(Measure measure) throws IM3Exception {
+		SortedSet<AtomFigure> result = new TreeSet<>(new Comparator<AtomFigure>() {
+			@Override
+			public int compare(AtomFigure o1, AtomFigure o2) {
+				int diff = o1.getTime().compareTo(o2.getTime());
+				if (diff == 0) {
+					return o1.compareTo(o2);
+				} else {
+					return diff;
+				}
+			}
+		});
+		result.addAll(getAtomFiguresWithOnsetWithin(measure.getTime(),measure.getEndTime()));
+		return result;
+	}
 
 	public Atom getLastAtom() throws IM3Exception {
 		if (atoms.isEmpty()) {

@@ -30,7 +30,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
  * @author drizo
  */
 public class XMLExporterImporterTest {
-	boolean testMEIExportImport = true;
+	boolean testMEIExportImport = false;
     private boolean testMusicXMLExportImport = true;
 
     @Before
@@ -267,7 +267,7 @@ public class XMLExporterImporterTest {
 	}
 	// ------------------------------------------------------------------------------------------
 	private static Void assertCrossStaff(ScoreSong song) {
-		try {
+		//try {
 			assertEquals(2, song.getStaves().size());
 			assertEquals(DiatonicPitch.G, song.getStaves().get(0).getClefAtTime(Time.TIME_ZERO).getNote());
             assertSame(song.getStaves().get(0), song.getStaves().get(0).getClefAtTime(Time.TIME_ZERO).getStaff());
@@ -276,10 +276,10 @@ public class XMLExporterImporterTest {
 			assertEquals(2, song.getStaves().get(0).getAtomPitches().size());
 			assertEquals(1, song.getStaves().get(1).getAtomPitches().size());
 			// MEI encodes a mRest, musicXML not, don't check atoms but atom pitches 
-		} catch (IM3Exception e) {
+		/*} catch (IM3Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
-		}
+		}*/
 		return null;
 	}
 	@Test
@@ -290,16 +290,16 @@ public class XMLExporterImporterTest {
 	
 	// ------------------------------------------------------------------------------------------	
 	private static Void assertCrossStaffMultilayer(ScoreSong song) {
-		try {
+		//try {
 			assertEquals(2, song.getStaves().size());
 			assertEquals(5, song.getStaves().get(0).getAtoms().size());
 			assertEquals(3, song.getStaves().get(0).getAtomPitches().size());
 			assertEquals(4, song.getStaves().get(1).getAtoms().size());
 			assertEquals(2, song.getStaves().get(1).getAtomPitches().size());
-		} catch (IM3Exception e) {
+		/*} catch (IM3Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
-		}
+		}*/
 		return null;
 	}
 	@Test

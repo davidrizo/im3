@@ -26,7 +26,7 @@ public class MusicXMLExporter implements ISongExporter {
     /**
      * Easier to set it fixed than compute it
      */
-    private static final Time divisions = new Time(64,1);
+    private static final Time divisions = new Time(64, 1);
 
     // some flags
     private boolean printVoiceNames;
@@ -37,19 +37,22 @@ public class MusicXMLExporter implements ISongExporter {
     /* TODO: calcado e invertido de MusicXMLSAXScoreSongImporter. ¿refactorizar esto en una clase utilidad? */
     static final HashMap<Figures, String> FIGURES = new HashMap<>();
     private static final String MIDDLE_TIE = "__middle__";
+
     // TODO MusicXML figures, ¿normalizar en MusicXMLImporter?
     static {
-        FIGURES.put(Figures.BREVE,"breve");
-        FIGURES.put(Figures.WHOLE,"whole");
-        FIGURES.put(Figures.HALF,"half");
-        FIGURES.put(Figures.QUARTER,"quarter");
-        FIGURES.put(Figures.EIGHTH,"eighth");
-        FIGURES.put(Figures.SIXTEENTH,"16th");
-        FIGURES.put(Figures.THIRTY_SECOND,"32th");
-        FIGURES.put(Figures.SIXTY_FOURTH,"64th");
-        FIGURES.put(Figures.HUNDRED_TWENTY_EIGHTH,"128th");
-        FIGURES.put(Figures.TWO_HUNDRED_FIFTY_SIX,"256th");
+        FIGURES.put(Figures.BREVE, "breve");
+        FIGURES.put(Figures.WHOLE, "whole");
+        FIGURES.put(Figures.HALF, "half");
+        FIGURES.put(Figures.QUARTER, "quarter");
+        FIGURES.put(Figures.EIGHTH, "eighth");
+        FIGURES.put(Figures.SIXTEENTH, "16th");
+        FIGURES.put(Figures.THIRTY_SECOND, "32th");
+        FIGURES.put(Figures.SIXTY_FOURTH, "64th");
+        FIGURES.put(Figures.HUNDRED_TWENTY_EIGHTH, "128th");
+        FIGURES.put(Figures.TWO_HUNDRED_FIFTY_SIX, "256th");
     }
+
+    private int backup;
 
     /**
      * @return the printRomanNumberAnalysis
@@ -60,6 +63,7 @@ public class MusicXMLExporter implements ISongExporter {
 
     /**
      * Not printed in Finale !!!
+     *
      * @param printRomanNumberAnalysis the printRomanNumberAnalysis to set
      */
     public final void setPrintRomanNumberAnalysis(boolean printRomanNumberAnalysis) {
@@ -74,10 +78,12 @@ public class MusicXMLExporter implements ISongExporter {
         this.sb = null;
         this.printVoiceNames = true;
         this.printRomanNumberAnalysis = false;
+        this.backup = 0;
     }
 
     /**
      * Constructor
+     *
      * @param printVoiceNames whether to print voice names
      */
     public MusicXMLExporter(boolean printVoiceNames) {
@@ -85,10 +91,13 @@ public class MusicXMLExporter implements ISongExporter {
         this.sb = null;
         this.printVoiceNames = printVoiceNames;
         this.printRomanNumberAnalysis = false;
+        this.backup = 0;
+
     }
 
     /**
      * Returns a name for a part given a score part
+     *
      * @param part the score part
      * @return a score part name
      */
@@ -125,6 +134,7 @@ public class MusicXMLExporter implements ISongExporter {
 
     /**
      * TODO PIERRE
+     *
      * @return
      * @throws IM3Exception
      * @throws ExportException
@@ -135,22 +145,22 @@ public class MusicXMLExporter implements ISongExporter {
         sb.append(XML);
         sb.append(PARTWISE_DOCTYPE);
         start(sb, 0, "score-partwise", "version", MUSICXML_VERSION);
-         start(sb, 1, "work");
-          startEndTextContentSingleLine(sb, 2, "work-title", scoreSong.getTitle());
-         end(sb, 1, "work");
-         start(sb, 1, "identification");
-          startEndTextContentSingleLine(sb, 2, "creator", scoreSong.getComposer(), "type", "composer");
-          start(sb, 2, "encoding");
-           startEndTextContentSingleLine(sb, 3, "software", "IM3");
+        start(sb, 1, "work");
+        startEndTextContentSingleLine(sb, 2, "work-title", scoreSong.getTitle());
+        end(sb, 1, "work");
+        start(sb, 1, "identification");
+        startEndTextContentSingleLine(sb, 2, "creator", scoreSong.getComposer(), "type", "composer");
+        start(sb, 2, "encoding");
+        startEndTextContentSingleLine(sb, 3, "software", "IM3");
 
-           // TEST Con este formato: 2016-11-15
-           DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-           startEndTextContentSingleLine(sb, 3, "encoding-date", df.format(new Date()));
-           // Should we add these 'supports' tags? (see simple1.xml)
-           startEnd(sb, 3, "supports", "element", "accidental", "type", "yes");
-           // TODO add more supports tags (or do not)
-          end(sb, 2, "encoding");
-         end(sb, 1, "identification");
+        // TEST Con este formato: 2016-11-15
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        startEndTextContentSingleLine(sb, 3, "encoding-date", df.format(new Date()));
+        // Should we add these 'supports' tags? (see simple1.xml)
+        startEnd(sb, 3, "supports", "element", "accidental", "type", "yes");
+        // TODO add more supports tags (or do not)
+        end(sb, 2, "encoding");
+        end(sb, 1, "identification");
 
          /* Currently not needed
 
@@ -171,12 +181,12 @@ public class MusicXMLExporter implements ISongExporter {
          end(sb, 1, "defaults");
     */
 
-         start(sb, 1, "credit", "page", "1");
-          startEndTextContentSingleLine(sb, 3, "credit-words", scoreSong.getTitle(),"justify","center","valign","top","font-size","24");
-         end(sb, 1, "credit");
-         start(sb, 1, "credit", "page", "1");
-        startEndTextContentSingleLine(sb, 3, "credit-words", scoreSong.getComposer(),"justify","right","valign","bottom","font-size","12");
-         end(sb, 1, "credit");
+        start(sb, 1, "credit", "page", "1");
+        startEndTextContentSingleLine(sb, 3, "credit-words", scoreSong.getTitle(), "justify", "center", "valign", "top", "font-size", "24");
+        end(sb, 1, "credit");
+        start(sb, 1, "credit", "page", "1");
+        startEndTextContentSingleLine(sb, 3, "credit-words", scoreSong.getComposer(), "justify", "right", "valign", "bottom", "font-size", "12");
+        end(sb, 1, "credit");
 
         exportPartList();
         exportParts();
@@ -188,34 +198,33 @@ public class MusicXMLExporter implements ISongExporter {
 
     /**
      * Exports the list of parts in the score
-     *
      */
     private void exportPartList() {
-        start(sb,1, "part-list");
+        start(sb, 1, "part-list");
         ArrayList<ScorePart> parts = scoreSong.getParts();
-        for (int i=0; i<parts.size(); i++) {
+        for (int i = 0; i < parts.size(); i++) {
             //ScorePart part = movement.getScorePart(i);
             ScorePart voice = parts.get(i);
             // TODO: not sure: was voice.getAtomFigures() in im2
             if (voice.getAtomFigures().size() > 0) {
-                start(sb, 2,"score-part", "id",computePartID(voice));
-                 startEndTextContentSingleLine(sb,3,"part-name",(printVoiceNames ? (voice.getName()!=null ? voice.getName() :  "Voice " + (i+1)) : ""));
-				 start(sb, 3, "score-instrument", "id",computePartID(voice)+"-"+voice.__getID());
-				 // TODO: get the real instrument for the part
-				  startEndTextContentSingleLine(sb,4,"instrument-name","Piano");
-                 end(sb,3,"score-instrument");
+                start(sb, 2, "score-part", "id", computePartID(voice));
+                startEndTextContentSingleLine(sb, 3, "part-name", (printVoiceNames ? (voice.getName() != null ? voice.getName() : "Voice " + (i + 1)) : ""));
+                start(sb, 3, "score-instrument", "id", computePartID(voice) + "-" + voice.__getID());
+                // TODO: get the real instrument for the part
+                startEndTextContentSingleLine(sb, 4, "instrument-name", "Piano");
+                end(sb, 3, "score-instrument");
                 // No MIDI stuff : channel, program, volume, pan (see simple1.xml)
                 end(sb, 2, "score-part");
             }
         }
-        end(sb,1,"part-list");
+        end(sb, 1, "part-list");
     }
 
     private void exportParts() throws IM3Exception {
         Collection<Measure> measures = scoreSong.getMeasures();
         //ScorePart part = movement.getScorePart(ip); // PIERRE: what is this??
         boolean harmoniesExported = false;
-        for (ScorePart part: scoreSong.getPartsSortedByNumberAsc()) {
+        for (ScorePart part : scoreSong.getPartsSortedByNumberAsc()) {
             /* TODO
             if (!harmoniesExported) {
                 // in order to export the harmonies, we create a PlayedNote decorator that contains the harmony. This object is
@@ -229,16 +238,22 @@ public class MusicXMLExporter implements ISongExporter {
                 harmoniesExported = true;
             } */
 
-            // part.getAtomFigures()? part.getAtomPitches()? part.getAtomsSortedByTime()?
-            if (!part. getAtomsSortedByTime().isEmpty()) {
-                start(sb, 1,"part","id",computePartID(part));
+            if (!part.isEmpty()) {
+                start(sb, 1, "part", "id", computePartID(part));
                 // TODO im2 : boolean F4Clef = part.needsF4Clef();
                 Iterator<Measure> itm = measures.iterator();
+
                 while (itm.hasNext()) {
                     Measure measure = itm.next();
                     openBar(false, measure, part);
-                    List<AtomFigure> snotes = part.getAtomFiguresWithOnsetWithin(measure.getTime(),measure.getEndTime());
-                    for (AtomFigure note: snotes) {
+
+                    Collection<ScoreLayer> layers = part.getLayers();
+                    Iterator<ScoreLayer> iterator = layers.iterator();
+                    while (iterator.hasNext()) {
+                        ScoreLayer layer = iterator.next();
+TreeSet<Atom> s;
+                        Set<AtomFigure> snotes=null;// = layer.getAtomsSortedByTimeWithin(measure);
+                        for (AtomFigure note : snotes) {
                         /* TODO: handle functional analysis
                         _HarmomyNoteDecoration hnd = (_HarmomyNoteDecoration) note.getDecoration(_HarmomyNoteDecoration.class);
                         if (hnd != null) {
@@ -280,50 +295,57 @@ public class MusicXMLExporter implements ISongExporter {
                             out.println("</harmony>");
                         } */
 
-                        // I guess im2 ScoreChord is im3 SimpleChord, im2 ScoreNote is im3 AtomPitch
-                        // We start from a note, see whether it is in a chord, then get the notes in the  chord and export them??
-                        if (note.getAtom() instanceof SimpleChord) {
-                            boolean firstInChord=true;
-                            SimpleChord chord = (SimpleChord) note.getAtom();
-                            for (ScientificPitch pitch: chord.getPitches()) {
-                                AtomFigure afigure = chord.getAtomFigure();
-                                SimpleNote snote = new SimpleNote(afigure.getFigure(), afigure.getDots(), pitch);
-                                //was im2: ScoreNote.createTempScoreNote(note.getVoice(), song.getResolution(), chord.getTime(), pitch, chord.getRhythm());
-                                exportNoteOrRest(snote, !firstInChord, chord.getParentAtom());
-                                firstInChord=false;
+                            // I guess im2 ScoreChord is im3 SimpleChord, im2 ScoreNote is im3 AtomPitch
+                            // We start from a note, see whether it is in a chord, then get the notes in the  chord and export them??
+                            if (note.getAtom() instanceof SimpleChord) {
+                                boolean firstInChord = true;
+                                SimpleChord chord = (SimpleChord) note.getAtom();
+                                for (ScientificPitch pitch : chord.getPitches()) {
+                                    AtomFigure afigure = chord.getAtomFigure();
+                                    SimpleNote snote = new SimpleNote(afigure.getFigure(), afigure.getDots(), pitch);
+                                    //was im2: ScoreNote.createTempScoreNote(note.getVoice(), song.getResolution(), chord.getTime(), pitch, chord.getRhythm());
+                                    exportNoteOrRest(snote, !firstInChord, chord.getParentAtom());
+                                    firstInChord = false;
+                                }
+                            } else {
+                                exportNoteOrRest(note.getAtom(), false, note.getAtom().getParentAtom());
                             }
-                        } else {
-                            exportNoteOrRest(note.getAtom(), false, note.getAtom().getParentAtom());
+                        }
+                        if (backup > 0) {
+                            start(sb, 3, "backup");
+                            startEndTextContentSingleLine(sb, 4, "duration", String.valueOf(backup));
+                            end(sb, 3, "backup");
                         }
                     }
 
-                    closeBar( ! itm.hasNext());
+
+                    closeBar(!itm.hasNext());
                 }
-                end(sb,1,"part");
+                end(sb, 1, "part");
             }
         }
     }
 
     private void exportNoteOrRest(Atom atom, boolean inChord, CompoundAtom tuplet) {
         boolean needsBackup = false;
-        start(sb,3,"note");
+        start(sb, 3, "note");
         if (inChord) {
-            startEnd(sb,4,"chord");
+            startEnd(sb, 4, "chord");
         }
         if (atom instanceof SimpleRest) {
-            startEnd(sb,4,"rest");
+            startEnd(sb, 4, "rest");
         } else if (atom instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) atom;
-            start(sb,5,"pitch");
+            start(sb, 5, "pitch");
             PitchClass pc = note.getPitch().getPitchClass();
-            startEndTextContentSingleLine(sb,6,"step",pc.getNoteName().toString());
+            startEndTextContentSingleLine(sb, 6, "step", pc.getNoteName().toString());
             if (pc.getAccidental() != Accidentals.NATURAL)
-                startEndTextContentSingleLine(sb,6,"alter",String.valueOf(pc.getAccidental().getAlteration()));
-            startEndTextContentSingleLine(sb,6,"octave",String.valueOf(note.getPitch().getOctave()));
-            end(sb,5,"pitch");
+                startEndTextContentSingleLine(sb, 6, "alter", String.valueOf(pc.getAccidental().getAlteration()));
+            startEndTextContentSingleLine(sb, 6, "octave", String.valueOf(note.getPitch().getOctave()));
+            end(sb, 5, "pitch");
         } /* TODO else { what else? } */
 
-        startEndTextContentSingleLine(sb,5,"duration",String.valueOf(atom.getDuration().multiplyBy(divisions).intValue()));
+        startEndTextContentSingleLine(sb, 5, "duration", String.valueOf(atom.getDuration().multiplyBy(divisions).intValue()));
         /* In im2 it was computed like this:
         double duration=64.0*atom.getFigure().getRatio();
         double durwithdots = duration;
@@ -335,103 +357,107 @@ public class MusicXMLExporter implements ISongExporter {
         if (atom instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) atom;
             if (note.getAtomPitch().getTiedFromPrevious() != null) {
-                startEnd(sb,5,"tie","type","stop");
+                startEnd(sb, 5, "tie", "type", "stop");
             }
 
             if (note.getAtomPitch().getTiedToNext() != null) {
-                startEnd(sb,5,"tie","type","start");
+                startEnd(sb, 5, "tie", "type", "start");
             }
         }
 
-        startEndTextContentSingleLine(sb,5,"voice",String.valueOf(atom.getLayer().getNumber()));
+        startEndTextContentSingleLine(sb, 5, "voice", String.valueOf(atom.getLayer().getNumber()));
         if (atom.getLayer() != lastVoice) {
-            needsBackup = true;
+            backup += atom.getDuration().multiplyBy(divisions).intValue();
         }
-        lastVoice = atom.getLayer();
+        lastVoice = atom.getLayer(); // TODO: esto va aquí? Hmmm...
 
         if (atom instanceof SingleFigureAtom) {
             SingleFigureAtom sfa = (SingleFigureAtom) atom;
-            startEndTextContentSingleLine(sb,5,"type",FIGURES.get(sfa.getAtomFigure().getFigure()));
-            for (int idts=0; idts<sfa.getAtomFigure().getDots(); idts++) {
-                startEnd(sb,5,"dot");
+            startEndTextContentSingleLine(sb, 5, "type", FIGURES.get(sfa.getAtomFigure().getFigure()));
+            for (int idts = 0; idts < sfa.getAtomFigure().getDots(); idts++) {
+                startEnd(sb, 5, "dot");
             }
         }
 
 
         if (atom.getStaff() != null) {
-            startEndTextContentSingleLine(sb,5,"staff",String.valueOf(atom.getStaff().getNumberIdentifier()));
+            startEndTextContentSingleLine(sb, 5, "staff", String.valueOf(atom.getStaff().getNumberIdentifier()));
         }
 
         if (tuplet instanceof SimpleTuplet) {
             SimpleTuplet simpleTuplet = (SimpleTuplet) tuplet;
-            start(sb,5,"time-modification");
-            startEndTextContentSingleLine(sb,6,"actual-notes",String.valueOf(simpleTuplet.getCardinality()));
-            startEndTextContentSingleLine(sb,6,"normal-notes",String.valueOf(simpleTuplet.getInSpaceOfAtoms()));
-            end(sb,5,"time-modification");
+            start(sb, 5, "time-modification");
+            startEndTextContentSingleLine(sb, 6, "actual-notes", String.valueOf(simpleTuplet.getCardinality()));
+            startEndTextContentSingleLine(sb, 6, "normal-notes", String.valueOf(simpleTuplet.getInSpaceOfAtoms()));
+            end(sb, 5, "time-modification");
         }
 
         if (atom instanceof SimpleNote) {
             AtomPitch note = ((SimpleNote) atom).getAtomPitch();
 
             if (note.getLyrics() != null) {
-                for (Map.Entry<Integer, ScoreLyric> entry: note.getLyrics().entrySet()) {
-                    start(sb,5,"lyric","number",String.valueOf(entry.getKey()));
-                    startEndTextContentSingleLine(sb,6,"syllabic","single");
-                    startEndTextContentSingleLine(sb,6,"text",entry.getValue().getText());
-                    end(sb,5,"lyric");
+                for (Map.Entry<Integer, ScoreLyric> entry : note.getLyrics().entrySet()) {
+                    start(sb, 5, "lyric", "number", String.valueOf(entry.getKey()));
+                    startEndTextContentSingleLine(sb, 6, "syllabic", "single");
+                    startEndTextContentSingleLine(sb, 6, "text", entry.getValue().getText());
+                    end(sb, 5, "lyric");
                 }
             }
         }
 
-        end(sb,3,"note");
+        end(sb, 3, "note");
 
+        /*
         if (needsBackup) {
             start(sb,3,"backup");
             startEndTextContentSingleLine(sb,4,"duration",String.valueOf(atom.getDuration().multiplyBy(divisions).intValue()));
             end(sb,3,"backup");
-        }
+        }*/
     }
 
     /**
-         * @param useFClef
-         * @param measure
-         * @param part
-         * @throws IM3Exception
-         */
-        private void openBar(boolean useFClef, Measure measure, ScorePart part) throws IM3Exception {
-            start(sb, 2,"measure","number",measure.getNumber().toString());
-             start(sb,3,"attributes");
-                //int divisions = (int) ((double)ts.getNumerator() / (double)song.findMinimumFigure(bar).getRatio()); //TODO Ver qu� pasa con compases compuestos
-                startEndTextContentSingleLine(sb,4,"divisions", String.valueOf(divisions.intValue()));
+     * @param useFClef
+     * @param measure
+     * @param part
+     * @throws IM3Exception
+     */
+    private void openBar(boolean useFClef, Measure measure, ScorePart part) throws IM3Exception {
+        // reset backup
+        backup = 0;
 
-            // ks was KeySignature in im2, I think it is Key in im3 (not KeySignature)
-            Key ks = scoreSong.getUniqueKeyWithOnset(measure.getTime());
-            if (ks != null) {
-                start(sb, 4, "key");
-                startEndTextContentSingleLine(sb,5,"fifths",String.valueOf(ks.getFifths()));
-                startEndTextContentSingleLine(sb,5,"mode",ks.getMode() == Mode.MAJOR ? "major" : "minor");
-                end(sb,4,"key");
+        start(sb, 2, "measure", "number", measure.getNumber().toString());
+        start(sb, 3, "attributes");
+        //int divisions = (int) ((double)ts.getNumerator() / (double)song.findMinimumFigure(bar).getRatio()); //TODO Ver qu� pasa con compases compuestos
+        startEndTextContentSingleLine(sb, 4, "divisions", String.valueOf(divisions.intValue()));
+
+        // ks was KeySignature in im2, I think it is Key in im3 (not KeySignature)
+        Key ks = scoreSong.getUniqueKeyWithOnset(measure.getTime());
+        if (ks != null) {
+            start(sb, 4, "key");
+            startEndTextContentSingleLine(sb, 5, "fifths", String.valueOf(ks.getFifths()));
+            startEndTextContentSingleLine(sb, 5, "mode", ks.getMode() == Mode.MAJOR ? "major" : "minor");
+            end(sb, 4, "key");
 
 
-            }
+        }
 
-            TimeSignature ts = scoreSong.getUniqueMeterWithOnset(measure.getTime());
-            // TODO: Only modern notation time signatures, for now
-            if (ts instanceof FractionalTimeSignature) {
-                FractionalTimeSignature fts = (FractionalTimeSignature) ts;
-                start(sb,4,"time");
-                startEndTextContentSingleLine(sb,5,"beats", String.valueOf(fts.getNumerator()));
-                startEndTextContentSingleLine(sb,5,"beat-type",String.valueOf(fts.getDenominator()));
-                end(sb,4,"time");
+        TimeSignature ts = scoreSong.getUniqueMeterWithOnset(measure.getTime());
+        // TODO: Only modern notation time signatures, for now
+        if (ts instanceof FractionalTimeSignature) {
+            FractionalTimeSignature fts = (FractionalTimeSignature) ts;
+            start(sb, 4, "time");
+            startEndTextContentSingleLine(sb, 5, "beats", String.valueOf(fts.getNumerator()));
+            startEndTextContentSingleLine(sb, 5, "beat-type", String.valueOf(fts.getDenominator()));
+            end(sb, 4, "time");
 
             // staves
             List<Staff> staves = part.getStaves();
-            startEndTextContentSingleLine(sb,4,"staves",String.valueOf(staves.size()));
-            for (Staff s: part.getStaves()) {
-                start(sb,4,"clef","number",String.valueOf(s.getNumberIdentifier()));
-                startEndTextContentSingleLine(sb,5,"sign", s.getRunningClefAt(measure.getTime()).getNote().toString());
-                startEndTextContentSingleLine(sb,5,"line",String.valueOf(s.getRunningClefAt(measure.getTime()).getLine()));
-                end(sb,4,"clef");
+            startEndTextContentSingleLine(sb, 4, "staves", String.valueOf(staves.size()));
+            for (Staff s : part.getStaves()) {
+                start(sb, 4, "clef", "number", String.valueOf(s.getNumberIdentifier()));
+                startEndTextContentSingleLine(sb, 5, "sign", s.getRunningClefAt(measure.getTime()).getNote().toString());
+                startEndTextContentSingleLine(sb, 5, "line", String.valueOf(s.getRunningClefAt(measure.getTime()).getLine()));
+                end(sb, 4, "clef");
             }
 
 
@@ -444,23 +470,23 @@ public class MusicXMLExporter implements ISongExporter {
 				out.println("<line>2</line>");
 			}
 			out.println("</clef>");		*/ //TODO Revisar
-            }
-            end(sb,3,"attributes");
-
         }
+        end(sb, 3, "attributes");
 
-        private void closeBar(boolean lastMeasure) {
-            if (lastMeasure) {
-                // <barline location="right">
-                // <bar-style>light-heavy</bar-style>
-                // </barline>
+    }
 
-                start(sb, 3,"barline", "location", "right");
-                startEndTextContentSingleLine(sb,4,"bar-style","light-heavy");
-                end(sb,3,"barline");
-            }
-            end(sb,2,"measure");
+    private void closeBar(boolean lastMeasure) {
+        if (lastMeasure) {
+            // <barline location="right">
+            // <bar-style>light-heavy</bar-style>
+            // </barline>
+
+            start(sb, 3, "barline", "location", "right");
+            startEndTextContentSingleLine(sb, 4, "bar-style", "light-heavy");
+            end(sb, 3, "barline");
         }
+        end(sb, 2, "measure");
+    }
 
 
 }
