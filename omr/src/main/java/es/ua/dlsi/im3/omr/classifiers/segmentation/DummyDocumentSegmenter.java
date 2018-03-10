@@ -15,16 +15,14 @@ import java.util.List;
 public class DummyDocumentSegmenter implements IDocumentSegmenter {
 
     @Override
-    public List<Page> segment(URL imageFile) {
-        Page page = new Page(imageFile.getFile());
-        page.add(new Region(RegionType.title, 1630, 47, 2122, 118));
-        page.add(new Region(RegionType.title, 2520, 28, 2642, 130));
-        page.add(new Region(RegionType.staff, 1627, 151, 2960, 300));
-        page.add(new Region(RegionType.lyrics, 1627, 322, 2960, 446));
-        page.add(new Region(RegionType.staff, 1595, 455, 3006, 629));
-        page.add(new Region(RegionType.lyrics, 1595, 723, 3006, 723));
-        ArrayList<Page> result = new ArrayList<>();
-        result.add(page);
+    public List<Region> segment(URL imageFile) {
+        ArrayList<Region> result = new ArrayList<>();
+        result.add(new Region(RegionType.title, 1630, 47, 2122, 118));
+        result.add(new Region(RegionType.title, 2520, 28, 2642, 130));
+        result.add(new Region(RegionType.staff, 1627, 151, 2960, 300));
+        result.add(new Region(RegionType.lyrics, 1627, 322, 2960, 446));
+        result.add(new Region(RegionType.staff, 1595, 455, 3006, 629));
+        result.add(new Region(RegionType.lyrics, 1595, 723, 3006, 723));
         return result;
     }
 }

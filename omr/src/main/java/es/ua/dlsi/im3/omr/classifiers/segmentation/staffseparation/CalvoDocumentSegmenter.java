@@ -27,7 +27,7 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
 
     private static boolean libraryLoaded = false;
 
-    public CalvoDocumentSegmenter() throws NoSuchFieldException {
+    public CalvoDocumentSegmenter()  {
         synchronized (PageSplitting.class) {
             if (!libraryLoaded) {
                 // OpenCV 3.2 Resources downloaded from http://www.magicandlove.com/blog/2017/03/02/opencv-3-2-java-build/
@@ -52,36 +52,56 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
         if (score.empty()) {
             throw new IM3Exception("Empty image: " + filename);
         } else {
-            Logger.getLogger(CalvoDocumentSegmenter.class.getName()).log(Level.INFO, "Image {0} loaded with {1} columns and {2} rows", new Object[] {filename, score.cols(), score.rows()});
+            Logger.getLogger(CalvoDocumentSegmenter.class.getName()).log(Level.INFO, "Image {0} loaded with {1} columns and {2} rows", new Object[] {filename, score.width(), score.height()});
         }
         return score;
     }
 
     @Override
-    public List<Page> segment(URL imageFile) throws IM3Exception {
+    public List<Region> segment(URL imageFile) throws IM3Exception {
         // first split into pages
         PageSplitting pageSplitting = new PageSplitting();
         Mat score = readImage(imageFile.getFile());
 
-        Mat [] matPages = pageSplitting.splitIntoPages(score);
-        List<Page> result = new ArrayList<>();
+        int pageDivisionPoint = pageSplitting.run(score);
+        List<Region> result = new ArrayList<>();
 
-        Logger.getLogger(CalvoDocumentSegmenter.class.getName()).log(Level.INFO, "Found {0} pages", matPages.length);
+        if (pageDivisionPoint == 0 || pageDivisionPoint >= score.width()-1) {
+            Logger.getLogger(CalvoDocumentSegmenter.class.getName()).log(Level.INFO, "Found 1 page");
 
-        for (Mat matPage: matPages) {
-            StaffSplitting staffSplitting = new StaffSplitting();
-            List<Integer> divisionPoints = staffSplitting.run(matPage);
+            fillRegions(result, score, 0, score.cols());
 
-            Page page = new Page(imageFile.getFile()); //TODO Relative file name
-            result.add(page);
-            // TODO: 10/3/18 Guardar región de la página - está modelado como si cada página fuera un solo fichero y no es así
-            for (Integer divisionPoint: divisionPoints) {
-                Region region = new Region(RegionType.staff, 0,0,0,0); //TODO valores de divisionPoints...
-                page.add(region);
-            }
+        } else {
+            Logger.getLogger(CalvoDocumentSegmenter.class.getName()).log(Level.INFO, "Found 2 pages, division point at col {0}", pageDivisionPoint);
+            fillRegions(result, score, 0, pageDivisionPoint);
+            fillRegions(result, score, pageDivisionPoint, score.cols());
         }
 
         return result;
+    }
+
+    int i=0;
+    /**
+     *
+     * @param result
+     * @param score
+     * @param fromCol
+     * @param toCol Not incuded
+     */
+    private void fillRegions(List<Region> result, Mat score, int fromCol, int toCol) {
+        StaffSplitting staffSplitting = new StaffSplitting();
+        Mat subscore = score.colRange(fromCol, toCol);
+        List<Integer> divisionPoints = staffSplitting.run(score);
+
+        int lastDivisionPoint = 0;
+        for (Integer divisionPoint: divisionPoints) {
+            Region region = new Region(RegionType.staff, fromCol, lastDivisionPoint, toCol, divisionPoint);
+            result.add(region);
+            lastDivisionPoint = divisionPoint;
+
+            /*Mat write = score.rowRange(divisionPoint)
+            Imgcodecs.imwrite("/tmp/region_" + i + ".jpg", write)*/
+        }
     }
 
     public static final void main(String [] args) throws Exception {

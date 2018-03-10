@@ -11,5 +11,5 @@ import java.util.List;
  * It splits the documento in pages, and in turn each page into regions that will contain different types of content (title, staves...)
  */
 public interface IDocumentSegmenter {
-    List<Page> segment(URL imageFile) throws IM3Exception;
+    List<Region> segment(URL imageFile) throws IM3Exception;
 }

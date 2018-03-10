@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.model.pojo;
 
 import java.util.*;
 
+//TODO LLamarlo ImageFile
 public class Page {
     String imageRelativeFileName;
     //TODO ¿Diferencia entre region y staff?
