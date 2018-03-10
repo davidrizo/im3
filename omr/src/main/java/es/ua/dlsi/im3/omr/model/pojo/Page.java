@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Page {
     String imageRelativeFileName;
+    //TODO ¿Diferencia entre region y staff?
     List<Staff> staves;
     int order;
     Set<Instrument> instruments;
@@ -70,5 +71,9 @@ public class Page {
     public int hashCode() {
 
         return Objects.hash(imageRelativeFileName);
+    }
+
+    public void add(Region region) {
+        regions.add(region);
     }
 }

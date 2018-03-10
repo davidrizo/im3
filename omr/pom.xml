@@ -17,6 +17,12 @@
             <name>jcenter</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
+
+        <repository>
+            <id>in-project</id>
+            <name>In Project Repo</name>
+            <url>file://${project.basedir}/libs</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -66,7 +72,14 @@
             <artifactId>gm4java</artifactId>
             <version>1.1.1</version>
         </dependency>
-        
+
+        <!-- Document / staff separation. This library loads the native dynamic libraries as well -->
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>3.2.0-1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
