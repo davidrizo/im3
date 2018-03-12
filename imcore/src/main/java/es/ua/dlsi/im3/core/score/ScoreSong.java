@@ -1718,5 +1718,4 @@ public class ScoreSong {
             }
         }
     }
-
 }
