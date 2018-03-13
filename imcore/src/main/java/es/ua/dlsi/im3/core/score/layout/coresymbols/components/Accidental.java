@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
@@ -31,7 +32,7 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
         super(accidental, parent, position);
         this.accidental = accidental;
 
-        pictogram = new Pictogram("ACC", layoutFont, getUnicode(), position); //TODO IDS
+        pictogram = new Pictogram(InteractionElementType.accidental, layoutFont, getUnicode(), position); //TODO IDS
     }
 
     private String getUnicode() {

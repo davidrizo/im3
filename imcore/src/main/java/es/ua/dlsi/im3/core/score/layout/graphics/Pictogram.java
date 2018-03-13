@@ -6,10 +6,13 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -42,8 +45,8 @@ public class Pictogram extends GraphicsElement {
 
     LayoutFont layoutFont;
 
-    public Pictogram(String ID, LayoutFont layoutFont, String codepoint, Coordinate position) throws IM3Exception {
-        super(ID);
+    public Pictogram(InteractionElementType interactionElementType, LayoutFont layoutFont, String codepoint, Coordinate position) throws IM3Exception {
+        super(interactionElementType);
         this.codepoint = codepoint;
         this.layoutFont = layoutFont;
         this.position = position;
@@ -107,6 +110,11 @@ public class Pictogram extends GraphicsElement {
             throw new GUIException(e);
         }
         return path;
+    }
+
+    @Override
+    public void setJavaFXColor(Color color) {
+        path.setFill(color);
     }
 
     @Override

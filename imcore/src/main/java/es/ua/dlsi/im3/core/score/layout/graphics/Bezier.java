@@ -4,8 +4,10 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
@@ -26,13 +28,21 @@ public class Bezier extends Shape {
     Coordinate from;
     Coordinate to;
     Coordinate middleInnerPoint;
+    private CubicCurve javaFXCubicCurve;
 
-    public Bezier(String ID, Coordinate from, Coordinate controlPointFrom, Coordinate controlPointTo, Coordinate to) {
-        super(ID);
+    public Bezier(InteractionElementType interactionElementType, Coordinate from, Coordinate controlPointFrom, Coordinate controlPointTo, Coordinate to) {
+        super(interactionElementType);
         this.from = from;
         this.to = to;
         this.controlPointFrom = controlPointFrom;
         this.controlPointTo = controlPointTo;
+        initJavaFX();
+    }
+
+    private void initJavaFX() {
+        javaFXCubicCurve = new CubicCurve();
+        javaFXCubicCurve.setFill(Color.TRANSPARENT);
+        javaFXCubicCurve.setStroke(Color.BLACK);
     }
 
     @Override
@@ -96,13 +106,26 @@ public class Bezier extends Shape {
     @Override
     public Node getJavaFXRoot() throws ExportException {
         try {
-            CubicCurve cubicCurve = new CubicCurve(from.getAbsoluteX(), from.getAbsoluteY(), controlPointFrom.getAbsoluteY(), controlPointFrom.getAbsoluteY(),
-                    controlPointTo.getAbsoluteX(), controlPointTo.getAbsoluteY(), to.getAbsoluteX(), to.getAbsoluteY());
-            cubicCurve.setFill(Color.TRANSPARENT);
-            return cubicCurve;
+            javaFXCubicCurve.setStartX(from.getAbsoluteX());
+            javaFXCubicCurve.setStartY(from.getAbsoluteY());
+            javaFXCubicCurve.setControlX1(controlPointFrom.getAbsoluteX());
+            javaFXCubicCurve.setControlY1(controlPointFrom.getAbsoluteY());
+            javaFXCubicCurve.setControlX2(controlPointTo.getAbsoluteX());
+            javaFXCubicCurve.setControlY2(controlPointTo.getAbsoluteY());
+            javaFXCubicCurve.setEndX(to.getAbsoluteX());
+            javaFXCubicCurve.setEndY(to.getAbsoluteY());
+            /*from.getAbsoluteX(), from.getAbsoluteY(), controlPointFrom.getAbsoluteY(), controlPointFrom.getAbsoluteY(),
+                    controlPointTo.getAbsoluteX(), controlPointTo.getAbsoluteY(), to.getAbsoluteX(), to.getAbsoluteY()*/
         } catch (IM3Exception e) {
             throw new ExportException(e);
         }
+
+        return javaFXCubicCurve;
+    }
+
+    @Override
+    public void setJavaFXColor(Color color) {
+        javaFXCubicCurve.setStroke(color);
     }
 
     @Override

@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.score.PositionAboveBelow;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
@@ -28,7 +29,7 @@ public class LedgerLines extends Component<LayoutStaff> {
     public LedgerLines(LayoutStaff parent, Coordinate position, double noteHeadWidth, PositionAboveBelow positionAboveBelow, int numberOfLines) {
         super(null, parent, position);
         this.noteHeadWidth = noteHeadWidth;
-        group = new Group("G_LEDGER_LINES_");//TODO IDS
+        group = new Group(InteractionElementType.ledgerLines);
         ensure(numberOfLines, positionAboveBelow);
     }
 

@@ -25,7 +25,7 @@ public class LayoutCoreSignTimeSignature extends LayoutCoreTimeSignature<SignTim
 
     public LayoutCoreSignTimeSignature(LayoutFont layoutFont, SignTimeSignature coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
-        pictogram = new Pictogram("TS-", layoutFont, getUnicode(), position);//TODO IDS
+        pictogram = new Pictogram(InteractionElementType.signTimeSignature, layoutFont, getUnicode(), position);//TODO IDS
 
     }
 

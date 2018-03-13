@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols.connectors;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.layout.*;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreBarline;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -38,7 +39,7 @@ public class LayoutDashedBarlineAcrossStaves extends LayoutConnector {
     }
 
     private void init(Coordinate from, Coordinate to) throws IM3Exception {
-        line = new Line("DASHED-", from, to); //TODO ID
+        line = new Line(InteractionElementType.barlineAcrossStaves, from, to); //TODO ID
         line.setStrokeType(StrokeType.eDashed);
     }
 

@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
@@ -22,7 +23,7 @@ public class LayoutScoreLyric extends Component<NotePitch> {
      */
     public LayoutScoreLyric(NotePitch parent, LayoutFont layoutFont, Coordinate position) {
         super(null, parent, position);
-        group = new Group("LYRICS-"); //TODO ID
+        group = new Group(InteractionElementType.lyrics);
         if (parent.getAtomPitch().getLyrics() != null) {
             lyrics = new ArrayList<>();
             for (ScoreLyric lyrics : parent.getAtomPitch().getLyrics().values()) {
@@ -32,7 +33,7 @@ public class LayoutScoreLyric extends Component<NotePitch> {
                 Coordinate coordinate = new Coordinate(
                         position.getX(),
                         new CoordinateComponent(position.getY(), y));
-                Text text = new Text("LYR-", layoutFont, lyrics.getText(), coordinate); //TODO ID
+                Text text = new Text(InteractionElementType.lyric, layoutFont, lyrics.getText(), coordinate); //TODO ID
                 group.add(text);
             }
         }

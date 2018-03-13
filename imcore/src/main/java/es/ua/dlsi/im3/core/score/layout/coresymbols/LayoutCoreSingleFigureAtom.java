@@ -25,7 +25,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
     public LayoutCoreSingleFigureAtom(LayoutFont layoutFont, SingleFigureAtom coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
 
-        group = new Group("SINGLE_FIG_"); //TODO IDS
+        group = new Group(InteractionElementType.singleFigureAtom);
 
         notePitches = new ArrayList<>();
 
@@ -189,6 +189,4 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         }
         //return position;
     }
-
-
 }

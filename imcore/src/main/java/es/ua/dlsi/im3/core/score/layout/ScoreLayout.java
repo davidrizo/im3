@@ -107,7 +107,7 @@ public abstract class ScoreLayout {
     }
 
     private void initWidths(Staff staff, LayoutFont layoutFont) throws IM3Exception {
-        Pictogram noteHead = new Pictogram("_NHWC_", layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
+        Pictogram noteHead = new Pictogram(InteractionElementType.none, layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
                 new Coordinate(new CoordinateComponent(0),
                         new CoordinateComponent(0)
                 ));

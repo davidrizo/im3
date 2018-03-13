@@ -47,7 +47,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
 
         atomPitch = pitch;
 
-        root = new Group("NOTE-HEAD-G-"); //TODO IDS
+        root = new Group(InteractionElementType.notePitch); //TODO IDS
 
         ScientificPitch scientificPitch =  pitch.getScientificPitch();
         int ndots = pitch.getAtomFigure().getDots();
@@ -63,7 +63,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
                 new CoordinateComponent(position.getX()),
                 null
         );
-        noteHeadPictogram = new Pictogram("NOTE-HEAD-", layoutFont, getUnicode(), noteHeadPosition); //TODO IDS
+        noteHeadPictogram = new Pictogram(InteractionElementType.noteHead, layoutFont, getUnicode(), noteHeadPosition); //TODO IDS
         root.getChildren().add(noteHeadPictogram);
 
         if (ndots > 0) {
@@ -151,7 +151,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     public void useHeadWithoutFlag() throws IM3Exception {
         boolean stemUp = parent.isStemUp();
 
-        Pictogram newNoteHeadPictogram = new Pictogram(noteHeadPictogram.getID(), layoutFont,
+        Pictogram newNoteHeadPictogram = new Pictogram(noteHeadPictogram.getInteractionElementType(), layoutFont, //TODO ID
                 layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp),
                 noteHeadPictogram.getPosition());
 

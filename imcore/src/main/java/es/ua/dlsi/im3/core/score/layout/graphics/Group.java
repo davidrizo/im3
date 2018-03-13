@@ -5,15 +5,19 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -22,10 +26,12 @@ import java.util.List;
  */
 public class Group extends GraphicsElement {
     List<GraphicsElement> children;
+    HashMap<GraphicsElement, Node> javaFXNodes;
 
-    public Group(String id) {
-        super(id);
+    public Group(InteractionElementType interactionElementType) {
+        super(interactionElementType);
         this.children = new ArrayList<>();
+        this.javaFXNodes = new HashMap<>();
     }
 
     public void add(GraphicsElement element) {
@@ -75,6 +81,8 @@ public class Group extends GraphicsElement {
             Node node = null;
             try {
                 node = child.getJavaFXRoot();
+                node.setId(child.getID());
+                this.javaFXNodes.put(child, node);
             } catch (ExportException e) {
                 throw new GUIException(e);
             }
@@ -83,6 +91,17 @@ public class Group extends GraphicsElement {
             }
         }
         return group;
+    }
+
+    public HashMap<GraphicsElement, Node> getJavaFXNodes() {
+        return javaFXNodes;
+    }
+
+    @Override
+    public void setJavaFXColor(Color color) {
+        for (GraphicsElement child: children) {
+            child.setJavaFXColor(color);
+        }
     }
 
 

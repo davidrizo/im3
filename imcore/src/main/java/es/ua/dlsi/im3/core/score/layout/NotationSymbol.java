@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.IUniqueIDObject;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
@@ -10,9 +11,10 @@ import java.util.Collection;
 /**
  * @author drizo
  */
-public abstract class NotationSymbol {
+public abstract class NotationSymbol implements IUniqueIDObject {
     protected boolean hidden;
     protected Coordinate position;
+    private String ID;
 
     public abstract GraphicsElement getGraphics();
 
@@ -48,4 +50,18 @@ public abstract class NotationSymbol {
         position.setDisplacementX(position.getX().getDisplacement()+offset);
     }
 
+    @Override
+    public String __getID() {
+        return ID;
+    }
+
+    @Override
+    public void __setID(String id) {
+        this.ID = ID;
+    }
+
+    @Override
+    public String __getIDPrefix() {
+        return this.getClass().getName();
+    }
 }

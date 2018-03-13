@@ -15,7 +15,7 @@ public class LayoutCoreFractionalTimeSignature extends LayoutCoreTimeSignature<F
 
     public LayoutCoreFractionalTimeSignature(LayoutFont layoutFont, FractionalTimeSignature coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
-        group = new Group("FRAC_TIME_SIG");//TODO IDS
+        group = new Group(InteractionElementType.fractionalTimeSignature);
 
         //TODO Igual que Barline - que valga para percusión
         Coordinate numeratorPosition = new Coordinate(position.getX(), null);

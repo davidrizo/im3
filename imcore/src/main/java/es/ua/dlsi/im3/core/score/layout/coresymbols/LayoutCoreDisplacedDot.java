@@ -18,7 +18,7 @@ public class LayoutCoreDisplacedDot extends LayoutAttachmentInStaff<DisplacedDot
     public LayoutCoreDisplacedDot(LayoutFont layoutFont, DisplacedDot coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
         //TODO ¿Este codepoint igual que un puntillo normal?
-        pictogram = new Pictogram("DOT-", layoutFont, "augmentationDot", position);//TODO IDS
+        pictogram = new Pictogram(InteractionElementType.dot, layoutFont, "augmentationDot", position);//TODO IDS
     }
 
     @Override

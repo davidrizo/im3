@@ -17,7 +17,7 @@ public class LayoutCoreStaffTimedPlaceHolder extends LayoutCoreSymbolInStaff<Sta
         super(layoutFont, coreSymbol);
         Coordinate from = position;
         Coordinate to = position; // empty
-        line = new Line("", from, to);
+        line = new Line(InteractionElementType.staffTimePlaceHolder, from, to);
     }
 
     @Override

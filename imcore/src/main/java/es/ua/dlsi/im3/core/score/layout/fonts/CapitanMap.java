@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Figures;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 
@@ -71,7 +72,7 @@ public class CapitanMap implements IFontMap {
 
     @Override
     public GraphicsElement createBeam(String ID, Coordinate fromPosition, Coordinate toPosition) {
-        Line line = new Line(ID, fromPosition, toPosition);
+        Line line = new Line(InteractionElementType.beam, fromPosition, toPosition);
         line.setThickness(3); //TODO Una pequeña curva
         return line;
     }

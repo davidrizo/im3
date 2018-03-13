@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.BeamGroup;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
@@ -26,7 +27,7 @@ public class LayoutBeamGroup {
      * Create the beams between the notes
      */
     public void createBeams() throws IM3Exception {
-        group = new Group("BEAM-"); //TODO ID
+        group = new Group(InteractionElementType.beam);
         // TODO: 1/10/17 Importante !!! No funciona con grupos de varias duraciones
         Integer flags = null;
         for (LayoutCoreSymbol coreSymbol: this.layoutCoreSingleFigureAtoms) {

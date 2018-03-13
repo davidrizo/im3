@@ -26,7 +26,7 @@ public class LayoutPageBreak extends LayoutCoreSymbol<PageBreak> {
         from = new Coordinate(position.getX(), null);
         to = new Coordinate(position.getX(), null);
 
-        line = new Line("SB-", from, to);//TODO IDS
+        line = new Line(InteractionElementType.systemBreak, from, to);
         line.setHidden(true);
     }
 

@@ -28,7 +28,7 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
     }
 
     private void createAccidentals(LayoutFont layoutFont) throws IM3Exception {
-        group = new Group("KEYSIG-"); //TODO IDS
+        group = new Group(InteractionElementType.keySignature);
         accidentals = new ArrayList<>();
         /*
         int previousNoteOrder = 0;

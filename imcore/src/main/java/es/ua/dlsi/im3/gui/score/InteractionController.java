@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.gui.score;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.List;
  * @autor drizo
  */
 public class InteractionController {
-    HashMap<EventType, List<IScoreSongViewEventSubscriptor>> eventSubscriptors;
+    HashMap<EventType, HashMap<InteractionElementType, List<IScoreSongViewEventSubscriptor>>> eventSubscriptors;
 
     HashMap<String, GraphicsElement> layoutElementsByID;
 
@@ -19,14 +20,15 @@ public class InteractionController {
         this.layoutElementsByID = new HashMap<>();
         eventSubscriptors = new HashMap<>();
         for (EventType event: EventType.values()) {
-            eventSubscriptors.put(event, new LinkedList());
+            HashMap<InteractionElementType, List<IScoreSongViewEventSubscriptor>> map = new HashMap<>();
+            for (InteractionElementType interactionElementType: InteractionElementType.values()) {
+                map.put(interactionElementType, new LinkedList<>());
+            }
+            eventSubscriptors.put(event, map);
         }
     }
 
     public void register(GraphicsElement graphicsElement) throws IM3Exception {
-        if (graphicsElement.getID() == null) {
-            throw new IM3Exception("The graphics element " + graphicsElement + " has not an ID");
-        }
         layoutElementsByID.put(graphicsElement.getID(), graphicsElement);
     }
 
@@ -39,13 +41,16 @@ public class InteractionController {
         return layoutElementsByID.get(ID);
     }
 
-    public void subscribe(EventType eventType, IScoreSongViewEventSubscriptor subscriptor) {
-        eventSubscriptors.get(eventType).add(subscriptor);
+    public void subscribe(IScoreSongViewEventSubscriptor subscriptor, EventType eventType, InteractionElementType ... interactionElementTypes) {
+        for (InteractionElementType interactionElementType: interactionElementTypes) {
+            eventSubscriptors.get(eventType).get(interactionElementType).add(subscriptor);
+        }
     }
 
-
-    public void unsubscribe(EventType eventType, IScoreSongViewEventSubscriptor subscriptor) {
-        eventSubscriptors.get(eventType).remove(subscriptor);
+    public void unsubscribe(IScoreSongViewEventSubscriptor subscriptor, EventType eventType, InteractionElementType ... interactionElementTypes) {
+        for (InteractionElementType interactionElementType: interactionElementTypes) {
+            eventSubscriptors.get(eventType).get(interactionElementType).remove(subscriptor);
+        }
     }
 
     public void handleEvent(EventType eventType, String ID) throws IM3Exception {
@@ -54,10 +59,10 @@ public class InteractionController {
             throw new IM3Exception("No graphics element with ID " + ID);
         }
 
-        for (IScoreSongViewEventSubscriptor subscriptor: eventSubscriptors.get(eventType)) {
+        InteractionElementType interactionElementType = graphicsElement.getInteractionElementType();
+
+        for (IScoreSongViewEventSubscriptor subscriptor: eventSubscriptors.get(eventType).get(interactionElementType)) {
             subscriptor.onEvent(eventType, graphicsElement);
         }
     }
-
-
 }

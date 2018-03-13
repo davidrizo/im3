@@ -16,7 +16,7 @@ public class LayoutCoreClef extends LayoutCoreSymbolInStaff<Clef> {
         super(layoutFont, clef);
 
         //position.setY(layoutStaff.getYAtLine(coreSymbol.getLine()));
-        pictogram = new Pictogram("CLEF-", layoutFont, getUnicode(), position);//TODO IDS
+        pictogram = new Pictogram(InteractionElementType.clef, layoutFont, getUnicode(), position);//TODO IDS
     }
 
     @Override

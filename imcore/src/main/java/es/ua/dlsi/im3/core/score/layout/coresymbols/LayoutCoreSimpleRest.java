@@ -46,7 +46,7 @@ public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRes
             position.getX(),
             null
         );
-        pictogram = new Pictogram("REST-", layoutFont, getUnicode(), restPosition);//TODO IDS
+        pictogram = new Pictogram(InteractionElementType.rest, layoutFont, getUnicode(), restPosition);//TODO IDS
     }
 
     @Override

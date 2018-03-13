@@ -30,7 +30,7 @@ public class LayoutCoreBarline extends LayoutCoreSymbol<Measure>  {
         from = new Coordinate(position.getX(), null);
         to = new Coordinate(position.getX(), null);
 
-        line = new Line("BARLINE-", from, to);//TODO IDS
+        line = new Line(InteractionElementType.barline, from, to);//TODO IDS
 
     }
 

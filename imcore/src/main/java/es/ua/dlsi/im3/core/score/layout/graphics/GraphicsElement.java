@@ -1,18 +1,34 @@
 package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.score.IUniqueIDObject;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
+import javafx.scene.paint.Color;
 import org.apache.pdfbox.pdmodel.PDPage;
 
 // TODO: 18/9/17  Create a GraphicsDevice instead of implementing these interfaces
 public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement, ISVGElement {
+    private final InteractionElementType interactionElementType;
+    private final String ID;
     private Canvas canvas;
     boolean hidden;
-    private String ID;
+    static long NEXT_ID = 0;
+    private long idSequence;
+    private RGBA color;
 
-    public GraphicsElement(String ID) {
-        this.ID = ID;
+    public GraphicsElement(InteractionElementType interactionElementType) {
+        if (interactionElementType == null) {
+            throw new IM3RuntimeException("interactionElementType cannot be null for class " + this.getClass().getName());
+        }
+        this.interactionElementType = interactionElementType;
+        synchronized (GraphicsElement.class) {
+            NEXT_ID++;
+            this.idSequence = NEXT_ID;
+        }
+        this.ID = this.interactionElementType.name() + "_" + this.idSequence;
         hidden = false;
     }
 
@@ -44,14 +60,12 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
         return -LayoutConstants.PDF_TOP_MARGIN -(float) y + page.getCropBox().getUpperRightY();
     }
 
-
     /**
      * It cannot be based on the x position because the layout algorithm depends on it. It must be based on the physical width
      */
     public abstract double getWidth() throws IM3Exception;
 
     public abstract Coordinate getPosition() throws IM3Exception;
-
 
     /**
      * The space between the x of the symbol and its left end and its right end
@@ -68,15 +82,24 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
         return boundingBox;
     }
 
-    public String getID() {
-        return ID;
-    }
-
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
 
     public boolean isHidden() {
         return hidden;
+    }
+
+    public void setRGBColor(RGBA color) {
+        this.color = color;
+        this.setJavaFXColor(new Color(color.getR(), color.getG(), color.getB(), color.getA()));
+    }
+
+    public InteractionElementType getInteractionElementType() {
+        return interactionElementType;
+    }
+
+    public String getID() {
+        return ID;
     }
 }

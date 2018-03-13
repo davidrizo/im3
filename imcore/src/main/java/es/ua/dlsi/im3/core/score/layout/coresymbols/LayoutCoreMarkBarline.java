@@ -21,7 +21,7 @@ public class LayoutCoreMarkBarline extends LayoutCoreSymbolInStaff<MarkBarline> 
         from = new Coordinate(position.getX(), null);
         to = new Coordinate(position.getX(), null);
 
-        line = new Line("MARKBARLINE-", from, to);//TODO IDS
+        line = new Line(InteractionElementType.markBarline, from, to);//TODO IDS
 
     }
 

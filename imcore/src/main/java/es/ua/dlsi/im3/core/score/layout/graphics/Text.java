@@ -6,10 +6,13 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -28,8 +31,8 @@ public class Text extends Shape {
      */
     private javafx.scene.text.Text javaFXText;
 
-    public Text(String ID, LayoutFont layoutFont, String text, Coordinate position) {
-        super(ID);
+    public Text(InteractionElementType interactionElementType, LayoutFont layoutFont, String text, Coordinate position) {
+        super(interactionElementType);
         this.position = position;
         this.layoutFont = layoutFont;
         this.text = text;
@@ -51,6 +54,11 @@ public class Text extends Shape {
     @Override
     public Node getJavaFXRoot() throws GUIException, ExportException {
         return this.javaFXText;
+    }
+
+    @Override
+    public void setJavaFXColor(Color color) {
+        javaFXText.fillProperty().setValue(color);
     }
 
     @Override
