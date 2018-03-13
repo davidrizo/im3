@@ -1,10 +1,16 @@
 package es.ua.dlsi.im3.core.score.layout;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.score.NotationType;
+import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.CapitanFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.fonts.PatriarcaFont;
+
+import java.util.HashMap;
 
 public class FontFactory {
     private static FontFactory instance = null;
@@ -75,4 +81,25 @@ public class FontFactory {
 
     }
 
+    public HashMap<Staff, LayoutFonts> getFontsForScoreSong(ScoreSong scoreSong) throws IM3Exception {
+        HashMap<Staff, LayoutFonts> fontHashMap = new HashMap<>();
+        for (Staff staff: scoreSong.getStaves()) {
+            LayoutFonts layoutFonts;
+            if (staff.getNotationType() == null) {
+                throw new IM3Exception("Notation type for staff '" + staff.getName() + "' not set");
+            }
+            switch (staff.getNotationType()) {
+                case eMensural:
+                    layoutFonts = LayoutFonts.patriarca;
+                    break;
+                case eModern:
+                    layoutFonts = LayoutFonts.bravura;
+                    break;
+                default:
+                    throw new IM3Exception("Unsupported notation type: " + staff.getNotationType());
+            }
+            fontHashMap.put(staff, layoutFonts);
+        }
+        return fontHashMap;
+    }
 }
