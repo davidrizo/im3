@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
@@ -31,13 +32,13 @@ public class Line extends Shape {
     private StrokeType strokeType;
     private javafx.scene.shape.Line fxline;
 
-    public Line(InteractionElementType interactionElementType, Coordinate from, Coordinate to)  {
-        this(interactionElementType, from, to, DEFAULT_THICKNESS, DEFAULT_STROKE_TYPE);
+    public Line(NotationSymbol notationSymbol, InteractionElementType interactionElementType, Coordinate from, Coordinate to)  {
+        this(notationSymbol, interactionElementType, from, to, DEFAULT_THICKNESS, DEFAULT_STROKE_TYPE);
     }
 
 
-    public Line(InteractionElementType interactionElementType, Coordinate from, Coordinate to, double thickness, StrokeType strokeType) {
-        super(interactionElementType);
+    public Line(NotationSymbol notationSymbol, InteractionElementType interactionElementType, Coordinate from, Coordinate to, double thickness, StrokeType strokeType) {
+        super(notationSymbol,interactionElementType);
         this.from = from;
         this.to = to;
         this.thickness = thickness;
@@ -63,7 +64,7 @@ public class Line extends Shape {
 
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
+    public void doGenerateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         try {
             String strokeWidth;
 
@@ -95,7 +96,7 @@ public class Line extends Shape {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
+    public void doGeneratePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
         try {
             contents.setStrokingColor(0, 0, 0);
             try {
@@ -128,12 +129,9 @@ public class Line extends Shape {
     }
 
     @Override
-    public Node getJavaFXRoot() throws ExportException {
+    public Node doGenerateJavaFXRoot() throws ExportException {
         try {
-            fxline.setStartX(from.getAbsoluteX());
-            fxline.setStartY(from.getAbsoluteY());
-            fxline.setEndX(to.getAbsoluteX());
-            fxline.setEndY(to.getAbsoluteY());
+            updateJavaFXRoot();
         } catch (IM3Exception e) {
             throw new ExportException(e);
         }
@@ -141,8 +139,21 @@ public class Line extends Shape {
     }
 
     @Override
+    public void updateJavaFXRoot() throws IM3Exception {
+        fxline.setStartX(from.getAbsoluteX());
+        fxline.setStartY(from.getAbsoluteY());
+        fxline.setEndX(to.getAbsoluteX());
+        fxline.setEndY(to.getAbsoluteY());
+    }
+
+    @Override
     public void setJavaFXColor(Color color) {
         fxline.setStroke(color);
+    }
+
+    @Override
+    protected void doRepaint() throws IM3Exception {
+        // TODO: 14/3/18 ¿Qué hacemos aquí? 
     }
 
     @Override

@@ -8,5 +8,5 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
 public interface IPDFElement {
-    void generatePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException;
+    void doGeneratePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException;
 }

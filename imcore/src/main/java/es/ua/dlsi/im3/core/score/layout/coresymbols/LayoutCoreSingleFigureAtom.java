@@ -25,7 +25,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
     public LayoutCoreSingleFigureAtom(LayoutFont layoutFont, SingleFigureAtom coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
 
-        group = new Group(InteractionElementType.singleFigureAtom);
+        group = new Group(this, InteractionElementType.singleFigureAtom);
 
         notePitches = new ArrayList<>();
 
@@ -85,24 +85,6 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
     }
 
     @Override
-    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
-        //TODO Para acordes
-        CoordinateComponent stemYPosition = null;
-        super.setLayoutStaff(layoutStaff);
-        for (NotePitch notePitch: notePitches) {
-            // TODO: 24/9/17 ¿Y si ya las tenía?
-            notePitch.setLayoutStaff(layoutStaff);
-            layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getNoteHeadWidth());
-            stemYPosition = notePitch.getNoteHeadPosition().getY();
-        }
-
-        if (stem != null) {
-            stem.setReferenceY(stemYPosition);
-        }
-
-    }
-
-    @Override
     public GraphicsElement getGraphics() {
         return group;
     }
@@ -110,6 +92,11 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
     @Override
     public Time getDuration() {
         return coreSymbol.getDuration();
+    }
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
     }
 
     public List<NotePitch> getNotePitches() {
@@ -188,5 +175,20 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
             return connectionPoint;
         }
         //return position;
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
+        //TODO Para acordes
+        CoordinateComponent stemYPosition = null;
+        for (NotePitch notePitch: notePitches) {
+            // TODO: 24/9/17 ¿Y si ya las tenía?
+            notePitch.setLayoutStaff(layoutStaff);
+            layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getNoteHeadWidth());
+            stemYPosition = notePitch.getNoteHeadPosition().getY();
+        }
+
+        if (stem != null) {
+            stem.setReferenceY(stemYPosition);
+        }
     }
 }

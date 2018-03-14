@@ -25,7 +25,7 @@ public class LayoutSystemBreak extends LayoutCoreSymbol<SystemBreak> {
         from = new Coordinate(position.getX(), null);
         to = new Coordinate(position.getX(), null);
 
-        line = new Line(InteractionElementType.systemBreak, from, to);
+        line = new Line(this, InteractionElementType.systemBreak, from, to);
         line.setHidden(true);
     }
 
@@ -53,5 +53,14 @@ public class LayoutSystemBreak extends LayoutCoreSymbol<SystemBreak> {
      */
     public Time getDuration() {
         return DEFAULT_TIME_FOR_SPACE_COMPUTING; //TODO Quitar con esto consigo que no se ponga margen
+    }
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

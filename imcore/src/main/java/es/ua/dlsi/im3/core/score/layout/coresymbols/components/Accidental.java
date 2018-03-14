@@ -32,7 +32,7 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
         super(accidental, parent, position);
         this.accidental = accidental;
 
-        pictogram = new Pictogram(InteractionElementType.accidental, layoutFont, getUnicode(), position); //TODO IDS
+        pictogram = new Pictogram(this, InteractionElementType.accidental, layoutFont, getUnicode(), position); //TODO IDS
     }
 
     private String getUnicode() {
@@ -51,5 +51,10 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
 
     public Accidentals getAccidental() {
         return accidental;
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

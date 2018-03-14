@@ -27,4 +27,6 @@ public abstract class LayoutCoreSymbolInStaff<CoreSymbolType extends ITimedEleme
     public LayoutStaff getLayoutStaff() {
         return layoutStaff;
     }
+
+
 }

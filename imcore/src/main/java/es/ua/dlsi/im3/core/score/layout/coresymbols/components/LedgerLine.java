@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols.components;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionAboveBelow;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
@@ -28,12 +29,17 @@ public class LedgerLine extends Component<LedgerLines> {
                 new CoordinateComponent(position.getY()));
 
 
-        line = new Line(InteractionElementType.ledgerLine, from, to);
+        line = new Line(this, InteractionElementType.ledgerLine, from, to);
     }
 
 
     @Override
     public GraphicsElement getGraphics() {
         return line;
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

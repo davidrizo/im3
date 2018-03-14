@@ -28,7 +28,7 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
     }
 
     private void createAccidentals(LayoutFont layoutFont) throws IM3Exception {
-        group = new Group(InteractionElementType.keySignature);
+        group = new Group(this, InteractionElementType.keySignature);
         accidentals = new ArrayList<>();
         /*
         int previousNoteOrder = 0;
@@ -80,18 +80,6 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
         }
     }
 
-    @Override
-    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
-        super.setLayoutStaff(layoutStaff);
-        if (positionInStaffs != null) {
-            double nextRelativeXPosition = 0;
-            for (int i=0; i<positionInStaffs.length; i++) {
-                CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
-                accidentals.get(i).getPosition().setReferenceY(y);
-            }
-        }
-    }
-
     private void addAccidentalComponent(Accidental p) {
         accidentals.add(p);
         group.add(p.getGraphics());
@@ -105,4 +93,19 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
             return clef.getStartingOctave(coreSymbol.getAccidental());
         }
     }*/
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
+        if (positionInStaffs != null) {
+            double nextRelativeXPosition = 0;
+            for (int i=0; i<positionInStaffs.length; i++) {
+                CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
+                accidentals.get(i).getPosition().setReferenceY(y);
+            }
+        }
+    }
 }

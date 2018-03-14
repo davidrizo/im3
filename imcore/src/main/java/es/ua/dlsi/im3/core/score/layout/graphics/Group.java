@@ -5,16 +5,15 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
-import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,10 +27,17 @@ public class Group extends GraphicsElement {
     List<GraphicsElement> children;
     HashMap<GraphicsElement, Node> javaFXNodes;
 
-    public Group(InteractionElementType interactionElementType) {
-        super(interactionElementType);
+    public Group(NotationSymbol notationSymbol, InteractionElementType interactionElementType) {
+        super(notationSymbol, interactionElementType);
         this.children = new ArrayList<>();
         this.javaFXNodes = new HashMap<>();
+    }
+
+    @Override
+    protected void doRepaint() throws IM3Exception {
+        for (GraphicsElement child: children) {
+            child.doRepaint();
+        }
     }
 
     public void add(GraphicsElement element) {
@@ -57,30 +63,30 @@ public class Group extends GraphicsElement {
     }
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
+    public void doGenerateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         XMLExporterHelper.start(sb, tabs, "g"); //TODO ID
         for (GraphicsElement child: children) {
-            child.generateSVG(sb, tabs+1, usedGlyphs);
+            child.doGenerateSVG(sb, tabs+1, usedGlyphs);
         }
         XMLExporterHelper.end(sb, tabs, "g"); //TODO ID
 
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
+    public void doGeneratePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
         //TODO ¿cómo se hace un grupo?
         for (GraphicsElement child: children) {
-            child.generatePDF(contents, exporter, page);
+            child.doGeneratePDF(contents, exporter, page);
         }
     }
 
     @Override
-    public Node getJavaFXRoot() throws GUIException {
+    public Node doGenerateJavaFXRoot() throws GUIException {
         javafx.scene.Group group = new javafx.scene.Group();
         for (GraphicsElement child: children) {
             Node node = null;
             try {
-                node = child.getJavaFXRoot();
+                node = child.doGenerateJavaFXRoot();
                 node.setId(child.getID());
                 this.javaFXNodes.put(child, node);
             } catch (ExportException e) {
@@ -91,6 +97,13 @@ public class Group extends GraphicsElement {
             }
         }
         return group;
+    }
+
+    @Override
+    public void updateJavaFXRoot() throws IM3Exception {
+        for (GraphicsElement child : children) {
+            child.updateJavaFXRoot();
+        }
     }
 
     public HashMap<GraphicsElement, Node> getJavaFXNodes() {

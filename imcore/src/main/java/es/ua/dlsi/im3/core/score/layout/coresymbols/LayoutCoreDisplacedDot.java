@@ -18,17 +18,20 @@ public class LayoutCoreDisplacedDot extends LayoutAttachmentInStaff<DisplacedDot
     public LayoutCoreDisplacedDot(LayoutFont layoutFont, DisplacedDot coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
         //TODO ¿Este codepoint igual que un puntillo normal?
-        pictogram = new Pictogram(InteractionElementType.dot, layoutFont, "augmentationDot", position);//TODO IDS
-    }
-
-    @Override
-    public void setAttachedToView(NotePitch attachedToView) throws IM3Exception {
-        super.setAttachedToView(attachedToView);
-        position.setReferenceY(attachedToView.getDotsYCoordinate());
+        pictogram = new Pictogram(this, InteractionElementType.dot, layoutFont, "augmentationDot", position);//TODO IDS
     }
 
     @Override
     public GraphicsElement getGraphics() {
         return pictogram;
+    }
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
+        position.setReferenceY(attachedToView.getDotsYCoordinate());
     }
 }

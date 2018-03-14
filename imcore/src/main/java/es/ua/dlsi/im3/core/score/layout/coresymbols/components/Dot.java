@@ -15,11 +15,16 @@ public class Dot extends Component<NotePitch> {
      */
     public Dot(LayoutFont layoutFont, NotePitch parent, Coordinate position) throws IM3Exception {
         super(null, parent, position);
-        pictogram = new Pictogram(InteractionElementType.dot, layoutFont, "augmentationDot", position);//TODO IDS
+        pictogram = new Pictogram(this, InteractionElementType.dot, layoutFont, "augmentationDot", position);//TODO IDS
     }
 
     @Override
     public GraphicsElement getGraphics() {
         return pictogram;
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

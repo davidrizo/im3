@@ -2,24 +2,39 @@ package es.ua.dlsi.im3.core.score.layout.graphics;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.IUniqueIDObject;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
+import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
+import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
+import es.ua.dlsi.im3.gui.javafx.GUIException;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+
+import java.util.HashSet;
 
 // TODO: 18/9/17  Create a GraphicsDevice instead of implementing these interfaces
 public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement, ISVGElement {
     private final InteractionElementType interactionElementType;
     private final String ID;
+    private final NotationSymbol notationSymbol;
     private Canvas canvas;
     boolean hidden;
     static long NEXT_ID = 0;
     private long idSequence;
     private RGBA color;
+    /**
+     * Has changed and the client (JavaFX, PDF or SVG) needs recompute it
+     */
+    private boolean dirty;
 
-    public GraphicsElement(InteractionElementType interactionElementType) {
+    public GraphicsElement(NotationSymbol notationSymbol, InteractionElementType interactionElementType) {
+        this.notationSymbol = notationSymbol;
         if (interactionElementType == null) {
             throw new IM3RuntimeException("interactionElementType cannot be null for class " + this.getClass().getName());
         }
@@ -30,6 +45,18 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
         }
         this.ID = this.interactionElementType.name() + "_" + this.idSequence;
         hidden = false;
+        dirty = true;
+    }
+    
+    public void repaint() throws IM3Exception {
+        doRepaint();
+        dirty = true;
+    }
+
+    protected abstract void doRepaint() throws IM3Exception;
+
+    public boolean isDirty() {
+        return dirty;
     }
 
     public Canvas getCanvas() {
@@ -101,5 +128,25 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
 
     public String getID() {
         return ID;
+    }
+
+    public NotationSymbol getNotationSymbol() {
+        return notationSymbol;
+    }
+
+    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
+        doGenerateSVG(sb, tabs, usedGlyphs);
+        dirty = false; // just one client (svg, javafx, pdf) will be used //TODO Modelarlo mejor esto
+    }
+
+    public void generatePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
+        doGeneratePDF(contents, exporter, page);
+        dirty = false;
+    }
+
+    public Node generateJavaFXRoot() throws GUIException, ExportException {
+        Node result = doGenerateJavaFXRoot();
+        dirty = false;
+        return result;
     }
 }

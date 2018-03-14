@@ -13,19 +13,27 @@ public class LayoutCoreCustos extends LayoutCoreSymbolInStaff<Custos> {
         super(layoutFont, custos);
 
         //position.setY(layoutStaff.getYAtLine(coreSymbol.getLine()));
-        pictogram = new Pictogram(InteractionElementType.custos, layoutFont, layoutFont.getFontMap().getCustosCodePoint(), position);//TODO IDS
+        pictogram = new Pictogram(this, InteractionElementType.custos, layoutFont, layoutFont.getFontMap().getCustosCodePoint(), position);//TODO IDS
     }
 
     @Override
     public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
         super.setLayoutStaff(layoutStaff);
-        position.setReferenceY(
-                layoutStaff.computeYPositionForPitchWithoutClefOctaveChange(coreSymbol.getTime(), coreSymbol.getDiatonicPitch(), coreSymbol.getOctave()));
     }
 
 
     @Override
     public GraphicsElement getGraphics() {
        return pictogram;
+    }
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        position.setReferenceY(layoutStaff.computeYPositionForPitchWithoutClefOctaveChange(coreSymbol.getTime(), coreSymbol.getDiatonicPitch(), coreSymbol.getOctave()));
     }
 }

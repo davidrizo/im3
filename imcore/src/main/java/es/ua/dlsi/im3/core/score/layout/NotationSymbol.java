@@ -5,9 +5,6 @@ import es.ua.dlsi.im3.core.score.IUniqueIDObject;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
  * @author drizo
  */
@@ -15,6 +12,22 @@ public abstract class NotationSymbol implements IUniqueIDObject {
     protected boolean hidden;
     protected Coordinate position;
     private String ID;
+    /**
+     * True if requires a new layout computing
+     */
+    boolean dirtyLayout;
+
+    public NotationSymbol() {
+        dirtyLayout = false;
+    }
+
+    public boolean isDirtyLayout() {
+        return dirtyLayout;
+    }
+
+    public void setDirtyLayout(boolean dirtyLayout) {
+        this.dirtyLayout = dirtyLayout;
+    }
 
     public abstract GraphicsElement getGraphics();
 
@@ -64,4 +77,11 @@ public abstract class NotationSymbol implements IUniqueIDObject {
     public String __getIDPrefix() {
         return this.getClass().getName();
     }
+
+    public void layout() throws IM3Exception {
+        doLayout();
+        this.dirtyLayout = false;
+    }
+
+    protected abstract void doLayout() throws IM3Exception;
 }

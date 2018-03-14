@@ -66,7 +66,9 @@ public class HorizontalLayout extends ScoreLayout {
 
             for (LayoutCoreSymbolInStaff coreSymbol: layoutSymbolsInStaff) {
                 coreSymbol.setLayoutStaff(layoutStaff);
-                if (!(coreSymbol instanceof LayoutCoreCustos)) {
+                coreSymbol.layout();
+
+                if (!(coreSymbol instanceof LayoutCoreCustos)) { //TODO ¿por qué?
                     layoutStaff.add(coreSymbol);
                 } // ommitted in this layout
             }
@@ -103,7 +105,7 @@ public class HorizontalLayout extends ScoreLayout {
 
         if (beams != null) {
             for (LayoutBeamGroup beam : beams) {
-                canvas.add(beam.getGraphicsElement());
+                canvas.add(beam.getGraphics());
             }
         }
 
@@ -116,5 +118,31 @@ public class HorizontalLayout extends ScoreLayout {
 
     public LayoutStaffSystem getSystem() {
         return system;
+    }
+
+
+    @Override
+    public void replace(Clef clef, Clef newClef, boolean changePitches) throws IM3Exception {
+        // TODO: 14/3/18 Generalizar este replace
+        LayoutCoreClef layoutClef = (LayoutCoreClef) this.coreSymbolViews.get(clef);
+        if (layoutClef  == null) {
+            throw new IM3Exception("Cannot find a notation symbol for clef to be replaced: " + clef);
+        }
+
+        clef.getStaff().replaceClef(clef, newClef, changePitches);
+        layoutClef.setCoreSymbol(newClef);
+        this.repaint();
+        coreSymbolViews.remove(clef);
+        coreSymbolViews.put(newClef, layoutClef);
+
+        /*System.err.println("TO-DO cambiar pitches o posición en replace Clef"); // TODO: 14/3/18 TO-DO cambiar pitches o posición en replace Clef
+
+        LayoutCoreSymbolInStaff newLayoutClef = (LayoutCoreSymbolInStaff) createLayoutCoreSymbol(newClef);
+
+        List<LayoutCoreSymbolInStaff> coreSymbolsInStaffList = coreSymbolsInStaves.get(clef.getStaff());
+        CollectionsUtils.replace(coreSymbolsInStaffList, oldLayoutClef, newLayoutClef);
+        coreSymbolViews.replace(clef, oldLayoutClef, newLayoutClef);
+        //this.simultaneities.replace(oldLayoutClef, newLayoutClef); //TODO Recalcular posiciones - si es necesario borrar o insertar nuevos símbolos
+        System.err.println("TO-DO Notificar score view para que cambie - también simultaneities");*/
     }
 }

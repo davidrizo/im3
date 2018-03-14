@@ -38,7 +38,7 @@ public class Flag extends Component<LayoutCoreSingleFigureAtom> {
     public Flag(LayoutFont layoutFont, LayoutCoreSingleFigureAtom parent, Figures figure, Coordinate position, boolean stemUp) throws IM3Exception {
         super(null, parent, position);
 
-        pictogram = new Pictogram(InteractionElementType.flag, layoutFont, getUnicode(stemUp, figure), position);//TODO IDS
+        pictogram = new Pictogram(this, InteractionElementType.flag, layoutFont, getUnicode(stemUp, figure), position);//TODO IDS
     }
 
     @Override
@@ -53,5 +53,10 @@ public class Flag extends Component<LayoutCoreSingleFigureAtom> {
             throw new IM3Exception("Cannot find a font unicode for " + figure + " and stem up?" + stemUp);
         }
         return unicode;
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

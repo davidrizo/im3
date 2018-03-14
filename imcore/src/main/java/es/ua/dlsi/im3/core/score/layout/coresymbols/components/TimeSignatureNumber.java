@@ -15,12 +15,15 @@ public class TimeSignatureNumber extends Component<LayoutCoreTimeSignature> {
     public TimeSignatureNumber(LayoutFont layoutFont, LayoutCoreTimeSignature parent, int number, Coordinate position) throws IM3Exception {
         super(null, parent, position);
         this.number = number;
-        pictogram = new Pictogram(InteractionElementType.timeSignatureNumber,layoutFont, "timeSig" + number, position);//TODO IDS
+        pictogram = new Pictogram(this, InteractionElementType.timeSignatureNumber,layoutFont, "timeSig" + number, position);//TODO IDS
     }
 
     @Override
     public GraphicsElement getGraphics() {
         return pictogram;
     }
-
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
+    }
 }

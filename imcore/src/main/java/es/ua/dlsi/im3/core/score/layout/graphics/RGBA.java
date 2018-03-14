@@ -44,4 +44,14 @@ public class RGBA {
     public float getA() {
         return a;
     }
+
+    @Override
+    public String toString() {
+        return "RGBA{" +
+                "r=" + r +
+                ", g=" + g +
+                ", b=" + b +
+                ", a=" + a +
+                '}';
+    }
 }

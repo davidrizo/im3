@@ -21,6 +21,7 @@ import java.util.*;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.utils.CollectionsUtils;
 
 /**
  * It is just a visual holder for elements. The note, chord and rest sequences are stored in ScoreLayer,
@@ -876,5 +877,35 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
             }
         }
         return null;
+    }
+
+    /**
+     * It changes the old clef with the new one
+     * @param oldClef
+     * @param newClef
+     * @param changePitches If true, notes are true note pitches are changed according to the change, e-g-  
+     *                      repositioned to reflect the clef change,
+     *
+     * @throws IM3Exception
+     */
+    public void replaceClef(Clef oldClef, Clef newClef, boolean changePitches) throws IM3Exception {
+        newClef.setTime(oldClef.getTime());
+        newClef.setStaff(oldClef.getStaff());
+
+        CollectionsUtils.replace(coreSymbols, oldClef, newClef);
+
+        if (!clefs.replace(oldClef.getTime(), oldClef, newClef)) {
+            throw new IM3Exception("Cannot replace the clef " + oldClef + " for " + newClef + " at time " + oldClef.getTime());
+        }
+
+        if (changePitches) {
+            // TODO: 14/3/18
+            System.err.println("TO-DO replaceClef Change pitches ....");
+        } else {
+            // TODO: 14/3/18
+            System.err.println("TO-DO replaceClef Change pitches ....");
+        }
+
+
     }
 }

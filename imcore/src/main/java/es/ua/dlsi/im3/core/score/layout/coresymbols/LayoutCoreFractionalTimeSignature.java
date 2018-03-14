@@ -15,7 +15,7 @@ public class LayoutCoreFractionalTimeSignature extends LayoutCoreTimeSignature<F
 
     public LayoutCoreFractionalTimeSignature(LayoutFont layoutFont, FractionalTimeSignature coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
-        group = new Group(InteractionElementType.fractionalTimeSignature);
+        group = new Group(this, InteractionElementType.fractionalTimeSignature);
 
         //TODO Igual que Barline - que valga para percusión
         Coordinate numeratorPosition = new Coordinate(position.getX(), null);
@@ -42,9 +42,15 @@ public class LayoutCoreFractionalTimeSignature extends LayoutCoreTimeSignature<F
         if (layoutStaff.getLines().size() != 5) {
             throw new IM3Exception("TO-DO: unimplemented non pentagrams"); // TODO: 20/9/17 TODO Que se calcule sin ir a la línea
         }
+    }
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
 
         numerator.getPosition().setReferenceY(layoutStaff.getYAtLine(4));
         denominator.getPosition().setReferenceY(layoutStaff.getYAtLine(2));
     }
-
 }

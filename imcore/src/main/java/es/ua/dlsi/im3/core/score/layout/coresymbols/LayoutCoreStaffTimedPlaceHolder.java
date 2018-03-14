@@ -17,7 +17,7 @@ public class LayoutCoreStaffTimedPlaceHolder extends LayoutCoreSymbolInStaff<Sta
         super(layoutFont, coreSymbol);
         Coordinate from = position;
         Coordinate to = position; // empty
-        line = new Line(InteractionElementType.staffTimePlaceHolder, from, to);
+        line = new Line(this, InteractionElementType.staffTimePlaceHolder, from, to);
     }
 
     @Override
@@ -33,5 +33,14 @@ public class LayoutCoreStaffTimedPlaceHolder extends LayoutCoreSymbolInStaff<Sta
     @Override
     public Coordinate getConnectionPoint(Direction direction) {
         return position;
+    }
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
+
     }
 }

@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.gui.score;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
+import es.ua.dlsi.im3.core.score.layout.graphics.RGBA;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,12 +12,19 @@ import java.util.List;
 /**
  * @autor drizo
  */
-public class InteractionController {
-    HashMap<EventType, HashMap<InteractionElementType, List<IScoreSongViewEventSubscriptor>>> eventSubscriptors;
+public class InteractionPresenter {
+    RGBA defaultColor = new RGBA(0,0,0,1);
+    RGBA hoverColor = new RGBA(0,0,1,1);
+    RGBA selectedColor = new RGBA(1,0,0,1);
 
-    HashMap<String, GraphicsElement> layoutElementsByID;
 
-    public InteractionController() {
+    private final HashMap<EventType, HashMap<InteractionElementType, List<IScoreSongViewEventSubscriptor>>> eventSubscriptors;
+
+    private final HashMap<String, GraphicsElement> layoutElementsByID;
+
+    private List<GraphicsElement> selectedElements;
+
+    public InteractionPresenter() {
         this.layoutElementsByID = new HashMap<>();
         eventSubscriptors = new HashMap<>();
         for (EventType event: EventType.values()) {
@@ -26,6 +34,8 @@ public class InteractionController {
             }
             eventSubscriptors.put(event, map);
         }
+
+        selectedElements = new LinkedList<>();
     }
 
     public void register(GraphicsElement graphicsElement) throws IM3Exception {
@@ -65,4 +75,32 @@ public class InteractionController {
             subscriptor.onEvent(eventType, graphicsElement);
         }
     }
+
+    public void selectElements(GraphicsElement elementToSelect) {
+        for (GraphicsElement graphicElement : selectedElements) {
+            graphicElement.setRGBColor(defaultColor);
+        }
+
+        selectedElements.clear();
+        selectedElements.add(elementToSelect);
+        elementToSelect.setRGBColor(selectedColor);
+    }
+
+    public void onMouseEntererd(GraphicsElement graphicsElement) {
+        graphicsElement.setRGBColor(hoverColor);
+    }
+
+    public void onMouseExited(GraphicsElement graphicsElement) {
+        if (selectedElements.contains(graphicsElement)) {
+            graphicsElement.setRGBColor(selectedColor);
+        } else {
+            graphicsElement.setRGBColor(defaultColor);
+        }
+    }
+
+    public List<GraphicsElement> getSelectedElements() {
+        return selectedElements;
+    }
+
+    //TODO Seleccionar varios elements
 }

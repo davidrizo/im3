@@ -110,6 +110,10 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 		hash = 53 * hash + this.note.getOrder();
 		hash = 53 * hash + this.line;
 		hash = 53 * hash + this.noteOctave;
+		Staff stf = getStaff();
+		if (stf != null) {
+		    hash = 53 * hash + stf.hashCode();
+        }
 		return hash;
 	}
 

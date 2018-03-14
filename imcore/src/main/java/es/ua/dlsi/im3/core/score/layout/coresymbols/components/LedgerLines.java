@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols.components;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.PositionAboveBelow;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
@@ -29,7 +30,7 @@ public class LedgerLines extends Component<LayoutStaff> {
     public LedgerLines(LayoutStaff parent, Coordinate position, double noteHeadWidth, PositionAboveBelow positionAboveBelow, int numberOfLines) {
         super(null, parent, position);
         this.noteHeadWidth = noteHeadWidth;
-        group = new Group(InteractionElementType.ledgerLines);
+        group = new Group(this, InteractionElementType.ledgerLines);
         ensure(numberOfLines, positionAboveBelow);
     }
 
@@ -64,5 +65,10 @@ public class LedgerLines extends Component<LayoutStaff> {
                 group.add(ledgerLine.getGraphics());
             }
         }
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

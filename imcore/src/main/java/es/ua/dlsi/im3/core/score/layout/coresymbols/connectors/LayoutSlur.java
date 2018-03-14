@@ -80,7 +80,7 @@ public class LayoutSlur extends LayoutConnector {
         controlFrom = createControlCoordinate(directionFrom, from, controlXFrom);
         controlTo = createControlCoordinate(directionFrom, to, controlXTo);
 
-        bezier = new Bezier(InteractionElementType.slur, from, controlFrom, controlTo, to);
+        bezier = new Bezier(this, InteractionElementType.slur, from, controlFrom, controlTo, to);
     }
 
     @Override
@@ -102,5 +102,10 @@ public class LayoutSlur extends LayoutConnector {
             );
         }
         return coordinate;
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

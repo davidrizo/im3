@@ -25,14 +25,8 @@ public class LayoutCoreSignTimeSignature extends LayoutCoreTimeSignature<SignTim
 
     public LayoutCoreSignTimeSignature(LayoutFont layoutFont, SignTimeSignature coreSymbol) throws IM3Exception {
         super(layoutFont, coreSymbol);
-        pictogram = new Pictogram(InteractionElementType.signTimeSignature, layoutFont, getUnicode(), position);//TODO IDS
+        pictogram = new Pictogram(this, InteractionElementType.signTimeSignature, layoutFont, getUnicode(), position);//TODO IDS
 
-    }
-
-    @Override
-    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
-        super.setLayoutStaff(layoutStaff);
-        position.setReferenceY(layoutStaff.getYAtLine(3));
     }
 
     private String getUnicode() throws IM3Exception {
@@ -46,5 +40,14 @@ public class LayoutCoreSignTimeSignature extends LayoutCoreTimeSignature<SignTim
     @Override
     public GraphicsElement getGraphics() {
         return pictogram;
+    }
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
+        position.setReferenceY(layoutStaff.getYAtLine(3));
     }
 }

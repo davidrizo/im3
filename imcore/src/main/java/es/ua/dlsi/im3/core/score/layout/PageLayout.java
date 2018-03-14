@@ -273,8 +273,8 @@ public class PageLayout extends ScoreLayout {
             }
 
             for (LayoutBeamGroup beam : beams) {
-                if (beam.getGraphicsElement().getCanvas() == null) {
-                    page.getCanvas().add(beam.getGraphicsElement());
+                if (beam.getGraphics().getCanvas() == null) {
+                    page.getCanvas().add(beam.getGraphics());
                 }
             }
         }
@@ -288,5 +288,10 @@ public class PageLayout extends ScoreLayout {
             result.add(page.getCanvas());
         }
         return result;
+    }
+
+    @Override
+    public void replace(Clef clef, Clef newClef, boolean changePitches) {
+        throw new UnsupportedOperationException("TO-DO replace clef in PageLayout"); // TODO: 14/3/18 TO-DO replace clef in PageLayout
     }
 }
