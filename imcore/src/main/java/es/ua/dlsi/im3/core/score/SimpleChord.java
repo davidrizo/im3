@@ -99,6 +99,19 @@ public class SimpleChord extends SingleFigureAtom {
 	public String toString() {
 		return super.toString() + ", atomPitches=" + atomPitches;
 	}
-	
-	
+
+	/**
+	 * Returns the notes of the chord
+	 * @return a list containing the notes of the chord
+	 */
+	public List<SimpleNote> getNotes() {
+		ArrayList<SimpleNote> notes = new ArrayList<>();
+		for (ScientificPitch pitch : getPitches()) {
+			SimpleNote snote = new SimpleNote(atomFigure.getFigure(), atomFigure.getDots(), pitch);
+			snote.setParentAtom(getParentAtom());
+			snote.setLayer(getLayer());
+			notes.add(snote);
+		}
+		return notes;
+	}
 }

@@ -26,7 +26,7 @@ public class MusicXMLExporter implements ISongExporter {
     /**
      * Easier to set it fixed than compute it
      */
-    private static final Time divisions = new Time(64, 1);
+    private static final Time divisions = new Time(96, 1);
 
     // some flags
     private boolean printVoiceNames;
@@ -70,6 +70,19 @@ public class MusicXMLExporter implements ISongExporter {
         this.printRomanNumberAnalysis = printRomanNumberAnalysis;
     }
 
+    /**
+     * Returns the beam index of a given note.
+     * @param note note to compute the beam for
+     * @return the beam index, e. g., 0 for quarter notes or larger, 1 for 8ths, 2 for 16ths, etc.
+     */
+    private final int computeBeamIndex(SimpleNote note) {
+        Time dur = note.getDuration();
+        if (dur.getExactTime().getNumerator() != 1)
+            return 0; // no beam
+        else {
+            return note.getAtomFigure().getFigure().getNumFlags();
+        }
+    }
     /**
      * Default constructor
      */
@@ -181,12 +194,14 @@ public class MusicXMLExporter implements ISongExporter {
          end(sb, 1, "defaults");
     */
 
+         /* TODO: Interfers with <work> and <identification> in MuseScore
         start(sb, 1, "credit", "page", "1");
         startEndTextContentSingleLine(sb, 3, "credit-words", scoreSong.getTitle(), "justify", "center", "valign", "top", "font-size", "24");
         end(sb, 1, "credit");
         start(sb, 1, "credit", "page", "1");
         startEndTextContentSingleLine(sb, 3, "credit-words", scoreSong.getComposer(), "justify", "right", "valign", "bottom", "font-size", "12");
         end(sb, 1, "credit");
+        */
 
         exportPartList();
         exportParts();
@@ -225,6 +240,7 @@ public class MusicXMLExporter implements ISongExporter {
         //ScorePart part = movement.getScorePart(ip); // PIERRE: what is this??
         boolean harmoniesExported = false;
         for (ScorePart part : scoreSong.getPartsSortedByNumberAsc()) {
+            lastVoice = null;
             /* TODO
             if (!harmoniesExported) {
                 // in order to export the harmonies, we create a PlayedNote decorator that contains the harmony. This object is
@@ -251,8 +267,9 @@ public class MusicXMLExporter implements ISongExporter {
                     Iterator<ScoreLayer> iterator = layers.iterator();
                     while (iterator.hasNext()) {
                         ScoreLayer layer = iterator.next();
-TreeSet<Atom> s;
-                        Set<AtomFigure> snotes=null;// = layer.getAtomsSortedByTimeWithin(measure);
+                        if (!iterator.hasNext())
+                            lastVoice = layer;
+                        SortedSet<AtomFigure> snotes=layer.getAtomFiguresSortedByTimeWithin(measure);
                         for (AtomFigure note : snotes) {
                         /* TODO: handle functional analysis
                         _HarmomyNoteDecoration hnd = (_HarmomyNoteDecoration) note.getDecoration(_HarmomyNoteDecoration.class);
@@ -300,11 +317,11 @@ TreeSet<Atom> s;
                             if (note.getAtom() instanceof SimpleChord) {
                                 boolean firstInChord = true;
                                 SimpleChord chord = (SimpleChord) note.getAtom();
-                                for (ScientificPitch pitch : chord.getPitches()) {
-                                    AtomFigure afigure = chord.getAtomFigure();
-                                    SimpleNote snote = new SimpleNote(afigure.getFigure(), afigure.getDots(), pitch);
+                                List<SimpleNote> notes = chord.getNotes();
+                                for (SimpleNote simpleNote : notes) {
+
                                     //was im2: ScoreNote.createTempScoreNote(note.getVoice(), song.getResolution(), chord.getTime(), pitch, chord.getRhythm());
-                                    exportNoteOrRest(snote, !firstInChord, chord.getParentAtom());
+                                    exportNoteOrRest(simpleNote, !firstInChord, chord.getParentAtom());
                                     firstInChord = false;
                                 }
                             } else {
@@ -315,6 +332,7 @@ TreeSet<Atom> s;
                             start(sb, 3, "backup");
                             startEndTextContentSingleLine(sb, 4, "duration", String.valueOf(backup));
                             end(sb, 3, "backup");
+                            backup = 0;
                         }
                     }
 
@@ -354,6 +372,7 @@ TreeSet<Atom> s;
         }
         out.print((int)durwithdots);*/
 
+        // Ties
         if (atom instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) atom;
             if (note.getAtomPitch().getTiedFromPrevious() != null) {
@@ -363,20 +382,35 @@ TreeSet<Atom> s;
             if (note.getAtomPitch().getTiedToNext() != null) {
                 startEnd(sb, 5, "tie", "type", "start");
             }
+
         }
 
         startEndTextContentSingleLine(sb, 5, "voice", String.valueOf(atom.getLayer().getNumber()));
         if (atom.getLayer() != lastVoice) {
             backup += atom.getDuration().multiplyBy(divisions).intValue();
         }
-        lastVoice = atom.getLayer(); // TODO: esto va aquí? Hmmm...
 
+        // Type, tuplets, stems
         if (atom instanceof SingleFigureAtom) {
             SingleFigureAtom sfa = (SingleFigureAtom) atom;
             startEndTextContentSingleLine(sb, 5, "type", FIGURES.get(sfa.getAtomFigure().getFigure()));
             for (int idts = 0; idts < sfa.getAtomFigure().getDots(); idts++) {
                 startEnd(sb, 5, "dot");
             }
+
+            if (tuplet instanceof SimpleTuplet) {
+                SimpleTuplet stuplet = (SimpleTuplet) tuplet;
+                start(sb, 5, "time-modification");
+                  startEndTextContentSingleLine(sb,6,"actual-notes",String.valueOf(stuplet.getCardinality()));
+                  startEndTextContentSingleLine(sb,6,"normal-notes",String.valueOf(stuplet.getInSpaceOfAtoms()));
+                end(sb, 5, "time-modification");
+
+
+            }
+            // Stems
+            StemDirection stemdir = sfa.getExplicitStemDirection();
+            if (stemdir != null)
+                startEndTextContentSingleLine(sb, 5, "stem", stemdir.name());
         }
 
 
@@ -384,19 +418,46 @@ TreeSet<Atom> s;
             startEndTextContentSingleLine(sb, 5, "staff", String.valueOf(atom.getStaff().getNumberIdentifier()));
         }
 
-        if (tuplet instanceof SimpleTuplet) {
-            SimpleTuplet simpleTuplet = (SimpleTuplet) tuplet;
-            start(sb, 5, "time-modification");
-            startEndTextContentSingleLine(sb, 6, "actual-notes", String.valueOf(simpleTuplet.getCardinality()));
-            startEndTextContentSingleLine(sb, 6, "normal-notes", String.valueOf(simpleTuplet.getInSpaceOfAtoms()));
-            end(sb, 5, "time-modification");
-        }
-
+        // Beams and lyrics
+        // TODO: Beams of tuplets
         if (atom instanceof SimpleNote) {
-            AtomPitch note = ((SimpleNote) atom).getAtomPitch();
+            SimpleNote note = (SimpleNote) atom;
+            AtomPitch pitch = note.getAtomPitch();
 
-            if (note.getLyrics() != null) {
-                for (Map.Entry<Integer, ScoreLyric> entry : note.getLyrics().entrySet()) {
+            // Beams must go after <staff>, I believe
+            BeamGroup bg = note.getBelongsToBeam();
+            if (bg != null) {
+
+                String beamValue;
+                if (bg.getFirstFigure() == note)
+                    beamValue="begin";
+                else if (bg.getLastFigure() == note)
+                    beamValue="end";
+                else beamValue="continue";
+
+                // beam number is based on note duration
+                startEndTextContentSingleLine(sb,5, "beam", beamValue, "number", String.valueOf(computeBeamIndex(note)));
+            }
+
+            if (tuplet != null && tuplet instanceof SimpleTuplet) {
+                if (atom == tuplet.getFirstAtom() || atom == tuplet.getLastAtom()) {
+                    // tuplet <notations>
+                    // placement
+                    String placement = note.getExplicitStemDirection().name();
+
+                    if (placement.equals("up") || placement.equals("computed"))
+                        placement = "above";
+                    else placement = "below";
+                    start(sb, 5, "notations");
+                    String tuplet_type = (atom == tuplet.getFirstAtom() ? "start" : "stop");
+
+                    // TODO: check if the tuplet 'number' is really __getID()
+                    startEnd(sb, 6, "tuplet", "number", tuplet.__getID(), "placement", placement, "type", tuplet_type);
+                    end(sb, 5, "notations");
+                }
+            }
+            if (pitch.getLyrics() != null) {
+                for (Map.Entry<Integer, ScoreLyric> entry : pitch.getLyrics().entrySet()) {
                     start(sb, 5, "lyric", "number", String.valueOf(entry.getKey()));
                     startEndTextContentSingleLine(sb, 6, "syllabic", "single");
                     startEndTextContentSingleLine(sb, 6, "text", entry.getValue().getText());
@@ -404,6 +465,7 @@ TreeSet<Atom> s;
                 }
             }
         }
+
 
         end(sb, 3, "note");
 

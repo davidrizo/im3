@@ -93,10 +93,12 @@ public class ScoreLayerTest {
 
             SortedSet<AtomFigure> atoms = layer.getAtomFiguresSortedByTimeWithin(first_measure);
             assertEquals("First measure, first note",n0.getAtomFigure(),atoms.first());
+            // TODO: test notes in between
             assertEquals("First measure, last note",rest.getAtomFigure(),atoms.last());
 
             atoms = layer.getAtomFiguresSortedByTimeWithin(second_measure);
             assertEquals("Second measure, first note",n0_m2.getAtomFigure(),atoms.first());
+            // TODO: test notes in between
             assertEquals("Second measure, last note",n2_m2.getAtomFigure(),atoms.last());
         } catch (IM3Exception e) {
             e.printStackTrace();
