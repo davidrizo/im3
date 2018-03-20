@@ -30,7 +30,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
  * @author drizo
  */
 public class XMLExporterImporterTest {
-	boolean testMEIExportImport = false;
+	boolean testMEIExportImport = true;
     private boolean testMusicXMLExportImport = true;
 
     @Before
@@ -441,7 +441,7 @@ public class XMLExporterImporterTest {
 	@Test
 	public void simple_tuplet() throws Exception {
 		doTest(XMLExporterImporterTest::assertsimple_tuplet, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_tuplet.mei")));
-		//doTest(XMLExporterImporterTest::assertsimple_tuplet, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_tuplet.xml")));
+		doTest(XMLExporterImporterTest::assertsimple_tuplet, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_tuplet.xml")));
 	}
 	
 	// ------------------------------------------------------------------------------------------
@@ -710,12 +710,50 @@ public class XMLExporterImporterTest {
         return null;
     }
 
+    // ------------------------------------------------------------------------------------------
+    private static Void assertMultimeasureRestAtEnd(ScoreSong song) {
+        try {
+            assertEquals("Staves", 1, song.getStaves().size());
+            assertEquals("Measures", 8, song.getNumMeasures());
+            Staff staff = song.getStaves().get(0);
+            //for (Atom atom: staff.getAtoms()) {
+            //    System.out.println(atom.getClass());
+            //}
+            List<Atom> atoms = staff.getAtoms();
+            assertEquals("Atoms", 4, atoms.size());
+            SimpleMultiMeasureRest smr = (SimpleMultiMeasureRest) atoms.get(atoms.size()-1);
+            assertEquals("Multimeasure number of measures", 6, smr.getNumMeasures());
+            assertEquals("Duration", 18, smr.getQuarterRatioDuration(), 0.001);
+
+            /* TODO: Comprobar que hay doble barra final
+
+            Measure lastMeasure = song.getLastMeasure();
+            Collection<Connector> conectors = staff.getConnectors();
+            Iterator<Connector> it = conectors.iterator();
+            Connector c = null;
+            while (it.hasNext()) c = it.next();
+            if (c==null) fail("No end barline found");
+            assertSame(lastMeasure, c.getFrom());
+            */
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+
     @Test
     public void multimeasureRestBeginning() throws Exception {
-        doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.mei")));
+     //   doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.mei")));
         doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.xml")));
     }
 
+    @Test
+    public void multimeasureRestAtEnd() throws Exception {
+        // TODO: create MEI file
+        //        doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_at_end.mei")));
+        doTest(XMLExporterImporterTest::assertMultimeasureRestAtEnd, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_at_end.xml")));
+    }
 
 
 
@@ -951,10 +989,11 @@ public class XMLExporterImporterTest {
 	}
 
     // TODO: 1/10/17 Import beams in MusicXML
+    // DONE: Beams are exported in XML
     @Test
 	public void simpleBeam() throws Exception {
 		doTest(XMLExporterImporterTest::assertSimpleBeam, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.mei")));
-		//doTest(XMLExporterImporterTest::assertSimpleBeam, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.xml")));
+		doTest(XMLExporterImporterTest::assertSimpleBeam, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.xml")));
 	}
 
     // ------------------------------------------------------------------------------------------

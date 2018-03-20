@@ -44,7 +44,7 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 		duration = new Time(Fraction.ZERO); 
 		onset = new Time(Fraction.ZERO);
 	}
-	
+
 	/**
 	 * Package visibility. Used by layer on the addition of the atom to the layer
 	 * @param layer

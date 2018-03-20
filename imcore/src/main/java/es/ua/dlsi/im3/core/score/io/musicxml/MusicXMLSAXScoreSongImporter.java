@@ -306,6 +306,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     pendingMultirests = multipleRest;
                 }
 				break;
+            case "sound":
+                // TODO: handle <sound.../>
+                // sound contains tempo information and other playback parameters, such as segnos.
+                break;
 			case "print":
 			    String newSystem = getOptionalAttribute(attributes, "new-system");
 			    if (newSystem != null) {

@@ -106,8 +106,15 @@ public class SimpleChord extends SingleFigureAtom {
 	 */
 	public List<SimpleNote> getNotes() {
 		ArrayList<SimpleNote> notes = new ArrayList<>();
-		for (ScientificPitch pitch : getPitches()) {
-			SimpleNote snote = new SimpleNote(atomFigure.getFigure(), atomFigure.getDots(), pitch);
+		for (AtomPitch apitch : getAtomPitches()) {
+			SimpleNote snote = new SimpleNote(atomFigure.getFigure(), atomFigure.getDots(), null);
+			snote.atomPitch = apitch;
+			snote.atomFigure = atomFigure;
+			snote.connectorCollection = connectorCollection;
+			snote.belongsToBeam = belongsToBeam;
+			snote.setTime(getTime());
+			snote.setDuration(getDuration());
+			snote.setExplicitStemDirection(getExplicitStemDirection());
 			snote.setParentAtom(getParentAtom());
 			snote.setLayer(getLayer());
 			notes.add(snote);

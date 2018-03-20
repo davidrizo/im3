@@ -30,6 +30,7 @@ public class SimpleNote extends SingleFigureAtom {
 		super(figure, dots, alteredDuration);
 		atomPitch = new AtomPitch(this.atomFigure, pitch);
 	}
+
 	public ScientificPitch getPitch() {
 		return atomPitch.getScientificPitch();
 	}

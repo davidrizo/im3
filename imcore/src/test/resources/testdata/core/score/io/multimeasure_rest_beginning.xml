@@ -83,7 +83,7 @@
  <part id="P1">
   <!--============== Part: P1, Measure: 1 ==============-->
   <measure number="1" width="677">
-   <print new-page="yes">
+   <print new-page="yes"> 
     <system-layout>
      <system-margins>
       <left-margin>22</left-margin>
@@ -107,7 +107,7 @@
      <sign>G</sign>
      <line>2</line>
     </clef>
-    <staff-details number="1" print-object="yes" />
+    <staff-details number="1" print-object="yes" /> 
     <measure-style>
      <multiple-rest>6</multiple-rest>
     </measure-style>
