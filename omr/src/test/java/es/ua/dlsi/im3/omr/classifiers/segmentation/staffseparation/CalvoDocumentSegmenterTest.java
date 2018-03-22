@@ -26,7 +26,7 @@ public class CalvoDocumentSegmenterTest {
 
     @Test
     public void segment() throws Exception {
-        test("/testdata/images/mensural/manuscript/16-1544_ES-VC_1-3-1_00014.tif", 6); // there are actually 5 pages
+        test("/testdata/images/mensural/manuscript/16-1544_ES-VC_1-3-1_00014.tif", 6); // there are actually 5 staves
         test("/testdata/images/mensural/manuscript/12612.JPG", 14); // there are actually 12 staves, but the algorithm finds another one at top
         test("/testdata/images/mensural/manuscript/12608.JPG", 12); // it returns 12 regions!!
     }

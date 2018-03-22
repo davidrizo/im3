@@ -392,7 +392,7 @@
       <xs:group ref="StaffPitchData"/>
     </xs:sequence></xs:complexType></xs:element>
 
-    <!-- older dot position options for backwards compatibility -->
+    <!-- older dot positionInStaff options for backwards compatibility -->
     <xs:element name="StaffLoc" type="xs:integer"/>
     <xs:sequence>
       <xs:element name="RelativeStaffLoc" type="xs:integer"/>

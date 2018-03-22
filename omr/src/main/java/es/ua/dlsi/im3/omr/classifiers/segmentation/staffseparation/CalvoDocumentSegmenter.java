@@ -57,13 +57,23 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
         return score;
     }
 
+    public int findPagesDivisionPoint(URL imageFile) throws IM3Exception {
+        Mat score = readImage(imageFile.getFile());
+        return findPagesDivisionPoint(score);
+    }
+
+    public int findPagesDivisionPoint(Mat score) throws IM3Exception {
+        PageSplitting pageSplitting = new PageSplitting();
+        int pageDivisionPoint = pageSplitting.run(score);
+        return pageDivisionPoint;
+    }
+
     @Override
     public List<Region> segment(URL imageFile) throws IM3Exception {
-        // first split into pages
-        PageSplitting pageSplitting = new PageSplitting();
         Mat score = readImage(imageFile.getFile());
 
-        int pageDivisionPoint = pageSplitting.run(score);
+        // first split into pages
+        int pageDivisionPoint = findPagesDivisionPoint(score);
         List<Region> result = new ArrayList<>();
 
         if (pageDivisionPoint == 0 || pageDivisionPoint >= score.width()-1) {

@@ -393,7 +393,7 @@ public abstract class ScoreLayout {
         return layoutStaves.values();
     }
 
-    protected void repaint() throws IM3Exception {
+    public void repaint() throws IM3Exception {
         // TODO: 14/3/18 Añadir nuevos símbolos
         for (NotationSymbol notationSymbol: coreSymbolViews.values()) {
             if (notationSymbol instanceof LayoutCoreSymbol) {
@@ -403,8 +403,11 @@ public abstract class ScoreLayout {
                     layoutCoreSymbol.layout();
                 }
             } else if (notationSymbol.isDirtyLayout()) {
-                // TODO: 14/3/18 Notation symbol layout
+                notationSymbol.layout();
             }
+
+            // TODO: 15/3/18 Dirty no funciona - lo pongo manualmente
+            //notationSymbol.layout();
         }
     }
 

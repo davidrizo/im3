@@ -271,4 +271,20 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
     public Fermata getFermata() {
         return fermata;
     }
+
+    /**
+     * If figure does not have dots, the result is the duration of the figure, if has a dot, it is the duration of the dot if it has 2 dots, the duration of the second dot
+     * @return
+     */
+    public Time computeDurationOfSmallestParticle ()  {
+        Time duration = figure.getDuration();
+
+        Time minDur = duration;
+        double ratioDot=0.5;
+        for (int i=0; i<dots; i++) {
+            minDur = duration.multiply(ratioDot);
+            ratioDot /= 2.0;
+        }
+        return minDur;
+    }
 }

@@ -2,10 +2,7 @@ package es.ua.dlsi.im3.omr.conversions;
 
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
+import es.ua.dlsi.im3.omr.encoding.agnostic.*;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
 import org.junit.Test;
@@ -32,7 +29,7 @@ public class PagedCapitan2AgnosticTest {
     }
     @Test
     public void parseLine() throws ImportException {
-        HorizontalSeparator horizontalSeparator = new HorizontalSeparator();
+        HorizontalSeparator horizontalSeparator = new HorizontalSeparator(AgnosticVersion.v2);
 
         String input1 = "GCLEF.5 COLOUREDMINIMA.-10 COLOUREDMINIMA.0 MINIMA.01 MINIMA.01 MINIMAREST.1 BREVISREST.01";
         AgnosticToken[] expected1 = new AgnosticToken[] {

@@ -317,9 +317,9 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 	 * @return sorted array by time
 	 * @throws IM3Exception
 	 */
-	/*FRACCIONES public List<AtomFigure> getAtomFiguresWithOnsetWithin(Measure bar) throws IM3Exception {
+	public List<AtomFigure> getAtomFiguresWithOnsetWithin(Measure bar) throws IM3Exception {
 		return getAtomFiguresWithOnsetWithin(bar.getTime(), bar.getEndTime());
-	}	*/
+	}
 
 	/**
 	 * @return A sorted list
@@ -421,4 +421,5 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
     public void setSong(ScoreSong song) {
         this.scoreSong = song;
     }
+
 }

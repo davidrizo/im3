@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * All systems are arranged in a single line
@@ -131,9 +133,20 @@ public class HorizontalLayout extends ScoreLayout {
 
         clef.getStaff().replaceClef(clef, newClef, changePitches);
         layoutClef.setCoreSymbol(newClef);
-        this.repaint();
         coreSymbolViews.remove(clef);
         coreSymbolViews.put(newClef, layoutClef);
+
+        // set dirty of all affected notes to change their vertical position
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Changing note head positions");
+        // we change all elements in the staff because it is faster than filtering it - e.g. key signature must be changed
+        List<LayoutCoreSymbolInStaff> list = this.coreSymbolsInStaves.get(clef.getStaff());
+        if (list != null) {
+            for (LayoutCoreSymbolInStaff layoutCoreSymbolInStaff: list) {
+                layoutCoreSymbolInStaff.setDirtyLayout(true);
+                layoutCoreSymbolInStaff.layout(); // TODO: 16/3/18 Quitar - debería hacerse luego con los símnbo 
+            }
+        }
+
 
         /*System.err.println("TO-DO cambiar pitches o posición en replace Clef"); // TODO: 14/3/18 TO-DO cambiar pitches o posición en replace Clef
 

@@ -7,27 +7,7 @@ import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.TimeSignature;
-import es.ua.dlsi.im3.core.score.clefs.ClefC1;
-import es.ua.dlsi.im3.core.score.clefs.ClefC2;
-import es.ua.dlsi.im3.core.score.clefs.ClefC3;
-import es.ua.dlsi.im3.core.score.clefs.ClefC4;
-import es.ua.dlsi.im3.core.score.clefs.ClefC5;
-import es.ua.dlsi.im3.core.score.clefs.ClefEmpty;
-import es.ua.dlsi.im3.core.score.clefs.ClefF3;
-import es.ua.dlsi.im3.core.score.clefs.ClefF4;
-import es.ua.dlsi.im3.core.score.clefs.ClefF4OttavaAlta;
-import es.ua.dlsi.im3.core.score.clefs.ClefF4OttavaBassa;
-import es.ua.dlsi.im3.core.score.clefs.ClefF4QuindicesimaAlta;
-import es.ua.dlsi.im3.core.score.clefs.ClefF4QuindicesimaBassa;
-import es.ua.dlsi.im3.core.score.clefs.ClefF5;
-import es.ua.dlsi.im3.core.score.clefs.ClefG1;
-import es.ua.dlsi.im3.core.score.clefs.ClefG2;
-import es.ua.dlsi.im3.core.score.clefs.ClefG2OttavaAlta;
-import es.ua.dlsi.im3.core.score.clefs.ClefG2OttavaBassa;
-import es.ua.dlsi.im3.core.score.clefs.ClefG2QuindicesimaAlta;
-import es.ua.dlsi.im3.core.score.clefs.ClefG2QuindicesimaBassa;
-import es.ua.dlsi.im3.core.score.clefs.ClefPercussion;
-import es.ua.dlsi.im3.core.score.clefs.ClefTab;
+import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
@@ -45,7 +25,9 @@ public class ImportFactories {
 		Clef result;
 		switch (shape) {
 		case "G":
-			if (line == 1) {
+            if (line == 3) {
+                result = new ClefG3(); // artificial, used for experiments
+            } else if (line == 1) {
 				result = new ClefG1();
 			} else if (line != 2) {
 				throw new ImportException("Invalid line " + line + " for G clef");

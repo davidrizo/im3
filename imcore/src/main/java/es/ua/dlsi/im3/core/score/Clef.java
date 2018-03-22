@@ -81,7 +81,7 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
         // 	private int computeBottomLineNoteOrder(Clef clef) {
 
         // compute staff bottom line diatonic pitch
-        int noteOrder = note.getOrder() + noteOctave * 7;
+        int noteOrder = note == null?0:(note.getOrder() + noteOctave * 7);
         int bottomLineNoteOrder = noteOrder - (line - 1) * 2;
         this.bottomLineDiatonicPitch = DiatonicPitch.values()[bottomLineNoteOrder % 7];
         this.bottomLineOctave = bottomLineNoteOrder / 7;

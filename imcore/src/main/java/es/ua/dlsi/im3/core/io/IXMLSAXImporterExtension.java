@@ -1,8 +1,7 @@
 package es.ua.dlsi.im3.core.io;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-
-import es.ua.dlsi.im3.core.io.ImportException;
 
 /**
  * Add extra processing to the base one  
@@ -14,7 +13,7 @@ public interface IXMLSAXImporterExtension {
 
 	void handleCloseElement(String elementTag) throws ImportException;
 
-	void handleElementContent(String closingElementTag, String content) throws ImportException;
+	void handleElementContent(ArrayList<String> elementStack, String closingElementTag, String content) throws ImportException;
 
 
 }

@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.omr.classifiers.segmentation;
 
+import es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation.CalvoDocumentSegmenter;
+
 public class DocumentSegmenterFactory {
     private static DocumentSegmenterFactory ourInstance = new DocumentSegmenterFactory();
 
@@ -11,7 +13,7 @@ public class DocumentSegmenterFactory {
     }
 
     public IDocumentSegmenter create() {
-        //TODO
-        return new DummyDocumentSegmenter();
+        //return new DummyDocumentSegmenter();
+        return new CalvoDocumentSegmenter();
     }
 }

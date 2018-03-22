@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.0.1 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="3.0.1">
+  <identification>
+    <encoding>
+      <software>Audiveris 5.0.0</software>
+      <supports type="yes" element="print" attribute="new-system" value="yes"></supports>
+      <supports type="yes" element="print" attribute="new-page" value="yes"></supports>
+      <software>ProxyMusic 3.0.1.8e1a2c5</software>
+      <encoding-date>2018-03-19</encoding-date>
+    </encoding>
+    <source>/Users/drizo/cmg/investigacion/training_sets/sources/OMR/primus/original100kFicheros/package_aa/000051652-1_2_1/000051652-1_2_1.png</source>
+    <miscellaneous>
+      <miscellaneous-field name="source-file">/Users/drizo/cmg/investigacion/training_sets/sources/OMR/primus/original100kFicheros/package_aa/000051652-1_2_1/000051652-1_2_1.png</miscellaneous-field>
+      <miscellaneous-field name="source-sheet-1">1</miscellaneous-field>
+    </miscellaneous>
+  </identification>
+  <defaults>
+    <scaling>
+      <millimeters>6.0960</millimeters>
+      <tenths>40</tenths>
+    </scaling>
+    <page-layout>
+      <page-height>86</page-height>
+      <page-width>578</page-width>
+      <page-margins type="both">
+        <left-margin>80</left-margin>
+        <right-margin>80</right-margin>
+        <top-margin>80</top-margin>
+        <bottom-margin>80</bottom-margin>
+      </page-margins>
+    </page-layout>
+    <lyric-font font-family="Serif" font-size="10"></lyric-font>
+  </defaults>
+  <part-list>
+    <score-part id="P1">
+      <part-name>Part_1</part-name>
+      <score-instrument id="P1-I1">
+        <instrument-name>Voice Oohs</instrument-name>
+      </score-instrument>
+      <midi-instrument id="P1-I1">
+        <midi-channel>1</midi-channel>
+        <midi-program>54</midi-program>
+        <volume>78</volume>
+      </midi-instrument>
+    </score-part>
+  </part-list>
+  <!--= = = = = = = = = = = = = = = = = = = = = = = = = = = = =-->
+  <part id="P1">
+    <!--=======================================================-->
+    <measure number="1" width="186">
+      <print>
+        <system-layout>
+          <system-margins>
+            <left-margin>-79</left-margin>
+            <right-margin>-79</right-margin>
+          </system-margins>
+          <top-system-distance>-54</top-system-distance>
+        </system-layout>
+        <measure-numbering>system</measure-numbering>
+      </print>
+      <attributes>
+        <divisions>2</divisions>
+        <clef>
+          <sign>C</sign>
+          <line>1</line>
+        </clef>
+        <staff-details print-object="yes"></staff-details>
+      </attributes>
+      <direction>
+        <direction-type>
+          <words></words>
+        </direction-type>
+        <sound tempo="120"></sound>
+      </direction>
+      <note default-x="88">
+        <pitch>
+          <step>B</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>whole</type>
+      </note>
+    </measure>
+    <!--=======================================================-->
+    <measure number="2" width="104">
+      <note default-x="11">
+        <rest>
+          <display-step>F</display-step>
+          <display-octave>3</display-octave>
+        </rest>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+      </note>
+    </measure>
+    <!--=======================================================-->
+    <measure number="3" width="91">
+      <note default-x="11">
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>3</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <dot/>
+        <stem default-y="-44">down</stem>
+      </note>
+      <note default-x="60">
+        <pitch>
+          <step>F</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>1</duration>
+        <voice>1</voice>
+        <type>eighth</type>
+        <stem default-y="-55">down</stem>
+      </note>
+    </measure>
+    <!--=======================================================-->
+    <measure number="4" width="91">
+      <note default-x="11">
+        <pitch>
+          <step>D</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>3</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <dot/>
+        <stem default-y="-31">down</stem>
+      </note>
+    </measure>
+    <!--=======================================================-->
+    <measure number="5" width="105">
+      <note default-x="11">
+        <pitch>
+          <step>B</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>1</duration>
+        <voice>1</voice>
+        <type>eighth</type>
+        <stem default-y="-41">down</stem>
+      </note>
+      <note default-x="36">
+        <pitch>
+          <step>B</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>1</duration>
+        <voice>1</voice>
+        <type>eighth</type>
+        <stem default-y="-41">down</stem>
+      </note>
+      <note default-x="62">
+        <rest>
+          <display-step>F</display-step>
+          <display-octave>3</display-octave>
+        </rest>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+      </note>
+    </measure>
+  </part>
+</score-partwise>

@@ -17,6 +17,8 @@
 package es.ua.dlsi.im3.core.score;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
@@ -597,6 +599,35 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return result;
 	}
 
+    // TODO: 15/3/18 Test unitario
+    /**
+     * @param from
+     * @param to Excluded
+     * @return
+     * @throws IM3Exception
+     */
+    public List<AtomPitch> getAtomPitchesWithOnsetWithin(Time from, Time to) throws IM3Exception {
+        ArrayList<AtomPitch> result = new ArrayList<>();
+
+        for (ITimedElementInStaff symbol: coreSymbols) {
+            if (symbol instanceof Atom) {
+                Atom atom = (Atom) symbol;
+                List<AtomPitch> aps = atom.getAtomPitches();
+                if (aps != null) {
+                    for (AtomPitch ap: aps) {
+                        if (ap.getStaff() == this && ap.getTime().compareTo(from) >= 0 && ap.getTime().compareTo(to) < 0) {
+                            result.add(ap);
+                        }
+                    }
+                }
+            } else if (symbol instanceof AtomPitch &&  symbol.getTime().compareTo(from) >= 0 && symbol.getTime().compareTo(to) < 0) {
+                result.add((AtomPitch) symbol);
+            }
+        }
+        return result;
+    }
+
+
 	public List<Atom> getAtoms() throws IM3Exception {
 		ArrayList<Atom> result = new ArrayList<>();
 		
@@ -899,13 +930,24 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         }
 
         if (changePitches) {
-            // TODO: 14/3/18
-            System.err.println("TO-DO replaceClef Change pitches ....");
-        } else {
-            // TODO: 14/3/18
-            System.err.println("TO-DO replaceClef Change pitches ....");
+            Time nextClefTime = clefs.higherKey(oldClef.getTime());
+
+            // TODO: 15/3/18 ¿Se debe incluir el octave change?
+            ScientificPitch fromPitch = new ScientificPitch(new PitchClass(oldClef.getBottomLineDiatonicPitch()), oldClef.getNoteOctave());
+            ScientificPitch toPitch = new ScientificPitch(new PitchClass(newClef.getBottomLineDiatonicPitch()), newClef.getNoteOctave());
+            Interval interval = Interval.compute(fromPitch, toPitch);
+
+            if (nextClefTime == null) {
+                nextClefTime = Time.TIME_MAX;
+                Logger.getLogger(Staff.class.getName()).log(Level.INFO, "Changing pitches from time " + oldClef.getTime() + " till the end the interval " + interval);
+            } else {
+                Logger.getLogger(Staff.class.getName()).log(Level.INFO, "Changing pitches from time " + oldClef.getTime() + " to " + nextClefTime + " the interval " + interval);
+            }
+
+            List<AtomPitch> pitches = this.getAtomPitchesWithOnsetWithin(oldClef.getTime(), nextClefTime);
+            for (AtomPitch pitch: this.getAtomPitches()) {
+                pitch.transpose(interval);
+            }
         }
-
-
     }
 }

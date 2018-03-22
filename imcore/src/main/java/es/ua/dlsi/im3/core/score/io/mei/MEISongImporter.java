@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.InputStream;
 
 import es.ua.dlsi.im3.core.score.DurationEvaluator;
+import es.ua.dlsi.im3.core.score.Measure;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
 import es.ua.dlsi.im3.core.io.IXMLSAXImporterExtension;
 import es.ua.dlsi.im3.core.io.ImportException;
@@ -39,21 +41,26 @@ public class MEISongImporter implements IScoreSongImporter {
 	public void registerExtension(IXMLSAXImporterExtension extension) {
 		importer.registerExtension(extension);
 	}
+
 	/*public AMTimedElement findXMLID(String xmlid) throws ImportException {
 		return importer.findXMLID(xmlid);
 	}
 	public double decodeTStamp(AMMeasure measure, String tstamp) {
 		return importer.decodeTStamp(measure, tstamp);
 	}*/
-	/*FRACCIONES public ISymbolInLayer findXMLID(String xmlid) throws ImportException {
-		AMTimedElement timedElement = importer.findXMLID(xmlid);
-		return abstractModel2ModernSong.findCoreSymbol(timedElement);		
+
+	public Object findXMLID(String xmlid) throws ImportException {
+		Object timedElement = importer.findXMLID(xmlid);
+		return timedElement;
 	}
 	public Time decodeTStamp(String measureid, String tstamp) throws ImportException {
-		AMTimedElement measure = importer.findXMLID(measureid);		
-		Time quarters = importer.decodeTStamp((AMMeasure)measure, tstamp);
+		Object objMeasure = importer.findXMLID(measureid);
+		if (!(objMeasure instanceof Measure)) {
+		    throw new ImportException("Object with ID '" + measureid + "' is not a measure, it is a " + objMeasure.getClass());
+        }
+		Time quarters = importer.decodeTStamp((Measure) objMeasure, tstamp);
 		return quarters;
-	}*/
+	}
 	
 	
 	//TODO Añadir la lectura de group, mdiv....

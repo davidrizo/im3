@@ -27,7 +27,7 @@ public class LinearRhythmRepresentation extends MotiveRepresentation {
                 CoordinateComponent x = new CoordinateComponent(figure.getTime().multiply(SCALE).getComputedTime());
                 Coordinate coordinateFrom = new Coordinate(x, new CoordinateComponent());
                 Coordinate coordinateTo = new Coordinate(x, new CoordinateComponent(HEIGHT));
-                Line line = new Line(null, coordinateFrom, coordinateTo);
+                Line line = new Line(null, null, coordinateFrom, coordinateTo);
                 lines.add(line);
             }
         }

@@ -4,7 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
-import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;

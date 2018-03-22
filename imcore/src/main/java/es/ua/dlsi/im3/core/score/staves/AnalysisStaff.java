@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 
-// TODO: 5/10/17 Deprecated?
+// TODO: 5/10/17 Deprecated? - it is used in analysis
 /**
  * The layer that contains all analysis hooks is the hooks layer
  * @author drizo
@@ -50,6 +50,7 @@ public class AnalysisStaff extends Staff {
 
 	public void addAnalysisHook(ScoreAnalysisHook e) throws IM3Exception {
 		analysisHooks.put(e.getTime(), e);
+		e.setStaff(this);
 	}
 
 

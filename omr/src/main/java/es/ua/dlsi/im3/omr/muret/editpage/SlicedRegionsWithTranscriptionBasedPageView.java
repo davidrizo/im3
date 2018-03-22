@@ -7,7 +7,6 @@ import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
-import es.ua.dlsi.im3.gui.score.ScoreSongView;
 import es.ua.dlsi.im3.omr.muret.model.OMRPage;
 import es.ua.dlsi.im3.omr.muret.model.OMRRegion;
 import es.ua.dlsi.im3.omr.model.pojo.RegionType;

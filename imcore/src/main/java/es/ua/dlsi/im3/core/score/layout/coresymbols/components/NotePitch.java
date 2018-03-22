@@ -36,6 +36,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     private PositionInStaff positionInStaff;
 
     CoordinateComponent dotsYCoordinate;
+    private LayoutStaff layoutStaff;
 
     /**
      * @param parent
@@ -105,29 +106,8 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     }
 
     public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
-        noteHeadPictogram.getPosition().setReferenceY(layoutStaff.computeYPosition(positionInStaff));
-
-        if (dotsYCoordinate != null) {
-            double yDisplacement = 0;
-            if (positionInStaff.laysOnLine()) {
-                yDisplacement = -LayoutConstants.SPACE_HEIGHT / 2;
-            }
-            dotsYCoordinate.setDisplacement(yDisplacement);
-            dotsYCoordinate.setReference(noteHeadPictogram.getPosition().getY());
-                    //= new CoordinateComponent(noteHeadPictogram.getPosition().getY(), yDisplacement);
-        }
-        if (dots != null) {
-            for (int d = 0; d < dots.size(); d++) {
-                CoordinateComponent dotX = new CoordinateComponent(position.getX(), LayoutConstants.DOT_SEPARATION);
-                dots.get(d).getPosition().setReferenceY(dotsYCoordinate);
-            }
-        }
-        if (accidental != null) {
-            accidental.getPosition().setReferenceY(noteHeadPictogram.getPosition().getY());
-        }
-        if (layoutScoreLyric != null) {
-            layoutScoreLyric.getPosition().setReferenceY(layoutStaff.getBottomLine().getPosition().getY());
-        }
+        this.layoutStaff = layoutStaff;
+        doLayout();
     }
 
     private String getUnicode() throws IM3Exception {
@@ -246,6 +226,28 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
 
     @Override
     protected void doLayout() throws IM3Exception {
-        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
+        noteHeadPictogram.getPosition().setReferenceY(layoutStaff.computeYPosition(positionInStaff));
+
+        if (dotsYCoordinate != null) {
+            double yDisplacement = 0;
+            if (positionInStaff.laysOnLine()) {
+                yDisplacement = -LayoutConstants.SPACE_HEIGHT / 2;
+            }
+            dotsYCoordinate.setDisplacement(yDisplacement);
+            dotsYCoordinate.setReference(noteHeadPictogram.getPosition().getY());
+            //= new CoordinateComponent(noteHeadPictogram.getPosition().getY(), yDisplacement);
+        }
+        if (dots != null) {
+            for (int d = 0; d < dots.size(); d++) {
+                CoordinateComponent dotX = new CoordinateComponent(position.getX(), LayoutConstants.DOT_SEPARATION);
+                dots.get(d).getPosition().setReferenceY(dotsYCoordinate);
+            }
+        }
+        /*if (accidental != null) { // it is alreay set
+            accidental.getPosition().setReferenceY(noteHeadPictogram.getPosition().getY());
+        }*/
+        if (layoutScoreLyric != null) {
+            layoutScoreLyric.getPosition().setReferenceY(layoutStaff.getBottomLine().getPosition().getY());
+        }
     }
 }

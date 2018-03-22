@@ -6,11 +6,9 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
-import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 import es.ua.dlsi.im3.core.score.layout.graphics.Shape;
-import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 
 import java.io.BufferedWriter;
@@ -54,7 +52,7 @@ public class StaffRenderer {
             CoordinateComponent coordinateComponentY = new CoordinateComponent(STAFF_TOP_MARGIN+i*LINE_SEPARATION);
             Coordinate coordinateFrom = new Coordinate(fromX, coordinateComponentY);
             Coordinate coordinateTo = new Coordinate(toX, coordinateComponentY);
-            Line line = new Line(null, coordinateFrom, coordinateTo);
+            Line line = new Line(null, InteractionElementType.staffLine, coordinateFrom, coordinateTo);
             line.setThickness(3); // TODO: 7/11/17 Comprobarlo
             shapes.add(line);
             staffLines.add(line);
@@ -86,22 +84,22 @@ public class StaffRenderer {
                 if (staff.getScoreSong().getMeasureWithOnset(symbol.getTime()) != null) {
                     // add a barline
                     Glyph glyph = glyphFinder.findBarline();
-                    glyphs.add(new SVGGlyph(glyph));
+                    glyphs.add(new SVGGlyph(glyph, InteractionElementType.barline));
                 }
             }
 
             if (symbol instanceof Clef) {
                 Glyph glyph = glyphFinder.findClef((Clef) symbol);
-                glyphs.add(new SVGGlyph(glyph));
+                glyphs.add(new SVGGlyph(glyph, InteractionElementType.clef));
             } else if (symbol instanceof KeySignature) {
                 KeySignature keySignature = (KeySignature) symbol;
                 for (KeySignatureAccidentalElement accidental: keySignature.getAccidentals()) {
                     Glyph glyph = glyphFinder.findAcidental(accidental.getAccidental());
-                    glyphs.add(new SVGGlyph(glyph));
+                    glyphs.add(new SVGGlyph(glyph, InteractionElementType.keySignature));
                 }
             } else if (symbol instanceof FractionalTimeSignature) {
                 Glyph glyph = glyphFinder.findTimeSignature((FractionalTimeSignature) symbol);
-                glyphs.add(new SVGGlyph(glyph));
+                glyphs.add(new SVGGlyph(glyph, InteractionElementType.fractionalTimeSignature));
             } else if (symbol instanceof SimpleNote) {
                 renderNote(glyphs, (SimpleNote) symbol, accidentalsToShow);
             } else if (symbol instanceof SimpleRest) {
@@ -125,24 +123,24 @@ public class StaffRenderer {
         Accidentals accidental = accidentalsToShow.get(symbol.getAtomPitch());
         if (accidental != null) {
             Glyph accGlyph = glyphFinder.findAcidental(accidental);
-            glyphs.add(new SVGGlyph(accGlyph));
+            glyphs.add(new SVGGlyph(accGlyph, InteractionElementType.accidental));
         }
         Glyph figureGlyph = glyphFinder.findFigure(symbol.getAtomFigure().getFigure(), "Note");
-        glyphs.add(new SVGGlyph(figureGlyph));
+        glyphs.add(new SVGGlyph(figureGlyph, InteractionElementType.noteHead));
 
         for (int i=0; i<symbol.getAtomFigure().getDots(); i++) {
             Glyph dotGlyph = glyphFinder.findDot();
-            glyphs.add(new SVGGlyph(dotGlyph));
+            glyphs.add(new SVGGlyph(dotGlyph, InteractionElementType.dot));
         }
     }
 
     private void renderRest(List<SVGGlyph> glyphs, SimpleRest symbol) throws IM3Exception {
         Glyph figureGlyph = glyphFinder.findFigure(symbol.getAtomFigure().getFigure(), "Rest");
-        glyphs.add(new SVGGlyph(figureGlyph));
+        glyphs.add(new SVGGlyph(figureGlyph, InteractionElementType.rest));
 
         for (int i=0; i<symbol.getAtomFigure().getDots(); i++) {
             Glyph dotGlyph = glyphFinder.findDot();
-            glyphs.add(new SVGGlyph(dotGlyph));
+            glyphs.add(new SVGGlyph(dotGlyph, InteractionElementType.rest));
         }
     }
 
@@ -164,7 +162,7 @@ public class StaffRenderer {
 
         XMLExporterHelper.start(sbContent, 2, "g", "class", "page", "transform", "translate(30, 30)"); //TODO Configurar márgen
         for (Shape shape: shapes) {
-            shape.generateSVG(sbContent, 3, null);
+            shape.doGenerateSVG(sbContent, 3, null);
         }
 
         XMLExporterHelper.end(sbContent, 2, "g");

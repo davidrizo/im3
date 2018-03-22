@@ -98,6 +98,8 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
     public void rebuild() {
         throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
     }
+
+
     @Override
     protected void doLayout() throws IM3Exception {
         if (positionInStaffs != null) {
@@ -107,5 +109,12 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
                 accidentals.get(i).getPosition().setReferenceY(y);
             }
         }
+    }
+
+    // TODO: 15/3/18
+    @Override
+    public void layout() throws IM3Exception {
+        doLayout();
+        setDirtyLayout(false);
     }
 }

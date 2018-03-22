@@ -11,7 +11,7 @@ import es.ua.dlsi.im3.gui.command.ICommand;
 import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.gui.useractionlogger.actions.Coordinate;
 import es.ua.dlsi.im3.gui.useractionlogger.actions.MouseClickAction;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
@@ -507,7 +507,7 @@ public class OMRMainController implements Initializable{
                 symbolViewToChange.startEdit();
                 loadPossibleCorrections(symbolViewToChange);
                 toolbarCorrectionSymbols.setVisible(true);
-                lvSymbols.refresh(); // If not added it does not accept reposition ¿?
+                lvSymbols.refresh(); // If not added it does not accept layout ¿?
             }
         }
     }
@@ -624,7 +624,7 @@ public class OMRMainController implements Initializable{
                 commandManager.executeCommand(cmd);
             } catch (IM3Exception e) {
                 Logger.getLogger(OMRMainController.class.getName()).log(Level.WARNING, null, e);
-                ShowError.show(OMRApp.getMainStage(), "Cannot reposition", e);
+                ShowError.show(OMRApp.getMainStage(), "Cannot layout", e);
             }
         }
 

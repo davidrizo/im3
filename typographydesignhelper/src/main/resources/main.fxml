@@ -26,7 +26,7 @@
             <Label text="Staff line tickness" />
             <Spinner fx:id="spinnerStaffLineThickness" editable="true" />
             <Separator layoutX="474.0" layoutY="10.0" orientation="VERTICAL" prefHeight="20.0" />
-            <Label text="Vertical position" />
+            <Label text="Vertical positionInStaff" />
             <Spinner fx:id="spinnerVerticalPosition" editable="true" />
         </items>
       </ToolBar>

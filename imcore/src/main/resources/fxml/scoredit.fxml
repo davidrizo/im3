@@ -22,11 +22,17 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpenMEI" text="Open MEI">
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpenMEI" text="Open MEI ...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="UP" shortcut="ANY" />
                            </accelerator>
                         </MenuItem>
+                        <MenuItem fx:id="menuItemSave" mnemonicParsing="false" onAction="#handleSaveMEI" text="Save MEI">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="menuItemSaveMEIAs" mnemonicParsing="false" onAction="#handleSaveMEIAs" text="Save MEI As..." />
                     <MenuItem mnemonicParsing="false" text="Close" />
                   </items>
                 </Menu>

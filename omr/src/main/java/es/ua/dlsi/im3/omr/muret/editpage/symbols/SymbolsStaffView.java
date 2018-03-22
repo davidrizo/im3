@@ -174,17 +174,17 @@ public class SymbolsStaffView extends TranscriptionStaffView {
         LayoutCoreClef layoutCoreClef = new LayoutCoreClef(manuscriptLayoutFont, new ClefG2());
         layoutCoreClef.getPosition().setX(new CoordinateComponent(40));
         layoutCoreClef.getPosition().setReferenceY(new CoordinateComponent(lines[1].getStartY())); //TODO
-        transcriptionGroup.getChildren().add(layoutCoreClef.getGraphics().getJavaFXRoot());
-        SVGPath p0 = (SVGPath) layoutCoreClef.getGraphics().getJavaFXRoot();
+        transcriptionGroup.getChildren().add(layoutCoreClef.getGraphics().doGenerateJavaFXRoot());
+        SVGPath p0 = (SVGPath) layoutCoreClef.getGraphics().doGenerateJavaFXRoot();
         p0.setFill(symbolsRegionView.stripeColors[0]);
         //layoutCoreClef.setColor(symbolsRegionView.getSymbolViewArrayList().get(0).getColor());
 
         LayoutCoreSignTimeSignature layoutCoreSignTimeSignature = new LayoutCoreSignTimeSignature(manuscriptLayoutFont, new TimeSignatureCommonTime(notationType));
         layoutCoreSignTimeSignature.getPosition().setX(new CoordinateComponent(110)); //TODO Igual que la X del símbolo
         layoutCoreSignTimeSignature.getPosition().setReferenceY(new CoordinateComponent(lines[2].getStartY())); //TODO
-        transcriptionGroup.getChildren().add(layoutCoreSignTimeSignature.getGraphics().getJavaFXRoot());
+        transcriptionGroup.getChildren().add(layoutCoreSignTimeSignature.getGraphics().doGenerateJavaFXRoot());
         transcriptionPane.getChildren().add(transcriptionGroup);
-        SVGPath p1 = (SVGPath) layoutCoreSignTimeSignature.getGraphics().getJavaFXRoot();
+        SVGPath p1 = (SVGPath) layoutCoreSignTimeSignature.getGraphics().doGenerateJavaFXRoot();
         //p1.setFill(symbolsRegionView.getSymbolViewArrayList().get(1).getColor());
         p1.setFill(symbolsRegionView.stripeColors[1]);
         //layoutCoreSignTimeSignature.setColor(symbolsRegionView.getSymbolViewArrayList().get(0).getColor());

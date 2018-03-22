@@ -41,6 +41,9 @@ public class CoordinateComponent {
     }
 
     public void setReference(CoordinateComponent reference) {
+        if (this == reference) {
+            throw new IM3RuntimeException("Cannot set a reference to the coordinate component itself: " + this);
+        }
         this.reference = reference;
     }
 
