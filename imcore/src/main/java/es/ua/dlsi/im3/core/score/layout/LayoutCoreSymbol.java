@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaffSystem;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +30,6 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
      */
     protected int defaultHorizontalOrdering;
 
-    /**
-     * Whether the core symbol has changed and need recomputing
-     */
-    protected boolean dirtyCoreSymbol;
-
     private List<Component<? extends LayoutCoreSymbol<CoreSymbolType>>> components;
 
     /**
@@ -47,12 +43,10 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
         this.position = new Coordinate(new CoordinateComponent(), new CoordinateComponent());
 
         defaultHorizontalOrdering = LayoutSymbolsHorizontalOrderings.getInstance().getGroupDefaultOrder(this);
-        this.dirtyCoreSymbol = false;
     }
 
     public void setCoreSymbol(CoreSymbolType coreSymbol) {
         this.coreSymbol = coreSymbol;
-        dirtyCoreSymbol = true;
     }
 
     /**
@@ -125,16 +119,13 @@ public abstract class LayoutCoreSymbol<CoreSymbolType extends ITimedElement> ext
         return diff;
     }
 
-    public boolean isDirtyCoreSymbol() {
-        return dirtyCoreSymbol;
-    }
 
     @Override
     public String toString() {
         return getClass() + "@" + getTime() + ", hordering=" + defaultHorizontalOrdering;
     }
 
-    public abstract void rebuild() throws IM3Exception;
+    protected abstract void rebuild() throws IM3Exception;
 
     /**
      * Such as a dot displaced from a note head

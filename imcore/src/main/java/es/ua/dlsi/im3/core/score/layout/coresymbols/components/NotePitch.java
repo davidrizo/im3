@@ -250,4 +250,8 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
             layoutScoreLyric.getPosition().setReferenceY(layoutStaff.getBottomLine().getPosition().getY());
         }
     }
+
+    public void setPositionInStaff(PositionInStaff positionInStaff) {
+        this.positionInStaff = positionInStaff;
+    }
 }

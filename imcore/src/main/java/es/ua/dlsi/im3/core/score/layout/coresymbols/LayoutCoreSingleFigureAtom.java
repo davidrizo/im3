@@ -181,8 +181,14 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         //TODO Para acordes
         CoordinateComponent stemYPosition = null;
         for (NotePitch notePitch: notePitches) {
+            ScientificPitch scientificPitch = notePitch.getScientificPitch();
+            PositionInStaff positionInStaff = getCoreSymbol().getStaff().computePositionInStaff(getTime(),scientificPitch.getPitchClass().getNoteName(),
+                    scientificPitch.getOctave());
+            notePitch.setPositionInStaff(positionInStaff); //TODO Esto no está bien así - está duplicado el código con la construcción
+
             // TODO: 24/9/17 ¿Y si ya las tenía?
             notePitch.setLayoutStaff(layoutStaff);
+            notePitch.layout();
             layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getNoteHeadWidth());
             stemYPosition = notePitch.getNoteHeadPosition().getY();
         }

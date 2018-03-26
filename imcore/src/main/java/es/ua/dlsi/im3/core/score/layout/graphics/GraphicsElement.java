@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
+import java.time.Instant;
 import java.util.HashSet;
 
 // TODO: 18/9/17  Create a GraphicsDevice instead of implementing these interfaces
@@ -29,9 +30,9 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
     private long idSequence;
     private RGBA color;
     /**
-     * Has changed and the client (JavaFX, PDF or SVG) needs recompute it
+     * Last instant it has been repainted
      */
-    private boolean dirty;
+    private Instant lastRepaint;
 
     public GraphicsElement(NotationSymbol notationSymbol, InteractionElementType interactionElementType) {
         this.notationSymbol = notationSymbol;
@@ -45,18 +46,17 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
         }
         this.ID = this.interactionElementType.name() + "_" + this.idSequence;
         hidden = false;
-        dirty = true;
     }
     
     public void repaint() throws IM3Exception {
         doRepaint();
-        dirty = true;
+        lastRepaint = Instant.now();
     }
 
     protected abstract void doRepaint() throws IM3Exception;
 
-    public boolean isDirty() {
-        return dirty;
+    public Instant getLastRepaint() {
+        return lastRepaint;
     }
 
     public Canvas getCanvas() {
@@ -136,17 +136,14 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
 
     public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         doGenerateSVG(sb, tabs, usedGlyphs);
-        dirty = false; // just one client (svg, javafx, pdf) will be used //TODO Modelarlo mejor esto
     }
 
     public void generatePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
         doGeneratePDF(contents, exporter, page);
-        dirty = false;
     }
 
     public Node generateJavaFXRoot() throws GUIException, ExportException {
         Node result = doGenerateJavaFXRoot();
-        dirty = false;
         return result;
     }
 }

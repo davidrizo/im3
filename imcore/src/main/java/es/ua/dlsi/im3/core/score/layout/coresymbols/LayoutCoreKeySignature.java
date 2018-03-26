@@ -102,12 +102,13 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
 
     @Override
     protected void doLayout() throws IM3Exception {
-        if (positionInStaffs != null) {
-            double nextRelativeXPosition = 0;
-            for (int i=0; i<positionInStaffs.length; i++) {
-                CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
-                accidentals.get(i).getPosition().setReferenceY(y);
-            }
+        positionInStaffs = coreSymbol.computePositionsOfAccidentals();
+
+        double nextRelativeXPosition = 0;
+        for (int i=0; i<positionInStaffs.length; i++) {
+            CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
+            accidentals.get(i).setReferenceY(y);
+            accidentals.get(i).layout();
         }
     }
 
@@ -115,6 +116,5 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
     @Override
     public void layout() throws IM3Exception {
         doLayout();
-        setDirtyLayout(false);
     }
 }

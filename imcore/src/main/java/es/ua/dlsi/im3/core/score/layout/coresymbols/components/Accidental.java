@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
@@ -32,7 +33,7 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
         super(accidental, parent, position);
         this.accidental = accidental;
 
-        pictogram = new Pictogram(this, InteractionElementType.accidental, layoutFont, getUnicode(), position); //TODO IDS
+        pictogram = new Pictogram(this, InteractionElementType.accidental, layoutFont, getUnicode(), position);
     }
 
     private String getUnicode() {
@@ -55,6 +56,10 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
 
     @Override
     protected void doLayout() throws IM3Exception {
-        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
+        // TODO: 26/3/18 ¿Si ha cambiado el pictograma?
+    }
+
+    public void setReferenceY(CoordinateComponent y) {
+        this.getPosition().setReferenceY(y);
     }
 }

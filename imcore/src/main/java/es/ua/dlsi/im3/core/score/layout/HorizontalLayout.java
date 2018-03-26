@@ -125,7 +125,7 @@ public class HorizontalLayout extends ScoreLayout {
 
     @Override
     public void replace(Clef clef, Clef newClef, boolean changePitches) throws IM3Exception {
-        // TODO: 14/3/18 Generalizar este replace
+        // TODO: 14/3/18 Generalizar este replace para todos los símbolos y layouts
         LayoutCoreClef layoutClef = (LayoutCoreClef) this.coreSymbolViews.get(clef);
         if (layoutClef  == null) {
             throw new IM3Exception("Cannot find a notation symbol for clef to be replaced: " + clef);
@@ -133,20 +133,24 @@ public class HorizontalLayout extends ScoreLayout {
 
         clef.getStaff().replaceClef(clef, newClef, changePitches);
         layoutClef.setCoreSymbol(newClef);
+        if (!clef.getNote().equals(newClef.getNote())) {
+            layoutClef.rebuild(); // TODO: 26/3/18 ¿Mejor en el setCoreSymbol? 
+        }
+        layoutClef.layout();
+
         coreSymbolViews.remove(clef);
         coreSymbolViews.put(newClef, layoutClef);
 
         // set dirty of all affected notes to change their vertical position
-        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Changing note head positions");
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Changing note head positions for change in clef");
+
         // we change all elements in the staff because it is faster than filtering it - e.g. key signature must be changed
         List<LayoutCoreSymbolInStaff> list = this.coreSymbolsInStaves.get(clef.getStaff());
         if (list != null) {
             for (LayoutCoreSymbolInStaff layoutCoreSymbolInStaff: list) {
-                layoutCoreSymbolInStaff.setDirtyLayout(true);
-                layoutCoreSymbolInStaff.layout(); // TODO: 16/3/18 Quitar - debería hacerse luego con los símnbo 
+                layoutCoreSymbolInStaff.layout();
             }
         }
-
 
         /*System.err.println("TO-DO cambiar pitches o posición en replace Clef"); // TODO: 14/3/18 TO-DO cambiar pitches o posición en replace Clef
 
