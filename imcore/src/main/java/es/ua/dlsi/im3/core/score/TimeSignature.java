@@ -108,4 +108,5 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
     public double getBeat(Time onset) throws IM3Exception {
         double offset = onset.substract(this.getTime()).mod(getDuration());
         return offset;
-    }}
+    }
+}

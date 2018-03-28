@@ -8,6 +8,8 @@ import es.ua.dlsi.im3.core.score.harmony.*;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.io.antlr.ErrorListener;
@@ -84,6 +86,7 @@ public class KernImporter implements IScoreSongImporter {
 
         HashMap<Integer, ScoreLayer> spines = new HashMap<>();
         HashMap<Integer, Staff> stavesForSpines = new HashMap<>();
+        HashMap<Integer, String> namesForSpines = new HashMap<>();
         private HashMap<Integer, NotationType> spineNotationTypes = new HashMap<>();
         HashMap<Integer, Staff> stavesByNumber = new HashMap<>();
         HierarchicalIDGenerator hierarchicalIDGenerator = new HierarchicalIDGenerator();
@@ -201,7 +204,7 @@ public class KernImporter implements IScoreSongImporter {
             stavesForSpines.put(currentSpineIndex, staff);
             ScoreLayer layer = spines.get(currentSpineIndex);
             if (layer == null) {
-                throw new IM3RuntimeException("Spine " + currentSpineIndex + " has not a layer");
+                throw new IM3RuntimeException("Spine " + currentSpineIndex + " has not a layer (maybe the **mens or **kern is missing)");
             }
             staff.addLayer(0, layer);
             stavesByNumber.put(number, staff);
@@ -210,6 +213,12 @@ public class KernImporter implements IScoreSongImporter {
                 scoreSong.addStaffAt(0, staff); // kern begins from bottom
             }
             staff.addPart(globalPart); // TODO: 20/11/17 Parts when two parts in a staff - ahora está todo en el mismo part!!!!
+
+            String staffName = namesForSpines.get(currentSpineIndex);
+            if (staffName != null) {
+                staff.setName(staffName);
+            }
+
             return staff;
         }
 
@@ -326,11 +335,11 @@ public class KernImporter implements IScoreSongImporter {
         public void exitSong(kernParser.SongContext ctx) {
             for (int i=0; i<ctx.getChildCount(); i++) {
                 ParseTree child = ctx.getChild(i);
-                System.out.println("CHIIIIIIDDDDDDDD " + child.getText()); // FIXME: 13/10/17
+                //System.out.println("CHIIIIIIDDDDDDDD " + child.getText()); // FIXME: 13/10/17
                 if (child instanceof TerminalNode) {
                     TerminalNode typeNode = (TerminalNode) child;
                     if (typeNode.getSymbol().getType() == kernLexer.METADATACOMMENT) {
-                        System.out.println("!!!!!!!!!! READING METADATA: " + typeNode.getText());
+                        System.out.println("READING METADATA: " + typeNode.getText());
                     }
                 }
             }
@@ -454,6 +463,16 @@ public class KernImporter implements IScoreSongImporter {
             currentVoice = spines.get(currentSpineIndex);
 
             //updateLastTime();
+        }
+
+        @Override
+        public void exitFieldComment(kernParser.FieldCommentContext ctx) {
+            Staff staff = stavesForSpines.get(currentSpineIndex);
+            if (staff == null) {
+                // no staff yet - this field is the staff name
+                String name = ctx.getText().substring(1).trim();
+                namesForSpines.put(currentSpineIndex, name);
+            }
         }
 
         private void updateLastTime() throws IM3Exception {
@@ -679,7 +698,13 @@ public class KernImporter implements IScoreSongImporter {
                 TimeSignature presentMeter = staff.getTimeSignatureWithOnset(currentTime);
 
                 if (presentMeter != null) {
-                    if (!presentMeter.equals(ts)) {
+                    if (!(presentMeter.equals(ts) || (presentMeter instanceof TimeSignatureCommonTime &&
+                                ts instanceof FractionalTimeSignature && ((FractionalTimeSignature) ts).getNumerator() == 4
+                                && ts instanceof FractionalTimeSignature && ((FractionalTimeSignature) ts).getDenominator() == 4
+                            ||
+                                presentMeter instanceof TimeSignatureCutTime &&
+                                        ts instanceof FractionalTimeSignature && ((FractionalTimeSignature) ts).getNumerator() == 2
+                                        && ts instanceof FractionalTimeSignature && ((FractionalTimeSignature) ts).getDenominator() == 2))) {
                         throw new GrammarParseRuntimeException("There is already a meter " + presentMeter.toString()
                                 + " at time " + currentTime + " while inserting " + ts.toString());
                     }
@@ -698,6 +723,41 @@ public class KernImporter implements IScoreSongImporter {
         }
 
         @Override
+        public void exitMeterSign(kernParser.MeterSignContext ctx) {
+            TimeSignature ts;
+            switch (ctx.getText()) {
+                case "C":
+                case "c":
+                    ts = new TimeSignatureCommonTime(spineNotationTypes.get(currentSpineIndex));
+                    break;
+                case "C|":
+                case "c|":
+                    ts = new TimeSignatureCutTime(spineNotationTypes.get(currentSpineIndex));
+                    break;
+                default:
+                    throw new GrammarParseRuntimeException("Unsupported meter sign: '" + ctx.getText() + "'");
+            }
+            Staff staff = null;
+            try {
+                staff = getStaff(currentSpineIndex);
+                Time currentTime = getLastTime();
+                TimeSignature presentMeter = staff.getTimeSignatureWithOnset(currentTime);
+                if (presentMeter != null) {
+                    // replace if for new meter
+                    staff.removeTimeSignature(presentMeter);
+                }
+                ts.setTime(currentTime);
+                ts.setStaff(staff);
+                staff.addTimeSignature(ts);
+
+            } catch (IM3Exception ex) {
+                Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
+                throw new GrammarParseRuntimeException(ex);
+            }
+
+        }
+
+        @Override
         public void exitStaff(kernParser.StaffContext ctx) {
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Staff {0}", ctx.getText());
 
@@ -706,12 +766,11 @@ public class KernImporter implements IScoreSongImporter {
                 Staff staff = stavesByNumber.get(number);
                 if (staff == null) {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Creating staff {0}", new Object[]{number});
-                    addStaff(number);
+                    staff = addStaff(number);
                 } else {
                     stavesForSpines.put(currentSpineIndex, staff);
                     staff.addLayer(0, spines.get(currentSpineIndex));
                 }
-
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Associating spine {0} to staff {1}", new
                         Object[]{currentSpineIndex, number});
             } catch (IM3Exception ex) {

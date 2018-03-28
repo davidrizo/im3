@@ -104,7 +104,11 @@ public class MensuralKernTest {
 
             assertEquals("Staves", 1, song.getStaves().size());
             Staff staff = song.getStaves().get(0);
+            assertEquals("Staff name", "Soprano", staff.getName());
             List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
+
+            assertEquals("Time signatures", 1, staff.getTimeSignatures().size());
+            assertTrue(staff.getTimeSignatureWithOnset(Time.TIME_ZERO) instanceof TimeSignatureCommonTime);
             assertTrue(symbols.get(0) instanceof Clef);
             assertTrue(symbols.get(3) instanceof SimpleRest);
             assertTrue(symbols.get(4) instanceof SimpleRest);

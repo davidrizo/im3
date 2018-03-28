@@ -75,7 +75,6 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
                 Accidental p = new Accidental(layoutFont, this, coreSymbol.getAccidental(), position);
                 nextRelativeXPosition += p.getWidth();
                 addAccidentalComponent(p);
-
             }
         }
     }

@@ -1763,4 +1763,21 @@ public class ScoreSong {
             }
         }
     }
+
+    /**
+     *
+     * @param name
+     * @return null if not found
+     */
+    public Staff getStaffByName(String name) throws IM3Exception {
+        if (name == null || name.isEmpty()) {
+            throw new IM3Exception("Cannot search an empty name");
+        }
+        for (Staff staff: staves) {
+            if (Objects.equals(staff.getName(), name)) {
+                return staff;
+            }
+        }
+        return null;
+    }
 }

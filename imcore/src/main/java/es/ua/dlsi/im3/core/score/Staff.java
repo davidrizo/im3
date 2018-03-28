@@ -400,6 +400,12 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		ts.setStaff(this);
 	}
 
+    public void removeTimeSignature(TimeSignature meter) {
+	    this.coreSymbols.remove(meter);
+	    this.timeSignatures.remove(meter.getTime());
+    }
+
+
 	public void addKeySignature(KeySignature ts) throws IM3Exception {
 		KeySignature prev = keySignatures.get(ts.getTime());
 		if (prev != null) {
@@ -950,4 +956,5 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
             }
         }
     }
+
 }
