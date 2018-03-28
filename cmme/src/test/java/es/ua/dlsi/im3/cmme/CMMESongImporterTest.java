@@ -1,12 +1,15 @@
 package es.ua.dlsi.im3.cmme;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefC1;
 import es.ua.dlsi.im3.core.score.clefs.ClefC3;
 import es.ua.dlsi.im3.core.score.clefs.ClefC4;
 import es.ua.dlsi.im3.core.score.clefs.ClefF3;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
+import es.ua.dlsi.im3.core.score.io.kern.KernImporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import org.junit.Test;
@@ -18,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class CMMESongImporterTest {
     @Test
-    public void importSong() throws Exception {
+    public void importSong1() throws Exception {
         CMMESongImporter importer = new CMMESongImporter();
         File file = TestFileUtils.getFile("/testdata/cmme/missa-mort-et-fortune_01kyrie.cmme.xml");
         ScoreSong scoreSong = importer.importSong(file);
@@ -63,6 +66,74 @@ public class CMMESongImporterTest {
 
         KernExporter kernExporter = new KernExporter();
         kernExporter.exportSong(new File("/tmp/cmme.krn"), scoreSong);
+    }
+
+    private void checkKrnVsCMME(String filenameWithoutExtension) throws IM3Exception {
+        File cmmeFile = TestFileUtils.getFile("/testdata/cmme/incipits/" + filenameWithoutExtension + ".xml");
+        File kernFile = TestFileUtils.getFile("/testdata/cmme/incipits/" + filenameWithoutExtension + ".krn");
+
+        CMMESongImporter cmmeImporter = new CMMESongImporter();
+        ScoreSong cmmeSong = cmmeImporter.importSong(cmmeFile);
+
+        KernImporter kernImporter = new KernImporter();
+        ScoreSong kernSong = kernImporter.importSong(kernFile);
+
+        // TODO: 27/3/18 Comprobar
+        checkEqual("cmme", cmmeSong, "kern", kernSong);
+
+    }
+
+    private void checkEqual(String aType, ScoreSong a, String bType, ScoreSong b) throws IM3Exception {
+        assertEquals("Staves", a.getStaves().size(), b.getStaves().size());
+        for (Staff astaff: a.getStaves()) {
+            Staff bstaff = b.getStaffByName(astaff.getName());
+            if (bstaff == null) {
+                fail("No staff with name '" + astaff.getName() + "' found in " + bType);
+            }
+
+            assertEquals("Clefs", astaff.getClefs().size(), bstaff.getClefs().size());
+            for (Clef aclef: astaff.getClefs()) {
+                Clef bclef = bstaff.getClefAtTime(aclef.getTime());
+                if (bclef == null) {
+                    fail("No clef in " + bType + " at time " + aclef.getTime() + ", expected " + aclef.getTime());
+                }
+                assertEquals("Staff " + astaff.getName(), aclef, bclef);
+            }
+
+            assertEquals("Time signatures", astaff.getTimeSignatures().size(), bstaff.getTimeSignatures().size());
+            for (TimeSignature ats: astaff.getTimeSignatures()) {
+                TimeSignature bts = bstaff.getTimeSignatureWithOnset(ats.getTime());
+                if (bts == null) {
+                    fail("No time signature in " + bType + " at time " + ats.getTime() + ", expected " + ats.getTime());
+                }
+                assertEquals("Staff " + astaff.getName(), ats.toString(), bts.toString());
+            }
+
+            assertEquals("Key signatures", astaff.getKeySignatures().size(), bstaff.getKeySignatures().size());
+            for (KeySignature ats: astaff.getKeySignatures()) {
+                KeySignature bts = bstaff.getKeySignatureWithOnset(ats.getTime());
+                if (bts == null) {
+                    fail("No key signature in " + bType + " at time " + ats.getTime() + ", expected " + ats.getTime());
+                }
+                assertEquals("Staff " + astaff.getName(), ats.toString(), bts.toString());
+            }
+
+            assertEquals("Layers", astaff.getLayers().size(), bstaff.getLayers().size());
+
+            assertEquals("Atoms", astaff.getLayers().get(0).getAtoms().size(), bstaff.getLayers().get(0).getAtoms().size());
+            for (int i=0; i<astaff.getAtoms().size(); i++) {
+                Atom atomA = astaff.getAtoms().get(i);
+                Atom atomB = bstaff.getAtoms().get(i);
+                assertEquals("Staff " + astaff.getName() + ", atom #" + i, atomA, atomB);
+            }
+        }
+
+        // TODO: 27/3/18 Fermate...
+    }
+
+    @Test
+    public void importIncipit() throws Exception {
+        checkKrnVsCMME("01-4r-anonymous-o_salutaris_hostia.cmme");
     }
 
 }

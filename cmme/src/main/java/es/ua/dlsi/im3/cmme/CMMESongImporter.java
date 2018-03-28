@@ -20,6 +20,8 @@ import org.cmme.DataStruct.Clef;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CMMESongImporter implements IScoreSongImporter {
     private ScoreSong scoreSong;
@@ -114,7 +116,12 @@ public class CMMESongImporter implements IScoreSongImporter {
             for (Event event : voice.getEvents()) {
                 switch (event.geteventtype()) {
                     case Event.EVENT_CLEF:
-                        importClef(staff, layer, (ClefEvent) event);
+                        ClefEvent clefEvent = (ClefEvent) event;
+                        if (clefEvent.getClef().signature()) {
+                            importSignatureClef(staff, layer, clefEvent);
+                        } else {
+                            importClef(staff, layer, (ClefEvent) event);
+                        }
                         break;
                     case Event.EVENT_MENS:
                         importMensuration(staff, layer, (MensEvent) event);
@@ -182,6 +189,7 @@ public class CMMESongImporter implements IScoreSongImporter {
             }
         }
     }
+
 
     private void importBlank(Staff staff, ScoreLayer layer, Event event) {
         System.out.println("Pending: " + event.toString());
@@ -335,6 +343,7 @@ public class CMMESongImporter implements IScoreSongImporter {
                         ts = new TimeSignatureCommonTime(NotationType.eMensural);
                     }
                 }
+                break;
         }
 
         if (ts == null) {
@@ -374,6 +383,16 @@ public class CMMESongImporter implements IScoreSongImporter {
                         break;
                 }
                 break;
+            case Clef.CLEF_Frnd: // TODO: 27/3/18 ¿Qué clave es realmente? 
+                switch (event.getClef().getloc()) {
+                    case 5:
+                        clef = new ClefF3();
+                        break;
+                    case 7:
+                        clef = new ClefF4();
+                        break;
+                }
+                break;
             case Clef.CLEF_F:
                 switch (event.getClef().getloc()) {
                     case 5:
@@ -400,6 +419,27 @@ public class CMMESongImporter implements IScoreSongImporter {
         }
         clef.setTime(layer.getDuration());
         staff.addClef(clef);
+    }
+    /*private Accidentals convertAccDistance(int accDistance) throws ImportException {
+        switch (accDistance) {
+            case 1: return Accidentals.SHARP;
+            case -1: return Accidentals.FLAT;
+            case 2: return Accidentals.DOUBLE_SHARP;
+            default: throw new ImportException("Unsupported accDistance: " + accDistance);
+        }
+
+    }*/
+
+    private void importSignatureClef(Staff staff, ScoreLayer layer, ClefEvent clefEvent) throws IM3Exception {
+        ModernKeySignature mks = clefEvent.getModernKeySig();
+        // TODO: 28/3/18 Ver si hay otras claves no modernas que haya que gestionar distintas
+        try {
+            KeySignature ks = new KeySignature(NotationType.eMensural, new Key(mks.getAccDistance(), Mode.UNKNOWN));
+            ks.setTime(layer.getDuration());
+            staff.addKeySignature(ks);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot convert key signature", e);
+        }
     }
 
 }
