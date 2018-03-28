@@ -96,39 +96,68 @@ public final class Key implements Comparable<Key> {
 			PitchClasses.G.getPitchClass(), PitchClasses.A_FLAT.getPitchClass(), PitchClasses.A.getPitchClass(),
 			PitchClasses.B_FLAT.getPitchClass(), PitchClasses.B.getPitchClass() };
 
+    /**
+     *
+     * @param ififths negative for flats, positive for sharps
+     * @param mode
+     * @throws IM3Exception
+     */
 	public Key(int ififths, Mode mode) throws IM3Exception {
-		if (ififths > 7 || ififths < -7) {
-			throw new IM3Exception("Invalid number of flats/sharps in instrumentKey signature: " + ififths);
-		}
-		int result;
-		if (ififths == 0) {
-			result = 0;
-		} else if (ififths > 0) { // sharps
-			result = KEY_SIGNATURE_SHARPS[ififths - 1];
-		} else { // <0, flats
-			result = KEY_SIGNATURE_FLATS[-ififths - 1];
-		}
-
-		this.mode = mode;
-		if (mode.equals(Mode.MINOR)) {
-			result = (result - 3 + 12) % 12;
-		}
-		if (ififths > 0) {
-			this.pitchClass = OCTAVE_SHARPS[result];
-		} else {
-			this.pitchClass = OCTAVE_FLATS[result];
-		}
-
-		this.fifths = ififths;
+        init(ififths, mode);
 	}
 
-	public Key(int fifths, PitchClasses pc, Mode mode) {
+    private void init(int ififths, Mode mode) throws IM3Exception {
+        if (ififths > 7 || ififths < -7) {
+            throw new IM3Exception("Invalid number of flats/sharps in instrumentKey signature: " + ififths);
+        }
+        int result;
+        if (ififths == 0) {
+            result = 0;
+        } else if (ififths > 0) { // sharps
+            result = KEY_SIGNATURE_SHARPS[ififths - 1];
+        } else { // <0, flats
+            result = KEY_SIGNATURE_FLATS[-ififths - 1];
+        }
+
+        this.mode = mode;
+        if (mode.equals(Mode.MINOR)) {
+            result = (result - 3 + 12) % 12;
+        }
+        if (ififths > 0) {
+            this.pitchClass = OCTAVE_SHARPS[result];
+        } else {
+            this.pitchClass = OCTAVE_FLATS[result];
+        }
+
+        this.fifths = ififths;
+    }
+
+    /**
+     *
+     * @param fifths ififths negative for flats, positive for sharps
+     * @param pc
+     * @param mode
+     */
+    public Key(int fifths, PitchClasses pc, Mode mode) {
 		this.pitchClass = pc.getPitchClass();
 		this.mode = mode;
 		this.fifths = fifths;
 	}
 
-	/**
+    public Key(Accidentals accidentals, int number, Mode mode) throws IM3Exception {
+	    switch (accidentals) {
+            case FLAT:
+                init(-number, mode);
+                break;
+            case SHARP:
+                init(number, mode);
+                break;
+            default:
+                throw new IM3Exception("Invalid accidental for key signature creation: " + accidentals);
+        }
+    }
+
+    /**
 	 * @return the mode
 	 */
 	public final Mode getMode() {

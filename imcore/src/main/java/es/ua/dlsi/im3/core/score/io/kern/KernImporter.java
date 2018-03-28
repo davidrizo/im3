@@ -660,7 +660,9 @@ public class KernImporter implements IScoreSongImporter {
                                     + " at time " + currentTime + " while inserting " + ks.toString());
                         }
                     } else {
-                        staff.addKeySignature(new KeySignature(NotationType.eModern, ks));
+                        KeySignature newKs = new KeySignature(spineNotationTypes.get(currentSpineIndex), ks);
+                        newKs.setTime(currentTime);
+                        staff.addKeySignature(newKs);
                     }
                 }
             } catch (IM3Exception ex) {
