@@ -45,7 +45,7 @@ public class LayoutStaff extends NotationSymbol {
         //layoutSymbolsInStaff = new TreeSet<>(LayoutCoreSymbolComparator.getInstance());
         layoutSymbolsInStaff = new TreeSet<>();
 
-        group = new Group("GROUP-STAFF-"+staff.__getID()); //TODO IDS
+        group = new Group(this, InteractionElementType.staff); //TODO IDS
 
         double staffNameWidth = 0;
 
@@ -58,7 +58,7 @@ public class LayoutStaff extends NotationSymbol {
             //}
             Coordinate from = new Coordinate(new CoordinateComponent(leftTop.getX(), staffNameWidth), new CoordinateComponent(leftTop.getY(), y));
             Coordinate to = new Coordinate(rightTop.getX(), new CoordinateComponent(leftTop.getY(), y));
-            Line line = new Line("LINE-", from, to); //TODO márgenes arriba abajo - quizás mejor en el grupo en el que están on en la página
+            Line line = new Line(this, InteractionElementType.staffLine, from, to); //TODO márgenes arriba abajo - quizás mejor en el grupo en el que están on en la página
             //TODO IDS
             lines.add(0, line);
             group.add(0, line);
@@ -90,6 +90,11 @@ public class LayoutStaff extends NotationSymbol {
     public GraphicsElement getGraphics() {
         return group;
     }
+
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("TO-DO layout LayoutStaff");    }
 
 
     public Line getTopLine() {

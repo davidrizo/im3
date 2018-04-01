@@ -333,4 +333,8 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
     }
 
 
+    public void transpose(Interval interval) throws IM3Exception {
+	    this.scientificPitch = interval.computeScientificPitchFrom(this.scientificPitch);
+        // TODO: 15/3/18 ¿Y si se cambia el accidental? 
+    }
 }

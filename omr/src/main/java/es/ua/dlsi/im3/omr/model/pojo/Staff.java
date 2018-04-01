@@ -1,5 +1,8 @@
 package es.ua.dlsi.im3.omr.model.pojo;
 
+/**
+ * @deprecated Use Region
+ */
 public class Staff {
     private double leftTopX;
     private double leftTopY;

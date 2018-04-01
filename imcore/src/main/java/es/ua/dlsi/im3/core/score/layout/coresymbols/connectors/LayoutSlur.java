@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout.coresymbols.connectors;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.IConnectableWithSlurInStaff;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.Bezier;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -79,7 +80,7 @@ public class LayoutSlur extends LayoutConnector {
         controlFrom = createControlCoordinate(directionFrom, from, controlXFrom);
         controlTo = createControlCoordinate(directionFrom, to, controlXTo);
 
-        bezier = new Bezier("BEZ-", from, controlFrom, controlTo, to);
+        bezier = new Bezier(this, InteractionElementType.slur, from, controlFrom, controlTo, to);
     }
 
     @Override
@@ -101,5 +102,10 @@ public class LayoutSlur extends LayoutConnector {
             );
         }
         return coordinate;
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

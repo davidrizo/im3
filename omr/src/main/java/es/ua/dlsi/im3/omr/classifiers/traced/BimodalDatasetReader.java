@@ -43,8 +43,8 @@ public class BimodalDatasetReader implements IBimodalDatasetReader {
 			
 			BimodalSymbol symbol = new BimodalSymbol(stringToSymbolFactory.parseString(label));
 			
-			String [] strokeList = strokes.split(";");
-			for (String sl : strokeList) {
+			String [] coordList = strokes.split(";");
+			for (String sl : coordList) {
 				String [] coords = sl.split(",");
 				if (coords.length != 2) {
 					throw new IOException("Invalid coordinate, must have 2 components and it has just " + coords.length);	

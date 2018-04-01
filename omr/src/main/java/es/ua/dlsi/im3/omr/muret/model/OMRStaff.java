@@ -9,7 +9,7 @@ import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
-import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.muret.OMRMainController;
 import es.ua.dlsi.im3.omr.model.Symbol;
@@ -199,7 +199,7 @@ public class OMRStaff {
         imitationLayout = page.getOMRProject().getImitationLayout();
         layoutStaff = imitationLayout.createLayoutStaff(sourceStaff, boundingBox.getWidth(), boundingBox.getHeight(), FontFactory.getInstance().getFont(LayoutFonts.capitan)); //TODO
 
-        Node layoutStaffNode = layoutStaff.getGraphics().getJavaFXRoot();
+        Node layoutStaffNode = layoutStaff.getGraphics().doGenerateJavaFXRoot();
         scoreViewPane.getChildren().add(0, layoutStaffNode); // add to back to keep interaction triangle visible
         AnchorPane.setLeftAnchor(layoutStaffNode, 0.0);
         AnchorPane.setRightAnchor(layoutStaffNode, 0.0);
@@ -271,7 +271,7 @@ public class OMRStaff {
         LayoutCoreSymbol coreSymbol = imitationLayout.createAndAddSymbol(symbolInStaff, layoutStaff);
 
         //TODO Esto debería renderizarlo el layout
-        scoreViewPane.getChildren().add(coreSymbol.getGraphics().getJavaFXRoot());
+        scoreViewPane.getChildren().add(coreSymbol.getGraphics().doGenerateJavaFXRoot());
 
 
     }

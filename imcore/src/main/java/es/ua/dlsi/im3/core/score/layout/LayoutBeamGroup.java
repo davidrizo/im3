@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.BeamGroup;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Group;
@@ -10,7 +11,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 
 import java.util.List;
 
-public class LayoutBeamGroup {
+public class LayoutBeamGroup extends NotationSymbol {
     private final LayoutFont layoutFont;
     BeamGroup beamGroup;
     List<LayoutCoreSingleFigureAtom> layoutCoreSingleFigureAtoms;
@@ -26,7 +27,7 @@ public class LayoutBeamGroup {
      * Create the beams between the notes
      */
     public void createBeams() throws IM3Exception {
-        group = new Group("BEAM-"); //TODO ID
+        group = new Group(null, InteractionElementType.beams);
         // TODO: 1/10/17 Importante !!! No funciona con grupos de varias duraciones
         Integer flags = null;
         for (LayoutCoreSymbol coreSymbol: this.layoutCoreSingleFigureAtoms) {
@@ -62,17 +63,23 @@ public class LayoutBeamGroup {
                     new CoordinateComponent(to.getStemEnd().getX()),
                     new CoordinateComponent(to.getStemEnd().getY(), displacementY));
 
-            GraphicsElement beam = layoutFont.getFontMap().createBeam("BEAM-", fromPosition, toPosition); // TODO ID
+            GraphicsElement beam = layoutFont.getFontMap().createBeam(this, fromPosition, toPosition); // TODO ID
             group.add(beam);
             displacementY += LayoutConstants.BEAM_SEPARATION; // FIXME: 1/10/17 Dirección según plica - extender plica
         }
 
     }
 
-    public Group getGraphicsElement() {
+    @Override
+    public Group getGraphics() {
         if (group == null) {
             throw new IM3RuntimeException("createBeams not invoked");
         }
         return group;
+    }
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

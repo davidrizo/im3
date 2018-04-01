@@ -198,4 +198,5 @@ public class Time implements Comparable<Time> {
     public boolean isOne() {
 	    return exactTime.getNumerator() == 1;
     }
+
 }

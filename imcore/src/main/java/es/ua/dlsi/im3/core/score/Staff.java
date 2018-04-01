@@ -17,10 +17,13 @@
 package es.ua.dlsi.im3.core.score;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.utils.CollectionsUtils;
 
 /**
  * It is just a visual holder for elements. The note, chord and rest sequences are stored in ScoreLayer,
@@ -397,6 +400,12 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		ts.setStaff(this);
 	}
 
+    public void removeTimeSignature(TimeSignature meter) {
+	    this.coreSymbols.remove(meter);
+	    this.timeSignatures.remove(meter.getTime());
+    }
+
+
 	public void addKeySignature(KeySignature ts) throws IM3Exception {
 		KeySignature prev = keySignatures.get(ts.getTime());
 		if (prev != null) {
@@ -595,6 +604,35 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		}
 		return result;
 	}
+
+    // TODO: 15/3/18 Test unitario
+    /**
+     * @param from
+     * @param to Excluded
+     * @return
+     * @throws IM3Exception
+     */
+    public List<AtomPitch> getAtomPitchesWithOnsetWithin(Time from, Time to) throws IM3Exception {
+        ArrayList<AtomPitch> result = new ArrayList<>();
+
+        for (ITimedElementInStaff symbol: coreSymbols) {
+            if (symbol instanceof Atom) {
+                Atom atom = (Atom) symbol;
+                List<AtomPitch> aps = atom.getAtomPitches();
+                if (aps != null) {
+                    for (AtomPitch ap: aps) {
+                        if (ap.getStaff() == this && ap.getTime().compareTo(from) >= 0 && ap.getTime().compareTo(to) < 0) {
+                            result.add(ap);
+                        }
+                    }
+                }
+            } else if (symbol instanceof AtomPitch &&  symbol.getTime().compareTo(from) >= 0 && symbol.getTime().compareTo(to) < 0) {
+                result.add((AtomPitch) symbol);
+            }
+        }
+        return result;
+    }
+
 
 	public List<Atom> getAtoms() {
 		ArrayList<Atom> result = new ArrayList<>();
@@ -877,4 +915,46 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         }
         return null;
     }
+
+    /**
+     * It changes the old clef with the new one
+     * @param oldClef
+     * @param newClef
+     * @param changePitches If true, notes are true note pitches are changed according to the change, e-g-
+     *                      repositioned to reflect the clef change,
+     *
+     * @throws IM3Exception
+     */
+    public void replaceClef(Clef oldClef, Clef newClef, boolean changePitches) throws IM3Exception {
+        newClef.setTime(oldClef.getTime());
+        newClef.setStaff(oldClef.getStaff());
+
+        CollectionsUtils.replace(coreSymbols, oldClef, newClef);
+
+        if (!clefs.replace(oldClef.getTime(), oldClef, newClef)) {
+            throw new IM3Exception("Cannot replace the clef " + oldClef + " for " + newClef + " at time " + oldClef.getTime());
+        }
+
+        if (changePitches) {
+            Time nextClefTime = clefs.higherKey(oldClef.getTime());
+
+            // TODO: 15/3/18 ¿Se debe incluir el octave change?
+            ScientificPitch fromPitch = new ScientificPitch(new PitchClass(oldClef.getBottomLineDiatonicPitch()), oldClef.getNoteOctave());
+            ScientificPitch toPitch = new ScientificPitch(new PitchClass(newClef.getBottomLineDiatonicPitch()), newClef.getNoteOctave());
+            Interval interval = Interval.compute(fromPitch, toPitch);
+
+            if (nextClefTime == null) {
+                nextClefTime = Time.TIME_MAX;
+                Logger.getLogger(Staff.class.getName()).log(Level.INFO, "Changing pitches from time " + oldClef.getTime() + " till the end the interval " + interval);
+            } else {
+                Logger.getLogger(Staff.class.getName()).log(Level.INFO, "Changing pitches from time " + oldClef.getTime() + " to " + nextClefTime + " the interval " + interval);
+            }
+
+            List<AtomPitch> pitches = this.getAtomPitchesWithOnsetWithin(oldClef.getTime(), nextClefTime);
+            for (AtomPitch pitch: this.getAtomPitches()) {
+                pitch.transpose(interval);
+            }
+        }
+    }
+
 }

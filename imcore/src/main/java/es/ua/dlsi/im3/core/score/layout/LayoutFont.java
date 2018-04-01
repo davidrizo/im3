@@ -77,8 +77,8 @@ public class LayoutFont {
     }
 
 
-    public Glyph getGlyph(Pictogram element) throws IM3Exception {
-        String unicode = mapping.getCodepoint(element.getCodepoint());
+    public Glyph getGlyph(String codepoint) throws IM3Exception {
+        String unicode = mapping.getCodepoint(codepoint);
         return svgFont.getGlyph(unicode);
     }
 

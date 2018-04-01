@@ -10,23 +10,31 @@ import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 
 public class LayoutCoreClef extends LayoutCoreSymbolInStaff<Clef> {
-    private final Pictogram pictogram;
+    private Pictogram pictogram;
 
     public LayoutCoreClef(LayoutFont layoutFont, Clef clef) throws IM3Exception {
         super(layoutFont, clef);
 
-        //position.setY(layoutStaff.getYAtLine(coreSymbol.getLine()));
-        pictogram = new Pictogram("CLEF-", layoutFont, getUnicode(), position);//TODO IDS
+        build();
+    }
+
+    private void build() throws IM3Exception {
+        pictogram = new Pictogram(this, InteractionElementType.clef, layoutFont, getCodePoint(), position);
+    }
+
+
+    @Override
+    public void rebuild() throws IM3Exception {
+        pictogram.setCodePoint(getCodePoint());
+        pictogram.repaint();
     }
 
     @Override
-    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
-        super.setLayoutStaff(layoutStaff);
-        position.setReferenceY(layoutStaff.getYAtLine(coreSymbol.getLine()));
+    protected void doLayout() throws IM3Exception {
+        position.setReferenceY(layoutStaff.getYAtLine(this.coreSymbol.getLine()));
     }
 
-
-    private String getUnicode() {
+    private String getCodePoint() {
         switch (coreSymbol.getNote()) {
             case F:
                 switch (coreSymbol.getOctaveChange()) {
@@ -74,4 +82,5 @@ public class LayoutCoreClef extends LayoutCoreSymbolInStaff<Clef> {
     public GraphicsElement getGraphics() {
        return pictogram;
     }
+
 }

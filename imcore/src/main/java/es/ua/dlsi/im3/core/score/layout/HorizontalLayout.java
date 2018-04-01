@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * All systems are arranged in a single line
@@ -66,7 +68,9 @@ public class HorizontalLayout extends ScoreLayout {
 
             for (LayoutCoreSymbolInStaff coreSymbol: layoutSymbolsInStaff) {
                 coreSymbol.setLayoutStaff(layoutStaff);
-                if (!(coreSymbol instanceof LayoutCoreCustos)) {
+                coreSymbol.layout();
+
+                if (!(coreSymbol instanceof LayoutCoreCustos)) { //TODO ¿por qué?
                     layoutStaff.add(coreSymbol);
                 } // ommitted in this layout
             }
@@ -103,7 +107,7 @@ public class HorizontalLayout extends ScoreLayout {
 
         if (beams != null) {
             for (LayoutBeamGroup beam : beams) {
-                canvas.add(beam.getGraphicsElement());
+                canvas.add(beam.getGraphics());
             }
         }
 
@@ -116,5 +120,46 @@ public class HorizontalLayout extends ScoreLayout {
 
     public LayoutStaffSystem getSystem() {
         return system;
+    }
+
+
+    @Override
+    public void replace(Clef clef, Clef newClef, boolean changePitches) throws IM3Exception {
+        // TODO: 14/3/18 Generalizar este replace para todos los símbolos y layouts
+        LayoutCoreClef layoutClef = (LayoutCoreClef) this.coreSymbolViews.get(clef);
+        if (layoutClef  == null) {
+            throw new IM3Exception("Cannot find a notation symbol for clef to be replaced: " + clef);
+        }
+
+        clef.getStaff().replaceClef(clef, newClef, changePitches);
+        layoutClef.setCoreSymbol(newClef);
+        if (!clef.getNote().equals(newClef.getNote())) {
+            layoutClef.rebuild(); // TODO: 26/3/18 ¿Mejor en el setCoreSymbol? 
+        }
+        layoutClef.layout();
+
+        coreSymbolViews.remove(clef);
+        coreSymbolViews.put(newClef, layoutClef);
+
+        // set dirty of all affected notes to change their vertical position
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Changing note head positions for change in clef");
+
+        // we change all elements in the staff because it is faster than filtering it - e.g. key signature must be changed
+        List<LayoutCoreSymbolInStaff> list = this.coreSymbolsInStaves.get(clef.getStaff());
+        if (list != null) {
+            for (LayoutCoreSymbolInStaff layoutCoreSymbolInStaff: list) {
+                layoutCoreSymbolInStaff.layout();
+            }
+        }
+
+        /*System.err.println("TO-DO cambiar pitches o posición en replace Clef"); // TODO: 14/3/18 TO-DO cambiar pitches o posición en replace Clef
+
+        LayoutCoreSymbolInStaff newLayoutClef = (LayoutCoreSymbolInStaff) createLayoutCoreSymbol(newClef);
+
+        List<LayoutCoreSymbolInStaff> coreSymbolsInStaffList = coreSymbolsInStaves.get(clef.getStaff());
+        CollectionsUtils.replace(coreSymbolsInStaffList, oldLayoutClef, newLayoutClef);
+        coreSymbolViews.replace(clef, oldLayoutClef, newLayoutClef);
+        //this.simultaneities.replace(oldLayoutClef, newLayoutClef); //TODO Recalcular posiciones - si es necesario borrar o insertar nuevos símbolos
+        System.err.println("TO-DO Notificar score view para que cambie - también simultaneities");*/
     }
 }

@@ -105,8 +105,12 @@ public class MEISongExporter implements ISongExporter {
 
 
 	protected void preprocess() throws IM3Exception {
-		marksPerBar = new HashMap<>();
-        lastBeam = null;
+	    generateMissingIDs();
+
+        this.marksPerBar = new HashMap<>();
+        this.lastBeam = null;
+        this.lastClef = null;
+        this.previousAccidentals = new HashMap<>();
 		if (song.getStaves() != null) {
 			for (Staff staff: song.getStaves()) {
 				if (!(staff instanceof AnalysisStaff)) {
@@ -151,6 +155,21 @@ public class MEISongExporter implements ISongExporter {
 			}
 		}		*/
 	}
+
+    private void generateMissingIDs() {
+        // TODO: 22/3/18 Hacerlo para todos los elementos - ahora lo hacemos para bars y atoms
+        for (Measure measure: song.getMeasures()) {
+            if (measure.__getID() == null) {
+                this.generateID(measure, false);
+            }
+        }
+
+        for (AtomFigure atomFigure: song.getAtomFiguresSortedByTime()) {
+            if (atomFigure.getAtom().__getID() == null) {
+                this.generateID(atomFigure.getAtom(), false);
+            }
+        }
+    }
 
     public boolean isUseHarmTypes() {
         return useHarmTypes;
@@ -271,7 +290,8 @@ public class MEISongExporter implements ISongExporter {
 			KeySignature staffKS = staff.getKeySignatureWithOnset(Time.TIME_ZERO);
 			if (ks == null) {
 				ks = staffKS;
-			} else if (!ks.getAccidentals().equals(staffKS.getAccidentals()) || ks.getInstrumentKey().getMode() != staffKS.getInstrumentKey().getMode()) {
+			} else if (staffKS != null && (ks.getAccidentals() != null && staffKS.getAccidentals() != null && !ks.getAccidentals().equals(staffKS.getAccidentals()) ||
+                    ks.getInstrumentKey() != null && staffKS.getInstrumentKey() != null && ks.getInstrumentKey().getMode() != staffKS.getInstrumentKey().getMode())) {
 				return null;
 			}
 		}
@@ -284,7 +304,7 @@ public class MEISongExporter implements ISongExporter {
 			TimeSignature staffKS = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
 			if (ks == null) {
 				ks = staffKS;
-			} else if (!ks.equals(staffKS)) {
+			} else if (staffKS != null && !ks.equals(staffKS)) {
 				return null;
 			}
 		}
@@ -736,6 +756,12 @@ public class MEISongExporter implements ISongExporter {
 		} 
 	}*/
 
+    /**
+     *
+     * @param symbol
+     * @param reference If true an # is added
+     * @return
+     */
 	private String generateID(IUniqueIDObject symbol, boolean reference) {
 		if (reference) {
 			return "#" + song.getIdManager().getID(symbol);

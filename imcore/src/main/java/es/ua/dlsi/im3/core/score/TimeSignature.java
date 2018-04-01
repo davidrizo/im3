@@ -108,4 +108,5 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
     public double getBeat(Time onset) {
         double offset = onset.substract(this.getTime()).mod(getDuration());
         return offset;
-    }}
+    }
+}

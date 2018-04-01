@@ -15,6 +15,11 @@
         <module>similarity</module>
         <module>languagemodel</module>
         <module>omr</module>
+        <!--<module>mhontanilla</module>-->
+        <module>mavr</module>
+        <module>typographydesignhelper</module>
+        <module>pruebas</module>
+        <module>imvisual</module>
     </modules>
 
     <properties>

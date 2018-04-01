@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout.fonts;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Figures;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
 public interface IFontMap {
@@ -18,6 +19,6 @@ public interface IFontMap {
     String getUnicodeWihoutFlag(Figures figures, boolean stemUp) throws IM3Exception;
     String getUnicodeNoteHeadWidth();
     boolean isGlyphIncludeStemAndFlag(Figures figures);
-    GraphicsElement createBeam(String ID, Coordinate from, Coordinate to);
+    GraphicsElement createBeam(NotationSymbol notationSymbol, Coordinate from, Coordinate to);
     String getCustosCodePoint();
 }

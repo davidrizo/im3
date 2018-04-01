@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.TimedElementCollection;
 import es.ua.dlsi.im3.core.metadata.*;
+import es.ua.dlsi.im3.core.score.clefs.ClefNone;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
 
@@ -305,13 +306,13 @@ public class ScoreSong {
 		return n;
 	}
 
-	/*FRACCIONES public List<AtomFigure> getAtomFiguresWithOnsetWithin(Measure bar) throws IM3Exception {
+	public List<AtomFigure> getAtomFiguresWithOnsetWithin(Measure bar) throws IM3Exception {
 		ArrayList<AtomFigure> result = new ArrayList<>();
 		for (ScorePart part : parts) {
 			result.addAll(part.getAtomFiguresWithOnsetWithin(bar));
 		}
 		return result;
-	}*/
+	}
 
 	
 	/**
@@ -580,29 +581,73 @@ public class ScoreSong {
 		 */
 		return part;
 	}
-	/*FRACTIONS public void createAnalysisPartAndStaff() throws IM3Exception {
+	public void createAnalysisPartAndStaff() throws IM3Exception {
 		createAnalysisPartAndStaff(false);
-	}*/
+	}
+    // TODO: 21/3/18 Test unitario
 	/**
 	 * It adds the analysis staff, the layer and the corresponding staff. It always uses modern notation
 	 * @throws IM3Exception
 	 */
-	/*FRACTIONS public void createAnalysisPartAndStaff(boolean createAnalysisHooks) throws IM3Exception {
+	public void createAnalysisPartAndStaff(boolean createAnalysisHooks) throws IM3Exception {
 		ScorePart part = addAnalysisPart();
-		AnalysisStaff staff = new AnalysisStaff(part, "", 989898); //TODO 10000? - puesto a piñón - debería ser el último valor disponible
+		AnalysisStaff staff = new AnalysisStaff(this, "999.9", 99999); // TODO: 20/3/18 Debería tener un número
 		ClefNone clef = new ClefNone();
 		clef.setTime(Time.TIME_ZERO);
 		staff.addClef(clef);
 		part.addStaff(staff);
 		addStaff(staff);
 		if (createAnalysisHooks) {
-			this.createAnalysisHooks(staff.getHooksLayer());
+			this.createAnalysisHooks(staff);
 		}
-	}*/
+	}
 
-	
+    public void createAnalysisHooks(AnalysisStaff analysisStaff) throws IM3Exception {
+        createAnalysisHooksForMinimumSubdivisionsInBar(analysisStaff);
+    }
 
-	public ScoreAnalysisPart getAnalysisPart() {
+
+    //TODO Tresillos
+    /**
+     * It takes as minimum the expanded subdivisions, i.e. if the minimum is an eighth dotted, the minimum figureAndDots is a sixteenth
+     * @throws IM3Exception
+     */
+    public void createAnalysisHooksForMinimumSubdivisionsInBar(AnalysisStaff analysisStaff) throws IM3Exception {
+        boolean firstBar = true;
+        Time currentTime = Time.TIME_ZERO;
+        for (Measure bar : this.getMeasuresSortedAsArray()) {
+            AtomFigure minimum = null;
+            Time minDur = Time.TIME_MAX;
+            List<AtomFigure> atomFigures = getAtomFiguresWithOnsetWithin(bar);
+            if (!atomFigures.isEmpty()) {
+                for (AtomFigure atomFigure: atomFigures) {
+                    Time duration = atomFigure.computeDurationOfSmallestParticle();
+                    if (duration.compareTo(minDur) < 0) {
+                        minimum = atomFigure;
+                        minDur = duration;
+                    }
+                }
+                Time barDuration = bar.getDuration();
+                int numHooks = barDuration.divideBy(minDur).intValue();
+
+                ArrayList<ScoreAnalysisHook> newElementsInBar = new ArrayList<>();
+
+                //Figures fig = Figures.findDuration(minDur, analysisStaff.getNotationType());
+                //FiguresModern fig = FiguresModern.findRatio((double) minDur / AbstractSong.DEFAULT_RESOLUTION);
+                //ScoreFigureAndDots minFigDur = new ScoreFigureAndDots<IFigures>(fig, 0);
+                for (int i = 0; i < numHooks; i++) { // +1 to add a analysis hook at the end of the song
+                    ScoreAnalysisHook e = new ScoreAnalysisHook(analysisStaff, currentTime);
+                    currentTime = currentTime.add(minDur);
+                    newElementsInBar.add(e);
+                    analysisStaff.addAnalysisHook(e);
+                }
+            }
+        }
+
+    }
+
+
+    public ScoreAnalysisPart getAnalysisPart() {
 		return analysisPart;
 	}
 
@@ -1714,4 +1759,20 @@ public class ScoreSong {
         }
     }
 
+    /**
+     *
+     * @param name
+     * @return null if not found
+     */
+    public Staff getStaffByName(String name) throws IM3Exception {
+        if (name == null || name.isEmpty()) {
+            throw new IM3Exception("Cannot search an empty name");
+        }
+        for (Staff staff: staves) {
+            if (Objects.equals(staff.getName(), name)) {
+                return staff;
+            }
+        }
+        return null;
+    }
 }

@@ -46,15 +46,9 @@ public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRes
             position.getX(),
             null
         );
-        pictogram = new Pictogram("REST-", layoutFont, getUnicode(), restPosition);//TODO IDS
+        pictogram = new Pictogram(this, InteractionElementType.rest, layoutFont, getUnicode(), restPosition);//TODO IDS
     }
 
-    @Override
-    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
-        super.setLayoutStaff(layoutStaff);
-        position.setReferenceY(layoutStaff.getYAtCenterLine());
-        pictogram.getPosition().setReferenceY(position.getY());
-    }
 
     @Override
     public GraphicsElement getGraphics() {
@@ -82,5 +76,15 @@ public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRes
     @Override
     public Coordinate getConnectionPoint(Direction direction) {
         return position;
+    }
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
+        position.setReferenceY(layoutStaff.getYAtCenterLine());
+        pictogram.getPosition().setReferenceY(position.getY());
     }
 }

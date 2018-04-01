@@ -8,7 +8,7 @@ import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.PatriarcaFont;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.omr.IGraphicalToScoreSymbolFactory;
 import es.ua.dlsi.im3.omr.mensuralspanish.*;
 import es.ua.dlsi.im3.omr.model.pojo.Instrument;

@@ -21,7 +21,7 @@ public class LayoutCoreMarkBarline extends LayoutCoreSymbolInStaff<MarkBarline> 
         from = new Coordinate(position.getX(), null);
         to = new Coordinate(position.getX(), null);
 
-        line = new Line("MARKBARLINE-", from, to);//TODO IDS
+        line = new Line(this, InteractionElementType.markBarline, from, to);//TODO IDS
 
     }
 
@@ -31,11 +31,14 @@ public class LayoutCoreMarkBarline extends LayoutCoreSymbolInStaff<MarkBarline> 
         return line;
     }
 
+
     @Override
-    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
-        super.setLayoutStaff(layoutStaff);
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+    @Override
+    protected void doLayout() throws IM3Exception {
         from.setReferenceY(layoutStaff.getYAtLine(1));
         to.setReferenceY(layoutStaff.getYAtLine(5));
-
     }
 }

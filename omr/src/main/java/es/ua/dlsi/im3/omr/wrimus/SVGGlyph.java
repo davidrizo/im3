@@ -3,11 +3,13 @@ package es.ua.dlsi.im3.omr.wrimus;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.graphics.Shape;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
 import es.ua.dlsi.im3.omr.classifiers.traced.Coordinate;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
@@ -27,10 +29,15 @@ public class SVGGlyph extends Shape {
     private final Glyph glyph;
     es.ua.dlsi.im3.core.score.layout.Coordinate position;
 
-    public SVGGlyph(Glyph glyph) {
-        super("");
+    public SVGGlyph(Glyph glyph, InteractionElementType interactionElementType) {
+        super(null, interactionElementType);
         this.glyph = glyph;
         this.position = new es.ua.dlsi.im3.core.score.layout.Coordinate();
+    }
+
+    @Override
+    protected void doRepaint() throws IM3Exception {
+
     }
 
     @Override
@@ -44,18 +51,27 @@ public class SVGGlyph extends Shape {
     }
 
     @Override
-    public Node getJavaFXRoot() throws GUIException, ExportException {
+    public Node doGenerateJavaFXRoot() throws GUIException, ExportException {
         //not used
         return null;
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
+    public void updateJavaFXRoot() throws IM3Exception {
+
+    }
+
+    @Override
+    public void setJavaFXColor(Color color) {
+    }
+
+    @Override
+    public void doGeneratePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
         //not used
     }
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs, HashSet<es.ua.dlsi.im3.core.score.layout.svg.Glyph> usedGlyphs) throws ExportException {
+    public void doGenerateSVG(StringBuilder sb, int tabs, HashSet<es.ua.dlsi.im3.core.score.layout.svg.Glyph> usedGlyphs) throws ExportException {
         StringBuilder translate = new StringBuilder(TRANSLATE);
         translate.append('(');
         try {

@@ -7,17 +7,12 @@ import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
-import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.omr.muret.editpage.SlicedRegionsWithTranscriptionBasedPageView;
-import es.ua.dlsi.im3.omr.muret.editpage.TranscriptionStaffView;
 import es.ua.dlsi.im3.omr.muret.model.OMRPage;
 import es.ua.dlsi.im3.omr.muret.model.OMRRegion;
-import es.ua.dlsi.im3.omr.model.pojo.RegionType;
-import javafx.scene.layout.VBox;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * It contains the excerpt of the manuscript, the digital score staff and the transduced score staff of all regions.

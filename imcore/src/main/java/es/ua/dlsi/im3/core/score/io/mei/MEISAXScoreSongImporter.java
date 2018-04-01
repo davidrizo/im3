@@ -209,7 +209,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	int layerCount=0;
 	
 	//Time lastTime; //TODO Quitar como campo
-	StaffTimedPlaceHolder currentStaffTimedPlaceHolder;
+	//StaffTimedPlaceHolder currentStaffTimedPlaceHolder;
 	HashMap<Time, StaffTimedPlaceHolder> placeHolders;
 	protected boolean importingMusic = false;
 	private SimpleChord lastChord;
@@ -1663,7 +1663,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     for (int i=0; i<num-1; i++) {
                         Measure measure;
                         if (nmeasure != null) {
-                            measure = new Measure(song, nmeasure++);
+                            measure = new Measure(song, ++nmeasure);
                         } else {
                             measure = new Measure(song);
                         }

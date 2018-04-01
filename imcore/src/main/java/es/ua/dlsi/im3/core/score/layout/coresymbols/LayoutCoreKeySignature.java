@@ -28,7 +28,7 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
     }
 
     private void createAccidentals(LayoutFont layoutFont) throws IM3Exception {
-        group = new Group("KEYSIG-"); //TODO IDS
+        group = new Group(this, InteractionElementType.keySignature);
         accidentals = new ArrayList<>();
         /*
         int previousNoteOrder = 0;
@@ -75,19 +75,6 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
                 Accidental p = new Accidental(layoutFont, this, coreSymbol.getAccidental(), position);
                 nextRelativeXPosition += p.getWidth();
                 addAccidentalComponent(p);
-
-            }
-        }
-    }
-
-    @Override
-    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
-        super.setLayoutStaff(layoutStaff);
-        if (positionInStaffs != null) {
-            double nextRelativeXPosition = 0;
-            for (int i=0; i<positionInStaffs.length; i++) {
-                CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
-                accidentals.get(i).getPosition().setReferenceY(y);
             }
         }
     }
@@ -105,4 +92,28 @@ public class LayoutCoreKeySignature extends LayoutCoreSymbolInStaff<KeySignature
             return clef.getStartingOctave(coreSymbol.getAccidental());
         }
     }*/
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
+    }
+
+
+    @Override
+    protected void doLayout() throws IM3Exception {
+        positionInStaffs = coreSymbol.computePositionsOfAccidentals();
+
+        double nextRelativeXPosition = 0;
+        for (int i=0; i<positionInStaffs.length; i++) {
+            CoordinateComponent y = layoutStaff.computeYPosition(positionInStaffs[i]);
+            accidentals.get(i).setReferenceY(y);
+            accidentals.get(i).layout();
+        }
+    }
+
+    // TODO: 15/3/18
+    @Override
+    public void layout() throws IM3Exception {
+        doLayout();
+    }
 }

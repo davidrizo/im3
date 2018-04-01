@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.io.FileType;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
+import es.ua.dlsi.im3.core.utils.FileUtils;
 
 import java.io.File;
 
@@ -64,5 +65,15 @@ public class ScoreSongImporter {
 
     public ScoreSong importSong(File file, String fileNameExtension) throws ImportException {
         return importSong(file, fileNameExtension, new DurationEvaluator());
+    }
+
+    /**
+     * Currently it imports given the extension
+     * @param file
+     * @return
+     */
+    public ScoreSong importSong(File file) throws ImportException {
+        return importSong(file, FileUtils.getExtension(file));
+
     }
 }

@@ -22,11 +22,15 @@ import java.util.logging.Logger;
  * @author drizo
  */
 public class FileUtils {
-	private static final String DOT_STR = ".";
+    private static final String DOT_STR = ".";
 	/**
 	 * Empty constants
 	 */
 	private static final String EMPTY = "empty";
+    /**
+     * Empty constants
+     */
+    private static final String EMPTY_STR = "";
 	/**
 	 * DOT
 	 */
@@ -37,7 +41,8 @@ public class FileUtils {
 	public static final String[] MIDS = {"mid"};
 	public static final String[] MIDS_KAR = {"mid", "kar"};
 	public static final String[] XMLS = {"xml"};
-	/**
+
+    /**
 	 * Recursive read files
 	 * @param folder Input folder
 	 * @param fileList Output list of file objects
@@ -290,5 +295,12 @@ public class FileUtils {
         } else {
             Logger.getLogger(FileUtils.class.getName()).log(Level.INFO, "Skipping copy because both files are the same: " + fromFile.getAbsolutePath() + " and " + targetFile.getAbsolutePath());
         }
+    }
+
+    public static String getExtension(File file) {
+        String fileName = file.getName();
+        if(fileName.lastIndexOf(FileUtils.DOT) != -1 && fileName.lastIndexOf(DOT) != 0)
+            return fileName.substring(fileName.lastIndexOf(DOT)+1);
+        else return EMPTY_STR;
     }
 }

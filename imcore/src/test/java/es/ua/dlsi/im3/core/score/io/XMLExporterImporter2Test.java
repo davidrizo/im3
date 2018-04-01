@@ -126,4 +126,30 @@ public class XMLExporterImporter2Test {
         //doTest(XMLExporterImporter2Test::assertCrossStaffMultilayer, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/cross-staff-multilayer.xml")));
     }
 
+    // TODO: 20/3/18 Ponerlo con XMLExporterImporterTest
+    // ------------------------------------------------------------------------------------------
+    private static Void assertMultimeasureRest(ScoreSong song) {
+        try {
+            assertEquals("Measures", 4, song.getNumMeasures());
+            ArrayList<Measure> measures = song.getMeasuresSortedAsArray();
+            for (int i=0; i<song.getNumMeasures(); i++) {
+                Measure measure = measures.get(i);
+                Integer number = i+1;
+                assertEquals("Measure number", number, measure.getNumber());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        return null;
+    }
+    @Test
+    public void multimeasureRest() throws Exception {
+        doTest(XMLExporterImporter2Test::assertMultimeasureRest, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest.mei")));
+        doTest(XMLExporterImporter2Test::assertMultimeasureRest, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest.xml")));
+        //TODO Import from MusicXML        <measure-style>
+        //TODO  <multiple-rest>2</multiple-rest>
+        //TODO</measure-style>
+    }
+
 }

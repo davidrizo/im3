@@ -71,9 +71,9 @@ public abstract class XMLSAXImporter {
                 //System.out.println("End:" + qName);
                 try {
                     handleCloseElement(qName);
-                    for (IXMLSAXImporterExtension extension: extensions) {
+                    /*for (IXMLSAXImporterExtension extension: extensions) {
                         extension.handleCloseElement(qName);
-                    }
+                    }*/
 
                 } catch (ImportException e) {
                     throw new SAXException(e);
@@ -141,7 +141,7 @@ public abstract class XMLSAXImporter {
             if (!content.isEmpty() && !(content.equals(NULL_STRING))) {
                 handleElementContent(closingElement, content);
                 for (IXMLSAXImporterExtension extension: extensions) {
-                    extension.handleElementContent(closingElement, content);
+                    extension.handleElementContent(elementStack, closingElement, content);
                 }
             }
         }

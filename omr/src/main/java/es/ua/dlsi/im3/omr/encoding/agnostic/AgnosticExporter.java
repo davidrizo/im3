@@ -9,10 +9,20 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.HorizontalSeparator;
  */
 public class AgnosticExporter extends Exporter<AgnosticToken> {
     private AgnosticEncoding encoding;
+    AgnosticVersion agnosticVersion;
+
+    public AgnosticExporter() {
+        this(AgnosticVersion.v2);
+    }
+    public AgnosticExporter(AgnosticVersion agnosticVersion) {
+        super();
+        this.agnosticVersion = agnosticVersion;
+    }
 
     @Override
     protected boolean requiresSeparator(AgnosticToken symbol) {
-        return (symbol instanceof HorizontalSeparator);
+        return agnosticVersion != AgnosticVersion.v1 &&
+        (symbol instanceof HorizontalSeparator);
     }
 
     @Override

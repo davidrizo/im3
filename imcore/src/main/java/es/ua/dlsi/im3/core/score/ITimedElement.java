@@ -17,6 +17,7 @@
 
 package es.ua.dlsi.im3.core.score;
 
+import java.time.Instant;
 import java.util.Comparator;
 
 import es.ua.dlsi.im3.core.IM3Exception;
@@ -33,7 +34,7 @@ public interface ITimedElement {
 	 * @throws IM3Exception
 	 */
 	Time getTime();
-	
+
     //void setTime(Time time) throws IM3Exception; 
 //    public void move(long offset) throws IM3Exception;
 	

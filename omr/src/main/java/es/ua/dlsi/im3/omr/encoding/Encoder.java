@@ -13,6 +13,7 @@ import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Fermata;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Slur;
@@ -38,17 +39,30 @@ public class Encoder {
     static final PositionInStaff CENTER_LINE = PositionInStaff.fromLine(3);
     private static final PositionInStaff FERMATA_POSITION_ABOVE  = PositionsInStaff.SPACE_6;
     private static final PositionInStaff FERMATA_POSITION_BELOW = PositionsInStaff.SPACE_MINUS_1;
-    private static VerticalLine barline = new VerticalLine();
+    private static VerticalLine barline;
     private static Dot dot = new Dot();
+    private final AgnosticVersion version;
 
     AgnosticEncoding agnosticEncoding;
     SemanticEncoding semanticEncoding;
     ScoreSong scoreSong;
-    private static final VerticalSeparator verticalSeparator = new VerticalSeparator();
+    private final VerticalSeparator verticalSeparator;
     private static final JuxtapositionSeparator juxtapositionSeparator = new JuxtapositionSeparator();
-    private static final HorizontalSeparator horizontalSeparator = new HorizontalSeparator();
+    private final HorizontalSeparator horizontalSeparator;
+
+    public Encoder(AgnosticVersion version) {
+        this.version = version;
+        horizontalSeparator = new HorizontalSeparator(version);
+        barline = new VerticalLine(version);
+        verticalSeparator = new VerticalSeparator(version);
+    }
 
     public Encoder() {
+        this(AgnosticVersion.v2);
+    }
+
+    private void addVerticalSeparator() {
+        agnosticEncoding.add(verticalSeparator);
     }
 
     public void encode(ScoreSong scoreSong) throws IM3Exception {
@@ -57,7 +71,14 @@ public class Encoder {
 
         if (scoreSong.getStaves().size() != 1) {
             //Note we don't have information in the MEI file about line breaking
-            throw new ExportException("Currently only one staff is supported in the export format");
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (Staff staff: scoreSong.getStaves()) {
+                stringBuilder.append(staff.getName());
+                stringBuilder.append(' ');
+            }
+            throw new ExportException("Currently only one staff is supported in the export format, and there are " + scoreSong.getStaves().size()
+                    + " with names: " + stringBuilder.toString());
         }
 
         Staff staff = scoreSong.getStaves().get(0);
@@ -186,7 +207,7 @@ public class Encoder {
             } else if (symbol instanceof FractionalTimeSignature) {
                 FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
                 agnosticEncoding.add(new AgnosticSymbol(new Digit(ts.getNumerator()), PositionsInStaff.LINE_4));
-                agnosticEncoding.add(verticalSeparator);
+                addVerticalSeparator();
                 agnosticEncoding.add(new AgnosticSymbol(new Digit(ts.getDenominator()), PositionsInStaff.LINE_2));
                 agnosticEncoding.add(horizontalSeparator);
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getNumerator()), PositionsInStaff.LINE_4));
@@ -209,7 +230,7 @@ public class Encoder {
 
             if (note.getAtomFigure().getFermata() != null && (note.getAtomFigure().getFermata().getPosition() == null || note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
                 agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
-                agnosticEncoding.add(verticalSeparator);
+                addVerticalSeparator();
 
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
             }
@@ -249,7 +270,7 @@ public class Encoder {
                 for (StaffMark mark : note.getMarks()) {
                     if (mark instanceof Trill) {
                         agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
-                        agnosticEncoding.add(verticalSeparator);
+                        addVerticalSeparator();
                         trill = true;
                         //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, FERMATA_POSITION_ABOVE));
                     } else {
@@ -267,7 +288,7 @@ public class Encoder {
 
             if (note.getAtomFigure().getFermata() != null && note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
-                agnosticEncoding.add(verticalSeparator);
+                addVerticalSeparator();
                 agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.below), FERMATA_POSITION_BELOW));
             } else {
                 agnosticEncoding.add(horizontalSeparator);
@@ -324,13 +345,13 @@ public class Encoder {
             if (multiMeasureRest.getAtomFigure().getFermata() != null && multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
                 Positions positions = convert(multiMeasureRest.getAtomFigure().getFermata().getPosition());
                 agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_ABOVE));
-                agnosticEncoding.add(verticalSeparator);
+                addVerticalSeparator();
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_ABOVE));
             }
 
             if (n <= 2) { // the digit is placed on top of the symbol by Verovio
                 agnosticEncoding.add(new AgnosticSymbol(new Digit(n), PositionsInStaff.SPACE_5));
-                agnosticEncoding.add(verticalSeparator);
+                addVerticalSeparator();
                 if (n == 1) {
                     agnosticEncoding.add(new AgnosticSymbol(new Rest(RestFigures.whole), PositionsInStaff.LINE_4)); // Verovio encodes these rests this way
                 } else {
@@ -358,7 +379,7 @@ public class Encoder {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
 
                 Positions positions = convert(multiMeasureRest.getAtomFigure().getFermata().getPosition());
-                agnosticEncoding.add(verticalSeparator);
+                addVerticalSeparator();
                 agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_BELOW));
             }
 
@@ -372,7 +393,7 @@ public class Encoder {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_ABOVE));
                 Positions positions = convert(rest.getAtomFigure().getFermata().getPosition());
                 agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_ABOVE));
-                agnosticEncoding.add(verticalSeparator);
+                addVerticalSeparator();
             }
 
             PositionInStaff positionsInStaff;
@@ -389,7 +410,7 @@ public class Encoder {
             if (rest.getAtomFigure().getFermata() != null && rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
                 Positions positions = convert(rest.getAtomFigure().getFermata().getPosition());
-                agnosticEncoding.add(verticalSeparator);
+                addVerticalSeparator();
                 agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_BELOW));
             } else {
                 agnosticEncoding.add(horizontalSeparator);

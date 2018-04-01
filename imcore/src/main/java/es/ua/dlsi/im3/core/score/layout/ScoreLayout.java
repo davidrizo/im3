@@ -107,7 +107,7 @@ public abstract class ScoreLayout {
     }
 
     private void initWidths(Staff staff, LayoutFont layoutFont) throws IM3Exception {
-        Pictogram noteHead = new Pictogram("_NHWC_", layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
+        Pictogram noteHead = new Pictogram(null, InteractionElementType.none, layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
                 new Coordinate(new CoordinateComponent(0),
                         new CoordinateComponent(0)
                 ));
@@ -178,17 +178,26 @@ public abstract class ScoreLayout {
     public LayoutFont getLayoutFont(Staff staff) throws IM3Exception {
         LayoutFont layoutFont = layoutFonts.get(staff);
         if (layoutFont == null) {
-            throw new IM3Exception("Staff not found in layoutFonts: " + staff);
+            throw new IM3Exception("Staff " + staff + " not found in layoutFonts");
         }
         return layoutFont;
     }
+
+    protected LayoutCoreSymbol createLayoutCoreSymbol(ITimedElementInStaff symbol) throws IM3Exception {
+        Staff staff = symbol.getStaff();
+        if (staff == null) {
+            throw new IM3Exception("The symbol " + symbol + " has not a staff set");
+        }
+        return layoutSymbolFactory.createCoreSymbol(getLayoutFont(staff), symbol);
+    }
+
     private void createLayoutSymbol(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, ITimedElementInStaff symbol) throws IM3Exception {
         if (symbol instanceof CompoundAtom) {
             for (Atom subatom : ((CompoundAtom) symbol).getAtoms()) {
                 createLayoutSymbol(coreSymbolsInStaff, subatom);
             }
         } else {
-            LayoutCoreSymbol layoutCoreSymbol = layoutSymbolFactory.createCoreSymbol(getLayoutFont(symbol.getStaff()), symbol);
+            LayoutCoreSymbol layoutCoreSymbol = createLayoutCoreSymbol(symbol);
 
             coreSymbolViews.put(symbol, layoutCoreSymbol);
             if (layoutCoreSymbol.getComponents() != null) {
@@ -383,4 +392,24 @@ public abstract class ScoreLayout {
     public Collection<LayoutStaff> getLayoutStaves() {
         return layoutStaves.values();
     }
+
+    /*public void repaint() throws IM3Exception {
+        // TODO: 14/3/18 Añadir nuevos símbolos
+        for (NotationSymbol notationSymbol: coreSymbolViews.values()) {
+            if (notationSymbol instanceof LayoutCoreSymbol) {
+                LayoutCoreSymbol layoutCoreSymbol = (LayoutCoreSymbol) notationSymbol;
+                if (layoutCoreSymbol.isDirtyCoreSymbol()) {
+                    layoutCoreSymbol.rebuild();
+                    layoutCoreSymbol.layout();
+                }
+            } else if (notationSymbol.isDirtyLayout()) {
+                notationSymbol.layout();
+            }
+
+            // TODO: 15/3/18 Dirty no funciona - lo pongo manualmente
+            //notationSymbol.layout();
+        }
+    }*/
+
+    public abstract void replace(Clef clef, Clef newClef, boolean changePitches) throws IM3Exception;
 }

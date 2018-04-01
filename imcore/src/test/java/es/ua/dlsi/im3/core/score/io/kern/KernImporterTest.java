@@ -13,6 +13,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
 
 import static org.junit.Assert.*;
 
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import org.apache.commons.lang3.math.Fraction;
 import org.junit.Test;
 
@@ -482,10 +483,7 @@ public class KernImporterTest {
             for (Staff staff: song.getStaves()) {
                 assertEquals("Number of layers", 1, staff.getLayers().size());
                 TimeSignature ts = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
-                assertTrue("Fractional ts", ts instanceof FractionalTimeSignature);
-                //TODO Meter C Common time FractionalTimeSignature fts = (FractionalTimeSignature) ts;
-                //assertEquals("TS Numerator", 3, fts.getNumerator());
-                //assertEquals("TS Denominator", 4, fts.getDenominator());
+                assertTrue("Common time", ts instanceof TimeSignatureCommonTime);
                 assertEquals(PitchClasses.G.getPitchClass(), ks.getPitchClass());
             }
 

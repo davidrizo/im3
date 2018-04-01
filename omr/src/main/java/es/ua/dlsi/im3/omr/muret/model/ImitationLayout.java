@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.muret.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.Staff;
@@ -45,13 +46,18 @@ public class ImitationLayout extends ScoreLayout {
         }
 
         for (LayoutBeamGroup beam: beams) {
-            canvas.add(beam.getGraphicsElement());
+            canvas.add(beam.getGraphics());
         }*/
     }
 
     @Override
     public Collection<Canvas> getCanvases() {
         return canvases.values();
+    }
+
+    @Override
+    public void replace(Clef clef, Clef newClef, boolean changePitches) throws IM3Exception {
+        // TODO: 14/3/18  
     }
 
     public LayoutStaff createLayoutStaff(Staff staff, double width, double height, LayoutFont layoutFont) throws IM3Exception {

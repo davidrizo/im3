@@ -30,7 +30,7 @@ public class LayoutCoreBarline extends LayoutCoreSymbol<Measure>  {
         from = new Coordinate(position.getX(), null);
         to = new Coordinate(position.getX(), null);
 
-        line = new Line("BARLINE-", from, to);//TODO IDS
+        line = new Line(this, InteractionElementType.barline, from, to);//TODO IDS
 
     }
 
@@ -56,8 +56,17 @@ public class LayoutCoreBarline extends LayoutCoreSymbol<Measure>  {
     }
 
     @Override
+    protected void doLayout() throws IM3Exception {
+    }
+
+    @Override
     public Time getTime() {
         return time;
+    }
+
+    @Override
+    public void rebuild() {
+        throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
     }
 
     public Coordinate getBottomEnd() throws IM3Exception {

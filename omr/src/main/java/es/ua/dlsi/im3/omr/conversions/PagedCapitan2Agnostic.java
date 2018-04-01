@@ -28,7 +28,7 @@ public class PagedCapitan2Agnostic {
 
     private static final VerticalSeparator verticalSeparator = new VerticalSeparator();
     private static final JuxtapositionSeparator juxtapositionSeparator = new JuxtapositionSeparator();
-    private static final HorizontalSeparator horizontalSeparator = new HorizontalSeparator();
+    private static final HorizontalSeparator horizontalSeparator = new HorizontalSeparator(AgnosticVersion.v2);
 
     public PagedCapitan2Agnostic() {
         noteFigures = new HashMap<>();

@@ -6,10 +6,14 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -24,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class Pictogram extends GraphicsElement {
     private static final String SIZE = LayoutConstants.EM + "px";
-    private final Glyph glyph;
+    private Glyph glyph;
     /**
      * Used to compute dimensions of the pictogram
      */
@@ -32,7 +36,7 @@ public class Pictogram extends GraphicsElement {
     /**
      * SMuFL (or similar) name of the pictogram (e.g. gClef)
      */
-    private String codepoint;
+    private String codePoint;
 
     Coordinate position;
 
@@ -42,29 +46,33 @@ public class Pictogram extends GraphicsElement {
 
     LayoutFont layoutFont;
 
-    public Pictogram(String ID, LayoutFont layoutFont, String codepoint, Coordinate position) throws IM3Exception {
-        super(ID);
-        this.codepoint = codepoint;
+    public Pictogram(NotationSymbol notationSymbol, InteractionElementType interactionElementType, LayoutFont layoutFont, String codepoint, Coordinate position) throws IM3Exception {
+        super(notationSymbol, interactionElementType);
+        this.codePoint = codepoint;
         this.layoutFont = layoutFont;
         this.position = position;
         if (layoutFont == null) {
             throw new IM3Exception("layoutFont cannot be null");
         }
-        glyph = layoutFont.getGlyph(this);
-
         path = new SVGPath();
-        path.setContent(glyph.getPath());
         path.getTransforms().add(layoutFont.getJavaFXScale());
+        doRepaint();
+    }
+
+    @Override
+    protected void doRepaint() throws IM3Exception {
+        glyph = layoutFont.getGlyph(getCodePoint());
+        path.setContent(glyph.getPath());
         width = path.getLayoutBounds().getWidth() * layoutFont.getScaleX();
         height = path.getLayoutBounds().getHeight() * layoutFont.getScaleX();
     }
 
-    public String getCodepoint() {
-        return codepoint;
+    public String getCodePoint() {
+        return codePoint;
     }
 
     @Override
-    public void generateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
+    public void doGenerateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
         try {
             XMLExporterHelper.startEnd(sb, tabs, "use",
                     "xlink:href", "#" + glyph.getEscapedUnicodeFontUnique(),
@@ -74,7 +82,7 @@ public class Pictogram extends GraphicsElement {
                     "y", position.getAbsoluteY() + "px"
             );
         } catch (IM3Exception e) {
-            Logger.getLogger(Pictogram.class.getName()).log(Level.WARNING, "Cannot generate SVG for pictogram with codepoint " + codepoint, e);
+            Logger.getLogger(Pictogram.class.getName()).log(Level.WARNING, "Cannot generate SVG for pictogram with codepoint " + codePoint, e);
             throw new ExportException(e);
         }
 
@@ -82,7 +90,7 @@ public class Pictogram extends GraphicsElement {
     }
 
     @Override
-    public void generatePDF(PDPageContentStream contentStream, PDFExporter exporter, PDPage page) throws ExportException {
+    public void doGeneratePDF(PDPageContentStream contentStream, PDFExporter exporter, PDPage page) throws ExportException {
         try {
             PDType0Font musicFont = exporter.getMusicFont(layoutFont);
 
@@ -99,14 +107,24 @@ public class Pictogram extends GraphicsElement {
     }
 
     @Override
-    public Node getJavaFXRoot() throws GUIException {
-        path.setLayoutX(position.getAbsoluteX());
+    public Node doGenerateJavaFXRoot() throws GUIException {
         try {
-            path.setLayoutY(position.getAbsoluteY());
+            updateJavaFXRoot();
         } catch (IM3Exception e) {
             throw new GUIException(e);
         }
         return path;
+    }
+
+    @Override
+    public void updateJavaFXRoot() throws IM3Exception {
+        path.setLayoutX(position.getAbsoluteX());
+        path.setLayoutY(position.getAbsoluteY());
+    }
+
+    @Override
+    public void setJavaFXColor(Color color) {
+        path.setFill(color);
     }
 
     @Override
@@ -122,5 +140,9 @@ public class Pictogram extends GraphicsElement {
 
     public double getHeight() {
         return height;
+    }
+
+    public void setCodePoint(String codePoint) {
+        this.codePoint = codePoint;
     }
 }

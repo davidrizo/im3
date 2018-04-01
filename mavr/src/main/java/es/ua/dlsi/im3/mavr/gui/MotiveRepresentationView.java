@@ -17,7 +17,7 @@ public class MotiveRepresentationView extends Group {
 
     private void draw() throws ExportException, GUIException {
         for (Shape shape: motiveRepresentation.getShapes()) {
-            Node node = shape.getJavaFXRoot();
+            Node node = shape.doGenerateJavaFXRoot();
             this.getChildren().add(node);
         }
     }

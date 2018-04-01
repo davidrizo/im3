@@ -1,6 +1,6 @@
 package es.ua.dlsi.im3.omr.muret.editpage.music;
 
-import es.ua.dlsi.im3.gui.score.ScoreSongView;
+import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.omr.muret.editpage.TranscriptionStaffView;
 import es.ua.dlsi.im3.omr.muret.model.OMRPage;
 import es.ua.dlsi.im3.omr.muret.model.OMRRegion;

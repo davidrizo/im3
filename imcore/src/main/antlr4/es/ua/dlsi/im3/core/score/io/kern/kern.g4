@@ -1,7 +1,7 @@
 grammar kern;
 /*
 Don't use rules for lexer literals based on letters ('a'...) because they are ambiguos and
-depend on the parser
+depend on the parser -- TODO Use fragments
 
 TO-DO See this website for a solution:
 https://stackoverflow.com/questions/28873463/no-context-sensitivity-in-antlr4
@@ -20,7 +20,7 @@ https://stackoverflow.com/questions/28873463/no-context-sensitivity-in-antlr4
     }
 }
 
-song: (METADATACOMMENT EOL)* header (EOL record)+ EOL? endOfFile;
+song: (METADATACOMMENT EOL)* header (EOL record)+ EOL? (METADATACOMMENT EOL?)* endOfFile;
 
 endOfFile: EOF;
 
@@ -43,12 +43,12 @@ record: (field (TAB field)*);
 
 //field: (graphicalToken editorialToken?) | '.';
 field: graphicalToken
-     | (DOT // nothing is done, it is just a placeholder
-     | FIELDCOMMENT
+     | DOT // nothing is done, it is just a placeholder
      | EXCLAMATION_SIGN // empty comment
-       )
+     | fieldComment
      ;
 
+fieldComment: FIELDCCOMMENT;
 //repeatToken: 
 
 //graphicalToken: interpretation | tandemInterpretation | splineOperations | localComment | note | rest | barline;
@@ -61,7 +61,7 @@ tandemInterpretation:
     (TANDEM_CLEF clef) //| meter | key | metronome | instrument | instrumentClass | instrumentGroup;
     | (TANDEM_KEY LEFTBRACKET keysignature RIGHTBRACKET)
     | (TANDEM_METER meter)
-    | (TANDEM_MET LEFTPAR 'C' RIGHTPAR) // not found in documentation, e.g. met(C) for common time
+    | (TANDEM_MET LEFTPAR meterSign RIGHTPAR)
     | (TANDEM_STAFF staff)
     | (ASTERISK keyChange COLON)
     | (UNKNOWN_KEY  // unknown key
@@ -72,6 +72,7 @@ tandemInterpretation:
     | ASTERISK) // a null interpretation (placeholder) will have just an asterisk
     ;
 
+meterSign: ('C' | 'c' | 'C|' | 'c|'); //TODO Como fragment
 keyChange: (minorKey | majorKey) keyAccidental?;
 
 //keyAccidental: (LETTER_n | OCTOTHORPE | MINUS);
@@ -89,7 +90,7 @@ noteNameUpperCase: ('A'|'B'|'C'|'D'|'E'|'F'|'G');
 staff: NUMBER;
 
 //TODO change C1....
-clef: G2 | F2 | F3 | F4 | C3 | C4 | C2 | G1 | Gv2;
+clef: G2 | F2 | F3 | F4 | C5 | C4 | C3 | C2 | C1 | G1 | Gv2;
 
 keysignature: keysignatureNote*; // natural, sharp, flat
 
@@ -267,9 +268,8 @@ TANDEM_METER: '*M';
 ATONAL_PASSAGE: '*X:';
 UNKNOWN_KEY: '*?:';
 ASTERISK: '*';
-METADATACOMMENT: '!!!' COMMENTTEXT;
-FIELDCOMMENT: EXCLAMATION_SIGN COMMENTTEXT;
 EXCLAMATION_SIGN: '!';
+METADATACOMMENT: '!!!' COMMENTTEXT;
 
 
 //GLOBALCOMMENT: '!!' ~[\n\r];
@@ -298,9 +298,11 @@ G2:'G2';
 F4:'F4';
 F3:'F3';
 F2:'F2';
+C5:'C5';
+C4:'C4';
 C3:'C3';
 C2:'C2';
-C4:'C4';
+C1:'C1';
 G1:'G1';
 Gv2: 'Gv2';
 
@@ -354,14 +356,12 @@ LINE_COMMENT
 	-> channel(HIDDEN) // or  -> skip
     ;
 
+FIELDCCOMMENT: EXCLAMATION_SIGN COMMENTTEXT?;
+
+fragment COMMENTTEXT: ~[\t\n\r!|]+ ; // | and ! to avoid confusing a comment with a bar line
+fragment TEXT: ~[\t\n\r]+ ;
 
 
-fragment
-TEXT : ~[\t\n\r]+ ;
-
-
-fragment
-COMMENTTEXT: ~[\t\n\r!|]+ ; // | and ! to avoid confusing a comment with a bar line
 
 
 // TODO Repetitions

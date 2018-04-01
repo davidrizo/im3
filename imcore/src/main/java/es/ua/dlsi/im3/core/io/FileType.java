@@ -7,6 +7,6 @@ public enum FileType {
     /**
      * Don't change order, it is used in application databases
      */
-    mei, musicxml, kern, pae, midi
+    mei, musicxml, kern, pae, midi, compressedMusicXML
 }
 
