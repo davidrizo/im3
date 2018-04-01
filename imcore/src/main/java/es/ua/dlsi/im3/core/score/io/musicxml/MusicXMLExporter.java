@@ -489,7 +489,7 @@ public class MusicXMLExporter implements ISongExporter {
                     else placement = "below";
                     String tuplet_type = (atom == tuplet.getFirstAtom() ? "start" : "stop");
 
-                    // TODO: check if the tuplet 'number' is really __getID()
+                    // TODO: check if the tuplet 'number' is really __getID(). Tuplets need an integer identifier
                     startEnd(sb, 6, "tuplet", "number", tuplet.__getID(), "placement", placement, "type", tuplet_type);
                 }
             }
@@ -527,8 +527,10 @@ public class MusicXMLExporter implements ISongExporter {
     private void openBar(boolean useFClef, Measure measure, ScorePart part, Tempo tempo, HashMap<Time, SystemBreak> systemBreaks) throws IM3Exception {
         // reset backup
         backup = 0;
-
-        start(sb, 2, "measure", "number", measure.getNumber().toString());
+        if (measure.getTime().equals(Time.TIME_ZERO) && measure.getSong().isAnacrusis())
+            start(sb, 2, "measure", "implicit","yes","number", measure.getNumber().toString());
+        else
+            start(sb, 2, "measure", "number", measure.getNumber().toString());
         if (multiMeasureRestRemaining==0) { // not in a multimeasure rest
 
             // manual system breaks

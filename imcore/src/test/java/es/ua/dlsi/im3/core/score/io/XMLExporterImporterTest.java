@@ -744,7 +744,7 @@ public class XMLExporterImporterTest {
 
     @Test
     public void multimeasureRestBeginning() throws Exception {
-     //   doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.mei")));
+        doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.mei")));
         doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.xml")));
     }
 
@@ -825,6 +825,7 @@ public class XMLExporterImporterTest {
     @Test
     public void systemBreaks() throws Exception {
         doTest(XMLExporterImporterTest::assertSystemBreaks, importMEI(TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.mei")));
+		// TODO: Does XML output correctly, i. e., displays correctly in MuseScore, but reimporting fails ¿?
         doTest(XMLExporterImporterTest::assertSystemBreaks, importMusicXML(TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.xml")));
     }
 
