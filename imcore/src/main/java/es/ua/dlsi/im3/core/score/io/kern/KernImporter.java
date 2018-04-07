@@ -587,7 +587,7 @@ public class KernImporter implements IScoreSongImporter {
                                 RuntimeException("Invalid clef: " + ctx.getText()); //TODO Logger
                 }
                 Staff staff = getStaff(currentSpineIndex);
-                Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
+                Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
                         "Setting clef {0} to staff {1}", new Object[]{clef.toString(), staff.getNumberIdentifier()});
 
                 Time t = getLastTime();
@@ -602,7 +602,6 @@ public class KernImporter implements IScoreSongImporter {
                 } else {
                     clef.setTime(t);
                     staff.addClef(clef);
-
                 }
             } catch (IM3Exception ex) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
@@ -1149,11 +1148,12 @@ public class KernImporter implements IScoreSongImporter {
                         }
                     }
 
-                   /* if (ctx.afterNote() != null && ctx.afterNote().pause() != null && !ctx.afterNote().pause().isEmpty()) {
-                        Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
+                   if (ctx.afterNote() != null && ctx.afterNote().pause() != null && !ctx.afterNote().pause().isEmpty()) {
+                        Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
                                 "Pause found");
-                        //TODO 2017 sn.setFermata(true);
-                    }*/
+                        sn.getStaff().addFermata(sn.getAtomFigure());
+                    }
+
                     Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
                             "Score note added {0}", sn.toString());
 
@@ -1210,11 +1210,11 @@ public class KernImporter implements IScoreSongImporter {
                 //2017 rest.setStaff(getStaff(currentSpineIndex)); // Beniarbeig 2014
                 //measurescorenotes.add(rest);
 
-                /*if (ctx.pause() != null && !ctx.pause().isEmpty()) {
+                if (ctx.pause() != null && !ctx.pause().isEmpty()) {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                             "Pause found");
-                    //TODO 2017 rest.setFermata(true);
-                }*/
+                    staff.addFermata(rest.getAtomFigure());
+                }
 
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                         "Rest added {0}", rest.toString());
@@ -1515,7 +1515,15 @@ public class KernImporter implements IScoreSongImporter {
         @Override
         public void exitSplineSplit(kernParser.SplineSplitContext ctx) {
             super.exitSplineSplit(ctx);
-            throw new GrammarParseRuntimeException("Unsupported spline operation split...: " + ctx.getText());
+            // add a spine in a new layer
+            /*getStaff()
+
+            stavesForSpines.put(currentSpineIndex, staff);
+            ScoreLayer layer = spines.get(currentSpineIndex);
+            if (layer == null) {
+                throw new IM3RuntimeException("Spine " + currentSpineIndex + " has not a layer (maybe the **mens or **kern is missing)");
+            }
+            staff.addLayer(0, layer);*/
         }
 
         @Override

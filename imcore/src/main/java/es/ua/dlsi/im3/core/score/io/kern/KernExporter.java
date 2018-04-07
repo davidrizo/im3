@@ -383,9 +383,18 @@ public class KernExporter {
 
             if (atom instanceof SimpleNote) {
                 SimpleNote sn = (SimpleNote) atom;
-                record.add(generateNote(sn.getAtomPitch(), duration));
+                String noteStr = generateNote(sn.getAtomPitch(), duration);
+                if (sn.getAtomFigure().getFermata() != null) {
+                    noteStr += ";";
+                }
+                record.add(noteStr);
             } else if (atom instanceof SimpleRest) {
-                record.add(duration + "r");
+                if (((SimpleRest) atom).getAtomFigure().getFermata() != null) {
+                    record.add(duration + "r;");
+                } else {
+                    record.add(duration + "r");
+                }
+
             } else if (atom instanceof SimpleChord) {
                 StringBuilder cb = new StringBuilder();
                 SimpleChord sc = (SimpleChord) atom;
@@ -394,6 +403,9 @@ public class KernExporter {
                         cb.append(' ');
                     }
                     cb.append(generateNote(atomPitch, duration));
+                }
+                if (sc.getAtomFigure().getFermata() != null) {
+                    cb.append(';');
                 }
                 record.add(cb.toString());
             } else {

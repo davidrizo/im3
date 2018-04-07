@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -283,7 +284,15 @@ public class KernImporterTest {
 
             assertTrue("Anacrusis" , song.isAnacrusis());
             assertEquals("Anacrusis offset", new Time(3, 1), song.getAnacrusisOffset());
-            // TODO Comprobar calderón
+
+            assertNotNull("Staff 1, top layer, first fermata", atoms1_top.get(5).getAtomFigures().get(0).getFermata());
+            assertNotNull("Staff 1, top layer, second fermata", atoms1_top.get(14).getAtomFigures().get(0).getFermata());
+            //Not in MusicXML example assertNotNull("Staff 1, bottom layer, first fermata", atoms1_bottom.get(5).getAtomFigures().get(0).getFermata());
+            //Not in MusicXML example assertNotNull("Staff 1, bottom layer, second fermata", atoms1_bottom.get(15).getAtomFigures().get(0).getFermata());
+            //Not in MusicXML example assertNotNull("Staff 2, top layer, first fermata", atoms2_top.get(5).getAtomFigures().get(0).getFermata());
+            //Not in MusicXML example assertNotNull("Staff 2, top layer, second fermata", atoms2_top.get(16).getAtomFigures().get(0).getFermata());
+            assertNotNull("Staff 2, bottom layer, first fermata", atoms2_bottom.get(9).getAtomFigures().get(0).getFermata());
+            assertNotNull("Staff 2, bottom layer, second fermata", atoms2_bottom.get(19).getAtomFigures().get(0).getFermata());
 
         } catch (Throwable t) {
             t.printStackTrace();
@@ -295,8 +304,8 @@ public class KernImporterTest {
 
     @Test
     public void testGuideExample2_3() throws Exception {
-        doTest(KernImporterTest::assertGuideExample2_3, importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/guide02-example2-3.krn")));
         doTest(KernImporterTest::assertGuideExample2_3, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/kern/guide02-example2-3.xml")));
+        doTest(KernImporterTest::assertGuideExample2_3, importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/guide02-example2-3.krn")));
     }
 
     // ------------------------------------------------------------------------------------------
@@ -519,6 +528,47 @@ public class KernImporterTest {
         assertChor9(importedSong);
     }
 
+    // ------------------------------------------------------------------------------------------
+   /* private static Void assertSimpleSpineSplit(ScoreSong song) {
+        try {
+            assertEquals("Staves", 1, song.getStaves().size());
+            Staff staff = song.getStaves().get(0);
+            assertEquals("Layers", 2, staff.getLayers().size());
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail(t.toString());
+        }
+        return null;
+    }
+
+
+    @Test
+    public void testSimpleSpineSplit() throws Exception {
+        ScoreSong kernSong = importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/spline_split.krn"));
+        doTest(KernImporterTest::assertSimpleSpineSplit, kernSong);
+    }
+
+
+    // ------------------------------------------------------------------------------------------
+    private static Void assertSpineSplitPiston70(ScoreSong song) {
+        try {
+
+            // TODO: 7/4/18 Hacer
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail(t.toString());
+        }
+        return null;
+    }
+
+
+    @Test
+    public void testSpineSplitPiston70() throws Exception {
+        ScoreSong kernSong = importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/spline_split_piston070.krn"));
+        doTest(KernImporterTest::assertSpineSplitPiston70, kernSong);
+    }*/
 
 
 }

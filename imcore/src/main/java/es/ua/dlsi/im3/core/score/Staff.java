@@ -186,15 +186,44 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return fermate;
 	}
 
+    // TODO: 7/4/18 ¿Esta suposición de poner el calderón según la clave está bien?
+    /**
+     * It adds the fermata depending on the clef
+     * @param snr
+     * @throws IM3Exception
+     */
+    public void addFermata(AtomFigure snr) throws IM3Exception {
+        Clef clef = null;
+        try {
+            clef = this.getRunningClefAt(snr); // harmony spines...
+        } catch (IM3Exception e) {
+            //no-op
+        }
+        if (clef == null || clef.getNoteOctave() >= 4) {
+            addFermata(snr, PositionAboveBelow.ABOVE);
+        } else {
+            addFermata(snr, PositionAboveBelow.BELOW);
+        }
+    }
+
+    /**
+     * Add a specific fermata
+     * @param snr
+     * @param position
+     * @throws IM3Exception
+     */
 	public void addFermata(AtomFigure snr, PositionAboveBelow position) throws IM3Exception {
+	    if (position == PositionAboveBelow.UNDEFINED) {
+	        addFermata(snr);
+        }
+
 		Fermate f = fermate.get(snr.getTime());
-		if (!fermate.containsKey(snr.getTime())) {
+		if (f == null) {
 			f = new Fermate(getNotationType(), this, snr, position);
 			fermate.put(snr.getTime(), f);
 			this.addMark(f);
-		} else {
-			f.addDurationalSymbol(snr, position);
 		}
+		f.addDurationalSymbol(snr, position);
 	}
 
 	// ----------------------------------------------------------------------
@@ -226,7 +255,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		Map.Entry<Time, Clef> c = this.clefs.floorEntry(symbol.getTime());
 		if (c == null) {
 			throw new IM3Exception(
-					"There is no clef set at symbol " + symbol.toString() + " at time  " + symbol.getTime());
+					"There is no clef set at symbol " + symbol.toString() + " at time  " + symbol.getTime() + " in staff " + this);
 		}
 		return c.getValue();
 	}
@@ -957,4 +986,8 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         }
     }
 
+    @Override
+    public String toString() {
+        return "#" + getNumberIdentifier();
+    }
 }

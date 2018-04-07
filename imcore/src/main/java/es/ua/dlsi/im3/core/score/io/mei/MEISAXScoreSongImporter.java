@@ -1382,12 +1382,14 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				//Atom fromAtom = tiedFrom.getAtomFigure().getAtom();
 				//SimpleNote tiedNote = new SimpleNote(figure, dots, tiedFrom.getScientificPitch());
 				//tiedNote.getAtomPitch().setTiedFromPrevious(tiedFrom);
-				//20180208 tiedFrom.setTiedToNext(lastAtomPitch);
+				//tiedFrom.setTiedToNext(lastAtomPitch);
+                // we don't tie here because the accidental may not be set yet
 				pendingTieTo.put(System.identityHashCode(lastAtomPitch), tiedFrom);
 				currentTies.remove(tieCode);
 				//addElementToVoiceStaffOrTuplet(tiedNote, xmlid, attributesMap);
 			} else if (type.equals("m")) { // middle
-                //20180208 tiedFrom.setTiedToNext(lastAtomPitch);
+                // tiedFrom.setTiedToNext(lastAtomPitch);
+                // we don't tie here because the accidental may not be set yet
                 pendingTieTo.put(System.identityHashCode(lastAtomPitch), tiedFrom);
 				currentTies.remove(tieCode);
 				

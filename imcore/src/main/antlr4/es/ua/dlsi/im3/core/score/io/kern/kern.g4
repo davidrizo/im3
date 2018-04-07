@@ -203,10 +203,10 @@ partialBarLine:
 
 //globalComment: GLOBALCOMMENT;
 
-splineOperations: splineTerminator; // terminator
+splineOperations: splineTerminator | splineSplit | splineJoin; // terminator
 splineTerminator: ASTERISK MINUS;
 splineSplit: ASTERISK CIRCUMFLEX;
-splineJoin: '*v'; // 'v' literal here to avoid confusion with 'v' degree
+splineJoin: '*v'; // 'v' literal here to avoid confusion with 'v' degree //TODO Se puede hacer con fragment
 
 ///// ----------- HARM ---------
 harm: harmChord alternateHarm? pause?;

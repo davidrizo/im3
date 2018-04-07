@@ -1,4 +1,6 @@
 package es.ua.dlsi.im3.gui.score.javafx;
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import com.sun.javafx.scene.control.skin.TableViewSkinBase;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.io.ImportException;
@@ -45,7 +47,8 @@ public class ScoreEditController implements Initializable, IScoreSongViewEventSu
     MenuItem menuItemSave;
     @FXML
     MenuItem menuItemSaveMEIAs;
-
+    @FXML
+    TableView<KernRecord> tableViewKern;
 
     ObjectProperty<ScoreEditModel> model;
     private ScoreSongView scoreSongView;
@@ -57,6 +60,24 @@ public class ScoreEditController implements Initializable, IScoreSongViewEventSu
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         menuItemSave.disableProperty().bind(model.isNull());
+
+        // remove headers
+        tableViewKern.skinProperty().addListener((a, b, newSkin) -> {
+            TableHeaderRow headerRow = ((TableViewSkinBase) newSkin).getTableHeaderRow();
+            headerRow.setVisible(false);
+            headerRow.setMinHeight(0);
+            headerRow.setPrefHeight(0);
+            headerRow.setMaxHeight(0);
+        });
+
+        // TODO: 3/4/18 - add - remove rows
+        for (int ivoice = 0; ivoice < 4; ivoice++) {
+            KernRecord kernRecord = new KernRecord(4);
+            for (int i = 0; i < 100; i++) {
+                kernRecord.add(ivoice + " " + i);
+            }
+            tableViewKern.getItems().add(kernRecord);
+        }
     }
 
     @FXML

@@ -64,11 +64,12 @@ public class Fermate extends StaffMark implements INotationTypeDependant {
 
 	public final void addDurationalSymbol(AtomFigure snr, PositionAboveBelow position) {
 		associatedDurationalSymbols.add(snr);
-		if (!fermate.containsKey(position)) {
-			Fermata ll = new Fermata(this, position);
+		Fermata ll = fermate.get(position);
+		if (ll == null) {
+			ll = new Fermata(this, position);
 			fermate.put(position, ll);
-			snr.setFermata(ll);
 		}
+        snr.setFermata(ll);
 	}
 
 	public HashMap<PositionAboveBelow, Fermata> getFermate() {

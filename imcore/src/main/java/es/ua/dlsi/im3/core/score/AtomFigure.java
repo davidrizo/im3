@@ -121,7 +121,6 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		this.onsetRelativeToAtom = relativeOnset;
 	}
 	
-	//TODO Guardarla para que no haya que recalcularla siempre
 	@Override
 	/**
 	 * It returns the absolute time
@@ -268,6 +267,9 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         this.fermata = fermata;
     }
 
+    /**
+     * @return null if not a fermata found
+     */
     public Fermata getFermata() {
         return fermata;
     }
