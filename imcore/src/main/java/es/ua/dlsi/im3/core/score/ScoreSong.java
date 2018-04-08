@@ -1780,4 +1780,14 @@ public class ScoreSong {
         }
         return null;
     }
+
+    public ArrayList<Staff> getNonAnalysisStaves() {
+        ArrayList<Staff> result = new ArrayList<>();
+        for (Staff staff: staves) {
+            if (!(staff instanceof AnalysisStaff)) {
+                result.add(staff);
+            }
+        }
+        return result;
+    }
 }

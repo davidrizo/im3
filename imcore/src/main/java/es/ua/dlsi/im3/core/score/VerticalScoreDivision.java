@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 
 /**
  * This is a core symbol for allowing the recursive design scheme
@@ -45,6 +46,9 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 	public VerticalScoreDivision(ScoreSong notationSong, String hierarchicalOrder, int numberIdentifier) {
 		this.notationSong = notationSong;
 		this.hierarchicalOrder = hierarchicalOrder;
+		if (numberIdentifier == 0) {
+		    throw new IM3RuntimeException("Number identifier should not be 0 (for MEI)");
+        }
 		this.numberIdentifier = numberIdentifier;
 	}
 

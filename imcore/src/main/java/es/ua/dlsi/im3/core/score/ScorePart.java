@@ -356,6 +356,12 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 		this.scoreSong.getIdManager().assignNextID(staff);
 	}
 
+    public void addStaffAt(int index, Staff staff) {
+        this.staves.add(index, staff);
+        this.scoreSong.getIdManager().assignNextID(staff);
+    }
+
+
 	public List<Staff> getStaves() {
 		return staves;
 	}

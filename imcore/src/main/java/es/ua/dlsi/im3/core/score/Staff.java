@@ -378,7 +378,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		// computeOnsets
 		Map.Entry<Time, KeySignature> c = this.keySignatures.floorEntry(time);
 		if (c == null) {
-			throw new IM3Exception("There is no instrumentKey signature set at time " + time);
+			throw new IM3Exception("There is no instrumentKey signature set at time " + time + " in staff " + toString());
 		}
 		return c.getValue();
 	}
@@ -988,6 +988,10 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
     @Override
     public String toString() {
-        return "#" + getNumberIdentifier();
+        if (name != null) {
+            return "#" + getNumberIdentifier() + " (" + name + ")";
+        } else {
+            return "#" + getNumberIdentifier();
+        }
     }
 }

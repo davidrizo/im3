@@ -2,7 +2,6 @@ package es.ua.dlsi.im3.core.score.io.kern;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.io.antlr.GrammarParseException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.harmony.*;
@@ -11,6 +10,7 @@ import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
+import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.io.antlr.ErrorListener;
@@ -21,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -206,7 +205,7 @@ public class KernImporter implements IScoreSongImporter {
             Staff staff = currentSpine.staff;
             if (staff == null) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Adding staff 0 to part");
-                staff = addStaff(stavesByNumber.size());
+                staff = addStaff(stavesByNumber.size()+1); // avoid starting from 0
             }
             return staff;
         }
@@ -226,13 +225,13 @@ public class KernImporter implements IScoreSongImporter {
                 staff.addLayer(currentSpine.splittedInto.layer);
             }
 
-
             stavesByNumber.put(number, staff);
             if (!inRootSpine() && !inHarmSpine()) {
                 // if an analysis spine, it is not added to the song
                 scoreSong.addStaffAt(0, staff); // kern begins from bottom
             }
-            staff.addPart(globalPart); // TODO: 20/11/17 Parts when two parts in a staff - ahora está todo en el mismo part!!!!
+            staff.addPart(layer.getPart()); // TODO: 20/11/17 Parts when two parts in a staff - ahora está todo en el mismo part!!!!
+            layer.getPart().addStaffAt(0, staff); // kern begins from bottom
 
             if (currentSpine.pendingStaffName != null) {
                 staff.setName(currentSpine.pendingStaffName);
@@ -364,7 +363,11 @@ public class KernImporter implements IScoreSongImporter {
             }
 
             try {
-                spine.layer = part.addScoreLayer();
+                if (part != rootPart) { //TODO esto está muy mal programado ;(
+                    spine.layer = part.addScoreLayer();
+                } else {
+                    spine.layer = part.getUniqueVoice();
+                }
             } catch (IM3Exception e) {
                 throw new IM3RuntimeException("Cannot add score layer: " + e);
             }
@@ -422,6 +425,23 @@ public class KernImporter implements IScoreSongImporter {
             kernSpineFound = true; // for dealing with **harm only files
         }
 
+        private Staff addAnalysisPart() {
+            try {
+                if (rootPart == null) {
+                    rootPart = scoreSong.addAnalysisPart();
+                    AnalysisStaff analysisStaff = new AnalysisStaff(scoreSong, "99999", 99999); //TODO
+                    analysisStaff.setNotationType(NotationType.eModern); // always modern
+                    rootPart.addStaff(analysisStaff);
+                    scoreSong.addStaff(analysisStaff);
+                    return analysisStaff;
+                } else {
+                    return scoreSong.getAnalysisStaff();
+                }
+            } catch (IM3Exception e) {
+                throw new IM3RuntimeException("Cannot add an analysis part: " + e);
+            }
+        }
+
         @Override
         public void enterHeaderHarm(kernParser.HeaderHarmContext ctx) {
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Harm {0}", ctx.getText());
@@ -429,21 +449,23 @@ public class KernImporter implements IScoreSongImporter {
                 throw new GrammarParseRuntimeException("Cannot set two harm spines, previous was " + harmSpine.spineIndex
                         + ", and new one is " + currentSpineIndex + " at row " + currentRow);
             }
-            harmSpine = prepareSpine(globalPart);
+            Staff analysisStaff = addAnalysisPart();
+            harmSpine = prepareSpine(rootPart);
             harmSpine.harmSpine = true;
+            harmSpine.staff = analysisStaff;
+            harmSpine.layer.setStaff(analysisStaff);
+            analysisStaff.addLayer(harmSpine.layer);
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Setting harm spine in {0}", harmSpine);
         }
 
         @Override
         public void enterHeaderRoot(kernParser.HeaderRootContext ctx) {
-            try {
-                rootPart = scoreSong.addAnalysisPart();
-            } catch (IM3Exception e) {
-                throw new IM3RuntimeException("Cannot add an analysis part: " + e);
-            }
+            Staff analysisStaff = addAnalysisPart();
             rootSpine = prepareSpine(rootPart);
             rootSpine.rootSpine = true;
-
+            rootSpine.staff = analysisStaff;
+            rootSpine.layer.setStaff(analysisStaff);
+            analysisStaff.addLayer(rootSpine.layer);
 			/*
 			 * Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST,
 			 * "Root {0}", ctx.getText()); if (rootSpine != -1) { throw new
@@ -682,6 +704,7 @@ public class KernImporter implements IScoreSongImporter {
         @Override
         public void exitKeysignature(kernParser.KeysignatureContext ctx) {
             super.exitKeysignature(ctx);
+
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Key Signature {0}", ctx.getText());
             try {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
@@ -705,26 +728,20 @@ public class KernImporter implements IScoreSongImporter {
                     // TODO Comprobar el contenido
                 }
 
-                if (inRootSpine()) {
+                /*if (inRootSpine()) {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.WARNING, "Skipping key information in **root spine");
                 } else if (inHarmSpine()) {
                     lastHarmKey = ks;
-                } else {
+                } else {*/
+
                     Staff staff = getStaff();
 
-                    KeySignature otherKey = staff.getKeySignatureWithOnset(currentTime);
-                    if (otherKey != null) {
-                        //TODO Comprobar transpositores
-                        if (!otherKey.getConcertPitchKey().equals(ks)) {
-                            throw new GrammarParseRuntimeException("There is already a key " + otherKey.toString()
-                                    + " at time " + currentTime + " while inserting " + ks.toString());
-                        }
-                    } else {
-                        KeySignature newKs = new KeySignature(currentSpine.notationType, ks);
-                        newKs.setTime(currentTime);
-                        staff.addKeySignature(newKs);
+                    addKeySignature(currentTime, staff, ks);
+                    if (inHarmSpine() || inRootSpine()){
+                        lastHarmKey = ks;
+                        addKeySignature(currentTime, scoreSong.getAnalysisStaff(), ks);
                     }
-                }
+                //}
             } catch (IM3Exception ex) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
                 throw new GrammarParseRuntimeException(ex);
@@ -732,6 +749,34 @@ public class KernImporter implements IScoreSongImporter {
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Recognized key signature with {0} notes",
                     ksNotesCount);
 
+        }
+
+        private void addKeySignature(Time currentTime, Staff staff, Key ks) throws IM3Exception {
+            KeySignature otherKey = staff.getKeySignatureWithOnset(currentTime);
+            if (otherKey != null) {
+                //TODO Comprobar transpositores
+                if (!otherKey.getConcertPitchKey().equals(ks)) {
+                    throw new GrammarParseRuntimeException("There is already a key " + otherKey.toString()
+                            + " at time " + currentTime + " while inserting " + ks.toString());
+                }
+            } else {
+                KeySignature newKs = new KeySignature(currentSpine.notationType, ks);
+                newKs.setTime(currentTime);
+                staff.addKeySignature(newKs);
+
+                Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
+                        "Adding key signature {0} to staff {1}", new Object[]{newKs, staff});
+
+                if (inHarmSpine() || inRootSpine()) { // parche
+                    KeySignature newKsAnalysis = new KeySignature(currentSpine.notationType, ks);
+                    newKsAnalysis.setTime(currentTime);
+                    scoreSong.getAnalysisStaff().addKeySignature(newKsAnalysis);
+
+                    Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
+                            "Adding key signature {0} to staff {1}", new Object[]{newKs, staff});
+
+                }
+            }
         }
 
         @Override
@@ -1583,7 +1628,7 @@ public class KernImporter implements IScoreSongImporter {
             newSpine.splittedInto = newSpine;
             currentSpine.staff.addLayer(newSpine.layer);
             Logger.getLogger(KernImporter.class.getName()).log(Level.INFO, "Adding spine #" + currentSpineIndex);
-            //currentSpineIndex++;
+            currentSpineIndex++; // important when a sequence of *^ is found
             // add a spine in a new layer
             /*getStaff()
 

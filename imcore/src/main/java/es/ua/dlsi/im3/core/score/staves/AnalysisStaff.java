@@ -35,6 +35,7 @@ public class AnalysisStaff extends Staff {
 			int numberIdentifier) {
 		super(song, hierarchicalOrder, numberIdentifier, 1);
 		analysisHooks = new TreeMap<>();
+		this.setName("Analysis");
 	}
 
 	@Override
