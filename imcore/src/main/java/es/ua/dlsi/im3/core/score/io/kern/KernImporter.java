@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.io.kern;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.io.antlr.GrammarParseException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.harmony.*;
@@ -55,23 +56,41 @@ public class KernImporter implements IScoreSongImporter {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    static class VoiceTemp {
+    static class Spine {
+        public int spineIndex;
+        public Spine splittedFrom;
+        public Spine splittedInto;
+        public Time tupletStartTime;
+        Staff staff;
+        ScoreLayer layer;
+        String pendingStaffName;
+        NotationType notationType;
+        boolean rootSpine;
+        boolean harmSpine;
 
-        ArrayList<SingleFigureAtom> tupletElements = new ArrayList<>();
-        ArrayList<Integer> tupletDurations = new ArrayList<>();
+        ArrayList<SingleFigureAtom> tupletElements;
+        ArrayList<Integer> tupletDurations;
         boolean inTuplet;
         int mcdTupleElementDuration; // greatest common divisor
         int mcm; // lowest common multiple
         int tupletDots;
-        private int lastDuration;
+        private int lastDuration; // duration of last note
+
+        public Spine(int index) {
+            spineIndex = index;
+            tupletElements = new ArrayList<>();
+            tupletDurations = new ArrayList<>();
+            rootSpine = false;
+            harmSpine = false;
+        }
     }
 
     public static class Loader extends kernBaseListener {
         DurationEvaluator durationEvaluator;
         ScoreSong scoreSong;
-        ScoreLayer currentVoice; // TODO De momento solo tengo una voice por part
         int currentSpineIndex;
-        private int harmSpine = -1;
+        private Spine currentSpine;
+        private Spine harmSpine = null;
         int currentRow = 0; // incremented in enterRecord - start from 1
         boolean measureInserted;
         Time lastTime;
@@ -84,10 +103,9 @@ public class KernImporter implements IScoreSongImporter {
 
         SimpleChord chord;
 
-        HashMap<Integer, ScoreLayer> spines = new HashMap<>();
-        HashMap<Integer, Staff> stavesForSpines = new HashMap<>();
-        HashMap<Integer, String> namesForSpines = new HashMap<>();
-        private HashMap<Integer, NotationType> spineNotationTypes = new HashMap<>();
+        ArrayList<Spine> spines;
+        ArrayList<Spine> spinesToRemove; // when a join is found
+
         HashMap<Integer, Staff> stavesByNumber = new HashMap<>();
         HierarchicalIDGenerator hierarchicalIDGenerator = new HierarchicalIDGenerator();
 
@@ -103,17 +121,13 @@ public class KernImporter implements IScoreSongImporter {
         // ArrayList<ScoreSoundingElement> measurescorenotes = new
         // ArrayList<>();
         Measure currentMeasure;
-        private int rootSpine = -1;
+        private Spine rootSpine = null;
         private Mode keyChangeMode;
         private String keyString;
         private int octaveModif;
         private String noteName;
-        private VoiceTemp currentVoiceTemp;
         //private SimpleNote lastRootNote;
-        private VoiceTemp rootVoiceTemp;
         private SingleFigureAtom lastNoteOrChord;
-        private Harmony lastHarmony;
-        HashMap<Integer, VoiceTemp> voiceTemp;
         TreeSet<Double> figureBeatsSortedForTupletProcessing;
         private boolean inChord;
 
@@ -124,7 +138,6 @@ public class KernImporter implements IScoreSongImporter {
         private boolean eofReached = false;
 
         TreeSet<Integer> nonTupletDurations = new TreeSet<>(); // faster than a math op
-
         {
             nonTupletDurations.add(0);
             nonTupletDurations.add(1);
@@ -162,16 +175,18 @@ public class KernImporter implements IScoreSongImporter {
 
         /// -------- Helper methods -------
         boolean inHarmSpine() {
-            return currentSpineIndex == this.harmSpine;
+            //return spines.get(currentSpineIndex).harmSpine;
+            return currentSpine.harmSpine;
         }
 
         boolean inRootSpine() {
-            return currentSpineIndex == this.rootSpine;
+            //return spines.get(currentSpineIndex).rootSpine;
+            return currentSpine.rootSpine;
         }
 
-        final boolean isRootBeforeHarmonies() {
+        /*final boolean isRootBeforeHarmonies() {
             return rootSpine < harmSpine;
-        }
+        }*/
 
 		/*int gcd(int a, int b) {
             if (b == 0) {
@@ -187,8 +202,8 @@ public class KernImporter implements IScoreSongImporter {
 		}*/
 
 
-        private Staff getStaff(int currentSpineIndex) throws IM3Exception {
-            Staff staff = stavesForSpines.get(currentSpineIndex);
+        private Staff getStaff() throws IM3Exception {
+            Staff staff = currentSpine.staff;
             if (staff == null) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Adding staff 0 to part");
                 staff = addStaff(stavesByNumber.size());
@@ -198,15 +213,20 @@ public class KernImporter implements IScoreSongImporter {
 
         Staff addStaff(int number) throws IM3Exception {
             Staff staff = new Pentagram(scoreSong, hierarchicalIDGenerator.nextStaffHierarchicalOrder(null), number);
-            staff.setNotationType(spineNotationTypes.get(currentSpineIndex));
-            //TODO Cambiar por FINE
+            staff.setNotationType(currentSpine.notationType);
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Adding staff #{0} to spine #{1}", new Object[]{number, currentSpineIndex});
-            stavesForSpines.put(currentSpineIndex, staff);
-            ScoreLayer layer = spines.get(currentSpineIndex);
+            currentSpine.staff = staff;
+            ScoreLayer layer = currentSpine.layer;
             if (layer == null) {
                 throw new IM3RuntimeException("Spine " + currentSpineIndex + " has not a layer (maybe the **mens or **kern is missing)");
             }
             staff.addLayer(0, layer);
+            if (currentSpine.splittedInto != null) {
+                currentSpine.splittedInto.staff = staff;
+                staff.addLayer(currentSpine.splittedInto.layer);
+            }
+
+
             stavesByNumber.put(number, staff);
             if (!inRootSpine() && !inHarmSpine()) {
                 // if an analysis spine, it is not added to the song
@@ -214,9 +234,8 @@ public class KernImporter implements IScoreSongImporter {
             }
             staff.addPart(globalPart); // TODO: 20/11/17 Parts when two parts in a staff - ahora está todo en el mismo part!!!!
 
-            String staffName = namesForSpines.get(currentSpineIndex);
-            if (staffName != null) {
-                staff.setName(staffName);
+            if (currentSpine.pendingStaffName != null) {
+                staff.setName(currentSpine.pendingStaffName);
             }
 
             return staff;
@@ -245,7 +264,7 @@ public class KernImporter implements IScoreSongImporter {
             }
         }
 
-        VoiceTemp getCurrentVoiceTemp() {
+        //VoiceTemp getCurrentVoiceTemp() {
             /*if (inHarmSpine()) {
                 // try to get the root voice
                 if (rootSpine != -1) {
@@ -264,11 +283,11 @@ public class KernImporter implements IScoreSongImporter {
             } else {
                 return voiceTemp.get(currentSpineIndex);
             }*/
-            return voiceTemp.get(currentSpineIndex);
-        }
+        //    return voiceTemp.get(currentSpineIndex);
+        //}
 
         private TimeSignature currentTimeSignature() throws NoMeterException, IM3Exception {
-            Staff staff = getStaff(currentSpineIndex);
+            Staff staff = getStaff();
             return staff.getRunningTimeSignatureAt(lastTime);
 
 			/*2017 f (currentVoice.isEmpty()) {
@@ -284,8 +303,8 @@ public class KernImporter implements IScoreSongImporter {
         }
 
         private void addAtom(Time time, Atom atom) throws IM3Exception {
-            currentVoice.add(time, atom);
-            Staff staff = getStaff(currentSpineIndex);
+            currentSpine.layer.add(time, atom);
+            Staff staff = getStaff();
             staff.addCoreSymbol(atom);
 
         }
@@ -297,7 +316,7 @@ public class KernImporter implements IScoreSongImporter {
             super.enterHeader(ctx);
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Enter Header {0}", ctx.getText());
 
-            voiceTemp = new HashMap<>();
+            spines = new ArrayList<>();
             currentSpineIndex = 0;
         }
 
@@ -308,7 +327,7 @@ public class KernImporter implements IScoreSongImporter {
             currentSpineIndex++;
         }
 
-        private void prepareVoiceTemp() {
+        /*private void prepareVoiceTemp() {
             voiceTemp.put(currentSpineIndex, new VoiceTemp());
             if (spines.get(currentSpineIndex) == null) {
                 // 2017
@@ -328,8 +347,37 @@ public class KernImporter implements IScoreSongImporter {
 
                 spines.put(currentSpineIndex, v);
             }
+        }*/
 
+        /**
+         *
+         * @param part
+         * @param index If null the spine will be inserted to the end
+         * @return
+         */
+        private Spine prepareSpine(ScorePart part, Integer index) {
+            Spine spine = new Spine(currentSpineIndex);
+            if (index == null || index >= spines.size()){
+                spines.add(spine);
+            } else {
+                spines.add(index, spine);
+            }
+
+            try {
+                spine.layer = part.addScoreLayer();
+            } catch (IM3Exception e) {
+                throw new IM3RuntimeException("Cannot add score layer: " + e);
+            }
+            spine.layer.setDurationEvaluator(durationEvaluator);
+
+            return spine;
         }
+
+        private Spine prepareSpine(ScorePart part) {
+            return prepareSpine(part, null);
+        }
+
+
 
         @Override
         public void exitSong(kernParser.SongContext ctx) {
@@ -345,7 +393,6 @@ public class KernImporter implements IScoreSongImporter {
             }
         }
 
-
         /**
          * **kern
          *
@@ -355,8 +402,7 @@ public class KernImporter implements IScoreSongImporter {
         public void enterHeaderKern(kernParser.HeaderKernContext ctx) {
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Kern {0}", ctx.getText());
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Enter Header **krn {0}", ctx.getText());
-            spineNotationTypes.put(currentSpineIndex, NotationType.eModern);
-            prepareVoiceTemp();
+            prepareSpine(globalPart).notationType = NotationType.eModern;
         }
 
         @Override
@@ -368,8 +414,7 @@ public class KernImporter implements IScoreSongImporter {
         public void enterHeaderMens(kernParser.HeaderMensContext ctx) {
             super.enterHeaderMens(ctx);
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Enter Header **mens {0}", ctx.getText());
-            spineNotationTypes.put(currentSpineIndex, NotationType.eMensural);
-            prepareVoiceTemp();
+            prepareSpine(globalPart).notationType = NotationType.eMensural;
         }
 
         @Override
@@ -380,20 +425,25 @@ public class KernImporter implements IScoreSongImporter {
         @Override
         public void enterHeaderHarm(kernParser.HeaderHarmContext ctx) {
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Harm {0}", ctx.getText());
-            if (harmSpine != -1) {
-                throw new GrammarParseRuntimeException("Cannot set two harm spines, previous was " + harmSpine
+            if (harmSpine != null) {
+                throw new GrammarParseRuntimeException("Cannot set two harm spines, previous was " + harmSpine.spineIndex
                         + ", and new one is " + currentSpineIndex + " at row " + currentRow);
             }
-            harmSpine = currentSpineIndex;
-            prepareVoiceTemp();
+            harmSpine = prepareSpine(globalPart);
+            harmSpine.harmSpine = true;
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Setting harm spine in {0}", harmSpine);
         }
 
         @Override
         public void enterHeaderRoot(kernParser.HeaderRootContext ctx) {
-            rootSpine = currentSpineIndex;
-            rootPart = new ScorePart(scoreSong, -1);
-            prepareVoiceTemp();
+            try {
+                rootPart = scoreSong.addAnalysisPart();
+            } catch (IM3Exception e) {
+                throw new IM3RuntimeException("Cannot add an analysis part: " + e);
+            }
+            rootSpine = prepareSpine(rootPart);
+            rootSpine.rootSpine = true;
+
 			/*
 			 * Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST,
 			 * "Root {0}", ctx.getText()); if (rootSpine != -1) { throw new
@@ -427,6 +477,8 @@ public class KernImporter implements IScoreSongImporter {
             currentSpineIndex = 0;
             lastNoteOrChord = null;
             timeNeedsUpdate = true;
+            spinesToRemove = null;
+
             //minimumRecordDuration = Time.TIME_MAX;
         }
 
@@ -438,6 +490,12 @@ public class KernImporter implements IScoreSongImporter {
                 // if some duration symbols has been found
                 recordTime = recordTime.add(minimumRecordDuration);
             }*/
+
+            if (spinesToRemove != null) {
+                for (Spine spine: spinesToRemove) {
+                    spines.remove(spine);
+                }
+            }
 
             try {
                 updateLastTime();
@@ -452,7 +510,7 @@ public class KernImporter implements IScoreSongImporter {
         public void enterField(kernParser.FieldContext ctx) {
             super.enterField(ctx);
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Entering field {0}", ctx.getText());
-            currentVoiceTemp = this.getCurrentVoiceTemp();
+            currentSpine = spines.get(currentSpineIndex);
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Spine #{0}", currentSpineIndex);
             // currentScorePart = scoreSong.getPart(currentPartIndex);
             /*if (!inHarmSpine()) {
@@ -460,18 +518,16 @@ public class KernImporter implements IScoreSongImporter {
             } else {
                 currentVoice = null;
             }*/
-            currentVoice = spines.get(currentSpineIndex);
 
             //updateLastTime();
         }
 
         @Override
         public void exitFieldComment(kernParser.FieldCommentContext ctx) {
-            Staff staff = stavesForSpines.get(currentSpineIndex);
-            if (staff == null) {
+            if (currentSpine.staff == null) {
                 // no staff yet - this field is the staff name
                 String name = ctx.getText().substring(1).trim();
-                namesForSpines.put(currentSpineIndex, name);
+                currentSpine.pendingStaffName = name;
             }
         }
 
@@ -492,10 +548,15 @@ public class KernImporter implements IScoreSongImporter {
             }*/
             lastTime = Time.TIME_MAX;
             if (!this.spines.isEmpty()) {
-                for (Map.Entry<Integer, ScoreLayer> voice: this.spines.entrySet()) {
+                /*for (Map.Entry<Integer, ScoreLayer> voice: this.spines.entrySet()) {
                     if (voice.getKey() != rootSpine && voice.getKey() != harmSpine) { //TODO probar dejando sólo harmSpine
-                        //System.out.println("\t" + voice + ", dur =  " + voice.getDuration());
                         Time dur = voice.getValue().getDuration();
+                        lastTime = Time.min(lastTime, dur);
+                    }
+                }*/
+                for (Spine spine: spines) {
+                    if (!spine.rootSpine && !spine.harmSpine && !spine.layer.isEmpty()) {
+                        Time dur = spine.layer.getDuration();
                         lastTime = Time.min(lastTime, dur);
                     }
                 }
@@ -586,7 +647,7 @@ public class KernImporter implements IScoreSongImporter {
                         throw new
                                 RuntimeException("Invalid clef: " + ctx.getText()); //TODO Logger
                 }
-                Staff staff = getStaff(currentSpineIndex);
+                Staff staff = getStaff();
                 Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
                         "Setting clef {0} to staff {1}", new Object[]{clef.toString(), staff.getNumberIdentifier()});
 
@@ -649,7 +710,7 @@ public class KernImporter implements IScoreSongImporter {
                 } else if (inHarmSpine()) {
                     lastHarmKey = ks;
                 } else {
-                    Staff staff = getStaff(currentSpineIndex);
+                    Staff staff = getStaff();
 
                     KeySignature otherKey = staff.getKeySignatureWithOnset(currentTime);
                     if (otherKey != null) {
@@ -659,7 +720,7 @@ public class KernImporter implements IScoreSongImporter {
                                     + " at time " + currentTime + " while inserting " + ks.toString());
                         }
                     } else {
-                        KeySignature newKs = new KeySignature(spineNotationTypes.get(currentSpineIndex), ks);
+                        KeySignature newKs = new KeySignature(currentSpine.notationType, ks);
                         newKs.setTime(currentTime);
                         staff.addKeySignature(newKs);
                     }
@@ -695,7 +756,7 @@ public class KernImporter implements IScoreSongImporter {
                 ts.setTime(currentTime);
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Recognized time signature {0}", ts);
 
-                Staff staff = getStaff(currentSpineIndex);
+                Staff staff = getStaff();
                 TimeSignature presentMeter = staff.getTimeSignatureWithOnset(currentTime);
 
                 if (presentMeter != null) {
@@ -729,18 +790,18 @@ public class KernImporter implements IScoreSongImporter {
             switch (ctx.getText()) {
                 case "C":
                 case "c":
-                    ts = new TimeSignatureCommonTime(spineNotationTypes.get(currentSpineIndex));
+                    ts = new TimeSignatureCommonTime(currentSpine.notationType);
                     break;
                 case "C|":
                 case "c|":
-                    ts = new TimeSignatureCutTime(spineNotationTypes.get(currentSpineIndex));
+                    ts = new TimeSignatureCutTime(currentSpine.notationType);
                     break;
                 default:
                     throw new GrammarParseRuntimeException("Unsupported meter sign: '" + ctx.getText() + "'");
             }
             Staff staff = null;
             try {
-                staff = getStaff(currentSpineIndex);
+                staff = getStaff();
                 Time currentTime = getLastTime();
                 TimeSignature presentMeter = staff.getTimeSignatureWithOnset(currentTime);
                 if (presentMeter != null) {
@@ -769,8 +830,8 @@ public class KernImporter implements IScoreSongImporter {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Creating staff {0}", new Object[]{number});
                     staff = addStaff(number);
                 } else {
-                    stavesForSpines.put(currentSpineIndex, staff);
-                    staff.addLayer(0, spines.get(currentSpineIndex));
+                    currentSpine.staff = staff;
+                    staff.addLayer(0, currentSpine.layer);
                 }
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Associating spine {0} to staff {1}", new
                         Object[]{currentSpineIndex, number});
@@ -871,22 +932,22 @@ public class KernImporter implements IScoreSongImporter {
         public void exitNoteRestChord(kernParser.NoteRestChordContext ctx) {
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST,
                     "NoteRestChord {0}", ctx.getText());
-            if (currentVoiceTemp.inTuplet) {
+            if (currentSpine.inTuplet) {
                 try {
-                    int dur = currentVoiceTemp.lastDuration;
-                    currentVoiceTemp.tupletDurations.add(dur);
-                    currentVoiceTemp.mcdTupleElementDuration = ArithmeticUtils.gcd(dur,
-                            currentVoiceTemp.mcdTupleElementDuration);
-                    currentVoiceTemp.mcm = ArithmeticUtils.lcm(dur, currentVoiceTemp.mcm);
+                    int dur = currentSpine.lastDuration;
+                    currentSpine.tupletDurations.add(dur);
+                    currentSpine.mcdTupleElementDuration = ArithmeticUtils.gcd(dur,
+                            currentSpine.mcdTupleElementDuration);
+                    currentSpine.mcm = ArithmeticUtils.lcm(dur, currentSpine.mcm);
                     Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                             "Adding element to tuplet with figureAndDots {0}", dur);
 
                     if (processTuplet()) { // tuplet complete
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                 "Tuplet processed");
-                        currentVoiceTemp.inTuplet = false;
-                        currentVoiceTemp.tupletDurations.clear();
-                        currentVoiceTemp.tupletElements.clear();
+                        currentSpine.inTuplet = false;
+                        currentSpine.tupletDurations.clear();
+                        currentSpine.tupletElements.clear();
                     }
                 } catch (IM3Exception | NoMeterException ex) {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE,
@@ -965,29 +1026,28 @@ public class KernImporter implements IScoreSongImporter {
 
             if (inHarmSpine()) {
 //                int line = ctx.getChild(0).getA
-                throw new GrammarParseRuntimeException("Unexpected duration in a harm spine: " + ctx.getText()); // + ", line " + line);
+                throw new GrammarParseRuntimeException("Unexpected duration in a harm spine: " + ctx.getText() + ", line " + ctx.getStart().getLine());
             }
-
-            VoiceTemp currentVoiceTemp = getCurrentVoiceTemp();
 
             Figures f = lastDurationFigure;
             if (f == Figures.NO_DURATION) {
                     // one temporal that will be modified later
                     Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                             "ScoreFigureAndDots figureAndDots has to be a tuplet {0}", ctx.getText());
-                    if (!currentVoiceTemp.inTuplet) {
-                        currentVoiceTemp.inTuplet = true;
-                        currentVoiceTemp.tupletElements.clear();
-                        currentVoiceTemp.mcdTupleElementDuration = lastDur;
-                        currentVoiceTemp.mcm = lastDur;
-                        currentVoiceTemp.tupletDurations.clear();
+                    if (!currentSpine.inTuplet) {
+                        currentSpine.inTuplet = true;
+                        currentSpine.tupletStartTime = lastTime;
+                        currentSpine.tupletElements.clear();
+                        currentSpine.mcdTupleElementDuration = lastDur;
+                        currentSpine.mcm = lastDur;
+                        currentSpine.tupletDurations.clear();
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                 "Starting tuplet with element figureAndDots {0}", ctx.getText());
                     }
-                    currentVoiceTemp.lastDuration = lastDur;
+                currentSpine.lastDuration = lastDur;
             }
             int dots = ctx.augmentationDots().getText().length();
-            if (!currentVoiceTemp.inTuplet) {
+            if (!currentSpine.inTuplet) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Figure {0} with {1} dots",
                         new Object[]{f, dots});
 
@@ -998,7 +1058,7 @@ public class KernImporter implements IScoreSongImporter {
                 }
             } else { // TODO Comprobar que no salimos de un tuplet sin dots y
                 // pasamos a uno con dots...
-                currentVoiceTemp.tupletDots = dots;
+                currentSpine.tupletDots = dots;
                 lastFigure = f;
                 lastDots = dots;
             }
@@ -1082,14 +1142,14 @@ public class KernImporter implements IScoreSongImporter {
                         chord = new SimpleChord(lastFigure, lastDots);
                         addAtom(currentTime, chord);
                         //harm.setTime(currentTime);
-                        chord.setStaff(getStaff(currentSpineIndex));
+                        chord.setStaff(getStaff());
                         lastNoteOrChord = chord;
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                 "New chord at time {0}", chord.getTime());
-                        if (currentVoiceTemp.inTuplet) {
+                        if (currentSpine.inTuplet) {
                             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                     "Chord added to tuplet");
-                            currentVoiceTemp.tupletElements.add(chord);
+                            currentSpine.tupletElements.add(chord);
                         }
                     } else {
                         if (lastDots != chord.getAtomFigure().getDots() || !lastFigure.equals(chord.getAtomFigure().getFigure())) {
@@ -1103,14 +1163,14 @@ public class KernImporter implements IScoreSongImporter {
                     }
                     chord.addPitch(new ScientificPitch(new PitchClass(nn, acc), octave));
                 } else {
-                    Atom previous = currentVoice.isEmpty() ? null : currentVoice.getLastAtom();
+                    Atom previous = currentSpine.layer.isEmpty() ? null : currentSpine.layer.getLastAtom();
                     ScientificPitch sp = new ScientificPitch(nn, acc, octave);
                     SimpleNote sn = new SimpleNote(lastFigure, lastDots, sp);
 
-                    if (currentVoiceTemp.inTuplet) {
+                    if (currentSpine.inTuplet) {
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                 "Score note added {0} to tuplet", sn.toString());
-                        currentVoiceTemp.tupletElements.add(sn);
+                        currentSpine.tupletElements.add(sn);
                     } else {
 
 
@@ -1118,7 +1178,7 @@ public class KernImporter implements IScoreSongImporter {
                         addAtom(currentTime, sn);
                         lastNoteOrChord = sn;
                     }
-                    if (currentSpineIndex == rootSpine) {
+                    if (currentSpine == rootSpine) {
                         //TODO - en teoría no debería hacer falta, el hash
                         // stavesForSpines debería contenerlo - lo ponemos para depurar un error sn.setStaff(rootStaff);
                         /*2017 if (currentVoice != scoreSong.getAnalysisVoice()) {
@@ -1126,7 +1186,7 @@ public class KernImporter implements IScoreSongImporter {
                             );
                         }*/
                     } else {
-                        sn.setStaff(getStaff(currentSpineIndex));
+                        sn.setStaff(getStaff());
                     }
 
                     if (ctx.afterNote() != null &&
@@ -1202,12 +1262,13 @@ public class KernImporter implements IScoreSongImporter {
             try {
                 //ctx.noteName().
                 // TODO Crear rest con ritmo lastDuration
-                Staff staff = getStaff(currentSpineIndex);
+                Staff staff = getStaff();
                 Time currentTime = getLastTime();
                 SimpleRest rest = new SimpleRest(lastFigure, lastDots);
                 //currentVoice.add(currentTime, rest);
                 addAtom(currentTime, rest);
-                //2017 rest.setStaff(getStaff(currentSpineIndex)); // Beniarbeig 2014
+
+                //2017 rest.setStaff(getStaff()); // Beniarbeig 2014
                 //measurescorenotes.add(rest);
 
                 if (ctx.pause() != null && !ctx.pause().isEmpty()) {
@@ -1219,10 +1280,10 @@ public class KernImporter implements IScoreSongImporter {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                         "Rest added {0}", rest.toString());
                 if
-                        (currentVoiceTemp.inTuplet) {
+                        (currentSpine.inTuplet) {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                             "Rest added {0} to tuplet");
-                    currentVoiceTemp.tupletElements.add(rest);
+                    currentSpine.tupletElements.add(rest);
                 }
 
             } catch (IM3Exception ex) {
@@ -1251,28 +1312,28 @@ public class KernImporter implements IScoreSongImporter {
          * @throws NoMeterException
          */
         private boolean processTuplet() throws IM3Exception, NoMeterException {
-            // int nelementsInTuplet = currentVoiceTemp.tupletElements.size();
+            // int nelementsInTuplet = currentSpine.tupletElements.size();
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                     "Trying to process tuplet with {0} symbols of kern figureAndDots with m.c.d. {1} and m.c.m. {2}",
-                    new Object[]{currentVoiceTemp.tupletElements.size(), currentVoiceTemp.mcdTupleElementDuration,
-                            currentVoiceTemp.mcm});
+                    new Object[]{currentSpine.tupletElements.size(), currentSpine.mcdTupleElementDuration,
+                            currentSpine.mcm});
 
             // this is like the first part of tupletComplete but also adds the span
             int groupDuration = 0;
             ArrayList<Integer> spans = new ArrayList<>();
             int nelementsInTuplet = 0;
-            for (Integer d : currentVoiceTemp.tupletDurations) {
-                int span = currentVoiceTemp.mcm / d; // inverse figureAndDots
+            for (Integer d : currentSpine.tupletDurations) {
+                int span = currentSpine.mcm / d; // inverse figureAndDots
                 // relation (longer
                 // value = shorter
                 // figureAndDots)
                 spans.add(span);
-                groupDuration += (currentVoiceTemp.mcm * span);
+                groupDuration += (currentSpine.mcm * span);
                 nelementsInTuplet += span;
             }
 
             // int nelementsInTuplet = groupDuration /
-            // currentVoiceTemp.mcdTupleElementDuration; //TODO Ver si puede dar
+            // currentSpine.mcdTupleElementDuration; //TODO Ver si puede dar
             // esto un valor no entero
             // Figures tupletDurationFigure = Figures.findBeats(groupDuration);
             TimeSignature ts = currentTimeSignature();
@@ -1312,10 +1373,10 @@ public class KernImporter implements IScoreSongImporter {
             Figures individualDurationFigure = Figures.findMeterUnit((int) individualDuration, NotationType.eModern);
             // ScoreFigureAndDots individualFigureDuration = new
             // ScoreFigureAndDots(Figures.findRatio(individualFigureRatio),
-            // currentVoiceTemp.tupletDots); //TODO Ver lo que dice de los
+            // currentSpine.tupletDots); //TODO Ver lo que dice de los
             // puntillos, si se usan tuplets con puntillos en principio s�lo
             // tenemos que poner aqu� los puntillos
-            //2017 ScoreFigureAndDots individualFigureDuration = new ScoreFigureAndDots(individualDurationFigure, currentVoiceTemp.tupletDots); // TODO
+            //2017 ScoreFigureAndDots individualFigureDuration = new ScoreFigureAndDots(individualDurationFigure, currentSpine.tupletDots); // TODO
             // Ver lo que dice de los puntillos, si se usan tuplets con puntillos en principio solo
             // tenemos que poner aqui los puntillos
 
@@ -1325,18 +1386,18 @@ public class KernImporter implements IScoreSongImporter {
             int inSpaceOfNotes = (int) (individualDuration / actualGroupDuration); // TODO
             // esto es empirico - va a la inversa, menor valor mayor duracion
 
-            if (nelementsInTuplet * actualGroupDuration != currentVoiceTemp.mcm) {
+            if (nelementsInTuplet * actualGroupDuration != currentSpine.mcm) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                         "Tuplet not complete yet {0} symbols * {1} actualGroupDuration != {2} mcm",
-                        new Object[]{nelementsInTuplet, actualGroupDuration, currentVoiceTemp.mcm});
+                        new Object[]{nelementsInTuplet, actualGroupDuration, currentSpine.mcm});
                 return false;
             }
 
             ArrayList<Atom> tupletElements = new ArrayList<>();
-            for (int i = 0; i < currentVoiceTemp.tupletElements.size(); i++) {
-                SingleFigureAtom sse = currentVoiceTemp.tupletElements.get(i);
-                //int dur = currentVoiceTemp.tupletDurations.get(i);
-                // int span = dur / currentVoiceTemp.mcdTupleElementDuration;
+            for (int i = 0; i < currentSpine.tupletElements.size(); i++) {
+                SingleFigureAtom sse = currentSpine.tupletElements.get(i);
+                //int dur = currentSpine.tupletDurations.get(i);
+                // int span = dur / currentSpine.mcdTupleElementDuration;
                 //tupletElements.addElementAndChangeItsOnsetAndDuration(sse, spans.get(i));
                 //System.out.println("DUR: " + dur + "\t SPAN: " + spans.get(i));
 
@@ -1352,19 +1413,19 @@ public class KernImporter implements IScoreSongImporter {
             }
 
             SimpleTuplet tuplet = new SimpleTuplet(nelementsInTuplet, inSpaceOfNotes, individualDurationFigure,
-                    //currentVoiceTemp.tupletDots
+                    //currentSpine.tupletDots
                     tupletElements
             );
 
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Tuplet processed: {0}", tuplet.toString());
 
 
-            currentVoiceTemp.inTuplet = false;
-            currentVoiceTemp.tupletElements.clear();
-            currentVoiceTemp.tupletDots = 0;
-            currentVoiceTemp.tupletDurations.clear();
+            currentSpine.inTuplet = false;
+            currentSpine.tupletElements.clear();
+            currentSpine.tupletDots = 0;
+            currentSpine.tupletDurations.clear();
             //currentVoice.add(tuplet); // 2017
-            addAtom(lastTime, tuplet); // 2017
+            addAtom(currentSpine.tupletStartTime, tuplet); // 2017
             return true;
         }
 
@@ -1440,10 +1501,9 @@ public class KernImporter implements IScoreSongImporter {
 
             // only process last spine barline
             Time currentTime = getLastTime();
-
             Staff staff = null;
             try {
-                staff = getStaff(currentSpineIndex);
+                staff = getStaff();
             } catch (IM3Exception e) {
                 throw new GrammarParseRuntimeException(e);
             }
@@ -1506,15 +1566,24 @@ public class KernImporter implements IScoreSongImporter {
         }
 
         @Override
-        public void exitSplineTerminator(kernParser.SplineTerminatorContext ctx) {
-            Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Spline terminator for spline {0}",
+        public void exitSpineTerminator(kernParser.SpineTerminatorContext ctx) {
+            Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Spine terminator for spine {0}",
                     currentSpineIndex);
         }
 
 
         @Override
-        public void exitSplineSplit(kernParser.SplineSplitContext ctx) {
-            super.exitSplineSplit(ctx);
+        public void exitSpineSplit(kernParser.SpineSplitContext ctx) {
+            super.exitSpineSplit(ctx);
+            Spine newSpine = prepareSpine(globalPart, currentSpineIndex+1);
+            newSpine.lastDuration = currentSpine.lastDuration;
+            newSpine.staff = currentSpine.staff;
+            newSpine.notationType = currentSpine.notationType;
+            newSpine.splittedFrom = currentSpine;
+            newSpine.splittedInto = newSpine;
+            currentSpine.staff.addLayer(newSpine.layer);
+            Logger.getLogger(KernImporter.class.getName()).log(Level.INFO, "Adding spine #" + currentSpineIndex);
+            //currentSpineIndex++;
             // add a spine in a new layer
             /*getStaff()
 
@@ -1527,9 +1596,19 @@ public class KernImporter implements IScoreSongImporter {
         }
 
         @Override
-        public void exitSplineJoin(kernParser.SplineJoinContext ctx) {
-            super.exitSplineJoin(ctx);
-            throw new GrammarParseRuntimeException("Unsupported spline operation join...: " + ctx.getText());
+        public void exitSpineJoin(kernParser.SpineJoinContext ctx) {
+            super.exitSpineJoin(ctx);
+            if (currentSpine.splittedFrom != null) {
+                /*try {
+                    updateLastTime();
+                } catch (IM3Exception e) {
+                    throw new IM3RuntimeException("Cannot update time: " + e);
+                }*/
+                if (spinesToRemove == null) {
+                    spinesToRemove = new ArrayList<>();
+                }
+                spinesToRemove.add(currentSpine);
+            }
         }
 
 

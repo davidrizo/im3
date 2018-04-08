@@ -51,8 +51,8 @@ field: graphicalToken
 fieldComment: FIELDCCOMMENT;
 //repeatToken: 
 
-//graphicalToken: interpretation | tandemInterpretation | splineOperations | localComment | note | rest | barline;
-graphicalToken: interpretation | tandemInterpretation | noteRestChord | barline | splineOperations | harm;
+//graphicalToken: interpretation | tandemInterpretation | spineOperations | localComment | note | rest | barline;
+graphicalToken: interpretation | tandemInterpretation | noteRestChord | barline | spineOperations | harm;
 
 interpretation: INTERPRETATION;
 
@@ -203,10 +203,10 @@ partialBarLine:
 
 //globalComment: GLOBALCOMMENT;
 
-splineOperations: splineTerminator | splineSplit | splineJoin; // terminator
-splineTerminator: ASTERISK MINUS;
-splineSplit: ASTERISK CIRCUMFLEX;
-splineJoin: '*v'; // 'v' literal here to avoid confusion with 'v' degree //TODO Se puede hacer con fragment
+spineOperations: spineTerminator | spineSplit | spineJoin; // terminator
+spineTerminator: ASTERISK MINUS;
+spineSplit: ASTERISK CIRCUMFLEX;
+spineJoin: '*v'; // 'v' literal here to avoid confusion with 'v' degree //TODO Se puede hacer con fragment
 
 ///// ----------- HARM ---------
 harm: harmChord alternateHarm? pause?;

@@ -529,7 +529,7 @@ public class KernImporterTest {
     }
 
     // ------------------------------------------------------------------------------------------
-   /* private static Void assertSimpleSpineSplit(ScoreSong song) {
+    private static Void assertSimpleSpineSplit(ScoreSong song) {
         try {
             assertEquals("Staves", 1, song.getStaves().size());
             Staff staff = song.getStaves().get(0);
@@ -545,6 +545,7 @@ public class KernImporterTest {
 
     @Test
     public void testSimpleSpineSplit() throws Exception {
+        testExportImport = false;
         ScoreSong kernSong = importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/spline_split.krn"));
         doTest(KernImporterTest::assertSimpleSpineSplit, kernSong);
     }
@@ -566,9 +567,10 @@ public class KernImporterTest {
 
     @Test
     public void testSpineSplitPiston70() throws Exception {
+        testExportImport = false;
         ScoreSong kernSong = importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/spline_split_piston070.krn"));
         doTest(KernImporterTest::assertSpineSplitPiston70, kernSong);
-    }*/
+    }
 
 
 }
