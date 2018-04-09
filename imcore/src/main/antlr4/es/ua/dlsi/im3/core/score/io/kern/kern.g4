@@ -128,7 +128,7 @@ noteRestChord: chord | note | rest;
 //note: duration pitch editorialTokenSignifier?;
 chord: note (SPACE note)+;
 
-note:  beforeNote duration noteName alteration? afterNote;
+note:  beforeNote duration COLOURED? noteName alteration? afterNote;
 
 beforeNote:  //TODO Regla semantica (boolean) para que no se repitan
     (slurstart
@@ -293,6 +293,7 @@ OCTOTHORPE: '#';
 MINUS: '-';
 COLON: ':';
 SEMICOLON: ';';
+COLOURED: '~';
 
 G2:'G2';
 F4:'F4';

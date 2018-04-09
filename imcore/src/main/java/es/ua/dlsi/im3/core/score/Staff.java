@@ -818,6 +818,17 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return requiredAccidental;
 	}
 
+    //20180208 This cannot be computed fromTime - toTime to take into account previous context - public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow(Time fromTime, Time toTime) throws IM3Exception {
+    public Accidentals findCurrentKeySignatureAccidental(Time time, DiatonicPitch diatonicPitch) throws IM3Exception {
+	    try {
+	        KeySignature keySignature = getRunningKeySignatureAt(time);
+            return keySignature.getAccidentalOf(diatonicPitch);
+        } catch (IM3Exception e) {
+	        return null; // no key signature
+        }
+
+    }
+
     /**
      * It returns the y position for a given diatonic pitch at a given time (for taking into account the clef changes)
      * without taking into account the octave change. Used usually for key signatures
