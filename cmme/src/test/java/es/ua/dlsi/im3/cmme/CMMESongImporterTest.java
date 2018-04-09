@@ -61,7 +61,20 @@ public class CMMESongImporterTest {
         assertEquals("Dots of 11th event in cantus", 1, ((SimpleNote) cantusAtoms.get(10)).getAtomFigure().getDots());
 
 
+        assertEquals("Penultimate cantus note pitch", PitchClasses.G_SHARP.getPitchClass(), ((SimpleNote) cantusAtoms.get(cantusAtoms.size()-2)).getPitch().getPitchClass());
+
+
+        List<Atom> altusAtoms = scoreSong.getParts().get(1).getAtomsSortedByTime();
+        assertEquals("Flat in altus note pitch", PitchClasses.B_FLAT.getPitchClass(), ((SimpleNote) altusAtoms.get(185)).getPitch().getPitchClass());
+        assertFalse("Non optional accidental", ((SimpleNote) altusAtoms.get(185)).getAtomPitch().isOptionalAccidental());
+
+        SimpleNote lastAltusNote = (SimpleNote) altusAtoms.get(altusAtoms.size()-1);
+        assertEquals("Pitch of last altus note", PitchClasses.C_SHARP.getPitchClass(), lastAltusNote.getPitch().getPitchClass());
+        assertTrue("Optional accidental", lastAltusNote.getAtomPitch().isOptionalAccidental());
+
         //TODO Editorial accidentals
+
+        //TODO Hacer ejemplo completo en kern y compararlos
 
         MEISongExporter meiSongExporter = new MEISongExporter();
         meiSongExporter.exportSong(new File("/tmp/cmme.mei"), scoreSong);

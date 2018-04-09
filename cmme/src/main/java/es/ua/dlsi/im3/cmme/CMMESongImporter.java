@@ -323,9 +323,10 @@ public class CMMESongImporter implements IScoreSongImporter {
         Figures figure = convertFigure(event.getnotetype());
         DiatonicPitch noteName = DiatonicPitch.noteFromName(Character.toUpperCase(event.getPitch().noteletter));
         int octave = CMMEtoMusicXMLOctave(event.getPitch());
-        Accidentals cmmeAccidentals = Accidentals.alterToAccidentals(event.getPitchOffset().calcPitchOffset());
+        Accidentals cmmeAccidentals = Accidentals.alterToAccidentals(event.getPitchOffset().pitchOffset);
         Accidentals ksAccidental = staff.findCurrentKeySignatureAccidental(layer.getDuration(), noteName);
 
+        //System.out.println(event.getPitchOffset().calcPitchOffset() + " " + event.getPitchOffset().accType + " " + event.getPitchOffset().numAcc + " " + event.getPitchOffset().pitchOffset);
         Accidentals acc;
         if (cmmeAccidentals != Accidentals.NATURAL) {
             acc = cmmeAccidentals;
@@ -337,7 +338,6 @@ public class CMMESongImporter implements IScoreSongImporter {
 
         ScientificPitch pitch = new ScientificPitch(new PitchClass(noteName, acc), octave);
 
-
         // TODO Stem
         // TODO Accidentals editoriales
         int dots = 0;
@@ -345,6 +345,9 @@ public class CMMESongImporter implements IScoreSongImporter {
             dots = 1;
         }
         SimpleNote note = new SimpleNote(figure, dots, pitch);
+        if (event.getPitchOffset().optional) {
+            note.getAtomPitch().setOptionalAccidental(true);
+        }
         Proportion proportion = event.getLength();
         Time actualDuration = proportionToFraction(proportion);
         Time expectedDurationGivenFigure = figure.getDuration();
