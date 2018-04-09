@@ -301,6 +301,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         SimpleRest rest = new SimpleRest(figure, 0);
         rest.setStaff(staff);
         layer.add(rest);
+        staff.addCoreSymbol(rest);
         lastFigureAtom = rest;
     }
 
@@ -308,15 +309,42 @@ public class CMMESongImporter implements IScoreSongImporter {
         return new Time(Fraction.getFraction(proportion.i1, proportion.i2));
     }
 
+    /**
+     * Copied from MusicXMLGenerator
+     * @param p
+     * @return
+     */
+    static int CMMEtoMusicXMLOctave(Pitch p)
+    {
+        return p.octave+(p.noteletter>'B' ? 1 : 0);
+    }
+
     private void importNote(Staff staff, ScoreLayer layer, NoteEvent event) throws ImportException, IM3Exception {
         Figures figure = convertFigure(event.getnotetype());
         DiatonicPitch noteName = DiatonicPitch.noteFromName(Character.toUpperCase(event.getPitch().noteletter));
-        int octave = event.getPitch().octave;
-        ScientificPitch pitch = new ScientificPitch(new PitchClass(noteName), octave);
+        int octave = CMMEtoMusicXMLOctave(event.getPitch());
+        Accidentals cmmeAccidentals = Accidentals.alterToAccidentals(event.getPitchOffset().calcPitchOffset());
+        Accidentals ksAccidental = staff.findCurrentKeySignatureAccidental(layer.getDuration(), noteName);
+
+        Accidentals acc;
+        if (cmmeAccidentals != Accidentals.NATURAL) {
+            acc = cmmeAccidentals;
+        } else if (ksAccidental != null) {
+            acc = ksAccidental;
+        } else {
+            acc = null;
+        }
+
+        ScientificPitch pitch = new ScientificPitch(new PitchClass(noteName, acc), octave);
+
 
         // TODO Stem
-        // TODO Accidentals (originales y editoriales - ModernAccidental?)
-        SimpleNote note = new SimpleNote(figure, 0, pitch);
+        // TODO Accidentals editoriales
+        int dots = 0;
+        if (event.hasModernDot()) {
+            dots = 1;
+        }
+        SimpleNote note = new SimpleNote(figure, dots, pitch);
         Proportion proportion = event.getLength();
         Time actualDuration = proportionToFraction(proportion);
         Time expectedDurationGivenFigure = figure.getDuration();
@@ -328,6 +356,7 @@ public class CMMESongImporter implements IScoreSongImporter {
 
         note.setStaff(staff);
         layer.add(note);
+        staff.addCoreSymbol(note);
         lastFigureAtom = note;
     }
 
