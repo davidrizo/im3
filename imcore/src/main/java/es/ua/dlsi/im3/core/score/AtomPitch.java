@@ -19,6 +19,9 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 	 * Force this accidental to appear
 	 */
 	private Accidentals writtenExplicitAccidental;
+
+	private boolean optionalAccidental;
+
 	/**
 	 * For pitches that are not contained in the same staff as the atom they belong to
 	 */
@@ -336,5 +339,13 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
     public void transpose(Interval interval) throws IM3Exception {
 	    this.scientificPitch = interval.computeScientificPitchFrom(this.scientificPitch);
         // TODO: 15/3/18 ¿Y si se cambia el accidental? 
+    }
+
+    public boolean isOptionalAccidental() {
+        return optionalAccidental;
+    }
+
+    public void setOptionalAccidental(boolean optionalAccidental) {
+        this.optionalAccidental = optionalAccidental;
     }
 }
