@@ -8,7 +8,6 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
-import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensuralFactory;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
@@ -28,6 +27,10 @@ public class CMMESongImporter implements IScoreSongImporter {
     private HashMap<Integer, Staff> staves;
     private HashMap<Integer, ScoreLayer> layers;
     private SingleFigureAtom lastFigureAtom;
+    private int pendingMultiEventItems = 0;
+    boolean isFirstMultiEvent = false;
+    boolean inMultiEvent = false;
+    Time sectionTime;
 
     @Override
     public ScoreSong importSong(File file) throws ImportException {
@@ -68,8 +71,17 @@ public class CMMESongImporter implements IScoreSongImporter {
             createVoice(voice);
         }
 
+        sectionTime = null;
         for (MusicSection section: piece.getSections()) {
             importSection(section);
+            // unify onsets of all elements that start in the section
+            sectionTime = Time.TIME_ZERO;
+            for (ScorePart part: scoreSong.getParts()) {
+                for (ScoreLayer layer: part.getLayers()) {
+                    sectionTime = Time.max(sectionTime, layer.getDuration());
+                }
+            }
+
         }
         return scoreSong;
     }
@@ -81,6 +93,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         pentagram.setNotationType(NotationType.eMensural);
         pentagram.setName(voice.getStaffTitle());
         part.addStaff(pentagram);
+        pentagram.addPart(part);
         scoreSong.addStaff(pentagram);
         ScoreLayer layer = part.addScoreLayer(pentagram);
         staves.put(voice.getNum(), pentagram);
@@ -188,6 +201,12 @@ public class CMMESongImporter implements IScoreSongImporter {
                 }
             }
         }
+        if (inMultiEvent) {
+            pendingMultiEventItems--;
+            if (pendingMultiEventItems == 0) {
+                inMultiEvent = false;
+            }
+        }
     }
 
 
@@ -208,7 +227,11 @@ public class CMMESongImporter implements IScoreSongImporter {
     }
 
     private void importMultiEvent(Staff staff, ScoreLayer layer, MultiEvent event) {
-        System.out.println("Pending: " + event.toString());
+        if (event.getLowestNote() != null) { // just for notes, not for clef + key signature
+            pendingMultiEventItems = event.getNumEvents();
+            inMultiEvent = true;
+            isFirstMultiEvent = true;
+        }
     }
 
     private void importModernKey(Staff staff, ScoreLayer layer, ModernKeySignatureEvent event) {
@@ -336,6 +359,7 @@ public class CMMESongImporter implements IScoreSongImporter {
             acc = null;
         }
 
+        boolean colored = event.isColored();
         ScientificPitch pitch = new ScientificPitch(new PitchClass(noteName, acc), octave);
 
         // TODO Stem
@@ -344,23 +368,60 @@ public class CMMESongImporter implements IScoreSongImporter {
         if (event.hasModernDot()) {
             dots = 1;
         }
-        SimpleNote note = new SimpleNote(figure, dots, pitch);
-        if (event.getPitchOffset().optional) {
-            note.getAtomPitch().setOptionalAccidental(true);
-        }
+
         Proportion proportion = event.getLength();
         Time actualDuration = proportionToFraction(proportion);
         Time expectedDurationGivenFigure = figure.getDuration();
 
+        if (!inMultiEvent || isFirstMultiEvent) {
+            SimpleNote note = addNote(staff, layer, event, figure, pitch, dots, actualDuration, expectedDurationGivenFigure, colored);
+            lastFigureAtom = note;
+
+            isFirstMultiEvent = false;
+        } else {
+            if (lastFigureAtom instanceof SimpleNote && lastFigureAtom.getDuration().equals(actualDuration) && lastFigureAtom.getAtomFigure().isColored() == colored) {
+                // convert it into a chord
+                SimpleChord chord = new SimpleChord(lastFigureAtom.getAtomFigure().getFigure(), lastFigureAtom.getAtomFigure().getDots(),
+                        ((SimpleNote) lastFigureAtom).getAtomPitch().getScientificPitch(), pitch);
+                layer.remove(lastFigureAtom);
+                staff.remove(lastFigureAtom);
+                layer.add(chord);
+                staff.addCoreSymbol(chord);
+                lastFigureAtom = chord;
+            } else {
+                // if no other layer exists put there
+                if (staff.getLayers().size() == 1) {
+                    ScoreLayer newLayer = staff.getParts().get(0).addScoreLayer(staff);
+                    SimpleNote note = addNote(staff, newLayer, event, figure, pitch, dots, actualDuration, expectedDurationGivenFigure, colored);
+                    lastFigureAtom = note;
+                } else {
+                    throw new IM3Exception("TO-DO secuencias más largas de notas en varias capas"); // TODO: 10/4/18 secuencias más largas de notas en varias capas
+                }
+            }
+
+            pendingMultiEventItems--;
+        }
+    }
+
+    private SimpleNote addNote(Staff staff, ScoreLayer layer, NoteEvent event, Figures figure, ScientificPitch pitch, int dots, Time actualDuration, Time expectedDurationGivenFigure, boolean colored) throws IM3Exception {
+        SimpleNote note = new SimpleNote(figure, dots, pitch);
+        if (event.getPitchOffset().optional) {
+            note.getAtomPitch().setOptionalAccidental(true);
+        }
         if (!actualDuration.equals(expectedDurationGivenFigure)) {
             note.setDuration(actualDuration);
         }
 
-
         note.setStaff(staff);
-        layer.add(note);
+        note.getAtomFigure().setColored(colored);
+
+        if (sectionTime != null && sectionTime.compareTo(layer.getDuration()) > 0) {
+            layer.add(sectionTime, note);
+        } else {
+            layer.add(note);
+        }
         staff.addCoreSymbol(note);
-        lastFigureAtom = note;
+        return note;
     }
 
     private void importMensuration(Staff staff, ScoreLayer layer, MensEvent event) throws IM3Exception {

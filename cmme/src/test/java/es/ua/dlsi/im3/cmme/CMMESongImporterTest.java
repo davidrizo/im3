@@ -133,9 +133,13 @@ public class CMMESongImporterTest {
                 assertEquals("Staff " + astaff.getName(), ats.toString(), bts.toString());
             }
 
-            //assertEquals("Layers", astaff.getLayers().size(), bstaff.getLayers().size());
+            assertEquals("Layers", astaff.getLayers().size(), bstaff.getLayers().size());
 
-            assertEquals("Atoms", astaff.getAtoms().size(), bstaff.getAtoms().size());
+            System.out.println(astaff.getName());
+            for (int i=0; i<bstaff.getAtoms().size(); i++) {
+                System.out.println(bstaff.getAtoms().get(i));
+            }
+            assertEquals("Atoms in staff " + astaff.getName(), astaff.getAtoms().size(), bstaff.getAtoms().size());
 
             for (int i=0; i<astaff.getAtoms().size(); i++) {
                 Atom atomA = astaff.getAtoms().get(i);
@@ -149,8 +153,8 @@ public class CMMESongImporterTest {
 
     @Test
     public void importIncipit() throws Exception {
+        //checkKrnVsCMME("03-4v_5r-larue-o_salutaris_hostia.cmme"); // TODO: 10/4/18 Solucionar problema codificación huecos - se lo he preguntado a Craig 
         checkKrnVsCMME("01-4r-anonymous-o_salutaris_hostia.cmme");
-        //checkKrnVsCMME("03-4v_5r-larue-o_salutaris_hostia.cmme");
     }
 
 }
