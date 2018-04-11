@@ -130,6 +130,9 @@ public class KernImporter implements IScoreSongImporter {
         TreeSet<Double> figureBeatsSortedForTupletProcessing;
         private boolean inChord;
 
+        private String lastMensuralPerfection;
+        private boolean lastMensuralFigureColoured;
+
         // TODO refactorización private ScoreStaff rootStaff;
         private Measure lastMeasure = null;
         private Key lastHarmKey;
@@ -137,6 +140,7 @@ public class KernImporter implements IScoreSongImporter {
         private boolean eofReached = false;
 
         TreeSet<Integer> nonTupletDurations = new TreeSet<>(); // faster than a math op
+
         {
             nonTupletDurations.add(0);
             nonTupletDurations.add(1);
@@ -500,7 +504,6 @@ public class KernImporter implements IScoreSongImporter {
             lastNoteOrChord = null;
             timeNeedsUpdate = true;
             spinesToRemove = null;
-
             //minimumRecordDuration = Time.TIME_MAX;
         }
 
@@ -554,32 +557,12 @@ public class KernImporter implements IScoreSongImporter {
         }
 
         private void updateLastTime() throws IM3Exception {
-            /*if (!inHarmSpine()) {
-                try {
-                    if (lastTime == null || timeNeedsUpdate) {
-                        lastTime = currentVoice.getDuration();
-                    } else {
-                        lastTime = Time.min(lastTime, currentVoice.getDuration());
-                    }
-                    System.out.println("Updating last time to " + lastTime);
-                    timeNeedsUpdate = false;
-                } catch (IM3Exception ex) {
-                    Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
-                    throw new GrammarParseRuntimeException(ex);
-                }
-            }*/
             lastTime = Time.TIME_MAX;
             if (!this.spines.isEmpty()) {
-                /*for (Map.Entry<Integer, ScoreLayer> voice: this.spines.entrySet()) {
-                    if (voice.getKey() != rootSpine && voice.getKey() != harmSpine) { //TODO probar dejando sólo harmSpine
-                        Time dur = voice.getValue().getDuration();
-                        lastTime = Time.min(lastTime, dur);
-                    }
-                }*/
                 for (Spine spine: spines) {
                     if (!spine.rootSpine && !spine.harmSpine && !spine.layer.isEmpty()) {
                         Time dur = spine.layer.getDuration();
-                        lastTime = Time.min(lastTime, dur);
+                        lastTime = Time.min(lastTime, dur); // min because we are completing notes - it is not a mistake
                     }
                 }
             }
@@ -1000,7 +983,6 @@ public class KernImporter implements IScoreSongImporter {
                     throw new GrammarParseRuntimeException(ex);
                 }
             }
-
         }
 
         @Override
@@ -1050,18 +1032,21 @@ public class KernImporter implements IScoreSongImporter {
         public void exitMensuralDuration(kernParser.MensuralDurationContext ctx) {
             Figures f;
 
-            switch (ctx.getText()) {
-                case "X": f = Figures.MAXIMA; break;
-                case "L": f = Figures.LONGA; break;
-                case "S": f = Figures.BREVE; break;
-                case "s": f = Figures.SEMIBREVE; break;
-                case "M": f = Figures.MINIM; break;
-                case "m": f = Figures.SEMIMINIM; break;
-                case "U": f = Figures.FUSA; break;
-                case "u": f = Figures.SEMIFUSA; break;
+            switch (ctx.getText().charAt(0)) {
+                case 'X': f = Figures.MAXIMA; break;
+                case 'L': f = Figures.LONGA; break;
+                case 'S': f = Figures.BREVE; break;
+                case 's': f = Figures.SEMIBREVE; break;
+                case 'M': f = Figures.MINIM; break;
+                case 'm': f = Figures.SEMIMINIM; break;
+                case 'U': f = Figures.FUSA; break;
+                case 'u': f = Figures.SEMIFUSA; break;
                 default:
                     throw new GrammarParseRuntimeException("Mensural duration '" + ctx.getText() + "' not recognized");
             }
+
+            lastMensuralFigureColoured = ctx.COLOURED() != null;
+            lastMensuralPerfection = ctx.mensuralPerfection() == null?null:ctx.mensuralPerfection().getText();
             lastDurationFigure = f;
         }
 
@@ -1185,6 +1170,7 @@ public class KernImporter implements IScoreSongImporter {
                 if (inChord) {
                     if (chord == null) {
                         chord = new SimpleChord(lastFigure, lastDots);
+                        processPossibleImperfection(chord);
                         addAtom(currentTime, chord);
                         //harm.setTime(currentTime);
                         chord.setStaff(getStaff());
@@ -1211,7 +1197,7 @@ public class KernImporter implements IScoreSongImporter {
                     Atom previous = currentSpine.layer.isEmpty() ? null : currentSpine.layer.getLastAtom();
                     ScientificPitch sp = new ScientificPitch(nn, acc, octave);
                     SimpleNote sn = new SimpleNote(lastFigure, lastDots, sp);
-
+                    processPossibleImperfection(sn);
                     if (currentSpine.inTuplet) {
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                 "Score note added {0} to tuplet", sn.toString());
@@ -1282,7 +1268,6 @@ public class KernImporter implements IScoreSongImporter {
                 throw new
                         GrammarParseRuntimeException(ex.getMessage());
             }
-
         }
 
         @Override
@@ -1310,6 +1295,8 @@ public class KernImporter implements IScoreSongImporter {
                 Staff staff = getStaff();
                 Time currentTime = getLastTime();
                 SimpleRest rest = new SimpleRest(lastFigure, lastDots);
+
+                processPossibleImperfection(rest);
                 //currentVoice.add(currentTime, rest);
                 addAtom(currentTime, rest);
 
@@ -1330,13 +1317,33 @@ public class KernImporter implements IScoreSongImporter {
                             "Rest added {0} to tuplet");
                     currentSpine.tupletElements.add(rest);
                 }
-
             } catch (IM3Exception ex) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE,
                         null, ex);
                 throw new GrammarParseRuntimeException(ex);
             }
 
+        }
+
+        private void processPossibleImperfection(SingleFigureAtom atom) {
+            atom.getAtomFigure().setColored(lastMensuralFigureColoured);
+            if (lastMensuralPerfection != null && lastMensuralPerfection.equals("p")) {
+                // e.g. imperfection in mensural
+                int irregularGroupActualFigures = 3;
+                int irregularGroupInSpaceOfFigures = 2;
+                // it computes the duration
+                try {
+                    System.out.println("Prev: " + atom.getDuration());
+                    atom.getAtomFigure().setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
+                    System.out.println("Post: " + atom.getDuration());
+                } catch (IM3Exception ex) {
+                    Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE,
+                            null, ex);
+                    throw new GrammarParseRuntimeException(ex);
+                }
+            }
+            lastMensuralPerfection = null;
+            lastMensuralFigureColoured = false;
         }
 
         private void prepareFiguresForTuplet() {

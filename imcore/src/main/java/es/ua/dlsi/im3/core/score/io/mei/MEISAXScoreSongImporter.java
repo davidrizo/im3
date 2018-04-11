@@ -482,8 +482,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						tempusStr = lastTempusStr;
 						prolatioStr	 = lastProlatioStr;					
 					}
-					
-					processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+
+					if (meterCount != null || meterUnit != null || meterSym != null || modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null) {
+                        processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+                    }
 					String staffKeySig = getOptionalAttribute(attributesMap, "key.sig");
 					String staffKeyMode = getOptionalAttribute(attributesMap, "key.mode");
 					String staffTransDiat = getOptionalAttribute(attributesMap, "trans.diat");
@@ -1098,7 +1100,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			AtomFigure currentAtomFigure) throws IM3Exception, ImportException {
 		String numBase = getOptionalAttribute(attributesMap, "numbase");
 		String num = getOptionalAttribute(attributesMap, "num");
-		TimeSignature lastTimeSignature = lastStaff.getRunningTimeSignatureAt(currentAtomFigure);
+		TimeSignature lastTimeSignature = null;
+		lastTimeSignature = lastStaff.getRunningTimeSignatureAt(currentAtomFigure);
+
 		if (lastTimeSignature instanceof TimeSignatureMensural) {
 			TimeSignatureMensural mmeter = (TimeSignatureMensural) lastTimeSignature;
 			figureDuration = mmeter.getDuration(currentAtomFigure.getFigure());

@@ -116,7 +116,8 @@ denominator: NUMBER;
 duration: (modernDuration | mensuralDuration) augmentationDots;
 augmentationDots: (DOT)*;
 modernDuration: NUMBER;
-mensuralDuration: ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u');
+mensuralDuration: ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u') COLOURED? mensuralPerfection?;
+mensuralPerfection: 'p' | 'i';
 
 
 noteRestChord: chord | note | rest;
@@ -128,7 +129,7 @@ noteRestChord: chord | note | rest;
 //note: duration pitch editorialTokenSignifier?;
 chord: note (SPACE note)+;
 
-note:  beforeNote duration COLOURED? noteName alteration? afterNote;
+note:  beforeNote duration noteName alteration? afterNote;
 
 beforeNote:  //TODO Regla semantica (boolean) para que no se repitan
     (slurstart
@@ -361,7 +362,7 @@ FIELDCCOMMENT: EXCLAMATION_SIGN COMMENTTEXT?;
 
 fragment COMMENTTEXT: ~[\t\n\r!|]+ ; // | and ! to avoid confusing a comment with a bar line
 fragment TEXT: ~[\t\n\r]+ ;
-
+//TODO fragment MENSURAL_PERFECTION: 'p' | 'i';
 
 
 

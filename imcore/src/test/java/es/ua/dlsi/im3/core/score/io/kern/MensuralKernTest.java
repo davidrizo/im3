@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.core.score.io.kern;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefF4;
@@ -125,6 +127,23 @@ public class MensuralKernTest {
     @Test
     public void testPatriarca2() throws Exception {
         doTest(MensuralKernTest::assertPatriarca2, importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/mensural_binary.krn")));
+    }
+
+    //// tests for Wili Apel
+    @Test
+    public void testWiliApel() throws IM3Exception {
+        test("pag87_fig1");
+        //TODO Crear MEI y comparar
+    }
+
+    private void test(String file) throws IM3Exception {
+        String path = "/testdata/core/score/io/kern/apel/";
+        ScoreSong kernSong = importKern(TestFileUtils.getFile(path + file + ".krn"));
+        ScoreSong meiSong = importMEI(TestFileUtils.getFile(path + file + ".mei"));
+        TestScoreUtils.checkEqual("kern", kernSong, "mei", meiSong);
+
+
+        // TODO: 10/4/18 Exportar y comprobar que son iguales
     }
 
 }
