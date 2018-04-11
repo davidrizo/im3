@@ -1333,9 +1333,7 @@ public class KernImporter implements IScoreSongImporter {
                 int irregularGroupInSpaceOfFigures = 2;
                 // it computes the duration
                 try {
-                    System.out.println("Prev: " + atom.getDuration());
                     atom.getAtomFigure().setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
-                    System.out.println("Post: " + atom.getDuration());
                 } catch (IM3Exception ex) {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE,
                             null, ex);

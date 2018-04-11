@@ -114,7 +114,7 @@ denominator: NUMBER;
 
 //duration: figure editorialTokenSignifier? ('.'* editorialTokenSignifier?);
 duration: (modernDuration | mensuralDuration) augmentationDots;
-augmentationDots: (DOT)*;
+augmentationDots: (DOT | COLON)*;
 modernDuration: NUMBER;
 mensuralDuration: ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u') COLOURED? mensuralPerfection?;
 mensuralPerfection: 'p' | 'i';
