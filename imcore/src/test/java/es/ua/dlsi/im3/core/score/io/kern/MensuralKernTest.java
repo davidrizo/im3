@@ -144,7 +144,7 @@ public class MensuralKernTest {
         test("pag87_fig1");
         test("pag89_fig1");
         test("pag90_fig1");
-        //TODO Crear MEI y comparar
+        test("pag96_fig1");
     }
 
 
