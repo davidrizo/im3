@@ -61,6 +61,10 @@ public abstract class SimpleLigature extends Atom {
 		return figures;
 	}
 
+    /**
+     * Returns this element (1 item)
+     * @return
+     */
 	@Override
 	public List<Atom> getAtoms() {
 		return Arrays.asList(this);

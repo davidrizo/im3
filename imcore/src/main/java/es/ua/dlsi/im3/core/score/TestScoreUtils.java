@@ -56,7 +56,7 @@ public class TestScoreUtils {
             for (int i=0; i<astaff.getAtoms().size(); i++) {
                 Atom atomA = astaff.getAtoms().get(i);
                 Atom atomB = bstaff.getAtoms().get(i);
-                checkEqualAtom(astaff.getName(), i, atomA, atomB);
+                checkEqualAtom(astaff.getName(), aType, i, atomA, atomB);
             }
         }
 
@@ -71,21 +71,33 @@ public class TestScoreUtils {
      * @param atomA
      * @param atomB
      */
-    private static void checkEqualAtom(String name, int i, Atom atomA, Atom atomB) {
-        assertEquals("Staff " + name+ ", atom #" + i + ", atom class", atomA.getClass(), atomB.getClass());
+    private static void checkEqualAtom(String name, String songTypeOfExpected, int i, Atom atomA, Atom atomB) {
+        assertEquals("Staff " + name+ ", atom #" + i + ", atom class, expected = "+ songTypeOfExpected, atomA.getClass(), atomB.getClass());
 
-        assertEquals("Staff " + name+ ", atom #" + i + ", onset", atomA.getTime(), atomB.getTime());
-        assertEquals("Staff " + name+ ", atom #" + i + ", duration", atomA.getDuration(), atomB.getDuration());
+        assertEquals("Staff " + name+ ", atom #" + i + ", onset, expected = "+ songTypeOfExpected, atomA.getTime(), atomB.getTime());
+        assertEquals("Staff " + name+ ", atom #" + i + ", duration, expected = "+ songTypeOfExpected, atomA.getDuration(), atomB.getDuration());
 
         if (atomA instanceof SimpleNote) {
             SimpleNote noteA = (SimpleNote) atomA;
             SimpleNote noteB = (SimpleNote) atomB;
-            assertEquals("Staff " + name+ ", atom #" + i + ", pitch", noteA.getPitch(), noteB.getPitch());
-            assertEquals("Staff " + name+ ", atom #" + i + ", optional accidental", noteA.getAtomPitch().isOptionalAccidental(), noteB.getAtomPitch().isOptionalAccidental());
-            assertEquals("Staff " + name+ ", atom #" + i + ", tied from previous", noteA.getAtomPitch().isTiedFromPrevious(), noteB.getAtomPitch().isTiedFromPrevious());
-            assertEquals("Staff " + name+ ", atom #" + i + ", colored", noteA.getAtomFigure().isColored(), noteB.getAtomFigure().isColored());
+            assertEquals("Staff " + name + ", atom #" + i + ", pitch, expected = " + songTypeOfExpected, noteA.getPitch(), noteB.getPitch());
+            assertEquals("Staff " + name + ", atom #" + i + ", optional accidental, expected = " + songTypeOfExpected, noteA.getAtomPitch().isOptionalAccidental(), noteB.getAtomPitch().isOptionalAccidental());
+            assertEquals("Staff " + name + ", atom #" + i + ", tied from previous, expected = " + songTypeOfExpected, noteA.getAtomPitch().isTiedFromPrevious(), noteB.getAtomPitch().isTiedFromPrevious());
+            assertEquals("Staff " + name + ", atom #" + i + ", colored, expected = " + songTypeOfExpected, noteA.getAtomFigure().isColored(), noteB.getAtomFigure().isColored());
         } else if (atomA instanceof SimpleRest) {
             //no-op
+        } else if (atomA instanceof SimpleLigature) {
+            SimpleLigature la = (SimpleLigature) atomA;
+            SimpleLigature lb = (SimpleLigature) atomB;
+            assertEquals("Staff " + name + ", atom #" + i + ", number of ligature notes, expected " + songTypeOfExpected, la.getAtoms().size(), lb.getAtoms().size());
+            for (int ia=0; ia<la.getAtoms().size(); ia++) {
+                assertEquals("Staff " + name + ", ligature atom #" + i + ", subelement " + ia + ", pitch, expected = " + songTypeOfExpected, la.getAtomPitches().get(ia).getScientificPitch(), lb.getAtomPitches().get(ia).getScientificPitch());
+                assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", optional accidental, expected = " + songTypeOfExpected, la.getAtomPitches().get(ia).isOptionalAccidental(), lb.getAtomPitches().get(ia).isOptionalAccidental());
+                assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", colored, expected = " + songTypeOfExpected, la.getAtomFigures().get(ia).isColored(), lb.getAtomFigures().get(ia).isColored());
+                assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", duration, expected = " + songTypeOfExpected, la.getAtomFigures().get(ia).getDuration(), lb.getAtomFigures().get(ia).getDuration());
+                assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", figure, expected = " + songTypeOfExpected, la.getAtomFigures().get(ia).getFigure(), lb.getAtomFigures().get(ia).getFigure());
+
+            }
         } else {
             throw new IM3RuntimeException("Unsupported comparison between " + atomA.getClass());
         }
