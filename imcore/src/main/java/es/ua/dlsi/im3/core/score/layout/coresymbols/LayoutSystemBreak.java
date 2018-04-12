@@ -61,6 +61,5 @@ public class LayoutSystemBreak extends LayoutCoreSymbol<SystemBreak> {
     }
     @Override
     protected void doLayout() throws IM3Exception {
-        throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

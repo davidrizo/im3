@@ -150,6 +150,7 @@ public class PageLayout extends ScoreLayout {
                             newSimultaneitiesToAdd.add(layoutCoreClef);
                             layoutCoreClef.setTime(time);
                             layoutStaff.add(layoutCoreClef);
+                            layoutCoreClef.layout();
                         } // if not it will be inserted because it is explicit
 
                         KeySignature ks = staff.getKeySignatureWithOnset(time);
@@ -160,6 +161,7 @@ public class PageLayout extends ScoreLayout {
                             layoutCoreKs.setTime(time);
                             newSimultaneitiesToAdd.add(layoutCoreKs);
                             layoutStaff.add(layoutCoreKs);
+                            layoutCoreKs.layout();
                         } // if not it will be inserted because it is explicit
                     }
 
@@ -193,6 +195,7 @@ public class PageLayout extends ScoreLayout {
                         } else {
                             LayoutStaff layoutStaff = lastSystem.get(staff);
                             layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
+                            layoutCoreBarline.layout();
                             lastPage.getCanvas().getElements().add(layoutCoreBarline.getGraphics());
 
                             lastSystem.addLayoutCoreBarline(layoutCoreBarline);
@@ -201,7 +204,7 @@ public class PageLayout extends ScoreLayout {
                     //TODO Quizás mejor en el system
                    // page.getCanvas().add(coreSymbol.getGraphics());
                 }
-
+                coreSymbol.layout();
             }
 
         }

@@ -52,13 +52,14 @@ public class LayoutMensuralAndTranscription {
 
 
         // TODO: 2/11/17 Esto deberá seguir unas normas - no éstas puestas casi a piñón
-        if (mensural.getStaves().size() != 8) {
+        if (mensural.getStaves().size() != 9) {
             throw new IM3Exception("TO-DO ESTO ESTÁ HECHO PARA PATRIARCA!!!! - CAMBIAR MAPAS DE CLAVES DE FORMA INTERACTIVA O CON REGLAS");
         }
 
         Clef [] modernClefs = new Clef [] {
             new ClefG2(), new ClefG2(), new ClefG2(), new ClefF4(),
-            new ClefG2(), new ClefG2(), new ClefF4(), new ClefF4()
+            new ClefG2(), new ClefG2(), new ClefF4(), new ClefF4(),
+                new ClefF4()
         };
 
         MensuralToModern mensuralToModern = new MensuralToModern(modernClefs);
