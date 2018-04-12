@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.harmony.*;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureFactory;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
@@ -60,6 +61,8 @@ public class KernImporter implements IScoreSongImporter {
         public Spine splittedFrom;
         public Spine splittedInto;
         public Time tupletStartTime;
+        public Time ligatureStartTime;
+        public boolean ligatureEnded;
         Staff staff;
         ScoreLayer layer;
         String pendingStaffName;
@@ -68,6 +71,7 @@ public class KernImporter implements IScoreSongImporter {
         boolean harmSpine;
 
         ArrayList<SingleFigureAtom> tupletElements;
+        ArrayList<SimpleNote> ligatureNotes;
         ArrayList<Integer> tupletDurations;
         boolean inTuplet;
         int mcdTupleElementDuration; // greatest common divisor
@@ -79,6 +83,7 @@ public class KernImporter implements IScoreSongImporter {
             spineIndex = index;
             tupletElements = new ArrayList<>();
             tupletDurations = new ArrayList<>();
+            ligatureNotes = null;
             rootSpine = false;
             harmSpine = false;
         }
@@ -1206,7 +1211,26 @@ public class KernImporter implements IScoreSongImporter {
 
 
                         //currentVoice.add(currentTime, sn);
-                        addAtom(currentTime, sn);
+                        if (currentSpine.ligatureNotes == null) {
+                            addAtom(currentTime, sn);
+                        } else {
+                            currentSpine.ligatureNotes.add(sn);
+
+                            if (currentSpine.ligatureEnded) {
+                                try {
+                                    SimpleLigature ligature = LigatureFactory.createLigature(currentSpine.ligatureNotes);
+
+                                    addAtom(currentSpine.ligatureStartTime, ligature);
+
+                                } catch (IM3Exception e) {
+                                    Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, "Error creating ligature", e);
+                                    throw new GrammarParseRuntimeException(e);
+                                }
+                                currentSpine.ligatureNotes = null;
+                                currentSpine.ligatureEnded = false;
+                            }
+
+                        }
                         lastNoteOrChord = sn;
                     }
                     if (currentSpine == rootSpine) {
@@ -1661,8 +1685,19 @@ public class KernImporter implements IScoreSongImporter {
             }
         }
 
+        @Override
+        public void exitLigatureStart(kernParser.LigatureStartContext ctx) {
+            currentSpine.ligatureNotes = new ArrayList<>();
+            currentSpine.ligatureStartTime = lastTime;
+        }
 
-        //// HARM --------
+        @Override
+        public void exitLigatureEnd(kernParser.LigatureEndContext ctx) {
+            currentSpine.ligatureEnded = true;
+        }
+
+
+        //// ----------- HARM --------
         Harm harm;
         Harm alternateHarm;
         Harm lastHarm;

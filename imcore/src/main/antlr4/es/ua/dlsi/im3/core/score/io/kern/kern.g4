@@ -133,17 +133,21 @@ note:  beforeNote duration noteName alteration? afterNote;
 
 beforeNote:  //TODO Regla semantica (boolean) para que no se repitan
     (slurstart
-    | tiestart)*
+    | tiestart
+    | ligatureStart
+    )*
     ;
 
 afterNote://TODO Regla semantica (boolean) para que no se repitan
-	     (slurend | stem| tiemiddle | tieend| mordent| trill | beam| pause| partialbeam | tenuto)*;
+	     (slurend | stem| tiemiddle | tieend| ligatureEnd | mordent| trill | beam| pause| partialbeam | tenuto)*;
 
 tiestart: LEFTBRACKET;
 slurstart: LEFTPAR;
 slurend: RIGHTPAR;
 tiemiddle: UNDERSCORE;
 tieend: RIGHTBRACKET;
+ligatureStart: LIGATURE_START;
+ligatureEnd: LIGATURE_END;
 //partialbeam: LETTER_k;
 partialbeam: 'k';
 tenuto: TILDE;
@@ -289,6 +293,8 @@ LEFTPAR: '(';
 RIGHTPAR: ')';
 LEFTBRACKET: '[';
 RIGHTBRACKET: ']';
+LIGATURE_START: '<';
+LIGATURE_END: '>';
 SLASH: '/';
 OCTOTHORPE: '#';
 MINUS: '-';

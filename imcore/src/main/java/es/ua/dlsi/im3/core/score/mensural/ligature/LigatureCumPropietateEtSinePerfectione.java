@@ -9,10 +9,10 @@ import es.ua.dlsi.im3.core.score.SimpleLigature;
  * @author drizo
  *
  */
-public class LigatureCumPropietateEtCumPerfectione extends SimpleLigature {
+public class LigatureCumPropietateEtSinePerfectione extends SimpleLigature {
 
-	public LigatureCumPropietateEtCumPerfectione(ScientificPitch firstPitch, ScientificPitch secondPitch) {
-		super(Figures.LONGA, 1, Figures.BREVE, firstPitch, Figures.LONGA, secondPitch);
+	public LigatureCumPropietateEtSinePerfectione(ScientificPitch firstPitch, ScientificPitch secondPitch) {
+		super(Figures.LONGA, 1, Figures.LONGA, firstPitch, Figures.BREVE, secondPitch);
 	}
 
 }
