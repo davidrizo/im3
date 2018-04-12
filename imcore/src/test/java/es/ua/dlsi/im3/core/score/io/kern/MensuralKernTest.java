@@ -141,8 +141,9 @@ public class MensuralKernTest {
     //// tests for Wili Apel
     @Test
     public void testWiliApel() throws IM3Exception {
-        //test("pag87_fig1");
+        test("pag87_fig1");
         test("pag89_fig1");
+        test("pag90_fig1");
         //TODO Crear MEI y comparar
     }
 
