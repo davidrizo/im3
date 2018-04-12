@@ -1,15 +1,15 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.SimpleLigature;
+import es.ua.dlsi.im3.core.score.LigaturaBinaria;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.graphics.Shape;
 
-public class LayoutCoreSimpleLigature extends LayoutCoreSymbol<SimpleLigature> {
+public class LayoutCoreSimpleLigature extends LayoutCoreSymbol<LigaturaBinaria> {
 
-    public LayoutCoreSimpleLigature(LayoutFont layoutFont, SimpleLigature coreSymbol) {
+    public LayoutCoreSimpleLigature(LayoutFont layoutFont, LigaturaBinaria coreSymbol) {
         super(layoutFont, coreSymbol);
     }
 

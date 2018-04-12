@@ -1776,7 +1776,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
                 break;
             case "ligature":
-                SimpleLigature ligature = LigatureFactory.createLigature(ligatureElements);
+                LigaturaBinaria ligature = LigatureFactory.createLigature(ligatureElements);
                 ligatureElements = null;
                 addElementToVoiceStaffOrTupletOrLigature(ligature, ligatureXMLID, null, lastStaff);
                 break;

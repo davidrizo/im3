@@ -2,7 +2,7 @@ package es.ua.dlsi.im3.core.score.mensural.ligature;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Figures;
-import es.ua.dlsi.im3.core.score.SimpleLigature;
+import es.ua.dlsi.im3.core.score.LigaturaBinaria;
 import es.ua.dlsi.im3.core.score.SimpleNote;
 
 import java.util.List;
@@ -12,14 +12,14 @@ import java.util.List;
  * @autor drizo
  */
 public class LigatureFactory {
-    public static SimpleLigature createLigature(List<SimpleNote> noteList) throws IM3Exception {
+    public static LigaturaBinaria createLigature(List<SimpleNote> noteList) throws IM3Exception {
         if (noteList.size() != 2) {
             throw new IM3Exception("Currenly just ligatures of 2 notes are supported, and " + noteList.size() + " have been provided");
         }
 
         SimpleNote note1 = noteList.get(0);
         SimpleNote note2 = noteList.get(1);
-        SimpleLigature result = null;
+        LigaturaBinaria result = null;
         if (note1.getAtomFigure().getFigure() == Figures.BREVE) {
             if (note2.getAtomFigure().getFigure() == Figures.LONGA) {
                 result = new LigatureCumPropietateEtCumPerfectione(note1.getPitch(), note2.getPitch());

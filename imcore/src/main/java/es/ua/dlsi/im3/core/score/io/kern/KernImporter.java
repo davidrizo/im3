@@ -1218,7 +1218,7 @@ public class KernImporter implements IScoreSongImporter {
 
                             if (currentSpine.ligatureEnded) {
                                 try {
-                                    SimpleLigature ligature = LigatureFactory.createLigature(currentSpine.ligatureNotes);
+                                    LigaturaBinaria ligature = LigatureFactory.createLigature(currentSpine.ligatureNotes);
 
                                     addAtom(currentSpine.ligatureStartTime, ligature);
 

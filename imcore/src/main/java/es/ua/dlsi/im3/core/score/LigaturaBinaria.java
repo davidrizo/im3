@@ -7,11 +7,12 @@ import java.util.List;
 import es.ua.dlsi.im3.core.IM3Exception;
 /**
  * It is not a compound atom, visually it just has a note. The method getPlayedNotes will explode this single element 
- * in the notes it contains
+ * in the notes it contains.
+ * The therm LigatureBinaria comes from Willi Apel, page. 91
  * @author drizo
  *
  */
-public abstract class SimpleLigature extends Atom {
+public abstract class LigaturaBinaria extends Atom {
 	/**
 	 * figures and pitches lists are parallel, i-th element in figure contains the i-th figure of the i-th pitch
 	 * It allows for concatenated complex formations
@@ -20,7 +21,7 @@ public abstract class SimpleLigature extends Atom {
 	protected List<AtomPitch> pitches;
 	protected AtomFigure wholeDurationFigure;
 	
-	public SimpleLigature(Figures wholeDurationFig, int wholeDurationDots, Figures firstFigure, ScientificPitch firstPitch, Figures secondFigure, ScientificPitch secondPitch) {
+	public LigaturaBinaria(Figures wholeDurationFig, int wholeDurationDots, Figures firstFigure, ScientificPitch firstPitch, Figures secondFigure, ScientificPitch secondPitch) {
 		figures = new ArrayList<AtomFigure>();
 		pitches = new ArrayList<AtomPitch>();
 		wholeDurationFigure = new AtomFigure(this, wholeDurationFig, wholeDurationDots);

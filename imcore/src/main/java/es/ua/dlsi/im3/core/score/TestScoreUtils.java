@@ -86,9 +86,9 @@ public class TestScoreUtils {
             assertEquals("Staff " + name + ", atom #" + i + ", colored, expected = " + songTypeOfExpected, noteA.getAtomFigure().isColored(), noteB.getAtomFigure().isColored());
         } else if (atomA instanceof SimpleRest) {
             //no-op
-        } else if (atomA instanceof SimpleLigature) {
-            SimpleLigature la = (SimpleLigature) atomA;
-            SimpleLigature lb = (SimpleLigature) atomB;
+        } else if (atomA instanceof LigaturaBinaria) {
+            LigaturaBinaria la = (LigaturaBinaria) atomA;
+            LigaturaBinaria lb = (LigaturaBinaria) atomB;
             assertEquals("Staff " + name + ", atom #" + i + ", number of ligature notes, expected " + songTypeOfExpected, la.getAtoms().size(), lb.getAtoms().size());
             for (int ia=0; ia<la.getAtoms().size(); ia++) {
                 assertEquals("Staff " + name + ", ligature atom #" + i + ", subelement " + ia + ", pitch, expected = " + songTypeOfExpected, la.getAtomPitches().get(ia).getScientificPitch(), lb.getAtomPitches().get(ia).getScientificPitch());
