@@ -71,9 +71,9 @@ public abstract class XMLSAXImporter {
                 //System.out.println("End:" + qName);
                 try {
                     handleCloseElement(qName);
-                    /*for (IXMLSAXImporterExtension extension: extensions) {
-                        extension.handleCloseElement(qName);
-                    }*/
+                    //for (IXMLSAXImporterExtension extension: extensions) {
+                    //    extension.handleCloseElement(qName);
+                    //}
 
                 } catch (ImportException e) {
                     throw new SAXException(e);
@@ -144,9 +144,14 @@ public abstract class XMLSAXImporter {
                     extension.handleElementContent(elementStack, closingElement, content);
                 }
             }
+            currentStringBuilder = null;
         }
         try {
             handleElementClose(closingElement);
+            for (IXMLSAXImporterExtension extension: extensions) {
+                extension.handleCloseElement(element);
+            }
+
         } catch (IM3Exception e) {
             throw new ImportException(e);
         }

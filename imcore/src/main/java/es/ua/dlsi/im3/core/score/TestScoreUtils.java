@@ -31,7 +31,12 @@ public class TestScoreUtils {
             for (TimeSignature ats: astaff.getTimeSignatures()) {
                 TimeSignature bts = bstaff.getTimeSignatureWithOnset(ats.getTime());
                 if (bts == null) {
-                    fail("No time signature in " + bType + " at time " + ats.getTime() + ", expected " + ats.getTime());
+                    System.err.println("Found time signatures:");
+                    for (TimeSignature bbts: astaff.getTimeSignatures()) {
+                        System.err.println("\t" + bbts);
+                    }
+
+                    fail("No time signature in " + bType + " at time " + ats.getTime() + ", expected " + ats.getTime() + " for time signature " + ats);
                 }
                 assertEquals("Staff " + astaff.getName(), ats.toString(), bts.toString());
             }
@@ -47,10 +52,10 @@ public class TestScoreUtils {
 
             assertEquals("Layers", astaff.getLayers().size(), bstaff.getLayers().size());
 
-            System.out.println(astaff.getName());
+            /*System.out.println(astaff.getName());
             for (int i=0; i<bstaff.getAtoms().size(); i++) {
                 System.out.println(bstaff.getAtoms().get(i));
-            }
+            }*/
             assertEquals("Atoms in staff " + astaff.getName(), astaff.getAtoms().size(), bstaff.getAtoms().size());
 
             for (int i=0; i<astaff.getAtoms().size(); i++) {

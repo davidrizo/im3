@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.score.harmony.*;
 import es.ua.dlsi.im3.core.score.io.IScoreSongImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureFactory;
+import es.ua.dlsi.im3.core.score.mensural.meters.*;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
@@ -820,17 +821,46 @@ public class KernImporter implements IScoreSongImporter {
         @Override
         public void exitMeterSign(kernParser.MeterSignContext ctx) {
             TimeSignature ts;
-            switch (ctx.getText()) {
-                case "C":
-                case "c":
-                    ts = new TimeSignatureCommonTime(currentSpine.notationType);
-                    break;
-                case "C|":
-                case "c|":
-                    ts = new TimeSignatureCutTime(currentSpine.notationType);
-                    break;
-                default:
-                    throw new GrammarParseRuntimeException("Unsupported meter sign: '" + ctx.getText() + "'");
+            if (currentSpine.notationType == NotationType.eModern) {
+                switch (ctx.getText()) {
+                    case "C":
+                    case "c":
+                        ts = new TimeSignatureCommonTime(currentSpine.notationType);
+                        break;
+                    case "C|":
+                    case "c|":
+                        ts = new TimeSignatureCutTime(currentSpine.notationType);
+                        break;
+                    default:
+                        throw new GrammarParseRuntimeException("Unsupported meter sign: '" + ctx.getText() + "'");
+                }
+            } else if (currentSpine.notationType == NotationType.eMensural) {
+                switch (ctx.getText()) {
+                    case "c":
+                        ts = new TimeSignatureCommonTime(currentSpine.notationType);
+                        break;
+                    case "C":
+                        ts = new TempusImperfectumCumProlationeImperfecta();
+                        break;
+                    case "C·":
+                        ts = new TempusImperfectumCumProlationePerfecta();
+                        break;
+                    case "O":
+                        ts = new TempusPerfectumCumProlationeImperfecta();
+                        break;
+                    case "O·":
+                        ts = new TempusPerfectumCumProlationePerfecta();
+                        break;
+                    case "C|":
+                    case "c|":
+                        ts = new TimeSignatureCutTime(currentSpine.notationType);
+                        break;
+                    default:
+                        throw new GrammarParseRuntimeException("Unsupported meter sign: '" + ctx.getText() + "'");
+                }
+
+            } else {
+                throw new GrammarParseRuntimeException("Invalid notation type: " + currentSpine.notationType);
             }
             Staff staff = null;
             try {
@@ -1175,7 +1205,7 @@ public class KernImporter implements IScoreSongImporter {
                 if (inChord) {
                     if (chord == null) {
                         chord = new SimpleChord(lastFigure, lastDots);
-                        processPossibleImperfection(chord);
+                        processPossibleImperfection(chord, currentTime);
                         addAtom(currentTime, chord);
                         //harm.setTime(currentTime);
                         chord.setStaff(getStaff());
@@ -1202,7 +1232,7 @@ public class KernImporter implements IScoreSongImporter {
                     Atom previous = currentSpine.layer.isEmpty() ? null : currentSpine.layer.getLastAtom();
                     ScientificPitch sp = new ScientificPitch(nn, acc, octave);
                     SimpleNote sn = new SimpleNote(lastFigure, lastDots, sp);
-                    processPossibleImperfection(sn);
+                    processPossibleImperfection(sn, currentTime);
                     if (currentSpine.inTuplet) {
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                 "Score note added {0} to tuplet", sn.toString());
@@ -1320,7 +1350,7 @@ public class KernImporter implements IScoreSongImporter {
                 Time currentTime = getLastTime();
                 SimpleRest rest = new SimpleRest(lastFigure, lastDots);
 
-                processPossibleImperfection(rest);
+                processPossibleImperfection(rest, currentTime);
                 //currentVoice.add(currentTime, rest);
                 addAtom(currentTime, rest);
 
@@ -1349,7 +1379,7 @@ public class KernImporter implements IScoreSongImporter {
 
         }
 
-        private void processPossibleImperfection(SingleFigureAtom atom) {
+        private void processPossibleImperfection(SingleFigureAtom atom, Time lastTime) throws IM3Exception {
             atom.getAtomFigure().setColored(lastMensuralFigureColoured);
             if (lastMensuralPerfection != null && lastMensuralPerfection.equals("p")) {
                 // e.g. imperfection in mensural
@@ -1362,6 +1392,13 @@ public class KernImporter implements IScoreSongImporter {
                     Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE,
                             null, ex);
                     throw new GrammarParseRuntimeException(ex);
+                }
+            } else { //TODO ¿Cómo se coordina esto con lo de arriba de la imperfección? - con este else?
+                TimeSignature meter = currentSpine.staff.getRunningTimeSignatureAt(lastTime);
+                if (meter instanceof TimeSignatureMensural) {
+                    TimeSignatureMensural mmeter = (TimeSignatureMensural) meter;
+                    Time figureDuration = mmeter.getDuration(atom.getAtomFigure().getFigure());
+                    atom.getAtomFigure().setSpecialDuration(figureDuration);
                 }
             }
             lastMensuralPerfection = null;

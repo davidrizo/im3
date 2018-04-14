@@ -306,7 +306,6 @@ public class Tree<LabelType extends ITreeLabel> implements ITree<LabelType>, Com
 
 	/**
 	 * @return 
-	 * @see es.ua.dlsi.tree.ITree#getChildrenIterator()
 	 */
 	@Override
 	public Iterator<Tree<LabelType>> getChildrenIterator() {

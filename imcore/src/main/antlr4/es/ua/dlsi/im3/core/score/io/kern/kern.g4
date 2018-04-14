@@ -72,7 +72,7 @@ tandemInterpretation:
     | ASTERISK) // a null interpretation (placeholder) will have just an asterisk
     ;
 
-meterSign: ('C' | 'c' | 'C|' | 'c|'); //TODO Como fragment
+meterSign: ('C' | 'c' | 'C|' | 'c|' | 'C·' | 'O' | 'O·'); //TODO Como fragment
 keyChange: (minorKey | majorKey) keyAccidental?;
 
 //keyAccidental: (LETTER_n | OCTOTHORPE | MINUS);
