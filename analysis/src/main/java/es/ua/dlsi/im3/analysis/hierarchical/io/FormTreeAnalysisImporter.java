@@ -32,7 +32,7 @@ public class FormTreeAnalysisImporter implements IMEIComponentImporter<Tree<Attr
 			MEIHierarchicalAnalysesModernImporter importer) throws IM3Exception, TreeException {
 		
 		if (child.getNumChildren() != 1) {
-			throw new ImportException("Expected just a child named 'label' of child " + child);
+			throw new ImportException("Expected just a child named 'label' of child " + child + " and found " + child.getNumChildren() + " children");
 		}
 		
 		Tree<AttributesLabel> labelChild = child.getChild(0);

@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.analysis.hierarchical.io;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.analysis.hierarchical.Analysis;
 import es.ua.dlsi.im3.analysis.hierarchical.FreeAnalysis;
@@ -67,7 +69,7 @@ public class IOFactory {
 	public Analysis createAnalysis(String type) throws ImportException {
 		Class<? extends Analysis> analysisClass = analysisCreators.get(type);
 		if (analysisClass == null) {
-			throw new ImportException("Cannot find a class for analysis type '"+type+"'");
+			throw new ImportException("Cannot find a class for analysis type '" + type + "', valid types are: " + analysisCreators.keySet());
 		}
 		try {
 			return analysisClass.newInstance();
