@@ -139,6 +139,8 @@ public class KernImporter implements IScoreSongImporter {
         private String lastMensuralPerfection;
         private boolean lastMensuralFigureColoured;
 
+        private StemDirection lastStemDirection;
+
         // TODO refactorización private ScoreStaff rootStaff;
         private Measure lastMeasure = null;
         private Key lastHarmKey;
@@ -821,7 +823,7 @@ public class KernImporter implements IScoreSongImporter {
         @Override
         public void exitMeterSign(kernParser.MeterSignContext ctx) {
             TimeSignature ts;
-            if (currentSpine.notationType == NotationType.eModern) {
+            if (currentSpine.notationType == null || currentSpine.notationType == NotationType.eModern) {
                 switch (ctx.getText()) {
                     case "C":
                     case "c":
@@ -1164,8 +1166,21 @@ public class KernImporter implements IScoreSongImporter {
         }
 
         @Override
+        public void exitStem(kernParser.StemContext ctx) {
+            super.exitStem(ctx);
+            Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST, "Stem {0}", ctx.getText());
+            if (ctx.BACKSLASH() != null) {
+                lastStemDirection = StemDirection.down;
+            } else if (ctx.SLASH() != null) {
+                lastStemDirection = StemDirection.up;
+            } else {
+                throw new GrammarParseRuntimeException("Either slash or backslash expected, and found '" + ctx.getText() + "'");
+            }
+        }
+
+        @Override
         public void exitNote(kernParser.NoteContext ctx) {
-            super.enterNote(ctx);
+            super.exitNote(ctx);
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST,
                     "Note {0}", ctx.getText());
 
@@ -1201,10 +1216,11 @@ public class KernImporter implements IScoreSongImporter {
             }
             try {
                 Time currentTime = getLastTime();
-                SingleFigureAtom sse;
+                SingleFigureAtom sse = null;
                 if (inChord) {
                     if (chord == null) {
                         chord = new SimpleChord(lastFigure, lastDots);
+                        sse = chord;
                         processPossibleImperfection(chord, currentTime);
                         addAtom(currentTime, chord);
                         //harm.setTime(currentTime);
@@ -1232,6 +1248,7 @@ public class KernImporter implements IScoreSongImporter {
                     Atom previous = currentSpine.layer.isEmpty() ? null : currentSpine.layer.getLastAtom();
                     ScientificPitch sp = new ScientificPitch(nn, acc, octave);
                     SimpleNote sn = new SimpleNote(lastFigure, lastDots, sp);
+                    sse = sn;
                     processPossibleImperfection(sn, currentTime);
                     if (currentSpine.inTuplet) {
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
@@ -1315,6 +1332,10 @@ public class KernImporter implements IScoreSongImporter {
                         }
                     }*/
                 }
+                
+                if (sse != null && lastStemDirection != null) {
+                    sse.setExplicitStemDirection(lastStemDirection);
+                }
             } catch
                     (IM3Exception ex) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE,
@@ -1322,6 +1343,11 @@ public class KernImporter implements IScoreSongImporter {
                 throw new
                         GrammarParseRuntimeException(ex.getMessage());
             }
+        }
+
+        @Override
+        public void enterNote(kernParser.NoteContext ctx) {
+            lastStemDirection = null;
         }
 
         @Override

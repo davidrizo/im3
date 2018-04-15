@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.conversions.RhythmUtils;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
@@ -157,11 +158,12 @@ public class KernExporter {
             sb.append('/');
             sb.append(meter.getDenominator());
             return sb.toString();
-        } else if (ts instanceof TimeSignatureCommonTime) {
+        } else if (ts instanceof TimeSignatureCommonTime ||ts instanceof TempusImperfectumCumProlationeImperfecta) {
             return "M4/4";
         } else if (ts instanceof TimeSignatureCutTime) {
             return "M2/2";
         } else {
+            // TODO: 15/4/18 Resto de compases - además añadir los símbolos
             throw new ExportException("Unsupported time signature type: " + ts.getClass());
         }
     }
@@ -355,10 +357,14 @@ public class KernExporter {
 
     private String generateMeterSign(TimeSignature timeSig) {
         if (timeSig instanceof TimeSignatureCommonTime) {
-            return "C";
+            //return "C";
+            return "c"; // TODO: 15/4/18 ¿Seguro? 
         } else if (timeSig instanceof TimeSignatureCutTime) {
             return "C|";
+        } else if (timeSig instanceof TempusImperfectumCumProlationeImperfecta) {
+            return "C";
         } else {
+            // TODO: 15/4/18 Resto de prolaciones 
             return null;
         }
     }

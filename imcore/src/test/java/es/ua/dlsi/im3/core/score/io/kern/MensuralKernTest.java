@@ -12,6 +12,7 @@ import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import org.apache.commons.lang3.math.Fraction;
@@ -110,7 +111,7 @@ public class MensuralKernTest {
             List<ITimedElementInStaff> symbols = staff.getCoreSymbolsOrdered();
 
             assertEquals("Time signatures", 1, staff.getTimeSignatures().size());
-            assertTrue(staff.getTimeSignatureWithOnset(Time.TIME_ZERO) instanceof TimeSignatureCommonTime);
+            assertTrue(staff.getTimeSignatureWithOnset(Time.TIME_ZERO) instanceof TempusImperfectumCumProlationeImperfecta);
             assertTrue(symbols.get(0) instanceof Clef);
             assertTrue(symbols.get(3) instanceof SimpleRest);
             assertTrue(symbols.get(4) instanceof SimpleRest);
@@ -141,10 +142,11 @@ public class MensuralKernTest {
     //// tests for Wili Apel
     @Test
     public void testWiliApel() throws IM3Exception {
-       /* test("pag87_fig1");
+        test("pag87_fig1");
         test("pag89_fig1");
-        test("pag90_fig1");*/
+        test("pag90_fig1");
         test("pag96_fig1");
+        test("pag101_fig1");
     }
 
 

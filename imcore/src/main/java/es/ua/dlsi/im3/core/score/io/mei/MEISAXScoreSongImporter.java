@@ -1325,7 +1325,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			}
 		}
 		Mode mode;
-		if (keyMode == null || keyMode.equals("major")) {
+        if (keyMode == null) {
+            mode = Mode.UNKNOWN;
+        } else if (keyMode == null || keyMode.equals("major")) {
 			mode = Mode.MAJOR;
 		} else if (keyMode.equals("minor")) {
 			mode = Mode.MINOR;
