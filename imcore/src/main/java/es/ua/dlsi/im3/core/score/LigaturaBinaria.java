@@ -21,23 +21,34 @@ public abstract class LigaturaBinaria extends Atom {
 	protected List<AtomPitch> pitches;
 	protected AtomFigure wholeDurationFigure;
 	
-	public LigaturaBinaria(Figures wholeDurationFig, int wholeDurationDots, Figures firstFigure, ScientificPitch firstPitch, Figures secondFigure, ScientificPitch secondPitch) {
+	/*public LigaturaBinaria(Figures wholeDurationFig, int wholeDurationDots, Figures firstFigure, ScientificPitch firstPitch, Figures secondFigure, ScientificPitch secondPitch) {
 		figures = new ArrayList<AtomFigure>();
 		pitches = new ArrayList<AtomPitch>();
 		wholeDurationFigure = new AtomFigure(this, wholeDurationFig, wholeDurationDots);
 		addDuration(wholeDurationFigure.getDuration());
 		
-		addComponent(firstFigure, firstPitch);
-		addComponent(secondFigure, secondPitch);
-	}
+		addComponent(firstFigure, 0, firstPitch);
+		addComponent(secondFigure, 0, secondPitch);
+	}*/
+
+    public LigaturaBinaria(Figures wholeDurationFig, int wholeDurationDots, Figures firstFigure, int dotsFirstFigure, ScientificPitch firstPitch, Figures secondFigure, int dotsSecondFigure, ScientificPitch secondPitch) {
+        figures = new ArrayList<AtomFigure>();
+        pitches = new ArrayList<AtomPitch>();
+        wholeDurationFigure = new AtomFigure(this, wholeDurationFig, wholeDurationDots);
+        addDuration(wholeDurationFigure.getDuration());
+
+        addComponent(firstFigure, dotsFirstFigure, firstPitch);
+        addComponent(secondFigure, dotsSecondFigure, secondPitch);
+    }
 
 	/**
 	 * This method cannot be public for the classes that inherit SimpleLigature
-	 * @param fig
-	 * @param pitch
-	 */
-	private void addComponent(Figures fig, ScientificPitch pitch) {
-		AtomFigure af = new AtomFigure(this, fig, 0);
+     * @param fig
+     * @param dots
+     * @param pitch
+     */
+	private void addComponent(Figures fig, int dots, ScientificPitch pitch) {
+		AtomFigure af = new AtomFigure(this, fig, dots);
 		figures.add(af);
 		pitches.add(new AtomPitch(af, pitch));
 	}

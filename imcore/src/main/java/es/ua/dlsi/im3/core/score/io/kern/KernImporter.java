@@ -1423,7 +1423,7 @@ public class KernImporter implements IScoreSongImporter {
                 TimeSignature meter = currentSpine.staff.getRunningTimeSignatureAt(lastTime);
                 if (meter instanceof TimeSignatureMensural) {
                     TimeSignatureMensural mmeter = (TimeSignatureMensural) meter;
-                    Time figureDuration = mmeter.getDuration(atom.getAtomFigure().getFigure());
+                    Time figureDuration = mmeter.getDuration(atom.getAtomFigure().getFigure(), atom.getAtomFigure().getDots());
                     atom.getAtomFigure().setSpecialDuration(figureDuration);
                 }
             }

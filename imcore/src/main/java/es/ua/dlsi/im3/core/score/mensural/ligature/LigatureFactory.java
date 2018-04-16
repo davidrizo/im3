@@ -22,18 +22,18 @@ public class LigatureFactory {
         LigaturaBinaria result = null;
         if (note1.getAtomFigure().getFigure() == Figures.BREVE) {
             if (note2.getAtomFigure().getFigure() == Figures.LONGA) {
-                result = new LigatureCumPropietateEtCumPerfectione(note1.getPitch(), note2.getPitch());
+                result = new LigatureCumPropietateEtCumPerfectione(note1.getPitch(), note1.getAtomFigure().getDots(), note2.getPitch(), note2.getAtomFigure().getDots());
             } else if (note2.getAtomFigure().getFigure() == Figures.BREVE) {
-                result = new LigatureCumPropietateEtSinePerfectione(note1.getPitch(), note2.getPitch());
+                result = new LigatureCumPropietateEtSinePerfectione(note1.getPitch(), note1.getAtomFigure().getDots(), note2.getPitch(), note2.getAtomFigure().getDots());
             }
         } else if (note1.getAtomFigure().getFigure() == Figures.LONGA) {
             if (note2.getAtomFigure().getFigure() == Figures.LONGA) {
-                result = new LigatureSinePropietateEtCumPerfectione(note1.getPitch(), note2.getPitch());
+                result = new LigatureSinePropietateEtCumPerfectione(note1.getPitch(), note1.getAtomFigure().getDots(), note2.getPitch(), note2.getAtomFigure().getDots());
             } else if (note2.getAtomFigure().getFigure() == Figures.BREVE) {
-                result = new LigatureSinePropietateEtSinePerfectione(note1.getPitch(), note2.getPitch());
+                result = new LigatureSinePropietateEtSinePerfectione(note1.getPitch(), note1.getAtomFigure().getDots(), note2.getPitch(), note2.getAtomFigure().getDots());
             }
         } else if (note1.getAtomFigure().getFigure() == Figures.SEMIBREVE && note2.getAtomFigure().getFigure() == Figures.SEMIBREVE) {
-            result = new LigaturaCumOppositaPropietate(note1.getPitch(), note2.getPitch());
+            result = new LigaturaCumOppositaPropietate(note1.getPitch(), note1.getAtomFigure().getDots(), note2.getPitch(), note2.getAtomFigure().getDots());
         }
 
         if (result == null) {

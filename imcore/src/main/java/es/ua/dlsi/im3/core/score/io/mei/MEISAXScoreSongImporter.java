@@ -1119,7 +1119,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 		if (lastTimeSignature instanceof TimeSignatureMensural) {
 			TimeSignatureMensural mmeter = (TimeSignatureMensural) lastTimeSignature;
-			figureDuration = mmeter.getDuration(currentAtomFigure.getFigure());
+			figureDuration = mmeter.getDuration(currentAtomFigure.getFigure(), currentAtomFigure.getDots());
 			currentAtomFigure.setSpecialDuration(figureDuration);
 		}
 		if (numBase != null || num != null) {

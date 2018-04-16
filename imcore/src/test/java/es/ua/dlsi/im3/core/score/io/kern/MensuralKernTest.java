@@ -21,6 +21,7 @@ import org.junit.Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.function.Function;
 
 import static org.junit.Assert.*;
@@ -130,11 +131,30 @@ public class MensuralKernTest {
         doTest(MensuralKernTest::assertPatriarca2, importKern(TestFileUtils.getFile("/testdata/core/score/io/kern/mensural_binary.krn")));
     }
 
-    private void test(String file) throws IM3Exception {
+    /**
+     *
+     * @param file
+     * @param multiplier Value to match durations in the examples
+     * @param durations
+     * @throws IM3Exception
+     */
+    private void test(String file, double multiplier, double ... durations) throws IM3Exception {
         String path = "/testdata/core/score/io/kern/apel/";
         ScoreSong kernSong = importKern(TestFileUtils.getFile(path + file + ".krn"));
         ScoreSong meiSong = importMEI(TestFileUtils.getFile(path + file + ".mei"));
         TestScoreUtils.checkEqual("kern", kernSong, "mei", meiSong);
+
+        if (durations != null && durations.length > 0) {
+            List<AtomFigure> figures = kernSong.getParts().get(0).getUniqueVoice().getAtomFigures();
+            assertEquals("Number of figures", durations.length, figures.size());
+            int i=0;
+            for (AtomFigure figure: figures) {
+                System.out.println(figure.hashCode() + " " + figure);
+                assertEquals("Figure #" + i, multiplier*durations[i], figure.getDuration().getComputedTime(), 0.0001);
+                i++;
+            }
+        }
+
 
         // TODO: 10/4/18 Exportar y comprobar que son iguales
     }
@@ -142,16 +162,25 @@ public class MensuralKernTest {
     //// tests for Wili Apel
     @Test
     public void testWiliApel() throws IM3Exception {
-        test("pag87_fig1");
-        test("pag89_fig1");
-        test("pag90_fig1");
-        test("pag96_fig1");
-        test("pag101_fig1");
-        test("pag108_fig1");
-        test("pag108_fig2");
-        test("pag108_fig3");
-        test("pag108_fig4");
-        test("pag108_fig5");
+        /*test("pag87_fig1", 0);
+        test("pag89_fig1", 0);
+        test("pag90_fig1", 0);
+        test("pag96_fig1", 0);
+
+        // Durations are reduced in Apel, this is why we multiply it by 4
+        // TODO: 16/4/18 Lo ideal sería decirle la equivalencia unidad compás <-> compás, en este caso sería breve <-> 2/4 (blanca)
+        test("pag98_fig1", 4, 2, 1, 0.5, 0.25);
+        test("pag98_fig2", 4, 3, 1.5, 0.5, 0.25);
+        test("pag98_fig3", 4, 3, 1, 0.5, 0.25);
+        test("pag98_fig4", 4, 4.5, 1.5, 0.5, 0.25);*/
+
+
+        test("pag101_fig1", 4, 3, 1.5, 1, 0.25, 0.5, 0.25, 0.25, 0.5, 0.25, 0.25, 0.25, 0.5, 1, 0.5, 2);
+        test("pag108_fig1", 0);
+        test("pag108_fig2", 0);
+        test("pag108_fig3", 0);
+        test("pag108_fig4", 0);
+        test("pag108_fig5", 0);
     }
 
 

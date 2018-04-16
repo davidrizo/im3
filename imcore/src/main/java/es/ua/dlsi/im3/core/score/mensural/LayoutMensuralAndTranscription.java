@@ -38,7 +38,9 @@ public class LayoutMensuralAndTranscription {
 
         System.out.println("Input: " + args[0]);
         ScoreSongImporter importer = new ScoreSongImporter();
-        ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]), new BinaryDurationEvaluator(new Time(2)));
+        // TODO: 16/4/18 Es posible que haya que poner el multiplicador
+        //ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]), new BinaryDurationEvaluator(new Time(2)));
+        ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]));
 
         // exportamos también a lilypond
         LilypondExporter lilypondExporter = new LilypondExporter();

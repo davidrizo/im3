@@ -10,8 +10,8 @@ import es.ua.dlsi.im3.core.score.LigaturaBinaria;
  */
 public class LigaturaCumOppositaPropietate extends LigaturaBinaria {
 
-    public LigaturaCumOppositaPropietate(ScientificPitch firstPitch, ScientificPitch secondPitch) {
-        super(Figures.BREVE, 0, Figures.SEMIBREVE, firstPitch, Figures.SEMIBREVE, secondPitch);
+    public LigaturaCumOppositaPropietate(ScientificPitch firstPitch, int dotsFirstFigure, ScientificPitch secondPitch, int dotsSecondFigure) {
+        super(Figures.BREVE, 0, Figures.SEMIBREVE, dotsFirstFigure, firstPitch, Figures.SEMIBREVE, dotsSecondFigure, secondPitch);
     }
 
 }

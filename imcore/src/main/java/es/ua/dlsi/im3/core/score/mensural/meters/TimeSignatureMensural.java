@@ -168,6 +168,18 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
 				time + "]";
 	}
 
+
+    public Time getDuration(Figures figure, int dots) {
+	    Time duration = getDuration(figure);
+	    Time lastDuration = duration;
+	    for (int i=0; i<dots; i++) {
+	        lastDuration = lastDuration.divide(2);
+	        duration = duration.add(lastDuration);
+        }
+        return duration;
+    }
+
+
 	public Time getDuration(Figures figure) {
         Time duration;
 		switch (figure) {
