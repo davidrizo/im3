@@ -151,6 +151,7 @@ public class MensuralKernTest {
         test("pag108_fig2");
         test("pag108_fig3");
         test("pag108_fig4");
+        test("pag108_fig5");
     }
 
 
