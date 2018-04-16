@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 /**
  * Attachments that must be positioned in the staff (e.g. displaced dots)
  */
@@ -20,6 +22,10 @@ public class AttachmentInStaff<CoreSymbolType extends ITimedElementInStaff> exte
         this.time = time;
     }
 
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        this.time = time.add(offset);
+    }
     @Override
     public Staff getStaff() {
         return staff;

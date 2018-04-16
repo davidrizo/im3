@@ -263,5 +263,10 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 	public void setDuration(Time duration) {
 		this.duration = duration;
 	}
+
+    // TODO: 16/4/18 Test unitario
+    public void move(Time offset) {
+	    setTime(getTime().add(offset));
+    }
 }
 

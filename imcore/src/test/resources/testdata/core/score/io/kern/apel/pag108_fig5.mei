@@ -47,7 +47,8 @@
                                 <note dur="minima" oct="4" pname="e" stem.dir="up"/>
                                 <note dur="minima" oct="4" pname="d"/>
                                 <note dur="semibrevis" oct="4" pname="c"/>
-                                <note dur="brevis" dots="1" oct="3" pname="b"/>
+                                <note dur="brevis" oct="3" pname="b"/>
+                                <rest dur="semibrevis"/>
                             </layer>
                         </staff>
                     </section>

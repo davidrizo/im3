@@ -140,7 +140,9 @@ public class MensuralKernTest {
      */
     private void test(String file, double multiplier, double ... durations) throws IM3Exception {
         String path = "/testdata/core/score/io/kern/apel/";
+        System.out.println("\n\nImporting KERN " + file);
         ScoreSong kernSong = importKern(TestFileUtils.getFile(path + file + ".krn"));
+        System.out.println("\n\nImporting MEI " + file);
         ScoreSong meiSong = importMEI(TestFileUtils.getFile(path + file + ".mei"));
         TestScoreUtils.checkEqual("kern", kernSong, "mei", meiSong);
 
@@ -149,7 +151,6 @@ public class MensuralKernTest {
             assertEquals("Number of figures", durations.length, figures.size());
             int i=0;
             for (AtomFigure figure: figures) {
-                System.out.println(figure.hashCode() + " " + figure);
                 assertEquals("Figure #" + i, multiplier*durations[i], figure.getDuration().getComputedTime(), 0.0001);
                 i++;
             }
@@ -162,7 +163,7 @@ public class MensuralKernTest {
     //// tests for Wili Apel
     @Test
     public void testWiliApel() throws IM3Exception {
-        /*test("pag87_fig1", 0);
+        test("pag87_fig1", 0);
         test("pag89_fig1", 0);
         test("pag90_fig1", 0);
         test("pag96_fig1", 0);
@@ -172,15 +173,16 @@ public class MensuralKernTest {
         test("pag98_fig1", 4, 2, 1, 0.5, 0.25);
         test("pag98_fig2", 4, 3, 1.5, 0.5, 0.25);
         test("pag98_fig3", 4, 3, 1, 0.5, 0.25);
-        test("pag98_fig4", 4, 4.5, 1.5, 0.5, 0.25);*/
+        test("pag98_fig4", 4, 4.5, 1.5, 0.5, 0.25);
 
 
         test("pag101_fig1", 4, 3, 1.5, 1, 0.25, 0.5, 0.25, 0.25, 0.5, 0.25, 0.25, 0.25, 0.5, 1, 0.5, 2);
-        test("pag108_fig1", 0);
-        test("pag108_fig2", 0);
-        test("pag108_fig3", 0);
-        test("pag108_fig4", 0);
-        test("pag108_fig5", 0);
+
+        /*test("pag108_fig1", 4, 3, 3, 3, 3, 6, 3, 3);
+        test("pag108_fig2", 4, 3, 1, 1, 1, 3, 1, 1, 0.5, 0.5, 3, 0.5, 1, 1, 0.5, 3);
+        test("pag108_fig3", 4, 2, 1, 3, 2, 1, 0.5, 0.5, 1.5, 0.5, 2, 1, 2, 1);
+        test("pag108_fig4", 4, 2, 1, 2, 1, 3);
+        test("pag108_fig5", 4, 3, 3, 1, 2, 1, 0.5, 0.5, 1, 2, 1);*/
     }
 
 

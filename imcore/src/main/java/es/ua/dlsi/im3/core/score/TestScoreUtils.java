@@ -31,9 +31,9 @@ public class TestScoreUtils {
             for (TimeSignature ats: astaff.getTimeSignatures()) {
                 TimeSignature bts = bstaff.getTimeSignatureWithOnset(ats.getTime());
                 if (bts == null) {
-                    System.err.println("Found time signatures:");
-                    for (TimeSignature bbts: astaff.getTimeSignatures()) {
-                        System.err.println("\t" + bbts);
+                    System.err.println("Found time signatures in staff:" + bstaff.getName());
+                    for (TimeSignature bbts: bstaff.getTimeSignatures()) {
+                        System.err.println("\t" + bbts.getTime() + ": " + bbts);
                     }
 
                     fail("No time signature in " + bType + " at time " + ats.getTime() + ", expected " + ats.getTime() + " for time signature " + ats);

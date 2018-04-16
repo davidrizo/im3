@@ -1114,14 +1114,15 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			AtomFigure currentAtomFigure) throws IM3Exception, ImportException {
 		String numBase = getOptionalAttribute(attributesMap, "numbase");
 		String num = getOptionalAttribute(attributesMap, "num");
-		TimeSignature lastTimeSignature = null;
+		/*Done TimeSignature lastTimeSignature = null;
 		lastTimeSignature = lastStaff.getRunningTimeSignatureAt(currentAtomFigure);
 
-		if (lastTimeSignature instanceof TimeSignatureMensural) {
+		in ScoreSong.processMensuralImperfectionRules()
+		    if (lastTimeSignature instanceof TimeSignatureMensural) {
 			TimeSignatureMensural mmeter = (TimeSignatureMensural) lastTimeSignature;
 			figureDuration = mmeter.getDuration(currentAtomFigure.getFigure(), currentAtomFigure.getDots());
 			currentAtomFigure.setSpecialDuration(figureDuration);
-		}
+		}*/
 		if (numBase != null || num != null) {
 			if (numBase == null || num == null) {
 				throw new ImportException("When @numbase or @num are specified, both must be present");
@@ -1129,8 +1130,16 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			// e.g. imperfection in mensural //TODO Tuplets
 			int irregularGroupActualFigures = Integer.parseInt(num);
 			int irregularGroupInSpaceOfFigures = Integer.parseInt(numBase);
-			// it computes the duration
-			currentAtomFigure.setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
+
+			if (irregularGroupActualFigures == 2 && irregularGroupInSpaceOfFigures == 2) {
+                currentAtomFigure.setExplicitMensuralPerfection(Perfection.imperfectum);
+            } else if (irregularGroupActualFigures == 3 && irregularGroupInSpaceOfFigures == 2) {
+                currentAtomFigure.setExplicitMensuralPerfection(Perfection.perfectum);
+            } else {
+			    throw new ImportException("Invalid values for numbase ("+numBase+") and num ("+num+"), they should be 2 or 3");
+                // it computes the duration
+                //TODO This could be correct, it worked: currentAtomFigure.setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
+            }
 		}
 		
 		String colored = getOptionalAttribute(attributesMap, "colored");

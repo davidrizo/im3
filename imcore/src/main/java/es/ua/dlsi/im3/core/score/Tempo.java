@@ -7,6 +7,8 @@ package es.ua.dlsi.im3.core.score;
 
 //TODO Unificar esto con Tempo de Played. Hacer algo parecido con Key y Meter
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 /**
  * @author david
  */
@@ -34,7 +36,6 @@ public class Tempo implements ITimedElement, Comparable<Tempo>, IUniqueIDObject 
 	/**
 	 * Constructor
 	 *
-	 * @param tick
 	 * @param atempo
 	 */
 	public Tempo(int atempo) {
@@ -132,8 +133,6 @@ public class Tempo implements ITimedElement, Comparable<Tempo>, IUniqueIDObject 
 	 * milliseconds use the song method ticksToMilliseconds that uses all tempo
 	 * change information
 	 *
-	 * @param resolution
-	 * @param tickCount
 	 * @return
 	 */
 	/*FRACCIONES Habrá que ver qué relación hacemos public long ticksToMilliseconds(long tickCount) {
@@ -165,8 +164,13 @@ public class Tempo implements ITimedElement, Comparable<Tempo>, IUniqueIDObject 
 	public Time getTime()  {
 		return this.time;
 	}
-	
-	public final void setTime(Time time) {
+
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        this.time = time.add(offset);
+    }
+
+    public final void setTime(Time time) {
 		this.time = time;
 	}
 

@@ -406,6 +406,13 @@ public class KernImporter implements IScoreSongImporter {
                     }
                 }
             }
+
+            try {
+                scoreSong.processMensuralImperfectionRules();
+            } catch (IM3Exception e) {
+                Logger.getLogger(KernImporter.class.getName()).log(Level.WARNING, "Cannot apply mensural imperfection rules", e);
+                throw new GrammarParseRuntimeException(e);
+            }
         }
 
         /**
@@ -871,7 +878,7 @@ public class KernImporter implements IScoreSongImporter {
                 TimeSignature presentMeter = staff.getTimeSignatureWithOnset(currentTime);
                 if (presentMeter != null) {
                     // replace if for new meter
-                    staff.removeTimeSignature(presentMeter);
+                    staff.remove(presentMeter);
                 }
                 ts.setTime(currentTime);
                 ts.setStaff(staff);
@@ -1255,8 +1262,6 @@ public class KernImporter implements IScoreSongImporter {
                                 "Score note added {0} to tuplet", sn.toString());
                         currentSpine.tupletElements.add(sn);
                     } else {
-
-
                         //currentVoice.add(currentTime, sn);
                         if (currentSpine.ligatureNotes == null) {
                             addAtom(currentTime, sn);
@@ -1316,7 +1321,7 @@ public class KernImporter implements IScoreSongImporter {
                         sn.getStaff().addFermata(sn.getAtomFigure());
                     }
 
-                    Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
+                    Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                             "Score note added {0}", sn.toString());
 
                     //TODO Root spine
@@ -1407,26 +1412,23 @@ public class KernImporter implements IScoreSongImporter {
 
         private void processPossibleImperfection(SingleFigureAtom atom, Time lastTime) throws IM3Exception {
             atom.getAtomFigure().setColored(lastMensuralFigureColoured);
-            if (lastMensuralPerfection != null && lastMensuralPerfection.equals("p")) {
-                // e.g. imperfection in mensural
-                int irregularGroupActualFigures = 3;
-                int irregularGroupInSpaceOfFigures = 2;
-                // it computes the duration
-                try {
-                    atom.getAtomFigure().setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
-                } catch (IM3Exception ex) {
-                    Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE,
-                            null, ex);
-                    throw new GrammarParseRuntimeException(ex);
+            if (lastMensuralPerfection != null) {
+                if (lastMensuralPerfection.equals("p")) {
+                    atom.getAtomFigure().setExplicitMensuralPerfection(Perfection.perfectum);
+                } else if (lastMensuralPerfection.equals("i")) {
+                    atom.getAtomFigure().setExplicitMensuralPerfection(Perfection.imperfectum);
+                } else {
+                    throw new IM3Exception("Invalid perfection: '" + lastMensuralPerfection + "'");
                 }
-            } else { //TODO ¿Cómo se coordina esto con lo de arriba de la imperfección? - con este else?
+
+            } /*else { //TODO ¿Cómo se coordina esto con lo de arriba de la imperfección? - con este else?
                 TimeSignature meter = currentSpine.staff.getRunningTimeSignatureAt(lastTime);
                 if (meter instanceof TimeSignatureMensural) {
                     TimeSignatureMensural mmeter = (TimeSignatureMensural) meter;
                     Time figureDuration = mmeter.getDuration(atom.getAtomFigure().getFigure(), atom.getAtomFigure().getDots());
                     atom.getAtomFigure().setSpecialDuration(figureDuration);
                 }
-            }
+            }*/
             lastMensuralPerfection = null;
             lastMensuralFigureColoured = false;
         }

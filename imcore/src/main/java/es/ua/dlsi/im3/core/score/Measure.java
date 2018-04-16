@@ -203,6 +203,11 @@ public class Measure implements Comparable<Measure>, ITimedElement, IUniqueIDObj
 		this.time = time;		
 	}
 
+    @Override
+    public void move(Time offset) throws IM3Exception {
+	    this.duration = null;
+        this.time = time.add(offset);
+    }
 	
 	/**
 	 * Several staves may contain different meters

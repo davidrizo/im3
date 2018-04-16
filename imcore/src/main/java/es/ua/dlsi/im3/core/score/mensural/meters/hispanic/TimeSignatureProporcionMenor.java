@@ -18,9 +18,12 @@
 package es.ua.dlsi.im3.core.score.mensural.meters.hispanic;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.AtomFigure;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
+
+import java.util.List;
 
 /**
  *
@@ -37,7 +40,12 @@ public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
     		return "CZ";
     }
 
-	@Override
+    @Override
+    public void applyImperfectionRules(List<AtomFigure> figureList) {
+
+    }
+
+    @Override
 	public boolean equals(Object other) {
 		return other instanceof TimeSignatureProporcionMenor;
 	}

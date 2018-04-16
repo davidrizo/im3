@@ -411,8 +411,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		}
 		
 		this.clefs.put(clef.getTime(), clef);
-		this.coreSymbols.add(clef);
-		clef.setStaff(this);
+        this.addCoreSymbol(clef);
 	}
 
 	public void addTimeSignature(TimeSignature ts) throws IM3Exception {		
@@ -425,14 +424,15 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			}
 		}
 		this.timeSignatures.put(ts.getTime(), ts);
-		this.coreSymbols.add(ts);
-		ts.setStaff(this);
+		this.addCoreSymbol(ts);
+		//this.coreSymbols.add(ts);
+		//ts.setStaff(this);
 	}
 
-    public void removeTimeSignature(TimeSignature meter) {
+    /*public void removeTimeSignature(TimeSignature meter) {
 	    this.coreSymbols.remove(meter);
 	    this.timeSignatures.remove(meter.getTime());
-    }
+    }*/
 
 
 	public void addKeySignature(KeySignature ts) throws IM3Exception {
@@ -445,8 +445,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			}
 		}
 		this.keySignatures.put(ts.getTime(), ts);
-		this.coreSymbols.add(ts);
-		ts.setStaff(this);
+        this.addCoreSymbol(ts);
 	}
 
     public void addMarkBarline(MarkBarline ts) throws IM3Exception {
@@ -459,9 +458,8 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
             }
         }
         this.markBarlines.put(ts.getTime(), ts);
-        this.coreSymbols.add(ts);
-        ts.setStaff(this);
-    }
+        this.addCoreSymbol(ts);
+	}
 
 
 	// ----------------------------------------------------------------------
@@ -496,7 +494,12 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		ArrayList<ITimedElementInStaff> symbols = new ArrayList<>(coreSymbols);
 		SymbolsOrderer.sortList(symbols);
 		return symbols;
-	}	
+	}
+
+    public List<ITimedElementInStaff> getCoreSymbols() {
+	    return coreSymbols;
+    }
+
 	public void addMark(StaffMark mark) throws IM3Exception {
 		this.marks.add(mark);
 	}
@@ -532,6 +535,10 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	public void addCoreSymbol(ITimedElementInStaff e) throws IM3Exception {
 		e.setStaff(this);
         this.coreSymbols.add(e);
+        /*System.out.println(name + " ADDED " + e);
+        for (ITimedElementInStaff ee: coreSymbols) {
+            System.out.println("\t" + ee);
+        }*/
     }
 
 	/**
@@ -701,6 +708,26 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
     public void remove(ITimedElementInStaff element) {
         if (coreSymbols.remove(element)) { // if not removed yet
             element.setStaff(null);
+        }
+        //TODO Algo más elegante
+        if (element instanceof Custos) {
+            custos.remove(element.getTime());
+        }
+
+        if (element instanceof KeySignature) {
+            keySignatures.remove(element.getTime());
+        }
+
+        if (element instanceof TimeSignature) {
+            timeSignatures.remove(element.getTime());
+        }
+
+        if (element instanceof MarkBarline) {
+            markBarlines.remove(element.getTime());
+        }
+
+        if (element instanceof Fermate) {
+            markBarlines.remove(element.getTime());
         }
     }
 
@@ -1005,4 +1032,13 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
             return "#" + getNumberIdentifier();
         }
     }
+
+    public void moveFermate(Time oldTime, Time newTime) {
+        Fermate oldFermate = fermate.remove(oldTime);
+        if (oldFermate == null) {
+            throw new IM3RuntimeException("Cannot find a previous fermate at time " + oldTime);
+        }
+        this.fermate.put(newTime, oldFermate);
+    }
+
 }

@@ -11,6 +11,9 @@ import es.ua.dlsi.im3.core.adt.TimedElementCollection;
 import es.ua.dlsi.im3.core.metadata.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefNone;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
+import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
 
 /**
@@ -1790,4 +1793,85 @@ public class ScoreSong {
         }
         return result;
     }
+
+    public void processMensuralImperfectionRules() throws IM3Exception {
+        for (Staff staff: staves) {
+            System.out.println("STAFF: " + staff.getName());
+            if (staff.getNotationType() == NotationType.eMensural) {
+                List<ITimedElementInStaff> coreSymbols = staff.getCoreSymbols(); // without order because it may be incorrect
+                TimeSignatureMensural lastTimeSignature = null;
+                // elements to be computed
+                List<AtomFigure> chunk = new ArrayList<>();
+                for (ITimedElementInStaff timedElementInStaff: coreSymbols) {
+                    if (timedElementInStaff instanceof TimeSignatureMensural) {
+                        if (lastTimeSignature != null) {
+                            lastTimeSignature.applyImperfectionRules(chunk);
+                        }
+                        chunk = new ArrayList<>();
+                        lastTimeSignature = (TimeSignatureMensural) timedElementInStaff;
+                    } else if (timedElementInStaff instanceof MarkBarline) {
+                        lastTimeSignature.applyImperfectionRules(chunk);
+                        chunk = new ArrayList<>();
+                    } else if (timedElementInStaff instanceof Atom){
+                        chunk.addAll(((Atom) timedElementInStaff).getAtomFigures());
+                    }
+                }
+                if (lastTimeSignature != null) {
+                    lastTimeSignature.applyImperfectionRules(chunk);
+                }
+
+                // recompute durations and onset
+                Time currentTime = Time.TIME_ZERO;
+                lastTimeSignature = null;
+                List<ITimedElementInStaff> coreSymbolsInStaff = new LinkedList<>(coreSymbols); // in order to avoid concurrent modification
+
+
+                for (ITimedElementInStaff timedElementInStaff: coreSymbolsInStaff) {
+                    //String prefix="";
+                    //if (timedElementInStaff instanceof SingleFigureAtom) {
+                    //    if (((SingleFigureAtom) timedElementInStaff).getAtomFigure().getMensuralPerfection() != null) {
+                    //        prefix = ((SingleFigureAtom) timedElementInStaff).getAtomFigure().getMensuralPerfection().name();
+                    //    } else {
+                    //       prefix = "?";
+                    //  }
+                    //}
+                    //System.out.println(prefix + " " + timedElementInStaff);
+                    if (!timedElementInStaff.getTime().equals(currentTime)) {
+                        //System.out.print("\tMOVE" + timedElementInStaff.getTime() + " -> " );
+                        timedElementInStaff.move(currentTime.substract(timedElementInStaff.getTime()));
+                        //System.out.println(timedElementInStaff.getTime());
+                    } else {
+                        //System.out.println("\tSTAY" + timedElementInStaff.getTime());
+                    }
+
+                    System.out.println(timedElementInStaff.getTime() + ": " + timedElementInStaff);
+                    if (timedElementInStaff instanceof TimeSignatureMensural) {
+                        lastTimeSignature = (TimeSignatureMensural) timedElementInStaff;
+                    } else if (timedElementInStaff instanceof Atom) {
+                        Atom atom = (Atom) timedElementInStaff;
+                        if (lastTimeSignature != null) {
+                            List<AtomFigure> figures = atom.getAtomFigures();
+                            for (AtomFigure atomFigure : figures) {
+                                // default meter duration (perfect if the meter has perfection) are applied unless imperfection is applied
+                                if (atomFigure.getMensuralPerfection() != Perfection.imperfectum) {
+                                    Time oldDuration = atomFigure.getDuration();;
+                                    Time newDuration = lastTimeSignature.getDuration(atomFigure.getFigure(), atomFigure.getDots());
+                                    atomFigure.setSpecialDuration(newDuration);
+                                }
+                            }
+                        }
+                        currentTime = currentTime.add(atom.getDuration());
+                    }
+                }
+            }
+        }
+    }
 }
+/*else { //TODO ¿Cómo se coordina esto con lo de arriba de la imperfección? - con este else?
+        TimeSignature meter = currentSpine.staff.getRunningTimeSignatureAt(lastTime);
+        if (meter instanceof TimeSignatureMensural) {
+        TimeSignatureMensural mmeter = (TimeSignatureMensural) meter;
+        Time figureDuration = mmeter.getDuration(atom.getAtomFigure().getFigure(), atom.getAtomFigure().getDots());
+        atom.getAtomFigure().setSpecialDuration(figureDuration);
+        }
+        }*/

@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 public class Custos implements ITimedElementInStaff {
     DiatonicPitch diatonicPitch;
     Staff staff;
@@ -37,6 +39,13 @@ public class Custos implements ITimedElementInStaff {
         this.time = time;
     }
 
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        Staff prevStaff = staff;
+        staff.remove(this);
+        this.time = time.add(offset);
+        prevStaff.addCustos(this);
+    }
     public DiatonicPitch getDiatonicPitch() {
         return diatonicPitch;
     }

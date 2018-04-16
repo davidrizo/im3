@@ -38,6 +38,7 @@ public abstract class XMLSAXScoreSongImporter extends XMLSAXImporter {
 			initSAX();
 			init();
 			saxParser.parse(is, handler);
+			song.processMensuralImperfectionRules();
 		} catch (ParserConfigurationException | SAXException | IOException | IM3Exception e) {
 			throw new ImportException(e);
 		}
@@ -54,7 +55,12 @@ public abstract class XMLSAXScoreSongImporter extends XMLSAXImporter {
 		} catch (IM3Exception | ParserConfigurationException | SAXException | IOException e) {
 			throw new ImportException(e);
 		}
-	
-		return song;
+        try {
+            song.processMensuralImperfectionRules();
+        } catch (IM3Exception e) {
+		    Logger.getLogger(XMLSAXScoreSongImporter.class.getName()).log(Level.WARNING, "Cannot apply mensural imperfection rules", e);
+		    throw new ImportException(e);
+        }
+        return song;
 	}
 }

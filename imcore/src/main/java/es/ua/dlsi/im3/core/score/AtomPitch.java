@@ -175,6 +175,10 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 		return atomFigure.getEndTime();
 	}
 
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        //no-op
+    }
 
 	@Override
 	public boolean equals(Object o) {

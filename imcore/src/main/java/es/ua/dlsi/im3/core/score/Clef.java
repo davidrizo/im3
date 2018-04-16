@@ -16,6 +16,7 @@
  */
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 
 /**
@@ -153,6 +154,13 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 		this.time = time;
 	}
 
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        Staff prevStaff = staff;
+        this.time = time.add(offset);
+	    staff.remove(this);
+	    prevStaff.addClef(this);
+    }
 	public final NotationType getNotationType() {
 		return notationType;
 	}

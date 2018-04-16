@@ -1,12 +1,12 @@
 package es.ua.dlsi.im3.core.score.mensural.meters;
 
-import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 import org.apache.commons.lang3.math.Fraction;
 
-import es.ua.dlsi.im3.core.score.Figures;
-import es.ua.dlsi.im3.core.score.NotationType;
-import es.ua.dlsi.im3.core.score.TimeSignature;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class TimeSignatureMensural extends SignTimeSignature {
 
@@ -20,9 +20,9 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
 	private Perfection modusMinor;
 	private Perfection prolatio;
 	private Perfection tempus;
+    Time breveDuration;
 	Time maximaDuration;
     Time longaDuration;
-    Time breveDuration;
     Time semibreveDuration;
 
 	public TimeSignatureMensural(Perfection tempus, Perfection prolatio) {
@@ -50,7 +50,7 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
 
     private void initDurations() {
         semibreveDuration = Figures.MINIM.getDuration().multiplyBy(Fraction.getFraction(
-                prolatio == null? 2: prolatio.getDivisions(),
+                prolatio == null ? 2 : prolatio.getDivisions(),
                 1)
         );
 
@@ -80,95 +80,63 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
 		return tempus;
 	}
 
-	
-
 	public final Perfection getModusMaior() {
 		return modusMaior;
 	}
-
-
 
 	public final Perfection getModusMinor() {
 		return modusMinor;
 	}
 
-
-
-	public final Time getMaximaDuration() {
+	/*public final Time getMaximaDuration() {
 		return maximaDuration;
 	}
 
-
-
 	public final Time getLongaDuration() {
 		return longaDuration;
-	}
-
-
+	}*/
 
 	public final Time getBreveDuration() {
 		return breveDuration;
 	}
 
-
-
 	public final Time getSemibreveDuration() {
 		return semibreveDuration;
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimeSignatureMensural that = (TimeSignatureMensural) o;
+        return modusMaior == that.modusMaior &&
+                modusMinor == that.modusMinor &&
+                prolatio == that.prolatio &&
+                tempus == that.tempus;
+    }
 
+    @Override
+    public int hashCode() {
 
+        return Objects.hash(modusMaior, modusMinor, prolatio, tempus);
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((breveDuration == null) ? 0 : breveDuration.hashCode());
-		result = prime * result + ((longaDuration == null) ? 0 : longaDuration.hashCode());
-		result = prime * result + ((maximaDuration == null) ? 0 : maximaDuration.hashCode());
-		result = prime * result + ((semibreveDuration == null) ? 0 : semibreveDuration.hashCode());
-		return result;
-	}
+    @Override
+    public String toString() {
+        return "TimeSignatureMensural{" +
+                "modusMaior=" + modusMaior +
+                ", modusMinor=" + modusMinor +
+                ", prolatio=" + prolatio +
+                ", tempus=" + tempus +
+                '}';
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (getClass() != obj.getClass())
-			return false;
-		TimeSignatureMensural other = (TimeSignatureMensural) obj;
-		if (breveDuration == null) {
-			if (other.breveDuration != null)
-				return false;
-		} else if (!breveDuration.equals(other.breveDuration))
-			return false;
-		if (longaDuration == null) {
-			if (other.longaDuration != null)
-				return false;
-		} else if (!longaDuration.equals(other.longaDuration))
-			return false;
-		if (maximaDuration == null) {
-			if (other.maximaDuration != null)
-				return false;
-		} else if (!maximaDuration.equals(other.maximaDuration))
-			return false;
-		if (semibreveDuration == null) {
-			if (other.semibreveDuration != null)
-				return false;
-		} else if (!semibreveDuration.equals(other.semibreveDuration))
-			return false;
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "MensuralMeter [modusMaior=" + modusMaior + ", modusMinor=" + modusMinor + ", prolatio=" + prolatio
-				+ ", tempus=" + tempus + ", maximaDuration=" + maximaDuration + ", longaDuration=" + longaDuration
-				+ ", breveDuration=" + breveDuration + ", semibreveDuration=" + semibreveDuration + ", time=" + 
-				time + "]";
-	}
-
-
+    /**
+     * It just be used only is used by ScoreSong
+     * @param figure
+     * @param dots
+     * @return
+     */
     public Time getDuration(Figures figure, int dots) {
 	    Time duration = getDuration(figure);
 	    Time lastDuration = duration;
@@ -179,8 +147,12 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
         return duration;
     }
 
-
-	public Time getDuration(Figures figure) {
+    /**
+     * Default values. In ternary rhythms, it returns the perfecta (3 elements). Package visibility, it is used by ScoreSong
+     * @param figure
+     * @return
+     */
+	private Time getDuration(Figures figure) {
         Time duration;
 		switch (figure) {
 			case MAXIMA:
@@ -202,18 +174,25 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
 		return duration;
 	}
 
+	public void setModusMaior(Perfection modusMaior) {
+        this.modusMaior = modusMaior;
+        initDurations();
+    }
+
+    public void setModusMinor(Perfection modusMinor) {
+        this.modusMinor = modusMinor;
+        initDurations();
+    }
+
 	@Override
 	public boolean isCompound() {
 		return false;
 	}
 
-    public void setModusMaior(Perfection modusMaior) {
-	    this.modusMaior = modusMaior;
-	    initDurations();
-    }
-
-    public void setModusMinor(Perfection modusMinor) {
-	    this.modusMinor = modusMinor;
-	    initDurations();
-    }
+    /**
+     * It receives sequences of figures between time signatures of mark barlines
+     * @param figureList
+     * @throws IM3Exception
+     */
+    public abstract void applyImperfectionRules(List<AtomFigure> figureList) throws IM3Exception;
 }

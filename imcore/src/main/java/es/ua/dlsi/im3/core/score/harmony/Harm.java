@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.harmony;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 
 import java.util.ArrayList;
@@ -39,6 +40,10 @@ public class Harm implements ITimedElement {
         this.time = time;
     }
 
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        this.time = time.add(offset);
+    }
     public Key getKey() {
         return key;
     }

@@ -85,4 +85,11 @@ public class Fermate extends StaffMark implements INotationTypeDependant {
 		return notationType;
 	}
 
+    @Override
+    public void move(Time offset) throws IM3Exception {
+	    Time newTime = getTime().add(offset);
+	    getStaff().moveFermate(this.getTime(), newTime);
+	    this.setTime(newTime);
+    }
+
 }

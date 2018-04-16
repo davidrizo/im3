@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 import java.util.Collection;
 
 
@@ -18,7 +20,11 @@ public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbol
 	public Time getTime() {
 		return this.time;
 	}
-	
+
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        this.time = time.add(offset);
+    }
 	@Override
 	public final Staff getStaff() {
 		return staff;

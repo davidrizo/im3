@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.Time;
@@ -28,6 +29,14 @@ public class MarkBarline implements ITimedElementInStaff {
     @Override
     public Time getTime() {
         return time;
+    }
+
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        Staff prevStaff = staff;
+        staff.remove(this);
+        this.time = time.add(offset);
+        prevStaff.addMarkBarline(this);
     }
 
 }

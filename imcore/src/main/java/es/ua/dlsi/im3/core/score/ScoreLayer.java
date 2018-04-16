@@ -219,7 +219,8 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		if (atoms.isEmpty()) {
 			return new Time(Fraction.ZERO);
 		} else {
-			return atoms.get(atoms.size() - 1).getOffset();
+		    Time result = atoms.get(atoms.size() - 1).getOffset();
+			return result;
 		}
 	}
 
