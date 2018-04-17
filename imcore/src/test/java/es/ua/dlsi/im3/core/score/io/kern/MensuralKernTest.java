@@ -148,10 +148,10 @@ public class MensuralKernTest {
 
         if (durations != null && durations.length > 0) {
             List<AtomFigure> figures = kernSong.getParts().get(0).getUniqueVoice().getAtomFigures();
-            assertEquals("Number of figures", durations.length, figures.size());
+            assertEquals("Number of figures of durations", durations.length, figures.size());
             int i=0;
             for (AtomFigure figure: figures) {
-                assertEquals("Figure #" + i, multiplier*durations[i], figure.getDuration().getComputedTime(), 0.0001);
+                assertEquals("Duration of figure #" + i + " with perfection " + figure.getMensuralPerfection() + ", rule " + figure.getPerfectionRuleApplied(), multiplier*durations[i], figure.getDuration().getComputedTime(), 0.0001);
                 i++;
             }
         }
@@ -178,11 +178,13 @@ public class MensuralKernTest {
 
         test("pag101_fig1", 4, 3, 1.5, 1, 0.25, 0.5, 0.25, 0.25, 0.5, 0.25, 0.25, 0.25, 0.5, 1, 0.5, 2);
 
-        /*test("pag108_fig1", 4, 3, 3, 3, 3, 6, 3, 3);
+        test("pag107_fig1", 4, 2, 1, 1, 2);
+
+        test("pag108_fig1", 4, 3, 3, 3, 3, 6, 3, 3);
         test("pag108_fig2", 4, 3, 1, 1, 1, 3, 1, 1, 0.5, 0.5, 3, 0.5, 1, 1, 0.5, 3);
-        test("pag108_fig3", 4, 2, 1, 3, 2, 1, 0.5, 0.5, 1.5, 0.5, 2, 1, 2, 1);
+        test("pag108_fig3", 4, 2, 1, 3, 2, 1, 0.5, 0.5, 1.5, 0.5, 3, 1, 2, 1, 2, 0.5, 0.5, 1, 1, 0.5, 0.5, 0.5, 0.5, 2);
         test("pag108_fig4", 4, 2, 1, 2, 1, 3);
-        test("pag108_fig5", 4, 3, 3, 1, 2, 1, 0.5, 0.5, 1, 2, 1);*/
+        test("pag108_fig5", 4, 3, 3, 1, 2, 1, 0.5, 0.5, 1, 2, 1);
     }
 
 

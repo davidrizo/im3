@@ -12,7 +12,7 @@ import es.ua.dlsi.im3.core.score.LigaturaBinaria;
 public class LigatureCumPropietateEtSinePerfectione extends LigaturaBinaria {
 
 	public LigatureCumPropietateEtSinePerfectione(ScientificPitch firstPitch, int dotsFirstFigure, ScientificPitch secondPitch, int dotsSecondFigure) {
-		super(Figures.LONGA, 1, Figures.LONGA, dotsFirstFigure, firstPitch, Figures.BREVE, dotsSecondFigure, secondPitch);
+		super(Figures.LONGA, 0, Figures.BREVE, dotsFirstFigure, firstPitch, Figures.BREVE, dotsSecondFigure, secondPitch);
 	}
 
 }

@@ -223,9 +223,11 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 		return "onset=" + onset + ", duration=" + duration + ", ID=" + ID;
 	}
 
-	public void onFigureDurationChanged(Time oldDuration, Time newDuration) throws IM3Exception {
+	public void onFigureDurationChanged(Time oldDuration, Time newDuration, boolean notifyChangesToLayer) throws IM3Exception {
 		duration = new Time(duration.getExactTime().subtract(oldDuration.getExactTime()).add(newDuration.getExactTime()));
-		notifyDurationChange();
+		if (notifyChangesToLayer) {
+            notifyDurationChange();
+        }
 	}
 	
 	private void notifyDurationChange() throws IM3Exception {

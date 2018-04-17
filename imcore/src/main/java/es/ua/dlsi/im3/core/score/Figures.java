@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * The figures must be mantained in descending length
  */
-public enum Figures {
+public enum Figures implements Comparable<Figures> {
 	MAX_FIGURE (Integer.MAX_VALUE, 1, Integer.MAX_VALUE, NotationType.eModern, false, 0), // used the same way Integer.MAX_VALUE
 	QUADRUPLE_WHOLE (16,1,-1, NotationType.eModern, false, 0),
 	DOUBLE_WHOLE (8,1,0, NotationType.eModern, false, 0),
@@ -152,5 +152,4 @@ public enum Figures {
             throw new IM3RuntimeException("Unknown notation type " + notationType);
         }
     }
-
 }

@@ -21,6 +21,8 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
      * If mensuralPerfection and this value is true it is because it has explicitly set, of not, it has been computed
      */
 	private boolean explicitMensuralPerfection;
+
+	private String perfectionRuleApplied;
 	/**
 	 * Used in mensural
 	 */
@@ -79,8 +81,8 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	 * @param duration
 	 * @throws IM3Exception 
 	 */
- 	public void setSpecialDuration(Time duration) throws IM3Exception {
- 		atom.onFigureDurationChanged(this.duration, duration);
+ 	public void setSpecialDuration(Time duration, boolean notifyDurationChangeToLayer) throws IM3Exception {
+ 		atom.onFigureDurationChanged(this.duration, duration, notifyDurationChangeToLayer);
  		this.duration = duration;
  	}
 
@@ -103,7 +105,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
             this.irregularGroupActualFigures = irregularGroupActualFigures;
             this.irregularGroupInSpaceOfFigures = irregularGroupInSpaceOfFigures;
             Fraction nd = duration.getExactTime().multiplyBy(Fraction.getFraction(irregularGroupInSpaceOfFigures, irregularGroupActualFigures));
-            setSpecialDuration(new Time(nd));
+            setSpecialDuration(new Time(nd), true);
         }
  	}
  	
@@ -326,8 +328,9 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         setMensuralPerfection(true, perfection);
     }
 
-    public void setComputedMensuralPerfection(Perfection perfection) throws IM3Exception {
+    public void setComputedMensuralPerfection(Perfection perfection, String perfectionRuleApplied) throws IM3Exception {
         setMensuralPerfection(false, perfection);
+        this.perfectionRuleApplied = perfectionRuleApplied;
     }
 
     public Perfection getMensuralPerfection() {
@@ -342,4 +345,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         return colored;
     }
 
+    public String getPerfectionRuleApplied() {
+        return perfectionRuleApplied;
+    }
 }

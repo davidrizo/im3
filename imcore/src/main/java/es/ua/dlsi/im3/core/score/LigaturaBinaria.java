@@ -81,6 +81,4 @@ public abstract class LigaturaBinaria extends Atom {
 	public List<Atom> getAtoms() {
 		return Arrays.asList(this);
 	}
-
-	
 }

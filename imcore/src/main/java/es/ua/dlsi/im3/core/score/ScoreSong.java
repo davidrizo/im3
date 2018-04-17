@@ -12,6 +12,7 @@ import es.ua.dlsi.im3.core.metadata.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefNone;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureCumPropietateEtSinePerfectione;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
@@ -1796,7 +1797,7 @@ public class ScoreSong {
 
     public void processMensuralImperfectionRules() throws IM3Exception {
         for (Staff staff: staves) {
-            System.out.println("STAFF: " + staff.getName());
+            //System.out.println("STAFF: " + staff.getName());
             if (staff.getNotationType() == NotationType.eMensural) {
                 List<ITimedElementInStaff> coreSymbols = staff.getCoreSymbols(); // without order because it may be incorrect
                 TimeSignatureMensural lastTimeSignature = null;
@@ -1809,7 +1810,7 @@ public class ScoreSong {
                         }
                         chunk = new ArrayList<>();
                         lastTimeSignature = (TimeSignatureMensural) timedElementInStaff;
-                    } else if (timedElementInStaff instanceof MarkBarline) {
+                    } else if (lastTimeSignature != null && timedElementInStaff instanceof MarkBarline) {
                         lastTimeSignature.applyImperfectionRules(chunk);
                         chunk = new ArrayList<>();
                     } else if (timedElementInStaff instanceof Atom){
@@ -1844,7 +1845,6 @@ public class ScoreSong {
                         //System.out.println("\tSTAY" + timedElementInStaff.getTime());
                     }
 
-                    System.out.println(timedElementInStaff.getTime() + ": " + timedElementInStaff);
                     if (timedElementInStaff instanceof TimeSignatureMensural) {
                         lastTimeSignature = (TimeSignatureMensural) timedElementInStaff;
                     } else if (timedElementInStaff instanceof Atom) {
@@ -1856,7 +1856,15 @@ public class ScoreSong {
                                 if (atomFigure.getMensuralPerfection() != Perfection.imperfectum) {
                                     Time oldDuration = atomFigure.getDuration();;
                                     Time newDuration = lastTimeSignature.getDuration(atomFigure.getFigure(), atomFigure.getDots());
-                                    atomFigure.setSpecialDuration(newDuration);
+                                    //if (atom instanceof LigaturaBinaria) {
+                                    //    System.out.println("From duration " + atomFigure.getDuration() + " " + atom.getClass());
+                                    //}
+                                    atomFigure.setSpecialDuration(newDuration, false);
+                                    //if (atom instanceof LigaturaBinaria) {
+                                    //    System.out.println("To duration " + atomFigure.getDuration());
+                                    //}
+
+                                    // TODO: 17/4/18 Esto lla
                                 }
                             }
                         }
