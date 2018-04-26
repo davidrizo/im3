@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 /**
  * It converts the old Calvo's Capitan dataset to the new Hispamus Agnostic encoding (not the one with staves split
- * but the one with the whole pages).
+ * but the one with the whole images).
  * @autor drizo
  */
 public class PagedCapitan2Agnostic {

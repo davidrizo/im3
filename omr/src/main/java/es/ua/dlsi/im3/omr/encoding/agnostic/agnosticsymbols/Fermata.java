@@ -1,12 +1,13 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 /**
  * @autor drizo
  */
 public class Fermata extends AgnosticSymbolType {
-    private static final String FERMATA = "fermata" + SEPSYMBOL;
+    private static final String FERMATA = "fermata";
 
     Positions positions;
 
@@ -16,6 +17,11 @@ public class Fermata extends AgnosticSymbolType {
 
     public Fermata() {
 
+    }
+
+    @Override
+    public void setSubtype(String string) throws IM3Exception {
+        positions = Positions.parseAgnosticString(string);
     }
 
     public Positions getPositions() {
@@ -31,7 +37,7 @@ public class Fermata extends AgnosticSymbolType {
         if (positions == null) {
             return FERMATA;
         } else {
-            return FERMATA + positions.toAgnosticString();
+            return FERMATA + SEPSYMBOL + positions.toAgnosticString();
         }
     }
 }

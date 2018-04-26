@@ -308,9 +308,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				break;
 			case "print":
 			    String newSystem = getOptionalAttribute(attributes, "new-system");
-			    if (newSystem != null) {
-                    defaultStaff.addSystemBreak(new SystemBreak(measureStartTime, true));
-                } // TODO: 20/11/17 Page break 
+			    if (newSystem != null && newSystem.equals("yes")) {
+			        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "System break");
+                    getMeasureElementsToInsert().add(new SystemBreak(measureStartTime, true));
+                } // TODO: 20/11/17 Page break
                 // TODO: 20/11/17 Comprobar
                 break;
 			case "direction":
@@ -1439,7 +1440,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			}
 			
 			for (ITimedElementInStaff element: entry.getValue()) {
-				if (element instanceof Atom) {
+			    if (element instanceof SystemBreak) {
+			        staff.addSystemBreak((SystemBreak) element);
+                } else if (element instanceof Atom) {
 					Atom atom = (Atom) element;
 					if (atom.getDuration().equals(Figures.NO_DURATION.getDuration())) {
 						if (countAtoms == 1) {

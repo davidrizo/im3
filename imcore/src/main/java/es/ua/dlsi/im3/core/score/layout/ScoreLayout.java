@@ -231,7 +231,7 @@ public abstract class ScoreLayout {
             simultaneities.add(layoutCoreSymbol);
             if (layoutCoreSymbol instanceof LayoutCoreSymbolInStaff) {
                 coreSymbolsInStaff.add((LayoutCoreSymbolInStaff) layoutCoreSymbol);
-            } else {
+            } else if (!(layoutCoreSymbol instanceof LayoutCoreSystemBreak)) { // TODO: 23/4/18 LayoutCoreSystemBreak debería heredar de  LayoutCoreSymbolInStaff?
                 throw new IM3RuntimeException("Unimplemented " + layoutCoreSymbol.getClass()); // TODO: 24/9/17 Debemos ponerlos en otra lista? Beamed groups?
             }
 

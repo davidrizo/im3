@@ -6,13 +6,10 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.omr.encoding.Encoder;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.List;
 
 import static org.junit.Assert.*;
 

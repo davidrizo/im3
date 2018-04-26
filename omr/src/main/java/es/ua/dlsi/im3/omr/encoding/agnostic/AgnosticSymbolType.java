@@ -1,9 +1,16 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 public abstract class AgnosticSymbolType implements Comparable<AgnosticSymbolType> {
-    protected static String SEPSYMBOL = ".";
+    public static String SEPSYMBOL = ".";
     public abstract String toAgnosticString();
 
+    /**
+     * Required for the AgnosticSymbolTypeFactory
+     */
+    public AgnosticSymbolType() {
+    }
     /**
      * It orders element given the class name
      * @param other
@@ -34,4 +41,10 @@ public abstract class AgnosticSymbolType implements Comparable<AgnosticSymbolTyp
     public boolean equals(Object obj) {
         return this.getClass() == obj.getClass();
     }
+
+    /**
+     * The meaning depends on the agnostic type
+     * @param string
+     */
+    public abstract void setSubtype(String string) throws IM3Exception;
 }

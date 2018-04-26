@@ -15,9 +15,14 @@ public class Clef extends AgnosticSymbolType {
     }
 
     /**
-     * For use in automata
+     * For use in automata and in factory
      */
     public Clef() {
+    }
+
+    @Override
+    public void setSubtype(String string) {
+        clefNote = ClefNote.valueOf(string);
     }
 
     public ClefNote getClefNote() {

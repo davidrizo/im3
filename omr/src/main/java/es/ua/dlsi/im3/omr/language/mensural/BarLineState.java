@@ -7,7 +7,6 @@ import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.language.mensural.states.OMRState;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 public class BarLineState extends OMRState {
     public BarLineState(int number) {

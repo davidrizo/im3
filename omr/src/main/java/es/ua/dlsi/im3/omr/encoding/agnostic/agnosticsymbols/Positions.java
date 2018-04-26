@@ -9,4 +9,8 @@ public enum Positions {
     public String toAgnosticString() {
         return this.name();
     }
+
+    public static Positions parseAgnosticString(String string) {
+        return Positions.valueOf(string);
+    }
 }

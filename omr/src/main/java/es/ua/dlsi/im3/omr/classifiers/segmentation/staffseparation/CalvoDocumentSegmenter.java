@@ -2,18 +2,12 @@ package es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.classifiers.segmentation.IDocumentSegmenter;
-import es.ua.dlsi.im3.omr.model.pojo.Page;
-import es.ua.dlsi.im3.omr.model.pojo.Region;
-import es.ua.dlsi.im3.omr.model.pojo.RegionType;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
+import es.ua.dlsi.im3.omr.model.entities.Region;
+import es.ua.dlsi.im3.omr.model.entities.RegionType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +20,9 @@ import java.util.logging.Logger;
 public class CalvoDocumentSegmenter implements IDocumentSegmenter {
 
     private static boolean libraryLoaded = false;
+    private final Mat imageMat;
 
-    public CalvoDocumentSegmenter()  {
+    public CalvoDocumentSegmenter(File imageFile) throws IM3Exception {
         synchronized (PageSplitting.class) {
             if (!libraryLoaded) {
                 // OpenCV 3.2 Resources downloaded from http://www.magicandlove.com/blog/2017/03/02/opencv-3-2-java-build/
@@ -42,6 +37,8 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
                 libraryLoaded = true;
             }
         }
+        
+        imageMat = readImage(imageFile.getAbsolutePath());
     }
 
     private Mat readImage(String filename) throws IM3Exception {
@@ -57,9 +54,8 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
         return score;
     }
 
-    public int findPagesDivisionPoint(URL imageFile) throws IM3Exception {
-        Mat score = readImage(imageFile.getFile());
-        return findPagesDivisionPoint(score);
+    public int findPagesDivisionPoint() throws IM3Exception {
+        return findPagesDivisionPoint(imageMat);
     }
 
     public int findPagesDivisionPoint(Mat score) throws IM3Exception {
@@ -68,25 +64,19 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
         return pageDivisionPoint;
     }
 
-    @Override
-    public List<Region> segment(URL imageFile) throws IM3Exception {
-        Mat score = readImage(imageFile.getFile());
-
-        // first split into pages
-        int pageDivisionPoint = findPagesDivisionPoint(score);
+    public List<Region> segment() throws IM3Exception {
+        return segment(0, imageMat.cols());
+    }
+    /**
+     * @param fromCol Pixel column
+     * @param toCol Pixel column
+     * @return
+     * @throws IM3Exception
+     */
+    public List<Region> segment(int fromCol, int toCol) throws IM3Exception {
+        // first split into images
         List<Region> result = new ArrayList<>();
-
-        if (pageDivisionPoint == 0 || pageDivisionPoint >= score.width()-1) {
-            Logger.getLogger(CalvoDocumentSegmenter.class.getName()).log(Level.INFO, "Found 1 page");
-
-            fillRegions(result, score, 0, score.cols());
-
-        } else {
-            Logger.getLogger(CalvoDocumentSegmenter.class.getName()).log(Level.INFO, "Found 2 pages, division point at col {0}", pageDivisionPoint);
-            fillRegions(result, score, 0, pageDivisionPoint);
-            fillRegions(result, score, pageDivisionPoint, score.cols());
-        }
-
+        fillRegions(result, imageMat, fromCol, toCol);
         return result;
     }
 
@@ -98,7 +88,7 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
      * @param fromCol
      * @param toCol Not incuded
      */
-    private void fillRegions(List<Region> result, Mat score, int fromCol, int toCol) {
+    private void fillRegions(List<Region> result, Mat score, int fromCol, int toCol) throws IM3Exception {
         StaffSplitting staffSplitting = new StaffSplitting();
         Mat subscore = score.colRange(fromCol, toCol);
         List<Integer> divisionPoints = staffSplitting.run(score);
@@ -120,7 +110,7 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
             return;
         }
 
-        CalvoDocumentSegmenter calvoDocumentSegmenter = new CalvoDocumentSegmenter();
-        calvoDocumentSegmenter.segment(new File(args[0]).toURI().toURL());
+        CalvoDocumentSegmenter calvoDocumentSegmenter = new CalvoDocumentSegmenter(new File(args[0]));
+        calvoDocumentSegmenter.segment();
     }
 }

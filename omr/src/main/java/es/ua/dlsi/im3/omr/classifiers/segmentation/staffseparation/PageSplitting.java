@@ -1,7 +1,9 @@
 package es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation;
 
+import java.io.File;
 import java.util.List;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -92,7 +94,7 @@ public class PageSplitting {
 	}
 
     /**
-     * It returns two pages
+     * It returns two images
      * @param original
      * @return
      */

@@ -171,7 +171,7 @@ public abstract class XMLSAXImporter {
 
 
     protected void showUnimplemented(String element) {
-        Logger.getLogger(XMLSAXScoreSongImporter.class.getName()).log(Level.INFO, "Unimplemented element {0}", element);
+        Logger.getLogger(XMLSAXScoreSongImporter.class.getName()).log(Level.WARNING, "Unimplemented element {0}", element);
     }
 
     protected String getElementContentFor(String expectedElement) throws ImportException {

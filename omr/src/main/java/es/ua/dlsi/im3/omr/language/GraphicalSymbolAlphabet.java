@@ -1,11 +1,8 @@
 package es.ua.dlsi.im3.omr.language;
 
 import es.ua.dlsi.im3.core.adt.dfa.Alphabet;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 
 public class GraphicalSymbolAlphabet extends Alphabet<AgnosticSymbolType> {
     public GraphicalSymbolAlphabet() {

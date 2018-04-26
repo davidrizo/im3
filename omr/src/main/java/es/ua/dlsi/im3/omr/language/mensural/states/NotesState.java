@@ -10,8 +10,6 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.language.modern.states.AccNoteState;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 // TODO: 5/10/17 Mirar si podemos compartir algo con modern 
 public class NotesState extends OMRState {

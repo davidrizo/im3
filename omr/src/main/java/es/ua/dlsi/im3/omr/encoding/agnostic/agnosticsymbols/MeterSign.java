@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 
@@ -16,10 +17,15 @@ public class MeterSign extends AgnosticSymbolType {
     }
 
     /**
-     * For using it in automata
+     * For using it in automata and factory
      */
     public MeterSign() {
 
+    }
+
+    @Override
+    public void setSubtype(String string) throws IM3Exception {
+        meterSigns = MeterSigns.parseAgnosticString(string);
     }
 
     public MeterSigns getMeterSigns() {

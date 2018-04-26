@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 public class Note extends AgnosticSymbolType {
@@ -13,6 +14,11 @@ public class Note extends AgnosticSymbolType {
 
     public Note() {
 
+    }
+
+    @Override
+    public void setSubtype(String string) throws IM3Exception {
+        durationSpecification = NoteDurationSpecificationFactory.parseString(string);
     }
 
     public INoteDurationSpecification getDurationSpecification() {

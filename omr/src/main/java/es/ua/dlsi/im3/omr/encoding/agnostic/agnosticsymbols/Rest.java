@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 /**
@@ -16,6 +17,11 @@ public class Rest extends AgnosticSymbolType {
 
     public Rest() {
 
+    }
+
+    @Override
+    public void setSubtype(String string) throws IM3Exception {
+        restFigures = RestFigures.parseAgnosticString(string);
     }
 
     public RestFigures getRestFigures() {

@@ -12,7 +12,7 @@ public class PositionInStaff implements Comparable<PositionInStaff> {
     /**
      * 0 for bottom line, -1 for space under bottom line, 1 for space above bottom line
      */
-    final int lineSpace;
+    private final int lineSpace;
 
     public PositionInStaff(int lineSpace) {
         this.lineSpace = lineSpace;

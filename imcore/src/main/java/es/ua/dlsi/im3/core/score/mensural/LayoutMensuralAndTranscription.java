@@ -110,7 +110,7 @@ public class LayoutMensuralAndTranscription {
         System.out.println("Done!");
 
 
-        // Generate pages for all parts
+        // Generate images for all parts
         String svgFileName = FileUtils.getFileWithoutPathOrExtension(svgHorizontalFile);
         for (ScorePart part: mensural.getParts()) {
             String partSVGNamePrefix = svgFileName + "_" + FileUtils.leaveValidCaracters(part.getName());

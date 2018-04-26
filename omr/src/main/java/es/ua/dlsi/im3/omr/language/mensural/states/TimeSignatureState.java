@@ -7,12 +7,9 @@ import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.TimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Digit;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.MeterSign;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 public class TimeSignatureState extends OMRState {
     public TimeSignatureState(int number) {

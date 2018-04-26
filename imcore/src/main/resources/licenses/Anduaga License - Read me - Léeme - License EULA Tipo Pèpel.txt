@@ -1,6 +1,68 @@
 ------------------------
 
-ENGLISH > Tipo Pèpel End User License Agreement (EULA)By selecting the "Accept License Agreement" button, you are agreeing to be bound by the terms of this Agreement. This Agreement, in conjunction with the receipt that accompanies each purchase from Tipo Pèpel, constitutes the complete agreement between you and Tipo Pèpel.1. Allowed usesYou may use the licensed fonts to create images on any surface such as computer screens, paper, web pages, photographs, movie credits, printed material, T-shirts, and other surfaces where the image is a fixed size.You may use the licensed fonts to create EPS files or other scalable drawings provided that such files are only used by the household or company licensing the font.2. Number of usersThe maximum number of simultaneous users per SINGLE license is 1.Multiple user license purchasers will find total number of users applicable to them specified in the receipt generated for them at time of purchase.All users must belong to the font license purchaser's same business entity (company), non-profit organization, or household.3. Third partiesYou may temporarily provide the font to a graphic designer, printer or other service bureau that is working on your behalf ONLY IF THEY AGREE TO USE THE FONT EXCLUSIVELY FOR YOUR WORK, agree to the terms of this license, and retain no copies of the font on completion of the work.You may not provide the font or make it accessible to any other third parties.4. EmbeddingYou may embed the licensed fonts into any document (including PDF and Flash) you send to third parties only for use in executing your work. Such documents may be viewed and printed (but not edited) by the recipients.You may not under any circumstances embed the licensed fonts into software or hardware products in which the fonts will be used by the purchasers of such products. Such use requires a different license which may be offered by Tipo Pèpel through Tipo Pèpel. Please contact josep.patau@antaviana.cat for further information.5. ModificationsYou may import characters from the font as graphical objects into a drawing program and modify such graphical objects.You may not modify, adapt, translate, reverse engineer, decompile, disassemble, or create derivative works based on the licensed font itself without Tipo Pèpel's prior written consent.You may modify licensed fonts for your own purposes only IF YOU GET PERMISSION FROM Tipo Pèpel. Tipo Pèpel WILL SURELY GRANT ANY REASONABLE REQUEST FROM ANY LICENSED USER who can verify purchase*. However, the copyright remains with Tipo Pèpel, and the number of computers covered by the license remains the same--the EULA governing the original font also governs the font you have modified. You may not commission a third party to modify the fonts without first gaining permission from Tipo Pèpel. You may not sell or give away modified versions of the fonts. You may not add new users to your modified font without purchasing additional licenses from Tipo Pèpel. To request modifications or to register your font, please e-mail "josep.patau@antaviana.cat" .Making derivative works or extending font families by adding variations such as weights, widths, or slope variations, is not permitted. If additional variations are required, contact Tipo Pèpel.6. CopyrightThe font and the accompanying materials are copyrighted and contain proprietary information and trade secrets belonging to Josep Patau Bellart, owner of the font. Unauthorized copying of the Product even if modified, merged, or included with other software, or of the written materials, is expressly forbidden. You may be held legally responsible for any infringement of Tipo Pèpel's intellectual property rights that is caused or encouraged by your failure to abide by the terms of this Agreement.7. TerminationThis Agreement is effective until terminated. This Agreement will terminate automatically without notice from Tipo Pèpel or Tipo Pèpel if you fail to comply with any provision contained herein. Upon termination, you must destroy the written materials, the Product, and all copies of them, in part and in whole, including modified copies, if any.8. Product UpgradesTipo Pèpel or Tipo Pèpel may, from time to time, update the Product. Product upgrade pricing may apply but only in cases where additional features or glyphs have added to the value of the font. There will never be a charge for corrections or fixes to the font as originally licensed to the customer. Upgrades with new added value will have a title designation besides the version number to distinguish it from prior versions. (i. e., Pro, Nova, Greek)9. Disclaimer and Limited WarrantyTipo Pèpel warrants the Product to be free from defects in materials and workmanship under normal use for a period of twenty one (21) days from the date of delivery as shown on your receipt. Tipo Pèpel' entire liability and your exclusive remedy as to a defective product shall be, at Tipo Pèpel' option, either return of purchase price or replacement of any such product that is returned to Tipo Pèpel with a copy of the invoice. Tipo Pèpel shall have no responsibility to replace the product or refund the purchase price if failure results from accident, abuse or misapplication, or if any product is lost or damaged due to theft, fire, or negligence. Any replacement product will be warranted for twenty one (21) days. This warranty gives you specific legal rights. You may have other rights, which vary from state to state.EXCEPT AS EXPRESSLY PROVIDED ABOVE, THE PRODUCT, IS PROVIDED "AS IS". NEITHER Tipo Pèpel NOR Tipo Pèpel MAKES ANY WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.The entire risk as to the quality and performance of the Product rests upon you. Neither Tipo Pèpel nor Tipo Pèpel warrants that the functions contained in the Product will meet your requirements or that the operation of the software will be uninterrupted or error free.NEITHER Tipo Pèpel SHALL BE LIABLE FOR ANY DIRECT, INDIRECT, CONSEQUENTIAL, OR INCIDENTAL DAMAGES (INCLUDING DAMAGES FROM LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF BUSINESS INFORMATION, AND THE LIKE) ARISING OUT OF THE USE OF OR INABILITY TO USE THE PRODUCT EVEN IF Tipo Pèpel OR Tipo Pèpel HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.Because some states do not allow the exclusion or limitation of liability for consequential or incidental damages, the above limitation may not apply to you.
+ENGLISH > Tipo Pèpel End User License Agreement (EULA)
+
+By selecting the "Accept License Agreement" button, you are agreeing to be bound by the terms of this Agreement. This Agreement, in conjunction with the receipt that accompanies each purchase from Tipo Pèpel, constitutes the complete agreement between you and Tipo Pèpel.
+
+1. Allowed uses
+
+You may use the licensed fonts to create images on any surface such as computer screens, paper, web images, photographs, movie credits, printed material, T-shirts, and other surfaces where the image is a fixed size.
+
+You may use the licensed fonts to create EPS files or other scalable drawings provided that such files are only used by the household or company licensing the font.
+
+2. Number of users
+
+The maximum number of simultaneous users per SINGLE license is 1.
+
+Multiple user license purchasers will find total number of users applicable to them specified in the receipt generated for them at time of purchase.
+
+All users must belong to the font license purchaser's same business entity (company), non-profit organization, or household.
+
+3. Third parties
+
+You may temporarily provide the font to a graphic designer, printer or other service bureau that is working on your behalf ONLY IF THEY AGREE TO USE THE FONT EXCLUSIVELY FOR YOUR WORK, agree to the terms of this license, and retain no copies of the font on completion of the work.
+
+You may not provide the font or make it accessible to any other third parties.
+
+4. Embedding
+
+You may embed the licensed fonts into any document (including PDF and Flash) you send to third parties only for use in executing your work. Such documents may be viewed and printed (but not edited) by the recipients.
+
+You may not under any circumstances embed the licensed fonts into software or hardware products in which the fonts will be used by the purchasers of such products. Such use requires a different license which may be offered by Tipo Pèpel through Tipo Pèpel. Please contact josep.patau@antaviana.cat for further information.
+
+5. Modifications
+
+You may import characters from the font as graphical objects into a drawing program and modify such graphical objects.
+
+You may not modify, adapt, translate, reverse engineer, decompile, disassemble, or create derivative works based on the licensed font itself without Tipo Pèpel's prior written consent.
+
+You may modify licensed fonts for your own purposes only IF YOU GET PERMISSION FROM Tipo Pèpel. Tipo Pèpel WILL SURELY GRANT ANY REASONABLE REQUEST FROM ANY LICENSED USER who can verify purchase*. However, the copyright remains with Tipo Pèpel, and the number of computers covered by the license remains the same--the EULA governing the original font also governs the font you have modified. You may not commission a third party to modify the fonts without first gaining permission from Tipo Pèpel. You may not sell or give away modified versions of the fonts. You may not add new users to your modified font without purchasing additional licenses from Tipo Pèpel. To request modifications or to register your font, please e-mail "josep.patau@antaviana.cat" .
+
+Making derivative works or extending font families by adding variations such as weights, widths, or slope variations, is not permitted. If additional variations are required, contact Tipo Pèpel.
+
+6. Copyright
+
+The font and the accompanying materials are copyrighted and contain proprietary information and trade secrets belonging to Josep Patau Bellart, owner of the font. Unauthorized copying of the Product even if modified, merged, or included with other software, or of the written materials, is expressly forbidden. You may be held legally responsible for any infringement of Tipo Pèpel's intellectual property rights that is caused or encouraged by your failure to abide by the terms of this Agreement.
+
+7. Termination
+
+This Agreement is effective until terminated. This Agreement will terminate automatically without notice from Tipo Pèpel or Tipo Pèpel if you fail to comply with any provision contained herein. Upon termination, you must destroy the written materials, the Product, and all copies of them, in part and in whole, including modified copies, if any.
+
+8. Product Upgrades
+
+Tipo Pèpel or Tipo Pèpel may, from time to time, update the Product. Product upgrade pricing may apply but only in cases where additional features or glyphs have added to the value of the font. There will never be a charge for corrections or fixes to the font as originally licensed to the customer. Upgrades with new added value will have a title designation besides the version number to distinguish it from prior versions. (i. e., Pro, Nova, Greek)
+
+9. Disclaimer and Limited Warranty
+
+Tipo Pèpel warrants the Product to be free from defects in materials and workmanship under normal use for a period of twenty one (21) days from the date of delivery as shown on your receipt. Tipo Pèpel' entire liability and your exclusive remedy as to a defective product shall be, at Tipo Pèpel' option, either return of purchase price or replacement of any such product that is returned to Tipo Pèpel with a copy of the invoice. Tipo Pèpel shall have no responsibility to replace the product or refund the purchase price if failure results from accident, abuse or misapplication, or if any product is lost or damaged due to theft, fire, or negligence. Any replacement product will be warranted for twenty one (21) days. This warranty gives you specific legal rights. You may have other rights, which vary from state to state.
+
+EXCEPT AS EXPRESSLY PROVIDED ABOVE, THE PRODUCT, IS PROVIDED "AS IS". NEITHER Tipo Pèpel NOR Tipo Pèpel MAKES ANY WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+The entire risk as to the quality and performance of the Product rests upon you. Neither Tipo Pèpel nor Tipo Pèpel warrants that the functions contained in the Product will meet your requirements or that the operation of the software will be uninterrupted or error free.
+
+NEITHER Tipo Pèpel SHALL BE LIABLE FOR ANY DIRECT, INDIRECT, CONSEQUENTIAL, OR INCIDENTAL DAMAGES (INCLUDING DAMAGES FROM LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF BUSINESS INFORMATION, AND THE LIKE) ARISING OUT OF THE USE OF OR INABILITY TO USE THE PRODUCT EVEN IF Tipo Pèpel OR Tipo Pèpel HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+Because some states do not allow the exclusion or limitation of liability for consequential or incidental damages, the above limitation may not apply to you.
 
 --------------------------------
 
@@ -66,4 +128,4 @@ Todo el riesgo en cuanto a la calidad y rendimiento del producto reposa sobre vo
 
 NI Tipo Pèpel NI Tipo Pèpel SERÁN RESPONSABLES POR NINGÚN DAÑO DIRECTO, INDIRECTO, CONSECUENTE O INCIDENTAL (INCLUYENDO DAÑOS POR PÉRDIDA DE BENEFICIOS, INTERRUPCIÓN DEL NEGOCIO, PÉRDIDA DE INFORMACIÓN COMERCIAL Y SIMILARES) DERIVADOS DEL USO O IMPOSIBILIDAD DE USO DEL PRODUCTO, AUNQUE Tipo Pèpel O Tipo Pèpel HA SIDO ADVERTIDO DE LA POSIBILIDAD DE TALES DAÑOS.
 
-Debido a que algunos estados no permiten la exclusión o limitación de responsabilidad por daños consecuenciales o incidentales, la limitación anterior puede no ser aplicable en su caso.
+Debido a que algunos estados no permiten la exclusión o limitación de responsabilidad por daños consecuenciales o incidentales, la limitación anterior puede no ser aplicable en su caso.

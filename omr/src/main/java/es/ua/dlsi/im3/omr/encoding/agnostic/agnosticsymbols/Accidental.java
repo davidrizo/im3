@@ -16,7 +16,11 @@ public class Accidental extends AgnosticSymbolType {
 
 
     public Accidental() {
+    }
 
+    @Override
+    public void setSubtype(String string) {
+        accidentals = Accidentals.parseAgnosticString(string);
     }
 
     public Accidentals getAccidentals() {

@@ -15,4 +15,5 @@ public enum BeamType {
     public String toAgnosticString() {
         return this.agnosticString;
     }
+
 }

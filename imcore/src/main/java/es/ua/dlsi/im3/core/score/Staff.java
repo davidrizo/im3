@@ -949,6 +949,8 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
             throw new IM3Exception("System break has not time set");
         }
         systemBreaks.put(sb.getTime(), sb);
+        sb.setStaff(this);
+        this.coreSymbols.add(sb);
     }
 
     public HashMap<Time, SystemBreak> getSystemBreaks() {

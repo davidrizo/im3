@@ -40,6 +40,12 @@ public class DisplacedDotTest {
         assertEquals(11, layoutSymbolsInStaff.size());
 
         ArrayList<LayoutCoreSymbolInStaff> v = new ArrayList<>(layoutSymbolsInStaff);
+        int i=0;
+        for (LayoutCoreSymbolInStaff layoutCoreSymbolInStaff: v) {
+            System.out.println("#" + i + " " + layoutCoreSymbolInStaff);
+            i++;
+        }
+
         assertTrue(v.get(0) instanceof LayoutCoreClef);
         assertTrue(v.get(1) instanceof LayoutCoreKeySignature);
         assertTrue(v.get(2) instanceof LayoutCoreTimeSignature);
@@ -54,7 +60,4 @@ public class DisplacedDotTest {
 
         //TODO Comprobar posiciones relativas entre barlines
     }
-
-
-
 }

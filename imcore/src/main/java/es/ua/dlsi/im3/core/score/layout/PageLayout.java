@@ -77,7 +77,7 @@ public class PageLayout extends ScoreLayout {
         if (includePageAndSystemBreaks) {
             for (SystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
                 // use the first layout font, it can be any one
-                LayoutSystemBreak lsb = new LayoutSystemBreak(layoutFonts.values().iterator().next(), sb);
+                LayoutCoreSystemBreak lsb = new LayoutCoreSystemBreak(layoutFonts.values().iterator().next(), sb);
                 simultaneities.add(lsb);
             }
             // TODO: 20/11/17 He quitado los page breaks

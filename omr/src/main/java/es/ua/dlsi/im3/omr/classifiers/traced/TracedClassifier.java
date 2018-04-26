@@ -21,6 +21,8 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.model.entities.Point;
+import es.ua.dlsi.im3.omr.model.entities.Stroke;
 
 import java.io.File;
 import java.io.IOException;

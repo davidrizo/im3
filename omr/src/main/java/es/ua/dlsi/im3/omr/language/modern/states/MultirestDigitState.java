@@ -5,8 +5,6 @@ import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Digit;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 import java.util.ArrayList;
 
@@ -30,7 +28,7 @@ public class MultirestDigitState extends OMRState {
         //TODO 13/12/17 Implementar cantidad de compases de espera en onExit
     }
 
-    public void onExit(GraphicalToken token, State previousState, OMRTransduction transduction){
+    public void onExit(AgnosticSymbol token, State previousState, OMRTransduction transduction){
         //En futuras implementaciones agregaremos a la partitura la cantidad de compases
     }
 }

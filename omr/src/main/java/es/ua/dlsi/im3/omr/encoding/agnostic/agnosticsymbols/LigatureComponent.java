@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 //TODO
@@ -8,7 +9,15 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
  */
 public class LigatureComponent extends AgnosticSymbolType {
     private static final String LIGATURE = "ligature" + SEPSYMBOL;
-    private final NoteFigures figure;
+    private NoteFigures figure;
+
+    public LigatureComponent() {
+    }
+
+    @Override
+    public void setSubtype(String string) throws IM3Exception {
+        figure = NoteFigures.parseAgnosticString(string);
+    }
 
     public LigatureComponent(NoteFigures figures) {
         this.figure = figures;

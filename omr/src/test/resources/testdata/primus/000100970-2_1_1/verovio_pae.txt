@@ -1,0 +1,8 @@
+@start:000100970-2_1_1
+@clef:G-2
+@keysig:bBE
+@key:
+@timesig:2/4
+@data:{'8.B''6C}{'8B''6D'B}/{''GF+}4F{6ED}/q8D'4B8({''6EC'A})/
+@end:000100970-2_1_1
+

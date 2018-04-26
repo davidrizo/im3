@@ -942,7 +942,7 @@ public class XMLExporterImporterTest {
             assertSame(beams.get(2), beams.get(5));
 
             List<ITimedElementInStaff> coreSymbolsInStaff = song.getStaves().get(0).getCoreSymbolsOrdered();
-            assertEquals(10, coreSymbolsInStaff.size());
+            assertEquals(11, coreSymbolsInStaff.size()); // includes a system break
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());

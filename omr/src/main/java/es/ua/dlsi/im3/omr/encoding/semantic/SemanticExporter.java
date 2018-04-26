@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding.semantic;
 
 import es.ua.dlsi.im3.omr.encoding.Exporter;
-import es.ua.dlsi.im3.omr.model.pojo.SemanticSymbolEnum;
 
 /**
  * @author drizo
