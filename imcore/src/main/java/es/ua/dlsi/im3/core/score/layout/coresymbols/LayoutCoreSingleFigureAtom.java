@@ -165,9 +165,9 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         } else {
             double ydisplacement;
             if (stemUp) {
-                ydisplacement = LayoutConstants.SEPARATION_NOTE_SLUR;
+                ydisplacement = LayoutConstants.VERTICAL_SEPARATION_NOTE_SLUR;
             } else {
-                ydisplacement = -LayoutConstants.SEPARATION_NOTE_SLUR;
+                ydisplacement = -LayoutConstants.VERTICAL_SEPARATION_NOTE_SLUR;
             }
             Coordinate connectionPoint = new Coordinate(
                     notePitches.get(0).getNoteHeadPosition().getX(),

@@ -192,38 +192,42 @@ public abstract class ScoreLayout {
     }
 
     private void createLayoutSymbol(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, ITimedElementInStaff symbol) throws IM3Exception {
-        if (symbol instanceof CompoundAtom) {
-            for (Atom subatom : ((CompoundAtom) symbol).getAtoms()) {
-                createLayoutSymbol(coreSymbolsInStaff, subatom);
-            }
-        } else {
-            LayoutCoreSymbol layoutCoreSymbol = createLayoutCoreSymbol(symbol);
-
-            coreSymbolViews.put(symbol, layoutCoreSymbol);
-            if (layoutCoreSymbol.getComponents() != null) {
-                List<Component<LayoutCoreSymbol>> components = layoutCoreSymbol.getComponents();
-                for (Component<LayoutCoreSymbol> component : components) {
-                    coreSymbolViews.put(component.getModelElement(), component);
+        if (!skipSymbol(symbol)) {
+            if (symbol instanceof CompoundAtom) {
+                for (Atom subatom : ((CompoundAtom) symbol).getAtoms()) {
+                    createLayoutSymbol(coreSymbolsInStaff, subatom);
                 }
-            }
+            } else {
+                LayoutCoreSymbol layoutCoreSymbol = createLayoutCoreSymbol(symbol);
 
-            if (symbol instanceof ITimedSymbolWithConnectors) {
-                if (!(layoutCoreSymbol instanceof IConnectableWithSlurInStaff)) { // TODO: 31/10/17 Esto no está bien diseñado
-                    throw new IM3Exception("Design Inconsistency, " + layoutCoreSymbol + " should implement IConnectableWithSlurInStaff because "+ symbol + " is a ITimedSymbolWithConnectors");
+                coreSymbolViews.put(symbol, layoutCoreSymbol);
+                if (layoutCoreSymbol.getComponents() != null) {
+                    List<Component<LayoutCoreSymbol>> components = layoutCoreSymbol.getComponents();
+                    for (Component<LayoutCoreSymbol> component : components) {
+                        coreSymbolViews.put(component.getModelElement(), component);
+                    }
                 }
-                layoutConnectorEnds.put((ITimedSymbolWithConnectors)symbol, (IConnectableWithSlurInStaff)layoutCoreSymbol);
-            }
-            addCoreSymbolToSimultaneities(coreSymbolsInStaff, layoutCoreSymbol);
 
-            // now add the symbols dependant of the main symbol (e.g. displaced dot)
-            /*Collection<LayoutCoreSymbol> dependantSymbols = layoutCoreSymbol.getDependantCoreSymbols();
-            if (dependantSymbols != null) {
-                for (LayoutCoreSymbol ds : dependantSymbols) {
-                    addCoreSymbolToSimultaneities(coreSymbolsInStaff, ds);
+                if (symbol instanceof ITimedSymbolWithConnectors) {
+                    if (!(layoutCoreSymbol instanceof IConnectableWithSlurInStaff)) { // TODO: 31/10/17 Esto no está bien diseñado
+                        throw new IM3Exception("Design Inconsistency, " + layoutCoreSymbol + " should implement IConnectableWithSlurInStaff because " + symbol + " is a ITimedSymbolWithConnectors");
+                    }
+                    layoutConnectorEnds.put((ITimedSymbolWithConnectors) symbol, (IConnectableWithSlurInStaff) layoutCoreSymbol);
                 }
-            }*/
+                addCoreSymbolToSimultaneities(coreSymbolsInStaff, layoutCoreSymbol);
+
+                // now add the symbols dependant of the main symbol (e.g. displaced dot)
+                /*Collection<LayoutCoreSymbol> dependantSymbols = layoutCoreSymbol.getDependantCoreSymbols();
+                if (dependantSymbols != null) {
+                    for (LayoutCoreSymbol ds : dependantSymbols) {
+                        addCoreSymbolToSimultaneities(coreSymbolsInStaff, ds);
+                    }
+                }*/
+            }
         }
     }
+
+    protected abstract boolean skipSymbol(ITimedElementInStaff symbol);
 
     private void addCoreSymbolToSimultaneities(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, LayoutCoreSymbol layoutCoreSymbol) throws IM3Exception {
         //createLayout(symbol, layoutStaff);

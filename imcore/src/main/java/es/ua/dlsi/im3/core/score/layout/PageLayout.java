@@ -31,6 +31,11 @@ public class PageLayout extends ScoreLayout {
     }
 
     @Override
+    protected boolean skipSymbol(ITimedElementInStaff symbol) {
+        return false;
+    }
+
+    @Override
     protected void createConnectors() throws IM3Exception {
         super.createConnectors();
         System.err.println("TO-DO CONNECTORS IN PAGE LAYOUT"); // TODO: 1/10/17 Connectors en Page Layout

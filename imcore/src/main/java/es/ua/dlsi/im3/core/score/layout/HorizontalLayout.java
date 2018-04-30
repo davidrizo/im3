@@ -35,6 +35,11 @@ public class HorizontalLayout extends ScoreLayout {
     }
 
     @Override
+    protected boolean skipSymbol(ITimedElementInStaff symbol) {
+        return symbol instanceof SystemBreak || symbol instanceof PageBreak;
+    }
+
+    @Override
     protected void createConnectors() throws IM3Exception {
         super.createConnectors();
     }

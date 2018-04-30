@@ -129,6 +129,9 @@ public class MensuralToModern {
                 convert(modernStaff, modernLayer, (Atom) symbol, interval);
             } else if (symbol instanceof DisplacedDot) {
                 // no-op It is never displaced, if always accompanies the pitch
+            } else if (symbol instanceof SystemBreak) {
+                SystemBreak systemBreak = new SystemBreak(symbol.getTime(), ((SystemBreak) symbol).isManual());
+                modernStaff.addSystemBreak(systemBreak);
             } else if (symbol instanceof Custos) {
                 // no-op
             } else {

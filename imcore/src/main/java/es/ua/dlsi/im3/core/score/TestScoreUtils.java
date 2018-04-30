@@ -86,6 +86,7 @@ public class TestScoreUtils {
             SimpleNote noteA = (SimpleNote) atomA;
             SimpleNote noteB = (SimpleNote) atomB;
             assertEquals("Staff " + name + ", atom #" + i + ", pitch, expected = " + songTypeOfExpected, noteA.getPitch(), noteB.getPitch());
+            //assertEquals("Staff " + name + ", atom #" + i + ", pitch, expected = " + songTypeOfExpected, noteA.getAtomPitch().getWrittenExplicitAccidental().
             assertEquals("Staff " + name + ", atom #" + i + ", optional accidental, expected = " + songTypeOfExpected, noteA.getAtomPitch().isOptionalAccidental(), noteB.getAtomPitch().isOptionalAccidental());
             assertEquals("Staff " + name + ", atom #" + i + ", tied from previous, expected = " + songTypeOfExpected, noteA.getAtomPitch().isTiedFromPrevious(), noteB.getAtomPitch().isTiedFromPrevious());
             assertEquals("Staff " + name + ", atom #" + i + ", colored, expected = " + songTypeOfExpected, noteA.getAtomFigure().isColored(), noteB.getAtomFigure().isColored());
