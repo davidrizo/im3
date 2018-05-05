@@ -53,7 +53,7 @@
                                 <note dur="semiminima" oct="4" pname="d" stem.dir="up"/>
                                 <note dur="semiminima" oct="4" pname="c" stem.dir="up"/>
                                 <note dur="minima" oct="3" pname="b" stem.dir="up"/>
-                                <note dur="semibrevis" oct="4" pname="c" stem.dir="up"/>
+                                <note dur="semibrevis" oct="4" pname="c"/>
                                 <note dur="minima" oct="4" pname="d" stem.dir="up"/>
                                 <note dur="brevis" oct="4" pname="e"/>
                             </layer>
