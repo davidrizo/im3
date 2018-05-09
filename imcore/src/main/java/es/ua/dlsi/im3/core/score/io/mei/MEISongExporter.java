@@ -1213,7 +1213,7 @@ public class MEISongExporter implements ISongExporter {
                 params.add(generateAccidental(pitchAccidental));
             }
             addToPreviousAccidentals = true;
-        } else if (pitchAccidental != previousAccidental) {
+        } else if (pitchAccidental != previousAccidental && !(pitchAccidental == null && previousAccidental == Accidentals.NATURAL || pitchAccidental == Accidentals.NATURAL && previousAccidental == null)) {
             if (atomPitch.isHideAccidental()) {
                 params.add("accid.ges");
             } else {
