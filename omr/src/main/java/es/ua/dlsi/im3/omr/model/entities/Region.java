@@ -31,6 +31,18 @@ public class Region implements Comparable<Region> {
     SortedSet<Symbol> symbols;
 
     public Region(RegionType regionType, double fromX, double fromY, double toX, double toY) throws IM3Exception {
+        if (fromX < 0) {
+            throw new IM3Exception("Cannot build a region with fromX (" + fromX + ") < 0");
+        }
+        if (fromY < 0) {
+            throw new IM3Exception("Cannot build a region with fromY (" + fromY + ") < 0");
+        }
+        if (toX <= fromX) {
+            throw new IM3Exception("Cannot build a region with toX (" + toX + ") <= fromX (" + fromX + ")");
+        }
+        if (toY <= fromY) {
+            throw new IM3Exception("Cannot build a region with toY (" + toY + ") <= fromY (" + fromY + ")");
+        }
         boundingBox = new BoundingBoxYX(fromX, fromY, toX, toY);
         this.regionType = regionType;
         this.symbols = new TreeSet<>();

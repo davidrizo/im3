@@ -1,11 +1,33 @@
 package es.ua.dlsi.im3.omr.model.entities;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.utils.TimeUtils;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An image file
  */
 public class Image implements Comparable<Image> {
+    /**
+     * Width of the scaled image
+     */
+    public final static int RESIZE_W = 30;
+    /**
+     * Height of the scaled image
+     */
+    public final static int RESIZE_H = 30;
+
     /**
      * Image name, relative to the path where images are saved
      */
@@ -88,6 +110,4 @@ public class Image implements Comparable<Image> {
         }
         return diff;
     }
-
-
 }

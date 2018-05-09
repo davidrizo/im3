@@ -8,6 +8,8 @@ import java.util.*;
  * We use a parallel hierarchy just for saving using XStream making easier to it this way
  */
 public class Project {
+    public static final String IMAGES_FOLDER = "images";
+
     /**
      * Name of the project
      */

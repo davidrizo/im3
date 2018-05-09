@@ -1,13 +1,17 @@
 package es.ua.dlsi.im3.omr.encoding;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.omr.encoding.Encoder;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticExporter;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticImporter;
+import org.apache.commons.math3.stat.inference.TestUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,6 +19,15 @@ import java.io.File;
 import static org.junit.Assert.*;
 
 public class PrIMuSSemanticAgnosticExporterTest {
+    static TestScoreUtils.Configuration testScoreConfiguration;
+
+    @BeforeClass
+    public static void init() {
+        testScoreConfiguration = new TestScoreUtils.Configuration();
+        testScoreConfiguration.setAssertStems(false);
+        testScoreConfiguration.setAssertExplicitAccidentals(false);
+    }
+
     void test(AgnosticVersion agnosticVersion, String filename, String expectedAgnostic, String expectedSemantic) throws IM3Exception {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile(filename);
@@ -23,12 +36,27 @@ public class PrIMuSSemanticAgnosticExporterTest {
         encoder.encode(song);
 
         String agnosticStringFormat = new AgnosticExporter(agnosticVersion).export(encoder.getAgnosticEncoding());
-        assertEquals(expectedAgnostic, agnosticStringFormat);
+        assertEquals("Agnostic", expectedAgnostic, agnosticStringFormat);
 
         String semanticStringFormat = new SemanticExporter().export(encoder.getSemanticEncoding());
         System.out.println(filename);
         System.out.println(semanticStringFormat);
         assertEquals(expectedSemantic, semanticStringFormat);
+
+        // replace all "unknown" key signatures for Major
+        for (Staff staff: song.getStaves()) {
+            for (KeySignature keySignature: staff.getKeySignatures()) {
+                if (keySignature.getInstrumentKey().getMode() == Mode.UNKNOWN) {
+                    Key newKey = new Key(keySignature.getInstrumentKey().getFifths(), Mode.MAJOR);
+                    keySignature.getInstrumentKey().overwriteWith(newKey);
+                }
+            }
+        }
+
+        SemanticImporter semanticImporter = new SemanticImporter();
+        ScoreSong importedSong = semanticImporter.importSong(semanticStringFormat + "\n");
+
+        TestScoreUtils.checkEqual("mei", song, "semantic", importedSong, testScoreConfiguration);
 
     }
     @Test

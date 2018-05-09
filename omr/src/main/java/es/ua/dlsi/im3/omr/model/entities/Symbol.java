@@ -44,6 +44,19 @@ public class Symbol implements Comparable<Symbol> {
     }
 
     public Symbol(AgnosticSymbol symbolType, double fromX, double fromY, double toX, double toY) throws IM3Exception {
+        if (fromX < 0) {
+            throw new IM3Exception("Cannot build a symbol with fromX (" + fromX + ") < 0");
+        }
+        if (fromY < 0) {
+            throw new IM3Exception("Cannot build a symbol with fromY (" + fromY + ") < 0");
+        }
+        if (toX <= fromX) {
+            throw new IM3Exception("Cannot build a symbol with toX (" + toX + ") <= fromX (" + fromX + ")");
+        }
+        if (toY <= fromY) {
+            throw new IM3Exception("Cannot build a symbol with toY (" + toY + ") <= fromY (" + fromY + ")");
+        }
+
         this.agnosticSymbol = symbolType;
         boundingBox = new BoundingBoxXY(fromX, fromY, toX, toY);
     }

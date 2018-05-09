@@ -56,7 +56,7 @@ public class Calco2MuretXML {
         System.out.println("Done!");
     }
 
-    private Integer [] getRasterImage(Raster raster, BoundingBox boundingBox) {
+    /*private Integer [] getRasterImage(Raster raster, BoundingBox boundingBox) {
         int [] pixels = new int[raster.getWidth()*raster.getHeight()];
         raster.getPixels((int)boundingBox.getFromX(), (int)boundingBox.getFromY(), (int)boundingBox.getWidth(), (int)boundingBox.getHeight(), pixels);
         Integer [] result = new Integer[pixels.length];
@@ -64,7 +64,7 @@ public class Calco2MuretXML {
             result[i] = pixels[i];
         }
         return result;
-    }
+    }*/
 
     private void importFile(File imageFilesFolder, Project project, File input, int nimage, int expectedNPages) throws IOException, IM3Exception {
         System.out.println("Processing " + input.getName());
