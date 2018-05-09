@@ -1094,6 +1094,13 @@ public class MEISongExporter implements ISongExporter {
 				}*/
 				processPitchesParams(atomPitch, noteParams, atomFigure.getLayer());
 
+                if (atomPitch.getAtomFigure().getAtom() instanceof SimpleNote) {
+                    if (((SimpleNote) atomPitch.getAtomFigure().getAtom()).isGrace()) { //TODO Other types
+                        noteParams.add("grace");
+                        noteParams.add("unacc");
+                    }
+                }
+
                 if (atomPitch.getLyrics() == null || atomPitch.getLyrics().isEmpty()) {
                     XMLExporterHelper.startEnd(sb, tabs+1, "note", noteParams);
                 } else {
