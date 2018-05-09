@@ -28,12 +28,31 @@ public class Stem extends Component<LayoutCoreSingleFigureAtom> {
         to = new Coordinate(position.getX(), new CoordinateComponent(position.getY(), yDisplacement));
 
         line = new Line(this, InteractionElementType.stem, from, to);
-        if (stemUp) {
-            double xdisplacement = from.getX().getDisplacement()-1; // line.getWidth();// FIXME: 22/9/17 Based on line thickness
-            from.getX().setDisplacement(xdisplacement);
-            to.getX().setDisplacement(xdisplacement);
-        }
     }
+
+    public void changeStemDirection() {
+        line.getTo().setDisplacementY(line.getTo().getDisplacementY()*-1);
+    }
+
+    public void setXDisplacement(double stemXDisplacement) {
+        line.getFrom().setDisplacementX(stemXDisplacement);
+        line.getTo().setDisplacementX(stemXDisplacement);
+    }
+
+    public void setEndAbsoluteY(double toAbsoluteY) throws IM3Exception {
+        line.getTo().setDisplacementY(toAbsoluteY-line.getTo().getAbsoluteY());
+    }
+
+    public void setStartY(CoordinateComponent referenceY, double ydisplacement) {
+        line.getFrom().setReferenceY(referenceY);
+        line.getFrom().setDisplacementY(ydisplacement);
+    }
+
+    public void setEndY(CoordinateComponent referenceY, double ydisplacement) {
+        line.getTo().setReferenceY(referenceY);
+        line.getTo().setDisplacementY(ydisplacement);
+    }
+
 
     @Override
     public GraphicsElement getGraphics() {
@@ -44,12 +63,9 @@ public class Stem extends Component<LayoutCoreSingleFigureAtom> {
         return line.getTo();
     }
 
-    public void setReferenceY(CoordinateComponent stemYPosition) {
-        position.setReferenceY(stemYPosition);
-    }
-
     @Override
     protected void doLayout() throws IM3Exception {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
+
 }

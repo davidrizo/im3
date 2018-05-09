@@ -729,18 +729,32 @@ public class XMLExporterImporterTest {
             ScoreLayer layer = part.getUniqueVoice();
             assertEquals(-3, song.getUniqueKeyWithOnset(Time.TIME_ZERO).getFifths());
 
-            assertEquals(9, layer.getAtomPitches().size());
+            boolean testWrittenExplicit = layer.getAtomPitches().size() == 11;
+            if (!testWrittenExplicit) {
+                assertEquals(10, layer.getAtomPitches().size());
+            } // else it is 9 - // TODO: 30/4/18 El test de MusicXML sólo tiene 9 notas
             TreeSet<AtomPitch> pitches = layer.getAtomPitchesSortedByTime();
             List<PitchClasses> expectedPitchClasses = Arrays.asList(
                     PitchClasses.A_FLAT, PitchClasses.B_FLAT, PitchClasses.C, PitchClasses.D,
-                    PitchClasses.B, PitchClasses.C_SHARP, PitchClasses.C_SHARP, PitchClasses.B_FLAT,PitchClasses.B_FLAT
+                    PitchClasses.B, PitchClasses.C_SHARP, PitchClasses.C_SHARP, PitchClasses.B_FLAT,PitchClasses.B_FLAT, PitchClasses.G,
+                    PitchClasses.G_SHARP
                     );
 
             int i=0;
             for (AtomPitch atomPitch: pitches) {
-                assertEquals("Pitch #" + i, expectedPitchClasses.get(i).getPitchClass(), atomPitch.getScientificPitch().getPitchClass());
+                if (i<9 || testWrittenExplicit) { // MusicXML is not representing played != represented accidentals
+                    assertEquals("Pitch #" + i, expectedPitchClasses.get(i).getPitchClass(), atomPitch.getScientificPitch().getPitchClass());
+                }
+                if (i<9) {
+                    assertNull("Explicit written accidental of note #" + i, atomPitch.getWrittenExplicitAccidental());
+                } else {
+                    if (testWrittenExplicit && i==9) {
+                        assertEquals("Explicit written accidental of last note", Accidentals.SHARP, atomPitch.getWrittenExplicitAccidental());
+                    }
+                }
                 i++;
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -750,12 +764,13 @@ public class XMLExporterImporterTest {
     }
     @Test
     public void accidentals() throws Exception {
-        // in this file the pitches in key signature have the accid explicitly encoded
-        doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals.mei")));
-
         // in this file the pitches in key signature do not have the accid explicitly encoded
         doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals_non_explicit_accid.mei")));
 
+        // in this file the pitches in key signature have the accid explicitly encoded
+        doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals.mei")));
+
+        // TODO: 30/4/18 Incluir alteraciones escritas distintas de las interpretadas como en MEI (accid.ges = interpretadas, accid = escritas - nosotros usamos writtenExplicitAccidental para la impresa cuando es distinta de la interpretada)
         doTest(XMLExporterImporterTest::assertAccidentals, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/accidentals.xml")));
     }
 

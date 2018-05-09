@@ -4,18 +4,42 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 /**
  * @autor drizo
  */
 public class TestScoreUtils {
+    public static class Configuration {
+        boolean assertStems = true;
+        private boolean explicitAccidentals = true;
+
+        public void setAssertStems(boolean assertStems) {
+            this.assertStems = assertStems;
+        }
+
+        public void setAssertExplicitAccidentals(boolean b) {
+            this.explicitAccidentals = b;
+        }
+    }
+
     public static void checkEqual(String aType, ScoreSong a, String bType, ScoreSong b) throws IM3Exception {
+        checkEqual(aType, a, bType, b, new Configuration());
+    }
+    public static void checkEqual(String aType, ScoreSong a, String bType, ScoreSong b, Configuration configuration) throws IM3Exception {
         assertEquals("Staves", a.getStaves().size(), b.getStaves().size());
+
+        boolean justOneStaff = a.getStaves().size() == 1 && b.getStaves().size() == 1;
         for (Staff astaff: a.getStaves()) {
-            Staff bstaff = b.getStaffByName(astaff.getName());
-            if (bstaff == null) {
-                fail("No staff with name '" + astaff.getName() + "' found in " + bType);
+            Staff bstaff;
+            if (justOneStaff) {
+                bstaff = b.getStaves().get(0);
+            } else {
+                bstaff = b.getStaffByName(astaff.getName());
+                if (bstaff == null) {
+                    fail("No staff with name '" + astaff.getName() + "' found in " + bType);
+                }
             }
 
             assertEquals("Clefs", astaff.getClefs().size(), bstaff.getClefs().size());
@@ -61,7 +85,7 @@ public class TestScoreUtils {
             for (int i=0; i<astaff.getAtoms().size(); i++) {
                 Atom atomA = astaff.getAtoms().get(i);
                 Atom atomB = bstaff.getAtoms().get(i);
-                checkEqualAtom(astaff.getName(), aType, i, atomA, atomB);
+                checkEqualAtom(astaff.getName(), aType, i, atomA, atomB, configuration);
             }
         }
 
@@ -76,7 +100,7 @@ public class TestScoreUtils {
      * @param atomA
      * @param atomB
      */
-    private static void checkEqualAtom(String name, String songTypeOfExpected, int i, Atom atomA, Atom atomB) {
+    private static void checkEqualAtom(String name, String songTypeOfExpected, int i, Atom atomA, Atom atomB, Configuration configuration) {
         assertEquals("Staff " + name+ ", atom #" + i + ", atom class, expected = "+ songTypeOfExpected, atomA.getClass(), atomB.getClass());
 
         assertEquals("Staff " + name+ ", atom #" + i + ", onset, expected = "+ songTypeOfExpected, atomA.getTime(), atomB.getTime());
@@ -85,13 +109,29 @@ public class TestScoreUtils {
         if (atomA instanceof SimpleNote) {
             SimpleNote noteA = (SimpleNote) atomA;
             SimpleNote noteB = (SimpleNote) atomB;
-            assertEquals("Staff " + name + ", atom #" + i + ", pitch, expected = " + songTypeOfExpected, noteA.getPitch(), noteB.getPitch());
-            //assertEquals("Staff " + name + ", atom #" + i + ", pitch, expected = " + songTypeOfExpected, noteA.getAtomPitch().getWrittenExplicitAccidental().
-            assertEquals("Staff " + name + ", atom #" + i + ", optional accidental, expected = " + songTypeOfExpected, noteA.getAtomPitch().isOptionalAccidental(), noteB.getAtomPitch().isOptionalAccidental());
-            assertEquals("Staff " + name + ", atom #" + i + ", tied from previous, expected = " + songTypeOfExpected, noteA.getAtomPitch().isTiedFromPrevious(), noteB.getAtomPitch().isTiedFromPrevious());
-            assertEquals("Staff " + name + ", atom #" + i + ", colored, expected = " + songTypeOfExpected, noteA.getAtomFigure().isColored(), noteB.getAtomFigure().isColored());
+            String atomName = ", atom #" + i;
+            if (atomA.__getID() != null) {
+                atomName = atomName + ", ID=" + atomA.__getID();
+            }
+            assertEquals("Staff " + name + atomName+ ", pitch, expected = " + songTypeOfExpected, noteA.getPitch(), noteB.getPitch());
+            if (configuration.explicitAccidentals) {
+                if (noteA.getAtomPitch().getWrittenExplicitAccidental() == null) {
+                    assertNull("Staff " + name + atomName + ", written accidental should be null, expected " + songTypeOfExpected,
+                            noteB.getAtomPitch().getWrittenExplicitAccidental());
+                } else {
+                    assertEquals("Staff " + name + atomName + ", written accidental, expected = " + songTypeOfExpected,
+                            noteA.getAtomPitch().getWrittenExplicitAccidental(),
+                            noteB.getAtomPitch().getWrittenExplicitAccidental());
+                }
+            }
 
-            assertEquals("Staff " + name + ", atom #" + i + ", explicit stem, expected = " + songTypeOfExpected, noteA.getExplicitStemDirection(), noteB.getExplicitStemDirection());
+            assertEquals("Staff " + name + atomName+ ", optional accidental, expected = " + songTypeOfExpected, noteA.getAtomPitch().isOptionalAccidental(), noteB.getAtomPitch().isOptionalAccidental());
+            assertEquals("Staff " + name + atomName+ ", tied from previous, expected = " + songTypeOfExpected, noteA.getAtomPitch().isTiedFromPrevious(), noteB.getAtomPitch().isTiedFromPrevious());
+            assertEquals("Staff " + name + atomName+ ", colored, expected = " + songTypeOfExpected, noteA.getAtomFigure().isColored(), noteB.getAtomFigure().isColored());
+
+            if (configuration.assertStems) {
+                assertEquals("Staff " + name + atomName + ", explicit stem, expected = " + songTypeOfExpected, noteA.getExplicitStemDirection(), noteB.getExplicitStemDirection());
+            }
 
         } else if (atomA instanceof SimpleRest) {
             //no-op

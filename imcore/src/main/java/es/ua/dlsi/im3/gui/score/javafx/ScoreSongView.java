@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.gui.score.javafx;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
@@ -27,7 +26,7 @@ public class ScoreSongView {
     private ScoreLayout layout;
     InteractionPresenter interactionController;
 
-    public ScoreSongView(ScoreSong scoreSong, ScoreLayout layout) throws IM3Exception {
+    public ScoreSongView(ScoreLayout layout) throws IM3Exception {
         //layout = new HorizontalLayout(scoreSong, font, new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
         this.layout = layout;
         interactionController = new InteractionPresenter();

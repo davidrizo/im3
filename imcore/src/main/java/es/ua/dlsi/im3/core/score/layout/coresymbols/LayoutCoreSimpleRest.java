@@ -87,4 +87,18 @@ public class LayoutCoreSimpleRest extends LayoutCoreSymbolWithDuration<SimpleRes
         position.setReferenceY(layoutStaff.getYAtCenterLine());
         pictogram.getPosition().setReferenceY(position.getY());
     }
+    @Override
+    public int getNumBeams() {
+        return 0;
+    }
+
+    @Override
+    public double getBottomPitchAbsoluteY() throws IM3Exception {
+        return position.getAbsoluteY();
+    }
+
+    @Override
+    public double getTopPitchAbsoluteY() throws IM3Exception {
+        return position.getAbsoluteY();
+    }
 }

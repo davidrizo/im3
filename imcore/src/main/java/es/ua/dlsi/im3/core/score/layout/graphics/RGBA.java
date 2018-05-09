@@ -18,10 +18,17 @@ public class RGBA {
      */
     float b;
     /**
-     * 0 to 1
+     * 0 to 1, 1 means visible
      */
     float a;
 
+    /**
+     *
+     * @param r
+     * @param g
+     * @param b
+     * @param a 1 means visible, 0 transparent
+     */
     public RGBA(float r, float g, float b, float a) {
         this.r = r;
         this.g = g;
@@ -53,5 +60,13 @@ public class RGBA {
                 ", b=" + b +
                 ", a=" + a +
                 '}';
+    }
+
+    /**
+     * Valid in SVG
+     * @return
+     */
+    public String getHexadecimalString() {
+        return String.format("#%02x%02x%02x%02x", (int)r*255, (int)g*255, (int)b*255, (int)a*255);
     }
 }

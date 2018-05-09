@@ -601,9 +601,10 @@ public class ScoreSong {
 	public void createAnalysisPartAndStaff(boolean createAnalysisHooks) throws IM3Exception {
 		ScorePart part = addAnalysisPart();
 		AnalysisStaff staff = new AnalysisStaff(this, "999.9", 99999); // TODO: 20/3/18 Debería tener un número
-		ClefNone clef = new ClefNone();
-		clef.setTime(Time.TIME_ZERO);
-		staff.addClef(clef);
+        staff.setNotationType(NotationType.eModern); // TODO: 1/5/18 ¿Siempre? 
+		//ClefNone clef = new ClefNone();
+		//clef.setTime(Time.TIME_ZERO);
+		//staff.addClef(clef);
 		part.addStaff(staff);
 		addStaff(staff);
 		if (createAnalysisHooks) {

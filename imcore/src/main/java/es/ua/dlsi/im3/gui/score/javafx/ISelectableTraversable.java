@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 David Rizo Valero
+ * Copyright (C) 2014 David Rizo Valero
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.ua.dlsi.im3.core.score.clefs;
-
-import es.ua.dlsi.im3.core.score.Clef;
-import es.ua.dlsi.im3.core.score.PositionInStaff;
+package es.ua.dlsi.im3.gui.score.javafx;
 
 /**
- * @deprecated
+ *
  * @author drizo
  */
-public class ClefNone extends Clef {
-
-    public ClefNone() {
-        super(null, 1, 0,
-                new PositionInStaff[] {},
-                new PositionInStaff[] {}
-                );
-    }
-    @Override
-    public Clef clone() {
-    		return new ClefNone();
-    }
-    
+public interface ISelectableTraversable {
+    ISelectable first();
+    ISelectable last();
+    ISelectable previous(ISelectable s);
+    ISelectable next(ISelectable s);
 }

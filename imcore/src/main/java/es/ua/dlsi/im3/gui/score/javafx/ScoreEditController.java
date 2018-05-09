@@ -13,7 +13,6 @@ import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreClef;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
-import es.ua.dlsi.im3.core.score.layout.graphics.RGBA;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.score.EventType;
@@ -89,7 +88,7 @@ public class ScoreEditController implements Initializable, IScoreSongViewEventSu
         try {
             scoreSong = importer.importSong(file);
             model.set(new ScoreEditModel(scoreSong, scrollMainPane.getWidth(), scrollMainPane.getHeight()));
-            scoreSongView = new ScoreSongView(scoreSong, model.get().getLayout());
+            scoreSongView = new ScoreSongView(model.get().getLayout());
             initInteraction();
             scrollMainPane.setContent(scoreSongView.getMainPanel());
         } catch (Exception e) {

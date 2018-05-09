@@ -813,7 +813,7 @@ public class MEISongExporter implements ISongExporter {
 						//Collections.sort(symbols, ITimedElementInStaff.TIMED_ELEMENT_COMPARATOR);
                         SymbolsOrderer.sortList(symbols);
 						for (ITimedElementInStaff slr : symbols) {
-							if (slr instanceof Clef) { 
+							if (slr instanceof Clef) {
 								ArrayList<String> params = new ArrayList<>();
 								processClefChange((Clef) slr, params);
 								XMLExporterHelper.startEnd(sb, tabs+2, "clef", params);							
@@ -827,6 +827,7 @@ public class MEISongExporter implements ISongExporter {
                                 processAtom(tabs + 2, (Atom) slr, staff);
                             } else if (slr instanceof MarkBarline) {
 							    processBarLine(sb, tabs+2, (MarkBarline)slr, staff);
+                                previousAccidentals.clear();
 							} else {
 								throw new ExportException("Unsupported symbol type for export: '" + slr.getClass() + "'");
 							}
@@ -1192,8 +1193,39 @@ public class MEISongExporter implements ISongExporter {
             }
         }
 
-        String accidGes = null;
-        if (atomPitch.getWrittenExplicitAccidental() != null || previousAccidental != pitchAccidental && !(previousAccidental == null && pitchAccidental == Accidentals.NATURAL)) {
+        /*if ("m-537".equals(atomPitch.getAtomFigure().getAtom().__getID())) {
+            System.out.println("Aqui");
+        }*/
+        boolean addToPreviousAccidentals = false;
+        if (atomPitch.getWrittenExplicitAccidental() != null) {
+            params.add("accid");
+            params.add(generateAccidental(atomPitch.getWrittenExplicitAccidental()));
+
+            if (atomPitch.getWrittenExplicitAccidental() != previousAccidental) {
+                params.add("accid.ges");
+                params.add(generateAccidental(pitchAccidental));
+            }
+            addToPreviousAccidentals = true;
+        } else if (pitchAccidental != previousAccidental) {
+            if (atomPitch.isHideAccidental()) {
+                params.add("accid.ges");
+            } else {
+                params.add("accid");
+            }
+            params.add(generateAccidental(pitchAccidental));
+            addToPreviousAccidentals = true;
+        } else if (pitchAccidental != Accidentals.NATURAL) {
+            params.add("accid.ges");
+            params.add(generateAccidental(pitchAccidental));
+            addToPreviousAccidentals = true;
+        }
+
+        if (addToPreviousAccidentals) {
+            previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
+                    pitchAccidental);
+        }
+
+        /*if (atomPitch.getWrittenExplicitAccidental() != null || previousAccidental != pitchAccidental && !(previousAccidental == null && pitchAccidental == Accidentals.NATURAL)) {
             String accid;
             Accidentals acc;
             if (atomPitch.getWrittenExplicitAccidental() != null) {
@@ -1214,7 +1246,7 @@ public class MEISongExporter implements ISongExporter {
             params.add("accid.ges");
             params.add(accid);
 
-        }
+        }*/
 
 
 		/*String accidGes = null;

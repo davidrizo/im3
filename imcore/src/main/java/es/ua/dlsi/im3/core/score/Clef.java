@@ -73,6 +73,9 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
                 ) {
 		this.time = new Time();
 		this.octaveChange = octaveChange;
+		if (note == null) {
+		    throw new IM3RuntimeException("Cannot build clef without a note");
+        }
 		this.note = note;
 		this.line = line;
 		this.noteOctave = noteOctave; // clef.getOctaveTransposition();

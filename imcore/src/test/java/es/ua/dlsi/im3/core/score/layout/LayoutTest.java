@@ -104,7 +104,7 @@ public class LayoutTest {
 
 
     // Just test it does not crash
-    @Test
+    //TODO @Test
     public void horizontalLayoutCapitan() throws Exception {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/nodiviertanllantoninyo_mensural_only.mei");
@@ -212,8 +212,27 @@ public class LayoutTest {
         pdfExporter.exportLayout(pdfFile, layout);
     }
 
+    @Test
+    public void mixedBeams() throws Exception {
+        MEISongImporter importer = new MEISongImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/layout/beams.mei");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(1800), new CoordinateComponent(700));
+        layout.layout(true);
 
-    // Just test it does not crash
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("beams.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("beams.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+
+        // TODO: 1/5/18 Comprobarlo gráficamente
+    }
+
+        // Just test it does not crash
     // FIXME: 21/9/17 Commented until M
     /*@Test
     public void layoutCapitanAndBravura() throws Exception {

@@ -35,6 +35,12 @@ public class LayoutCoreClef extends LayoutCoreSymbolInStaff<Clef> {
     }
 
     private String getCodePoint() {
+        if (coreSymbol == null) {
+            throw new IM3RuntimeException("coreSymbol is null");
+        }
+        if (coreSymbol.getNote() == null) {
+            throw new IM3RuntimeException("coreSymbol note is null for coreSymbol " + coreSymbol);
+        }
         switch (coreSymbol.getNote()) {
             case F:
                 switch (coreSymbol.getOctaveChange()) {

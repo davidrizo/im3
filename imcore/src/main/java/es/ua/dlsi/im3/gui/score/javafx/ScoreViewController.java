@@ -1,6 +1,5 @@
 package es.ua.dlsi.im3.gui.score.javafx;
 
-import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
@@ -110,7 +109,7 @@ public class ScoreViewController {
             ScoreLayout layout = new HorizontalLayout(song, font,
                     new CoordinateComponent(stage.widthProperty().doubleValue()),
                     new CoordinateComponent(stage.heightProperty().doubleValue()));
-            scoreSongView = new ScoreSongView(song, layout);
+            scoreSongView = new ScoreSongView(layout);
             scrollMainPane.setContent(scoreSongView.getMainPanel());
         } catch (Exception e) {
             e.printStackTrace();

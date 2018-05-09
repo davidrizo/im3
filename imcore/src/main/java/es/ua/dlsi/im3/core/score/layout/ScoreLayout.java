@@ -11,7 +11,6 @@ import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
-import es.ua.dlsi.im3.core.score.layout.layoutengines.NaiveEngine;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.NonProportionalLayoutEngine;
 
 import java.util.*;
@@ -32,7 +31,7 @@ public abstract class ScoreLayout {
     protected HashMap<Staff, Pictogram> noteHeads;
     protected HashMap<Staff, Double> noteHeadWidths;
     protected HashMap<Staff, LayoutStaff> layoutStaves;
-    protected HashMap<BeamGroup, List<LayoutCoreSingleFigureAtom>> singleLayoutFigureAtomsInBeam;
+    protected HashMap<BeamGroup, List<LayoutCoreSymbolWithDuration<?>>> layoutSymbolsWithDurationInBeam;
     protected HashMap<Object, NotationSymbol> coreSymbolViews;
     /**
      * Used for building connectors
@@ -126,7 +125,7 @@ public abstract class ScoreLayout {
         // TODO: 1/10/17 Beaming - parámetro para que se pueda deshabilitar
         //layoutStaff.createBeaming();
         coreSymbolViews = new HashMap<>();
-        singleLayoutFigureAtomsInBeam = new HashMap<>();
+        layoutSymbolsWithDurationInBeam = new HashMap<>();
         coreSymbolsInStaves = new HashMap<>();
         layoutConnectorEnds = new HashMap<>();
         for (Staff staff: staves) {
@@ -245,10 +244,10 @@ public abstract class ScoreLayout {
 
                 BeamGroup beam = sfa.getCoreSymbol().getBelongsToBeam();
                 if (beam != null) {
-                    List<LayoutCoreSingleFigureAtom> layoutAtomsInBeam = singleLayoutFigureAtomsInBeam.get(beam);
+                    List<LayoutCoreSymbolWithDuration<?>> layoutAtomsInBeam = layoutSymbolsWithDurationInBeam.get(beam);
                     if (layoutAtomsInBeam == null) {
                         layoutAtomsInBeam = new ArrayList<>();
-                        singleLayoutFigureAtomsInBeam.put(sfa.getCoreSymbol().getBelongsToBeam(), layoutAtomsInBeam);
+                        layoutSymbolsWithDurationInBeam.put(sfa.getCoreSymbol().getBelongsToBeam(), layoutAtomsInBeam);
                     }
                     layoutAtomsInBeam.add(sfa);
                 }
@@ -264,7 +263,7 @@ public abstract class ScoreLayout {
     protected void createBeams() throws IM3Exception {
         beams = new ArrayList<>();
 
-        for (Map.Entry<BeamGroup, List<LayoutCoreSingleFigureAtom>> entry: singleLayoutFigureAtomsInBeam.entrySet()) {
+        for (Map.Entry<BeamGroup, List<LayoutCoreSymbolWithDuration<?>>> entry: layoutSymbolsWithDurationInBeam.entrySet()) {
             LayoutFont layoutFont = getLayoutFont(entry.getValue().get(0).getCoreStaff());
             LayoutBeamGroup layoutBeamGroup = new LayoutBeamGroup(entry.getKey(), entry.getValue(), layoutFont);
             layoutBeamGroup.createBeams();

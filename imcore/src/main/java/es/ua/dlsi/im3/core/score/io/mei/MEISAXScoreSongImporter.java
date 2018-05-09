@@ -1198,11 +1198,18 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	}
 
 	private Staff findStaff(String number) throws ImportException {
-		Staff result = staffNumbers.get(number);
-		if (result == null) {
-			throw new ImportException("Cannot find staff with number '" + number + "'");
-		}
-		return result;
+	    if (number == null) {
+	        if (staffNumbers.size() != 1) {
+                throw new ImportException("Staff number not provided and there are " + staffNumbers.size() + " staves");
+            }
+            return staffNumbers.values().iterator().next();
+        } else {
+            Staff result = staffNumbers.get(number);
+            if (result == null) {
+                throw new ImportException("Cannot find staff with number '" + number + "'");
+            }
+            return result;
+        }
 	}
 
 	/**
@@ -1726,6 +1733,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 int octave = lastAtomPitch.getScientificPitch().getOctave();
                 int previousAccidentalMapKey = generatePreviousAccidentalMapKey(pc.getNoteName(), octave);
                 Staff elementStaff = lastNoteStaff;
+
+                Accidentals lastAccidObj = lastAccid==null?null:accidToAccidental(lastAccid);
+
                 Accidentals previousAccidental = previousAccidentals.get(previousAccidentalMapKey);
                 if (previousAccidental == null) {
                     try {
@@ -1736,7 +1746,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     }
                 }
 
-                if (lastAccid != null) {
+                /*if (lastAccid != null) {
                     lastAtomPitch.setWrittenExplicitAccidental(accidToAccidental(lastAccid));
                 }
 
@@ -1747,6 +1757,36 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 if (lastAccid == null && lastAccidGes == null && previousAccidental != null) {
 
                     pc.setAccidental(previousAccidental); // TODO: 24/9/17 Diferenciar explicit e implicit. Igual en MEIExporter que aún lo exporta todo
+                }
+
+                if (pc.getAccidental() != null) {
+                    previousAccidentals.put(previousAccidentalMapKey, pc.getAccidental());
+                }*/
+
+
+                Accidentals accidObj = lastAccidObj;
+                if (previousAccidental != null && lastAccidObj == null) {
+                    lastAccidObj = previousAccidental;
+                }
+
+                if (lastAccidObj != null && lastAccidGes == null) {
+                    pc.setAccidental(lastAccidObj);
+                    if (accidObj != null && accidObj.equals(previousAccidental)) {
+                        lastAtomPitch.setWrittenExplicitAccidental(accidObj);
+                    }
+                } else if (lastAccidObj == null && lastAccidGes != null) {
+                    Accidentals accidental = accidToAccidental(lastAccidGes);
+                    pc.setAccidental(accidental);
+                } else if (lastAccidObj != null && lastAccidGes != null) {
+                    Accidentals accidGesObj = accidToAccidental(lastAccidGes);
+                    pc.setAccidental(accidGesObj);
+                    if (!lastAccidObj.equals(accidGesObj)) {
+                        if (lastAccid != null) { // it is explicitly encoded
+                            lastAtomPitch.setWrittenExplicitAccidental(lastAccidObj);
+                        } else {
+                            lastAtomPitch.setHideAccidental(true); // att.ges != null, different from previous played pitch, but it is not notated
+                        }
+                    }
                 }
 
                 if (pc.getAccidental() != null) {

@@ -12,5 +12,13 @@ public abstract class LayoutCoreSymbolWithDuration<CoreSymbolType extends ITimed
         super(layoutFont, coreSymbol);
     }
 
+    /**
+     * Number of beams to be shown
+     * @return
+     */
+    public abstract int getNumBeams();
 
+    public abstract double getBottomPitchAbsoluteY() throws IM3Exception;
+
+    public abstract double getTopPitchAbsoluteY() throws IM3Exception;
 }

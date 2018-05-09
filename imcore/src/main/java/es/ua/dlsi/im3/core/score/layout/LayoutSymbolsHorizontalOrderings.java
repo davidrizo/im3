@@ -15,6 +15,7 @@ public class LayoutSymbolsHorizontalOrderings {
     {
         orders.put(LayoutCoreBarline.class, 0);
         orders.put(LayoutCoreMarkBarline.class, 0);
+        orders.put(LayoutCoreStaffTimedPlaceHolder.class, 0);
         orders.put(LayoutCoreCustos.class, 1);
         orders.put(LayoutCoreSystemBreak.class, 2);
         orders.put(LayoutPageBreak.class, 3);

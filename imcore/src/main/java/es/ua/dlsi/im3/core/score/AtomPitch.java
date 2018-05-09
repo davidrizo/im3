@@ -15,12 +15,21 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 	private ScientificPitch scientificPitch;
 	private AtomPitch tiedFromPrevious;
 	private AtomPitch tiedToNext;
+    // TODO: 1/5/18 Possibly we should refactor accidental things to other class
 	/**
-	 * Force this accidental to appear
+	 * Force this accidental to appear, even it is different from that in the pitch. We encode it different from MEI.
+     * In MEI acc means the shown accidental, and acc.ges denote the played one. We prefer encoding the played one in
+     * the pitch and optionally encode the written one if it is different
 	 */
 	private Accidentals writtenExplicitAccidental;
-
+    /**
+     * The editor may want to show it is optional
+     */
 	private boolean optionalAccidental;
+    /**
+     * The editor may want to hide it (played using the accidental but accidental not shown)
+     */
+    private boolean hideAccidental;
 
 	/**
 	 * For pitches that are not contained in the same staff as the atom they belong to
@@ -135,7 +144,7 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 
 	public final void setWrittenExplicitAccidental(Accidentals writtenExplicitAccidental) throws IM3Exception {
 		this.writtenExplicitAccidental = writtenExplicitAccidental;
-		setAccidental(writtenExplicitAccidental);
+		//setAccidental(writtenExplicitAccidental); // the written accidental may be different from the actual pitch one
 	}
 
 	public void setAccidental(Accidentals accidental) throws IM3Exception {
@@ -351,5 +360,13 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 
     public void setOptionalAccidental(boolean optionalAccidental) {
         this.optionalAccidental = optionalAccidental;
+    }
+
+    public boolean isHideAccidental() {
+        return hideAccidental;
+    }
+
+    public void setHideAccidental(boolean hideAccidental) {
+        this.hideAccidental = hideAccidental;
     }
 }

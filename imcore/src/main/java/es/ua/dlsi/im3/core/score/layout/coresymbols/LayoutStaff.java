@@ -132,9 +132,19 @@ public class LayoutStaff extends NotationSymbol {
         return lines.get(line-1).getFrom().getY();
     }
 
+    public CoordinateComponent getYAtBottomLine() {
+        return lines.get(0).getFrom().getY();
+    }
+
+    public CoordinateComponent getYAtTopLine() {
+        return lines.get(lines.size()-1).getFrom().getY();
+    }
+
+
     public CoordinateComponent getYAtCenterLine() {
         return lines.get(lines.size()/2).getFrom().getY();
     }
+
 
 
     /**
@@ -251,6 +261,8 @@ public class LayoutStaff extends NotationSymbol {
     public TreeSet<LayoutCoreSymbolInStaff> getLayoutSymbolsInStaff() {
         return layoutSymbolsInStaff;
     }
+
+
 
 
     /*public void createNoteAccidentals(Time timeZero, Time timeMax) throws IM3Exception {

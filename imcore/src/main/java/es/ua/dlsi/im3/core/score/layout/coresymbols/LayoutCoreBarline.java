@@ -46,8 +46,10 @@ public class LayoutCoreBarline extends LayoutCoreSymbol<Measure>  {
      */
     public void setLayoutStaff(LayoutStaff bottomStaff, LayoutStaff topStaff) throws IM3Exception {
         // TODO: 21/9/17 Sólo vale para pentagramas - debe sobresalir igual con percusión
-        from.setReferenceY(bottomStaff.getYAtLine(1));
-        to.setReferenceY(topStaff.getYAtLine(5));
+        //from.setReferenceY(bottomStaff.getYAtLine(1));
+        from.setReferenceY(bottomStaff.getYAtBottomLine());
+        //to.setReferenceY(topStaff.getYAtLine(5));
+        to.setReferenceY(topStaff.getYAtTopLine());
     }
 
     @Override
