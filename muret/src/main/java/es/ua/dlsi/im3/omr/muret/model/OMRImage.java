@@ -25,10 +25,6 @@ import java.util.logging.Logger;
  */
 public class OMRImage implements Comparable<OMRImage> {
     /**
-     * Used to avoid loading twice the JAI library
-     */
-    private static boolean JAI_CHECKED = false;
-    /**
      * Parent project
      */
     OMRProject omrProject;

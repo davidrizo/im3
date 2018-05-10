@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.muret.regions;
 
+import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
 import es.ua.dlsi.im3.omr.muret.model.OMRPage;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;

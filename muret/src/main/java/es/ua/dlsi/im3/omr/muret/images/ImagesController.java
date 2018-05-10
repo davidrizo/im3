@@ -402,7 +402,7 @@ public class ImagesController extends MuretAbstractController {
     }
 
     private void doOpenImage(ImageThumbnailView pageView) {
-        dashboard.openImage(pageView);
+        dashboard.openImageDocumentAnalysis(pageView);
     }
 
 

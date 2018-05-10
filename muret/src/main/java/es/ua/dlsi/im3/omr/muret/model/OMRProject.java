@@ -30,11 +30,6 @@ import java.util.TreeSet;
  */
 public class OMRProject {
     /**
-     * Where images will be stored inside the project folder
-     */
-    static final String IMAGES_FOLDER = "images";
-
-    /**
      * Actual project folder
      */
     File projectFolder;
@@ -81,7 +76,7 @@ public class OMRProject {
         if (!projectFolder.exists()) {
             projectFolder.mkdirs();
         }
-        imagesFolder = new File(projectFolder, IMAGES_FOLDER);
+        imagesFolder = new File(projectFolder, Project.IMAGES_FOLDER);
         imagesFolder.mkdir();
 
         imagesProperty = FXCollections.observableSet(new TreeSet<>());
@@ -140,7 +135,7 @@ public class OMRProject {
 
     private void setProjectFolder(File projectFolder) {
         this.projectFolder = projectFolder;
-        this.imagesFolder = new File(projectFolder, IMAGES_FOLDER);
+        this.imagesFolder = new File(projectFolder, Project.IMAGES_FOLDER);
     }
 
     public String getName() {

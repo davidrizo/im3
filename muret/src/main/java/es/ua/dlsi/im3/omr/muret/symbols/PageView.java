@@ -1,19 +1,20 @@
-package es.ua.dlsi.im3.omr.muret.regions;
+package es.ua.dlsi.im3.omr.muret.symbols;
 
+import es.ua.dlsi.im3.omr.muret.model.OMRPage;
 import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
-import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 /**
- * Symbol bounding box view
  * @autor drizo
  */
-public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
+public class PageView extends BoundingBoxBasedView<OMRPage> {
+    VBox vBox;
 
-    public SymbolView(RegionView regionView, OMRSymbol owner, Color color) {
-        super(regionView, owner, color);
+    public PageView(OMRPage owner, Color color) {
+        super(null, owner, color);
     }
 
     @Override

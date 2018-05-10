@@ -6,8 +6,6 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.regions.DocumentAnalysisController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.symbols.SymbolCorrectionController">
     <top>
         <HBox spacing="20.0" BorderPane.alignment="CENTER">
             <children>
@@ -24,25 +22,14 @@
                     <items>
                   <Button mnemonicParsing="false" onAction="#handleClose" text="Close" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
-                  <Button mnemonicParsing="false" onAction="#handleGotoSymbolCorrection" text="Go to symbol correction" />
+                  <Button mnemonicParsing="false" onAction="#handleGotoDocumentAnalysis" text="Go to document analysis" />
                   <Button mnemonicParsing="false" onAction="#handleZoomIn" text="Zoom in" />
                   <Button mnemonicParsing="false" onAction="#handleZoomOut" text="Zoom out" />
                   <Button mnemonicParsing="false" onAction="#handleZoomToFit" text="Zoom to fit" />
                   <Button mnemonicParsing="false" onAction="#handleZoomReset" text="Reset" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
-                  <Button mnemonicParsing="false" onAction="#handleSetOnePageAndRegion" text="Leave just one page &amp; region" />
-                  <ToggleButton fx:id="toggleBtnSplitIntoPages" mnemonicParsing="false" onAction="#handleSplitModes" text="Split into pages">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="toggleGroupSplitMode" />
-                     </toggleGroup>
-                  </ToggleButton>
-                  <ToggleButton fx:id="toggleBtnSplitIntoRegions" mnemonicParsing="false" onAction="#handleSplitModes" text="Split into regions" toggleGroup="$toggleGroupSplitMode" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
-                  <Button fx:id="btnChangeSymbolsRegion" mnemonicParsing="false" onAction="#handleChangeSymbolsRegion" text="Change region of selected symbols" />
-                  <Button mnemonicParsing="false" onAction="#handleRecognizePages" text="Recognize pages" />
-                        <Button mnemonicParsing="false" onAction="#handleRecognizeRegions" text="Recognize regions" />
                   <Button mnemonicParsing="false" onAction="#handleRecognizeSymbols" text="Recognize symbols" />
-                  <Button mnemonicParsing="false" onAction="#handleDivideSymbolsIntoRegions" text="Divide symbols in regions" />
                     </items>
                 </ToolBar>
             </children>
@@ -51,7 +38,11 @@
     <center>
         <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
          <content>
-            <Pane fx:id="mainPane" prefHeight="200.0" prefWidth="200.0" />
+            <Pane fx:id="mainPane">
+               <children>
+                  <VBox fx:id="regionsPane" prefHeight="200.0" prefWidth="341.0" spacing="5.0" />
+               </children>
+            </Pane>
          </content>
         </ScrollPane>
     </center>

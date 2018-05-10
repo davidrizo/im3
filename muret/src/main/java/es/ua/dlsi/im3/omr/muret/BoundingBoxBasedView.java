@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret.regions;
+package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.omr.muret.model.IOMRBoundingBox;
@@ -16,22 +16,55 @@ import javafx.scene.text.Text;
  */
 public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> extends Group {
     protected static final double FILL_OPACITY = 0.2;
-    protected final Text label;
-    protected final OwnerType owner;
-    private final IOMRBoundingBox parentBoundingBox;
+    protected Text label;
+    protected OwnerType owner;
+    protected BoundingBoxBasedView parentBoundingBox;
+    private Color backgroundColor;
     protected DraggableRectangle rectangle;
 
-    public BoundingBoxBasedView(IOMRBoundingBox parentBoundingBox, OwnerType owner, Color color) {
-        this.setFocusTraversable(true); // to receive key events
-        this.owner = owner;
-        this.parentBoundingBox = parentBoundingBox;
+    /**
+     *
+     * @param parentBoundingBox It may be null
+     * @param fromX
+     * @param fromY
+     * @param width
+     * @param height
+     * @param owner
+     * @param color
+     */
+    public BoundingBoxBasedView(BoundingBoxBasedView parentBoundingBox, double fromX, double fromY, double width, double height, OwnerType owner, Color color) {
+        rectangle = new DraggableRectangle(Color.GOLD);
+        rectangle.hideHandles();
+        rectangle.xProperty().setValue(fromX);
+        rectangle.yProperty().setValue(fromY);
+        rectangle.widthProperty().setValue(width);
+        rectangle.heightProperty().setValue(height);
 
+        init(parentBoundingBox, owner, color, rectangle);
+    }
+
+    /**
+     *
+     * @param parentBoundingBox It may be null
+     * @param owner
+     * @param color
+     */
+    public BoundingBoxBasedView(BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color) {
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.hideHandles();
         rectangle.xProperty().bindBidirectional(owner.fromXProperty());
         rectangle.yProperty().bindBidirectional(owner.fromYProperty());
         rectangle.widthProperty().bindBidirectional(owner.widthProperty());
         rectangle.heightProperty().bindBidirectional(owner.heightProperty());
+        init(parentBoundingBox, owner, color, rectangle);
+    }
+
+
+    private void init(BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color, DraggableRectangle rectangle) {
+        this.setFocusTraversable(true); // to receive key events
+        this.owner = owner;
+        this.parentBoundingBox = parentBoundingBox;
+
         this.getChildren().add(rectangle);
 
         label = new Text();
@@ -45,7 +78,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
             onLabelContextMenuRequested(event);
         });
 
-        rectangle.setFill(getColor(color, FILL_OPACITY));
+        backgroundColor = getColor(color, FILL_OPACITY);
         rectangle.setStroke(getColor(color, 1));
 
         rectangle.setOnMouseClicked(event -> {
@@ -53,6 +86,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         });
 
         highlight(false);
+
     }
 
     private Color getColor(Color color, double opacity) {
@@ -73,9 +107,11 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
     public void highlight(boolean highlight) {
         if (highlight) {
             rectangle.setStrokeWidth(2); //TODO
+            rectangle.setFill(backgroundColor);
             label.setVisible(true);
         } else {
-            rectangle.setStrokeWidth(0); //TODO
+            rectangle.setStrokeWidth(1); //TODO
+            rectangle.setFill(Color.TRANSPARENT);
             label.setVisible(false);
         }
     }

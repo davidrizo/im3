@@ -11,24 +11,19 @@ import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.IImageSymbolRecognizer;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolRecognizerFactory;
 import es.ua.dlsi.im3.omr.model.entities.Region;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
-import es.ua.dlsi.im3.omr.muret.MuretAbstractController;
+import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
+import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.muret.model.*;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Scale;
 
 import java.net.URL;
 import java.util.*;
@@ -36,16 +31,7 @@ import java.util.*;
 /**
  * @autor drizo
  */
-public class DocumentAnalysisController extends MuretAbstractController {
-    @FXML
-    ScrollPane scrollPane;
-
-    @FXML
-    Pane imagePane;
-
-    @FXML
-    TreeView treeView;
-
+public class DocumentAnalysisController extends ImageBasedAbstractController  {
     @FXML
     Button btnChangeSymbolsRegion;
 
@@ -60,192 +46,34 @@ public class DocumentAnalysisController extends MuretAbstractController {
 
     @FXML
     Button btnDeleteTreeItem;
-
-    @FXML
-    TextArea textAreaComments;
-
-    DoubleProperty scale;
-
     enum InteractionMode {eIdle, eSplittingPages, eSplittingRegions};
 
     ObjectProperty<InteractionMode> interactionMode;
 
     //TODO Pasar esto a un modelo
-    BooleanProperty symbolSelectionBasedActionsEnabled;
-    HashSet<BoundingBoxBasedView> selectedElements;
     ImageView imageView;
-    private OMRImage omrImage;
     private Group viewsGroup;
-
-    private HashMap<IOMRBoundingBox, BoundingBoxBasedView> elements; // the superset of pages, regions and symbols
     private HashMap<OMRPage, PageView> pages;
     private HashMap<OMRRegion, RegionView> regions;
     private HashMap<OMRSymbol, SymbolView> symbols;
 
-    @Override
-    public Node getRoot() {
-        return scrollPane;
-    }
-
     public DocumentAnalysisController() {
-        symbolSelectionBasedActionsEnabled = new SimpleBooleanProperty(false);
+        pages = new HashMap<>();
+        regions = new HashMap<>();
+        symbols = new HashMap<>();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
         btnChangeSymbolsRegion.disableProperty().bind(symbolSelectionBasedActionsEnabled.not());
-
-        // TODO: 21/4/18 Que el botón de reconocimiento de regiones no esté activo si no hay páginas
-        treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        treeView.getSelectionModel().selectedItemProperty()
-                .addListener(new ChangeListener<TreeItem>() {
-                    @Override
-                    public void changed(
-                            ObservableValue<? extends TreeItem> observable,
-                            TreeItem old_val, TreeItem new_val) {
-                        /*TreeItem selectedItem = new_val;
-                        if (selectedItem.getValue() instanceof IOMRBoundingBox) {
-                            BoundingBoxBasedView boundingBoxBasedView = elements.get(selectedItem.getValue());
-                            if (boundingBoxBasedView == null) {
-                                ShowError.show(OMRApp.getMainStage(), "Cannot find the view for " + selectedItem.getValue());
-                            } else {
-                                select(boundingBoxBasedView);
-                            }
-                        }*/
-                        handleTreeSelection();
-                    }
-                });
-
         btnDeleteTreeItem.disableProperty().bind(treeView.getSelectionModel().selectedItemProperty().isNull());
-        createTreeViewContextMenu();
-
-        initZoom();
         initInteractionMode();
+        createTreeViewContextMenu();
     }
 
-    private void initZoom() {
-        scale = new SimpleDoubleProperty(1);
-        Scale scaleTransformation = new Scale();
-        scaleTransformation.xProperty().bind(scale);
-        scaleTransformation.yProperty().bind(scale);
-        scaleTransformation.pivotXProperty().bind(imagePane.layoutXProperty());
-        scaleTransformation.pivotYProperty().bind(imagePane.layoutYProperty());
-        imagePane.getTransforms().add(scaleTransformation);
-    }
 
-    // TODO: 23/4/18 Botones comunes con right click treeview
-    private void createTreeViewContextMenu() {
-        //MenuItem entry1 = new MenuItem("Test with Icon", graphicNode);
-        //MenuItem entryNewRegionWithSelectedSymbols = new MenuItem("Create new region with selected symbols");
-        //entryNewRegionWithSelectedSymbols.setOnAction(ae -> doNewRegionWithSelectedSymbols());
-        //entryNewRegionWithSelectedSymbols.disableProperty().bind(symbolSelectionBasedActionsEnabled);
 
-        MenuItem moveSymbolsToRegion = new MenuItem("Move symbols to other region");
-        moveSymbolsToRegion.setOnAction(ae -> doChangeSymbolsRegion());
-        moveSymbolsToRegion.disableProperty().bind(symbolSelectionBasedActionsEnabled.not());
-        treeView.setContextMenu(new ContextMenu(moveSymbolsToRegion));
-
-    }
-
-    public void setOMRImage(OMRImage omrImage) throws IM3Exception {
-        this.omrImage = omrImage;
-        imageView = new ImageView(omrImage.getImage());
-        imageView.setPreserveRatio(true);
-        imagePane.setMinWidth(imageView.getImage().getWidth());
-        imagePane.setMinHeight(imageView.getImage().getHeight());
-        imagePane.getChildren().add(imageView);
-
-        viewsGroup = new Group();
-        imagePane.getChildren().add(viewsGroup);
-
-        textAreaComments.textProperty().bindBidirectional(omrImage.commentsProperty());
-
-        loadPages();
-    }
-
-    private void loadPages() {
-        viewsGroup.getChildren().clear();
-
-        pages = new HashMap<>();
-        regions = new HashMap<>();
-        symbols = new HashMap<>();
-        elements = new HashMap<>();
-        selectedElements = new HashSet<>();
-
-        treeView.setRoot(new TreeItem<>(omrImage.toString()));
-        treeView.getRoot().setExpanded(true);
-
-        for (OMRPage omrPage : omrImage.getPages()) {
-            createAndAddPageView(omrPage);
-        }
-
-    }
-
-    private void handleTreeSelection() {
-        for (BoundingBoxBasedView boundingBoxBasedView: selectedElements) {
-            boundingBoxBasedView.highlight(false);
-        }
-        selectedElements.clear();
-
-        symbolSelectionBasedActionsEnabled.setValue(false);
-        ObservableList<TreeItem> selectedItems = treeView.getSelectionModel().getSelectedItems();
-        for (TreeItem treeItem: selectedItems) {
-            if (treeItem != null) {
-                Object value = treeItem.getValue();
-                if (value != null && value instanceof IOMRBoundingBox) {
-                    BoundingBoxBasedView boundingBoxBasedView = elements.get(value);
-
-                    if (boundingBoxBasedView instanceof SymbolView) {
-                        if (selectedElements.isEmpty()) {
-                            symbolSelectionBasedActionsEnabled.setValue(true);
-                        }
-                    } else {
-                        symbolSelectionBasedActionsEnabled.setValue(false);
-                    }
-
-                    if (boundingBoxBasedView == null) {
-                        ShowError.show(OMRApp.getMainStage(), "Cannot find the view for " + value);
-                    } else {
-                        selectedElements.add(boundingBoxBasedView);
-                        boundingBoxBasedView.highlight(true);
-                    }
-                }
-            }
-        }
-    }
-
-    private void createAndAddPageView(OMRPage omrPage) {
-        //SymbolsRegionView regionView = new SymbolsRegionView(this, region);
-        PageView pageView = new PageView(omrPage, Color.BLUE); // TODO: 21/4/18 Colores
-        pages.put(omrPage, pageView);
-        elements.put(omrPage, pageView);
-        viewsGroup.getChildren().add(pageView);
-
-        TreeItem pageTreeItem = new TreeItem<>(omrPage);
-        pageTreeItem.setExpanded(true);
-        treeView.getRoot().getChildren().add(pageTreeItem);
-
-        for (OMRRegion omrRegion: omrPage.getRegions()) {
-            RegionView regionView = new RegionView(omrRegion, Color.RED);
-            regions.put(omrRegion, regionView);
-            elements.put(omrRegion, regionView);
-            viewsGroup.getChildren().add(regionView);
-
-            TreeItem regionTreeItem = new TreeItem<>(omrRegion);
-            pageTreeItem.getChildren().add(regionTreeItem);
-            regionTreeItem.setExpanded(true);
-
-            for (OMRSymbol omrSymbol: omrRegion.symbolsProperty()) {
-                SymbolView symbolView = new SymbolView(omrSymbol, Color.GREEN);
-                symbols.put(omrSymbol, symbolView);
-                elements.put(omrSymbol, symbolView);
-                viewsGroup.getChildren().add(symbolView);
-
-                TreeItem symbolTreeItem = new TreeItem<>(omrSymbol);
-                regionTreeItem.getChildren().add(symbolTreeItem);
-            }
-        }
-    }
 
     @FXML
     private void handleRecognizePages() {
@@ -285,16 +113,29 @@ public class DocumentAnalysisController extends MuretAbstractController {
         try {
             omrImage.changeRegion(selectedSymbols, region);
             omrImage.recomputeRegionBoundingBoxes();
+            // now reload all model - we do not observe and change changes
+            loadPages();
         } catch (IM3Exception e) {
             e.printStackTrace();
             ShowError.show(OMRApp.getMainStage(), "Cannot change region or recompute region bounding boxes", e);
         }
-
-        // now reload all model - we do not observe and change changes
-        loadPages();
     }
 
 
+
+    // TODO: 23/4/18 Botones comunes con right click treeview
+    private void createTreeViewContextMenu() {
+        //MenuItem entry1 = new MenuItem("Test with Icon", graphicNode);
+        //MenuItem entryNewRegionWithSelectedSymbols = new MenuItem("Create new region with selected symbols");
+        //entryNewRegionWithSelectedSymbols.setOnAction(ae -> doNewRegionWithSelectedSymbols());
+        //entryNewRegionWithSelectedSymbols.disableProperty().bind(symbolSelectionBasedActionsEnabled);
+
+        MenuItem moveSymbolsToRegion = new MenuItem("Move symbols to other region");
+        moveSymbolsToRegion.setOnAction(ae -> doChangeSymbolsRegion());
+        moveSymbolsToRegion.disableProperty().bind(symbolSelectionBasedActionsEnabled.not());
+        treeView.setContextMenu(new ContextMenu(moveSymbolsToRegion));
+
+    }
     /*private void doNewRegionWithSelectedSymbols() {
         // TODO: 23/4/18 De momento ahora creo siempre Staff
         List<OMRSymbol> selectedSymbols = new LinkedList<>();
@@ -358,32 +199,6 @@ public class DocumentAnalysisController extends MuretAbstractController {
         }
     }
 
-    @FXML
-    private void handleZoomIn() {
-        scale.setValue(scale.doubleValue()+0.1);
-    }
-
-    @FXML
-    private void handleZoomOut() {
-        scale.setValue(scale.doubleValue()-0.1);
-
-    }
-
-    @FXML
-    private void handleZoomReset() {
-        scale.setValue(1);
-    }
-
-    @FXML
-    private void handleZoomToFit() {
-        double xRatio = this.scrollPane.getViewportBounds().getWidth() / this.imageView.getLayoutBounds().getWidth();
-        double yRatio = this.scrollPane.getViewportBounds().getHeight() / this.imageView.getLayoutBounds().getHeight();
-        if (xRatio > yRatio) {
-            scale.setValue(xRatio);
-        } else {
-            scale.setValue(yRatio);
-        }
-    }
 
     @FXML
     private void handleSplitModes() {
@@ -399,37 +214,8 @@ public class DocumentAnalysisController extends MuretAbstractController {
         }
     }
 
-    @FXML
-    private void handleCollapse() {
-        doCollapseTreeView();
-    }
-
-    private void doCollapseTreeView() {
-        if (treeView.getRoot() != null) {
-            treeView.getRoot().setExpanded(true);
-            List<TreeItem> pages= treeView.getRoot().getChildren();
-            for (TreeItem page: pages) {
-                page.setExpanded(true); // pages
-
-                List<TreeItem> regions= page.getChildren();
-                for (TreeItem region: regions) {
-                    region.setExpanded(false);
-                }
-            }
-        }
-    }
-
-    @FXML
-    private void handleDeleteTreeItem() {
-        try {
-            doDeleteTreeItems();
-        } catch (IM3Exception e) {
-            e.printStackTrace();
-            ShowError.show(OMRApp.getMainStage(), "Cannot delete tree item", e);
-        }
-    }
-
-    private void doDeleteTreeItems() throws IM3Exception {
+    @Override
+    protected void doDeleteTreeItems() throws IM3Exception {
         for (BoundingBoxBasedView boundingBoxBasedView : selectedElements) {
             // something more ellegant?
             boolean collapse = false;
@@ -454,7 +240,7 @@ public class DocumentAnalysisController extends MuretAbstractController {
     private void initInteractionMode() {
         interactionMode = new SimpleObjectProperty<>(InteractionMode.eIdle);
 
-        imagePane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        mainPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 if (interactionMode.get() == InteractionMode.eSplittingPages) {
@@ -546,11 +332,70 @@ public class DocumentAnalysisController extends MuretAbstractController {
     private void handleSetOnePageAndRegion() {
         try {
             omrImage.leaveJustOnePageAndRegion();
+            loadPages();
         } catch (IM3Exception e) {
             e.printStackTrace();
             ShowError.show(OMRApp.getMainStage(), "Cannot set everything in one page and region", e);
         }
-        loadPages();
     }
 
+    @Override
+    public void setOMRImage(OMRImage omrImage) throws IM3Exception {
+        viewsGroup = new Group();
+
+        imageView = new ImageView(omrImage.getImage());
+        imageView.setPreserveRatio(true);
+        mainPane.setMinWidth(imageView.getImage().getWidth());
+        mainPane.setMinHeight(imageView.getImage().getHeight());
+        mainPane.getChildren().add(imageView);
+        mainPane.getChildren().add(viewsGroup);
+
+        super.setOMRImage(omrImage);
+    }
+
+    @Override
+    protected void loadPages() throws IM3Exception {
+        viewsGroup.getChildren().clear();
+        super.loadPages();
+    }
+
+    @Override
+    protected BoundingBoxBasedView addSymbol(BoundingBoxBasedView regionView, OMRSymbol omrSymbol) {
+        SymbolView symbolView = new SymbolView((RegionView) regionView, omrSymbol, Color.GREEN);
+        symbols.put(omrSymbol, symbolView);
+        viewsGroup.getChildren().add(symbolView);
+        return symbolView;
+    }
+
+    @Override
+    protected BoundingBoxBasedView addRegion(BoundingBoxBasedView pageView, OMRRegion omrRegion) {
+        RegionView regionView = new RegionView((PageView) pageView, omrRegion, Color.RED);
+        regions.put(omrRegion, regionView);
+        viewsGroup.getChildren().add(regionView);
+        return regionView;
+    }
+
+    @Override
+    protected BoundingBoxBasedView addPage(OMRPage omrPage) {
+        PageView pageView = new PageView(omrPage, Color.BLUE); // TODO: 21/4/18 Colores
+        pages.put(omrPage, pageView);
+        viewsGroup.getChildren().add(pageView);
+        return pageView;
+    }
+
+    @Override
+    protected double getZoomToFitRatio() {
+        double xRatio = this.scrollPane.getViewportBounds().getWidth() / this.imageView.getLayoutBounds().getWidth();
+        double yRatio = this.scrollPane.getViewportBounds().getHeight() / this.imageView.getLayoutBounds().getHeight();
+        if (xRatio > yRatio) {
+            return xRatio;
+        } else {
+             return yRatio;
+        }
+    }
+
+    @FXML
+    private void handleGotoSymbolCorrection() {
+        this.dashboard.openImageSymbolCorrection(omrImage);
+    }
 }

@@ -13,8 +13,10 @@ import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
 import es.ua.dlsi.im3.omr.muret.images.ImageThumbnailView;
 import es.ua.dlsi.im3.omr.muret.images.ImagesController;
+import es.ua.dlsi.im3.omr.muret.model.OMRImage;
 import es.ua.dlsi.im3.omr.muret.model.OMRModel;
 import es.ua.dlsi.im3.omr.muret.regions.DocumentAnalysisController;
+import es.ua.dlsi.im3.omr.muret.symbols.SymbolCorrectionController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -241,18 +243,33 @@ public class DashboardController implements Initializable {
     }
 
 
-    public void openImage(ImageThumbnailView pageView) {
+    public void openImageDocumentAnalysis(ImageThumbnailView pageView) {
+        openImageDocumentAnalysis(pageView.getOMRImage());
+    }
+
+    public void openImageDocumentAnalysis(OMRImage omrImage) {
         try {
             Pair<DocumentAnalysisController, Parent> pair = ViewLoader.loadView("muret/documentanalysis.fxml");
             pair.getX().setDashboard(this);
-            pair.getX().setOMRImage(pageView.getOMRImage());
+            pair.getX().setOMRImage(omrImage);
             setMainPane(pair.getY());
         } catch (Exception e) {
             e.printStackTrace();
             ShowError.show(OMRApp.getMainStage(), "Cannot load document analysis screen", e);
         }
-     }
+    }
 
+    public void openImageSymbolCorrection(OMRImage omrImage) {
+        try {
+            Pair<SymbolCorrectionController, Parent> pair = ViewLoader.loadView("muret/symbolcorrection.fxml");
+            pair.getX().setDashboard(this);
+            pair.getX().setOMRImage(omrImage);
+            setMainPane(pair.getY());
+        } catch (Exception e) {
+            e.printStackTrace();
+            ShowError.show(OMRApp.getMainStage(), "Cannot load document analysis screen", e);
+        }
+    }
      @FXML
      public void handleCheckIntegrity() {
         String messages = omrModel.getCurrentProject().checkIntegrity();
@@ -263,4 +280,5 @@ public class DashboardController implements Initializable {
             ShowError.show(OMRApp.getMainStage(), "Errors found in the project", errors);
         }
      }
+
 }

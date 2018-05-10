@@ -43,7 +43,20 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
     private StringProperty name;
 
 
-    public OMRSymbol(OMRRegion omrRegion, AgnosticSymbol graphicalSymbol, double x, double y, double width, double height) {
+    public OMRSymbol(OMRRegion omrRegion, AgnosticSymbol graphicalSymbol, double x, double y, double width, double height) throws IM3Exception {
+        if (x < 0) {
+            throw new IM3Exception("Cannot build a symbol with fromX (" + x + ") < 0");
+        }
+        if (y < 0) {
+            throw new IM3Exception("Cannot build a symbol with fromY (" + y + ") < 0");
+        }
+        if (width <= 0) {
+            throw new IM3Exception("Cannot build a symbol with width (" + width + ") <= 0");
+        }
+        if (height <= 0) {
+            throw new IM3Exception("Cannot build a symbol with height (" + height + ") <= 0");
+        }
+
         this.omrRegion = omrRegion;
         this.graphicalSymbol = new SimpleObjectProperty<>(graphicalSymbol);
         this.x = new SimpleDoubleProperty(x);
@@ -55,7 +68,7 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
         this.name.bind(this.graphicalSymbol.asString());
     }
 
-    public OMRSymbol(OMRRegion omrRegion, Symbol symbol) {
+    public OMRSymbol(OMRRegion omrRegion, Symbol symbol) throws IM3Exception {
         this(omrRegion, symbol.getAgnosticSymbol(), symbol.getBoundingBox().getFromX(), symbol.getBoundingBox().getFromY(), symbol.getWidth(), symbol.getHeight());
         this.accepted.setValue(symbol.isAccepted());
         this.name = new SimpleStringProperty();

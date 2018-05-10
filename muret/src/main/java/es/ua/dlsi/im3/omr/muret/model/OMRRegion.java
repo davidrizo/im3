@@ -49,9 +49,22 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
     ObservableSet<OMRSymbol> symbols;
 
 
-    public OMRRegion(OMRPage omrPage, int id, double fromX, double fromY, double width, double height, RegionType regionType) {
+    public OMRRegion(OMRPage omrPage, int id, double fromX, double fromY, double width, double height, RegionType regionType) throws IM3Exception {
         this.id = id;
         this.omrPage = omrPage;
+        if (fromX < 0) {
+            throw new IM3Exception("Cannot build a region with fromX (" + fromX + ") < 0");
+        }
+        if (fromY < 0) {
+            throw new IM3Exception("Cannot build a region with fromY (" + fromY + ") < 0");
+        }
+        if (width <= 0) {
+            throw new IM3Exception("Cannot build a region with width (" + width + ") <= 0");
+        }
+        if (height <= 0) {
+            throw new IM3Exception("Cannot build a region with height (" + height + ") <= 0");
+        }
+
         this.fromX = new SimpleDoubleProperty(fromX);
         this.fromY = new SimpleDoubleProperty(fromY);
         this.width = new SimpleDoubleProperty(width);
@@ -62,7 +75,7 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
         name.bind(this.regionType.asString().concat(" #" + id));
     }
 
-    public OMRRegion(OMRPage omrPage, int id, Region region) {
+    public OMRRegion(OMRPage omrPage, int id, Region region) throws IM3Exception {
         this.id = id;
         this.omrPage = omrPage;
         this.fromX = new SimpleDoubleProperty(region.getBoundingBox().getFromX());
