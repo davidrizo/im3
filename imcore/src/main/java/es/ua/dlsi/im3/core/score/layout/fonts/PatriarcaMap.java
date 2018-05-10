@@ -14,6 +14,7 @@ public class PatriarcaMap implements IFontMap {
     public static final String NOTE_HEAD_WIDTH_CODEPOINT = "mensuralWhiteMinima";
     public static final String CUSTOS = "mensuralCustosUp";
 
+
     // TODO: 7/2/18 UP OR DOWN
     private static final HashMap<Figures, String> UNICODES_STEM_UP = new HashMap<>();
     {

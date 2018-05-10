@@ -20,7 +20,7 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
 
     static HashMap<Accidentals, String> unicodes = new HashMap<>();
     {
-        unicodes.put(Accidentals.FLAT, "accidentalFlat");
+        unicodes.put(Accidentals.FLAT, "accidentalFlat"); //TODO Generalizarlo a una fuente SmuflMap o algo así
         unicodes.put(Accidentals.NATURAL, "accidentalNatural");
         unicodes.put(Accidentals.SHARP, "accidentalSharp");
         unicodes.put(Accidentals.DOUBLE_SHARP, "accidentalDoubleSharp");
