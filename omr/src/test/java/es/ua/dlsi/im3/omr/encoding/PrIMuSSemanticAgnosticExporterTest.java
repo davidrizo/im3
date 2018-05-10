@@ -4,7 +4,9 @@ import com.sun.org.apache.xpath.internal.operations.Mod;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
+import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.encoding.Encoder;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
@@ -15,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +31,7 @@ public class PrIMuSSemanticAgnosticExporterTest {
         testScoreConfiguration.setAssertExplicitAccidentals(false);
     }
 
-    void test(AgnosticVersion agnosticVersion, String filename, String expectedAgnostic, String expectedSemantic) throws IM3Exception {
+    void test(AgnosticVersion agnosticVersion, String filename, String expectedAgnostic, String expectedSemantic) throws IM3Exception, IOException {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile(filename);
         ScoreSong song = importer.importSong(file);
@@ -57,6 +60,15 @@ public class PrIMuSSemanticAgnosticExporterTest {
         ScoreSong importedSong = semanticImporter.importSong(semanticStringFormat + "\n");
 
         TestScoreUtils.checkEqual("mei", song, "semantic", importedSong, testScoreConfiguration);
+
+        MEISongExporter meiSongExporter = new MEISongExporter();
+        File meiOut = TestFileUtils.createTempFile(FileUtils.getFileWithoutPathOrExtension(file) + "_semantic.mei");
+        System.out.println(meiOut.getAbsolutePath());
+        meiSongExporter.exportSong(meiOut, importedSong);
+
+        MEISongImporter meiSongImporter = new MEISongImporter();
+        ScoreSong meiSongImported = meiSongImporter.importSong(meiOut);
+        TestScoreUtils.checkEqual("mei", song, "mei exported from semantic", meiSongImported, testScoreConfiguration);
 
     }
     @Test

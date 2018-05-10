@@ -20,7 +20,7 @@ https://stackoverflow.com/questions/28873463/no-context-sensitivity-in-antlr4
     }
 }
 
-sequence: symbol (SEP symbol)* newLine;
+sequence: symbol (SEP symbol)* SEP? newLine?;
 
 newLine: NEWLINE;
 
@@ -63,7 +63,7 @@ octave : INTEGER;
 
 dots : DOT+;
 
-SEP: ' '; //v2, v1 was tab
+SEP: ' ' | '\t'; //v2 is space, v1 was tab
 SEPSYMBOL: '-';
 SEPVALUES: '_';
 SLASH: '/';

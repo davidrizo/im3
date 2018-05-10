@@ -2,7 +2,6 @@ package es.ua.dlsi.im3.omr.encoding.semantic;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.conversions.ScoreToPlayed;
-import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.io.antlr.ErrorListener;
 import es.ua.dlsi.im3.core.io.antlr.GrammarParseRuntimeException;
@@ -53,6 +52,22 @@ public class SemanticImporter implements IScoreSongImporter {
         public void exitNewLine(semanticParser.NewLineContext ctx) {
             super.exitNewLine(ctx);
             newLineFound = true;
+        }
+
+        @Override
+        public void exitSequence(semanticParser.SequenceContext ctx) {
+            super.exitSequence(ctx);
+            try {
+                if (!getTime().equals(scoreSong.getLastMeasure().getEndTime())) {
+                    // add a last measure
+                    Measure measure = new Measure(scoreSong);
+                    scoreSong.addMeasure(scoreSong.getLastMeasure().getEndTime(), measure);
+                    measure.setEndTime(getTime());
+                }
+            } catch (IM3Exception e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot set last measure time", e);
+                throw new GrammarParseRuntimeException(e);
+            }
         }
 
         @Override
@@ -187,10 +202,14 @@ public class SemanticImporter implements IScoreSongImporter {
         public void exitBarline(semanticParser.BarlineContext ctx) {
             super.exitBarline(ctx);
             Measure measure = new Measure(scoreSong);
-            Time time = null;
             try {
-                time = getTime();
-                scoreSong.addMeasure(time, measure);
+                Time time = getTime();
+                if (!scoreSong.hasMeasures()) {
+                    scoreSong.addMeasure(Time.TIME_ZERO, measure);
+                } else {
+                    scoreSong.addMeasure(scoreSong.getLastMeasure().getEndTime(), measure);
+                }
+                measure.setEndTime(time);
             } catch (IM3Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot add measure", e);
                 throw new GrammarParseRuntimeException(e);
@@ -228,9 +247,26 @@ public class SemanticImporter implements IScoreSongImporter {
             int number = Integer.parseInt(ctx.INTEGER().getText());
             try {
                 Time measureDuration = scoreSong.getStaves().get(0).getLastTimeSignature().getDuration();
+
+                // add the covered measures (but the last one because it will be added by the barline)
+                Time time;
+                if (scoreSong.hasMeasures()) {
+                    time = scoreSong.getLastMeasure().getEndTime();
+                } else {
+                    time = Time.TIME_ZERO;
+                }
+
+                for (int i=0; i<number-1; i++) {
+                    Measure measure = new Measure(scoreSong);
+                    scoreSong.addMeasure(time, measure);
+                    time = time.add(measureDuration);
+                    measure.setEndTime(time);
+                }
+
                 SimpleMultiMeasureRest simpleRest = new SimpleMultiMeasureRest(measureDuration, number);
                 scoreSong.getStaves().get(0).getLayers().get(0).add(simpleRest);
                 scoreSong.getStaves().get(0).addCoreSymbol(simpleRest);
+
             } catch (IM3Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot add multirest", e);
                 throw new GrammarParseRuntimeException(e);
@@ -263,9 +299,9 @@ public class SemanticImporter implements IScoreSongImporter {
 
         Loader loader = new Loader(scoreSong, NotationType.eModern); //TODO
         walker.walk(loader, tree);
-        if (!loader.newLineFound) {
-            throw new ImportException("End of line not reached");
-        }
+        //if (!loader.newLineFound) {
+        //    throw new ImportException("End of line not reached");
+        //}
         if (errorListener.getNumberErrorsFound() != 0) {
 
             throw new ImportException(errorListener.getNumberErrorsFound() + " errors found in "
@@ -317,7 +353,7 @@ public class SemanticImporter implements IScoreSongImporter {
     }
 
     public static void main(String [] args) throws IM3Exception {
-        if (args.length > 2) {
+        if (args.length > 2 || args.length == 0) {
             System.err.println("Use: " + SemanticImporter.class.getName() + " [<input file>] <output file (MEI or mid)>, if no input file is given, standard input is used (line must end with an EOL");
             return;
         }
@@ -333,21 +369,23 @@ public class SemanticImporter implements IScoreSongImporter {
                 line = line + "\n";
             }
             scoreSong = semanticImporter.importSong(line);
-            outputFileName = args[1];
+            outputFileName = args[0];
         } else {
             scoreSong = semanticImporter.importSong(new File(args[0]));
-            outputFileName = args[2];
+            outputFileName = args[1];
         }
 
-        if (args[1].toLowerCase().endsWith("mid")) {
+        if (outputFileName.toLowerCase().endsWith("mid")) {
             PlayedSong playedSong = new PlayedSong();
             ScoreToPlayed scoreToPlayed = new ScoreToPlayed();
             playedSong = scoreToPlayed.createPlayedSongFromScore(scoreSong);
             MidiSongExporter midiSongExporter = new MidiSongExporter();
             midiSongExporter.exportSong(new File(outputFileName), playedSong);
-        } else if (args[2].toLowerCase().endsWith("mei")) {
+        } else if (outputFileName.toLowerCase().endsWith("mei")) {
             MEISongExporter exporter = new MEISongExporter();
             exporter.exportSong(new File(outputFileName), scoreSong);
+        } else {
+            System.err.println("Unsupported output file, it must be .mid or .mei");
         }
     }
 }

@@ -2,6 +2,8 @@ package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
+import java.util.Objects;
+
 /**
  * @autor drizo
  */
@@ -34,5 +36,19 @@ public class Accidental extends AgnosticSymbolType {
     @Override
     public String toAgnosticString() {
         return ACCIDENTAL + accidentals.toAgnosticString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Accidental)) return false;
+        if (!super.equals(o)) return false;
+        Accidental that = (Accidental) o;
+        return accidentals == that.accidentals;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), accidentals);
     }
 }
