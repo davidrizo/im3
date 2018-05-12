@@ -3,9 +3,12 @@ package es.ua.dlsi.im3.omr.muret.model;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
 import javafx.beans.property.*;
+
+import java.util.Objects;
 
 /**
  * Order by x, then by y
@@ -211,5 +214,34 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
 
     public double getCenterX() {
         return x.get() + width.get()/2.0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OMRSymbol)) return false;
+        OMRSymbol omrSymbol = (OMRSymbol) o;
+        return Objects.equals(omrRegion, omrSymbol.omrRegion) &&
+                Objects.equals(graphicalSymbol, omrSymbol.graphicalSymbol) &&
+                Objects.equals(x, omrSymbol.x) &&
+                Objects.equals(y, omrSymbol.y) &&
+                Objects.equals(width, omrSymbol.width) &&
+                Objects.equals(height, omrSymbol.height) &&
+                Objects.equals(accepted, omrSymbol.accepted) &&
+                Objects.equals(name, omrSymbol.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(omrRegion, graphicalSymbol, x, y, width, height, accepted, name);
+    }
+
+    public void chagePosition(int lineSpaces) {
+        graphicalSymbol.get().changePosition(lineSpaces);
+    }
+
+    public void changeAgnosticSymbolType(AgnosticSymbolType agnosticSymbolType) {
+        graphicalSymbol.get().changeAgnosticSymbolType(agnosticSymbolType);
     }
 }

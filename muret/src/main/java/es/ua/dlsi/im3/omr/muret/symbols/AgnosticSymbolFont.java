@@ -22,28 +22,34 @@ public abstract class AgnosticSymbolFont {
      * Key is agnostic string, avoid hashCode just in case
      */
     private HashMap<String, Glyph> glyphs;
+    /**
+     * Key is agnostic string (aligned to glyphs map)
+     */
+    private HashMap<String, AgnosticSymbolType> agnosticSymbolTypes;
 
     private LayoutFont layoutFont;
 
     public AgnosticSymbolFont(LayoutFont layoutFont) {
         this.layoutFont = layoutFont;
         glyphs = new HashMap<>();
+        agnosticSymbolTypes = new HashMap<>();
     }
 
     protected void add(AgnosticSymbolType agnosticSymbolType, String codepoint) {
         try {
             Glyph glyph = layoutFont.getGlyph(codepoint);
             glyphs.put(agnosticSymbolType.toAgnosticString(), glyph);
+            agnosticSymbolTypes.put(agnosticSymbolType.toAgnosticString(), agnosticSymbolType);
         } catch (IM3Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find a glyph for agnostic symbol '{0}'", agnosticSymbolType.toAgnosticString());
         }
     }
 
-    public Shape createShape(AgnosticSymbolType agnosticSymbolType) throws IM3Exception {
-        Glyph glyph = glyphs.get(agnosticSymbolType.toAgnosticString());
+    public Shape createShape(String agnosticString) throws IM3Exception {
+        Glyph glyph = glyphs.get(agnosticString);
         Shape shape = null;
         if (glyph == null) {
-            shape = new Text(agnosticSymbolType.toAgnosticString());
+            shape = new Text(agnosticString);
         } else {
             SVGPath path = new SVGPath();
             path.setContent(glyph.getPath());
@@ -52,9 +58,25 @@ public abstract class AgnosticSymbolFont {
         }
 
         return shape;
+
+    }
+    public Shape createShape(AgnosticSymbolType agnosticSymbolType) throws IM3Exception {
+        return createShape(agnosticSymbolType.toAgnosticString());
     }
 
     public LayoutFont getLayoutFont() {
         return layoutFont;
+    }
+
+    /**
+     *
+     * @return HaspMap where key is the agnostic string and glyph the information for creating the shape
+     */
+    public HashMap<String, Glyph> getGlyphs() {
+        return glyphs;
+    }
+
+    public AgnosticSymbolType getAgnosticSymbolType(String agnosticString) {
+        return agnosticSymbolTypes.get(agnosticString);
     }
 }

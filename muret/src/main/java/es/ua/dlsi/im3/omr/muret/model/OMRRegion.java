@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.TreeSet;
 
 public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
@@ -233,5 +234,26 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
     public boolean containsAbsoluteCoordinate(double x, double y) {
         return x >= this.getFromX() && x <= this.getFromX()+this.getWidth()
                 && y >= this.getFromY() && y <= this.getFromY()+this.getHeight();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OMRRegion)) return false;
+        OMRRegion omrRegion = (OMRRegion) o;
+        return id == omrRegion.id &&
+                Objects.equals(omrPage, omrRegion.omrPage) &&
+                Objects.equals(fromX, omrRegion.fromX) &&
+                Objects.equals(fromY, omrRegion.fromY) &&
+                Objects.equals(width, omrRegion.width) &&
+                Objects.equals(height, omrRegion.height) &&
+                Objects.equals(name, omrRegion.name) &&
+                Objects.equals(regionType, omrRegion.regionType);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(omrPage, id, fromX, fromY, width, height, name, regionType);
     }
 }

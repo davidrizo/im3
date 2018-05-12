@@ -294,4 +294,23 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
             }
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OMRPage)) return false;
+        OMRPage omrPage = (OMRPage) o;
+        return Objects.equals(fromX, omrPage.fromX) &&
+                Objects.equals(fromY, omrPage.fromY) &&
+                Objects.equals(width, omrPage.width) &&
+                Objects.equals(height, omrPage.height) &&
+                Objects.equals(name, omrPage.name) &&
+                Objects.equals(omrImage, omrPage.omrImage);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(fromX, fromY, width, height, name, omrImage);
+    }
 }

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -66,6 +67,16 @@ public class OMRProject {
      * Comments about the project
      */
     private StringProperty comments;
+
+    /**
+     * Last changed date
+     */
+    private Date lastChangedDate;
+
+    /**
+     * User name that changed it
+     */
+    private String changedBy;
 
     /**
      * @param projectFolder In new files, if the project does not exist it will be created
@@ -250,5 +261,21 @@ public class OMRProject {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public Date getLastChangedDate() {
+        return lastChangedDate;
+    }
+
+    public String getChangedBy() {
+        return changedBy;
+    }
+
+    public void setLastChangedDate(Date lastChangedDate) {
+        this.lastChangedDate = lastChangedDate;
+    }
+
+    public void setChangedBy(String changedBy) {
+        this.changedBy = changedBy;
     }
 }

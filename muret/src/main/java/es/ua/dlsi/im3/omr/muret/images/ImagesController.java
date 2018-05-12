@@ -47,13 +47,13 @@ public class ImagesController extends MuretAbstractController {
 
     State state;
 
-    HashMap<OMRImage, ImageThumbnailView> pageImageThumbnailViewHashMap;
+    HashMap<OMRImage, ImageThumbnailView> imageThumbnailViewHashMap;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         state = State.idle; //TODO cambiar estado en drag & drop
         iconAdd = new IconAdd();
-        pageImageThumbnailViewHashMap = new HashMap<>();
+        imageThumbnailViewHashMap = new HashMap<>();
         flowPane.prefWidthProperty().bind(scrollPane.widthProperty());
     }
 
@@ -95,20 +95,20 @@ public class ImagesController extends MuretAbstractController {
     }
 
     private void createImageView(OMRImage omrImage, boolean skipLoadIcon) {
-        ImageThumbnailView pageView = new ImageThumbnailView(this, omrImage);
+        ImageThumbnailView imageView = new ImageThumbnailView(this, omrImage);
         if (skipLoadIcon) {
-            flowPane.getChildren().add(flowPane.getChildren().size() - 1, pageView); // before the addImage icon
+            flowPane.getChildren().add(flowPane.getChildren().size() - 1, imageView); // before the addImage icon
         } else {
-            flowPane.getChildren().add(pageView); // before the addImage icon
+            flowPane.getChildren().add(imageView); // before the addImage icon
         }
-        pageImageThumbnailViewHashMap.put(omrImage, pageView);
-        addInteraction(pageView);
+        imageThumbnailViewHashMap.put(omrImage, imageView);
+        addInteraction(imageView);
     }
 
-    private void removeImageView(OMRImage page) {
-        ImageThumbnailView view = pageImageThumbnailViewHashMap.get(page);
+    private void removeImageView(OMRImage image) {
+        ImageThumbnailView view = imageThumbnailViewHashMap.get(image);
         if (view == null) {
-            throw new IM3RuntimeException("Cannot find page " + page);
+            throw new IM3RuntimeException("Cannot find image " + image);
         }
         flowPane.getChildren().remove(view);
         recomputeOrdering();
@@ -131,39 +131,39 @@ public class ImagesController extends MuretAbstractController {
     }
 
 
-    private void addInteraction(ImageThumbnailView pageView) {
-        pageView.setOnDragDetected(event -> {
-            Dragboard db = pageView.startDragAndDrop(TransferMode.MOVE);
+    private void addInteraction(ImageThumbnailView imageView) {
+        imageView.setOnDragDetected(event -> {
+            Dragboard db = imageView.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
             // Store the node ID in order to know what is dragged.
-            content.putString(new Integer(pageView.getOMRImage().getOrder()-1).toString());
+            content.putString(new Integer(imageView.getOMRImage().getOrder()-1).toString());
             db.setContent(content);
             event.consume();
         });
 
-        pageView.setOpenImageHandler(handler -> {
-            doOpenImage(pageView);
+        imageView.setOpenImageHandler(handler -> {
+            doOpenImage(imageView);
         });
 
-        pageView.setDeleteImageHandler(handler -> {
-            doDeleteImage(pageView);
+        imageView.setDeleteImageHandler(handler -> {
+            doDeleteImage(imageView);
         });
 
-        initDropZone(pageView.getLeftDropbox(), pageView, false);
-        initDropZone(pageView.getRightDropbox(), pageView, true);
+        initDropZone(imageView.getLeftDropbox(), imageView, false);
+        initDropZone(imageView.getRightDropbox(), imageView, true);
 
-        pageView.setOnMouseClicked(event -> {
+        imageView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                doOpenImage(pageView);
+                doOpenImage(imageView);
             }
         });
 
-        pageView.setOnMouseEntered(event -> {
-            pageView.highlight(true);
+        imageView.setOnMouseEntered(event -> {
+            imageView.highlight(true);
         });
 
-        pageView.setOnMouseExited(event -> {
-            pageView.highlight(false);
+        imageView.setOnMouseExited(event -> {
+            imageView.highlight(false);
         });
 
     }
@@ -171,10 +171,10 @@ public class ImagesController extends MuretAbstractController {
     /**
      *
      * @param dropbox
-     * @param pageView Use object rather than target ordering to keep the orderings updated
+     * @param imageView Use object rather than target ordering to keep the orderings updated
      * @param insertAfter
      */
-    private void initDropZone(Rectangle dropbox, ImageThumbnailView pageView, boolean insertAfter) {
+    private void initDropZone(Rectangle dropbox, ImageThumbnailView imageView, boolean insertAfter) {
         dropbox.setOnDragEntered(event -> {
             //TODO Refactorizar
             dropbox.setFill(Color.GREY);
@@ -197,12 +197,12 @@ public class ImagesController extends MuretAbstractController {
             // Reorder images
             Dragboard db = event.getDragboard();
             if (db.hasString()) {
-                int toOrder = pageView.getOMRImage().getOrder()-1;
+                int toOrder = imageView.getOMRImage().getOrder()-1;
                 if (insertAfter) {
                     toOrder++;
                 }
-                Logger.getLogger(ImagesController.class.getName()).log(Level.INFO, "Drag&drop: moving page at position {0} to position {1}", new Object[]{db.getString(), toOrder});
-                moveThumbnail(pageView, Integer.parseInt(db.getString()), toOrder);
+                Logger.getLogger(ImagesController.class.getName()).log(Level.INFO, "Drag&drop: moving image at position {0} to position {1}", new Object[]{db.getString(), toOrder});
+                moveThumbnail(imageView, Integer.parseInt(db.getString()), toOrder);
 
                 event.setDropCompleted(true);
                 event.consume();
@@ -210,7 +210,7 @@ public class ImagesController extends MuretAbstractController {
         });
     }
 
-    private void moveThumbnail(final ImageThumbnailView page, final int fromOrder, final int toOrder) {
+    private void moveThumbnail(final ImageThumbnailView image, final int fromOrder, final int toOrder) {
         ICommand command = new ICommand() {
             ArrayList<ImageThumbnailView> currentOrdering;
             @Override
@@ -251,8 +251,8 @@ public class ImagesController extends MuretAbstractController {
             public void undo() throws Exception {
                 // set the saved ordering
                 flowPane.getChildren().clear();
-                for (ImageThumbnailView pageThumbnailView: currentOrdering) {
-                    flowPane.getChildren().add(pageThumbnailView);
+                for (ImageThumbnailView imageThumbnailView: currentOrdering) {
+                    flowPane.getChildren().add(imageThumbnailView);
                 }
                 flowPane.getChildren().add(iconAdd.getRoot());
                 recomputeOrdering();
@@ -265,12 +265,12 @@ public class ImagesController extends MuretAbstractController {
 
             @Override
             public String getEventName() {
-                return "Move page";
+                return "Move image";
             }
 
             @Override
             public String toString() {
-                return "Move " + page.toString();
+                return "Move " + image.toString();
             }
         };
         try {
@@ -338,12 +338,12 @@ public class ImagesController extends MuretAbstractController {
 
                     @Override
                     public String getEventName() {
-                        return "Add page";
+                        return "Add image";
                     }
 
                     @Override
                     public String toString() {
-                        return "Add page(s)";
+                        return "Add image(s)";
                     }
                 };
 
@@ -355,8 +355,8 @@ public class ImagesController extends MuretAbstractController {
         }
     }
 
-    private void doDeleteImage(ImageThumbnailView pageView) {
-        if (ShowConfirmation.show(OMRApp.getMainStage(), "Do you want to delete " + pageView.getOMRImage().toString() + "?. It cannot be undone")) {
+    private void doDeleteImage(ImageThumbnailView imageView) {
+        if (ShowConfirmation.show(OMRApp.getMainStage(), "Do you want to delete " + imageView.getOMRImage().toString() + "?. It cannot be undone")) {
             try {
                 ICommand command = new ICommand() {
                     @Override
@@ -366,7 +366,7 @@ public class ImagesController extends MuretAbstractController {
                     }
 
                     private void doExecute() throws IM3Exception {
-                        dashboard.getModel().getCurrentProject().deleteImage(pageView.getOMRImage());
+                        dashboard.getModel().getCurrentProject().deleteImage(imageView.getOMRImage());
                     }
 
                     @Override
@@ -376,7 +376,7 @@ public class ImagesController extends MuretAbstractController {
 
                     @Override
                     public void undo() throws Exception {
-                        dashboard.getModel().getCurrentProject().addImage(pageView.getOMRImage());
+                        dashboard.getModel().getCurrentProject().addImage(imageView.getOMRImage());
                     }
 
                     @Override
@@ -391,12 +391,12 @@ public class ImagesController extends MuretAbstractController {
 
                     @Override
                     public String toString() {
-                        return "Delete " + pageView.toString();
+                        return "Delete " + imageView.toString();
                     }
                 };
                 dashboard.getCommandManager().executeCommand(command);
             } catch (IM3Exception e) {
-                ShowError.show(OMRApp.getMainStage(), "Cannot delete page", e);
+                ShowError.show(OMRApp.getMainStage(), "Cannot delete image", e);
             }
         }
     }

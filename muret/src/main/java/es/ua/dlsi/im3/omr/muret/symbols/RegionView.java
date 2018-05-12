@@ -62,8 +62,8 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         imageViewWithSymbols.getChildren().addAll(imageView, symbolsBoundingBoxesGroup); // order is important
     }
 
-    private void createStaffView() {
-        agnosticStaffView = new AgnosticStaffView(agnosticSymbolFont, owner.getWidth(), STAFF_HEIGHT);
+    private void createStaffView() throws IM3Exception {
+        agnosticStaffView = new AgnosticStaffView(agnosticSymbolFont, owner.getWidth(), STAFF_HEIGHT, -getOwner().getFromX());
     }
 
     @Override

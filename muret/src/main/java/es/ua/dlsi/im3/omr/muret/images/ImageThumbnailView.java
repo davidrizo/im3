@@ -6,7 +6,6 @@ import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.muret.PredefinedIcon;
 import es.ua.dlsi.im3.omr.muret.model.OMRInstrument;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -36,7 +35,7 @@ import java.util.Set;
 public class ImageThumbnailView extends BorderPane {
     private final VBox labels;
     private final Node previewIcon;
-    private final ImagesController pagesController;
+    private final ImagesController imagesController;
     Label labelOrder;
     private final Node interactionIcon;
     OMRImage omrImage;
@@ -55,9 +54,9 @@ public class ImageThumbnailView extends BorderPane {
     IOpenImageHandler openImageHandler;
     IDeleteImageHandler deleteImageHandler;
 
-    public ImageThumbnailView(ImagesController pagesController, OMRImage omrImage) {
+    public ImageThumbnailView(ImagesController imagesController, OMRImage omrImage) {
         this.omrImage = omrImage;
-        this.pagesController = pagesController;
+        this.imagesController = imagesController;
         mainPane = new AnchorPane();
 
         //image = SwingFXUtils.toFXImage(omrImage.getBufferedImage(), null);
@@ -180,7 +179,7 @@ public class ImageThumbnailView extends BorderPane {
             });
 
             //TODo Modelo
-            Set<OMRInstrument> omrInstruments = pagesController.getModel().getCurrentProject().getInstruments().getInstrumentSet();
+            Set<OMRInstrument> omrInstruments = imagesController.getModel().getCurrentProject().getInstruments().getInstrumentSet();
 
             for (OMRInstrument instrument: omrInstruments) {
                 MenuItem menuInstrument = new MenuItem(instrument.getName());
@@ -195,7 +194,7 @@ public class ImageThumbnailView extends BorderPane {
             addInstrument.setOnAction(event1 -> {
                 String name = ShowInput.show(OMRApp.getMainStage(), "New instrument", "Introduce the instrument name");
                 if (name != null) {
-                    OMRInstrument instrument = pagesController.getModel().getCurrentProject().addInstrument(name);
+                    OMRInstrument instrument = imagesController.getModel().getCurrentProject().addInstrument(name);
                     addInstrumentToPage(instrument);
                 }
             });
@@ -211,7 +210,7 @@ public class ImageThumbnailView extends BorderPane {
             }
 
             contextMenu.getItems().add(new SeparatorMenuItem());
-            MenuItem deleteMenu = new MenuItem("Delete page");
+            MenuItem deleteMenu = new MenuItem("Delete image");
             contextMenu.getItems().add(deleteMenu);
             deleteMenu.setOnAction(event1 -> {
                 if (deleteImageHandler != null) {
@@ -284,7 +283,7 @@ public class ImageThumbnailView extends BorderPane {
         };
 
         try {
-            pagesController.getCommandManager().executeCommand(command);
+            imagesController.getCommandManager().executeCommand(command);
         } catch (IM3Exception e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot add instrument", e);
         }*/
@@ -336,7 +335,7 @@ public class ImageThumbnailView extends BorderPane {
         };
 
         try {
-            pagesController.getCommandManager().executeCommand(command);
+            imagesController.getCommandManager().executeCommand(command);
         } catch (IM3Exception e) {
             ShowError.show(OMRApp.getMainStage(), "Cannot add instrument", e);
         }
@@ -362,7 +361,7 @@ public class ImageThumbnailView extends BorderPane {
     }
 
     public void updateLabel() {
-        labelOrder.setText("Page " + omrImage.getOrder());
+        labelOrder.setText("Image " + omrImage.getOrder());
     }
 
     public IOpenImageHandler getOpenImageHandler() {

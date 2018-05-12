@@ -14,6 +14,7 @@ import es.ua.dlsi.im3.omr.model.io.XMLWriter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class InputOutput {
     static String createXMLFilename(File projectFolder) {
@@ -54,6 +55,8 @@ public class InputOutput {
         Project pojoProject = reader.load(xmlFile);
 
         OMRProject omrProject = new OMRProject(projectFolder);
+        omrProject.setChangedBy(pojoProject.getChangedBy());
+        omrProject.setLastChangedDate(pojoProject.getLastChangedDate());
         omrProject.setNotationType(pojoProject.getNotationType());
         omrProject.setComments(pojoProject.getComments());
         for (Instrument pojoInstrument: pojoProject.getInstruments()) {

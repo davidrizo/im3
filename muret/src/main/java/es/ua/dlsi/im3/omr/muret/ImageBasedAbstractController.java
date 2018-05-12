@@ -3,10 +3,7 @@ package es.ua.dlsi.im3.omr.muret;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.model.*;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -47,6 +44,8 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
 
     protected OMRImage omrImage;
 
+    protected ObjectProperty<BoundingBoxBasedView> selectedSymbol;
+
     @Override
     public Node getRoot() {
         return scrollPane;
@@ -54,6 +53,8 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        selectedSymbol = new SimpleObjectProperty<>();
+
         symbolSelectionBasedActionsEnabled = new SimpleBooleanProperty(false);
         // TODO: 21/4/18 Que el botón de reconocimiento de regiones no esté activo si no hay páginas
         treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -124,6 +125,15 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
                 }
             }
         }
+
+        selectedSymbol.setValue(null);
+        if (selectedElements.size() == 1) {
+            BoundingBoxBasedView selected = selectedElements.iterator().next();
+            if (selected.getOwner() instanceof OMRSymbol) {
+                selectedSymbol.set(selected);
+            }
+        }
+
     }
 
     public void setOMRImage(OMRImage omrImage) throws IM3Exception {
@@ -169,7 +179,7 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
         }
     }
 
-    protected abstract BoundingBoxBasedView addSymbol(BoundingBoxBasedView regionView, OMRSymbol omrSymbol);
+    protected abstract BoundingBoxBasedView addSymbol(BoundingBoxBasedView regionView, OMRSymbol omrSymbol) throws IM3Exception;
 
     protected abstract BoundingBoxBasedView addRegion(BoundingBoxBasedView pageView, OMRRegion omrRegion) throws IM3Exception;
 

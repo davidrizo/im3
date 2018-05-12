@@ -19,8 +19,9 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
     protected Text label;
     protected OwnerType owner;
     protected BoundingBoxBasedView parentBoundingBox;
-    private Color backgroundColor;
+    protected Color backgroundColor;
     protected DraggableRectangle rectangle;
+    protected Color color;
 
     /**
      *
@@ -64,7 +65,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         this.setFocusTraversable(true); // to receive key events
         this.owner = owner;
         this.parentBoundingBox = parentBoundingBox;
-
+        this.color = color;
         this.getChildren().add(rectangle);
 
         label = new Text();
