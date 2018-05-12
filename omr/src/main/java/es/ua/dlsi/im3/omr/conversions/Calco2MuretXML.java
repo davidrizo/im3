@@ -176,7 +176,7 @@ public class Calco2MuretXML {
         // Used once, this is why it is not parametrized
         File imageFilesFolder = new File("/Users/drizo/Documents/GCLOUDUA/HISPAMUS/repositorios/catedral_zaragoza/8Abril2014/MuestrasTipografia");
         File inputFolder = new File("/Users/drizo/Documents/GCLOUDUA/HISPAMUS/repositorios/catedral_zaragoza/BoundingBoxesCapitanJCalvo/Anotaciones-Capitan-BB");
-        File outputFolder = new File("/Users/drizo/Documents/GCLOUDUA/HISPAMUS/muret");
+        File outputFolder = new File("/Users/drizo/Documents/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza");
         String [] subfolders = new String[] {"B-3.28", "B-50.747", "B-53.781", "B-59.850"};
         int [] expectedNPages = {1, 1, 1, 2};
         Calco2MuretXML c = new Calco2MuretXML();

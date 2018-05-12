@@ -61,7 +61,7 @@ public class Calco2Agnostic {
             case "minima":
                 return new Note(NoteFigures.half);
             case "minima_rest":
-                return new Note(NoteFigures.half);
+                return new Rest(RestFigures.half);
             case "proportio_maior":
                 return new MeterSign(MeterSigns.CZ); // it was incorrect
             case "proportio_minor":

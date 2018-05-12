@@ -37,6 +37,16 @@ public class Project {
      * Comments about the project
      */
     private String comments;
+    /**
+     * Last changed date
+     */
+    private Date lastChangedDate;
+
+    /**
+     * User name that changed it
+     */
+    private String changedBy;
+
 
     public Project(ProjectVersion version) {
         this.version = version;
@@ -144,5 +154,21 @@ public class Project {
 
     public String getComments() {
         return comments;
+    }
+
+    public Date getLastChangedDate() {
+        return lastChangedDate;
+    }
+
+    public void setLastChangedDate(Date lastChangedDate) {
+        this.lastChangedDate = lastChangedDate;
+    }
+
+    public String getChangedBy() {
+        return changedBy;
+    }
+
+    public void setChangedBy(String changedBy) {
+        this.changedBy = changedBy;
     }
 }
