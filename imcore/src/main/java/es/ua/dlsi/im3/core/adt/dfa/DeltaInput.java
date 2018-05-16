@@ -3,7 +3,7 @@ package es.ua.dlsi.im3.core.adt.dfa;
 /**
  * A state with an input from the alphabet
  */
-public class DeltaInput<StateType extends State, AlphabetSymbolType extends Comparable<AlphabetSymbolType>> {
+public class DeltaInput<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType> {
     StateType from;
     AlphabetSymbolType input;
 
@@ -19,14 +19,17 @@ public class DeltaInput<StateType extends State, AlphabetSymbolType extends Comp
 
         DeltaInput<?, ?> that = (DeltaInput<?, ?>) o;
 
-        if (!from.equals(that.from)) return false;
-        return input.equals(that.input);
+        if (!from.equals(that.from)) {
+            return false;
+        }
+        boolean result = input.getType().equals(that.input.getType());
+        return result;
     }
 
     @Override
     public int hashCode() {
         int result = from.hashCode();
-        result = 31 * result + input.hashCode();
+        result = 31 * result + input.getType().hashCode();
         return result;
     }
 

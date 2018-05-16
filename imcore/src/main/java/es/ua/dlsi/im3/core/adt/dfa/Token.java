@@ -1,6 +1,6 @@
 package es.ua.dlsi.im3.core.adt.dfa;
 
-public class Token<AlphabetSymbolType extends Comparable<AlphabetSymbolType>> implements Comparable<Token<AlphabetSymbolType>> {
+public class Token<AlphabetSymbolType extends IAlphabetSymbolType> implements Comparable<Token<AlphabetSymbolType>> {
     /**
      * Symbol type, depends on the given alphabet
      */
@@ -16,7 +16,7 @@ public class Token<AlphabetSymbolType extends Comparable<AlphabetSymbolType>> im
 
     @Override
     public int compareTo(Token<AlphabetSymbolType> o) {
-        return symbol.compareTo(o.symbol);
+        return symbol.getType().compareTo(o.symbol.getType());
     }
 
     @Override
@@ -26,11 +26,11 @@ public class Token<AlphabetSymbolType extends Comparable<AlphabetSymbolType>> im
 
         Token<?> token = (Token<?>) o;
 
-        return symbol.equals(token.symbol);
+        return symbol.getType().equals(token.symbol.getType());
     }
 
     @Override
     public int hashCode() {
-        return symbol.hashCode();
+        return symbol.getType().hashCode();
     }
 }

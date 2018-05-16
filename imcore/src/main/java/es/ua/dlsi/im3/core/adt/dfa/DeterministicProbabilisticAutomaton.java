@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 // TODO: 3/10/17 Llamarle transductor. Quizás esto debería ir en ProbabilisticAutomaton
-public class DeterministicProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends Comparable<AlphabetSymbolType>, TransductionType extends Transduction>  extends ProbabilisticAutomaton<StateType, AlphabetSymbolType> {
+public class DeterministicProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType, TransductionType extends Transduction>  extends ProbabilisticAutomaton<StateType, AlphabetSymbolType> {
     private boolean debug;
     private static Logger logger = Logger.getLogger(DeterministicProbabilisticAutomaton.class.getName());
 
