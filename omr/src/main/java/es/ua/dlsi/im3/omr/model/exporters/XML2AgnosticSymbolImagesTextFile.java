@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.model.exporters;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.utils.ImageUtils;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.*;
 import es.ua.dlsi.im3.omr.model.io.XMLReader;
 
@@ -21,7 +22,7 @@ public class XML2AgnosticSymbolImagesTextFile {
     public void run(File inputXMLFile, File outputTextFile) throws FileNotFoundException, IM3Exception {
         File imagesFolder = new File(inputXMLFile.getParent(), Project.IMAGES_FOLDER);
         imageUtils = new ImageUtils();
-        XMLReader reader = new XMLReader();
+        XMLReader reader = new XMLReader(AgnosticVersion.v2);
         Project project = reader.load(inputXMLFile);
 
         PrintStream ps = new PrintStream(outputTextFile);

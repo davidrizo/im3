@@ -1,9 +1,13 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.dfa.IAlphabetSymbolType;
 
-public abstract class AgnosticSymbolType implements Comparable<AgnosticSymbolType> {
+public abstract class AgnosticSymbolType implements Comparable<AgnosticSymbolType>, IAlphabetSymbolType {
     public static String SEPSYMBOL = ".";
+    public static String SEPPROPERTIES = "_";
+
+    
     public abstract String toAgnosticString();
 
     /**
@@ -22,29 +26,16 @@ public abstract class AgnosticSymbolType implements Comparable<AgnosticSymbolTyp
         return diff;
     }
 
-
     /**
-     * Class hashCode
-     * @return
-     */
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    /**
-     * Class equals
-     * @param obj
-     * @return
-     */
-    @Override
-    public boolean equals(Object obj) {
-        return this.getClass() == obj.getClass();
-    }
-
     /**
      * The meaning depends on the agnostic type
      * @param string
      */
     public abstract void setSubtype(String string) throws IM3Exception;
+
+    @Override
+    public String getType() {
+        return this.getClass().getName();
+    }
+
 }

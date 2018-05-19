@@ -58,7 +58,7 @@ public class SemanticImporter implements IScoreSongImporter {
         public void exitSequence(semanticParser.SequenceContext ctx) {
             super.exitSequence(ctx);
             try {
-                if (!getTime().equals(scoreSong.getLastMeasure().getEndTime())) {
+                if (scoreSong.hasMeasures() && !getTime().equals(scoreSong.getLastMeasure().getEndTime())) {
                     // add a last measure
                     Measure measure = new Measure(scoreSong);
                     scoreSong.addMeasure(scoreSong.getLastMeasure().getEndTime(), measure);
@@ -96,6 +96,7 @@ public class SemanticImporter implements IScoreSongImporter {
                             timeSignature = new TimeSignatureCommonTime(notationType);
                             break;
                         case "Ccut":
+                        case "C/":
                             timeSignature = new TimeSignatureCutTime(notationType);
                             break;
                         default:

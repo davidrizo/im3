@@ -3,11 +3,10 @@ package es.ua.dlsi.im3.omr.model.io;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
+import es.ua.dlsi.im3.core.score.StemDirection;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Beam;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.BeamType;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.NoteFigures;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.model.entities.*;
 import org.junit.Test;
 
@@ -45,9 +44,9 @@ public class XMLReaderWriterTest {
         Region region1 = new Region(RegionType.all, 20, 30, 40, 50);
         page2_2.add(region1);
 
-        Symbol symbol1 = new Symbol(new AgnosticSymbol(new Note(NoteFigures.eighth), PositionsInStaff.LINE_1), 2, 4, 24, 37);
+        Symbol symbol1 = new Symbol(new AgnosticSymbol(new Note(NoteFigures.eighth, Directions.up), PositionsInStaff.LINE_1), 2, 4, 24, 37);
         region1.addSymbol(symbol1);
-        Symbol symbol2 = new Symbol(new AgnosticSymbol(new Note(new Beam(BeamType.right, 2)), PositionsInStaff.LINE_1), 3, 3, 25, 39);
+        Symbol symbol2 = new Symbol(new AgnosticSymbol(new Note(new Beam(BeamType.right, 2), Directions.up), PositionsInStaff.LINE_1), 3, 3, 25, 39);
         region1.addSymbol(symbol2);
         return project;
     }
@@ -57,10 +56,10 @@ public class XMLReaderWriterTest {
         Project project = generateTestProject();
         // first save it
         File out = TestFileUtils.createTempFile("project.xml");
-        XMLWriter writer = new XMLWriter();
+        XMLWriter writer = new XMLWriter(AgnosticVersion.v2);
         writer.save(project, out);
 
-        XMLReader reader = new XMLReader();
+        XMLReader reader = new XMLReader(AgnosticVersion.v2);
         Project readProject = reader.load(out);
 
         assertEquals("2 symbols", 2, readProject.getImages().last().getPages().last().getRegions().last().getSymbols().size());

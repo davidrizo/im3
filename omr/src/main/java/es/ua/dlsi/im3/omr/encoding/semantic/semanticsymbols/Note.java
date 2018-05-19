@@ -16,8 +16,17 @@ public class Note extends DurationalSymbol {
     boolean graceNote;
     ScientificPitch scientificPitch;
 
-    public Note(boolean graceNote, ScientificPitch scientificPitch, Figures figures, int dots, boolean fermata, boolean trill) {
-        super(figures, dots, fermata);
+    /**
+     * @param graceNote
+     * @param scientificPitch
+     * @param figures
+     * @param dots
+     * @param fermata
+     * @param trill
+     * @param tupletNumber If null, it is not a tuplet
+     */
+    public Note(boolean graceNote, ScientificPitch scientificPitch, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber) {
+        super(figures, dots, fermata, tupletNumber);
         this.trill = trill;
         this.graceNote = graceNote;
         this.scientificPitch = scientificPitch;
@@ -43,6 +52,13 @@ public class Note extends DurationalSymbol {
         for (int i=0; i<dots; i++) {
             sb.append('.');
         }
+
+        if (tupletNumber != null) {
+            sb.append(SEPVALUES);
+            sb.append(TUPLET);
+            sb.append(tupletNumber);
+        }
+
         if (fermata) {
             sb.append(SEPVALUES);
             sb.append(FERMATA);

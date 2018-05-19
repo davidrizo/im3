@@ -11,6 +11,7 @@ import es.ua.dlsi.im3.omr.classifiers.segmentation.SymbolClusterer;
 import es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation.CalvoDocumentSegmenter;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.*;
 import es.ua.dlsi.im3.omr.model.entities.Image;
 import es.ua.dlsi.im3.omr.model.io.XMLWriter;
@@ -51,7 +52,7 @@ public class Calco2MuretXML {
             nimage++;
         }
 
-        XMLWriter xmlWriter = new XMLWriter();
+        XMLWriter xmlWriter = new XMLWriter(AgnosticVersion.v2);
         xmlWriter.save(project, output);
         System.out.println("Done!");
     }

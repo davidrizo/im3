@@ -92,7 +92,13 @@ public class AgnosticSymbol extends AgnosticToken {
 	    positionInStaff = new PositionInStaff(positionInStaff.getLineSpace()+lineSpaces);
     }
 
-    public void changeAgnosticSymbolType(AgnosticSymbolType agnosticSymbolType) {
+    /**
+     * @param agnosticSymbolType
+     * @return Old value
+     */
+    public AgnosticSymbolType changeAgnosticSymbolType(AgnosticSymbolType agnosticSymbolType) {
+        AgnosticSymbolType oldValue = this.symbol;
 	    this.symbol = agnosticSymbolType;
+        return oldValue;
     }
 }

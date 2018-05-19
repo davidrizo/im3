@@ -19,7 +19,7 @@ public class AudiverisTest {
     public void readMusicXMLOutput() throws IM3Exception {
         File file = TestFileUtils.getFile("/testdata/primus/audiveris/000051652-1_2_1.xml");
         ScoreSongImporter importer = new ScoreSongImporter();
-        Encoder encoder = new Encoder(AgnosticVersion.v1);
+        Encoder encoder = new Encoder(AgnosticVersion.v1, false);
         encoder.encode(importer.importSong(file));
     }
 }

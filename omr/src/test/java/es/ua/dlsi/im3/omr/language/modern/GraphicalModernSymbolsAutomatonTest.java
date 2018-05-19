@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.omr.encoding.Encoder;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import org.junit.Test;
 
@@ -19,14 +20,14 @@ public class GraphicalModernSymbolsAutomatonTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         ScoreSong song = importer.importSong(file);
 
-        Encoder encoder = new Encoder();
+        Encoder encoder = new Encoder(AgnosticVersion.v1, false);
         encoder.encode(song);
         AgnosticEncoding scoreGraphicalDescription = encoder.getAgnosticEncoding();
         //List<GraphicalToken> graphicalSymbols = scoreGraphicalDescription.getTokens();
 
         GraphicalModernSymbolsAutomaton automaton = new GraphicalModernSymbolsAutomaton();
         //System.out.println(scoreGraphicalDescription.getTokens().toString());
-        OMRTransduction transduction = automaton.probabilityOf(scoreGraphicalDescription.getSymbols());
+        OMRTransduction transduction = automaton.probabilityOf(scoreGraphicalDescription.getSymbolsWithoutSeparators());
         assertTrue("File " + filename + " has non 0 probability", transduction.getProbability().getNumerator().longValue() != 0);
         //sacamos el listado de los elementos
 

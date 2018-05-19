@@ -9,11 +9,18 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
 /**
  * @autor drizo
  */
 public class AgnosticSymbolConverter implements Converter {
+    AgnosticVersion agnosticVersion;
+
+    public AgnosticSymbolConverter(AgnosticVersion agnosticVersion) {
+        this.agnosticVersion = agnosticVersion;
+    }
+
     @Override
     public void marshal(Object o, HierarchicalStreamWriter hierarchicalStreamWriter, MarshallingContext marshallingContext) {
         AgnosticSymbol agnosticSymbol = (AgnosticSymbol) o;

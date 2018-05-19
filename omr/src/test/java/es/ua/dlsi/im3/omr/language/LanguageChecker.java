@@ -73,7 +73,7 @@ public class LanguageChecker {
                 GraphicalModernSymbolsAutomaton automaton = new GraphicalModernSymbolsAutomaton();
 
                 ScoreSong scoreSong = importer.importSong(file);
-                Encoder encoder = new Encoder();
+                Encoder encoder = new Encoder(false);
                 encoder.encode(scoreSong);
                 AgnosticEncoding agnosticEncoding = encoder.getAgnosticEncoding();
                 //List<GraphicalToken> graphicalTokenList = export.convert(scoreSong).getTokens();

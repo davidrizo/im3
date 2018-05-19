@@ -2,25 +2,26 @@ package es.ua.dlsi.im3.omr.language;
 
 import es.ua.dlsi.im3.core.adt.dfa.Alphabet;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 
 public class GraphicalSymbolAlphabet extends Alphabet<AgnosticSymbolType> {
     public GraphicalSymbolAlphabet() {
-        this.symbols.add(new MeterSign());
-        this.symbols.add(new Clef());
-        this.symbols.add(new Accidental());
-        this.symbols.add(new Custos());
-        this.symbols.add(new DalSengno());
-        this.symbols.add(new Digit());
-        this.symbols.add(new Dot());
-        this.symbols.add(new Fermata());
-        this.symbols.add(new GraceNote());
-        this.symbols.add(new Multirest());
-        this.symbols.add(new Note());
-        this.symbols.add(new Rest());
-        this.symbols.add(new Slur());
-        this.symbols.add(new Trill());
-        this.symbols.add(new ThickBarline());
-        this.symbols.add(new VerticalLine());
+        add(new MeterSign());
+        add(new Clef());
+        add(new Accidental());
+        add(new Custos());
+        add(new DalSengno());
+        add(new Digit());
+        add(new Dot());
+        add(new Fermata());
+        add(new GraceNote());
+        add(new Multirest());
+        add(new Note());
+        add(new Rest());
+        add(new Slur());
+        add(new Trill());
+        add(new ThickBarline());
+        add(new VerticalLine());
     }
 }

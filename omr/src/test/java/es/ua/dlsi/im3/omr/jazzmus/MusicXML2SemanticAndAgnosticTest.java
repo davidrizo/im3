@@ -14,14 +14,11 @@ import static org.junit.Assert.*;
 public class MusicXML2SemanticAndAgnosticTest {
     @Test
     public void run() throws IOException, IM3Exception {
-        /*File file = TestFileUtils.getFile("/testdata/jazzmus/milesdavis_dig.xml");
+        File file = TestFileUtils.getFile("/testdata/jazzmus/milesdavis_dig.xml");
 
         MusicXML2SemanticAndAgnostic musicXML2SemanticAndAgnostic = new MusicXML2SemanticAndAgnostic();
         File agnosticFile = TestFileUtils.createTempFile("jazzmus_agnostic.txt");
         File semanticFile = TestFileUtils.createTempFile("jazzmus_semantic.txt");
         musicXML2SemanticAndAgnostic.run(file, semanticFile, agnosticFile);
-        */
-        //TODO URGENT - JazzMus
-        System.err.println("TO-DO JazzMus");
     }
 }

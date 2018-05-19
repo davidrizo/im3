@@ -1,18 +1,16 @@
 package es.ua.dlsi.im3.omr.model.io;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
-import com.thoughtworks.xstream.converters.reflection.SortableFieldKeySorter;
-import com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.score.NotationType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.*;
 
 /**
  * @autor drizo
  */
 public class XStreamFactory {
-    public static XStream create() {
+    public static XStream create(AgnosticVersion agnosticVersion) {
         //SortableFieldKeySorter sorter = new SortableFieldKeySorter();
         //sorter.registerFieldOrder(Project.class, new String[] { "instruments", "images"}); // make instruments in project appear before the ones in pages
         //XStream xStream = new XStream();
@@ -36,7 +34,7 @@ public class XStreamFactory {
         xStream.alias("point", Point.class);
         //xStream.setMode(XStream.NO_REFERENCES);
         xStream.setMode(XStream.ID_REFERENCES);
-        xStream.registerConverter(new AgnosticSymbolConverter());
+        xStream.registerConverter(new AgnosticSymbolConverter(agnosticVersion));
 
         return xStream;
     }

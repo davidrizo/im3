@@ -45,7 +45,7 @@ symbol:
 clef: CLEF SEPSYMBOL ('C' | 'G' | 'F') INTEGER;
 //TODO timeSignature: TIMESIGNATURE SEPSYMBOL (METERSIGNS | (INTEGER SLASH INTEGER));
 //timeSignature: TIMESIGNATURE SEPSYMBOL (('C' | 'C/') | (INTEGER SLASH INTEGER)); v1
-timeSignature: TIMESIGNATURE SEPSYMBOL (('C' | 'Ccut') | (INTEGER SLASH INTEGER)); // v2
+timeSignature: TIMESIGNATURE SEPSYMBOL (('C' | 'Ccut' | 'C/') | (INTEGER '/' INTEGER)); // v2 and v1
 //keySignature: KEYSIGNATURE SEPSYMBOL DIATONICPITCH ACCIDENTALS? (MAJOR|MINOR)?;
 keySignature: KEYSIGNATURE SEPSYMBOL ('A'|'B'|'C'|'D'|'E'|'F'|'G') ACCIDENTALS? (MAJOR|MINOR)?;
 note: (NOTE | GRACENOTE) SEPSYMBOL pitch SEPVALUES FIGURE dots? (SEPVALUES FERMATA)? (SEPVALUES TRILL)?;
@@ -66,7 +66,7 @@ dots : DOT+;
 SEP: ' ' | '\t'; //v2 is space, v1 was tab
 SEPSYMBOL: '-';
 SEPVALUES: '_';
-SLASH: '/';
+//fragment SLASH: '/'; // to avoid problems with C/
 
 //TODO LINENUMBER: ('1'..'5');
 ACCIDENTALS: 'bb' | 'b' | 'n' | '#' | 'x';

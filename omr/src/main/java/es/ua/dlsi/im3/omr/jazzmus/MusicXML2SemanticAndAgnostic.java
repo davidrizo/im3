@@ -40,7 +40,7 @@ public class MusicXML2SemanticAndAgnostic {
         MusicXMLImporter importer = new MusicXMLImporter();
         ScoreSong song = importer.importSong(file);
 
-        Encoder encoder = new Encoder(AgnosticVersion.v2);
+        Encoder encoder = new Encoder(AgnosticVersion.v2, true);
         SemanticExporter semanticExporter = new SemanticExporter();
         AgnosticExporter agnosticExporter = new AgnosticExporter();
         encoder.encode(song);

@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.adt.dfa.Transition;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolAlphabet;
 import es.ua.dlsi.im3.omr.language.GraphicalSymbolsAutomaton;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class GraphicalMensuralSymbolsAutomaton extends GraphicalSymbolsAutomaton {
+   // AgnosticVersion agnosticVersion = AgnosticVersion.v1;
+
     public GraphicalMensuralSymbolsAutomaton() throws IM3Exception {
         super(NotationType.eModern);
         HashSet<State> states = new HashSet<>();

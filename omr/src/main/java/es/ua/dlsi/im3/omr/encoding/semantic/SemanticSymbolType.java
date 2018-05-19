@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.omr.encoding.semantic;
 
-public abstract class SemanticSymbolType implements Comparable<SemanticSymbolType> {
+import es.ua.dlsi.im3.core.adt.dfa.IAlphabetSymbolType;
+
+public abstract class SemanticSymbolType implements Comparable<SemanticSymbolType>, IAlphabetSymbolType {
     protected static String SEPSYMBOL = "-";
     protected static String SEPVALUES = "_";
     public abstract String toSemanticString();
@@ -17,5 +19,10 @@ public abstract class SemanticSymbolType implements Comparable<SemanticSymbolTyp
             diff = hashCode() - other.hashCode();
         }
         return diff;
+    }
+
+    @Override
+    public String getType() {
+        return this.getClass().getName();
     }
 }
