@@ -103,7 +103,84 @@
     },
     "mensuralCustosUp" : {
 	"codepoint": "U+EA02"
+    },
+    "quadrupleWholeStem" : {
+      "codepoint": "U+F090"
+    },
+    "quadrupleWholeStemUp" : {
+      "codepoint": "U+F091"
+    },
+    "tripleWholeStem" : {
+      "codepoint": "U+F092"
+    },
+    "tripleWholeStemUp" : {
+      "codepoint": "U+F093"
+    },
+    "mensuralWhiteMaximaUp" : {
+      "codepoint": "U+F094"
+    },
+    "doubleWhole" : {
+      "codepoint": "U+F095"
+    },
+    "mensuralWhiteLongaUp" : {
+      "codepoint": "U+F096"
+    },
+    "mensuralBlackLonga" : {
+      "codepoint": "U+E951"
+    },
+    "mensuralBlackLongaUp" : {
+      "codepoint": "U+F951"
+    },
+    "mensuralBlackBrevis" : {
+      "codepoint": "U+E952"
+    },
+    "mensuralBlackSemibrevis" : {
+      "codepoint": "U+E953"
+    },
+    "sixteenthVoid" : {
+      "codepoint": "U+F966"
+    },
+    "sixteenthVoidDown" : {
+      "codepoint": "U+F967"
+    },
+    "mensuralRestSemifusa" : {
+      "codepoint": "U+E9F8"
+    },
+    "repeatDots" : {
+      "codepoint": "U+E043"
+    },
+    "mensuralSignumUp" : {
+      "codepoint": "U+EA00"
+    },
+    "agnosticSlurStart" : {
+      "codepoint": "U+F098"
+    },
+    "agnosticSlurEnd" : {
+      "codepoint": "U+F099"
+    },
+    "smudge" : {
+      "codepoint": "U+F0A0"
+    },
+    "ligature" : {
+      "codepoint": "U+F0A1"
+    },
+    "beamedRight1" : {
+      "codepoint": "U+F0A2"
+    },
+    "beamedLeft1" : {
+      "codepoint": "U+F0A3"
+    },
+    "beamedRight2" : {
+      "codepoint": "U+F0A4"
+    },
+    "beamedLeft2" : {
+      "codepoint": "U+F0A5"
+    },
+    "inkBlot" : {
+      "codepoint": "U+F0A6"
+    },
+    "paperHole" : {
+      "codepoint": "U+F0A7"
     }
-
 }
 

@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.gui.javafx.dialogs;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.stage.DirectoryChooser;
 
@@ -17,7 +19,14 @@ public class OpenFolderDialog {
 		//FileChooser fc = new FileChooser();
 		DirectoryChooser fc = new DirectoryChooser();
 		fc.setTitle(title);
-		fc.setInitialDirectory(new File(lastFolderPath));
+		if (lastFolderPath != null) {
+		    File initialDirectory = new File(lastFolderPath);
+		    if (initialDirectory.exists() && initialDirectory.isDirectory()) {
+                fc.setInitialDirectory(new File(lastFolderPath));
+            } else {
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot set initial directory {0}", lastFolderPath);
+            }
+        }
 		File file = fc.showDialog(null);
 		File lastFolder = null;
 		if (file != null) {

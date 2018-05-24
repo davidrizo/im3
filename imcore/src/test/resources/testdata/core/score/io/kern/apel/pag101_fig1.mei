@@ -41,7 +41,9 @@
                                 <mensur tempus="2" prolatio="2"/> <!-- C -->
                                 <note dur="brevis" dots="1" oct="4" pname="f"></note>
                                 <ligature form="obliqua">
-                                    <note dur="semibrevis" dots="1" oct="4" pname="e"></note>
+                                    <note dur="semibrevis" oct="4" pname="e">
+                                        <dot/>
+                                    </note>
                                     <note dur="semibrevis" oct="4" pname="d"></note>
                                 </ligature>
                                 <note dur="semiminima" oct="4" pname="c" stem.dir="up"/>

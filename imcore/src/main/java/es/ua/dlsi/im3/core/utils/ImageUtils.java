@@ -18,6 +18,8 @@ import java.util.logging.Logger;
  * @autor drizo
  */
 public class ImageUtils {
+    private static ImageUtils instance = null;
+
     /**
      * Used to avoid loading twice the JAI library (to load TIFF)
      */
@@ -38,6 +40,17 @@ public class ImageUtils {
             Instant end = Instant.now();
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, "JAI loaded in {0}", TimeUtils.getTimeElapsed(start, end));
         }
+    }
+
+    private ImageUtils() {
+    }
+    public static ImageUtils getInstance() {
+        synchronized (ImageUtils.class) {
+            if (instance == null) {
+                instance = new ImageUtils();
+            }
+        }
+        return instance;
     }
 
 

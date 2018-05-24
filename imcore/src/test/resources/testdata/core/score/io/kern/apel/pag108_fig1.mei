@@ -39,11 +39,11 @@
                         <staff n="1">
                             <layer n="1">
                                 <mensur tempus="3" prolatio="2"/> <!-- O -->
-                                <note dur="brevis" oct="4" pname="c"></note>
-                                <note dur="brevis" oct="3" pname="b"></note>
-                                <rest dur="brevis"/>
+                                <note dur="brevis" oct="4" pname="c" num="3" numbase="2"></note>
+                                <note dur="brevis" oct="3" pname="b" num="3" numbase="2"></note>
+                                <rest dur="brevis" num="3" numbase="2"/>
                                 <ligature form="recta">
-                                    <note dur="brevis" oct="3" pname="a"></note>
+                                    <note dur="brevis" oct="3" pname="a" num="3" numbase="2"></note>
                                     <note dur="longa" oct="5" pname="c"></note>
                                 </ligature>
                                 <ligature form="obliqua">

@@ -327,8 +327,9 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
             attachments = new HashSet<>();
         }
         attachments.add(attachment);
-	    if (attachment instanceof AttachmentInStaff) {
-            getStaff().addAttachment((AttachmentInStaff<?>) attachment); //TODO ¿Está esto bien diseñado?
+	    Staff staff = getStaff();
+	    if (attachment instanceof AttachmentInStaff && staff != null) {
+            staff.addAttachment((AttachmentInStaff<?>) attachment); //TODO ¿Está esto bien diseñado?
         }
     }
 
