@@ -32,7 +32,7 @@
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
                   <Button mnemonicParsing="false" onAction="#handleRecognizeSymbols" text="Recognize symbols" />
-                  <Button fx:id="btnChangeSymbol" mnemonicParsing="false" onAction="#handleChangeSymbol" text="Change symbol" />
+                  <Button fx:id="btnChangeSymbol" mnemonicParsing="false" onAction="#handleChangeSymbol" text="Change symbol (c)" />
                     </items>
                 </ToolBar>
             </children>

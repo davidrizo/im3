@@ -99,6 +99,10 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
 
     @FXML
     private void handleChangeSymbol() {
+        doChangeSymbol();
+    }
+
+    public void doChangeSymbol() {
         ((SymbolView)selectedSymbol.get()).doEdit();
     }
 

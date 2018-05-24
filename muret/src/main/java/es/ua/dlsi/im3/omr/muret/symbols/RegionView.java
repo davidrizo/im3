@@ -114,6 +114,10 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
     @Override
     public void handle(KeyEvent event) {
         super.handle(event);
+        switch (event.getCode()) {
+            default:
+                agnosticStaffView.handle(event);
+        }
     }
 
     public void delete(SymbolView symbolView) {

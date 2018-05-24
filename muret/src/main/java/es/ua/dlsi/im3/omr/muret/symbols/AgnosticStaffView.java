@@ -22,6 +22,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -165,7 +166,7 @@ public class AgnosticStaffView extends VBox {
         List<String> agnosticStrings =  new LinkedList<>(agnosticSymbolFont.getGlyphs().keySet());
 
         //TODO Diseñar la usabilidad de todo esto
-        Button buttonClose = new Button("Close correction", new FontIcon("oi-x"));
+        Button buttonClose = new Button("Close correction\n(ESC)", new FontIcon("oi-x"));
         correctionPane.getChildren().add(buttonClose);
         buttonClose.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -175,14 +176,14 @@ public class AgnosticStaffView extends VBox {
         });
 
         // see http://aalmiray.github.io/ikonli/cheat-sheet-openiconic.html
-        Button buttonPositionDown = new Button("Position down", new FontIcon("oi-arrow-bottom"));
+        Button buttonPositionDown = new Button("Position down\n(CMD+Down)", new FontIcon("oi-arrow-bottom"));
         buttonPositionDown.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 doChangePosition(-1);
             }
         });
-        Button buttonPositionUp = new Button("Position up", new FontIcon("oi-arrow-top"));
+        Button buttonPositionUp = new Button("Position up\n(CMD+Up)", new FontIcon("oi-arrow-top"));
         buttonPositionUp.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -230,15 +231,17 @@ public class AgnosticStaffView extends VBox {
      * Change symbol position
      * @param lineSpaces
      */
-    private void doChangePosition(int lineSpaces) {
+    public void doChangePosition(int lineSpaces) {
         try {
-            //TODO Commands, undo, redo, cancel
-            correctingSymbol.get().changePosition(lineSpaces);
-            Shape shape = shapesInStaff.get(correctingSymbol.get().getOwner());
-            if (shape == null) {
-                throw new IM3Exception("Cannot find the shape associated to symbol " + correctingSymbol.get());
+            if (correctingSymbol != null) {
+                //TODO Commands, undo, redo, cancel
+                correctingSymbol.get().changePosition(lineSpaces);
+                Shape shape = shapesInStaff.get(correctingSymbol.get().getOwner());
+                if (shape == null) {
+                    throw new IM3Exception("Cannot find the shape associated to symbol " + correctingSymbol.get());
+                }
+                updateVerticalLayoutInStaff(correctingSymbol.get().getOwner(), shape);
             }
-            updateVerticalLayoutInStaff(correctingSymbol.get().getOwner(), shape);
         } catch (IM3Exception e) {
             e.printStackTrace(); //TODO logs
             ShowError.show(null, "Cannot change position", e); // TODO stage
@@ -277,7 +280,7 @@ public class AgnosticStaffView extends VBox {
     }
 
 
-    private void doCloseCorrectionPane() {
+    public void doCloseCorrectionPane() {
         correctingSymbol.get().endEdit();
         correctingSymbol.setValue(null);
     }
@@ -288,5 +291,19 @@ public class AgnosticStaffView extends VBox {
             throw new IM3RuntimeException("Cannot find shape for element " + elementView.getOwner());
         }
         symbolsGroup.getChildren().remove(shape);
+    }
+
+    public void handle(KeyEvent event) {
+        switch (event.getCode()) {
+            case ESCAPE:
+                doCloseCorrectionPane();
+                break;
+            case UP:
+                doChangePosition(-1);
+                break;
+            case DOWN:
+                doChangePosition(1);
+                break;
+        }
     }
 }

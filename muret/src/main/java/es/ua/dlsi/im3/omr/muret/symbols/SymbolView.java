@@ -129,8 +129,28 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
     @Override
     public void handle(KeyEvent event) {
         super.handle(event);
-        if (event.getCode() == KeyCode.DELETE) {
-            this.regionView.delete(this);
+        switch (event.getCode()) {
+            case DELETE:
+                this.regionView.delete(this);
+                break;
+            case C:
+                ((SymbolCorrectionController)controller).doChangeSymbol();
+                break;
+            case ESCAPE:
+                this.regionView.getAgnosticStaffView().doCloseCorrectionPane();
+                break;
+            case UP:
+                if (event.isShortcutDown()) {
+                    regionView.getAgnosticStaffView().doChangePosition(1);
+                    break;
+                }
+                break;
+            case DOWN:
+                if (event.isShortcutDown()) {
+                    regionView.getAgnosticStaffView().doChangePosition(-1);
+                    break;
+                }
+                break;
         }
     }
 }
