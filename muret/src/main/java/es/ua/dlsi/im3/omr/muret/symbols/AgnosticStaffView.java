@@ -4,6 +4,7 @@ package es.ua.dlsi.im3.omr.muret.symbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
+import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
@@ -40,7 +41,10 @@ import java.util.logging.Logger;
  * @autor drizo
  */
 public class AgnosticStaffView extends VBox {
+    private static final double LEDGER_LINE_EXTRA_LENGTH = 8;
+    private static final double LEDGER_LINE_WIDTH = 20;
     private final ImageBasedAbstractController controller;
+    private final Line[] lines;
     Group staffGroup;
 
     private final AgnosticSymbolFont agnosticSymbolFont;
@@ -70,9 +74,11 @@ public class AgnosticStaffView extends VBox {
         staffGroup.getChildren().addAll(background, linesGroup, symbolsGroup); // order is important
 
         //TODO hacer una clase que sepa hacer esto y manipular cosas?
+        lines = new Line[5];
         for (int i=0; i<5; i++) {
             double y = LayoutConstants.EM+i*LayoutConstants.SPACE_HEIGHT;
             Line line = new Line();
+            lines[i] = line;
             line.setStartX(0);
             line.setStartY(y);
             line.setEndY(y);
@@ -97,7 +103,7 @@ public class AgnosticStaffView extends VBox {
         try {
             OMRSymbol symbol = symbolView.getOwner();
             Shape shape = agnosticSymbolFont.createShape(symbol.getGraphicalSymbol().getSymbol());
-            shape.setLayoutX(symbol.getX()+regionXOffset);
+            shape.setLayoutX(symbol.getCenterX()+regionXOffset);
 
             symbolsGroup.getChildren().add(shape);
             updateVerticalLayoutInStaff(symbol, shape);
@@ -113,7 +119,37 @@ public class AgnosticStaffView extends VBox {
     }
 
     private void updateVerticalLayoutInStaff(OMRSymbol omrSymbol, Shape shape) {
-        shape.setLayoutY(getPosition(omrSymbol.getGraphicalSymbol().getPositionInStaff()));
+        PositionInStaff positionInStaff = omrSymbol.getGraphicalSymbol().getPositionInStaff();
+        shape.setLayoutY(getPosition(positionInStaff));
+
+        // check if ledger lines are required
+        Group ledgerLinesGroup;
+        int numberOfLines = Staff.computeNumberLedgerLinesNeeded(positionInStaff, 5);
+        if (numberOfLines < 0) {
+            ledgerLinesGroup = new Group();
+            int n = -numberOfLines;
+            for (int i=1; i<=n; i++) {
+                double y = lines[0].getStartY() -i*LayoutConstants.SPACE_HEIGHT;
+                Line line = new Line(shape.getLayoutX()-LEDGER_LINE_EXTRA_LENGTH, y, shape.getLayoutX()+LEDGER_LINE_WIDTH, y);
+                line.setStroke(Color.BLACK);
+                line.setStrokeWidth(1);
+                ledgerLinesGroup.getChildren().add(line);
+            }
+        } else {
+            ledgerLinesGroup = new Group();
+            int n = numberOfLines;
+            for (int i=1; i<=n; i++) {
+                double y = lines[4].getStartY() + i*LayoutConstants.SPACE_HEIGHT;
+                Line line = new Line(shape.getLayoutX()-LEDGER_LINE_EXTRA_LENGTH, y, shape.getLayoutX()+LEDGER_LINE_WIDTH, y);
+                line.setStroke(Color.BLACK);
+                line.setStrokeWidth(1);
+                ledgerLinesGroup.getChildren().add(line);
+            }
+        }
+        if (symbolsGroup != null) {
+            symbolsGroup.getChildren().add(ledgerLinesGroup);
+        } //TODO Cuando borremos el elemento que se borre la línea
+
     }
 
     /**
