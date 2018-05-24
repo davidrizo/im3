@@ -103,7 +103,7 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
         LinkedList<OMRRegion> regions = new LinkedList<>();
         for (OMRPage page: omrImage.getPages()) {
-            for (OMRRegion omrRegion: page.getRegions()) {
+            for (OMRRegion omrRegion: page.regionsProperty()) {
                 regions.add(omrRegion);
             }
         }
@@ -361,7 +361,7 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
     @Override
     protected BoundingBoxBasedView addSymbol(BoundingBoxBasedView regionView, OMRSymbol omrSymbol) {
-        SymbolView symbolView = new SymbolView((RegionView) regionView, omrSymbol, Color.GREEN);
+        SymbolView symbolView = new SymbolView(this, (RegionView) regionView, omrSymbol, Color.GREEN);
         symbols.put(omrSymbol, symbolView);
         viewsGroup.getChildren().add(symbolView);
         return symbolView;
@@ -369,7 +369,7 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
     @Override
     protected BoundingBoxBasedView addRegion(BoundingBoxBasedView pageView, OMRRegion omrRegion) {
-        RegionView regionView = new RegionView((PageView) pageView, omrRegion, Color.RED);
+        RegionView regionView = new RegionView(this, (PageView) pageView, omrRegion, Color.RED);
         regions.put(omrRegion, regionView);
         viewsGroup.getChildren().add(regionView);
         return regionView;
@@ -377,7 +377,7 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
     @Override
     protected BoundingBoxBasedView addPage(OMRPage omrPage) {
-        PageView pageView = new PageView(omrPage, Color.BLUE); // TODO: 21/4/18 Colores
+        PageView pageView = new PageView(this, omrPage, Color.BLUE); // TODO: 21/4/18 Colores
         pages.put(omrPage, pageView);
         viewsGroup.getChildren().add(pageView);
         return pageView;

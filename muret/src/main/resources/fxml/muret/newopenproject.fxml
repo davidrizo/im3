@@ -18,14 +18,14 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <Label fx:id="detailsLabel" text="Select a taining set file" wrapText="true" GridPane.rowIndex="2">
+      <Label fx:id="detailsLabel" text="Select a taining set folder" wrapText="true" GridPane.rowIndex="2">
          <font>
             <Font size="12.0" />
          </font>
       </Label>
       <Button mnemonicParsing="false" onAction="#handleSelectFolder" text="..." GridPane.columnIndex="1" />
-      <Button mnemonicParsing="false" onAction="#handleSelectTrainingSetFile" text="..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <Label fx:id="labelTrainingSetFile" text="&lt;Training set file&gt;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+      <Button mnemonicParsing="false" onAction="#handleSelectTrainingSetFolder" text="..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label fx:id="labelTrainingSetFolder" text="&lt;Training set folder&gt;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
       <Label fx:id="labelProjectFolder" text="&lt;Last opened project folder&gt;" GridPane.columnIndex="2" />
       <Label text="Notation type (for new projects)" GridPane.rowIndex="1" />
       <HBox fx:id="hboxNotationType" GridPane.columnIndex="2" GridPane.rowIndex="1">

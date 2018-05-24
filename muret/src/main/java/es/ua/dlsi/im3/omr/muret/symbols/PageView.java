@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.muret.symbols;
 
+import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.model.OMRPage;
 import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
 import javafx.scene.input.ContextMenuEvent;
@@ -13,8 +14,8 @@ import javafx.scene.paint.Color;
 public class PageView extends BoundingBoxBasedView<OMRPage> {
     VBox vBox;
 
-    public PageView(OMRPage owner, Color color) {
-        super(null, owner, color);
+    public PageView(ImageBasedAbstractController controller, OMRPage owner, Color color) {
+        super(controller, null, owner, color);
     }
 
     @Override

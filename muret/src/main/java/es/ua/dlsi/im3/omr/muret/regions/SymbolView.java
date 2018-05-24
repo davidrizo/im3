@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.muret.regions;
 
 import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
+import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
@@ -12,8 +13,8 @@ import javafx.scene.paint.Color;
  */
 public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
 
-    public SymbolView(RegionView regionView, OMRSymbol owner, Color color) {
-        super(regionView, owner, color);
+    public SymbolView(ImageBasedAbstractController controller, RegionView regionView, OMRSymbol owner, Color color) {
+        super(controller, regionView, owner, color);
     }
 
     @Override

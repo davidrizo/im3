@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.*;
 import es.ua.dlsi.im3.omr.model.io.XMLReader;
 import es.ua.dlsi.im3.omr.model.io.XMLWriter;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.Date;
 
 public class InputOutput {
+    public static final AgnosticVersion AGNOSTIC_VERSION = AgnosticVersion.v2;
     static String createXMLFilename(File projectFolder) {
         return FileUtils.getFileWithoutPath(projectFolder.getName()) + ".mrt";
     }
@@ -30,7 +32,7 @@ public class InputOutput {
         File projectFolder = project.getProjectFolder();
         File xmlFile = new File(projectFolder, createXMLFilename(projectFolder));
 
-        XMLWriter writer = new XMLWriter();
+        XMLWriter writer = new XMLWriter(AGNOSTIC_VERSION);
         try {
             writer.save(pojoProject, xmlFile);
         } catch (IOException e) {
@@ -51,7 +53,7 @@ public class InputOutput {
             throw new IM3Exception("Cannot open project file '" + xmlFile.getAbsolutePath() + "'");
         }
 
-        XMLReader reader = new XMLReader();
+        XMLReader reader = new XMLReader(AGNOSTIC_VERSION);
         Project pojoProject = reader.load(xmlFile);
 
         OMRProject omrProject = new OMRProject(projectFolder);

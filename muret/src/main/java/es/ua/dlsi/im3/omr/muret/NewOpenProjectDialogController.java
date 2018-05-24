@@ -22,7 +22,7 @@ public class NewOpenProjectDialogController extends FXMLDialog {
     @FXML
     Label labelProjectFolder;
     @FXML
-    Label labelTrainingSetFile;
+    Label labelTrainingSetFolder;
     @FXML
     RadioButton rbNotationTypeMensural;
     @FXML
@@ -32,23 +32,23 @@ public class NewOpenProjectDialogController extends FXMLDialog {
 
     File projectFolder;
 
-    File trainingFile;
+    File trainingFolder;
     private Preferences prefs;
 
     public NewOpenProjectDialogController(Stage stage, String title, boolean newProject) {
         super(stage, title, "/fxml/muret/newopenproject.fxml");
         labelProjectFolder.setText("");
-        labelTrainingSetFile.setText("");
+        labelTrainingSetFolder.setText("");
 
         labelProjectFolder.setTextOverrun(OverrunStyle.LEADING_ELLIPSIS); // ellipsis from the beginning
-        labelTrainingSetFile.setTextOverrun(OverrunStyle.LEADING_ELLIPSIS);
+        labelTrainingSetFolder.setTextOverrun(OverrunStyle.LEADING_ELLIPSIS);
 
         String currentDir = System.getProperty("user.home");
         prefs = Preferences.userNodeForPackage(NewOpenProjectDialogController.class);
-        String lastTrainingFileStr = prefs.get(PROPERTY_TRAINING, null);
-        if (lastTrainingFileStr != null) {
-            trainingFile = new File(lastTrainingFileStr);
-            labelTrainingSetFile.setText(lastTrainingFileStr);
+        String lastTrainingFolderStr = prefs.get(PROPERTY_TRAINING, null);
+        if (lastTrainingFolderStr != null) {
+            trainingFolder = new File(lastTrainingFolderStr);
+            labelTrainingSetFolder.setText(lastTrainingFolderStr);
         }
 
         String lastProjectStr = prefs.get(PROPERTY_LASTPROJECT, null);
@@ -58,7 +58,7 @@ public class NewOpenProjectDialogController extends FXMLDialog {
         }
 
 
-        this.btnOKNode.disableProperty().bind(labelTrainingSetFile.textProperty().isEmpty().or(
+        this.btnOKNode.disableProperty().bind(labelTrainingSetFolder.textProperty().isEmpty().or(
                 labelProjectFolder.textProperty().isEmpty()
         ));
 
@@ -75,12 +75,17 @@ public class NewOpenProjectDialogController extends FXMLDialog {
         }
     }
     @FXML
-    public void handleSelectTrainingSetFile() {
-        OpenSaveFileDialog dlg = new OpenSaveFileDialog();
-        trainingFile = dlg.openFile("Training set file", "Training dataset", "train");
-        if (trainingFile != null) {
-            labelTrainingSetFile.setText(trainingFile.getAbsolutePath());
-            prefs.put(PROPERTY_TRAINING, trainingFile.getAbsolutePath());
+    public void handleSelectTrainingSetFolder() {
+        OpenFolderDialog dlg = new OpenFolderDialog();
+        String lastTrainingProjectFolder = null;
+        if (trainingFolder != null) {
+            lastTrainingProjectFolder = trainingFolder.getAbsolutePath();
+        }
+        File folder = dlg.openFolder("Training set folder", lastTrainingProjectFolder);
+        if (folder != null) {
+            trainingFolder = folder;
+            labelTrainingSetFolder.setText(trainingFolder.getAbsolutePath());
+            prefs.put(PROPERTY_TRAINING, trainingFolder.getAbsolutePath());
         }
 
     }
@@ -89,8 +94,8 @@ public class NewOpenProjectDialogController extends FXMLDialog {
         return projectFolder;
     }
 
-    public File getTrainingFile() {
-        return trainingFile;
+    public File getTrainingFolder() {
+        return trainingFolder;
     }
 
     public NotationType getNotationType() throws IM3Exception {

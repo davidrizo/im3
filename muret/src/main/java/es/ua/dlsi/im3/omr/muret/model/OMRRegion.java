@@ -169,7 +169,9 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
     }
 
     public void addSymbol(OMRSymbol s) {
-        symbols.add(s);
+        if (!symbols.contains(s)) {
+            symbols.add(s);
+        }
     }
 
     public void removeSymbol(OMRSymbol omrSymbol) {

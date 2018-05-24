@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -23,6 +24,7 @@
                   <Button mnemonicParsing="false" onAction="#handleClose" text="Close" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
                   <Button mnemonicParsing="false" onAction="#handleGotoDocumentAnalysis" text="Go to document analysis" />
+                  <ToggleButton fx:id="toggleButtonEditMusic" mnemonicParsing="false" text="Edit music" />
                   <Button mnemonicParsing="false" onAction="#handleZoomIn" text="Zoom in" />
                   <Button mnemonicParsing="false" onAction="#handleZoomOut" text="Zoom out" />
                   <Button mnemonicParsing="false" onAction="#handleZoomToFit" text="Zoom to fit" />
@@ -48,12 +50,13 @@
         </ScrollPane>
     </center>
    <left>
-      <VBox BorderPane.alignment="CENTER">
+      <VBox prefHeight="560.0" prefWidth="246.0" BorderPane.alignment="CENTER">
          <children>
-            <ToolBar prefHeight="40.0" prefWidth="200.0">
+            <ToolBar prefHeight="40.0" prefWidth="198.0">
               <items>
                   <Button mnemonicParsing="false" onAction="#handleCollapse" text="Collapse" />
                 <Button fx:id="btnDeleteTreeItem" mnemonicParsing="false" onAction="#handleDeleteTreeItem" text="Delete" />
+                  <ToggleButton fx:id="toggleBtnAddSymbol" mnemonicParsing="false" text="Add symbol" />
               </items>
             </ToolBar>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">

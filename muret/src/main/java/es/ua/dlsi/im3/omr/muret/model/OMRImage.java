@@ -249,7 +249,7 @@ public class OMRImage implements Comparable<OMRImage> {
 
     public void recomputeRegionBoundingBoxes() throws IM3Exception {
         for (OMRPage page: pages) {
-            for (OMRRegion region: page.getRegions()) {
+            for (OMRRegion region: page.regionsProperty()) {
                 double fromX = Double.MAX_VALUE;
                 double fromY = Double.MAX_VALUE;
                 double toX = Double.MIN_VALUE;
@@ -315,7 +315,7 @@ public class OMRImage implements Comparable<OMRImage> {
     public List<OMRSymbol> getAllSymbols() {
         List<OMRSymbol> result = new LinkedList<>();
         for (OMRPage page: pages) {
-            for (OMRRegion region: page.getRegions()) {
+            for (OMRRegion region: page.regionsProperty()) {
                 result.addAll(region.symbolsProperty());
             }
         }
@@ -367,7 +367,7 @@ public class OMRImage implements Comparable<OMRImage> {
                     newPage.addRegion(newRegion);
 
                     // not move all symbols in new page and change the width of previous regions
-                    for (OMRRegion region: page.getRegions()) {
+                    for (OMRRegion region: page.regionsProperty()) {
                         region.setWidth(page.getWidth()); // change the width of all regions inside
 
                         LinkedList<OMRSymbol> symbols = new LinkedList<>();
@@ -423,7 +423,7 @@ public class OMRImage implements Comparable<OMRImage> {
         onePage.addRegion(oneRegion);
         LinkedList<OMRSymbol> symbols = new LinkedList<>();
         for (OMRPage page: pages) {
-            for (OMRRegion omrRegion: page.getRegions()) {
+            for (OMRRegion omrRegion: page.regionsProperty()) {
                 symbols.addAll(omrRegion.symbolsProperty());
             }
         }

@@ -1,10 +1,8 @@
 package es.ua.dlsi.im3.omr.muret.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
 import javafx.beans.property.*;
 
@@ -67,15 +65,13 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
         this.width = new SimpleDoubleProperty(width);
         this.height = new SimpleDoubleProperty(height);
         this.accepted = new SimpleBooleanProperty(false);
-        this.name = new SimpleStringProperty();
-        this.name.bind(this.graphicalSymbol.asString());
+        this.name = new SimpleStringProperty(this.graphicalSymbol.get().getAgnosticString());
     }
 
     public OMRSymbol(OMRRegion omrRegion, Symbol symbol) throws IM3Exception {
         this(omrRegion, symbol.getAgnosticSymbol(), symbol.getBoundingBox().getFromX(), symbol.getBoundingBox().getFromY(), symbol.getWidth(), symbol.getHeight());
         this.accepted.setValue(symbol.isAccepted());
-        this.name = new SimpleStringProperty();
-        this.name.bind(this.graphicalSymbol.asString());
+        this.name = new SimpleStringProperty(this.graphicalSymbol.get().getAgnosticString());
     }
 
     public double getX() {
@@ -239,9 +235,17 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
 
     public void chagePosition(int lineSpaces) {
         graphicalSymbol.get().changePosition(lineSpaces);
+        this.name.set(this.graphicalSymbol.get().getAgnosticString());
     }
 
-    public void changeAgnosticSymbolType(AgnosticSymbolType agnosticSymbolType) {
-        graphicalSymbol.get().changeAgnosticSymbolType(agnosticSymbolType);
+    public AgnosticSymbolType changeAgnosticSymbolType(AgnosticSymbolType agnosticSymbolType) {
+        AgnosticSymbolType oldValue = graphicalSymbol.get().changeAgnosticSymbolType(agnosticSymbolType);
+        this.name.set(this.graphicalSymbol.get().getAgnosticString());
+        return oldValue;
+
+    }
+
+    public double getEndY() {
+        return getY() + getHeight();
     }
 }

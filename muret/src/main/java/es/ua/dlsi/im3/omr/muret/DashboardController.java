@@ -107,6 +107,7 @@ public class DashboardController implements Initializable {
         doCloseProject();
     }
 
+    //TODO Poner barra progreso lectura training set
     @FXML
     public void handleOpenProject() {
         boolean open = true;
@@ -118,7 +119,7 @@ public class DashboardController implements Initializable {
             if (dlg.show()) {
                 //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
                 try {
-                    omrModel.openProject(dlg.getProjectFolder(), dlg.getTrainingFile());
+                    omrModel.openProject(dlg.getProjectFolder(), dlg.getTrainingFolder());
                     title.setValue(omrModel.getCurrentProject().getName());
                     openImagesView();
                 } catch (Throwable e) {
@@ -281,4 +282,7 @@ public class DashboardController implements Initializable {
         }
      }
 
+    public OMRModel getOmrModel() {
+        return omrModel;
+    }
 }

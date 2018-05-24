@@ -244,7 +244,7 @@ public class OMRProject {
         StringBuilder stringBuilder = new StringBuilder();
         for (OMRImage omrImage: imagesProperty) {
             for (OMRPage omrPage: omrImage.getPages()) {
-                for (OMRRegion omrRegion: omrPage.getRegions()) {
+                for (OMRRegion omrRegion: omrPage.regionsProperty()) {
                     // check all symbols lie inside its assigned region
                     boolean symbolsOutsideRegionBoundingBox = false;
                     for (OMRSymbol omrSymbol: omrRegion.symbolsProperty()) {

@@ -2,15 +2,18 @@ package es.ua.dlsi.im3.omr.muret.symbols;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
+import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -26,6 +29,8 @@ import javafx.scene.shape.Shape;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +40,7 @@ import java.util.logging.Logger;
  * @autor drizo
  */
 public class AgnosticStaffView extends VBox {
+    private final ImageBasedAbstractController controller;
     Group staffGroup;
 
     private final AgnosticSymbolFont agnosticSymbolFont;
@@ -47,7 +53,8 @@ public class AgnosticStaffView extends VBox {
     HashMap<OMRSymbol, Shape> shapesInStaff;
     private double regionXOffset;
 
-    public AgnosticStaffView(AgnosticSymbolFont agnosticSymbolFont, double width, double height, double regionXOffset) throws IM3Exception {
+    public AgnosticStaffView(ImageBasedAbstractController controller, AgnosticSymbolFont agnosticSymbolFont, double width, double height, double regionXOffset) throws IM3Exception {
+        this.controller = controller;
         shapesInStaff = new HashMap<>();
         this.regionXOffset = regionXOffset;
         correctingSymbol = new SimpleObjectProperty();
@@ -78,9 +85,7 @@ public class AgnosticStaffView extends VBox {
         }
 
         createCorrectionPane();
-        correctionPane.visibleProperty().bind(correctingSymbol.isNotNull());
-
-        this.getChildren().addAll(staffGroup, correctionPane);
+        this.getChildren().addAll(staffGroup);
     }
 
     private double getPosition(PositionInStaff positionInStaff) {
@@ -88,8 +93,9 @@ public class AgnosticStaffView extends VBox {
         return lineBottomPosition + heightDifference;
     }
 
-    public Shape addSymbol(OMRSymbol symbol) throws IM3Exception {
+    public Shape addSymbol(SymbolView symbolView) throws IM3Exception {
         try {
+            OMRSymbol symbol = symbolView.getOwner();
             Shape shape = agnosticSymbolFont.createShape(symbol.getGraphicalSymbol().getSymbol());
             shape.setLayoutX(symbol.getX()+regionXOffset);
 
@@ -101,7 +107,7 @@ public class AgnosticStaffView extends VBox {
             //TODO Ledger lines
         } catch (IM3Exception e) {
             e.printStackTrace();
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find a glyph for agnostic symbol '{0}'", symbol.getGraphicalSymbol().getAgnosticString());
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find a glyph for agnostic symbol '{0}'", symbolView.getOwner().getGraphicalSymbol().getAgnosticString());
             throw e;
         }
     }
@@ -120,18 +126,27 @@ public class AgnosticStaffView extends VBox {
         correctionPane.setRowValignment(VPos.CENTER);
         correctionPane.setColumnHalignment(HPos.CENTER);
 
-        TreeSet<String> orderedAgnosticStrings =  new TreeSet<>(agnosticSymbolFont.getGlyphs().keySet());
+        List<String> agnosticStrings =  new LinkedList<>(agnosticSymbolFont.getGlyphs().keySet());
 
         //TODO Diseñar la usabilidad de todo esto
+        Button buttonClose = new Button("Close correction", new FontIcon("oi-x"));
+        correctionPane.getChildren().add(buttonClose);
+        buttonClose.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                doCloseCorrectionPane();
+            }
+        });
+
         // see http://aalmiray.github.io/ikonli/cheat-sheet-openiconic.html
-        Button buttonPositionDown = new Button("Position up", new FontIcon("oi-arrow-bottom"));
+        Button buttonPositionDown = new Button("Position down", new FontIcon("oi-arrow-bottom"));
         buttonPositionDown.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 doChangePosition(-1);
             }
         });
-        Button buttonPositionUp = new Button("Position down", new FontIcon("oi-arrow-top"));
+        Button buttonPositionUp = new Button("Position up", new FontIcon("oi-arrow-top"));
         buttonPositionUp.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -141,7 +156,7 @@ public class AgnosticStaffView extends VBox {
         correctionPane.getChildren().add(buttonPositionDown);
         correctionPane.getChildren().add(buttonPositionUp);
 
-        for (String agnosticString: orderedAgnosticStrings) {
+        for (String agnosticString: agnosticStrings) {
             Shape shape = agnosticSymbolFont.createShape(agnosticString);
             shape.setLayoutX(25);
             shape.setLayoutY(45);
@@ -158,16 +173,17 @@ public class AgnosticStaffView extends VBox {
             });
         }
 
-        Button buttonClose = new Button("Close correction", new FontIcon("oi-x"));
-        correctionPane.getChildren().add(buttonClose);
-        buttonClose.setOnAction(new EventHandler<ActionEvent>() {
+        correctingSymbol.addListener(new ChangeListener<SymbolView>() {
             @Override
-            public void handle(ActionEvent event) {
-                correctingSymbol.setValue(null);
+            public void changed(ObservableValue<? extends SymbolView> observable, SymbolView oldValue, SymbolView newValue) {
+                if (newValue == null) {
+                    getChildren().remove(correctionPane);
+                } else {
+                    getChildren().add(correctionPane);
+                }
             }
         });
     }
-
 
     public void correctSymbol(SymbolView symbolView) {
         this.correctingSymbol.setValue(symbolView);
@@ -202,14 +218,20 @@ public class AgnosticStaffView extends VBox {
         }
 
         if (agnosticSymbolType == null) {
-            ShowError.show(null, "Cannot find an agnostic symbol type for " + agnosticString);
+            ShowError.show(null, "Cannot find an agnostic symbol type for " + agnosticString); //TODO null
             return;
         } else {
             this.correctingSymbol.get().changeSymbolType(agnosticSymbolType);
+            try {
+                controller.onSymbolChanged(this.correctingSymbol.get().getOwner());
+            } catch (IM3Exception e) {
+                e.printStackTrace();
+                ShowError.show(null, "Cannot change symbol", e); //TODO null
+            }
             this.shapesInStaff.remove(correctingSymbol.get().getOwner());
             symbolsGroup.getChildren().remove(shape);
             try {
-                Shape newShape = addSymbol(correctingSymbol.get().getOwner());
+                Shape newShape = addSymbol(correctingSymbol.get());
                 correctingSymbol.get().setShapeInStaff(newShape); //TODO Esto está acoplado
             } catch (IM3Exception e) {
                 e.printStackTrace(); //TODO log
@@ -219,5 +241,16 @@ public class AgnosticStaffView extends VBox {
     }
 
 
+    private void doCloseCorrectionPane() {
+        correctingSymbol.get().endEdit();
+        correctingSymbol.setValue(null);
+    }
 
+    public void onSymbolRemoved(BoundingBoxBasedView elementView) {
+        Shape shape = shapesInStaff.remove(elementView.getOwner());
+        if (shape == null) {
+            throw new IM3RuntimeException("Cannot find shape for element " + elementView.getOwner());
+        }
+        symbolsGroup.getChildren().remove(shape);
+    }
 }

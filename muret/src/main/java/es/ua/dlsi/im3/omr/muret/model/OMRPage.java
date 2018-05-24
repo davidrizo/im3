@@ -86,7 +86,7 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
         this.regions.remove(region);
     }
 
-    public ObservableSet<OMRRegion> getRegions() {
+    public ObservableSet<OMRRegion> regionsProperty() {
         return regions;
     }
 
@@ -254,6 +254,15 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
     }
 
     public void splitRegionAt(double y) throws IM3Exception {
+        /*// check this line does not cross any symbol
+        for (OMRRegion region: regions) {
+            for (OMRSymbol symbol: region.symbolsProperty()) {
+                if (symbol.getY() <= y && y<=(symbol.getY()+symbol.getHeight())) {
+                    throw new IM3Exception("The line is crossing symbol " + symbol.toString());
+                }
+            }
+        }*/
+
         if (regions.isEmpty()) {
             OMRRegion omrRegion1 = new OMRRegion(this, 1, fromX.get(), 0, fromX.get()+width.get(), y-1, RegionType.staff);
             OMRRegion omrRegion2 = new OMRRegion(this, 2, fromX.get(), y, fromX.get()+width.get(), height.get(), RegionType.staff);
@@ -269,22 +278,23 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
                 if (y == toY) {
                     throw new IM3Exception("Splitting region at other region ending " + region);
                 }
-                if (y > fromY && y < toY) {
-                    region.heightProperty().setValue(y - 1 - fromY);
-                    OMRRegion newRegion = new OMRRegion(this, regions.size() + 1, region.getFromX(), y, region.getWidth(), toY - y, RegionType.staff);
-                    regions.add(newRegion);
+                if (y > fromY && y < toY) { // then split this region
+                    // All symbols whose bottomY lay below y are attached to the new region. Regions above it will remain in the current region
+                    // bounding box is computed taking into account the symbols, so two regions may overlap
 
-                    // now arrange all symbols so that they fall in the correct region
                     LinkedList<OMRSymbol> symbolsToMoveToNewRegion= new LinkedList<>();
+                    double splitYTakingIntoAccountTopSymbol = y; // by default it is the drawn y
                     for (OMRSymbol symbol: region.symbolsProperty()) {
-                        if (!region.containsAbsoluteCoordinate(symbol.getCenterX(), symbol.getCenterY())) {
-                            if (newRegion.containsAbsoluteCoordinate(symbol.getX(), symbol.getY())) {
-                                symbolsToMoveToNewRegion.add(symbol);
-                            } else {
-                                throw new IM3Exception("All symbols should be inside the old or the new region!!");
+                        if (symbol.getEndY() > y) {
+                            symbolsToMoveToNewRegion.add(symbol);
+                            if (symbol.getY() < splitYTakingIntoAccountTopSymbol) {
+                                splitYTakingIntoAccountTopSymbol = symbol.getY();
                             }
                         }
                     }
+                    region.heightProperty().setValue(y - 1 - fromY);
+                    OMRRegion newRegion = new OMRRegion(this, regions.size() + 1, region.getFromX(), splitYTakingIntoAccountTopSymbol, region.getWidth(), toY - splitYTakingIntoAccountTopSymbol, RegionType.staff);
+                    regions.add(newRegion);
 
                     for (OMRSymbol symbol: symbolsToMoveToNewRegion) {
                         symbol.setOMRRegion(newRegion);

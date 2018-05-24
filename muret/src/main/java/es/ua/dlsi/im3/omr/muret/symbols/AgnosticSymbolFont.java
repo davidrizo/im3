@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,9 +20,9 @@ import java.util.logging.Logger;
  */
 public abstract class AgnosticSymbolFont {
     /**
-     * Key is agnostic string, avoid hashCode just in case
+     * Key is agnostic string, avoid hashCode just in case. We want the order to be maintained as we add symbols
      */
-    private HashMap<String, Glyph> glyphs;
+    private LinkedHashMap<String, Glyph> glyphs;
     /**
      * Key is agnostic string (aligned to glyphs map)
      */
@@ -31,7 +32,7 @@ public abstract class AgnosticSymbolFont {
 
     public AgnosticSymbolFont(LayoutFont layoutFont) {
         this.layoutFont = layoutFont;
-        glyphs = new HashMap<>();
+        glyphs = new LinkedHashMap<>();
         agnosticSymbolTypes = new HashMap<>();
     }
 

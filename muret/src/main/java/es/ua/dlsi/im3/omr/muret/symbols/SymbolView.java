@@ -2,10 +2,15 @@ package es.ua.dlsi.im3.omr.muret.symbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -20,27 +25,21 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
     private final RegionView regionView;
 
     Shape shapeInStaff;
-    private Paint previousColor;
 
-    enum State {idle, editing};
-
-    State state = State.idle;
-
-    public SymbolView(RegionView regionView, OMRSymbol owner, Color color) throws IM3Exception {
-        super(regionView, owner.getX()-regionView.getOwner().getFromX(), owner.getY()-regionView.getOwner().getFromY(), owner.getWidth(), owner.getHeight(), owner, color);
+    public SymbolView(ImageBasedAbstractController controller, RegionView regionView, OMRSymbol owner, Color color) throws IM3Exception {
+        super(controller, regionView, owner.getX()-regionView.getOwner().getFromX(), owner.getY()-regionView.getOwner().getFromY(), owner.getWidth(), owner.getHeight(), owner, color);
         this.regionView = regionView;
-        shapeInStaff = regionView.getAgnosticStaffView().addSymbol(owner);
+        shapeInStaff = regionView.getAgnosticStaffView().addSymbol(this);
         initInteractionOnShape();
     }
 
-    //TODO Armonizar todo esto (p.ej. tecla corrección....) - ahora hacemos doble click - también botón arriba
+    //TODO Armonizar todo esto (p.ej. tecla corrección....) - que lo lleve todo el controlador - ahora hacemos doble click - también botón arriba
     private void initInteractionOnShape() {
         shapeInStaff.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (state == State.idle) {
-                    previousColor = shapeInStaff.getFill();
-                    shapeInStaff.setFill(HOVER);
+                if (!selected.get()) {
+                    setHover(true);
                 }
             }
         });
@@ -48,8 +47,8 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
         shapeInStaff.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (state == State.idle) {
-                    shapeInStaff.setFill(previousColor);
+                if (!selected.get()) {
+                    setHover(false);
                 }
             }
         });
@@ -57,13 +56,28 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
         shapeInStaff.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (state == State.idle) {
-                    if (event.getClickCount() == 2) {
-                        doEdit();
-                    }
-                }
+                selected.setValue(true);
             }
         });
+
+        this.hoverProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                doHover(newValue);
+            }
+        });
+    }
+
+    @Override
+    protected void doHover(boolean enable) {
+        super.doHover(enable);
+        if (shapeInStaff != null) {
+            if (enable) {
+                shapeInStaff.setFill(HOVER);
+            } else {
+                shapeInStaff.setFill(Color.BLACK);
+            }
+        }
     }
 
     @Override
@@ -77,11 +91,11 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
     }
 
     @Override
-    public void highlight(boolean highlight) {
-        super.highlight(highlight);
+    public void doHighlight(boolean highlight) {
+        super.doHighlight(highlight);
         if (shapeInStaff != null) { // may not be still created
             if (highlight) {
-                shapeInStaff.setFill(color);
+                shapeInStaff.setFill(SELECTED);
             } else {
                 shapeInStaff.setFill(Color.BLACK);
             }
@@ -89,21 +103,34 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
     }
 
     public void doEdit() {
+        this.doHighlight(true);
         shapeInStaff.setFill(SELECTED);
         regionView.getAgnosticStaffView().correctSymbol(this);
+    }
+
+    public void endEdit() {
+        shapeInStaff.setFill(Color.BLACK);
+        this.doHighlight(false);
     }
 
     public void changePosition(int lineSpaces) {
         owner.chagePosition(lineSpaces);
     }
 
-    public void changeSymbolType(AgnosticSymbolType agnosticSymbolType) {
-        owner.changeAgnosticSymbolType(agnosticSymbolType);
+    public AgnosticSymbolType changeSymbolType(AgnosticSymbolType agnosticSymbolType) {
+        return owner.changeAgnosticSymbolType(agnosticSymbolType);
     }
 
     public void setShapeInStaff(Shape newShape) {
         this.shapeInStaff = newShape;
+        initInteractionOnShape(); //TODO Ver por qué no se deja seleccionar otra vez
     }
 
-
+    @Override
+    public void handle(KeyEvent event) {
+        super.handle(event);
+        if (event.getCode() == KeyCode.DELETE) {
+            this.regionView.delete(this);
+        }
+    }
 }

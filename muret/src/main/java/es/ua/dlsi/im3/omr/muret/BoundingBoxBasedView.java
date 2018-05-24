@@ -2,8 +2,14 @@ package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.omr.muret.model.IOMRBoundingBox;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -23,6 +29,9 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
     protected DraggableRectangle rectangle;
     protected Color color;
 
+    protected ObjectProperty<Boolean> selected;
+    protected ImageBasedAbstractController controller;
+
     /**
      *
      * @param parentBoundingBox It may be null
@@ -33,7 +42,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
      * @param owner
      * @param color
      */
-    public BoundingBoxBasedView(BoundingBoxBasedView parentBoundingBox, double fromX, double fromY, double width, double height, OwnerType owner, Color color) {
+    public BoundingBoxBasedView(ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, double fromX, double fromY, double width, double height, OwnerType owner, Color color) {
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.hideHandles();
         rectangle.xProperty().setValue(fromX);
@@ -41,7 +50,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         rectangle.widthProperty().setValue(width);
         rectangle.heightProperty().setValue(height);
 
-        init(parentBoundingBox, owner, color, rectangle);
+        init(controller, parentBoundingBox, owner, color, rectangle);
     }
 
     /**
@@ -50,18 +59,19 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
      * @param owner
      * @param color
      */
-    public BoundingBoxBasedView(BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color) {
+    public BoundingBoxBasedView(ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color) {
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.hideHandles();
         rectangle.xProperty().bindBidirectional(owner.fromXProperty());
         rectangle.yProperty().bindBidirectional(owner.fromYProperty());
         rectangle.widthProperty().bindBidirectional(owner.widthProperty());
         rectangle.heightProperty().bindBidirectional(owner.heightProperty());
-        init(parentBoundingBox, owner, color, rectangle);
+        init(controller, parentBoundingBox, owner, color, rectangle);
     }
 
 
-    private void init(BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color, DraggableRectangle rectangle) {
+    private void init(ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color, DraggableRectangle rectangle) {
+        this.controller = controller;
         this.setFocusTraversable(true); // to receive key events
         this.owner = owner;
         this.parentBoundingBox = parentBoundingBox;
@@ -81,13 +91,74 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
 
         backgroundColor = getColor(color, FILL_OPACITY);
         rectangle.setStroke(getColor(color, 1));
+        initInteraction();
+    }
+
+    private void initInteraction() {
+        selected = new SimpleObjectProperty<>(false);
 
         rectangle.setOnMouseClicked(event -> {
-            onRegionMouseClicked(event);
+            doSelect(true, true);
+            onRegionMouseClicked(event); //TODo ¿quitar - cambiar por el cambio de selected?
         });
 
-        highlight(false);
 
+        rectangle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (!selected.get()) {
+                    setHover(true);
+                }
+            }
+        });
+
+        rectangle.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (!selected.get()) {
+                    setHover(false);
+                }
+            }
+        });
+
+        this.setOnMousePressed(new EventHandler<MouseEvent>() {
+               @Override
+               public void handle(MouseEvent event) {
+                   doMousePressed(event);
+               }
+           }
+        );
+
+        this.setOnMouseReleased(new EventHandler<MouseEvent>() {
+               @Override
+               public void handle(MouseEvent event) {
+                   doMouseReleased(event);
+               }
+           }
+        );
+
+        this.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                doMouseDragged(event);
+            }
+        });
+
+        hoverProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                doHover(newValue);
+            }
+        });
+
+        selected.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                doHighlight(newValue);
+            }
+        });
+        doHighlight(false);
+        doSelect(false, true);
     }
 
     private Color getColor(Color color, double opacity) {
@@ -100,12 +171,12 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
 
     protected abstract void onRegionMouseClicked(MouseEvent event);
 
-    public void showRegionBoundingBox(boolean show) {
+    /*public void showRegionBoundingBox(boolean show) {
         rectangle.setVisible(show);
         label.setVisible(show);
-    }
+    }*/
 
-    public void highlight(boolean highlight) {
+    public void doHighlight(boolean highlight) {
         if (highlight) {
             rectangle.setStrokeWidth(2); //TODO
             rectangle.setFill(backgroundColor);
@@ -117,6 +188,14 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         }
     }
 
+    protected void doHover(boolean enable) { //TODO Hacer una máquina de estados para doHighlight y doHover
+        if (enable) {
+            rectangle.setStrokeWidth(4);
+        } else {
+            rectangle.setStrokeWidth(1);
+        }
+    }
+
     public OwnerType getOwner() {
         return owner;
     }
@@ -125,4 +204,36 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
     public String toString() {
         return owner.toString();
     }
+
+    public void doSelect(boolean select, boolean notifyController) {
+        if (select != this.selected.get()) {
+            this.selected.setValue(select);
+            if (notifyController) {
+                controller.doSelect(this);
+            }
+        }
+    }
+
+    public void handle(KeyEvent event) {
+        // no - op by default
+    }
+
+    public void onSymbolRemoved(BoundingBoxBasedView elementView) {
+        // no - op
+    }
+
+    protected void doMousePressed(MouseEvent event) {
+        // no op - used for being overriden
+    }
+
+    protected void doMouseReleased(MouseEvent event) {
+        // no op - used for being overriden
+    }
+
+
+    protected void doMouseDragged(MouseEvent event) {
+        // no op - used for being overriden
+    }
+
+
 }
