@@ -25,6 +25,7 @@ public class LayoutFont {
     private final Scale javaFXScale;
     private final LayoutFonts font;
     private final String name;
+    private final String otfMusicFontResourcePath;
     OpenTypeFont otfMusicFont;
     OpenTypeFont otfTextFont;
     SVGFont svgFont;
@@ -35,13 +36,15 @@ public class LayoutFont {
     double textHeightInPixels;
     IFontMap fontMap;
 
+    //TODO No tiene mucho sentido pasar el path y también el input stream
     /**
      * @param otfMusicFontResource Typically a file with the font
+     * @param otfMusicFontResourcePath Typically a file path (using class.getReource) with the font (used for JavaFX, usually the same as otfMusicFontResource)
      * @param otfTextFontResource Typically a file with the font
      * @param svgFontResource Typically a file with the font
      * @param mappingResource Typically a file with the mapping (usually SMuFL)
      */
-    public LayoutFont(String name, LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
+    public LayoutFont(String name, LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, String otfMusicFontResourcePath, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
         this.name = name;
         this.font = font;
         this.fontMap = fontMap;
@@ -69,13 +72,14 @@ public class LayoutFont {
         }
 
         javaFXScale = new Scale(getScaleX(), getScaleY());
-        javaFXTextFont = Font.loadFont(otfMusicFontResource, LayoutConstants.TEXT_FONT_SIZE);
+        //TODO ¿Está bien?
+        javaFXTextFont = Font.loadFont(otfTextFontResource, LayoutConstants.TEXT_FONT_SIZE);
         javaFXTextForSizes = new Text(0, 0, "X");
         javaFXTextForSizes.setFont(javaFXTextFont);
         textHeightInPixels = javaFXTextForSizes.getBoundsInLocal().getHeight();
 
+        this.otfMusicFontResourcePath = otfMusicFontResourcePath;
     }
-
 
     public Glyph getGlyph(String codepoint) throws IM3Exception {
         String unicode = mapping.getCodepoint(codepoint);
@@ -146,5 +150,9 @@ public class LayoutFont {
 
     public String getName() {
         return name;
+    }
+
+    public Font getJavaFXMusicFont(int size) {
+        return Font.loadFont(this.getClass().getResourceAsStream(otfMusicFontResourcePath), size);
     }
 }

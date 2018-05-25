@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout.svg;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.Objects;

@@ -233,16 +233,19 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return this.lines;
 	}
 
+	public static int computeNumberLedgerLinesNeeded(PositionInStaff positionInStaff, int lines) {
+        int lineSpace = positionInStaff.getLineSpace();
+        if (lineSpace < 0) {
+            return -lineSpace / 2;
+        } else if (lineSpace > (lines - 1) * 2) {
+            return -(lineSpace - (lines - 1) * 2) / 2;
+        } else {
+            return 0;
+        }
+    }
 
 	public int computeNumberLedgerLinesNeeded(PositionInStaff positionInStaff) {
-		int lineSpace = positionInStaff.getLineSpace();
-		if (lineSpace < 0) {
-			return -lineSpace / 2;
-		} else if (lineSpace > (lines - 1) * 2) {
-			return -(lineSpace - (lines - 1) * 2) / 2;
-		} else {
-			return 0;
-		}
+	    return computeNumberLedgerLinesNeeded(positionInStaff, lines);
 	}
 
 	// ----------------------------------------------------------------------
