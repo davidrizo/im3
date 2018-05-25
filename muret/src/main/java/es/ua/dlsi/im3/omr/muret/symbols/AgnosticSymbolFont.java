@@ -6,9 +6,12 @@ import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
@@ -30,10 +33,13 @@ public abstract class AgnosticSymbolFont {
 
     private LayoutFont layoutFont;
 
+    private Font iconsFont;
+
     public AgnosticSymbolFont(LayoutFont layoutFont) {
         this.layoutFont = layoutFont;
         glyphs = new LinkedHashMap<>();
         agnosticSymbolTypes = new HashMap<>();
+        iconsFont = layoutFont.getJavaFXMusicFont(20);
     }
 
     protected void add(AgnosticSymbolType agnosticSymbolType, String codepoint) {
@@ -46,6 +52,26 @@ public abstract class AgnosticSymbolFont {
         }
     }
 
+    public Text createFontBasedText(String agnosticString) throws IM3Exception {
+        Glyph glyph = glyphs.get(agnosticString);
+        Text text;
+        if (glyph == null) {
+            text = new Text(agnosticString); // without music font
+        } else {
+            String unicode = glyph.getUnicode();
+            text = new Text();
+            //Font font = Font.loadFont(layoutFont.getOtfMusicFontResource(), 15);
+            text.setFont(iconsFont);
+            //text.setFont(Font.loadFont(layoutFont.getOtfMusicFontResource(), 30));
+
+            text.setText(unicode);
+            text.setStrokeType(StrokeType.INSIDE);
+            text.setStrokeWidth(0);
+
+        }
+        return text;
+
+    }
     public Shape createShape(String agnosticString) throws IM3Exception {
         Glyph glyph = glyphs.get(agnosticString);
         Shape shape = null;

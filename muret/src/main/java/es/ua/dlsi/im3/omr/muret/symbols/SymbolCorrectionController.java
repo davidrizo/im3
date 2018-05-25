@@ -13,9 +13,11 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -26,6 +28,8 @@ import java.util.ResourceBundle;
  * @autor drizo
  */
 public class SymbolCorrectionController extends ImageBasedAbstractController {
+    @FXML
+    BorderPane mainBorderPane;
     @FXML
     VBox regionsPane;
     @FXML
@@ -123,5 +127,13 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
 
     public BooleanProperty addingSymbolProperty() {
         return addingSymbol;
+    }
+
+    public void setSymbolCorrectionToolbar(Node toolbar) {
+        mainBorderPane.setBottom(toolbar);
+    }
+
+    public void removeSymbolCorrectionToolbar() {
+        mainBorderPane.setBottom(null);
     }
 }

@@ -22,6 +22,8 @@ import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -194,13 +196,14 @@ public class AgnosticStaffView extends VBox {
         correctionPane.getChildren().add(buttonPositionUp);
 
         for (String agnosticString: agnosticStrings) {
-            Shape shape = agnosticSymbolFont.createShape(agnosticString);
-            shape.setLayoutX(25);
-            shape.setLayoutY(45);
+            Shape shape = agnosticSymbolFont.createFontBasedText(agnosticString);
+            //shape.setLayoutX(15);
+            shape.setLayoutY(25);
             Pane pane = new Pane(shape); // required
-            pane.setPrefHeight(100);
-            pane.setPrefWidth(50);
-            Button button = new Button(agnosticString, pane);
+            pane.setPrefHeight(50);
+            pane.setPrefWidth(30);
+            Button button = new Button("", pane);
+            button.setTooltip(new Tooltip(agnosticString));
             correctionPane.getChildren().add(button);
             button.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -213,10 +216,11 @@ public class AgnosticStaffView extends VBox {
         correctingSymbol.addListener(new ChangeListener<SymbolView>() {
             @Override
             public void changed(ObservableValue<? extends SymbolView> observable, SymbolView oldValue, SymbolView newValue) {
+                SymbolCorrectionController symbolCorrectionController = (SymbolCorrectionController) controller;
                 if (newValue == null) {
-                    getChildren().remove(correctionPane);
+                    symbolCorrectionController.removeSymbolCorrectionToolbar();
                 } else {
-                    getChildren().add(correctionPane);
+                    symbolCorrectionController.setSymbolCorrectionToolbar(correctionPane);
                 }
             }
         });
