@@ -51,7 +51,7 @@ public class PagedCapitan2AgnosticTest {
 
 
         String input2 = "FCLEF.2 CUTTIME.2 LONGAREST.13 LONGAREST.13 SEMIBREVIS.1 DOT.01 FLAT.-10 MINIMA.01 MINIMA.1 DOT.01 COLOUREDMINIMA.12 MINIMA.2 MINIMA.3 SEMIBREVIS.1 SEMIBREVISREST.2 MINIMA.23 DOT.23 COLOUREDMINIMA.3 COLOUREDMINIMA.34 COLOUREDMINIMA.45 SEMIBREVIS.3 MINIMA.34/SHARP.45 MINIMA.34/SHARP.45 SEMIBREVIS.3 MINIMA.1 SEMIBREVIS.3 SEMIBREVIS.1 CUSTOS.3";
-        String expected2 = "clef.F-L3, metersign.Ccut-L3, rest.longa-L2, rest.longa-L2, note.whole-L4, dot-S4, accidental.flat-S5, note.half-S4, note.half-L4, dot-S4, note.quarter-S3, note.half-L3, note.half-L2, note.whole-L4, rest.whole-L3, note.half-S2, dot-S2, note.quarter-L2, note.quarter-S1, note.quarter-S0, note.whole-L2, note.half-S1/accidental.sharp-S0, note.half-S1/accidental.sharp-S0, note.whole-L2, note.half-L4, note.whole-L2, note.whole-L4, custos-L2";
+        String expected2 = "clef.F-L3, metersign.Ccut-L3, rest.longa2-L2, rest.longa2-L2, note.whole-L4, dot-S4, accidental.flat-S5, note.half-S4, note.half-L4, dot-S4, note.quarter-S3, note.half-L3, note.half-L2, note.whole-L4, rest.whole-L3, note.half-S2, dot-S2, note.quarter-L2, note.quarter-S1, note.quarter-S0, note.whole-L2, note.half-S1/accidental.sharp-S0, note.half-S1/accidental.sharp-S0, note.whole-L2, note.half-L4, note.whole-L2, note.whole-L4, custos-L2";
         test(input2, expected2);
 
         // Beginning of 5th staff in 12644-B.txt

@@ -59,9 +59,9 @@ public class StaffNormalizer {
         String stable_paths_file=inputFileNameToStaffDetectionEXEBase+"-staffLines_vs01.txt";
         Mat mat = pre_straight_stablePaths.run(imageMat, stable_paths_file);
         Pre_Normalization_FivePeaks pre_normalization_fivePeaks = new Pre_Normalization_FivePeaks();
-        pre_normalization_fivePeaks.run(mat);
+        Mat fivePeaks = pre_normalization_fivePeaks.run(mat);
 
-        Imgcodecs.imwrite(outputImageFile.getAbsolutePath(), mat);
+        Imgcodecs.imwrite(outputImageFile.getAbsolutePath(), fivePeaks);
 
     }
 }
