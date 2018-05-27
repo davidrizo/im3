@@ -52,7 +52,7 @@ public class PagedCapitan2Agnostic {
 
 
         //restFigures.put("MAXIMAREST", RestFigures.); // tagged as vertical line
-        restFigures.put("LONGAREST", RestFigures.longa);
+        restFigures.put("LONGAREST", RestFigures.longa2);
         restFigures.put("BREVISREST", RestFigures.breve);
         restFigures.put("MINIMAREST", RestFigures.half);
         restFigures.put("SEMIBREVISREST", RestFigures.whole);

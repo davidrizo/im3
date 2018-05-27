@@ -84,7 +84,7 @@ public class NotesState extends OMRState {
                 return Figures.FUSA;
             case half:
                 return Figures.MINIM;
-            case longa:
+            case longa2:
                 return Figures.LONGA;
             case quarter:
                 return Figures.SEMIMINIM;

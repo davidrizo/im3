@@ -57,15 +57,15 @@ public class Calco2Agnostic {
             case "longa":
                 return new Note(NoteFigures.longa);
             case "longa_rest":
-                return new Rest(RestFigures.longa);
+                return new Rest(RestFigures.longa2);
             case "minima":
                 return new Note(NoteFigures.half);
             case "minima_rest":
                 return new Rest(RestFigures.half);
             case "proportio_maior":
-                return new MeterSign(MeterSigns.CZ); // it was incorrect
+                return new MeterSign(MeterSigns.CcutZ);
             case "proportio_minor":
-                return new MeterSign(MeterSigns.CcutZ); // it was incorrect
+                return new MeterSign(MeterSigns.CZ);
             case "semibrevis":
                 return new Note(NoteFigures.whole);
             case "semibrevis_rest":

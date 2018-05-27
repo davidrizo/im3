@@ -1,22 +1,22 @@
 package es.ua.dlsi.im3.omr.model.exporters;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.utils.ImageUtils;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.*;
 import es.ua.dlsi.im3.omr.model.io.XMLReader;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 /**
- * It exports a file containing a line for each symbol with the image, region number, symbol, image pixels
+ * It exports a file containing a line for each symbol with the image relative path, region number, symbol, bounding box specified as x1;y1;x2;y2
  * @autor drizo
  */
-public class XML2AgnosticSymbolImagesTextFile {
+public class XML2AgnosticSymbolBoundingBoxesTextFile {
     private static final String FIELD_SEPARATOR = ";";
+    private static final String BOUNDING_BOX_SEPARATOR = ",";
 
     public void run(File inputXMLFile, File outputTextFile) throws FileNotFoundException, IM3Exception {
         File imagesFolder = new File(inputXMLFile.getParent(), Project.IMAGES_FOLDER);
@@ -24,18 +24,19 @@ public class XML2AgnosticSymbolImagesTextFile {
         Project project = reader.load(inputXMLFile);
 
         PrintStream ps = new PrintStream(outputTextFile);
-        ps.print("#Image");
+        ps.print("#Image path");
         ps.print(FIELD_SEPARATOR);
         ps.print("Page");
         ps.print(FIELD_SEPARATOR);
+        ps.print("Page Bounding Box (x1,y1,x2,y2) (printed just once)");
+        ps.print(FIELD_SEPARATOR);
         ps.print("Region");
+        ps.print(FIELD_SEPARATOR);
+        ps.print("Region Bounding Box (x1,y1,x2,y2) (printed just once)");
         ps.print(FIELD_SEPARATOR);
         ps.print("Agnostic symbol");
         ps.print(FIELD_SEPARATOR);
-        ps.print("Image pixels:");
-        ps.print(Image.RESIZE_W);
-        ps.print('x');
-        ps.println(Image.RESIZE_H);
+        ps.println("Bounding box (x1,y1,x2,y2)");
 
         for (Image image: project.getImages()) {
             System.out.println("Image " + image.getImageRelativeFileName());
@@ -47,8 +48,10 @@ public class XML2AgnosticSymbolImagesTextFile {
                     for (Region region : page.getRegions()) {
                         if (!region.getSymbols().isEmpty()) {
                             System.out.println("\tRegion #" + nregion);
+                            int nsymbol = 1;
                             for (Symbol symbol : region.getSymbols()) {
-                                printSymbol(ps, imagesFolder, image, npage, nregion, symbol);
+                                printSymbol(ps, imagesFolder, image, npage, page, nregion, region, nsymbol++, symbol);
+                                nsymbol++;
                             }
                             nregion++;
                         }
@@ -61,28 +64,36 @@ public class XML2AgnosticSymbolImagesTextFile {
         ps.close();
     }
 
-    private void printSymbol(PrintStream ps, File fileImagesFolder, Image image, int page, int region, Symbol symbol) throws IM3Exception {
+    private void printBoundingBox(PrintStream ps, BoundingBox bb) {
+        ps.print(bb.getFromX());
+        ps.print(BOUNDING_BOX_SEPARATOR);
+        ps.print(bb.getFromY());
+        ps.print(BOUNDING_BOX_SEPARATOR);
+        ps.print(bb.getToX());
+        ps.print(BOUNDING_BOX_SEPARATOR);
+        ps.print(bb.getToY());
+
+    }
+
+    private void printSymbol(PrintStream ps, File fileImagesFolder, Image image, int npage, Page page, int nregion, Region region, int nsymbol, Symbol symbol) throws IM3Exception {
         ps.print(image.getImageRelativeFileName());
         ps.print(FIELD_SEPARATOR);
-        ps.print(page);
+        ps.print(npage);
         ps.print(FIELD_SEPARATOR);
-        ps.print(region);
+        if (nregion == 1 && nsymbol == 1) {
+            printBoundingBox(ps, page.getBoundingBox());
+        }
+        ps.print(FIELD_SEPARATOR);
+        ps.print(nregion);
+        ps.print(FIELD_SEPARATOR);
+        if (nsymbol == 1) {
+            printBoundingBox(ps, region.getBoundingBox());
+        }
         ps.print(FIELD_SEPARATOR);
         ps.print(symbol.getAgnosticSymbol().getAgnosticString());
         ps.print(FIELD_SEPARATOR);
-
-        StringBuilder stringBuilder = new StringBuilder();
-        int [] imagePixels = image.getGrayscaleImagePixels(fileImagesFolder, symbol.getBoundingBox());
-        boolean first = true;
-        for (int i=0; i<imagePixels.length; i++) {
-            if (first) {
-                first = false;
-            } else {
-                stringBuilder.append(',');
-            }
-            stringBuilder.append(imagePixels[i]);
-        }
-        ps.println(stringBuilder);
+        printBoundingBox(ps, symbol.getBoundingBox());
+        ps.println();
     }
 
 
@@ -90,7 +101,7 @@ public class XML2AgnosticSymbolImagesTextFile {
         if (args.length == 2) {
             File input = new File(args[0]);
             File output = new File(args[1]);
-            new XML2AgnosticSymbolImagesTextFile().run(input, output);
+            new XML2AgnosticSymbolBoundingBoxesTextFile().run(input, output);
         } else {
             // generate all corpus given an absolute path
             String basePath = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
@@ -101,14 +112,14 @@ public class XML2AgnosticSymbolImagesTextFile {
                     "B-53.781",
                     "B-59.850"};
 
-            String outputPath = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images";
+            String outputPath = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_boundingboxes";
 
             for (String project: projects) {
                 try {
                     System.out.println("-------- PROJECT: " + project + " ----------------");
                     File input = new File(new File(basePath, project), project + ".mrt");
-                    File output = new File(outputPath, project + ".symbolsimages.txt");
-                    new XML2AgnosticSymbolImagesTextFile().run(input, output);
+                    File output = new File(outputPath, project + ".symbolsboundingboxes.txt");
+                    new XML2AgnosticSymbolBoundingBoxesTextFile().run(input, output);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

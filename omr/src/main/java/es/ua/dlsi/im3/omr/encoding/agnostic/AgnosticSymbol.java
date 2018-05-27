@@ -21,6 +21,9 @@ public class AgnosticSymbol extends AgnosticToken {
 
 	public AgnosticSymbol(AgnosticSymbolType symbol, PositionInStaff position) {
 		super(symbol);
+		if (position == null) {
+		    throw new IM3RuntimeException("Cannot create an agnostic symbols without position");
+        }
 		this.positionInStaff = position;
 	}
 	public PositionInStaff getPositionInStaff() {

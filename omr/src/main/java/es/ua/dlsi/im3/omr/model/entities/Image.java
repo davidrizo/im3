@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.model.entities;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.utils.ImageUtils;
 import es.ua.dlsi.im3.core.utils.TimeUtils;
 
 import javax.imageio.ImageIO;
@@ -109,5 +110,27 @@ public class Image implements Comparable<Image> {
             diff = imageRelativeFileName.compareTo(o.imageRelativeFileName);
         }
         return diff;
+    }
+
+    public int[] getGrayscaleImagePixels(File fileImagesFolder, BoundingBox boundingBox) throws IM3Exception {
+        File imageFile = new File(fileImagesFolder, imageRelativeFileName);
+        BufferedImage subimage = ImageUtils.getInstance().generateBufferedImage(imageFile, boundingBox);
+        BufferedImage scaledImage = ImageUtils.getInstance().rescaleToGray(subimage, Image.RESIZE_W, Image.RESIZE_H);
+        int[][] imagePixels = ImageUtils.getInstance().readGrayScaleImage(scaledImage);
+
+        if (imagePixels.length != Image.RESIZE_W) {
+            throw new IM3Exception("Expected width " +  Image.RESIZE_W + " and found " + imagePixels.length);
+        }
+        if (imagePixels[0].length != Image.RESIZE_H) {
+            throw new IM3Exception("Expected height " +  Image.RESIZE_H + " and found " + imagePixels[0].length);
+        }
+        int [] result = new int[Image.RESIZE_W * Image.RESIZE_H];
+        int index=0;
+        for (int i=0; i<imagePixels.length; i++) {
+            for (int j=0; j<imagePixels[i].length; j++) {
+                result[index++] = imagePixels[i][j];
+            }
+        }
+        return result;
     }
 }
