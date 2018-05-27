@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.muret.symbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.utils.ImageUtils;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.AgnosticSequenceRecognizer;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
@@ -110,23 +111,25 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
 
     @FXML
     private void handleRecognizeSymbols() {
-        if (selectedSymbol.get() == null) {
-            ShowError.show(OMRApp.getMainStage(), "Select a region");
-        } else if (!(selectedSymbol.get() instanceof RegionView)) {
-            ShowError.show(OMRApp.getMainStage(), "Select a region, not a " + selectedSymbol.get());
-        } else {
-            try {
-                doRecognizeSymbolsInRegion((RegionView)selectedSymbol.get());
-            } catch (Exception e) {
+        //TODO Barra progreso
+        try {
+            for (BoundingBoxBasedView selectedElement: selectedElements) {
+                if ((selectedElement instanceof RegionView)) {
+                    doRecognizeSymbolsInRegion((RegionView) selectedElement);
+                }
+            }
+        } catch (Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot recognize symbols", e);
                 ShowError.show(OMRApp.getMainStage(), "Cannot recognize regions", e);
-            }
         }
     }
 
     private void doRecognizeSymbolsInRegion(RegionView regionView) throws IOException, IM3Exception {
         //TODO A modelo
-        BufferedImage bImage = SwingFXUtils.fromFXImage(regionView.getImageView().getImage(), null);
+        BufferedImage bImage = SwingFXUtils.fromFXImage(regionView.getImageView().getImage(), null).getSubimage(
+                (int)regionView.getOwner().getFromX(), (int)regionView.getOwner().getFromY(),
+                (int)regionView.getOwner().getWidth(), (int)regionView.getOwner().getHeight());
+
         //File tmpFile = File.createTempFile("")
         File file = new File("/tmp/muretselectedregion.jpg"); //TODO tempFile
         ImageIO.write(bImage, "jpg", file);
@@ -134,6 +137,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
         List<AgnosticSymbol> symbolList = agnosticSequenceRecognizer.recognize(file);
         double currentX = 0; //TODO Ahora el reconocedor no me da x, los voy poniendo yo a ojo
         for (AgnosticSymbol agnosticSymbol: symbolList) {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Adding symbol {0}", agnosticSymbol.getAgnosticString());
             //TODO Que no haya que poner bounding boxes
             OMRSymbol omrSymbol = new OMRSymbol(regionView.getOwner(), agnosticSymbol, currentX, 0, 25, 30);
             regionView.getOwner().addSymbol(omrSymbol);

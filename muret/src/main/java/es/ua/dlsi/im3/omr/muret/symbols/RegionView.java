@@ -86,7 +86,6 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         fullImage = owner.getOMRPage().getOMMRImage().getImage();
         imageView = new ImageView(fullImage);
         imageView.setViewport(new Rectangle2D(owner.getFromX(), owner.getFromY(), owner.getWidth(), owner.getHeight()));
-
         symbolsBoundingBoxesGroup = new Group();
         imageViewWithSymbols = new Group();
         imageViewWithSymbols.getChildren().addAll(imageView, symbolsBoundingBoxesGroup); // order is important
