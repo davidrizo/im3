@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
  * @autor drizo
  */
 public class SemanticStaffView extends VBox {
+
     //LayoutStaffSystem layoutStaffSystem;
 
     public SemanticStaffView() {

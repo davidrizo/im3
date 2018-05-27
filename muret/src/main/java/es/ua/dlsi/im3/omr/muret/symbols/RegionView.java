@@ -73,6 +73,13 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         vBox = new VBox(5);
         vBox.getChildren().addAll(imageViewWithSymbols, agnosticStaffView);
         this.getChildren().add(vBox);
+        initSemantic();
+    }
+
+    private void initSemantic() {
+        vBox.getChildren().add(semanticStaffView);
+        SymbolCorrectionController scontroller = (SymbolCorrectionController) controller;
+        semanticStaffView.visibleProperty().bind(scontroller.editMusicEnabledProperty());
     }
 
     private void createImageView() throws IM3Exception {
@@ -202,5 +209,9 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         } else {
             ShowError.show(OMRApp.getMainStage(), "Cannot add a symbols with bounding box of width or height with less than 2 pixels");
         }
+    }
+
+    public ImageView getImageView() {
+        return imageView;
     }
 }

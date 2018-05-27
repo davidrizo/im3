@@ -200,7 +200,8 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
                     pageTreeItem.getChildren().remove(removedTreeItem);
                     elements.remove(removedElement);
                 } else if (change.wasAdded()) {
-                    ShowError.show(null, "TODO ADD " + change); //TODO
+                    //ShowError.show(null, "TODO ADD " + change); //TODO
+                    System.err.println("TODO ADD " + change); //TODO Change
                 }
             }
         });
