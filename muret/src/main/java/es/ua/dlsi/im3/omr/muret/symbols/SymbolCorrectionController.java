@@ -1,8 +1,9 @@
 package es.ua.dlsi.im3.omr.muret.symbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IProgressObserver;
 import es.ua.dlsi.im3.core.utils.ImageUtils;
-import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.gui.javafx.dialogs.*;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.AgnosticSequenceRecognizer;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
@@ -13,10 +14,12 @@ import es.ua.dlsi.im3.omr.muret.model.OMRPage;
 import es.ua.dlsi.im3.omr.muret.model.OMRRegion;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -115,7 +118,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
         try {
             for (BoundingBoxBasedView selectedElement: selectedElements) {
                 if ((selectedElement instanceof RegionView)) {
-                    doRecognizeSymbolsInRegion((RegionView) selectedElement);
+                    recognizeSymbolsInRegionDialog((RegionView) selectedElement);
                 }
             }
         } catch (Exception e) {
@@ -124,25 +127,65 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
         }
     }
 
-    private void doRecognizeSymbolsInRegion(RegionView regionView) throws IOException, IM3Exception {
-        //TODO A modelo
-        BufferedImage bImage = SwingFXUtils.fromFXImage(regionView.getImageView().getImage(), null).getSubimage(
-                (int)regionView.getOwner().getFromX(), (int)regionView.getOwner().getFromY(),
-                (int)regionView.getOwner().getWidth(), (int)regionView.getOwner().getHeight());
+    private void doRecognizeSymbolsInRegion(RegionView regionView) throws IM3Exception {
+        try {
+            //TODO A modelo
+            BufferedImage bImage = SwingFXUtils.fromFXImage(regionView.getImageView().getImage(), null).getSubimage(
+                    (int) regionView.getOwner().getFromX(), (int) regionView.getOwner().getFromY(),
+                    (int) regionView.getOwner().getWidth(), (int) regionView.getOwner().getHeight());
 
-        //File tmpFile = File.createTempFile("")
-        File file = new File("/tmp/muretselectedregion.jpg"); //TODO tempFile
-        ImageIO.write(bImage, "jpg", file);
-        AgnosticSequenceRecognizer agnosticSequenceRecognizer = new AgnosticSequenceRecognizer();
-        List<AgnosticSymbol> symbolList = agnosticSequenceRecognizer.recognize(file);
-        double currentX = 0; //TODO Ahora el reconocedor no me da x, los voy poniendo yo a ojo
-        for (AgnosticSymbol agnosticSymbol: symbolList) {
-            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Adding symbol {0}", agnosticSymbol.getAgnosticString());
-            //TODO Que no haya que poner bounding boxes
-            OMRSymbol omrSymbol = new OMRSymbol(regionView.getOwner(), agnosticSymbol, currentX, 0, 25, 30);
-            regionView.getOwner().addSymbol(omrSymbol);
-            currentX += 30;
+            File file = File.createTempFile("region_" + regionView.getOwner().hashCode(), ".jpg");
+            ImageIO.write(bImage, "jpg", file);
+            AgnosticSequenceRecognizer agnosticSequenceRecognizer = new AgnosticSequenceRecognizer();
+            List<AgnosticSymbol> symbolList = agnosticSequenceRecognizer.recognize(file);
+            double currentX = 0; //TODO Ahora el reconocedor no me da x, los voy poniendo yo a ojo
+            for (AgnosticSymbol agnosticSymbol : symbolList) {
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Adding symbol {0}", agnosticSymbol.getAgnosticString());
+                //TODO Que no haya que poner bounding boxes
+                OMRSymbol omrSymbol = new OMRSymbol(regionView.getOwner(), agnosticSymbol, currentX, 0, 25, 30);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        regionView.getOwner().addSymbol(omrSymbol);
+                    }
+                });
+                currentX += 30;
+            }
+        } catch (IOException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Error recognizing symbols", e);
+            throw new IM3Exception(e);
         }
+    }
+    private void recognizeSymbolsInRegionDialog(RegionView regionView) throws IOException, IM3Exception {
+        //TODO Ver este dálogo
+        WorkIndicatorDialog workIndicatorDialog = new WorkIndicatorDialog(OMRApp.getMainStage().getOwner(), "Recognizing symbol sequences in selected regions");
+
+        workIndicatorDialog.addTaskEndNotification(result -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    String resultMessage = "Result: " + result;
+                    ShowMessage.show(OMRApp.getMainStage(), resultMessage);
+                }
+            });
+        });
+
+
+        workIndicatorDialog.exec("", inputParam -> {
+            try {
+                doRecognizeSymbolsInRegion(regionView);
+            } catch (IM3Exception e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Error recognizing symbols", e);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ShowError.show(OMRApp.getMainStage(), "Cannot recognize symbols", e);
+                    }
+                });
+            }
+            return new Integer(1);
+        });
+
     }
 
     @FXML
