@@ -122,8 +122,8 @@ public class MensImporter {
         }
 
         @Override
-        public void enterKeysignature(mensParser.KeysignatureContext ctx) {
-            super.enterKeysignature(ctx);
+        public void enterKeySignature(mensParser.KeySignatureContext ctx) {
+            super.enterKeySignature(ctx);
             Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Beginning a key signature",
                     ctx.getText());
             ksNotesCount = 0;
@@ -131,8 +131,8 @@ public class MensImporter {
 
 
         @Override
-        public void exitKeysignature(mensParser.KeysignatureContext ctx) {
-            super.exitKeysignature(ctx);
+        public void exitKeySignature(mensParser.KeySignatureContext ctx) {
+            super.exitKeySignature(ctx);
 
             Key ks = null;
             Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Key Signature {0}", ctx.getText());
@@ -140,16 +140,16 @@ public class MensImporter {
                 Logger.getLogger(MensImporter.class.getName()).log(Level.INFO,
                         "Currently all key signatures are being encoded as UNKOWN");
 
-                if (ctx.keysignatureNote().isEmpty()) {
+                if (ctx.keySignatureNote().isEmpty()) {
                     ks = new Key(PitchClasses.C.getPitchClass(), Mode.UNKNOWN); // mode
                 } else {
-                    DiatonicPitch nn = DiatonicPitch.valueOf(ctx.keysignatureNote().get(0).lowerCasePitch().getText().toUpperCase());
+                    DiatonicPitch nn = DiatonicPitch.valueOf(ctx.keySignatureNote().get(0).lowerCasePitch().getText().toUpperCase());
                     if (nn == DiatonicPitch.F) {
                         // sharps
-                        ks = new Key(ctx.keysignatureNote().size(), Mode.UNKNOWN.name());
+                        ks = new Key(ctx.keySignatureNote().size(), Mode.UNKNOWN.name());
                     } else if (nn == DiatonicPitch.B) {
                         // flats
-                        ks = new Key(-ctx.keysignatureNote().size(), Mode.UNKNOWN.name());
+                        ks = new Key(-ctx.keySignatureNote().size(), Mode.UNKNOWN.name());
                     } else {
                         throw new GrammarParseRuntimeException("Unimplemented key signature support: " + ctx.getText());
                     }
@@ -295,11 +295,11 @@ public class MensImporter {
         }
 
         @Override
-        public void exitBarline(mensParser.BarlineContext ctx) {
-            Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Barline {0}", ctx.getText());
-            super.exitBarline(ctx);
-            MarkBarline markBarline = new MarkBarline(); //TODO repetitions ....
-            humdrumMatrix.addItemToCurrentRow(ctx.getText(), markBarline);
+        public void exitBarLine(mensParser.BarLineContext ctx) {
+            Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "BarLine {0}", ctx.getText());
+            super.exitBarLine(ctx);
+            MarkBarline markBarLine = new MarkBarline(); //TODO repetitions ....
+            humdrumMatrix.addItemToCurrentRow(ctx.getText(), markBarLine);
         }
 
 
