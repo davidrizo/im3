@@ -98,7 +98,7 @@ fieldComment: FIELD_COMMENT FIELD_TEXT?;
 graphicalToken:
     tandemInterpretation
     |
-    barline
+    barLine
     |
     layout
     |
@@ -116,7 +116,7 @@ tandemInterpretation:
     |
     clef
     |
-    keysignature
+    keySignature
     |
     meterSign
     |
@@ -142,8 +142,8 @@ clefValue: clefNote clefLine;
 clefNote: CHAR_C | CHAR_F | CHAR_G;
 clefLine: DIGIT_1 | DIGIT_2 | DIGIT_3 | DIGIT_4 | DIGIT_5;
 
-keysignature: TANDEM_KEY LEFT_BRACKET keysignatureNote* RIGHT_BRACKET;
-keysignatureNote: lowerCasePitch keyAccidental?;
+keySignature: TANDEM_KEY LEFT_BRACKET keySignatureNote* RIGHT_BRACKET;
+keySignatureNote: lowerCasePitch keyAccidental?;
 
 keyAccidental: (CHAR_n | OCTOTHORPE | MINUS);
 keyChange: ASTERISK (minorKey | majorKey) keyAccidental? COLON;
@@ -163,7 +163,7 @@ metronome: METRONOME number;
 nullInterpretation: ASTERISK; // a null interpretation (placeholder) will have just an ASTERISK_FRAGMENT
 
 //barline: EQUAL+ (NUMBER)? (COLON? barlineWidth? partialBarLine? COLON?) ; // COLON = repetition mark
-barline: EQUAL+ number? (COLON? partialBarLine? COLON?); // COLON = repetition mark
+barLine: EQUAL+ number? (COLON? partialBarLine? COLON?); // COLON = repetition mark
 
 //barlineWidth: (EXCLAMATION? PIPE EXCLAMATION?);
 
