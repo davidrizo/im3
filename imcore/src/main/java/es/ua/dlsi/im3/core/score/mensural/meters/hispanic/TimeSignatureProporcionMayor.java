@@ -26,19 +26,20 @@ import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import java.util.List;
 
 //TODO Integrar con C32 "internacional"
+
 /**
  *
  * @author drizo
  */
-public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
+public class TimeSignatureProporcionMayor extends TimeSignatureMensural {
 
-    public TimeSignatureProporcionMenor() throws IM3Exception {
+    public TimeSignatureProporcionMayor() throws IM3Exception {
     		super(Perfection.perfectum, Perfection.imperfectum);
     }
 
     @Override
     public String toString() {
-    		return "CZ";
+    		return "C/Z";
     }
 
     @Override
@@ -48,17 +49,17 @@ public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
 
     @Override
 	public boolean equals(Object other) {
-		return other instanceof TimeSignatureProporcionMenor;
+		return other instanceof TimeSignatureProporcionMayor;
 	}
 
 	@Override
 	public Time getDuration() {
-		return getSemibreveDuration();
+		return getBreveDuration();
 	}
 
 
 	@Override
 	public String getSignString() {
-		return "C32";
+		return "C/32";
 	}
 }

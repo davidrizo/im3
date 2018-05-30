@@ -58,7 +58,7 @@ interpretation: INTERPRETATION;
 
 
 tandemInterpretation:
-    (TANDEM_CLEF clef) //| meter | key | metronome | instrument | instrumentClass | instrumentGroup;
+    (TANDEM_CLEF clef) //| meter | key | metronome | comment | instrumentClass | instrumentGroup;
     | (TANDEM_KEY LEFTBRACKET keysignature RIGHTBRACKET)
     | (TANDEM_METER meter)
     | (TANDEM_MET LEFTPAR meterSign RIGHTPAR)
@@ -67,7 +67,7 @@ tandemInterpretation:
     | (UNKNOWN_KEY  // unknown key
     | ATONAL_PASSAGE // atonal passage
     | SECTIONLABEL // section labels
-    | INSTRUMENT //TODO Add a ScorePart for each instrument
+    | INSTRUMENT //TODO Add a ScorePart for each comment
     | METRONOME
     | ASTERISK) // a null interpretation (placeholder) will have just an asterisk
     ;

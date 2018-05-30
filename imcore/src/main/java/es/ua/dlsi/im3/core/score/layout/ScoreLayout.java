@@ -12,6 +12,7 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.NonProportionalLayoutEngine;
+import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
 import java.util.*;
 
@@ -415,4 +416,13 @@ public abstract class ScoreLayout {
     }*/
 
     public abstract void replace(Clef clef, Clef newClef, boolean changePitches) throws IM3Exception;
+
+    public void add(Clef clef) throws IM3Exception {
+        System.err.println("THIS ADD CLEF IS JUST A TEST");
+        //TODO Hacerlo bien
+        if (this.scoreSong.getStaves().size() == 0) {
+            this.scoreSong.addStaff(new Pentagram(this.scoreSong, "1", 1));
+        }
+        this.scoreSong.getStaves().get(0).addClef(clef);
+    }
 }

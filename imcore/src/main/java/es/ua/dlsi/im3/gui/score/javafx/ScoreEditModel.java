@@ -26,6 +26,10 @@ public class ScoreEditModel {
                 new CoordinateComponent(height));
     }
 
+    public ScoreEditModel() throws IM3Exception {
+        this(new ScoreSong(), 500, 100);
+    }
+
     public HorizontalLayout getLayout() {
         return layout;
     }
