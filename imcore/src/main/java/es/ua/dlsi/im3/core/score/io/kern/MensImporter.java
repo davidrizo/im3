@@ -44,10 +44,12 @@ public class MensImporter {
         private int octaveModif;
         private String noteName;
         private int lastDots;
+        private boolean inLigature;
 
 
         public Loader() {
             humdrumMatrix = new HumdrumMatrix();
+            inLigature = false;
         }
 
         @Override
@@ -499,7 +501,38 @@ public class MensImporter {
             }
 
             handlePerfectionColoration(note);
-            humdrumMatrix.addItemToCurrentRow(ctx.getText(), note);
+
+            LigatureType ligatureType = LigatureType.computed;
+            if (ctx.afterNote().ligatureType() != null && ctx.afterNote().ligatureType().size() > 0) {
+                String str = ctx.afterNote().ligatureType().get(0).getText();
+                if (str.equals("R")) {
+                    ligatureType = LigatureType.recta;
+                } else if (str.equals("Q")) {
+                    ligatureType = LigatureType.obliqua;
+                } else {
+                    throw new GrammarParseRuntimeException("Invalid ligature type: '" + str + "'");
+                }
+            }
+
+            KernLigatureComponent ligatureComponent = null;
+            if (ctx.beforeNote().ligatureStart() != null && ctx.beforeNote().ligatureStart().size() > 0) {
+                if (ctx.afterNote().ligatureEnd() != null && ctx.afterNote().ligatureEnd().size() > 0) {
+                    throw new GrammarParseRuntimeException("Cannot create a ligature of an only symbol");
+                }
+                ligatureComponent = new KernLigatureComponent(LigatureStartEnd.start, ligatureType, note);
+                inLigature = true;
+            } else if (ctx.afterNote().ligatureEnd() != null && ctx.afterNote().ligatureEnd().size() > 0) {
+                ligatureComponent = new KernLigatureComponent(LigatureStartEnd.end, ligatureType, note);
+                inLigature = false;
+            } else if (inLigature) {
+                ligatureComponent = new KernLigatureComponent(LigatureStartEnd.inside, ligatureType, note);
+            }
+
+            if (ligatureComponent != null) {
+                humdrumMatrix.addItemToCurrentRow(ctx.getText(), ligatureComponent);
+            } else {
+                humdrumMatrix.addItemToCurrentRow(ctx.getText(), note);
+            }
         }
     }
 

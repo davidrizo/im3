@@ -118,7 +118,7 @@ alteration ::= OCTOTHORPE | (OCTOTHORPE OCTOTHORPE) | MINUS | (MINUS MINUS) | CH
 // x is show, xx is shows editorial
 alterationVisualMode ::= CHAR_x CHAR_x?
 
-afterNote ::= (slurEnd | stem| tieMiddle | tieEnd| ligatureEnd | beam | pause | barLineCrossedNoteEnd)*
+afterNote ::= (slurEnd | stem| tieMiddle | tieEnd| ligatureEnd | ligatureType | beam | pause | barLineCrossedNoteEnd)*
 
 tieStart ::= LEFT_BRACKET
 
@@ -131,6 +131,8 @@ slurStart ::= LEFT_PARENTHESIS
 ligatureStart ::= ANGLE_BRACKET_OPEN
 
 ligatureEnd ::= ANGLE_BRACKET_CLOSE
+
+ligatureType ::= CHAR_R | CHAR_Q
 
 slurEnd ::= RIGHT_PARENTHESIS
 
@@ -174,7 +176,13 @@ CHAR_L ::= 'L'
 
 CHAR_J ::= 'J'
 
+CHAR_R ::= 'R'
+
+CHAR_Q ::= 'Q'
+
 CHAR_S ::= 'S'
+
+CHAR_T ::= 'T'
 
 ASTERISK ::= '*'
 

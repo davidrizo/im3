@@ -233,7 +233,7 @@ alteration: OCTOTHORPE | (OCTOTHORPE OCTOTHORPE) | MINUS | (MINUS MINUS) | CHAR_
 alterationVisualMode: CHAR_x CHAR_x?;
 
 afterNote:
-	     (slurEnd | stem| tieMiddle | tieEnd| ligatureEnd | beam | pause | barLineCrossedNoteEnd)*;
+	     (slurEnd | stem| tieMiddle | tieEnd | ligatureType | ligatureEnd | beam | pause | barLineCrossedNoteEnd)*;
 
 //TODO SEQUENCES OF LIGATURE
 //TEXT
@@ -244,6 +244,7 @@ tieEnd: RIGHT_BRACKET;
 slurStart: LEFT_PARENTHESIS;
 ligatureStart: ANGLE_BRACKET_OPEN;
 ligatureEnd: ANGLE_BRACKET_CLOSE;
+ligatureType: CHAR_R | CHAR_Q;
 slurEnd: RIGHT_PARENTHESIS;
 barLineCrossedNoteStart: CHAR_T;
 barLineCrossedNoteEnd: CHAR_t;

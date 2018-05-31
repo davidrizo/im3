@@ -30,6 +30,8 @@ CHAR_L: 'L';
 CHAR_M: 'M';
 CHAR_O: 'O';
 CHAR_P: 'P';
+CHAR_Q: 'Q';
+CHAR_R: 'R';
 CHAR_S: 'S';
 CHAR_X: 'X';
 CHAR_T: 'T';

@@ -60,7 +60,7 @@ public class MensImporterTest {
         MensImporter importer = new MensImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/kern/mensGrammarTest.krn");
         HumdrumMatrix humdrumMatrix = importer.importMens(file);
-        assertEquals("Size", 14, humdrumMatrix.getMatrix().size());
+        assertEquals("Size", 17, humdrumMatrix.getMatrix().size());
         assertEquals("**mens", humdrumMatrix.get(0, 0).getHumdrumEncoding());
         assertEquals("*clefG2", humdrumMatrix.get(1, 0).getHumdrumEncoding());
         assertEquals("Clef", new ClefG2(), humdrumMatrix.get(1, 0).getParsedObject());
@@ -92,7 +92,6 @@ public class MensImporterTest {
         assertEquals("Brevis rest", new SimpleRest(Figures.BREVE, 0), humdrumMatrix.get(12, 0).getParsedObject());
 
         assertEquals("s~pA#x", humdrumMatrix.get(13, 0).getHumdrumEncoding());
-
         SimpleNote simpleNote = new SimpleNote(Figures.SEMIBREVE, 0, new ScientificPitch(PitchClasses.A_SHARP, 3));
         simpleNote.getAtomFigure().setColored(true);
         simpleNote.getAtomFigure().setExplicitMensuralPerfection(Perfection.perfectum);
@@ -100,9 +99,22 @@ public class MensImporterTest {
 
         assertEquals("Semibrevis perect colored A", simpleNote, humdrumMatrix.get(13, 0).getParsedObject());
 
+        assertEquals("<ScR", humdrumMatrix.get(14, 0).getHumdrumEncoding());
+        KernLigatureComponent ligatureComponent1 = new KernLigatureComponent(LigatureStartEnd.start, LigatureType.recta, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.C, 3)));
+        assertEquals("Brevis ligature start", ligatureComponent1, humdrumMatrix.get(14, 0).getParsedObject());
+
+        assertEquals("LeQ", humdrumMatrix.get(15, 0).getHumdrumEncoding());
+        KernLigatureComponent ligatureComponent2 = new KernLigatureComponent(LigatureStartEnd.inside, LigatureType.obliqua, new SimpleNote(Figures.LONGA, 0, new ScientificPitch(PitchClasses.E, 3)));
+        assertEquals("Longa ligature inside", ligatureComponent2, humdrumMatrix.get(15, 0).getParsedObject());
+
+        assertEquals("Sd>", humdrumMatrix.get(16, 0).getHumdrumEncoding());
+        KernLigatureComponent ligatureComponent3 = new KernLigatureComponent(LigatureStartEnd.end, LigatureType.computed, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.D, 3)));
+        assertEquals("Brevis ligature end", ligatureComponent3, humdrumMatrix.get(16, 0).getParsedObject());
+
         //TODO Comprobar Coloration, perfection. Explicit accidental
         //TODO Slurs, ties
         //TODO SPINES y TEXT
         //TODO Editorial accidental
+        //TODO Beams
     }
 }
