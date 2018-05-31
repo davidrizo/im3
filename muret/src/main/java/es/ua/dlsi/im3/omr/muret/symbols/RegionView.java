@@ -144,7 +144,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         super.doMousePressed(event);
 
         SymbolCorrectionController symbolCorrectionController = (SymbolCorrectionController) controller;
-        if (symbolCorrectionController.isAddingSymbol()) {
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
             newSymbolBoundingBox = new DraggableRectangle(event.getX(), event.getY(), 1, 1, Color.GOLD);
             newSymbolBoundingBox.setFill(Color.TRANSPARENT);
             newSymbolBoundingBox.setStroke(Color.GOLD);

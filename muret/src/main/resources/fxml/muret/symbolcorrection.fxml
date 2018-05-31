@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -39,7 +40,7 @@
         </HBox>
     </top>
     <center>
-        <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
+        <ScrollPane fx:id="scrollPane" prefHeight="560.0" prefWidth="608.0" BorderPane.alignment="CENTER">
          <content>
             <Pane fx:id="mainPane">
                <children>
@@ -56,12 +57,16 @@
               <items>
                   <Button mnemonicParsing="false" onAction="#handleCollapse" text="Collapse" />
                 <Button fx:id="btnDeleteTreeItem" mnemonicParsing="false" onAction="#handleDeleteTreeItem" text="Delete" />
-                  <ToggleButton fx:id="toggleBtnAddSymbol" mnemonicParsing="false" text="Add symbol" />
               </items>
             </ToolBar>
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+            <Label text="Add symbol by double click">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <SplitPane dividerPositions="0.4922779922779923" orientation="VERTICAL" prefHeight="520.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="253.0" prefWidth="300.0">
                      <children>
                         <TreeView fx:id="treeView" prefHeight="560.0" prefWidth="204.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>

@@ -285,8 +285,10 @@ public class AgnosticStaffView extends VBox {
 
 
     public void doCloseCorrectionPane() {
-        correctingSymbol.get().endEdit();
-        correctingSymbol.setValue(null);
+        if (correctingSymbol != null && correctingSymbol.get() != null) {
+            correctingSymbol.get().endEdit();
+            correctingSymbol.setValue(null);
+        }
     }
 
     public void onSymbolRemoved(BoundingBoxBasedView elementView) {

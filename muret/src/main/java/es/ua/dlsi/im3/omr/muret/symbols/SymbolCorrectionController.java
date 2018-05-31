@@ -51,13 +51,9 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
     @FXML
     Button btnChangeSymbol;
     @FXML
-    ToggleButton toggleBtnAddSymbol;
-    @FXML
     ToggleButton toggleButtonEditMusic;
 
     AgnosticSymbolFont agnosticSymbolFont;
-
-    BooleanProperty addingSymbol;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,7 +61,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
         regionsPane.prefHeightProperty().bind(mainPane.heightProperty());
         regionsPane.prefWidthProperty().bind(mainPane.widthProperty());
         btnChangeSymbol.disableProperty().bind(selectedSymbol.isNull());
-        initAddSymbolInteraction();
+        //initAddSymbolInteraction();
     }
 
     @Override
@@ -198,7 +194,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
     }
 
 
-    private void initAddSymbolInteraction() {
+    /*private void initAddSymbolInteraction() {
         addingSymbol = new SimpleBooleanProperty(false);
         toggleBtnAddSymbol.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -214,7 +210,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
 
     public BooleanProperty addingSymbolProperty() {
         return addingSymbol;
-    }
+    }*/
 
     public void setSymbolCorrectionToolbar(Node toolbar) {
         mainBorderPane.setBottom(toolbar);
