@@ -534,6 +534,12 @@ public class MensImporter {
                 humdrumMatrix.addItemToCurrentRow(ctx.getText(), note);
             }
         }
+
+        @Override
+        public void exitLyricsText(mensParser.LyricsTextContext ctx) {
+            super.exitLyricsText(ctx);
+            humdrumMatrix.addItemToCurrentRow(ctx.getText(), new KernText(ctx.getText()));
+        }
     }
 
     static class MensLexer extends mensLexer {
@@ -558,7 +564,7 @@ public class MensImporter {
         try {
             Logger.getLogger(MensImporter.class.getName()).log(Level.INFO, "Parsing {0}", inputDescription);
 
-            boolean debugLexer = true;
+            boolean debugLexer = false;
             mensLexer lexer = new MensLexer(input, debugLexer);
             lexer.addErrorListener(errorListener);
             CommonTokenStream tokens = new CommonTokenStream(lexer);

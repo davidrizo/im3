@@ -1,15 +1,57 @@
 lexer grammar mensLexer;
 
 @lexer::header {
+import java.util.ArrayList;
 }
+
+// Non context free grammar needs semantic predicates to handle text spines
+@lexer::members {
+    // record whether each spine is **text
+    private ArrayList<Boolean> textSpines = new ArrayList<>();
+    private int currentSpine;
+    private boolean inTextMode = false;
+    public boolean inTextSpine() {
+        if (currentSpine >= textSpines.size()) {
+            return false;
+        } else {
+            return textSpines.get(currentSpine);
+        }
+    }
+    private void incSpine() {
+        currentSpine++;
+        if (inTextSpine()) {
+            pushMode(FREE_TEXT);
+            inTextMode = true;
+        } else if (inTextMode) {
+            popMode();
+            inTextMode = false;
+        }
+    }
+    private void splitSpine() {
+        textSpines.add(currentSpine, inTextSpine());
+    }
+    private void joinSpine() {
+        textSpines.remove(currentSpine);
+    }
+    private void resetSpine() {
+        currentSpine=0;
+    }
+    public void addMensSpine() {
+        textSpines.add(false);
+    }
+    public void addTextSpine() {
+        textSpines.add(true);
+    }
+}
+
 
 fragment ASTERISK_FRAGMENT : '*';
 fragment EXCLAMATION_FRAGMENT : '!';
 
 //fragment REFERENCE_RECORD: EXCLAMATION_FRAGMENT EXCLAMATION_FRAGMENT EXCLAMATION_FRAGMENT;
 
-MENS: ASTERISK_FRAGMENT ASTERISK_FRAGMENT 'mens';
-TEXT: ASTERISK_FRAGMENT ASTERISK_FRAGMENT 'text';
+MENS: ASTERISK_FRAGMENT ASTERISK_FRAGMENT 'mens' {addMensSpine();};
+TEXT: ASTERISK_FRAGMENT ASTERISK_FRAGMENT 'text' {addTextSpine();};
 TANDEM_STAFF: ASTERISK_FRAGMENT 'staff';
 TANDEM_CLEF: ASTERISK_FRAGMENT 'clef';
 TANDEM_KEY: ASTERISK_FRAGMENT 'k';
@@ -86,8 +128,8 @@ COLON: ':';
 SEMICOLON: ';';
 
 // with pushMode, the lexer uses the rules below FREE_TEXT
-TAB: '\t';
-EOL : '\r'?'\n';
+TAB: '\t' {incSpine();}; // incSpine changes mode depending on the spine type
+EOL : '\r'?'\n' {resetSpine();};
 
 //REFERENCE_RECORD_COMPOSER: REFERENCE_RECORD 'COM'  -> pushMode(FREE_TEXT);
 //REFERENCE_RECORD_PARENT_WORK: REFERENCE_RECORD 'OPT'  -> pushMode(FREE_TEXT);
@@ -107,6 +149,3 @@ FIELD_TEXT: ~[\t\n\r]+  -> popMode;
 mode LAYOUT_MODE;
 LAYOUT_NOTE_VISUAL_ACCIDENTAL: 'N:va='  -> popMode;
 LAYOUT_REST_POSITION: 'R:v='  -> popMode;
-
-//mode FREE_CHAR; Used in **kern for alternate measure
-//CHAR: 'a..z' | 'A'..'Z' -> popMode

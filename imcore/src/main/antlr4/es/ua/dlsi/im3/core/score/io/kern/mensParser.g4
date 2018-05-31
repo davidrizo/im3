@@ -15,27 +15,6 @@ options { tokenVocab=mensLexer; } // use tokens from mensLexer.g4
     }
 }
 
-// Non context free grammar needs semantic predicates to handle text spines
-@parser::members {
-    // record whether each spine is **text
-    private ArrayList<Boolean> textSpines = new ArrayList<>();
-    private int currentSpine;
-    public boolean inTextSpine() {
-        return textSpines.get(currentSpine);
-    }
-    private void incSpine() {
-        currentSpine++;
-    }
-    private void splitSpine() {
-        textSpines.add(currentSpine, inTextSpine());
-    }
-    private void joinSpine() {
-        textSpines.remove(currentSpine);
-    }
-    private void resetSpine() {
-        currentSpine=0;
-    }
-}
 
 
 
@@ -66,10 +45,13 @@ header: headerField (TAB headerField)*;
 
 headerField: headerMens; // in full **kern specification it includes also headerKern | headerRoot | headerHarm
 
-headerMens: MENS;
+headerMens:
+    MENS
+    |
+    TEXT
+    ;
 
 record
-@before {resetSpine();}
     :
     globalComment
     |
@@ -82,7 +64,6 @@ globalComment:
     GLOBAL_COMMENT FIELD_TEXT?;
 
 field
-@after {incSpine(); }
     :
     graphicalToken
      |
@@ -107,8 +88,8 @@ graphicalToken:
     note
     |
     spineOperation
-    /*|
-    lyricsText*/
+    |
+    lyricsText
     ;
 
 tandemInterpretation:
@@ -178,9 +159,9 @@ partialBarLine:
 spineOperation:
     spineTerminator
      |
-     spineSplit {splitSpine();}
+     spineSplit
      |
-     spineJoin {joinSpine(); }
+     spineJoin
      ;
 
 spineTerminator: ASTERISK MINUS;
@@ -235,9 +216,6 @@ alterationVisualMode: CHAR_x CHAR_x?;
 afterNote:
 	     (slurEnd | stem| tieMiddle | tieEnd | ligatureType | ligatureEnd | beam | pause | barLineCrossedNoteEnd)*;
 
-//TODO SEQUENCES OF LIGATURE
-//TEXT
-
 tieStart: LEFT_BRACKET;
 tieMiddle: UNDERSCORE;
 tieEnd: RIGHT_BRACKET;
@@ -272,6 +250,6 @@ staffPosition: lineSpace number;
 
 lineSpace: CHAR_L | CHAR_S; // l = line, s = space
 
-lyricsText: {inTextSpine()}? FIELD_TEXT;
+lyricsText: FIELD_TEXT;
 
 

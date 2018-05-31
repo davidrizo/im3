@@ -64,6 +64,8 @@ public class MensImporterTest {
         assertEquals("**mens", humdrumMatrix.get(0, 0).getHumdrumEncoding());
         assertEquals("*clefG2", humdrumMatrix.get(1, 0).getHumdrumEncoding());
         assertEquals("Clef", new ClefG2(), humdrumMatrix.get(1, 0).getParsedObject());
+        assertEquals("*clefG2 text", new KernText("G clef"), humdrumMatrix.get(1, 1).getParsedObject());
+
         assertEquals("*k[b-]", humdrumMatrix.get(2, 0).getHumdrumEncoding());
         assertEquals("Key", new Key(PitchClasses.F, Mode.UNKNOWN), humdrumMatrix.get(2, 0).getParsedObject());
         assertEquals("*met(C)", humdrumMatrix.get(3, 0).getHumdrumEncoding());
