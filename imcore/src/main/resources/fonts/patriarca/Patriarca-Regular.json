@@ -167,14 +167,38 @@
     "beamedRight1" : {
       "codepoint": "U+F0A2"
     },
+    "beamedRight1Down" : {
+      "codepoint": "U+F0A8"
+    },
     "beamedLeft1" : {
       "codepoint": "U+F0A3"
+    },
+    "beamedLeft1Down" : {
+      "codepoint": "U+F0A9"
+    },
+    "beamedBoth1" : {
+      "codepoint": "U+F0B0"
+    },
+    "beamedLeft1Down" : {
+      "codepoint": "U+F0B1"
     },
     "beamedRight2" : {
       "codepoint": "U+F0A4"
     },
+    "beamedRight2Down" : {
+      "codepoint": "U+F0B3"
+    },
     "beamedLeft2" : {
       "codepoint": "U+F0A5"
+    },
+    "beamedLeft2Down" : {
+      "codepoint": "U+F0B4"
+    },
+    "beamedBoth2" : {
+      "codepoint": "U+F0B2"
+    },
+    "beamedBoth2Down" : {
+      "codepoint": "U+F0B5"
     },
     "inkBlot" : {
       "codepoint": "U+F0A6"

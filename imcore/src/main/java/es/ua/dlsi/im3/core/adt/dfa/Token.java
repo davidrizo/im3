@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.core.adt.dfa;
 
+import java.util.Objects;
+
 public class Token<AlphabetSymbolType extends IAlphabetSymbolType> implements Comparable<Token<AlphabetSymbolType>> {
     /**
      * Symbol type, depends on the given alphabet
@@ -22,15 +24,14 @@ public class Token<AlphabetSymbolType extends IAlphabetSymbolType> implements Co
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Token)) return false;
         Token<?> token = (Token<?>) o;
-
-        return symbol.getType().equals(token.symbol.getType());
+        return Objects.equals(symbol, token.symbol);
     }
 
     @Override
     public int hashCode() {
-        return symbol.getType().hashCode();
+
+        return Objects.hash(symbol);
     }
 }

@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import static org.junit.Assert.*;
 
@@ -27,17 +28,8 @@ public class NearestNeighbourClassifierTest {
         };
 
         classifier.train();
-        List<String> rank1 = classifier.classify(new DoublePrototype(null, 1.5));
-        assertEquals(3, rank1.size());
-        assertEquals("A", rank1.get(0));
-        assertEquals("B", rank1.get(1));
-        assertEquals("C", rank1.get(2));
-
-        List<String> rank2 = classifier.classify(new DoublePrototype(null, -100.0));
-        assertEquals(3, rank2.size());
-        assertEquals("C", rank2.get(0));
-        assertEquals("A", rank2.get(1));
-        assertEquals("B", rank2.get(2));
-
+        TreeSet<RankingItem<DoublePrototype>> rank1 = classifier.classify(new DoublePrototype(null, 1.5));
+        assertEquals(9, rank1.size());
+        assertEquals("A", new RankingItem<DoublePrototype>(new DoublePrototype("A", 1.0), 0.5), rank1.first());
     }
 }

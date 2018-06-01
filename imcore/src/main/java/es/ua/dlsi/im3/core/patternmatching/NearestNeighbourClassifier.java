@@ -26,72 +26,27 @@ public abstract class NearestNeighbourClassifier<PrototypeClassType, InstanceTyp
 
     }
 
-    class Ranking implements Comparable<Ranking>{
-        PrototypeClassType symbol;
-        double distance;
 
-        public Ranking(PrototypeClassType symbol, double distance) {
-            super();
-            this.symbol = symbol;
-            this.distance = distance;
-        }
-
-        public PrototypeClassType getClassType() {
-            return symbol;
-        }
-
-        public double getDistance() {
-            return distance;
-        }
-
-        @Override
-        public int compareTo(Ranking o) {
-            if (distance < o.distance) {
-                return -1;
-            } else if (distance > o.distance) {
-                return 1;
-            } else {
-                return symbol.hashCode() - o.hashCode();
-            }
-        }
-    }
 
     /**
      * @param elementToClassify
      * @return An ordered list of elements ordered by descreasing similarity
      */
-    public TreeSet<Ranking> rank(InstanceType elementToClassify) throws IM3Exception {
+    public TreeSet<RankingItem<InstanceType>> classify(InstanceType elementToClassify) throws IM3Exception {
         if (trainedSet == null) {
             throw new IM3Exception("The classifier has not been trained yet");
         }
-        TreeMap<PrototypeClassType, Double> symbolDistances = new TreeMap<>();
 
+        TreeSet<RankingItem<InstanceType>> result = new TreeSet<>();
         for(InstanceType symbol : trainedSet) {
             double distance = elementToClassify.computeDistance(symbol);
-
-            Double prevDist = symbolDistances.get(symbol.getPrototypeClass());
-            if (prevDist == null || distance < prevDist) {
-                symbolDistances.put(symbol.getPrototypeClass(), distance); // to avoid repeating symbols
-            }
-
-            symbolDistances.put(symbol.getPrototypeClass(), distance);
-        }
-        TreeSet<Ranking> result = new TreeSet<>();
-        for (Map.Entry<PrototypeClassType, Double> symbolEntry: symbolDistances.entrySet()) {
-            result.add(new Ranking(symbolEntry.getKey(), symbolEntry.getValue()));
+            result.add(new RankingItem(symbol, distance));
         }
 
         return result;
     }
 
-    public List<PrototypeClassType> classify(InstanceType instanceClassType) throws IM3Exception {
-        TreeSet<Ranking> ranking = rank(instanceClassType);
-
-        List<PrototypeClassType> result = new ArrayList<>();
-        for (Ranking r: ranking) {
-            result.add(r.getClassType());
-        }
-        return result;
+    public List<InstanceType> getTrainedSet() {
+        return trainedSet;
     }
-
 }
