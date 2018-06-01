@@ -3,11 +3,18 @@ package es.ua.dlsi.im3.omr.muret.symbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
+import es.ua.dlsi.im3.core.patternmatching.RankingItem;
+import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
+import es.ua.dlsi.im3.gui.command.ICommand;
+import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.GrayscaleImageData;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolImagePrototype;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
 import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.muret.model.OMRRegion;
@@ -23,7 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.util.List;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -127,9 +134,42 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
     }
 
     public void delete(SymbolView symbolView) {
-        //TODO Command
-        // it changes the model and ImageBasedAbstractController, that is bound to model changes propagates all changes in the view
-        this.owner.removeSymbol(symbolView.getOwner());
+        ICommand command = new ICommand() {
+            OMRSymbol deletedSymbol = symbolView.getOwner();
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                // it changes the model and ImageBasedAbstractController, that is bound to model changes propagates all changes in the view
+                owner.removeSymbol(deletedSymbol);
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                owner.addSymbol(deletedSymbol);
+            }
+
+            @Override
+            public void redo() throws Exception {
+                owner.addSymbol(deletedSymbol);
+            }
+
+            @Override
+            public String getEventName() {
+                return "Delete symbol " + deletedSymbol.toString();
+            }
+        };
+
+        try {
+            controller.getDashboard().getCommandManager().executeCommand(command);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot delete symbol", e);
+            ShowError.show(OMRApp.getMainStage(), "Cannot delete symbol", e);
+        }
+
     }
 
     @Override
@@ -188,16 +228,58 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         if (width > 1 && height > 1) {
             try {
                 GrayscaleImageData grayscaleImageData = getGrayScaleImage(x, y, width, height);
-                List<AgnosticSymbol> orderedRecognizedSymbols = controller.getDashboard().getModel().classifySymbolFromImage(grayscaleImageData);
+                TreeSet<RankingItem<SymbolImagePrototype>> orderedRecognizedSymbols = controller.getDashboard().getModel().classifySymbolFromImage(grayscaleImageData);
                 if (orderedRecognizedSymbols == null || orderedRecognizedSymbols.isEmpty()) {
                     throw new IM3Exception("No symbols returned");
                 }
 
                 //TODO Mostrar barra corrección con símbolos ordenados
-                AgnosticSymbol agnosticSymbol = orderedRecognizedSymbols.get(0);
-                OMRSymbol omrSymbol = new OMRSymbol(owner, agnosticSymbol, x, y, width, height);
-                owner.addSymbol(omrSymbol); // ImageBasedAbstractController is listening the model for changes and it propagates any change
+                RankingItem<SymbolImagePrototype> firstRankedElement = orderedRecognizedSymbols.first();
+                AgnosticSymbol agnosticSymbol = AgnosticSymbol.parseAgnosticString(firstRankedElement.getClassType().getPrototypeClass().getAgnosticString());
 
+                if (agnosticSymbol.getSymbol() instanceof Note) { //TODO resto de tipos
+                    Note note = (Note) agnosticSymbol.getSymbol();
+                    if (note.getStemDirection() == null && note.getDurationSpecification().isUsesStem()) {
+                        if (agnosticSymbol.getPositionInStaff().getLineSpace() < PositionsInStaff.LINE_3.getLineSpace()) {
+                            note.setStemDirection(Directions.up);
+                        } else {
+                            note.setStemDirection(Directions.down);
+                        }
+                    }
+                }
+
+                OMRSymbol omrSymbol = new OMRSymbol(owner, agnosticSymbol, x, y, width, height);
+                ICommand command = new ICommand() {
+                    OMRSymbol newSymbol;
+                    @Override
+                    public void execute(IObservableTaskRunner observer) throws Exception {
+                        newSymbol = omrSymbol;
+                        owner.addSymbol(omrSymbol); // ImageBasedAbstractController is listening the model for changes and it propagates any change
+                    }
+
+                    @Override
+                    public boolean canBeUndone() {
+                        return true;
+                    }
+
+                    @Override
+                    public void undo() throws Exception {
+                        owner.removeSymbol(newSymbol);
+
+                    }
+
+                    @Override
+                    public void redo() throws Exception {
+                        owner.addSymbol(newSymbol);
+                    }
+
+                    @Override
+                    public String getEventName() {
+                        return "Add symbol " + newSymbol.toString();
+                    }
+                };
+
+                controller.getDashboard().getCommandManager().executeCommand(command);
                 SymbolView symbolView = (SymbolView) controller.doSelect(omrSymbol);
                 symbolView.doEdit();
 

@@ -81,11 +81,20 @@ public class MensuralAgnosticSymbolFont extends AgnosticSymbolFont {
         add(new Slur(StartEnd.start), "agnosticSlurStart");
         add(new Slur(StartEnd.end), "agnosticSlurEnd");
 
-        add(new Note(new Beam(BeamType.right, 1)), "beamedRight1");
-        add(new Note(new Beam(BeamType.left, 1)), "beamedLeft1");
+        add(new Note(new Beam(BeamType.right, 1), Directions.up), "beamedRight1");
+        add(new Note(new Beam(BeamType.right, 1), Directions.down), "beamedRight1Down");
+        add(new Note(new Beam(BeamType.both, 1), Directions.up), "beamedBoth1");
+        add(new Note(new Beam(BeamType.both, 1), Directions.down), "beamedBoth1Down");
+        add(new Note(new Beam(BeamType.left, 1), Directions.up), "beamedLeft1");
+        add(new Note(new Beam(BeamType.left, 1), Directions.down), "beamedLeft1Down");
 
-        add(new Note(new Beam(BeamType.right, 2)), "beamedRight2");
-        add(new Note(new Beam(BeamType.left, 2)), "beamedLeft2");
+
+        add(new Note(new Beam(BeamType.right, 2), Directions.up), "beamedRight2");
+        add(new Note(new Beam(BeamType.right, 2), Directions.down), "beamedRight2Down");
+        add(new Note(new Beam(BeamType.both, 2), Directions.up), "beamedBoth2");
+        add(new Note(new Beam(BeamType.both, 2), Directions.down), "beamedBoth2Down");
+        add(new Note(new Beam(BeamType.left, 2), Directions.up), "beamedLeft2");
+        add(new Note(new Beam(BeamType.left, 2), Directions.down), "beamedLeft2Down");
 
         add(new Smudge(), "smudge");
         add(new InkBlot(), "inkBlot");

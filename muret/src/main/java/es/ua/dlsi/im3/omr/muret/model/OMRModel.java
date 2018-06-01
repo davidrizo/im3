@@ -2,16 +2,19 @@ package es.ua.dlsi.im3.omr.muret.model;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.patternmatching.RankingItem;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.GrayscaleImageData;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.ISymbolFromImageDataRecognizer;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolFromImageDataRecognizerFactory;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolImagePrototype;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.io.File;
 import java.util.List;
+import java.util.TreeSet;
 
 public class OMRModel {
     ObjectProperty<OMRProject> currentProject;
@@ -64,7 +67,7 @@ public class OMRModel {
         currentProject.setValue(project);
     }
 
-    public List<AgnosticSymbol> classifySymbolFromImage(GrayscaleImageData grayScaleImage) throws IM3Exception {
+    public TreeSet<RankingItem<SymbolImagePrototype>> classifySymbolFromImage(GrayscaleImageData grayScaleImage) throws IM3Exception {
         return symbolFromImageDataRecognizer.recognize(grayScaleImage);
     }
 }
