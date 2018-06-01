@@ -52,7 +52,7 @@ public class AgnosticSymbol extends AgnosticToken {
         return sb.toString();
     }
 
-    public static AgnosticSymbol parseString(String string) throws IM3Exception {
+    public static AgnosticSymbol parseAgnosticString(String string) throws IM3Exception {
 	    String trimmedString = string.trim();
 	    if (trimmedString.isEmpty()) {
 	        throw new IM3RuntimeException("Empty string");
@@ -69,7 +69,6 @@ public class AgnosticSymbol extends AgnosticToken {
         return new AgnosticSymbol(agnosticSymbolType, positionInStaff);
 
     }
-
 
     @Override
     public boolean equals(Object o) {

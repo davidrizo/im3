@@ -10,6 +10,8 @@ import es.ua.dlsi.im3.omr.conversions.PagedCapitan2Agnostic;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
 import es.ua.dlsi.im3.omr.imageprocessing.StaffNormalizer;
 
 import java.io.File;
@@ -38,7 +40,16 @@ public class AgnosticSequenceRecognizer {
         LinkedList<AgnosticSymbol> agnosticSymbolLinkedList = new LinkedList<>();
         for (String t: tokens) {
             String token = t.trim().replaceAll("'", "");
-            agnosticSymbolLinkedList.add(pagedCapitan2Agnostic.convert(token));
+            AgnosticSymbol agnosticSymbol = pagedCapitan2Agnostic.convert(token);
+            if (agnosticSymbol.getSymbol() instanceof Note) { //TODO Los demás
+                Note note = (Note) agnosticSymbol.getSymbol();
+                if (agnosticSymbol.getPositionInStaff().getLineSpace() < PositionsInStaff.LINE_3.getLineSpace()) {
+                    note.setStemDirection(Directions.up);
+                } else {
+                    note.setStemDirection(Directions.down);
+                }
+            }
+            agnosticSymbolLinkedList.add(agnosticSymbol);
         }
 
         return agnosticSymbolLinkedList;

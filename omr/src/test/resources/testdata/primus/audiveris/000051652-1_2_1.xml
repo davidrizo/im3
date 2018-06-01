@@ -35,14 +35,14 @@
   <part-list>
     <score-part id="P1">
       <part-name>Part_1</part-name>
-      <score-instrument id="P1-I1">
-        <instrument-name>Voice Oohs</instrument-name>
-      </score-instrument>
-      <midi-instrument id="P1-I1">
+      <score-comment id="P1-I1">
+        <comment-name>Voice Oohs</comment-name>
+      </score-comment>
+      <midi-comment id="P1-I1">
         <midi-channel>1</midi-channel>
         <midi-program>54</midi-program>
         <volume>78</volume>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
   </part-list>
   <!--= = = = = = = = = = = = = = = = = = = = = = = = = = = = =-->

@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.omr.classifiers.symbolrecognition;
 import es.ua.dlsi.im3.core.IM3Exception;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @autor drizo
@@ -10,8 +11,8 @@ import java.util.ArrayList;
 public class GrayscaleImageData {
     ArrayList<Integer> grayScalePixels;
 
-    public GrayscaleImageData(ArrayList<Integer> grayScalePixels) {
-        this.grayScalePixels = grayScalePixels;
+    public GrayscaleImageData(List<Integer> grayScalePixels) {
+        this.grayScalePixels = new ArrayList<>(grayScalePixels);
     }
 
     public GrayscaleImageData(int[] pixels) {
@@ -39,5 +40,20 @@ public class GrayscaleImageData {
         }
 
         return Math.sqrt(acc);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i=0; i<grayScalePixels.size(); i++) {
+            if (i==0) {
+                stringBuilder.append('[');
+            } else {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append(grayScalePixels.get(i));
+        }
+        stringBuilder.append(']');
+        return stringBuilder.toString();
     }
 }

@@ -7,7 +7,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
@@ -35,7 +34,7 @@ public class AgnosticSymbolConverter implements Converter {
         String value = hierarchicalStreamReader.getValue();
         hierarchicalStreamReader.moveUp();
         try {
-            return AgnosticSymbol.parseString(value);
+            return AgnosticSymbol.parseAgnosticString(value);
         } catch (IM3Exception e) {
             throw new IM3RuntimeException("Cannot parse agnostic symbol '" + value + "'");
         }

@@ -52,4 +52,9 @@ public class Beam implements INoteDurationSpecification {
             return "<UNSETBEAM> " + beams;
         }
     }
+
+    @Override
+    public boolean isUsesStem() {
+        return true;
+    }
 }

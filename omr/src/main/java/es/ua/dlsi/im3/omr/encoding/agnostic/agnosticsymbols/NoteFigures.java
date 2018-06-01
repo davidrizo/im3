@@ -37,6 +37,7 @@ public enum NoteFigures implements INoteDurationSpecification {
         this.usesStem = usesStem;
     }
 
+    @Override
     public boolean isUsesStem() {
         return usesStem;
     }

@@ -41,7 +41,7 @@ public class BimodalDatasetReader implements IBimodalDatasetReader {
 			String strokes = components[1];
 			String grayscalePixels = components[2];
 			
-			BimodalSymbol symbol = new BimodalSymbol(stringToSymbolFactory.parseString(label));
+			BimodalSymbol symbol = new BimodalSymbol(stringToSymbolFactory.parseAgnosticString(label));
 			
 			String [] coordList = strokes.split(";");
 			for (String sl : coordList) {

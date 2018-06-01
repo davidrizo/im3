@@ -49,16 +49,16 @@
   <part-list>
     <score-part id="P1">
       <part-name></part-name>
-      <score-instrument id="P1-I1">
-        <instrument-name></instrument-name>
-        </score-instrument>
+      <score-comment id="P1-I1">
+        <comment-name></comment-name>
+        </score-comment>
       <midi-device id="P1-I1" port="1"></midi-device>
-      <midi-instrument id="P1-I1">
+      <midi-comment id="P1-I1">
         <midi-channel>1</midi-channel>
         <midi-program>41</midi-program>
         <volume>78.7402</volume>
         <pan>0</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     </part-list>
   <part id="P1">

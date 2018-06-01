@@ -1,27 +1,25 @@
 package es.ua.dlsi.im3.omr.classifiers.symbolrecognition;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
 import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassifier;
-import es.ua.dlsi.im3.core.score.PositionInStaff;
-import es.ua.dlsi.im3.core.score.PositionsInStaff;
+import es.ua.dlsi.im3.core.patternmatching.RankingItem;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
-import es.ua.dlsi.im3.omr.model.entities.Symbol;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.TreeSet;
 
 /**
- * This classifier does not recognizes position in staff, always return L3.
+ * This classifier returns the exact symbol most similar to this one in the training dataset, with its position included
  * It is trained from a list of folders contained files with tagged images (extension symbolsimages.txt-see HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images)
  * @autor drizo
  */
-public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourClassifier<AgnosticSymbolType, SymbolImagePrototype>  implements ISymbolFromImageDataRecognizer {
-    private final File trainingDataFolder;
+public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourClassifier<AgnosticSymbol, SymbolImagePrototype>  implements ISymbolFromImageDataRecognizer {
+    private File trainingDataFolder;
+
+    public NearestNeighbourSymbolFromImageRecognizer()  {
+    }
 
     public NearestNeighbourSymbolFromImageRecognizer(File trainingDataFolder) throws IM3Exception {
         this.trainingDataFolder = trainingDataFolder;
@@ -29,17 +27,15 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
     }
 
     @Override
-    public List<AgnosticSymbol> recognize(GrayscaleImageData imageData) throws IM3Exception {
+    public TreeSet<RankingItem<SymbolImagePrototype>> recognize(GrayscaleImageData imageData) throws IM3Exception {
         SymbolImagePrototype prototype = new SymbolImagePrototype(null, imageData);
-        List<AgnosticSymbolType> orderedValues = this.classify(prototype);
-        List<AgnosticSymbol> result = new LinkedList<>();
-        for (AgnosticSymbolType agnosticSymbolType: orderedValues) {
-            AgnosticSymbol agnosticSymbol = new AgnosticSymbol(agnosticSymbolType, PositionsInStaff.LINE_3);
-            result.add(agnosticSymbol);
-        }
-        return result;
+        TreeSet<RankingItem<SymbolImagePrototype>> orderedValues = this.classify(prototype);
+        return orderedValues;
     }
 
+    public void trainWithFile(File trainingFile) throws IM3Exception, IOException {
+        loadTrainingFile(trainingFile);
+    }
     @Override
     protected void train() throws IM3Exception {
         ArrayList<File> trainingFiles = new ArrayList<>();
@@ -67,14 +63,14 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
                     throw new IOException("Invalid line, must have 5 components and it has just " + components.length);
                 }
 
-                AgnosticSymbol agnosticSymbol = AgnosticSymbol.parseString(components[3]);
+                AgnosticSymbol agnosticSymbol = AgnosticSymbol.parseAgnosticString(components[3]);
                 ArrayList<Integer> pixels = new ArrayList<>();
                 String[] pxs = components[4].split(",");
                 for (String px : pxs) {
                     pixels.add(Integer.parseInt(px));
                 }
                 GrayscaleImageData grayscaleImageData = new GrayscaleImageData(pixels);
-                this.addPrototype(new SymbolImagePrototype(agnosticSymbol.getSymbol(), grayscaleImageData));
+                this.addPrototype(new SymbolImagePrototype(agnosticSymbol, grayscaleImageData));
             }
         }
     }
