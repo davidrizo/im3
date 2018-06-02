@@ -77,54 +77,54 @@
     <score-part id="P1">
       <part-name>Soprano</part-name>
       <part-abbreviation>S</part-abbreviation>
-      <score-instrument id="P1-I1">
-        <instrument-name>ARIA Player</instrument-name>
-      </score-instrument>
-      <midi-instrument id="P1-I1">
+      <score-comment id="P1-I1">
+        <comment-name>ARIA Player</comment-name>
+      </score-comment>
+      <midi-comment id="P1-I1">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
         <volume>80</volume>
         <pan>-70</pan>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
     <score-part id="P2">
       <part-name>Alto</part-name>
       <part-abbreviation>A</part-abbreviation>
-      <score-instrument id="P2-I2">
-        <instrument-name>ARIA Player</instrument-name>
-      </score-instrument>
-      <midi-instrument id="P2-I2">
+      <score-comment id="P2-I2">
+        <comment-name>ARIA Player</comment-name>
+      </score-comment>
+      <midi-comment id="P2-I2">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
         <volume>80</volume>
         <pan>-21</pan>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
     <score-part id="P3">
       <part-name>Tenor</part-name>
       <part-abbreviation>T</part-abbreviation>
-      <score-instrument id="P3-I3">
-        <instrument-name>ARIA Player</instrument-name>
-      </score-instrument>
-      <midi-instrument id="P3-I3">
+      <score-comment id="P3-I3">
+        <comment-name>ARIA Player</comment-name>
+      </score-comment>
+      <midi-comment id="P3-I3">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
         <volume>80</volume>
         <pan>27</pan>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
     <score-part id="P4">
       <part-name>Bass</part-name>
       <part-abbreviation>B</part-abbreviation>
-      <score-instrument id="P4-I4">
-        <instrument-name>ARIA Player</instrument-name>
-      </score-instrument>
-      <midi-instrument id="P4-I4">
+      <score-comment id="P4-I4">
+        <comment-name>ARIA Player</comment-name>
+      </score-comment>
+      <midi-comment id="P4-I4">
         <midi-channel>4</midi-channel>
         <midi-program>1</midi-program>
         <volume>80</volume>
         <pan>79</pan>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
     <part-group number="1" type="stop"/>
   </part-list>

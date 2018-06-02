@@ -48,58 +48,58 @@
     <score-part id="P1">
       <part-name>Soprano</part-name>
       <part-abbreviation>S</part-abbreviation>
-      <score-instrument id="P1-I1">
-        <instrument-name>ARIA Player</instrument-name>
-        </score-instrument>
+      <score-comment id="P1-I1">
+        <comment-name>ARIA Player</comment-name>
+        </score-comment>
       <midi-device id="P1-I1" port="1"></midi-device>
-      <midi-instrument id="P1-I1">
+      <midi-comment id="P1-I1">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
         <volume>79.5276</volume>
         <pan>-70</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     <score-part id="P2">
       <part-name>Alto</part-name>
       <part-abbreviation>A</part-abbreviation>
-      <score-instrument id="P2-I1">
-        <instrument-name>ARIA Player</instrument-name>
-        </score-instrument>
+      <score-comment id="P2-I1">
+        <comment-name>ARIA Player</comment-name>
+        </score-comment>
       <midi-device id="P2-I1" port="1"></midi-device>
-      <midi-instrument id="P2-I1">
+      <midi-comment id="P2-I1">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
         <volume>79.5276</volume>
         <pan>-21</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     <score-part id="P3">
       <part-name>Tenor</part-name>
       <part-abbreviation>T</part-abbreviation>
-      <score-instrument id="P3-I1">
-        <instrument-name>ARIA Player</instrument-name>
-        </score-instrument>
+      <score-comment id="P3-I1">
+        <comment-name>ARIA Player</comment-name>
+        </score-comment>
       <midi-device id="P3-I1" port="1"></midi-device>
-      <midi-instrument id="P3-I1">
+      <midi-comment id="P3-I1">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
         <volume>79.5276</volume>
         <pan>26</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     <score-part id="P4">
       <part-name>Bass</part-name>
       <part-abbreviation>B</part-abbreviation>
-      <score-instrument id="P4-I1">
-        <instrument-name>ARIA Player</instrument-name>
-        </score-instrument>
+      <score-comment id="P4-I1">
+        <comment-name>ARIA Player</comment-name>
+        </score-comment>
       <midi-device id="P4-I1" port="1"></midi-device>
-      <midi-instrument id="P4-I1">
+      <midi-comment id="P4-I1">
         <midi-channel>4</midi-channel>
         <midi-program>1</midi-program>
         <volume>79.5276</volume>
         <pan>78</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     <part-group type="stop" number="1"/>
     </part-list>

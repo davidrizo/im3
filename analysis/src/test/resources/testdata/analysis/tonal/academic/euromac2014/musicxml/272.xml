@@ -43,55 +43,55 @@
   <part-list>
     <score-part id="P1">
       <part-name>soprn</part-name>
-      <score-instrument id="P1-I1">
-        <instrument-name>Grand Piano</instrument-name>
-        </score-instrument>
+      <score-comment id="P1-I1">
+        <comment-name>Grand Piano</comment-name>
+        </score-comment>
       <midi-device id="P1-I1" port="1"></midi-device>
-      <midi-instrument id="P1-I1">
+      <midi-comment id="P1-I1">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
         <volume>79.5276</volume>
         <pan>0</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     <score-part id="P2">
       <part-name>calto</part-name>
-      <score-instrument id="P2-I1">
-        <instrument-name>Grand Piano</instrument-name>
-        </score-instrument>
+      <score-comment id="P2-I1">
+        <comment-name>Grand Piano</comment-name>
+        </score-comment>
       <midi-device id="P2-I1" port="1"></midi-device>
-      <midi-instrument id="P2-I1">
+      <midi-comment id="P2-I1">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
         <volume>79.5276</volume>
         <pan>0</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     <score-part id="P3">
       <part-name>tenor</part-name>
-      <score-instrument id="P3-I1">
-        <instrument-name>Grand Piano</instrument-name>
-        </score-instrument>
+      <score-comment id="P3-I1">
+        <comment-name>Grand Piano</comment-name>
+        </score-comment>
       <midi-device id="P3-I1" port="1"></midi-device>
-      <midi-instrument id="P3-I1">
+      <midi-comment id="P3-I1">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
         <volume>79.5276</volume>
         <pan>0</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     <score-part id="P4">
       <part-name>bass</part-name>
-      <score-instrument id="P4-I1">
-        <instrument-name>Grand Piano</instrument-name>
-        </score-instrument>
+      <score-comment id="P4-I1">
+        <comment-name>Grand Piano</comment-name>
+        </score-comment>
       <midi-device id="P4-I1" port="1"></midi-device>
-      <midi-instrument id="P4-I1">
+      <midi-comment id="P4-I1">
         <midi-channel>4</midi-channel>
         <midi-program>1</midi-program>
         <volume>79.5276</volume>
         <pan>0</pan>
-        </midi-instrument>
+        </midi-comment>
       </score-part>
     </part-list>
   <part id="P1">

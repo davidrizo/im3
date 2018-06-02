@@ -15,6 +15,11 @@ import es.ua.dlsi.im3.analysis.hierarchical.motives.MelodicMotivesAnalysis;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
+import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
+import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,5 +58,27 @@ public class MEIHierarchicalAnalysesModernExporterImporterTest {
 		ArrayList<Analysis> importedAnalysis = importer.getAnalyses();
 		assertEquals(1, importedAnalysis.size());
 	}
+
+    @Test
+    public void quitar() throws Exception {
+        // TODO: 3/5/18 Quitar
+        MEIHierarchicalAnalysesModernImporter importer = new MEIHierarchicalAnalysesModernImporter();
+        importer.importSongAndAnalyses(new File("/Users/drizo/Documents/EASD.A/docencia/alicante-2017-2018/inv/paula_molina_gonzalez_analisis/ultima_licion_zayas.mei"));
+        ScoreSong scoreSong = importer.getScoreSong();
+        HorizontalLayout layout = new HorizontalLayout(scoreSong, LayoutFonts.bravura,
+                new CoordinateComponent(38000), new CoordinateComponent(700));
+        layout.layout(true);
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("licion.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("licion.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+
+    }
+
+
 
 }
