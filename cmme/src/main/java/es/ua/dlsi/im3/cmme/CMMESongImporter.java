@@ -284,7 +284,7 @@ public class CMMESongImporter implements IScoreSongImporter {
             throw new ImportException("There is not a previous note or rest to add the dot");
         }
         // use set dots to avoid increasing the duration that is already specified in the note/length element
-        lastFigureAtom.getAtomFigure().setDots(lastFigureAtom.getAtomFigure().getDots()+1);
+        lastFigureAtom.getAtomFigure().addDot();
     }
 
     private Figures convertFigure(int noteType) throws ImportException {
