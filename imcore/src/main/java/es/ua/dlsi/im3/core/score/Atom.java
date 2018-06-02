@@ -52,8 +52,12 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 	void setLayer(ScoreLayer layer) {
 		this.layer = layer;
 	}
-	
 
+
+    /**
+     * It returns the atom staff or the one of the its parent atom
+     * @return
+     */
 	@Override
 	public Staff getStaff() {
 		if (staff != null) {
@@ -66,6 +70,10 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 			return null;
 		}
 	}
+
+	public Staff getAtomSpecificStaff() {
+	    return staff;
+    }
 
 	@Override
 	public void setStaff(Staff staff) {
