@@ -517,4 +517,25 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	    this.atoms.clear();
     }
 
+    /**
+     * Gets the figures within a measure, sorted by onset time.
+     * @param measure the measure
+     * @return a sorted set of figures
+     * @throws IM3Exception
+     */
+    public SortedSet<AtomFigure> getAtomFiguresSortedByTimeWithin(Measure measure) throws IM3Exception {
+        SortedSet<AtomFigure> result = new TreeSet<>(new Comparator<AtomFigure>() {
+            @Override
+            public int compare(AtomFigure o1, AtomFigure o2) {
+                int diff = o1.getTime().compareTo(o2.getTime());
+                if (diff == 0) {
+                    return o1.compareTo(o2);
+                } else {
+                    return diff;
+                }
+            }
+        });
+        result.addAll(getAtomFiguresWithOnsetWithin(measure.getTime(),measure.getEndTime()));
+        return result;
+    }
 }

@@ -99,6 +99,29 @@ public class SimpleChord extends SingleFigureAtom {
 	public String toString() {
 		return super.toString() + ", atomPitches=" + atomPitches;
 	}
-	
-	
+
+
+	//TODO David - esto lo ha escrito Pierre para exportar MusicXML - quizás deberíamos mejor en el exportador
+    // de MusicXML exportar directamente AtomPitch y no tener que hacer esto
+    /**
+     * Returns the notes of the chord
+     * @return a list containing the notes of the chord
+     */
+    public List<SimpleNote> getNotesForMusicXML() {
+        ArrayList<SimpleNote> notes = new ArrayList<>();
+        for (AtomPitch apitch : getAtomPitches()) {
+            SimpleNote snote = new SimpleNote(atomFigure.getFigure(), atomFigure.getDots(), null);
+            snote.atomPitch = apitch;
+            snote.atomFigure = atomFigure;
+            snote.connectorCollection = connectorCollection;
+            snote.belongsToBeam = belongsToBeam;
+            snote.setTime(getTime());
+            snote.setDuration(getDuration());
+            snote.setExplicitStemDirection(getExplicitStemDirection());
+            snote.setParentAtom(getParentAtom());
+            snote.setLayer(getLayer());
+            notes.add(snote);
+        }
+        return notes;
+    }
 }

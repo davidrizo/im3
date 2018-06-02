@@ -82,6 +82,25 @@ public class CompoundAtom extends Atom {
 	public String toString() {
 		return super.toString() + ", subatoms=" + subatoms;
 	}
-	
+
+    /**
+     * Gets the first subatom in this compound atom
+     * @return the first subatom, or null if there are no subatoms
+     */
+    public Atom getFirstAtom() {
+        if (subatoms!= null)
+            return subatoms.get(0);
+        else return null;
+    }
+
+    /**
+     * Gets the last subatom in this compound atom
+     * @return the last subatom, or null if there are no subatoms
+     */
+    public Atom getLastAtom() {
+        if (subatoms!= null)
+            return subatoms.get(subatoms.size()-1);
+        else return null;
+    }
 
 }

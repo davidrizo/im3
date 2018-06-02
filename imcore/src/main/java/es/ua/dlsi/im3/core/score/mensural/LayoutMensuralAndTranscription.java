@@ -15,6 +15,7 @@ import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.core.score.io.lilypond.LilypondExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
+import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLExporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.PageLayout;
@@ -32,8 +33,8 @@ public class LayoutMensuralAndTranscription {
     public static final void main(String [] args) throws IOException, IM3Exception {
         // TODO: 16/10/17 Que se pueda elegir el tipo de renderización y salida
 
-        if (args.length != 5) {
-            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file (it generates also parts)> <output midi file> <output ly file> <output krn>");
+        if (args.length != 6) {
+            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file (it generates also parts)> <output midi file> <output ly file> <output krn> <output musicXML>");
         }
 
         System.out.println("Input: " + args[0]);
@@ -52,6 +53,8 @@ public class LayoutMensuralAndTranscription {
         File kernFile = new File(args[4]);
         kernExporter.exportSong(kernFile, mensural);
 
+        File musicXMLFile = new File(args[5]);
+
 
         // TODO: 2/11/17 Esto deberá seguir unas normas - no éstas puestas casi a piñón
         if (mensural.getStaves().size() != 9) {
@@ -68,6 +71,9 @@ public class LayoutMensuralAndTranscription {
         //TODO Parámetro
         //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC); // ésta genera más sostenidos
         ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FIFTH_PERFECT_DESC);
+
+        MusicXMLExporter musicXMLExporter = new MusicXMLExporter(true);
+        musicXMLExporter.exportSong(musicXMLFile, modern);
 
         //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.UNISON_PERFECT);
         String midiFile = args[2];

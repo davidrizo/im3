@@ -30,11 +30,13 @@ import es.ua.dlsi.im3.core.io.ImportException;
  * @author drizo
  */
 public class XMLExporterImporterTest {
-	boolean testMEIExportImport = true;
-    private boolean testMusicXMLExportImport = false;
+	boolean testMEIExportImport;
+    private boolean testMusicXMLExportImport;
 
     @Before
 	public void setUp() throws Exception {
+        testMEIExportImport = true;
+        testMusicXMLExportImport = true;
 	}
 
 	private ScoreSong importMEI(File file) throws ImportException {
@@ -220,6 +222,7 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void testMensural1() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		doTest(XMLExporterImporterTest::assertMensural1, importMEI(TestFileUtils.getFile("/testdata/core/score/io/garisonMEI.mei")));
 	}
 
@@ -263,6 +266,7 @@ public class XMLExporterImporterTest {
 	}	
 	@Test
 	public void testSpanishMensural1() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		doTest(XMLExporterImporterTest::assertSpanishMensuralWithTransduction1, importMEI(TestFileUtils.getFile("/testdata/core/score/io/nodiviertanllantoninyo.mei")));
 	}
 	// ------------------------------------------------------------------------------------------
@@ -459,6 +463,7 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void twoNotesTriplet() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		doTest(XMLExporterImporterTest::assertTwoNotesTriplet, importMEI(TestFileUtils.getFile("/testdata/core/score/io/two_notes_tuplet.mei")));
 		doTest(XMLExporterImporterTest::assertTwoNotesTriplet, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/two_notes_tuplet.xml")));
 	}	
@@ -548,6 +553,7 @@ public class XMLExporterImporterTest {
 	// It also evaluates whole measure rests (mrest in MEI)
 	@Test
 	public void meterChange() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		doTest(XMLExporterImporterTest::assertMeterChange, importMEI(TestFileUtils.getFile("/testdata/core/score/io/meter_change.mei")));
 		doTest(XMLExporterImporterTest::assertMeterChange, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/meter_change.xml")));
 	}	
@@ -575,6 +581,7 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void keyChange() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		// it does not use mRest
 		doTest(XMLExporterImporterTest::assertKeyChange, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/key_changes_musescore.xml")));
 		// it uses mRest
@@ -654,6 +661,7 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void anacrusisStaves() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		doTest(XMLExporterImporterTest::assertAnacrusisStaves, importMEI(TestFileUtils.getFile("/testdata/core/score/io/anacrusis_staves.mei")));
 		doTest(XMLExporterImporterTest::assertAnacrusisStaves, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/anacrusis_staves.xml")));
 	}
@@ -682,6 +690,7 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void multimeasureRest() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		doTest(XMLExporterImporterTest::assertMultimeasureRest, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest.mei")));
         doTest(XMLExporterImporterTest::assertMultimeasureRest, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest.xml")));
 		//TODO Import from MusicXML        <measure-style>
@@ -764,6 +773,7 @@ public class XMLExporterImporterTest {
     }
     @Test
     public void accidentals() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
         // in this file the pitches in key signature do not have the accid explicitly encoded
         doTest(XMLExporterImporterTest::assertAccidentals, importMEI(TestFileUtils.getFile("/testdata/core/score/io/accidentals_non_explicit_accid.mei")));
 
@@ -801,6 +811,7 @@ public class XMLExporterImporterTest {
     }
     @Test
     public void systemBreaks() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
         doTest(XMLExporterImporterTest::assertSystemBreaks, importMEI(TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.mei")));
         doTest(XMLExporterImporterTest::assertSystemBreaks, importMusicXML(TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.xml")));
     }
@@ -831,6 +842,7 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void melisma() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		doTest(XMLExporterImporterTest::assertMelisma, importMEI(TestFileUtils.getFile("/testdata/core/score/io/melisma.mei")));
 		doTest(XMLExporterImporterTest::assertMelisma, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/melisma.xml")));
 	}
@@ -931,6 +943,7 @@ public class XMLExporterImporterTest {
     }
     @Test
     public void fermateTrills() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 	    // the .mei has been exported from Sibelius and modified manually to encode the fermate in to different ways
         doTest(XMLExporterImporterTest::assertFermateTrills, importMEI(TestFileUtils.getFile("/testdata/core/score/io/fermata_trill.mei")));
         doTest(XMLExporterImporterTest::assertFermateTrills, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/fermata_trill.xml")));
@@ -968,6 +981,7 @@ public class XMLExporterImporterTest {
     // TODO: 1/10/17 Import beams in MusicXML
     @Test
 	public void simpleBeam() throws Exception {
+        this.testMusicXMLExportImport = false; //TODO
 		doTest(XMLExporterImporterTest::assertSimpleBeam, importMEI(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.mei")));
 		//doTest(XMLExporterImporterTest::assertSimpleBeam, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/simple_beam.xml")));
 	}
