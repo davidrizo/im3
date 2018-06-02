@@ -3,10 +3,12 @@ package es.ua.dlsi.im3.mavr.gui;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
+import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.javafx.ViewLoader;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
@@ -22,7 +24,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,10 +75,10 @@ public class MainController implements Initializable {
     @FXML
     private void handleOpen() {
         OpenSaveFileDialog dlg = new OpenSaveFileDialog();
-        File file = dlg.openFile("Open a music file", "MusicXML", "xml");
+        File file = dlg.openFile("Open a music file", new String [] {"MEI", "MusicXML"}, new String [] {"mei", "xml"});
         if (file != null) {
             try {
-                ScoreSong scoreSong = new ScoreSongImporter().importSong(file, "xml");
+                ScoreSong scoreSong = new ScoreSongImporter().importSong(file, FileUtils.getExtension(file));
                 addDocument(scoreSong);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -98,11 +103,81 @@ public class MainController implements Initializable {
         mainPane.getChildren().add(scoreView.getMainPanel());
     }
 
-
     //TODO QUe se elija qué representamos
     //TODO Dibujar partitura y que se elijan los motivos
     //TODO No hacerlo todo aquí - además, que se exporte a SVG, PDF
     private void represent() throws IM3Exception {
+        final double X_SCALE_FACTOR = 50;
+        final double Y_SCALE_FACTOR = 3;
+
+        Group keySignatureGroup = new Group();
+
+        KeyView lastKey = new KeyView(model.getScoreSong().getUniqueKeyActiveAtTime(Time.TIME_ZERO));
+        keySignatureGroup.getChildren().add(lastKey.getRoot());
+        TonalFunctionView lastTonalFunctionView = null;
+
+        for (Harm harm: model.getScoreSong().getOrderedHarms()) {
+            double x = harm.getTime().getComputedTime()*X_SCALE_FACTOR;
+            // draw key
+            if (lastKey == null || !lastKey.getKey().equals(harm.getKey())) {
+                if (lastKey != null) {
+                    lastKey.setEndX(x);
+                }
+                lastKey = new KeyView(harm.getKey());
+                lastKey.setX(x);
+                keySignatureGroup.getChildren().add(lastKey.getRoot());
+            }
+
+            if (lastTonalFunctionView == null || !lastTonalFunctionView.getTonalFunction().equals(harm.getTonalFunction())) {
+                if (lastTonalFunctionView != null) {
+                    lastTonalFunctionView.setEndX(x);
+                }
+                lastTonalFunctionView = new TonalFunctionView(harm.getTonalFunction(), lastKey);
+                lastTonalFunctionView.setX(x);
+                keySignatureGroup.getChildren().add(lastTonalFunctionView.getRoot());
+
+            }
+
+
+            // draw tonal function
+            /*if (lastTonalFunction == null || !lastTonalFunction.equals(harm.getTonalFunction())) {
+                lastTonalFunction = harm.getTonalFunction();
+                if (lastTonalFunctionRectangle != null) {
+                    double toX = harm.getTime().getComputedTime()*X_SCALE_FACTOR;
+                    finishTonalFunctionRectangle(lastTonalFunction, lastTonalFunctionText, lastKeyFromX, lastTonalFunctionRectangle, toX);
+                }
+                Rectangle rectangle = new Rectangle();
+                lastTonalFunctionText = new Text(lastTonalFunction.getAbbr());
+                keySignatureGroup.getChildren().add(rectangle);
+                keySignatureGroup.getChildren().add(lastTonalFunctionText);
+                lastTonalFunctionFromX = harm.getTime().getComputedTime()*X_SCALE_FACTOR;
+                rectangle.setX(lastTonalFunctionFromX);
+                rectangle.setY(0);
+                rectangle.setHeight(50);
+                rectangle.setFill(Color.TRANSPARENT);
+                rectangle.setStroke(Color.BLACK);
+                lastTonalFunctionRectangle = rectangle;
+            }*/
+
+        }
+        if (lastKey != null) {
+            double toX = model.getScoreSong().getSongDuration().getComputedTime() * X_SCALE_FACTOR;
+            lastKey.setEndX(toX);
+        }
+
+        if (lastTonalFunctionView != null) {
+            double toX = model.getScoreSong().getSongDuration().getComputedTime() * X_SCALE_FACTOR;
+            lastTonalFunctionView.setEndX(toX);
+        }
+
+        /*if (lastTonalFunctionRectangle != null) {
+            double toX = model.getScoreSong().getSongDuration().getComputedTime() * X_SCALE_FACTOR;
+            finishTonalFunctionRectangle(lastTonalFunction, lastTonalFunctionText, lastKeyFromX, lastTonalFunctionRectangle, toX);
+        }*/
+
+        mainPane.getChildren().add(keySignatureGroup);
+        keySignatureGroup.setTranslateY(500);
+
         /*List<Motive> motives = model.getMotives();
         for (Motive motive: motives) {
             MotiveRepresentation motiveRepresentation = new LinearRhythmRepresentation(motive);
@@ -110,8 +185,6 @@ public class MainController implements Initializable {
             rhythmPane.getChildren().add(view);
         }*/
 
-        final double X_SCALE_FACTOR = 50;
-        final double Y_SCALE_FACTOR = 3;
         // rhythm representation
         Group rhythmGroup = new Group();
         for (Staff staff: model.getScoreSong().getStaves()) {
@@ -128,7 +201,7 @@ public class MainController implements Initializable {
                 }
             }
         }
-        rhythmGroup.setTranslateY(300);
+        rhythmGroup.setTranslateY(600);
         mainPane.getChildren().add(rhythmGroup);
 
 
@@ -154,7 +227,31 @@ public class MainController implements Initializable {
                 }
             }
         }
-        melodyGroup.setTranslateY(600);
+        melodyGroup.setTranslateY(700);
         mainPane.getChildren().add(melodyGroup);
     }
+
+    //draw tonic in the center, dominant in the corner, subdominant in the middle between both
+    private void finishTonalFunctionRectangle(TonalFunction tonalFunction, Text lastTonalFunctionText, double lastKeyFromX, Rectangle lastTonalFunctionRectangle, double toX) throws IM3Exception {
+        lastTonalFunctionRectangle.setWidth(toX - lastKeyFromX);
+        /*switch (tonalFunction) {
+            case TONIC:
+                lastTonalFunctionText.xProperty().bind(lastTonalFunctionRectangle.xProperty().add(lastTonalFunctionRectangle.widthProperty().multiply(0.5)));
+                lastTonalFunctionText.yProperty().bind(lastTonalFunctionRectangle.yProperty().add(lastTonalFunctionRectangle.heightProperty().multiply(0.5)));
+                break;
+            case DOMINANT:
+                lastTonalFunctionText.xProperty().bind(lastTonalFunctionRectangle.xProperty().add(lastTonalFunctionRectangle.widthProperty().multiply(0.9)));
+                lastTonalFunctionText.yProperty().bind(lastTonalFunctionRectangle.yProperty().add(lastTonalFunctionRectangle.heightProperty().multiply(0.1)));
+                break;
+            case SUBDOMINANT:
+                lastTonalFunctionText.xProperty().bind(lastTonalFunctionRectangle.xProperty().add(lastTonalFunctionRectangle.widthProperty().multiply(0.7)));
+                lastTonalFunctionText.yProperty().bind(lastTonalFunctionRectangle.yProperty().add(lastTonalFunctionRectangle.heightProperty().multiply(0.3)));
+                break;
+            default:
+                throw new IM3Exception("Invalid tonal function: " + tonalFunction);
+        }*/
+        lastTonalFunctionText.xProperty().bind(lastTonalFunctionRectangle.xProperty());
+        lastTonalFunctionText.yProperty().bind(lastTonalFunctionRectangle.yProperty().add(30));
+    }
+
 }
