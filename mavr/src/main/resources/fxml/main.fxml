@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.mavr.gui.MainController">
    <children>
@@ -40,6 +45,32 @@
             </MenuBar>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
+                  <Tab fx:id="tabScore" text="Score">
+                     <content>
+                        <BorderPane fx:id="mainBorderPane">
+                           <center>
+                              <ScrollPane fx:id="mainScrollPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <content>
+                                    <Pane fx:id="mainPane" prefHeight="200.0" prefWidth="200.0" />
+                                 </content>
+                              </ScrollPane>
+                           </center>
+                           <left>
+                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Label text="Filters" />
+                                    <CheckBox mnemonicParsing="false" text="Melody" />
+                                    <CheckBox mnemonicParsing="false" text="Rhythm" />
+                                    <Label text="TO-DO Opacidad, posición" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" top="10.0" />
+                                 </padding>
+                              </VBox>
+                           </left>
+                        </BorderPane>
+                     </content>
+                  </Tab>
                   <Tab fx:id="tabMotives" onSelectionChanged="#handleMotivesOpened" text="Motives" />
                 <Tab text="Rhythm">
                   <content>

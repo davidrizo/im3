@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<pages>
+<images>
     <page xml:id="page-0000001331376594">
         <system xml:id="system-0000000995703989" system.leftmar="0" system.rightmar="0">
             <section xml:id="section-0000000018540100" />
@@ -30,4 +30,4 @@
             <boundaryEnd xml:id="bdend-0000001205679940" startid="section-0000000018540100" type="section" />
         </system>
     </page>
-</pages>
+</images>
