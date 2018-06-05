@@ -4,6 +4,8 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.VerticalLine;
 
+import java.util.Arrays;
+
 /**
  * It creates agnostic symbol types from strings
  * @autor drizo

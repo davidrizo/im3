@@ -178,16 +178,159 @@ public class Encoder {
         } else if (symbol instanceof TimeSignature) {
             encodeTimeSignature((TimeSignature) symbol);
         } else if (symbol instanceof SimpleChord) {
-            throw new IM3Exception("Unsupported chords"); // TODO - separar con verticalSeparator
+            if (version == AgnosticVersion.v1) {
+                throw new IM3Exception("Unsupported chords in V1");
+            } else {
+                SimpleChord chord = (SimpleChord) symbol;
+
+                PositionInStaff [] positionInStaffs = new PositionInStaff[chord.getAtomPitches().size()];
+                int i=0;
+                boolean tiedFromPreviousGenerated = false;
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    positionInStaffs[i] = symbol.getStaff().computePositionInStaff(chord.getTime(),
+                            atomPitch.getScientificPitch().getPitchClass().getNoteName(), atomPitch.getScientificPitch().getOctave());
+
+                    if (atomPitch.isTiedFromPrevious()) {
+                        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, END, positionInStaff));
+                        if (tiedFromPreviousGenerated) {
+                            addVerticalSeparator();
+                        }
+                        agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.end), positionInStaffs[i]));
+                        tiedFromPreviousGenerated = true;
+                    }
+
+                    i++;
+                }
+                if (tiedFromPreviousGenerated) {
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+                if (chord.getAtomFigure().getFermata() != null && (chord.getAtomFigure().getFermata().getPosition() == null || chord.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
+                    agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
+                    addVerticalSeparator();
+
+                    //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
+                }
+
+                i=0;
+                boolean accdidentalsGenerated = false;
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    Accidentals accidentalToDraw = drawnAccidentals.get(atomPitch.getScientificPitch());
+                    if (accidentalToDraw != null) {
+                        es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(accidentalToDraw);
+                        for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
+                            if (accdidentalsGenerated) {
+                                addVerticalSeparator();
+                            }
+                            agnosticEncoding.add(new AgnosticSymbol(new Accidental(acc), positionInStaffs[i]));
+                            accdidentalsGenerated = true;
+                        }
+                        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, accidentalToDraw.name().toLowerCase(), positionInStaff));
+                    }
+                    i++;
+                }
+                if (accdidentalsGenerated) {
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+
+                //String figureString = generateFigureString(note);
+                INoteDurationSpecification figureString = generateFigureString(chord);
+
+                //  GraphicalSymbol graphicalSymbol;
+            /*if (note.isGrace()) {
+                graphicalSymbol = GraphicalSymbol.gracenote;
+            } else {
+                graphicalSymbol = GraphicalSymbol.note;
+            }*/
+
+                // TODO: 18/10/17 Otras marcas
+                boolean trill = false;
+                if (chord.getMarks() != null) {
+                    for (StaffMark mark : chord.getMarks()) {
+                        if (mark instanceof Trill) {
+                            agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
+                            addVerticalSeparator();
+                            trill = true;
+                            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, FERMATA_POSITION_ABOVE));
+                        } else {
+                            throw new IM3Exception("Unsupported mark: " + mark.getClass());
+                        }
+                    }
+                }
+
+                for (i=0; i<positionInStaffs.length; i++) {
+                    if (i>0) {
+                        addVerticalSeparator();
+                    }
+                    if (chord.isGrace()) {
+                        agnosticEncoding.add(new AgnosticSymbol(new GraceNote(figureString), positionInStaffs[i]));
+                    } else {
+                        agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaffs[i]));
+                    }
+                }
+                //graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
+
+                if (chord.getAtomFigure().getFermata() != null && chord.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
+                    //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
+                    addVerticalSeparator();
+                    agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.below), FERMATA_POSITION_BELOW));
+                } else {
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+                if (chord.getAtomFigure().getDots()>0) {
+                    for (i = 0; i < positionInStaffs.length; i++) {
+                        if (i > 0) {
+                            addVerticalSeparator();
+                        }
+                        PositionInStaff dotPositionInStaff;
+                        if (positionInStaffs[i].laysOnLine()) {
+                            dotPositionInStaff = positionInStaffs[i].move(1);
+                        } else {
+                            dotPositionInStaff = positionInStaffs[i];
+                        }
+                        convertDots(chord.getAtomFigure(), dotPositionInStaff);
+                    }
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+                boolean tiedToNextGenerated = false;
+                i=0;
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    if (atomPitch.isTiedToNext()) {
+                        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, START, positionInStaff));
+                        if (tiedToNextGenerated) {
+                            addVerticalSeparator();
+                        }
+                        agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.start), positionInStaffs[i]));
+                        tiedToNextGenerated = true;
+                    }
+                    i++;
+                }
+
+                if (tiedToNextGenerated) {
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note semanticNote =
+                            new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note(chord.isGrace(), atomPitch.getScientificPitch(), chord.getAtomFigure().getFigure(), chord.getAtomFigure().getDots(),
+                                    chord.getAtomFigure().getFermata() != null,
+                                    trill, tupletNumber);
+                    semanticEncoding.add(new SemanticSymbol(semanticNote));
+                }
+
+                i=0;
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    if (atomPitch.isTiedToNext()) {
+                        semanticEncoding.add(new SemanticSymbol(new Tie())); //TODO Esto no está bien
+                        //semanticTokens.add(new SemanticToken(SemanticSymbol.tie));
+                    }
+                }
+            }
         } else if (symbol instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) symbol;
-
-            if (note.getAtomFigure().getFermata() != null && (note.getAtomFigure().getFermata().getPosition() == null || note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
-                addVerticalSeparator();
-
-                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
-            }
 
             PositionInStaff positionInStaff = symbol.getStaff().computePositionInStaff(note.getTime(),
                     note.getPitch().getPitchClass().getNoteName(), note.getPitch().getOctave());
@@ -197,6 +340,15 @@ public class Encoder {
                 agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.end), positionInStaff));
                 agnosticEncoding.add(horizontalSeparator);
             }
+
+            if (note.getAtomFigure().getFermata() != null && (note.getAtomFigure().getFermata().getPosition() == null || note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
+                agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
+                addVerticalSeparator();
+
+                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
+            }
+
+
 
             Accidentals accidentalToDraw = drawnAccidentals.get(note.getAtomPitch());
             if (accidentalToDraw != null) {
@@ -391,14 +543,24 @@ public class Encoder {
             PositionInStaff tupletPositionInStaff = computePositionInStaff(simpleTuplet);
 
             tupletNumber = simpleTuplet.getCardinality();
-            if (simpleTuplet.getEachFigure().getMeterUnit() <= Figures.QUARTER.getMeterUnit()) {
-                // if quarter, half,....
+            //if (simpleTuplet.getEachFigure().getMeterUnit() <= Figures.QUARTER.getMeterUnit()) {
+            boolean inBeam = false;
+            if (simpleTuplet.getAtoms().get(0) instanceof SingleFigureAtom) {
+                inBeam = ((SingleFigureAtom)simpleTuplet.getAtoms().get(0)).getBelongsToBeam() != null;
+            } else {
+                throw new IM3Exception("Unsupported compound tuplets");
+            }
+
+            if (!inBeam) {
+                // if quarter, half,.... or eighth without beam
                 agnosticEncoding.add(new AgnosticSymbol(new Bracket(StartEnd.start), tupletPositionInStaff));
+                addVerticalSeparator();
                 convert(simpleTuplet.getAtoms().get(0), drawnAccidentals, tupletNumber);
                 agnosticEncoding.add(new AgnosticSymbol(new Digit(3), tupletPositionInStaff));
-                agnosticEncoding.add(horizontalSeparator);
+                addVerticalSeparator();
                 convert(simpleTuplet.getAtoms().get(1), drawnAccidentals, tupletNumber);
                 agnosticEncoding.add(new AgnosticSymbol(new Bracket(StartEnd.end), tupletPositionInStaff));
+                addVerticalSeparator();
                 convert(simpleTuplet.getAtoms().get(2), drawnAccidentals, tupletNumber);
 
                 //TODO SEMANTIC
@@ -410,7 +572,7 @@ public class Encoder {
                 convert(simpleTuplet.getAtoms().get(1), drawnAccidentals, tupletNumber);
                 convert(simpleTuplet.getAtoms().get(2), drawnAccidentals, tupletNumber);
             }
-        } else {
+        } else if (!(symbol instanceof StaffTimedPlaceHolder)) {
             throw new ExportException("Unsupported symbol conversion of: " + symbol.getClass());
 
         }
@@ -597,14 +759,14 @@ public class Encoder {
             return note.getAtomFigure().getFigure().toString().toLowerCase();
         }*
     }*/
-    private INoteDurationSpecification generateFigureString(SimpleNote note) throws IM3Exception {
-        BeamGroup beam = note.getBelongsToBeam();
+    private INoteDurationSpecification generateFigureString(SingleFigureAtom singleFigureAtom) throws IM3Exception {
+        BeamGroup beam = singleFigureAtom.getBelongsToBeam();
         if (beam != null) {
-            int flags = note.getAtomFigure().getFigure().getNumFlags();
-            if (beam.getFirstFigure() == note) {
+            int flags = singleFigureAtom.getAtomFigure().getFigure().getNumFlags();
+            if (beam.getFirstFigure() == singleFigureAtom) {
                 //return "beamedRight" + flags;
                 return new Beam(BeamType.right, flags);
-            } else if (beam.getLastFigure() == note) {
+            } else if (beam.getLastFigure() == singleFigureAtom) {
                 //return "beamedLeft" + flags;
                 return new Beam(BeamType.left, flags);
             } else {
@@ -612,7 +774,7 @@ public class Encoder {
                 return new Beam(BeamType.both, flags);
             }
         } else {
-            switch (note.getAtomFigure().getFigure()) {
+            switch (singleFigureAtom.getAtomFigure().getFigure()) {
                 case DOUBLE_WHOLE: return NoteFigures.doubleWhole;
                 case WHOLE: return NoteFigures.whole;
                 case HALF: return NoteFigures.half;
@@ -622,7 +784,7 @@ public class Encoder {
                 case THIRTY_SECOND: return NoteFigures.thirtySecond;
                 case SIXTY_FOURTH: return NoteFigures.sixtyFourth;
                 case HUNDRED_TWENTY_EIGHTH: return NoteFigures.hundredTwentyEighth;
-                default: throw new IM3Exception("Unsupported note figure: " + note.getAtomFigure().getFigure());
+                default: throw new IM3Exception("Unsupported note figure: " + singleFigureAtom.getAtomFigure().getFigure());
             }
             //return note.getAtomFigure().getFigure().toString().toLowerCase();
         }

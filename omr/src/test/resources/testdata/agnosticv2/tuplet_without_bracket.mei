@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="4.0.0">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title />
+            </titleStmt>
+            <pubStmt />
+        </fileDesc>
+        <encodingDesc>
+            <appInfo>
+                <application isodate="2018-06-05T16:30:57" version="2.0.0-dev-2da6de7-dirty">
+                    <name>Verovio</name>
+                    <p>Transcoded from Humdrum</p>
+                </application>
+            </appInfo>
+        </encodingDesc>
+        <workDesc>
+            <work>
+                <titleStmt>
+                    <title xml:id="title-L1" analog="humdrum:Xfi" type="translated">autobeam</title>
+                </titleStmt>
+            </work>
+        </workDesc>
+        <extMeta>
+            <frames xmlns:humxml="http://www.humdrum.org/ns/humxml">
+                <metaFrame n="0" token="!!!Xfilter: autobeam" xml:id="loc0">
+                    <frameInfo>
+                        <startTime float="0" />
+                        <frameType>reference</frameType>
+                        <referenceKey>Xfilter</referenceKey>
+                        <referenceValue>autobeam</referenceValue>
+                    </frameInfo>
+                </metaFrame>
+            </frames>
+        </extMeta>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv xml:id="mdiv-0000000293117169">
+                <score xml:id="score-0000000287293895">
+                    <scoreDef xml:id="scoredef-0000000172196263">
+                        <staffGrp xml:id="staffgrp-0000000263203332">
+                            <staffDef xml:id="staffdef-0000001500608779" clef.shape="G" clef.line="2" meter.count="3" meter.unit="4" n="1" lines="5">
+                                <label xml:id="label-0000001764195034" />
+                            </staffDef>
+                        </staffGrp>
+                    </scoreDef>
+                    <section xml:id="section-0000001221755791">
+                        <measure xml:id="measure-L2" n="0">
+                            <staff xml:id="staff-0000001056443862" n="1">
+                                <layer xml:id="layer-L2F1N1" n="1">
+                                    <tuplet xml:id="tuplet-L4F1-L6F1" num="3" numbase="2" num.format="count">
+                                        <beam xml:id="beam-L4F1-L6F1">
+                                            <note xml:id="note-L4F1" dur="8" oct="4" pname="c" accid.ges="n" />
+                                            <note xml:id="note-L5F1" dur="8" oct="4" pname="d" accid.ges="n" />
+                                            <note xml:id="note-L6F1" dur="8" oct="4" pname="e" accid.ges="n" />
+                                        </beam>
+                                    </tuplet>
+                                    <rest xml:id="rest-L7F1" dur="2" />
+                                </layer>
+                            </staff>
+                        </measure>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>
