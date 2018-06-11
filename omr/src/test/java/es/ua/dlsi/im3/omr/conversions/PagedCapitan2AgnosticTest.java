@@ -10,6 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PagedCapitan2AgnosticTest {
+    AgnosticVersion agnosticVersion = AgnosticVersion.v1;
 
     private void test(String input, AgnosticToken [] expected) throws ImportException {
         PagedCapitan2Agnostic capitan2Agnostic = new PagedCapitan2Agnostic();
@@ -33,19 +34,19 @@ public class PagedCapitan2AgnosticTest {
 
         String input1 = "GCLEF.5 COLOUREDMINIMA.-10 COLOUREDMINIMA.0 MINIMA.01 MINIMA.01 MINIMAREST.1 BREVISREST.01";
         AgnosticToken[] expected1 = new AgnosticToken[] {
-                new AgnosticSymbol(new Clef(ClefNote.G), PositionsInStaff.LINE_2),
+                new AgnosticSymbol(agnosticVersion, new Clef(ClefNote.G), PositionsInStaff.LINE_2),
                 horizontalSeparator,
-                new AgnosticSymbol(new Note(NoteFigures.quarter), PositionsInStaff.SPACE_5),
+                new AgnosticSymbol(agnosticVersion, new Note(NoteFigures.quarter), PositionsInStaff.SPACE_5),
                 horizontalSeparator,
-                new AgnosticSymbol(new Note(NoteFigures.quarter), PositionsInStaff.LINE_5),
+                new AgnosticSymbol(agnosticVersion, new Note(NoteFigures.quarter), PositionsInStaff.LINE_5),
                 horizontalSeparator,
-                new AgnosticSymbol(new Note(NoteFigures.half), PositionsInStaff.SPACE_4),
+                new AgnosticSymbol(agnosticVersion, new Note(NoteFigures.half), PositionsInStaff.SPACE_4),
                 horizontalSeparator,
-                new AgnosticSymbol(new Note(NoteFigures.half), PositionsInStaff.SPACE_4),
+                new AgnosticSymbol(agnosticVersion, new Note(NoteFigures.half), PositionsInStaff.SPACE_4),
                 horizontalSeparator,
-                new AgnosticSymbol(new Rest(RestFigures.half), PositionsInStaff.LINE_4),
+                new AgnosticSymbol(agnosticVersion, new Rest(RestFigures.half), PositionsInStaff.LINE_4),
                 horizontalSeparator,
-                new AgnosticSymbol(new Rest(RestFigures.breve), PositionsInStaff.LINE_3)
+                new AgnosticSymbol(agnosticVersion, new Rest(RestFigures.breve), PositionsInStaff.LINE_3)
         };
         test(input1, expected1);
 

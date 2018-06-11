@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.conversions.Calco2Agnostic;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
 
 import java.io.BufferedReader;
@@ -55,7 +56,7 @@ public class StubImage00531SymbolRecognizer implements IImageSymbolRecognizer {
                         Double.parseDouble(coordsTo[0]),
                         Double.parseDouble(coordsTo[1])));
                 AgnosticSymbolType agnosticSymbolType = calco2Agnostic.convert(tokens[2]);
-                AgnosticSymbol agnosticSymbol = new AgnosticSymbol(agnosticSymbolType, PositionInStaff.parseString(tokens[3]));
+                AgnosticSymbol agnosticSymbol = new AgnosticSymbol(AgnosticVersion.v1, agnosticSymbolType, PositionInStaff.parseString(tokens[3]));
                 symbol.setAgnosticSymbol(agnosticSymbol);
                 result.add(symbol);
                 n++;

@@ -16,7 +16,8 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 public class XMLReaderWriterTest {
-    
+    AgnosticVersion agnosticVersion = AgnosticVersion.v2;
+
     private Project generateTestProject() throws IM3Exception {
         Project project = new Project(ProjectVersion.v1);
         project.setName("Test");
@@ -44,9 +45,9 @@ public class XMLReaderWriterTest {
         Region region1 = new Region(RegionType.all, 20, 30, 40, 50);
         page2_2.add(region1);
 
-        Symbol symbol1 = new Symbol(new AgnosticSymbol(new Note(NoteFigures.eighth, Directions.up), PositionsInStaff.LINE_1), 2, 4, 24, 37);
+        Symbol symbol1 = new Symbol(new AgnosticSymbol(agnosticVersion, new Note(NoteFigures.eighth, Directions.up), PositionsInStaff.LINE_1), 2, 4, 24, 37);
         region1.addSymbol(symbol1);
-        Symbol symbol2 = new Symbol(new AgnosticSymbol(new Note(new Beam(BeamType.right, 2), Directions.up), PositionsInStaff.LINE_1), 3, 3, 25, 39);
+        Symbol symbol2 = new Symbol(new AgnosticSymbol(agnosticVersion, new Note(new Beam(BeamType.right, 2), Directions.up), PositionsInStaff.LINE_1), 3, 3, 25, 39);
         region1.addSymbol(symbol2);
         return project;
     }

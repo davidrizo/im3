@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassifier;
 import es.ua.dlsi.im3.core.patternmatching.RankingItem;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -16,13 +17,16 @@ import java.util.TreeSet;
  * @autor drizo
  */
 public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourClassifier<AgnosticSymbol, SymbolImagePrototype>  implements ISymbolFromImageDataRecognizer {
+    private final AgnosticVersion agnosticVersion;
     private File trainingDataFolder;
 
-    public NearestNeighbourSymbolFromImageRecognizer()  {
+    public NearestNeighbourSymbolFromImageRecognizer(AgnosticVersion agnosticVersion)  {
+        this.agnosticVersion = agnosticVersion;
     }
 
-    public NearestNeighbourSymbolFromImageRecognizer(File trainingDataFolder) throws IM3Exception {
+    public NearestNeighbourSymbolFromImageRecognizer(AgnosticVersion agnosticVersion, File trainingDataFolder) throws IM3Exception {
         this.trainingDataFolder = trainingDataFolder;
+        this.agnosticVersion = agnosticVersion;
         train();
     }
 
@@ -63,7 +67,7 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
                     throw new IOException("Invalid line, must have 5 components and it has just " + components.length);
                 }
 
-                AgnosticSymbol agnosticSymbol = AgnosticSymbol.parseAgnosticString(components[3]);
+                AgnosticSymbol agnosticSymbol = AgnosticSymbol.parseAgnosticString(agnosticVersion, components[3]);
                 ArrayList<Integer> pixels = new ArrayList<>();
                 String[] pxs = components[4].split(",");
                 for (String px : pxs) {

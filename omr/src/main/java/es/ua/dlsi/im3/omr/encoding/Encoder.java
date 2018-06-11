@@ -98,7 +98,7 @@ public class Encoder {
         for (ITimedElementInStaff symbol : coreSymbolsOrdered) {
             if (processSystemBreaks && symbol instanceof SystemBreak) {
                 semanticEncoding.add(new SemanticSymbol(new Barline()));
-                agnosticEncoding.add(new AgnosticSymbol(barline, PositionsInStaff.LINE_1));
+                agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
                 agnosticEncoding.add(agnosticSystemBreak);
                 semanticEncoding.add(semanticSystemBreak);
                 newSystem = true;
@@ -118,7 +118,7 @@ public class Encoder {
                     //TODO slurs
                 } else {
                     if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
-                        agnosticEncoding.add(new AgnosticSymbol(barline, PositionsInStaff.LINE_1));
+                        agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
                         agnosticEncoding.add(horizontalSeparator);
                         //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
                         semanticEncoding.add(new SemanticSymbol(new Barline()));
@@ -144,7 +144,7 @@ public class Encoder {
         if (lastEndTime.equals(measureEndTime)) {
             // add bar line just if the measure is complete
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
-            agnosticEncoding.add(new AgnosticSymbol(barline, PositionsInStaff.LINE_1));
+            agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
             agnosticEncoding.add(horizontalSeparator);
             //semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
             semanticEncoding.add(new SemanticSymbol(new Barline()));
@@ -162,7 +162,7 @@ public class Encoder {
 
     private void convertDots(AtomFigure figure, PositionInStaff positionInStaff) {
         for (int i = 0; i < figure.getDots(); i++) {
-            agnosticEncoding.add(new AgnosticSymbol(dot, positionInStaff));
+            agnosticEncoding.add(new AgnosticSymbol(version, dot, positionInStaff));
             agnosticEncoding.add(horizontalSeparator);
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.dot, null, positionInStaff));
         }
@@ -195,7 +195,7 @@ public class Encoder {
                         if (tiedFromPreviousGenerated) {
                             addVerticalSeparator();
                         }
-                        agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.end), positionInStaffs[i]));
+                        agnosticEncoding.add(new AgnosticSymbol(version, new Slur(StartEnd.end), positionInStaffs[i]));
                         tiedFromPreviousGenerated = true;
                     }
 
@@ -206,7 +206,7 @@ public class Encoder {
                 }
 
                 if (chord.getAtomFigure().getFermata() != null && (chord.getAtomFigure().getFermata().getPosition() == null || chord.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
                     addVerticalSeparator();
 
                     //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
@@ -222,7 +222,7 @@ public class Encoder {
                             if (accdidentalsGenerated) {
                                 addVerticalSeparator();
                             }
-                            agnosticEncoding.add(new AgnosticSymbol(new Accidental(acc), positionInStaffs[i]));
+                            agnosticEncoding.add(new AgnosticSymbol(version, new Accidental(acc), positionInStaffs[i]));
                             accdidentalsGenerated = true;
                         }
                         //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, accidentalToDraw.name().toLowerCase(), positionInStaff));
@@ -249,7 +249,7 @@ public class Encoder {
                 if (chord.getMarks() != null) {
                     for (StaffMark mark : chord.getMarks()) {
                         if (mark instanceof Trill) {
-                            agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
+                            agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
                             addVerticalSeparator();
                             trill = true;
                             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, FERMATA_POSITION_ABOVE));
@@ -264,9 +264,9 @@ public class Encoder {
                         addVerticalSeparator();
                     }
                     if (chord.isGrace()) {
-                        agnosticEncoding.add(new AgnosticSymbol(new GraceNote(figureString), positionInStaffs[i]));
+                        agnosticEncoding.add(new AgnosticSymbol(version, new GraceNote(figureString), positionInStaffs[i]));
                     } else {
-                        agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaffs[i]));
+                        agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaffs[i]));
                     }
                 }
                 //graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
@@ -274,7 +274,7 @@ public class Encoder {
                 if (chord.getAtomFigure().getFermata() != null && chord.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                     //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
                     addVerticalSeparator();
-                    agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.below), FERMATA_POSITION_BELOW));
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(Positions.below), FERMATA_POSITION_BELOW));
                 } else {
                     agnosticEncoding.add(horizontalSeparator);
                 }
@@ -303,7 +303,7 @@ public class Encoder {
                         if (tiedToNextGenerated) {
                             addVerticalSeparator();
                         }
-                        agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.start), positionInStaffs[i]));
+                        agnosticEncoding.add(new AgnosticSymbol(version, new Slur(StartEnd.start), positionInStaffs[i]));
                         tiedToNextGenerated = true;
                     }
                     i++;
@@ -337,12 +337,12 @@ public class Encoder {
 
             if (note.getAtomPitch().isTiedFromPrevious()) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, END, positionInStaff));
-                agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.end), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Slur(StartEnd.end), positionInStaff));
                 agnosticEncoding.add(horizontalSeparator);
             }
 
             if (note.getAtomFigure().getFermata() != null && (note.getAtomFigure().getFermata().getPosition() == null || note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
                 addVerticalSeparator();
 
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
@@ -354,7 +354,7 @@ public class Encoder {
             if (accidentalToDraw != null) {
                 es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(accidentalToDraw);
                 for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Accidental(acc), positionInStaff));
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Accidental(acc), positionInStaff));
                     agnosticEncoding.add(horizontalSeparator);
                 }
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, accidentalToDraw.name().toLowerCase(), positionInStaff));
@@ -375,7 +375,7 @@ public class Encoder {
             if (note.getMarks() != null) {
                 for (StaffMark mark : note.getMarks()) {
                     if (mark instanceof Trill) {
-                        agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
+                        agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
                         addVerticalSeparator();
                         trill = true;
                         //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, FERMATA_POSITION_ABOVE));
@@ -386,16 +386,16 @@ public class Encoder {
             }
 
             if (note.isGrace()) {
-                agnosticEncoding.add(new AgnosticSymbol(new GraceNote(figureString), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new GraceNote(figureString), positionInStaff));
             } else {
-                agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaff));
             }
             //graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
 
             if (note.getAtomFigure().getFermata() != null && note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
                 addVerticalSeparator();
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.below), FERMATA_POSITION_BELOW));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(Positions.below), FERMATA_POSITION_BELOW));
             } else {
                 agnosticEncoding.add(horizontalSeparator);
             }
@@ -410,7 +410,7 @@ public class Encoder {
 
             if (note.getAtomPitch().isTiedToNext()) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, START, positionInStaff));
-                agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.start), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Slur(StartEnd.start), positionInStaff));
                 agnosticEncoding.add(horizontalSeparator);
             }
 
@@ -444,24 +444,24 @@ public class Encoder {
             int n = multiMeasureRest.getNumMeasures();
 
             if (n > 2) { // the digit is placed on top of the symbol by Verovio but after the physical start of multirest
-                agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Multirest(), PositionsInStaff.LINE_3));
+                agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Multirest(), PositionsInStaff.LINE_3));
                 agnosticEncoding.add(horizontalSeparator);
             }
 
             if (multiMeasureRest.getAtomFigure().getFermata() != null && multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
                 Positions positions = convert(multiMeasureRest.getAtomFigure().getFermata().getPosition());
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_ABOVE));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(positions), FERMATA_POSITION_ABOVE));
                 addVerticalSeparator();
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_ABOVE));
             }
 
             if (n <= 2) { // the digit is placed on top of the symbol by Verovio
-                agnosticEncoding.add(new AgnosticSymbol(new Digit(n), PositionsInStaff.SPACE_5));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(n), PositionsInStaff.SPACE_5));
                 addVerticalSeparator();
                 if (n == 1) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Rest(RestFigures.whole), PositionsInStaff.LINE_4)); // Verovio encodes these rests this way
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Rest(RestFigures.whole), PositionsInStaff.LINE_4)); // Verovio encodes these rests this way
                 } else {
-                    agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest(RestFigures.breve), PositionsInStaff.LINE_3)); // Verovio encodes these rests this way
+                    agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest(RestFigures.breve), PositionsInStaff.LINE_3)); // Verovio encodes these rests this way
                 }
                 agnosticEncoding.add(horizontalSeparator);
             } else {
@@ -472,7 +472,7 @@ public class Encoder {
                     digits.add(0, digit);
                 }
                 for (Integer digit : digits) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Digit(digit), PositionsInStaff.SPACE_5));
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Digit(digit), PositionsInStaff.SPACE_5));
                     agnosticEncoding.add(horizontalSeparator);
                     //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(digit), PositionsInStaff.SPACE_5));
                 }
@@ -486,7 +486,7 @@ public class Encoder {
 
                 Positions positions = convert(multiMeasureRest.getAtomFigure().getFermata().getPosition());
                 addVerticalSeparator();
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_BELOW));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(positions), FERMATA_POSITION_BELOW));
             }
 
             //semanticTokens.add(new SemanticToken(SemanticSymbol.multirest, Integer.toString(multiMeasureRest.getNumMeasures())));
@@ -498,7 +498,7 @@ public class Encoder {
             if (rest.getAtomFigure().getFermata() != null && (rest.getAtomFigure().getFermata().getPosition() == null || rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_ABOVE));
                 Positions positions = convert(rest.getAtomFigure().getFermata().getPosition());
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_ABOVE));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(positions), FERMATA_POSITION_ABOVE));
                 addVerticalSeparator();
             }
 
@@ -510,14 +510,14 @@ public class Encoder {
             }
 
             RestFigures restFigure = convert(rest.getAtomFigure().getFigure());
-            agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest(restFigure), positionsInStaff));
+            agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest(restFigure), positionsInStaff));
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.rest, rest.getAtomFigure().getFigure().toString().toLowerCase(), positionsInStaff));
 
             if (rest.getAtomFigure().getFermata() != null && rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
                 Positions positions = convert(rest.getAtomFigure().getFermata().getPosition());
                 addVerticalSeparator();
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_BELOW));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(positions), FERMATA_POSITION_BELOW));
             } else {
                 agnosticEncoding.add(horizontalSeparator);
             }
@@ -553,13 +553,13 @@ public class Encoder {
 
             if (!inBeam) {
                 // if quarter, half,.... or eighth without beam
-                agnosticEncoding.add(new AgnosticSymbol(new Bracket(StartEnd.start), tupletPositionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Bracket(StartEnd.start), tupletPositionInStaff));
                 addVerticalSeparator();
                 convert(simpleTuplet.getAtoms().get(0), drawnAccidentals, tupletNumber);
-                agnosticEncoding.add(new AgnosticSymbol(new Digit(3), tupletPositionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(3), tupletPositionInStaff));
                 addVerticalSeparator();
                 convert(simpleTuplet.getAtoms().get(1), drawnAccidentals, tupletNumber);
-                agnosticEncoding.add(new AgnosticSymbol(new Bracket(StartEnd.end), tupletPositionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Bracket(StartEnd.end), tupletPositionInStaff));
                 addVerticalSeparator();
                 convert(simpleTuplet.getAtoms().get(2), drawnAccidentals, tupletNumber);
 
@@ -567,7 +567,7 @@ public class Encoder {
             } else {
                 // if 8th, 16th...
                 convert(simpleTuplet.getAtoms().get(0), drawnAccidentals, tupletNumber);
-                agnosticEncoding.add(new AgnosticSymbol(new Digit(3), tupletPositionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(3), tupletPositionInStaff));
                 agnosticEncoding.add(horizontalSeparator);
                 convert(simpleTuplet.getAtoms().get(1), drawnAccidentals, tupletNumber);
                 convert(simpleTuplet.getAtoms().get(2), drawnAccidentals, tupletNumber);
@@ -597,7 +597,7 @@ public class Encoder {
             // TODO: 23/2/18 Octava bassa, alta....
             default: throw new IM3Exception("Invalid clef note: " + clef.getNote());
         }
-        agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef(clefNote), positionInStaff));
+        agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef(clefNote), positionInStaff));
         agnosticEncoding.add(horizontalSeparator);
         //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.clef, clef.getNote().name(), positionInStaff));
         //semanticTokens.add(new SemanticToken(SemanticSymbol.clef, clef.getNote() + "" + clef.getLine()));
@@ -610,15 +610,15 @@ public class Encoder {
         if (symbol instanceof SignTimeSignature) {
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.metersign, ((SignTimeSignature) symbol).getSignString(), PositionsInStaff.LINE_3));
             MeterSigns meterSign = convert((SignTimeSignature) symbol);
-            agnosticEncoding.add(new AgnosticSymbol(new MeterSign(meterSign), PositionsInStaff.LINE_3));
+            agnosticEncoding.add(new AgnosticSymbol(version, new MeterSign(meterSign), PositionsInStaff.LINE_3));
             agnosticEncoding.add(horizontalSeparator);
             timeSignature = new MeterSignTimeSignature(meterSign);
             //sb.append(((SignTimeSignature) symbol).getSignString());
         } else if (symbol instanceof FractionalTimeSignature) {
             FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
-            agnosticEncoding.add(new AgnosticSymbol(new Digit(ts.getNumerator()), PositionsInStaff.LINE_4));
+            agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getNumerator()), PositionsInStaff.LINE_4));
             addVerticalSeparator();
-            agnosticEncoding.add(new AgnosticSymbol(new Digit(ts.getDenominator()), PositionsInStaff.LINE_2));
+            agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getDenominator()), PositionsInStaff.LINE_2));
             agnosticEncoding.add(horizontalSeparator);
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getNumerator()), PositionsInStaff.LINE_4));
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getDenominator()), PositionsInStaff.LINE_2));
@@ -643,7 +643,7 @@ public class Encoder {
             for (PositionInStaff position : positions) {
                 es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(ks.getAccidental());
                 for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Accidental(acc), position));
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Accidental(acc), position));
                     agnosticEncoding.add(horizontalSeparator);
                 }
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, ks.getAccidental().name().toLowerCase(), position));

@@ -19,6 +19,7 @@ public class MusicXML2SemanticAndAgnosticTest {
         MusicXML2SemanticAndAgnostic musicXML2SemanticAndAgnostic = new MusicXML2SemanticAndAgnostic();
         File agnosticFile = TestFileUtils.createTempFile("jazzmus_agnostic.txt");
         File semanticFile = TestFileUtils.createTempFile("jazzmus_semantic.txt");
-        musicXML2SemanticAndAgnostic.run(file, semanticFile, agnosticFile);
+        File kernFile = TestFileUtils.createTempFile("jazzmus_kern.txt");
+        musicXML2SemanticAndAgnostic.run(file, semanticFile, agnosticFile, kernFile);
     }
 }

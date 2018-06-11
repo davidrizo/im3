@@ -21,6 +21,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.Point;
 import es.ua.dlsi.im3.omr.model.entities.Stroke;
 
@@ -37,12 +38,14 @@ import java.util.logging.Logger;
 public class TracedClassifier implements IBimodalClassifier {
     private List<BimodalSymbol> trainSet;
 	IBimodalDatasetReader datasetReader;
-	
-	public TracedClassifier(IBimodalDatasetReader reader) {
+    private AgnosticVersion agnosticVersion;
+
+    public TracedClassifier(AgnosticVersion agnosticVersion, IBimodalDatasetReader reader) {
 		this.datasetReader = reader;
 	}
 	public void learn(File file) throws IOException {
 		trainSet = datasetReader.read(file);
+		this.agnosticVersion = agnosticVersion;
 		Logger.getLogger(TracedClassifier.class.getName()).log(Level.INFO, "Learnt with {0} symbols", trainSet.size());
 	}
 
@@ -74,7 +77,7 @@ public class TracedClassifier implements IBimodalClassifier {
 		ArrayList<AgnosticSymbol> result = new ArrayList<>();
 		for (Ranking item : ranking) {
             //TODO Hacer Javi - clasificar altura
-			result.add(new AgnosticSymbol(item.getSymbol(), PositionsInStaff.LINE_3));
+			result.add(new AgnosticSymbol(agnosticVersion, item.getSymbol(), PositionsInStaff.LINE_3));
 		}
 		return result;
 	}

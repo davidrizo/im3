@@ -34,7 +34,7 @@ public class AgnosticSymbolConverter implements Converter {
         String value = hierarchicalStreamReader.getValue();
         hierarchicalStreamReader.moveUp();
         try {
-            return AgnosticSymbol.parseAgnosticString(value);
+            return AgnosticSymbol.parseAgnosticString(agnosticVersion, value);
         } catch (IM3Exception e) {
             throw new IM3RuntimeException("Cannot parse agnostic symbol '" + value + "'");
         }

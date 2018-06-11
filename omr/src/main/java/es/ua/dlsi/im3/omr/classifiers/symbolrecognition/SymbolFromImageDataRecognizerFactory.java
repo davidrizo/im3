@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.classifiers.symbolrecognition;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
 import java.io.File;
 
@@ -15,7 +16,7 @@ public class SymbolFromImageDataRecognizerFactory {
     }
 
     //TODO Generalizar este parámetro
-    public ISymbolFromImageDataRecognizer create(File trainingFolder) throws IM3Exception {
-        return new NearestNeighbourSymbolFromImageRecognizer(trainingFolder);
+    public ISymbolFromImageDataRecognizer create(AgnosticVersion agnosticVersion, File trainingFolder) throws IM3Exception {
+        return new NearestNeighbourSymbolFromImageRecognizer(agnosticVersion, trainingFolder);
     }
 }

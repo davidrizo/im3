@@ -99,11 +99,11 @@ public class PagedCapitan2Agnostic {
 
     public AgnosticSymbol convert(String symbol) throws ImportException {
         if (symbol.equals("BARLINE")) {
-            return new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1);
+            return new AgnosticSymbol(AgnosticVersion.v1, new VerticalLine(), PositionsInStaff.LINE_1);
         } else if (symbol.equals("SMUDGE")) {
-            return new AgnosticSymbol(new Smudge(), PositionsInStaff.LINE_1);
+            return new AgnosticSymbol(AgnosticVersion.v1, new Smudge(), PositionsInStaff.LINE_1);
         } else if (symbol.startsWith("GREGORIAN")) {
-            return new AgnosticSymbol(new Ligature(), PositionsInStaff.LINE_3);
+            return new AgnosticSymbol(AgnosticVersion.v1, new Ligature(), PositionsInStaff.LINE_3);
          /*   return new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.SPACE_3));
             agnosticEncoding.add(juxtapositionSeparator);
             agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.LINE_3));
@@ -125,7 +125,7 @@ public class PagedCapitan2Agnostic {
             AgnosticSymbolType symbolType = parseNotationSymbol(subsymbols[0]);
 
             if (symbolType instanceof LigatureComponent) {
-                return new AgnosticSymbol(new Ligature(), PositionsInStaff.LINE_3);
+                return new AgnosticSymbol(AgnosticVersion.v1, new Ligature(), PositionsInStaff.LINE_3);
             } else {
                 if (subsymbols.length != 2) {
                     throw new ImportException("Expected two subsymbols at '" + symbol + "' and found " + subsymbols.length);
@@ -152,7 +152,7 @@ public class PagedCapitan2Agnostic {
                     }
                 }
 
-                AgnosticSymbol pst = new AgnosticSymbol(symbolType, positionInStaff);
+                AgnosticSymbol pst = new AgnosticSymbol(AgnosticVersion.v1, symbolType, positionInStaff);
                 return pst;
             }
         }

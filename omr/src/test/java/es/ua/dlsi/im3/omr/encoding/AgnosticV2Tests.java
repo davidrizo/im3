@@ -32,20 +32,20 @@ public class AgnosticV2Tests {
     @Test
     public void testChord() throws IM3Exception {
         String filename = "chord.mei";
-        String expected = "clef.G-L2, digit.3-L4/digit.4-L2, note.half-L0/note.half-L1/note.half-L2, slur.start-L0/slur.start-L1/slur.start-L2, slur.end-L0/slur.end-L1/slur.end-L2, fermata.above-S6/trill-S6/note.half-L0/note.half-L1/note.half-L2";
+        String expected = "clef.G:L2, digit.3:L4/digit.4:L2, note.half:L0/note.half:L1/note.half:L2, slur.start:L0/slur.start:L1/slur.start:L2, slur.end:L0/slur.end:L1/slur.end:L2, fermata.above:S6/trill:S6/note.half:L0/note.half:L1/note.half:L2";
         doTest(filename, expected);
     }
 
     @Test
     public void testTupletWithoutBracket() throws IM3Exception {
         String filename = "tuplet_without_bracket.mei";
-        String expected = "clef.G-L2, digit.3-L4/digit.4-L2, note.beamedRight1-L0, digit.3-S6, note.beamedBoth1-S0, note.beamedLeft1-L1, rest.half-L3, verticalLine-L1";
+        String expected = "clef.G:L2, digit.3:L4/digit.4:L2, note.beamedRight1:L0, digit.3:S6, note.beamedBoth1:S0, note.beamedLeft1:L1, rest.half:L3, verticalLine:L1";
         doTest(filename, expected);
     }
     @Test
     public void testTupletWithtBracket() throws IM3Exception {
         String filename = "tuplet_with_bracket.mei";
-        String expected = "clef.G-L2, digit.3-L4/digit.4-L2, bracket.start-S6/note.eighth-L0, digit.3-S6/note.eighth-S0, bracket.end-S6/note.eighth-L1";
+        String expected = "clef.G:L2, digit.3:L4/digit.4:L2, bracket.start:S6/note.eighth:L0, digit.3:S6/note.eighth:S0, bracket.end:S6/note.eighth:L1";
         doTest(filename, expected);
     }
 

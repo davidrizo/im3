@@ -12,15 +12,20 @@ import java.util.Objects;
  * @author drizo
  */
 public class AgnosticSymbol extends AgnosticToken {
-    private static final char SEPVERTICALPOS = '-';
-    private static final String SEPVERTICALPOS_STR = ""+SEPVERTICALPOS;
+    private static final char SEPVERTICALPOS_V1 = '-';
+    private static final char SEPVERTICALPOS_V2 = ':';
+    private static final String SEPVERTICALPOS_STR_V1 = ""+SEPVERTICALPOS_V1;
+    private static final String SEPVERTICALPOS_STR_V2 = ""+SEPVERTICALPOS_V2;
+    private final AgnosticVersion agnosticVersion;
     /**
      * Vertical position in the staff
      */
     private PositionInStaff positionInStaff;
 
-	public AgnosticSymbol(AgnosticSymbolType symbol, PositionInStaff position) {
+	public AgnosticSymbol(AgnosticVersion agnosticVersion, AgnosticSymbolType symbol, PositionInStaff position) {
 		super(symbol);
+		this.agnosticVersion = agnosticVersion;
+
 		if (position == null) {
 		    throw new IM3RuntimeException("Cannot create an agnostic symbols without position");
         }
@@ -47,17 +52,28 @@ public class AgnosticSymbol extends AgnosticToken {
         AgnosticSymbolType specificSymbol = symbol;
         StringBuilder sb = new StringBuilder();
         sb.append(specificSymbol.toAgnosticString());
-        sb.append(SEPVERTICALPOS);
+        if (agnosticVersion == AgnosticVersion.v1) {
+            sb.append(SEPVERTICALPOS_V1);
+        } else {
+            sb.append(SEPVERTICALPOS_V2);
+        }
         sb.append(positionInStaff.toString());
         return sb.toString();
     }
 
-    public static AgnosticSymbol parseAgnosticString(String string) throws IM3Exception {
+    public static AgnosticSymbol parseAgnosticString(AgnosticVersion agnosticVersion, String string) throws IM3Exception {
 	    String trimmedString = string.trim();
 	    if (trimmedString.isEmpty()) {
 	        throw new IM3RuntimeException("Empty string");
         }
-	    String [] tokens = string.split(SEPVERTICALPOS_STR);
+        String separator;
+        if (agnosticVersion == AgnosticVersion.v1) {
+            separator = SEPVERTICALPOS_STR_V1;
+        } else {
+            separator = SEPVERTICALPOS_STR_V2;
+        }
+	    //String [] tokens = string.split("-");
+        String [] tokens = string.split(separator);
 
         PositionInStaff positionInStaff = null;
         AgnosticSymbolType agnosticSymbolType = AgnosticSymbolTypeFactory.parseString(tokens[0]);
@@ -66,7 +82,7 @@ public class AgnosticSymbol extends AgnosticToken {
         } else if (tokens.length > 2) {
 	        throw new ImportException("Invalid agnostic symbol string: '" + string + "'");
         }
-        return new AgnosticSymbol(agnosticSymbolType, positionInStaff);
+        return new AgnosticSymbol(agnosticVersion, agnosticSymbolType, positionInStaff);
 
     }
 

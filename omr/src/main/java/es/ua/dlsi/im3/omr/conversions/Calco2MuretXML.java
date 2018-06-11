@@ -126,7 +126,7 @@ public class Calco2MuretXML {
                 AgnosticSymbolType agnosticSymbolType = calco2Agnostic.convert(label);
                 postProcess(agnosticSymbolType, positionInStaff);
 
-                AgnosticSymbol agnosticSymbol = new AgnosticSymbol(agnosticSymbolType, positionInStaff);
+                AgnosticSymbol agnosticSymbol = new AgnosticSymbol(AgnosticVersion.v1, agnosticSymbolType, positionInStaff);
                 symbol.setAgnosticSymbol(agnosticSymbol);
 
                 //TODO symbol.setRasterMonochromeImage(new RasterMonochromeImage((int)symbol.getWidth(), (int)symbol.getHeight(), getRasterImage(raster, symbol.getBoundingBox())));

@@ -17,6 +17,8 @@
 package es.ua.dlsi.im3.omr.classifiers.traced;
 
 
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
+
 /**
  *
  * @author drizo
@@ -35,7 +37,7 @@ public class BimodalClassifierFactory<SymbolType> {
     }
     
     
-    public IBimodalClassifier createClassifier(IBimodalDatasetReader reader) {
-    	return new TracedClassifier(reader);
+    public IBimodalClassifier createClassifier(AgnosticVersion agnosticVersion, IBimodalDatasetReader reader) {
+    	return new TracedClassifier(agnosticVersion, reader);
     }
 }

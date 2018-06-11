@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.patternmatching.RankingItem;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import org.junit.Test;
 
 import java.io.File;
@@ -22,7 +23,7 @@ public class NearestNeighbourSymbolFromImageRecognizerTest {
     @Test
     public void classify() throws IOException, IM3Exception {
         File inputTrainingFile = TestFileUtils.getFile("/testdata/training/B-53.781.symbolsimages-extract.txt");
-        NearestNeighbourSymbolFromImageRecognizer nearestNeighbourSymbolFromImageRecognizer = new NearestNeighbourSymbolFromImageRecognizer();
+        NearestNeighbourSymbolFromImageRecognizer nearestNeighbourSymbolFromImageRecognizer = new NearestNeighbourSymbolFromImageRecognizer(AgnosticVersion.v1);
         nearestNeighbourSymbolFromImageRecognizer.trainWithFile(inputTrainingFile);
         assertEquals("Training instances", 250, nearestNeighbourSymbolFromImageRecognizer.getTrainedSet().size());
 
