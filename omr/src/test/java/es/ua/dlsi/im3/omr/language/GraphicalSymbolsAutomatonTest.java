@@ -104,7 +104,7 @@ public class GraphicalSymbolsAutomatonTest {
         assertEquals(0, t2.getProbability().getNumeratorAsLong());
 
         // draw first transduction
-        HorizontalLayout layout = new HorizontalLayout(t1.getSong(), LayoutFonts.capitan,
+        HorizontalLayout layout = new HorizontalLayout(t1.getSong(), LayoutFonts.patriarca,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
