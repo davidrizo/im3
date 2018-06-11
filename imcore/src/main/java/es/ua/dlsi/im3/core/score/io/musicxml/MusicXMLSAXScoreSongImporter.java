@@ -1386,7 +1386,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		} else if (stemDir.equals("up")) {
 			return StemDirection.up;
 		} else if (stemDir.equals("down")) {
-			return StemDirection.down;
+            return StemDirection.down;
+        } else if (stemDir.equals("none")) {
+		    return StemDirection.none;
 		} else {
 			throw new ImportException("Invalid stem direction: " + stemDir);
 		}

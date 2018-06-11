@@ -43,6 +43,12 @@ public class KernExporter {
         }
     }
 
+    /**
+     * @param song
+     * @return
+     * @throws ExportException
+     * @throws IM3Exception
+     */
     public String exportSong(ScoreSong song) throws ExportException, IM3Exception {
         sb = new StringBuilder();
         this.song = song;

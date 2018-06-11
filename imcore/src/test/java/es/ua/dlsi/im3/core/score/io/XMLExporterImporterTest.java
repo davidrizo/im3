@@ -288,6 +288,7 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void testCrossStaff() throws Exception {
+        testMusicXMLExportImport = false;
 		doTest(XMLExporterImporterTest::assertCrossStaff, importMEI(TestFileUtils.getFile("/testdata/core/score/io/cross-staff.mei")));
 		doTest(XMLExporterImporterTest::assertCrossStaff, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/cross-staff.xml")));
 	}
@@ -308,6 +309,7 @@ public class XMLExporterImporterTest {
 	}
 	@Test
 	public void testCrossStaffMultilayer() throws Exception {
+        testMusicXMLExportImport = false;
 		doTest(XMLExporterImporterTest::assertCrossStaffMultilayer, importMEI(TestFileUtils.getFile("/testdata/core/score/io/cross-staff-multilayer.mei")));
 		doTest(XMLExporterImporterTest::assertCrossStaffMultilayer, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/cross-staff-multilayer.xml")));
 	}
@@ -721,6 +723,7 @@ public class XMLExporterImporterTest {
 
     @Test
     public void multimeasureRestBeginning() throws Exception {
+        testMusicXMLExportImport = false;
         doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMEI(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.mei")));
         doTest(XMLExporterImporterTest::assertMultimeasureRestBeginning, importMusicXML(TestFileUtils.getFile("/testdata/core/score/io/multimeasure_rest_beginning.xml")));
     }

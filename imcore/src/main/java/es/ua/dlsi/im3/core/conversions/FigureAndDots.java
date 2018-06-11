@@ -17,4 +17,12 @@ public class FigureAndDots {
     public int getDots() {
         return dots;
     }
+
+    @Override
+    public String toString() {
+        return "FigureAndDots{" +
+                "figure=" + figure +
+                ", dots=" + dots +
+                '}';
+    }
 }

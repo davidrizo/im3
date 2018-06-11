@@ -18,7 +18,7 @@
         "codepoint": "U+E062"
     },
     "mensuralFclefPetrucci": {
-      "codepoint": "U+E902"
+      "codepoint": "U+E904"
     },
     "timeSigCommon": {
         "codepoint": "U+E08A"
@@ -137,6 +137,12 @@
     "mensuralBlackSemibrevis" : {
       "codepoint": "U+E953"
     },
+    "eighthVoid" : {
+      "codepoint": "U+F964"
+    },
+    "eighthVoidDown" : {
+      "codepoint": "U+F965"
+    },
     "sixteenthVoid" : {
       "codepoint": "U+F966"
     },
@@ -179,7 +185,7 @@
     "beamedBoth1" : {
       "codepoint": "U+F0B0"
     },
-    "beamedLeft1Down" : {
+    "beamedBoth1Down" : {
       "codepoint": "U+F0B1"
     },
     "beamedRight2" : {
@@ -205,6 +211,9 @@
     },
     "paperHole" : {
       "codepoint": "U+F0A7"
+    },
+    "barlineSingle" : {
+      "codepoint": "U+E030"
     }
 }
 

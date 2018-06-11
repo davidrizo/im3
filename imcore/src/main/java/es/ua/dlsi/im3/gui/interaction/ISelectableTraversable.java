@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.ua.dlsi.im3.gui.score.javafx;
+package es.ua.dlsi.im3.gui.interaction;
 
 /**
  *

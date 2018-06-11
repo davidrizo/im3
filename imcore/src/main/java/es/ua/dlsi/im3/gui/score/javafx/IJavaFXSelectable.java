@@ -19,6 +19,8 @@ package es.ua.dlsi.im3.gui.score.javafx;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.command.ICommand;
+import es.ua.dlsi.im3.gui.interaction.ISelectable;
+import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
@@ -27,13 +29,8 @@ import javafx.scene.input.KeyEvent;
  *
  * @author drizo
  */
-public interface ISelectable {
-    ISelectableTraversable getParent();    
-    void select();
-    void unselect();
-    
-    void startEdit() throws IM3Exception;
-    void endEdit()  throws IM3Exception;
+public interface IJavaFXSelectable extends ISelectable {
+
 
     /**
      * Return the command to be executed
@@ -42,25 +39,26 @@ public interface ISelectable {
      */
     public ICommand onKeyEvent(KeyEvent t);
 
-    public void startHover();
-    public void endHover();
-
-    /**
-     * Any value valid for ordering
-     * @return 
-     */
-    DoubleProperty getOrder();
-    
-
     public void showContextMenu(double x, double y);
 
     Node getRoot();
+
+    void startEdit() throws IM3Exception;
+    void endEdit()  throws IM3Exception;
+
     /**
      * For traversing with tab skipping different types (e.g. from barline to barline)
-     * @return 
+     * @return
      */
     public String getSelectionType();
-    
+    /**
+     * Any value valid for ordering
+     * @return
+     */
+    double getOrder();
+
+
+
     //void buildInteraction();
 
     //public ICommand onDeleteAction();

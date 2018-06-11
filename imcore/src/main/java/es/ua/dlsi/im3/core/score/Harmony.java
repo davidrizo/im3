@@ -13,7 +13,7 @@ import es.ua.dlsi.im3.core.score.scales.ScaleSelectorFactory;
 
 //TODO Dejar sólo lo que haga falta
 /**
- * @deprecated Use analysis.tonal.RomanNumeralAnalysis
+ * @deprecated Use Harm
  * @author drizo
  * @date 05/06/2011
  *
