@@ -19,6 +19,7 @@ public class KeyView {
     Group group;
     Rectangle rectangle;
     Key key;
+    static ColorWheel colorWheel = new ColorWheel(12, 1, 1);
 
     public KeyView(Key key) throws IM3Exception {
         this.key = key;
@@ -37,20 +38,9 @@ public class KeyView {
         return group;
     }
 
-
     private Color keyToColor(Key key) throws IM3Exception {
-        double hue = 12 + key.getFifths()*11;
-        double saturation;
-        double brightness;
-        if (key.getMode() == Mode.MAJOR) {
-            saturation = 1;
-            brightness = 1;
-        } else {
-            saturation = 0.5;
-            brightness = 0.5;
-        }
-        Color color = Color.hsb(hue % 360, saturation, brightness); //TODO
-        return color;
+        int pc = key.getPitchClass().getSemitonesFromC();
+        return colorWheel.getColors()[pc];
     }
 
     public Key getKey() {
