@@ -1,13 +1,6 @@
 package es.ua.dlsi.im3.core.score;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeSet;
+import java.util.*;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
@@ -325,7 +318,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 	 * @return A sorted list
 	 */
 	public List<AtomPitch> getAtomPitches() {
-		ArrayList<AtomPitch> result = new ArrayList<>();
+		List<AtomPitch> result = new LinkedList<>();
 		for (ScoreLayer voice : layers.values()) {
 			result.addAll(voice.getAtomPitches());
 		}
@@ -334,11 +327,22 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 		return result;
 	}
 
-	/**
+    public List<AtomPitch> getAtomPitchesWithOnsetWithin(Segment segment) {
+        List<AtomPitch> result = new LinkedList<>();
+        for (ScoreLayer voice : layers.values()) {
+            result.addAll(voice.getAtomPitchesWithOnsetWithin(segment));
+        }
+
+        return result;
+    }
+
+
+
+    /**
 	 * @return A sorted list
 	 */
 	public List<AtomFigure> getAtomFigures() {
-		ArrayList<AtomFigure> result = new ArrayList<>();
+        List<AtomFigure> result = new LinkedList<>();
 		for (ScoreLayer voice : layers.values()) {
 			result.addAll(voice.getAtomFigures());
 		}
@@ -413,7 +417,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 	}
 
 	public List<Atom> getAtomsSortedByTime() {
-		ArrayList<Atom> atoms = new ArrayList<>();
+		List<Atom> atoms = new LinkedList<>();
 		for (ScoreLayer layer : layers.values()) {
 			atoms.addAll(layer.getAtoms());
 		}

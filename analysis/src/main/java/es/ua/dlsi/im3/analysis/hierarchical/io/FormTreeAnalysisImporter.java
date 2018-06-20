@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.analysis.hierarchical.io;
 
 
 import es.ua.dlsi.im3.analysis.hierarchical.forms.FormAnalysis;
+import es.ua.dlsi.im3.analysis.hierarchical.forms.FormAnalysisTreeNodeLabel;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.tree.Tree;
 import es.ua.dlsi.im3.core.adt.tree.TreeException;
@@ -18,7 +19,7 @@ public class FormTreeAnalysisImporter implements IMEIComponentImporter<Tree<Attr
 			for (int i=0; i<source.getNumChildren(); i++) {
 				Tree<AttributesLabel> child = source.getChild(i);
 				if ("eTree".equals(child.getLabel().getTag()) || "eLeaf".equals(child.getLabel().getTag())) {
-					importSection(result, child, importer);
+                    importDivision(result, result.getTree(), child, importer);
 				}
 			}
 			return result;
@@ -28,39 +29,52 @@ public class FormTreeAnalysisImporter implements IMEIComponentImporter<Tree<Attr
 	}
 
 
-	private void importSection(FormAnalysis result, Tree<AttributesLabel> child,
+    /**
+     * It can be a section, subsection, a period, a phrase, or whatever
+     * @param result
+     * @param child
+     * @param importer
+     * @throws IM3Exception
+     * @throws TreeException
+     */
+	private void importDivision(FormAnalysis result, Tree<FormAnalysisTreeNodeLabel> parent, Tree<AttributesLabel> child,
 			MEIHierarchicalAnalysesModernImporter importer) throws IM3Exception, TreeException {
-		
-		if (child.getNumChildren() != 1) {
-			throw new ImportException("Expected just a child named 'label' of child " + child + " and found " + child.getNumChildren() + " children");
-		}
-		
-		Tree<AttributesLabel> labelChild = child.getChild(0);
-		if (!"label".equals(labelChild.getLabel().getTag())) {
-			throw new ImportException("Expected child named 'label' of child " + child);
-		}
-		
-		AttributesLabel attrLabel = labelChild.getLabel();
-		String name = attrLabel.getAttribute("name");
-		String measureid = attrLabel.getAttribute("measureid");
-		String tstamp = attrLabel.getAttribute("tstamp");
-		String color = attrLabel.getOptionalAttribute("color");
-		Time quarters = importer.decodeTStamp(measureid, tstamp);
-		
-		String description = null;
-		for (Tree<AttributesLabel> dchild: labelChild.getChildren()) {
-			if (dchild.getLabel().getTag().equals("description")) {
-				if (description != null) {
-					throw new ImportException("Several descriptions for melodic node label");
-				}
-				description = dchild.getLabel().getTextContent();
-			} else {
-				throw new ImportException("Unknown tag for section label: '" + child.getLabel().getTag() + "'");
-			}			
-		}
-		
-		
-		result.addSection(name, quarters, description, color);
+
+	    // locate the label element and create a tree for it
+        Tree<FormAnalysisTreeNodeLabel> newDivisionTree = null;
+        for (int i=0; newDivisionTree == null && i<child.getNumChildren(); i++) {
+            Tree<AttributesLabel> labelChild = child.getChild(i);
+
+            if ("label".equals(labelChild.getLabel().getTag())) {
+                AttributesLabel attrLabel = labelChild.getLabel();
+                String name = attrLabel.getAttribute("name");
+                String measureid = attrLabel.getAttribute("measureid");
+                String tstamp = attrLabel.getAttribute("tstamp");
+                String color = attrLabel.getOptionalAttribute("color");
+                Time quarters = importer.decodeTStamp(measureid, tstamp);
+
+                String description = null;
+                for (Tree<AttributesLabel> dchild : labelChild.getChildren()) {
+                    if (dchild.getLabel().getTag().equals("description")) {
+                        if (description != null) {
+                            throw new ImportException("Several descriptions for melodic node label");
+                        }
+                        description = dchild.getLabel().getTextContent();
+                    } else {
+                        throw new ImportException("Unknown tag for section label: '" + child.getLabel().getTag() + "'");
+                    }
+                }
+                newDivisionTree = result.addDivision(parent, name, quarters, description, color);
+            }
+        }
+
+        // for all children but previously used <label>
+        for (int i=0; i<child.getNumChildren(); i++) {
+            Tree<AttributesLabel> nonLabelChild = child.getChild(i);
+            if (!"label".equals(nonLabelChild.getLabel().getTag())) {
+                importDivision(result, newDivisionTree, nonLabelChild, importer);
+            }
+        }
 		
 		/*ScoreAnalysisHook<FiguresModern> scoreAnalysisHookStart = importer.getScoreSong().getAnalysisStaff().findAnalysisHookWithOnset((long) (quarters * AbstractSong.DEFAULT_RESOLUTION));
 		SectionLabel sectionLabel = new SectionLabel(name, scoreAnalysisHookStart);

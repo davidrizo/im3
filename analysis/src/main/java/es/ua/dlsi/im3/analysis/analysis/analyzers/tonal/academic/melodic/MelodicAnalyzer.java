@@ -43,7 +43,7 @@ public abstract class MelodicAnalyzer {
     private boolean onlineTraining = true;
 
     private List<AtomPitch> atomPitches;
-    private ArrayList<Segment> sonorities;
+    private List<Segment> sonorities;
 
     String name;
     protected boolean prefixValidation;

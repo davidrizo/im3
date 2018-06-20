@@ -4,7 +4,7 @@ package es.ua.dlsi.im3.analysis.hierarchical.forms;
 import es.ua.dlsi.im3.core.score.ITimedElement;
 import es.ua.dlsi.im3.core.score.ScoreAnalysisHook;
 
-public class SectionLabel extends FormAnalysisTreeNodeLabel implements ITimedLabel {
+public class DivisionLabel extends FormAnalysisTreeNodeLabel implements ITimedLabel {
 	String name;
 	String description;
 	/**
@@ -19,7 +19,7 @@ public class SectionLabel extends FormAnalysisTreeNodeLabel implements ITimedLab
 	/**
 	 * @param name Should have the name property set
 	 */
-	public SectionLabel(String name, ScoreAnalysisHook scoreAnalysisHookStart) {
+	public DivisionLabel(String name, ScoreAnalysisHook scoreAnalysisHookStart) {
 		this.name = name;
 		this.scoreAnalysisHookStart = scoreAnalysisHookStart;
 	}
@@ -59,8 +59,8 @@ public class SectionLabel extends FormAnalysisTreeNodeLabel implements ITimedLab
 	}
 	
 	@Override
-	public SectionLabel clone() {
-		return new SectionLabel(name, scoreAnalysisHookStart);
+	public DivisionLabel clone() {
+		return new DivisionLabel(name, scoreAnalysisHookStart);
 	}
 
 	@Override

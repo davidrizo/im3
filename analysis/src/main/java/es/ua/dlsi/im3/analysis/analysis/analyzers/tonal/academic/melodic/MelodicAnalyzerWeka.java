@@ -259,7 +259,7 @@ public class MelodicAnalyzerWeka extends MelodicAnalyzerMachineLearning {
     }
 
     private void buildInstances(Instances data, ScoreSong lsong, List<Segment> sonorities, HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features) throws MelodicAnalysisException {
-        ArrayList<AtomPitch> notes = lsong.getAtomPitches();
+        List<AtomPitch> notes = lsong.getAtomPitches();
         for (AtomPitch n : notes) {
             AtomPitch scoreNote = (AtomPitch) n;
             NoteMelodicAnalysisFeatures noteFeatures = features.get(scoreNote);

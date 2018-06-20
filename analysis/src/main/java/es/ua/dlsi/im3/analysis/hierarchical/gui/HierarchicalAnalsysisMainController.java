@@ -284,13 +284,13 @@ public class HierarchicalAnalsysisMainController implements Initializable {
 			tab.textProperty().bind(documentView.titleWithSavingMarkProperty());
 			tab.setUserData(documentView);
 			tabPaneDocuments.getTabs().add(tab);
-			tabPaneDocuments.getSelectionModel().select(tab);
+			tabPaneDocuments.getSelectionModel().onSelect(tab);
 			
 			Parent svRoot = documentView.getScoreViewController().getScoreView().getRoot();
 			VBox pane = new VBox(svRoot);
 			VBox.setVgrow(svRoot, Priority.ALWAYS);
 			tab.setContent(pane); // in order to get stretched to fill up space
-			tabPaneDocuments.getSelectionModel().select(tab);
+			tabPaneDocuments.getSelectionModel().onSelect(tab);
 
 			onDocumentAdded(documentView.getScoreViewController());
 		} catch (Exception e) {
@@ -377,7 +377,7 @@ public class HierarchicalAnalsysisMainController implements Initializable {
 				try {
 					getSelectedModel().setSelectedElements(event.getSelectedElements());
 				} catch (Exception e) {
-					ShowError.show(HierarchicalAnalsysisMainController.this, "Cannot select model", e);
+					ShowError.show(HierarchicalAnalsysisMainController.this, "Cannot onSelect model", e);
 				}
 			}
 		});
@@ -579,7 +579,7 @@ public class HierarchicalAnalsysisMainController implements Initializable {
 				String name = ShowInput.show(this, "Forms analysis", "Give a name to the analysis");
 				if (name != null) {
 					analysis = getSelectedModel().createNewAnalysis(name); // it adds to the observable list
-					lvAnalyses.getSelectionModel().select(analysis);
+					lvAnalyses.getSelectionModel().onSelect(analysis);
 					paintFormAnalysisTree();
 				}
 			} catch (Exception e) {

@@ -29,7 +29,7 @@ public class DummyFormAnalyzer implements IFormAnalyzer {
 		try {
 			int i=0;
 			for (String sn : sectionNames) {
-				fa.addSection(sn, bars.get(i).getTime(), "Description of " + sn, "FF0000");
+				fa.addDivision(sn, bars.get(i).getTime(), "Description of " + sn, "FF0000");
 				i+=sectionLength;
 			}
 		} catch (TreeException e) {

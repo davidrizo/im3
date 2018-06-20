@@ -111,6 +111,7 @@ public class ScoreViewController {
                     new CoordinateComponent(stage.heightProperty().doubleValue()));
             scoreSongView = new ScoreSongView(layout);
             scrollMainPane.setContent(scoreSongView.getMainPanel());
+
         } catch (Exception e) {
             e.printStackTrace();
             ShowError.show(stage, "Cannot open file", e);

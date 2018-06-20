@@ -25,7 +25,7 @@ public class MelodicAnalyzerFeaturesExtractorTest {
 
         MelodicAnalyzerFeaturesExtractor extractor = new MelodicAnalyzerFeaturesExtractor();
         SonoritySegmenter segmenter = new SonoritySegmenter();
-        ArrayList<Segment> segments = segmenter.segmentSonorities(song);
+        List<Segment> segments = segmenter.segmentSonorities(song);
         TonalAnalysis tonalAnalysis = new TonalAnalysis(song);
         HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features = extractor.computeFeatures(song, segments, tonalAnalysis);
         TreeSet<AtomPitch> pitches = song.getAtomPitchesSortedByTimeStaffAndPitch();

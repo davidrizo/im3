@@ -154,7 +154,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	 * @throws IM3Exception 
 	 */
 	public List<PlayedScoreNote> getPlayedNotes() throws IM3Exception {
-		ArrayList<PlayedScoreNote> result = new ArrayList<>();
+		List<PlayedScoreNote> result = new LinkedList<>();
 		
 		for (Atom atom : atoms) {
 			List<PlayedScoreNote> pn = atom.computePlayedNotes();
@@ -169,8 +169,8 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	 * Sequence of (non necessarily ordered) onset and continuation pitches 
 	 * @return
 	 */
-	public ArrayList<AtomPitch> getAtomPitches() {
-		ArrayList<AtomPitch> result = new ArrayList<>();
+	public List<AtomPitch> getAtomPitches() {
+		List<AtomPitch> result = new LinkedList<>();
 		for (Atom atom : atoms) {
 			List<AtomPitch> atomPitches = atom.getAtomPitches();
 			if (atomPitches != null) {
@@ -191,7 +191,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	 * @return
 	 */
 	public List<AtomFigure> getAtomFigures() {
-		ArrayList<AtomFigure> result = new ArrayList<>();
+		List<AtomFigure> result = new LinkedList<>();
 
 		for (Atom atom : atoms) {
 			result.addAll(atom.getAtomFigures());
@@ -320,7 +320,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	 * @throws IM3Exception 
 	 */
 	public List<AtomFigure> getAtomFiguresWithOnsetWithin(Time fromTime, Time toTime)  {
-		ArrayList<AtomFigure> result = new ArrayList<>();
+		List<AtomFigure> result = new LinkedList<>();
 		List<AtomFigure> figureSeq = getAtomFigures();
 		for (AtomFigure atomFigure : figureSeq) {
 			if (atomFigure.getTime().isContainedIn(fromTime, toTime)) {
@@ -464,6 +464,17 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	    return null;
     }
 
+    public List<AtomPitch> getAtomPitchesWithOnsetWithin(Segment segment) {
+        List<AtomPitch> result = new LinkedList<>();
+        List<AtomPitch> atomPitches = this.getAtomPitches(); //TODO Esto está haciendo el mismo cálculo muchas veces
+        for (AtomPitch ap: atomPitches) {
+            if (segment.contains(ap.getTime())) {
+                result.add(ap);
+            }
+        }
+        return result;
+    }
+
     /**
      *
      * It creates the beaming between eight or shorter notes that form groups
@@ -538,4 +549,5 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
         result.addAll(getAtomFiguresWithOnsetWithin(measure.getTime(),measure.getEndTime()));
         return result;
     }
+
 }

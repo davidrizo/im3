@@ -51,6 +51,7 @@ public class AnalysisStaff extends Staff {
 
 	public void addAnalysisHook(ScoreAnalysisHook e) throws IM3Exception {
 		analysisHooks.put(e.getTime(), e);
+		this.addCoreSymbol(e);
 		e.setStaff(this);
 	}
 

@@ -1,6 +1,6 @@
 package es.ua.dlsi.im3.analysis.hierarchical.io;
 
-import es.ua.dlsi.im3.analysis.hierarchical.forms.SectionLabel;
+import es.ua.dlsi.im3.analysis.hierarchical.forms.DivisionLabel;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.Measure;
@@ -10,10 +10,10 @@ import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 
 import java.util.ArrayList;
 
-public class MEIFormsSectionLabelExporter implements IMEIComponentExporter<SectionLabel> {
+public class MEIFormsSectionLabelExporter implements IMEIComponentExporter<DivisionLabel> {
 
 	@Override
-	public void process(MEIHierarchicalAnalysesModernExporter meiExporter, StringBuilder sb, int tabs, SectionLabel sectionLabel) throws ExportException {
+	public void process(MEIHierarchicalAnalysesModernExporter meiExporter, StringBuilder sb, int tabs, DivisionLabel sectionLabel) throws ExportException {
 		String tstamp;
 		Measure bar = null;
 		try {

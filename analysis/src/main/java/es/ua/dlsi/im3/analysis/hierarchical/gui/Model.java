@@ -21,7 +21,7 @@ import es.ua.dlsi.im3.core.score.AtomFigure;
 import es.ua.dlsi.im3.core.score.ScoreAnalysisHook;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
-import es.ua.dlsi.im3.gui.score.javafx.ISelectable;
+import es.ua.dlsi.im3.gui.score.javafx.IJavaFXSelectable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,7 +33,7 @@ import javafx.collections.ObservableList;
 public class Model {
 	ScoreSong scoreSong;
 	ObjectProperty<ObservableList<FormAndMotivesAnalysis>> possibleAnalyses;
-	Collection<? extends ISelectable> selectedElements;
+	Collection<? extends IJavaFXSelectable> selectedElements;
 	ObjectProperty<FormAndMotivesAnalysis> selectedAnalysis;
 	File file;
 	private StringProperty titleProperty;
@@ -111,7 +111,7 @@ public class Model {
 		possibleAnalyses.get().add(fa);
 		return fa;		
 	}*/
-	public void setSelectedElements(Collection<? extends ISelectable> selectedElements) {
+	public void setSelectedElements(Collection<? extends IJavaFXSelectable> selectedElements) {
 		this.selectedElements = selectedElements;		
 		Logger.getLogger(Model.class.getName()).log(Level.INFO, "Selected {0} elements", this.selectedElements.size());
 	}
@@ -150,7 +150,7 @@ public class Model {
 
 		List<AtomFigure> atomFigureList = new LinkedList<>();
 
-		for (ISelectable selectedElement: this.selectedElements) {
+		for (IJavaFXSelectable selectedElement: this.selectedElements) {
 		    throw new UnsupportedOperationException();
 			/*IM3 if (selectedElement instanceof ScoreNoteView
 					|| selectedElement instanceof ScoreRestView
@@ -176,7 +176,7 @@ public class Model {
 	
 	public void addSectionAt(String name, ScoreAnalysisHook analysisHook, String description, String hexaColor) throws IM3Exception, TreeException {
 		//TODO Names
-		selectedAnalysis.get().getFormAnalysis().addSection(name, analysisHook.getTime(), description, hexaColor);
+		selectedAnalysis.get().getFormAnalysis().addDivision(name, analysisHook.getTime(), description, hexaColor);
 	}
 	/**
 	 * It ensures the song has an analysis staff

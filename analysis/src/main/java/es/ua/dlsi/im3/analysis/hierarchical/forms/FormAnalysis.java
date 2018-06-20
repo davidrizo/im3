@@ -16,48 +16,75 @@ public class FormAnalysis extends TreeAnalysis<FormAnalysisTreeNodeLabel> {
 	
 	public FormAnalysis(ScoreSong song) throws IM3Exception {
 		super(song);		
-		hierarchicalStructure = new Tree<FormAnalysisTreeNodeLabel>(new RootLabel());
+		hierarchicalStructure = new Tree<>(new RootLabel());
 	}
-	public void addSection(String name, Time time, String description, String hexaColor) throws IM3Exception, TreeException {
-		Tree<FormAnalysisTreeNodeLabel> nextSection = null;
-		for (Iterator<Tree<FormAnalysisTreeNodeLabel>> iterator = hierarchicalStructure.getChildrenIterator(); nextSection == null && iterator.hasNext();) {
-			Tree<FormAnalysisTreeNodeLabel> section = iterator.next();
-			if (!(section.getLabel() instanceof SectionLabel)) {
-				throw new IM3Exception("The first level should contain just SectionLabel objects, and this is a " + section.getLabel().getClass());
+
+    /**
+     * Add division at root level
+     * @param name
+     * @param time
+     * @param description
+     * @param hexaColor
+     * @return New created tree
+     * @throws IM3Exception
+     * @throws TreeException
+     */
+    public Tree<FormAnalysisTreeNodeLabel> addDivision(String name, Time time, String description, String hexaColor) throws IM3Exception, TreeException {
+	    return addDivision(this.hierarchicalStructure, name, time, description, hexaColor);
+    }
+
+    /**
+     * Add a hierarchical division below parent
+     * @param parent
+     * @param name
+     * @param time
+     * @param description
+     * @param hexaColor
+     * @return New created tree
+     * @throws IM3Exception
+     * @throws TreeException
+     */
+    public Tree<FormAnalysisTreeNodeLabel> addDivision(Tree<FormAnalysisTreeNodeLabel> parent, String name, Time time, String description, String hexaColor) throws IM3Exception, TreeException {
+		Tree<FormAnalysisTreeNodeLabel> nextDivision = null;
+		for (Iterator<Tree<FormAnalysisTreeNodeLabel>> iterator = parent.getChildrenIterator(); nextDivision == null && iterator.hasNext();) {
+			Tree<FormAnalysisTreeNodeLabel> division = iterator.next();
+			if (!(division.getLabel() instanceof DivisionLabel)) {
+				throw new IM3Exception("The first level should contain just DivisionLabel objects, and this is a " + division.getLabel().getClass());
 			}
-			SectionLabel sectionLabel = (SectionLabel) section.getLabel();
+			DivisionLabel divisionLabel = (DivisionLabel) division.getLabel();
 			
-			if (sectionLabel.getScoreAnalysisHookStart().getTime().compareTo(time)>0) {
-				nextSection = section;
-			} else if (sectionLabel.getScoreAnalysisHookStart().getTime().equals(time)) {
-				throw new IM3Exception("Cannot set two sections at the same time: " + time);
+			if (divisionLabel.getScoreAnalysisHookStart().getTime().compareTo(time)>0) {
+				nextDivision = division;
+			} else if (divisionLabel.getScoreAnalysisHookStart().getTime().equals(time)) {
+				throw new IM3Exception("Cannot set two divisions at the same time: " + time);
 			} 
 		}
 		
 		ScoreAnalysisHook hookFrom = song.getAnalysisStaff().findLastAnalysisHookBeforeOrEqualsOnset(time);
-		SectionLabel label = new SectionLabel(name, hookFrom);
+		DivisionLabel label = new DivisionLabel(name, hookFrom);
 		label.setDescription(description);
 		label.setHexaColor(hexaColor);
 		Tree<FormAnalysisTreeNodeLabel> newTree = new Tree<>(label);		
 		
-		if (nextSection == null) { // the last one
-			hierarchicalStructure.addChild(newTree);			
+		if (nextDivision == null) { // the last one
+            parent.addChild(newTree);
 		} else {
-			hierarchicalStructure.addChildBefore(nextSection, newTree);						
+            parent.addChildBefore(nextDivision, newTree);
 		}
-		
+
+		return newTree;
 		//System.out.println(hierarchicalStructure.toFunctionalString());
 	}
 	
-	public List<SectionLabel> getSections() throws IM3Exception {
-		ArrayList<SectionLabel> result = new ArrayList<>();
+	public List<DivisionLabel> getRootDivisions() throws IM3Exception {
+		ArrayList<DivisionLabel> result = new ArrayList<>();
 		for (Iterator<Tree<FormAnalysisTreeNodeLabel>> iterator = hierarchicalStructure.getChildrenIterator(); iterator.hasNext();) {
 			Tree<FormAnalysisTreeNodeLabel> child = iterator.next();
-			if (!(child.getLabel() instanceof SectionLabel)) {
-				throw new IM3Exception("The first level should contain just SectionLabel objects, and this is a " + child.getLabel().getClass());
+			if (!(child.getLabel() instanceof DivisionLabel)) {
+				throw new IM3Exception("The first level should contain just DivisionLabel objects, and this is a " + child.getLabel().getClass());
 			}
-			SectionLabel sectionLabel = (SectionLabel) child.getLabel();
-			result.add(sectionLabel);
+			DivisionLabel divisionLabel = (DivisionLabel) child.getLabel();
+			result.add(divisionLabel);
 		}
 		return result;
 	}

@@ -2,8 +2,7 @@ package es.ua.dlsi.im3.core.utils;
 
 import es.ua.dlsi.im3.core.score.*;
 
-import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.*;
 
 public class SonoritySegmenter {
     /**
@@ -11,8 +10,8 @@ public class SonoritySegmenter {
      * segment can contain two notes in a given part and it contains at least one note.
      * It divides the multimeasure rests
      */
-    public ArrayList<Segment> segmentSonorities(ScoreSong song)  {
-        ArrayList<Segment> segments = new ArrayList<>();
+    public List<Segment> segmentSonorities(ScoreSong song)  {
+        List<Segment> segments = new LinkedList<>();
         TreeSet<AtomFigure> ssds = song.getAtomFiguresSortedByTime();
 
         TreeSet<Time> times = new TreeSet<>(); // all onset or offsets
@@ -43,4 +42,18 @@ public class SonoritySegmenter {
         return segments;
     }
 
+    public List<Sonority> buildSonorities(ScoreSong scoreSong) {
+        List<Segment> sonoritySegments = segmentSonorities(scoreSong);
+        List<Sonority> sonorities = new LinkedList<>();
+        for (Segment segment: sonoritySegments) {
+            List<AtomPitch> atomPitches = scoreSong.getAtomPitchesWithOnsetWithin(segment);
+            SortedSet<ScientificPitch> sonorityPitches = new TreeSet<>();
+            for (AtomPitch ap: atomPitches) {
+                sonorityPitches.add(ap.getScientificPitch());
+            }
+            Sonority sonority = new Sonority(segment, sonorityPitches);
+            sonorities.add(sonority);
+        }
+        return sonorities;
+    }
 }

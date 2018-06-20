@@ -42,6 +42,7 @@ public abstract class ScoreLayout {
     protected HashMap<Staff, List<LayoutCoreBarline>> barlines;
     protected List<LayoutConnector> connectors;
     protected List<LayoutBeamGroup> beams;
+    protected double topMargin;
 
 
     // TODO: 20/11/17 mejor que el parámetro staves esté en el método abstract layout() y que toda la inicialización se haga ahí
@@ -51,6 +52,7 @@ public abstract class ScoreLayout {
      * @throws IM3Exception
      */
     public ScoreLayout(ScoreSong song, Collection<Staff> staves, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+        topMargin = LayoutConstants.TOP_MARGIN;
         this.scoreSong = song;
         layoutFonts = new HashMap<>();
         initStaves(staves);
@@ -59,6 +61,14 @@ public abstract class ScoreLayout {
             layoutFonts.put(staff, layoutFont);
         }
         init();
+    }
+
+    public double getTopMargin() {
+        return topMargin;
+    }
+
+    public void setTopMargin(double topMargin) {
+        this.topMargin = topMargin;
     }
 
     private void initStaves(Collection<Staff> staves) {
@@ -173,6 +183,10 @@ public abstract class ScoreLayout {
             }
 
         }
+    }
+
+    public NotationSymbol getCoreSymbolView(Object coreSymbol) {
+        return coreSymbolViews.get(coreSymbol);
     }
 
     public LayoutFont getLayoutFont(Staff staff) throws IM3Exception {

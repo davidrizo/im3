@@ -65,7 +65,7 @@ public class MelodicAnalyzerSimple extends MelodicAnalyzer {
         Interval UNISON = Intervals.UNISON_PERFECT.createInterval();
 
         //Interval [] appSet = {new Interval(-2, 'm'), new Interval(-2, 'M'), new Interval(2, 'm')};
-        ArrayList<AtomPitch> notes = song.getAtomPitches();
+        List<AtomPitch> notes = song.getAtomPitches();
         long total = notes.size();
         long progress = 0;
         IntervalEmpty intervalEmpty = new IntervalEmpty();

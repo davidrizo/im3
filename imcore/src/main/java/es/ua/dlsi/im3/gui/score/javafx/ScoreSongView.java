@@ -36,6 +36,8 @@ public class ScoreSongView {
     private void init(ScoreLayout layout) throws IM3Exception {
         layout.layout(true);
         mainPanel = new Group();
+        //mainPanel.setStyle("-fx-background-color:white; "); //TODO
+
         /*mainPanel = new Pane();
         mainPanel.setPrefWidth(canvas.getWidth());
         mainPanel.setPrefHeight(canvas.getHeight());
@@ -56,6 +58,8 @@ public class ScoreSongView {
                     node.setId(element.getID());
                     registerNodeInteraction(element, node);
                     mainPanel.getChildren().add(node);
+                    mainPanel.setTranslateX(25);
+                    mainPanel.setTranslateY(25);
                 } catch (Exception e) {
                     throw new GUIException(e);
                 }

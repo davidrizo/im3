@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,7 +24,7 @@ public class SonoritySegmenterTest {
         ScoreSong song = importer.importSong(file);
 
         SonoritySegmenter segmenter = new SonoritySegmenter();
-        ArrayList<Segment> segments = segmenter.segmentSonorities(song);
+        List<Segment> segments = segmenter.segmentSonorities(song);
         assertEquals("Number of segments", 5, segments.size());
 
         assertEquals("Segment #0 onset", Time.TIME_ZERO, segments.get(0).getFrom());

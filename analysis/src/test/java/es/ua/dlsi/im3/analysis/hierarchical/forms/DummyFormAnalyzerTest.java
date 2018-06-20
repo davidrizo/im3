@@ -29,7 +29,7 @@ public class DummyFormAnalyzerTest {
 		ScoreSong song = importer.importSong(file);
 		DummyFormAnalyzer analyzer = new DummyFormAnalyzer(new String[]{"A","B","A'"});
 		FormAnalysis analysis = analyzer.analyze(song);
-		assertEquals(3, analysis.getSections().size());
+		assertEquals(3, analysis.getRootDivisions().size());
 		System.out.println(analysis);
 	}
 

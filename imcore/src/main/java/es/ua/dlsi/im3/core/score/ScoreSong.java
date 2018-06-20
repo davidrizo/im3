@@ -1648,13 +1648,22 @@ public class ScoreSong {
 		return ts;
     }
 
-    public ArrayList<AtomPitch> getAtomPitches() {
-		ArrayList<AtomPitch> result = new ArrayList<>();
+    public List<AtomPitch> getAtomPitches() {
+		List<AtomPitch> result = new LinkedList<>();
 		for (ScorePart part: parts) {
 			result.addAll(part.getAtomPitches());
 		}
 		return result;
     }
+
+    public List<AtomPitch> getAtomPitchesWithOnsetWithin(Segment segment) {
+        List<AtomPitch> result = new LinkedList<>();
+        for (ScorePart part: parts) {
+            result.addAll(part.getAtomPitchesWithOnsetWithin(segment));
+        }
+        return result;
+    }
+
 
     /// Harmonies
     public void addHarm(Harm harm) throws IM3Exception {
@@ -1796,6 +1805,8 @@ public class ScoreSong {
         return result;
     }
 
+
+
     public void processMensuralImperfectionRules() throws IM3Exception {
         for (Staff staff: staves) {
             //System.out.println("STAFF: " + staff.getName());
@@ -1875,6 +1886,9 @@ public class ScoreSong {
             }
         }
     }
+
+
+
 }
 /*else { //TODO ¿Cómo se coordina esto con lo de arriba de la imperfección? - con este else?
         TimeSignature meter = currentSpine.staff.getRunningTimeSignatureAt(lastTime);
