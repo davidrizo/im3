@@ -99,7 +99,8 @@ public class DashboardController implements Initializable {
 
     @FXML
     public void handleAbout() {
-        ShowMessage.show(OMRApp.getMainStage(), "Music recognition, encoding, and transcription (MURET)\n@2018 David Rizo Valero (drizo@dlsi.ua.es)");
+        ShowMessage.show(OMRApp.getMainStage(), "Music recognition, encoding, and transcription (MURET)\n@2018 David Rizo Valero (drizo@dlsi.ua.es)\nv"
+        + Version.VERSION);
     }
 
     @FXML
@@ -115,17 +116,17 @@ public class DashboardController implements Initializable {
             open = doCloseProject();
         }
         if (open) {
-            NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "Open project", false);
-            if (dlg.show()) {
-                //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
-                try {
-                    omrModel.openProject(dlg.getProjectFolder(), dlg.getTrainingFolder());
-                    title.setValue(omrModel.getCurrentProject().getName());
-                    openImagesView();
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                    ShowError.show(OMRApp.getMainStage(), "Cannot open project", e);
+            try {
+                NewOpenProjectDialogController dlg = new NewOpenProjectDialogController(OMRApp.getMainStage(), "Open project", false);
+                if (dlg.show()) {
+                    //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
+                        omrModel.openProject(dlg.getProjectFolder(), dlg.getTrainingFolder());
+                        title.setValue(omrModel.getCurrentProject().getName());
+                        openImagesView();
                 }
+            } catch (Throwable e) {
+                e.printStackTrace();
+                ShowError.show(OMRApp.getMainStage(), "Cannot open project", e);
             }
         }
     }
@@ -137,10 +138,10 @@ public class DashboardController implements Initializable {
             //borderPane.getScene().getRoot().setCursor(Cursor.WAIT);
             try {
                 if (dlg.getProjectFolder() == null) {
-                    throw new IM3Exception("Must select a project folder");
+                    throw new IM3Exception("Must onSelect a project folder");
                 }
                 //if (dlg.getTrainingFile() == null) {
-                //    throw new IM3Exception("Must select a training file");
+                //    throw new IM3Exception("Must onSelect a training file");
                 //}
                 omrModel.createProject(dlg.getProjectFolder(), dlg.getNotationType());
                 title.setValue(omrModel.getCurrentProject().getName());

@@ -11,31 +11,14 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
 import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
-import javafx.geometry.VPos;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,7 +39,7 @@ public class AgnosticStaffView extends VBox {
     Group symbolsGroup;
     double lineBottomPosition;
     FlowPane correctionPane;
-    private ObjectProperty<SymbolView> correctingSymbol;
+    //private ObjectProperty<SymbolView> correctingSymbol;
     HashMap<OMRSymbol, Shape> shapesInStaff;
     private double regionXOffset;
 
@@ -64,7 +47,7 @@ public class AgnosticStaffView extends VBox {
         this.controller = controller;
         shapesInStaff = new HashMap<>();
         this.regionXOffset = regionXOffset;
-        correctingSymbol = new SimpleObjectProperty();
+        //correctingSymbol = new SimpleObjectProperty();
         staffGroup = new Group();
         this.agnosticSymbolFont = agnosticSymbolFont;
         this.linesGroup = new Group();
@@ -93,7 +76,6 @@ public class AgnosticStaffView extends VBox {
             lineBottomPosition = y;
         }
 
-        createCorrectionPane();
         this.getChildren().addAll(staffGroup);
     }
 
@@ -155,141 +137,80 @@ public class AgnosticStaffView extends VBox {
 
     }
 
-    /**
-     * We do not create the same for all staves because the order of symbols may change
-     */
-    private void createCorrectionPane() throws IM3Exception {
-        correctionPane = new FlowPane();
-        correctionPane.prefWrapLengthProperty().bind(background.widthProperty());
-        correctionPane.setOrientation(Orientation.HORIZONTAL);
-        correctionPane.setRowValignment(VPos.CENTER);
-        correctionPane.setColumnHalignment(HPos.CENTER);
 
-        List<String> agnosticStrings =  new LinkedList<>(agnosticSymbolFont.getGlyphs().keySet());
-
-        //TODO Diseñar la usabilidad de todo esto
-        Button buttonClose = new Button("Close correction\n(ESC)", new FontIcon("oi-x"));
-        correctionPane.getChildren().add(buttonClose);
-        buttonClose.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                doCloseCorrectionPane();
-            }
-        });
-
-        // see http://aalmiray.github.io/ikonli/cheat-sheet-openiconic.html
-        Button buttonPositionDown = new Button("Position down\n(CMD+Down)", new FontIcon("oi-arrow-bottom"));
-        buttonPositionDown.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                doChangePosition(-1);
-            }
-        });
-        Button buttonPositionUp = new Button("Position up\n(CMD+Up)", new FontIcon("oi-arrow-top"));
-        buttonPositionUp.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                doChangePosition(1);
-            }
-        });
-        correctionPane.getChildren().add(buttonPositionDown);
-        correctionPane.getChildren().add(buttonPositionUp);
-
-        for (String agnosticString: agnosticStrings) {
-            Shape shape = agnosticSymbolFont.createFontBasedText(agnosticString);
-            //shape.setLayoutX(15);
-            shape.setLayoutY(25);
-            Pane pane = new Pane(shape); // required
-            pane.setPrefHeight(50);
-            pane.setPrefWidth(30);
-            Button button = new Button("", pane);
-            button.setTooltip(new Tooltip(agnosticString));
-            correctionPane.getChildren().add(button);
-            button.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    doChangeSymbolType(agnosticString);
-                }
-            });
-        }
-
-        correctingSymbol.addListener(new ChangeListener<SymbolView>() {
-            @Override
-            public void changed(ObservableValue<? extends SymbolView> observable, SymbolView oldValue, SymbolView newValue) {
-                SymbolCorrectionController symbolCorrectionController = (SymbolCorrectionController) controller;
-                if (newValue == null) {
-                    symbolCorrectionController.removeSymbolCorrectionToolbar();
-                } else {
-                    symbolCorrectionController.setSymbolCorrectionToolbar(correctionPane);
-                }
-            }
-        });
-    }
-
-    public void correctSymbol(SymbolView symbolView) {
+    /*public void correctSymbol(SymbolView symbolView) {
         this.correctingSymbol.setValue(symbolView);
-    }
+    }*/
 
 
     /**
      * Change symbol position
      * @param lineSpaces
+     * @param symbolToCorrect
      */
-    public void doChangePosition(int lineSpaces) {
+    public PositionInStaff doChangePosition(int lineSpaces, SymbolView symbolToCorrect) {
+        PositionInStaff prev = null;
         try {
-            if (correctingSymbol != null) {
                 //TODO Commands, undo, redo, cancel
-                correctingSymbol.get().changePosition(lineSpaces);
-                Shape shape = shapesInStaff.get(correctingSymbol.get().getOwner());
+                prev = symbolToCorrect.changePosition(lineSpaces);
+                Shape shape = shapesInStaff.get(symbolToCorrect.getOwner());
                 if (shape == null) {
-                    throw new IM3Exception("Cannot find the shape associated to symbol " + correctingSymbol.get());
+                    throw new IM3Exception("Cannot find the shape associated to symbol " + symbolToCorrect);
                 }
-                updateVerticalLayoutInStaff(correctingSymbol.get().getOwner(), shape);
-            }
+                updateVerticalLayoutInStaff(symbolToCorrect.getOwner(), shape);
         } catch (IM3Exception e) {
             e.printStackTrace(); //TODO logs
             ShowError.show(null, "Cannot change position", e); // TODO stage
         }
+        return prev;
     }
 
-    private void doChangeSymbolType(String agnosticString) {
+    /**
+     * Previous agnostic string type
+     * @param agnosticString
+     * @param symbolToCorrect
+     * @return
+     */
+    public String doChangeSymbolType(String agnosticString, SymbolView symbolToCorrect) {
         AgnosticSymbolType agnosticSymbolType = agnosticSymbolFont.getAgnosticSymbolType(agnosticString);
-        Shape shape = shapesInStaff.get(correctingSymbol.get().getOwner());
+        Shape shape = shapesInStaff.get(symbolToCorrect.getOwner());
         if (shape == null) {
-            ShowError.show(null, "Cannot find the shape associated to symbol " + correctingSymbol.get());
-            return;
+            ShowError.show(null, "Cannot find the shape associated to symbol " + symbolToCorrect);
+            return null;
         }
 
         if (agnosticSymbolType == null) {
             ShowError.show(null, "Cannot find an agnostic symbol type for " + agnosticString); //TODO null
-            return;
+            return null;
         } else {
-            this.correctingSymbol.get().changeSymbolType(agnosticSymbolType);
+            String prev = symbolToCorrect.changeSymbolType(agnosticSymbolType).toAgnosticString();
             try {
-                controller.onSymbolChanged(this.correctingSymbol.get().getOwner());
+                controller.onSymbolChanged(symbolToCorrect.getOwner());
             } catch (IM3Exception e) {
                 e.printStackTrace();
                 ShowError.show(null, "Cannot change symbol", e); //TODO null
             }
-            this.shapesInStaff.remove(correctingSymbol.get().getOwner());
+            this.shapesInStaff.remove(symbolToCorrect.getOwner());
             symbolsGroup.getChildren().remove(shape);
             try {
-                Shape newShape = addSymbol(correctingSymbol.get());
-                correctingSymbol.get().setShapeInStaff(newShape); //TODO Esto está acoplado
+                Shape newShape = addSymbol(symbolToCorrect);
+                symbolToCorrect.setShapeInStaff(newShape); //TODO Esto está acoplado
+                symbolToCorrect.doHighlight(true); // force new symbol to be highlighted
             } catch (IM3Exception e) {
                 e.printStackTrace(); //TODO log
                 ShowError.show(null, "Cannot find an add symbol", e);
             }
+            return prev;
         }
     }
 
-
-    public void doCloseCorrectionPane() {
+    /*public void doEndEdit() {
         if (correctingSymbol != null && correctingSymbol.get() != null) {
-            correctingSymbol.get().endEdit();
+            SymbolView correctingSymbolObject = correctingSymbol.get();
             correctingSymbol.setValue(null);
+            correctingSymbolObject.endEdit();
         }
-    }
+    }*/
 
     public void onSymbolRemoved(BoundingBoxBasedView elementView) {
         Shape shape = shapesInStaff.remove(elementView.getOwner());
@@ -299,10 +220,10 @@ public class AgnosticStaffView extends VBox {
         symbolsGroup.getChildren().remove(shape);
     }
 
-    public void handle(KeyEvent event) {
+    /*public void handle(KeyEvent event) {
         switch (event.getCode()) {
             case ESCAPE:
-                doCloseCorrectionPane();
+                doEndEdit();
                 break;
             case UP:
                 doChangePosition(-1);
@@ -311,5 +232,5 @@ public class AgnosticStaffView extends VBox {
                 doChangePosition(1);
                 break;
         }
-    }
+    }*/
 }

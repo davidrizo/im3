@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
+import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.NonProportionalLayoutEngine;
@@ -117,7 +118,18 @@ public abstract class ScoreLayout {
     }
 
     private void initWidths(Staff staff, LayoutFont layoutFont) throws IM3Exception {
-        Pictogram noteHead = new Pictogram(null, InteractionElementType.none, layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
+        NotationSymbol emptyNotationSymbol = new NotationSymbol() {
+            @Override
+            public GraphicsElement getGraphics() {
+                    return null;
+            }
+
+            @Override
+            protected void doLayout() throws IM3Exception {
+            }
+        };
+
+        Pictogram noteHead = new Pictogram(emptyNotationSymbol, InteractionElementType.none, layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
                 new Coordinate(new CoordinateComponent(0),
                         new CoordinateComponent(0)
                 ));

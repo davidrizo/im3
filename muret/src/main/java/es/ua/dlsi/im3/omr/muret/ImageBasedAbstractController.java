@@ -2,11 +2,15 @@ package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.gui.interaction.ISelectable;
+import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
+import es.ua.dlsi.im3.gui.interaction.ISelectionChangeListener;
+import es.ua.dlsi.im3.gui.interaction.SelectionManager;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.model.*;
+import es.ua.dlsi.im3.omr.muret.symbols.SymbolView;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.SetChangeListener;
 import javafx.event.EventHandler;
@@ -29,31 +33,36 @@ import java.util.logging.Logger;
  * The selection is managed here, not in the element itself
  * @autor drizo
  */
-public abstract class ImageBasedAbstractController extends MuretAbstractController implements Initializable  {
+public abstract class ImageBasedAbstractController extends MuretAbstractController implements Initializable, ISelectableTraversable {
     @FXML
     protected ScrollPane scrollPane;
 
     @FXML
     protected Pane mainPane;
 
+    /**
+     * Values of tree items contain the model object (OMRPage, OMRRegion, OMRSymbol)
+     */
     @FXML
     protected TreeView treeView;
+
+    /**
+     * The equivalence between OMRPage, OMRRegion, OMRSymbol and TreeItem
+     */
+    private HashMap<IOMRBoundingBox, TreeItem> mapOMRElementTreItem;
+    /**
+     * The superset of pages, regions and symbols and their views
+     */
+    private HashMap<IOMRBoundingBox, BoundingBoxBasedView> mapOMRElementView;
 
     @FXML
     protected TextArea textAreaComments;
 
     protected DoubleProperty scale;
 
-    protected HashSet<BoundingBoxBasedView> selectedElements;
-
     protected BooleanProperty symbolSelectionBasedActionsEnabled;
 
-    private HashMap<IOMRBoundingBox, BoundingBoxBasedView> elements; // the superset of pages, regions and symbols
-    private HashMap<IOMRBoundingBox, TreeItem> treeItemValues;
-
     protected OMRImage omrImage;
-
-    protected ObjectProperty<BoundingBoxBasedView> selectedSymbol;
 
     @Override
     public Node getRoot() {
@@ -61,35 +70,49 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
     }
 
     protected KeyEventManager keyEventManager;
+    protected SelectionManager selectionManager;
+
+    private long nextID = 1;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        selectedSymbol = new SimpleObjectProperty<>();
-        treeItemValues = new HashMap<>();
-        symbolSelectionBasedActionsEnabled = new SimpleBooleanProperty(false);
-        // TODO: 21/4/18 Que el botón de reconocimiento de regiones no esté activo si no hay páginas
-        treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        treeView.getSelectionModel().selectedItemProperty()
-                .addListener(new ChangeListener<TreeItem>() {
-                    @Override
-                    public void changed(
-                            ObservableValue<? extends TreeItem> observable,
-                            TreeItem old_val, TreeItem new_val) {
-                        /*TreeItem selectedItem = new_val;
-                        if (selectedItem.getValue() instanceof IOMRBoundingBox) {
-                            BoundingBoxBasedView boundingBoxBasedView = elements.get(selectedItem.getValue());
-                            if (boundingBoxBasedView == null) {
-                                ShowError.show(OMRApp.getMainStage(), "Cannot find the view for " + selectedItem.getValue());
-                            } else {
-                                select(boundingBoxBasedView);
-                            }
-                        }*/
-                        handleTreeSelection();
-                    }
-                });
-
+        mapOMRElementTreItem = new HashMap<>();
+        initTreeViewInteraction();
         initZoom();
         registerKeyEventManager();
+        initSelectionManager();
+    }
+
+    protected String getNextID(String prefix) {
+        String result = prefix + nextID;
+        nextID++;
+        return result;
+    }
+
+    private void initSelectionManager() {
+        symbolSelectionBasedActionsEnabled = new SimpleBooleanProperty(false);
+        selectionManager = new SelectionManager();
+        selectionManager.subscribe(new ISelectionChangeListener() {
+            @Override
+            public void onSelectionChange(Collection<ISelectable> selection) {
+                doOnSelectionChange(selection);
+            }
+        });
+    }
+
+    private void doOnSelectionChange(Collection<ISelectable> selection) {
+        symbolSelectionBasedActionsEnabled.setValue(selectionManager.isCommonBaseClass(IOMRSymbolBaseView.class));
+    }
+
+    private void initTreeViewInteraction() {
+        // TODO: 21/4/18 Que el botón de reconocimiento de regiones no esté activo si no hay páginas
+        treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        treeView.getSelectionModel().getSelectedItems().addListener(new ListChangeListener() {
+            @Override
+            public void onChanged(Change c) {
+                handleTreeSelection();
+            }
+        });
     }
 
     private void registerKeyEventManager() {
@@ -97,9 +120,13 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
         keyEventManager.setCurrentKeyEventHandler(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                // propagate to all selected elements until one consumes it
-                for (BoundingBoxBasedView selected: selectedElements) {
-                    selected.handle(event);
+                // propagate to all selected mapOMRElementView until one consumes it
+                Class<?> baseClass = selectionManager.getCommonBaseClass();
+                if (baseClass != null && BoundingBoxBasedView.class.isAssignableFrom(baseClass)) {
+                    for (ISelectable selectable: selectionManager.getSelection()) {
+                        BoundingBoxBasedView boundingBoxBasedView = (BoundingBoxBasedView) selectable;
+                        boundingBoxBasedView.handle(event);
+                    }
                 }
             }
         });
@@ -116,46 +143,18 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
     }
 
     protected void handleTreeSelection() {
-        for (BoundingBoxBasedView boundingBoxBasedView: selectedElements) {
-            boundingBoxBasedView.doSelect(false, false);
-        }
-        selectedElements.clear();
-
-        symbolSelectionBasedActionsEnabled.setValue(false);
+        selectionManager.clearSelection();
         ObservableList<TreeItem> selectedItems = treeView.getSelectionModel().getSelectedItems();
+        selectionManager.clearSelection();
+        LinkedList<ISelectable> selection = new LinkedList<>();
         for (TreeItem treeItem: selectedItems) {
             if (treeItem != null) {
                 Object value = treeItem.getValue();
-                if (value != null && value instanceof IOMRBoundingBox) {
-                    BoundingBoxBasedView boundingBoxBasedView = elements.get(value);
-
-                    if (boundingBoxBasedView.getOwner() instanceof OMRSymbol) {
-                        if (selectedElements.isEmpty()) {
-                            symbolSelectionBasedActionsEnabled.setValue(true);
-                        }
-                    } else {
-                        symbolSelectionBasedActionsEnabled.setValue(false);
-                    }
-
-                    if (boundingBoxBasedView == null) {
-                        ShowError.show(OMRApp.getMainStage(), "Cannot find the view for " + value);
-                    } else {
-                        selectedElements.add(boundingBoxBasedView);
-                        boundingBoxBasedView.doSelect(true, false);
-                        //JavaFXUtils.ensureVisibleX(scrollPane, boundingBoxBasedView); //TODO No va bien, además, luego el zoomToFit no va
-                    }
-                }
+                BoundingBoxBasedView boundingBoxBasedView = mapOMRElementView.get(value);
+                selection.add(boundingBoxBasedView);
             }
         }
-
-        selectedSymbol.setValue(null);
-        if (selectedElements.size() == 1) {
-            BoundingBoxBasedView selected = selectedElements.iterator().next();
-            if (selected.getOwner() instanceof OMRSymbol) {
-                selectedSymbol.set(selected);
-            }
-        }
-
+        selectionManager.select(selection);
     }
 
     public void setOMRImage(OMRImage omrImage) throws IM3Exception {
@@ -165,8 +164,7 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
     }
 
     protected void loadPages() throws IM3Exception {
-        elements = new HashMap<>();
-        selectedElements = new HashSet<>();
+        mapOMRElementView = new HashMap<>();
 
         treeView.setRoot(new TreeItem<>(omrImage.toString()));
         treeView.getRoot().setExpanded(true);
@@ -175,15 +173,16 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
             createAndAddPageView(omrPage);
         }
 
+        selectionManager.clearSelection();
     }
 
     private void createAndAddPageView(OMRPage omrPage) throws IM3Exception {
         TreeItem pageTreeItem = new TreeItem<>(omrPage);
         pageTreeItem.setExpanded(true);
         treeView.getRoot().getChildren().add(pageTreeItem);
-        treeItemValues.put(omrPage, pageTreeItem);
+        mapOMRElementTreItem.put(omrPage, pageTreeItem);
         BoundingBoxBasedView pageView = addPage(omrPage);
-        elements.put(omrPage, pageView);
+        mapOMRElementView.put(omrPage, pageView);
 
         // listen to model changes
         omrPage.regionsProperty().addListener(new SetChangeListener<OMRRegion>() {
@@ -193,12 +192,12 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
                 //TODO Inserción
                 if (change.wasRemoved()) {
                     OMRRegion removedElement = change.getElementRemoved();
-                    TreeItem removedTreeItem = treeItemValues.get(removedElement);
+                    TreeItem removedTreeItem = mapOMRElementTreItem.get(removedElement);
                     if (removedTreeItem == null) {
                         throw new IM3RuntimeException("Cannot find the removed tree item for " + removedElement);
                     }
                     pageTreeItem.getChildren().remove(removedTreeItem);
-                    elements.remove(removedElement);
+                    mapOMRElementView.remove(removedElement);
                 } else if (change.wasAdded()) {
                     //ShowError.show(null, "TODO ADD " + change); //TODO
                     System.err.println("TODO ADD " + change); //TODO Change
@@ -207,12 +206,12 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
         });
         for (OMRRegion omrRegion: omrPage.regionsProperty()) {
             TreeItem regionTreeItem = new TreeItem<>(omrRegion);
-            treeItemValues.put(omrRegion, regionTreeItem);
+            mapOMRElementTreItem.put(omrRegion, regionTreeItem);
             pageTreeItem.getChildren().add(regionTreeItem);
             regionTreeItem.setExpanded(true);
 
             BoundingBoxBasedView regionView = addRegion(pageView, omrRegion);
-            elements.put(omrRegion, regionView);
+            mapOMRElementView.put(omrRegion, regionView);
 
             omrRegion.symbolsProperty().addListener(new SetChangeListener<OMRSymbol>() {
                 @Override
@@ -221,12 +220,12 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
                     //TODO Inserción
                     if (change.wasRemoved()) {
                         OMRSymbol removedElement = change.getElementRemoved();
-                        TreeItem removedTreeItem = treeItemValues.get(removedElement);
+                        TreeItem removedTreeItem = mapOMRElementTreItem.get(removedElement);
                         if (removedTreeItem == null) {
                             throw new IM3RuntimeException("Cannot find the removed tree item for " + removedElement);
                         }
                         regionTreeItem.getChildren().remove(removedTreeItem);
-                        BoundingBoxBasedView elementView = elements.remove(removedElement);
+                        BoundingBoxBasedView elementView = mapOMRElementView.remove(removedElement);
                         if (elementView == null) {
                             throw new IM3RuntimeException("Cannot find the removed item view for " + removedElement);
                         }
@@ -252,8 +251,8 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
 
     private void addSymbolViewToRegion(BoundingBoxBasedView regionView, TreeItem regionTreeItem, OMRSymbol omrSymbol) throws IM3Exception {
         TreeItem symbolTreeItem = new TreeItem<>(omrSymbol);
-        treeItemValues.put(omrSymbol, symbolTreeItem);
-        elements.put(omrSymbol, addSymbol(regionView, omrSymbol));
+        mapOMRElementTreItem.put(omrSymbol, symbolTreeItem);
+        mapOMRElementView.put(omrSymbol, addSymbol(regionView, omrSymbol));
 
         // look for the correct position
         int indexToInsert = regionTreeItem.getChildren().size();
@@ -331,6 +330,16 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
         }
     }
 
+    public void onSymbolChanged(OMRSymbol owner) throws IM3Exception {
+        TreeItem treeItem = mapOMRElementTreItem.get(owner);
+        if (treeItem != null) {
+            treeItem.setValue(null); // force reference change for updating view
+            treeItem.setValue(owner);
+        } else {
+            throw new IM3Exception("Cannot find the symbol " + owner + " in the treeview");
+        }
+    }
+
     /**
      * It selects the view object
      * @param boundingBoxBasedView
@@ -338,7 +347,7 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
      */
     public <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> boundingBoxBasedView) {
         treeView.getSelectionModel().clearSelection();
-        treeView.getSelectionModel().select(treeItemValues.get(boundingBoxBasedView.getOwner()));
+        treeView.getSelectionModel().select(mapOMRElementTreItem.get(boundingBoxBasedView.getOwner())); // it should propagate the selection
     }
 
     /**
@@ -347,7 +356,7 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
      * @return View object
      */
     public BoundingBoxBasedView doSelect(OMRSymbol omrSymbol) throws IM3Exception {
-        BoundingBoxBasedView viewObject = elements.get(omrSymbol);
+        BoundingBoxBasedView viewObject = mapOMRElementView.get(omrSymbol);
         if (viewObject == null) {
             throw new IM3Exception("Cannot find a view object for " + omrSymbol);
         }
@@ -355,15 +364,10 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
         return viewObject;
     }
 
-
-    public void onSymbolChanged(OMRSymbol owner) throws IM3Exception {
-        TreeItem treeItem = treeItemValues.get(owner);
-        if (treeItem != null) {
-            treeItem.setValue(null); // force reference change for updating view
-            treeItem.setValue(owner);
-        } else {
-            throw new IM3Exception("Cannot find the symbol " + owner + " in the treeview");
-        }
+    public void unselect() {
+        selectionManager.clearSelection();
     }
+
+
 
 }

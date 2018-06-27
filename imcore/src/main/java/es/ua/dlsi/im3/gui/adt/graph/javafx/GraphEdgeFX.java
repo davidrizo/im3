@@ -1,8 +1,8 @@
-package es.ua.dlsi.im3.gui.graph.javafx;
+package es.ua.dlsi.im3.gui.adt.graph.javafx;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.gui.graph.viewmodel.GraphEdgeViewModel;
+import es.ua.dlsi.im3.gui.adt.graph.viewmodel.GraphEdgeViewModel;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;

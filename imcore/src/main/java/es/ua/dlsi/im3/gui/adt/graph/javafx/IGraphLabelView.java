@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.gui.graph.javafx;
+package es.ua.dlsi.im3.gui.adt.graph.javafx;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import javafx.beans.binding.DoubleBinding;

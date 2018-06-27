@@ -96,10 +96,11 @@ public class XML2AgnosticSymbolImagesTextFile {
             String basePath = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
             String [] projects = new String[]
                     {
-                    "B-3.28",
-                    "B-50.747",
-                    "B-53.781",
-                    "B-59.850"};
+                    "B-3.28", // generated 2018, june 11th
+                    //"B-50.747",
+                    //"B-53.781",
+                    "B-59.850" // generated 2018, june 27th
+                    };
 
             String outputPath = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images";
 

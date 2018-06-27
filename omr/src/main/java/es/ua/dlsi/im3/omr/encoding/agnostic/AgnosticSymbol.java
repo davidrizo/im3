@@ -106,9 +106,13 @@ public class AgnosticSymbol extends AgnosticToken {
         return getAgnosticString();
     }
 
-    public void changePosition(int lineSpaces) {
+    public PositionInStaff changeRelativePosition(int lineSpaces) {
+        PositionInStaff prevPosition = positionInStaff;
 	    positionInStaff = new PositionInStaff(positionInStaff.getLineSpace()+lineSpaces);
+	    return prevPosition;
     }
+
+
 
     /**
      * @param agnosticSymbolType

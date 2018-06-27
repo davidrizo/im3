@@ -1,11 +1,9 @@
-package es.ua.dlsi.im3.gui.graph.javafx;
-
-import java.util.logging.Logger;
+package es.ua.dlsi.im3.gui.adt.graph.javafx;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graph.IEdgeLabel;
 import es.ua.dlsi.im3.core.adt.graph.INodeLabel;
-import es.ua.dlsi.im3.gui.graph.viewmodel.GraphNodeViewModel;
+import es.ua.dlsi.im3.gui.adt.graph.viewmodel.GraphNodeViewModel;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.EventHandler;
 import javafx.scene.Group;

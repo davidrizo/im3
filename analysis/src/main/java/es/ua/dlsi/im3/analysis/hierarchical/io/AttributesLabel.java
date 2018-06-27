@@ -45,8 +45,13 @@ public class AttributesLabel implements ITreeLabel {
 		}
 		return result;
 	}
-	
-	public void addAttribute(String key, String value) {
+
+    @Override
+    public Double getPredefinedHorizontalPosition() {
+        return null;
+    }
+
+    public void addAttribute(String key, String value) {
 		attributes.put(key, value);
 	}
 

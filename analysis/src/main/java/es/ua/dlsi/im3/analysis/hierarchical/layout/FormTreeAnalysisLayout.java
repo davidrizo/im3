@@ -14,6 +14,7 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
+import es.ua.dlsi.im3.core.score.layout.graphics.RGBA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +35,8 @@ public class FormTreeAnalysisLayout {
     }
 
 
-    public void drawAnalysisInCanvas(HorizontalLayout horizontalLayout, double ySeparationBetweenLevels) throws IM3Exception {
-        TreeGraphic treeGraphic = new TreeGraphic(horizontalLayout, tree, layoutFont, ySeparationBetweenLevels);
+    public void drawAnalysisInCanvas(HorizontalLayout horizontalLayout, double ySeparationBetweenLevels, RGBA rgba) throws IM3Exception {
+        TreeGraphic treeGraphic = new TreeGraphic(horizontalLayout, tree, layoutFont, ySeparationBetweenLevels, rgba);
         Canvas canvas = horizontalLayout.getCanvas();
         canvas.add(treeGraphic);
     }

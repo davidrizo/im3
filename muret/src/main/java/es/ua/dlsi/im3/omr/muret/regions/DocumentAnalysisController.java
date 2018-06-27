@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.omr.muret.regions;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.command.ICommand;
 import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
+import es.ua.dlsi.im3.gui.interaction.ISelectable;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowChoicesDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.classifiers.segmentation.ISymbolClusterer;
@@ -46,6 +47,27 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
     @FXML
     Button btnDeleteTreeItem;
+
+    @Override
+    public ISelectable first() {
+        return null; //TODO
+    }
+
+    @Override
+    public ISelectable last() {
+        return null; //TODO
+    }
+
+    @Override
+    public ISelectable previous(ISelectable s) {
+        return null; //TODO
+    }
+
+    @Override
+    public ISelectable next(ISelectable s) {
+        return null; //TODO
+    }
+
     enum InteractionMode {eIdle, eSplittingPages, eSplittingRegions};
 
     ObjectProperty<InteractionMode> interactionMode;
@@ -91,36 +113,34 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
     }
 
     private void doChangeSymbolsRegion() {
-        List<OMRSymbol> selectedSymbols = new LinkedList<>();
-        for (BoundingBoxBasedView boundingBoxBasedView: selectedElements) {
-            if (!(boundingBoxBasedView.getOwner() instanceof OMRSymbol)) {
-                ShowError.show(OMRApp.getMainStage(), "A selected element is not a symbol: " + boundingBoxBasedView.getOwner());
-                return;
+        if (selectionManager.isCommonBaseClass(SymbolView.class)) {
+            List<OMRSymbol> selectedSymbols = new LinkedList<>();
+            for (ISelectable selectedSymbol : selectionManager.getSelection()) {
+                BoundingBoxBasedView boundingBoxBasedView = (BoundingBoxBasedView) selectedSymbol;
+                selectedSymbols.add((OMRSymbol) boundingBoxBasedView.getOwner());
             }
-            selectedSymbols.add((OMRSymbol) boundingBoxBasedView.getOwner());
-        }
 
 
-        LinkedList<OMRRegion> regions = new LinkedList<>();
-        for (OMRPage page: omrImage.getPages()) {
-            for (OMRRegion omrRegion: page.regionsProperty()) {
-                regions.add(omrRegion);
+            LinkedList<OMRRegion> regions = new LinkedList<>();
+            for (OMRPage page : omrImage.getPages()) {
+                for (OMRRegion omrRegion : page.regionsProperty()) {
+                    regions.add(omrRegion);
+                }
             }
-        }
 
-        ShowChoicesDialog<OMRRegion> dlg = new ShowChoicesDialog<>();
-        OMRRegion region = dlg.show(OMRApp.getMainStage(), "Change symbols to region", "Choose a region", regions, null);
-        try {
-            omrImage.changeRegion(selectedSymbols, region);
-            omrImage.recomputeRegionBoundingBoxes();
-            // now reload all model - we do not observe and change changes
-            loadPages();
-        } catch (IM3Exception e) {
-            e.printStackTrace();
-            ShowError.show(OMRApp.getMainStage(), "Cannot change region or recompute region bounding boxes", e);
+            ShowChoicesDialog<OMRRegion> dlg = new ShowChoicesDialog<>();
+            OMRRegion region = dlg.show(OMRApp.getMainStage(), "Change symbols to region", "Choose a region", regions, null);
+            try {
+                omrImage.changeRegion(selectedSymbols, region);
+                omrImage.recomputeRegionBoundingBoxes();
+                // now reload all model - we do not observe and change changes
+                loadPages();
+            } catch (IM3Exception e) {
+                e.printStackTrace();
+                ShowError.show(OMRApp.getMainStage(), "Cannot change region or recompute region bounding boxes", e);
+            }
         }
     }
-
 
 
     // TODO: 23/4/18 Botones comunes con right click treeview
@@ -216,23 +236,25 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
     @Override
     protected void doDeleteTreeItems() throws IM3Exception {
-        for (BoundingBoxBasedView boundingBoxBasedView : selectedElements) {
-            // something more ellegant?
-            boolean collapse = false;
-            if (boundingBoxBasedView instanceof PageView) {
-                PageView pageView = (PageView) boundingBoxBasedView;
-                omrImage.deletePage(pageView.getOwner());
-                collapse = true;
-            } else if (boundingBoxBasedView instanceof RegionView) {
-                RegionView regionView = (RegionView) boundingBoxBasedView;
-                collapse = true;
-            } else if (boundingBoxBasedView instanceof SymbolView) {
-                SymbolView symbolView = (SymbolView) boundingBoxBasedView;
-                symbolView.getOwner().getOMRRegion().removeSymbol(symbolView.getOwner());
-            }
-            loadPages(); //TODO Observables
-            if (collapse) {
-                doCollapseTreeView();
+        if (selectionManager.isCommonBaseClass(BoundingBoxBasedView.class)) {
+            for (ISelectable selectable : selectionManager.getSelection()) {
+                // something more ellegant?
+                boolean collapse = false;
+                if (selectable instanceof PageView) {
+                    PageView pageView = (PageView) selectable;
+                    omrImage.deletePage(pageView.getOwner());
+                    collapse = true;
+                } else if (selectable instanceof RegionView) {
+                    RegionView regionView = (RegionView) selectable;
+                    collapse = true;
+                } else if (selectable instanceof SymbolView) {
+                    SymbolView symbolView = (SymbolView) selectable;
+                    symbolView.getOwner().getOMRRegion().removeSymbol(symbolView.getOwner());
+                }
+                loadPages(); //TODO Observables
+                if (collapse) {
+                    doCollapseTreeView();
+                }
             }
         }
     }
@@ -361,7 +383,7 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
     @Override
     protected BoundingBoxBasedView addSymbol(BoundingBoxBasedView regionView, OMRSymbol omrSymbol) {
-        SymbolView symbolView = new SymbolView(this, (RegionView) regionView, omrSymbol, Color.GREEN);
+        SymbolView symbolView = new SymbolView(getNextID("Symbol"), this, (RegionView) regionView, omrSymbol, Color.GREEN);
         symbols.put(omrSymbol, symbolView);
         viewsGroup.getChildren().add(symbolView);
         return symbolView;
@@ -369,7 +391,7 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
     @Override
     protected BoundingBoxBasedView addRegion(BoundingBoxBasedView pageView, OMRRegion omrRegion) {
-        RegionView regionView = new RegionView(this, (PageView) pageView, omrRegion, Color.RED);
+        RegionView regionView = new RegionView(getNextID("Region"), this, (PageView) pageView, omrRegion, Color.RED);
         regions.put(omrRegion, regionView);
         viewsGroup.getChildren().add(regionView);
         return regionView;
@@ -377,7 +399,7 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
 
     @Override
     protected BoundingBoxBasedView addPage(OMRPage omrPage) {
-        PageView pageView = new PageView(this, omrPage, Color.BLUE); // TODO: 21/4/18 Colores
+        PageView pageView = new PageView(getNextID("Page"), this, omrPage, Color.BLUE); // TODO: 21/4/18 Colores
         pages.put(omrPage, pageView);
         viewsGroup.getChildren().add(pageView);
         return pageView;

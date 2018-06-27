@@ -42,14 +42,10 @@ public abstract class AgnosticSymbolFont {
         iconsFont = layoutFont.getJavaFXMusicFont(20);
     }
 
-    protected void add(AgnosticSymbolType agnosticSymbolType, String codepoint) {
-        try {
-            Glyph glyph = layoutFont.getGlyph(codepoint);
-            glyphs.put(agnosticSymbolType.toAgnosticString(), glyph);
-            agnosticSymbolTypes.put(agnosticSymbolType.toAgnosticString(), agnosticSymbolType);
-        } catch (IM3Exception e) {
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find a glyph for agnostic symbol '{0}'", agnosticSymbolType.toAgnosticString());
-        }
+    protected void add(AgnosticSymbolType agnosticSymbolType, String codepoint) throws IM3Exception {
+        Glyph glyph = layoutFont.getGlyph(codepoint);
+        glyphs.put(agnosticSymbolType.toAgnosticString(), glyph);
+        agnosticSymbolTypes.put(agnosticSymbolType.toAgnosticString(), agnosticSymbolType);
     }
 
     public Text createFontBasedText(String agnosticString) throws IM3Exception {

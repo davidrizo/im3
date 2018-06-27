@@ -24,6 +24,7 @@ import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
+import es.ua.dlsi.im3.core.score.layout.graphics.RGBA;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import org.junit.Before;
@@ -85,7 +86,7 @@ public class MEIHierarchicalAnalysesModernExporterImporterTest {
         Tree<FormAnalysisTreeNodeLabel> tree = formAnalysis.getTree();
         LayoutFont layoutFont = new BravuraFont();
         FormTreeAnalysisLayout analysisLayout = new FormTreeAnalysisLayout(layoutFont, tree, importer.getScoreSong());
-        analysisLayout.drawAnalysisInCanvas(layout, separation);
+        analysisLayout.drawAnalysisInCanvas(layout, separation, new RGBA(0, 0, 1, 1));
 
         SVGExporter svgExporter = new SVGExporter();
         File svgFile = TestFileUtils.createTempFile("licion.svg");

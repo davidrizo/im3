@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.gui.graph.javafx;
+package es.ua.dlsi.im3.gui.adt.graph.javafx;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -9,9 +9,9 @@ import es.ua.dlsi.im3.core.adt.graph.GraphEdge;
 import es.ua.dlsi.im3.core.adt.graph.GraphNode;
 import es.ua.dlsi.im3.core.adt.graph.IEdgeLabel;
 import es.ua.dlsi.im3.core.adt.graph.INodeLabel;
-import es.ua.dlsi.im3.gui.graph.viewmodel.DirectedGraphViewModel;
-import es.ua.dlsi.im3.gui.graph.viewmodel.GraphEdgeViewModel;
-import es.ua.dlsi.im3.gui.graph.viewmodel.GraphNodeViewModel;
+import es.ua.dlsi.im3.gui.adt.graph.viewmodel.DirectedGraphViewModel;
+import es.ua.dlsi.im3.gui.adt.graph.viewmodel.GraphEdgeViewModel;
+import es.ua.dlsi.im3.gui.adt.graph.viewmodel.GraphNodeViewModel;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.utils.ParallelModelFactory;
 import javafx.beans.binding.DoubleBinding;

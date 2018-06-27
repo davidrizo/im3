@@ -3,7 +3,9 @@ package es.ua.dlsi.im3.omr.wrimus;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
+import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Shape;
 import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
@@ -30,7 +32,17 @@ public class SVGGlyph extends Shape {
     es.ua.dlsi.im3.core.score.layout.Coordinate position;
 
     public SVGGlyph(Glyph glyph, InteractionElementType interactionElementType) {
-        super(null, interactionElementType);
+        super(new NotationSymbol() {
+            @Override
+            public GraphicsElement getGraphics() {
+                return null;
+            }
+
+            @Override
+            protected void doLayout() throws IM3Exception {
+
+            }
+        }, interactionElementType);
         this.glyph = glyph;
         this.position = new es.ua.dlsi.im3.core.score.layout.Coordinate();
     }

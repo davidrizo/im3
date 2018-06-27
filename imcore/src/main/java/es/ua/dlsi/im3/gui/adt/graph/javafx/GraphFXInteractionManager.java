@@ -1,6 +1,4 @@
-package es.ua.dlsi.im3.gui.graph.javafx;
-
-import java.util.logging.Logger;
+package es.ua.dlsi.im3.gui.adt.graph.javafx;
 
 import es.ua.dlsi.im3.core.adt.graph.IEdgeLabel;
 import es.ua.dlsi.im3.core.adt.graph.INodeLabel;
@@ -41,7 +39,7 @@ public class GraphFXInteractionManager<LabelNodeType extends INodeLabel, LabelEd
 			interactionConnectingLine.setStartY(graphNodeFX.getRoot().getLayoutBounds().getMaxY());
 			interactionConnectingLine.setEndX(interactionConnectingLine.getStartX());
 			interactionConnectingLine.setEndY(interactionConnectingLine.getStartY());
-			//viewController.getInteractionController().registerEventHandler(MouseEvent.MOUSE_MOVED, mouseMoveEventHandler);
+			//viewController.getInteractionPresenter().registerEventHandler(MouseEvent.MOUSE_MOVED, mouseMoveEventHandler);
             //IM3 GenericEventsInteractionController.getInstance().registerEventHandler(MouseEvent.MOUSE_MOVED, mouseMoveEventHandler);
             //IM3 GenericEventsInteractionController.getInstance().registerEventHandler(KeyEvent.KEY_PRESSED, escapeEventHandler);
 		} else {
@@ -79,7 +77,7 @@ public class GraphFXInteractionManager<LabelNodeType extends INodeLabel, LabelEd
 		interactionConnectingLine = null;
 		lastSelectedNode = null;
 		// we don't want to receive more mouse move events
-		//viewController.getInteractionController().removeEventHandler(MouseEvent.MOUSE_MOVED, mouseMoveEventHandler);
+		//viewController.getInteractionPresenter().removeEventHandler(MouseEvent.MOUSE_MOVED, mouseMoveEventHandler);
         //IM3 GenericEventsInteractionController.getInstance().removeEventHandler(MouseEvent.MOUSE_MOVED, mouseMoveEventHandler);
         //IM3 GenericEventsInteractionController.getInstance().removeEventHandler(KeyEvent.KEY_PRESSED, escapeEventHandler);
 	}	

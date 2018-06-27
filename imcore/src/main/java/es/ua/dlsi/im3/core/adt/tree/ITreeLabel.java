@@ -20,4 +20,10 @@ public interface ITreeLabel {
 	public String getColor() throws Exception;
 	
 	public ITreeLabel clone();
+
+    /**
+     * Horizontal position for being drawn
+     * @return null if it does not have this information
+     */
+	public Double getPredefinedHorizontalPosition();
 }

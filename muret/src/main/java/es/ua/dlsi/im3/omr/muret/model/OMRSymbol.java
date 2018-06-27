@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.muret.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
@@ -233,9 +234,18 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
         return Objects.hash(omrRegion, graphicalSymbol, x, y, width, height, accepted, name);
     }
 
-    public void chagePosition(int lineSpaces) {
-        graphicalSymbol.get().changePosition(lineSpaces);
+    public PositionInStaff chageRelativePosition(int lineSpaces) {
+        PositionInStaff prev = graphicalSymbol.get().changeRelativePosition(lineSpaces);
         this.name.set(this.graphicalSymbol.get().getAgnosticString());
+        return prev;
+    }
+
+    public PositionInStaff getPositionInStaff() {
+        return graphicalSymbol.get().getPositionInStaff();
+    }
+
+    public void setPositionInStaff(PositionInStaff positionInStaff) {
+        graphicalSymbol.get().setPositionInStaff(positionInStaff);
     }
 
     public AgnosticSymbolType changeAgnosticSymbolType(AgnosticSymbolType agnosticSymbolType) {

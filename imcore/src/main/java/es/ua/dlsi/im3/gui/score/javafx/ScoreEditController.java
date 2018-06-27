@@ -126,10 +126,10 @@ public class ScoreEditController implements Initializable, IScoreSongViewEventSu
                 InteractionElementType.slur, InteractionElementType.accidental, InteractionElementType.clef
         };
 
-        scoreSongView.getInteractionController().subscribe(this, EventType.contextMenuRequest, elementsToSubscribe);
-        scoreSongView.getInteractionController().subscribe(this, EventType.mouseEntered, elementsToSubscribe);
-        scoreSongView.getInteractionController().subscribe(this, EventType.mouseExited,  elementsToSubscribe);
-        scoreSongView.getInteractionController().subscribe(this, EventType.dblClick, elementsToSubscribe);
+        scoreSongView.getInteractionPresenter().subscribe(this, EventType.contextMenuRequest, elementsToSubscribe);
+        scoreSongView.getInteractionPresenter().subscribe(this, EventType.mouseEntered, elementsToSubscribe);
+        scoreSongView.getInteractionPresenter().subscribe(this, EventType.mouseExited,  elementsToSubscribe);
+        scoreSongView.getInteractionPresenter().subscribe(this, EventType.dblClick, elementsToSubscribe);
 
         Scene scene = ScoreEditApp.getMainStage().getScene();
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -159,15 +159,15 @@ public class ScoreEditController implements Initializable, IScoreSongViewEventSu
     }
 
     private void doDblClick(GraphicsElement graphicsElement) {
-        scoreSongView.getInteractionController().selectElements(graphicsElement);
+        scoreSongView.getInteractionPresenter().selectElements(graphicsElement);
     }
 
     private void doMouseExited(GraphicsElement graphicsElement) {
-        scoreSongView.getInteractionController().onMouseExited(graphicsElement);
+        scoreSongView.getInteractionPresenter().onMouseExited(graphicsElement);
     }
 
     private void doMouseEntered(GraphicsElement graphicsElement) {
-        scoreSongView.getInteractionController().onMouseEntererd(graphicsElement);
+        scoreSongView.getInteractionPresenter().onMouseEntererd(graphicsElement);
     }
 
     private void doContextMenuRequest(GraphicsElement graphicsElement) {
@@ -175,7 +175,7 @@ public class ScoreEditController implements Initializable, IScoreSongViewEventSu
     }
 
     private void doKeyPressed(KeyEvent event) {
-        List<GraphicsElement> selectedElements = scoreSongView.getInteractionController().getSelectedElements();
+        List<GraphicsElement> selectedElements = scoreSongView.getInteractionPresenter().getSelectedElements();
         try {
             for (GraphicsElement selectedElement : selectedElements) {
                 if (processKeyPressed(selectedElement.getNotationSymbol(), event.getCode(), event.isShiftDown())) {

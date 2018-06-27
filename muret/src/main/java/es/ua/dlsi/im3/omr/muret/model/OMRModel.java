@@ -9,6 +9,7 @@ import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.ISymbolFromImageDataReco
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolFromImageDataRecognizerFactory;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolImagePrototype;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -60,7 +61,7 @@ public class OMRModel {
 
     //TODO Generalizar, que no se pueda entrenar sólo de un directorio
     public void openProject(File projectFolder, File trainingFolder) throws IM3Exception {
-        symbolFromImageDataRecognizer = SymbolFromImageDataRecognizerFactory.getInstance().create(trainingFolder);
+        symbolFromImageDataRecognizer = SymbolFromImageDataRecognizerFactory.getInstance().create(AgnosticVersion.v2, trainingFolder);
 
         InputOutput io = new InputOutput();
         OMRProject project = io.load(projectFolder);

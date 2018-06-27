@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.gui.graph.viewmodel;
+package es.ua.dlsi.im3.gui.adt.graph.viewmodel;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graph.DirectedGraph;

@@ -103,7 +103,7 @@ public class DraggableRectangle extends Group {
     }
 
     private void createDraggableRectangle(double x, double y, double width, double height, Paint handlesColor) {
-        final double handleRadius = 10 ;
+        final double handleRadius = 5;
 
         rect = new Rectangle(x, y, width, height);
 

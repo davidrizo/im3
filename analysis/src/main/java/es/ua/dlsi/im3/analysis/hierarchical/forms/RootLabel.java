@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.analysis.hierarchical.forms;
 
+import es.ua.dlsi.im3.core.score.Time;
+
 public class RootLabel extends FormAnalysisTreeNodeLabel {
 
 	public RootLabel() {
@@ -20,5 +22,15 @@ public class RootLabel extends FormAnalysisTreeNodeLabel {
 	public FormAnalysisTreeNodeLabel clone() {
 		return new RootLabel();
 	}
+
+    @Override
+    public Time getTime() {
+        return Time.TIME_ZERO;
+    }
+
+    @Override
+    public Double getPredefinedHorizontalPosition() {
+        return null;
+    }
 
 }

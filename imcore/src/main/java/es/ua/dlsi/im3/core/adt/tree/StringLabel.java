@@ -75,7 +75,12 @@ public class StringLabel implements ITreeLabel {
 		}
 	}
 
-	public boolean isEmptyLabel() {
+    @Override
+    public Double getPredefinedHorizontalPosition() {
+        return null;
+    }
+
+    public boolean isEmptyLabel() {
 		return label == null;
 	}
 	

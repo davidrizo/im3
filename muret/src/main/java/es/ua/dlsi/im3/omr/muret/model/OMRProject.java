@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.PatriarcaFont;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.Instrument;
 import es.ua.dlsi.im3.omr.model.entities.Image;
 import es.ua.dlsi.im3.omr.model.entities.Project;

@@ -8,11 +8,13 @@ import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.gui.command.ICommand;
 import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
+import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.GrayscaleImageData;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolImagePrototype;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
 import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
@@ -25,7 +27,6 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -71,8 +72,8 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
 
     DraggableRectangle newSymbolBoundingBox;
 
-    public RegionView(ImageBasedAbstractController controller, AgnosticSymbolFont agnosticSymbolFont, PageView parentBoundingBox, OMRRegion owner, Color color) throws IM3Exception {
-        super(controller, parentBoundingBox, 0.0, 0.0, owner.getWidth(), owner.getHeight() + STAFF_HEIGHT, owner, color);
+    public RegionView(String ID, ImageBasedAbstractController controller, AgnosticSymbolFont agnosticSymbolFont, PageView parentBoundingBox, OMRRegion owner, Color color) throws IM3Exception {
+        super(ID, controller, parentBoundingBox, 0.0, 0.0, owner.getWidth(), owner.getHeight() + STAFF_HEIGHT, owner, color);
         this.agnosticSymbolFont = agnosticSymbolFont;
         createImageView();
         createAgnosticStaffView();
@@ -86,7 +87,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
     private void initSemantic() {
         vBox.getChildren().add(semanticStaffView);
         SymbolCorrectionController scontroller = (SymbolCorrectionController) controller;
-        semanticStaffView.visibleProperty().bind(scontroller.editMusicEnabledProperty());
+        semanticStaffView.visibleProperty().bind(scontroller.agnosticModeProperty().not());
     }
 
     private void createImageView() throws IM3Exception {
@@ -113,7 +114,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
 
     @Override
     protected void onRegionMouseClicked(MouseEvent event) {
-
+        controller.unselect();
     }
 
     public AgnosticStaffView getAgnosticStaffView() {
@@ -124,14 +125,14 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         symbolsBoundingBoxesGroup.getChildren().add(symbolView);
     }
 
-    @Override
+    /*@Override
     public void handle(KeyEvent event) {
         super.handle(event);
         switch (event.getCode()) {
             default:
                 agnosticStaffView.handle(event);
         }
-    }
+    }*/
 
     public void delete(SymbolView symbolView) {
         ICommand command = new ICommand() {
@@ -235,7 +236,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
 
                 //TODO Mostrar barra corrección con símbolos ordenados
                 RankingItem<SymbolImagePrototype> firstRankedElement = orderedRecognizedSymbols.first();
-                AgnosticSymbol agnosticSymbol = AgnosticSymbol.parseAgnosticString(firstRankedElement.getClassType().getPrototypeClass().getAgnosticString());
+                AgnosticSymbol agnosticSymbol = AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, firstRankedElement.getClassType().getPrototypeClass().getAgnosticString());
 
                 if (agnosticSymbol.getSymbol() instanceof Note) { //TODO resto de tipos
                     Note note = (Note) agnosticSymbol.getSymbol();
@@ -281,7 +282,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
 
                 controller.getDashboard().getCommandManager().executeCommand(command);
                 SymbolView symbolView = (SymbolView) controller.doSelect(omrSymbol);
-                symbolView.doEdit();
+                //symbolView.doEdit();
 
             } catch (IM3Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot add symbol", e);
@@ -292,7 +293,101 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         }
     }
 
+    public void doChangePosition(SymbolView symbolView, int linespaceDifference) {
+        ICommand command = new ICommand() {
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                agnosticStaffView.doChangePosition(linespaceDifference, symbolView);
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                agnosticStaffView.doChangePosition(-linespaceDifference, symbolView);
+            }
+
+            @Override
+            public void redo() throws Exception {
+                agnosticStaffView.doChangePosition(linespaceDifference, symbolView);
+            }
+
+            @Override
+            public String getEventName() {
+                return "Change position";
+            }
+        };
+        try {
+            controller.getDashboard().getCommandManager().executeCommand(command);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot change position", e);
+            ShowError.show(OMRApp.getMainStage(), "Cannot change position", e);
+        }
+    }
+
+    public void doChangeSymbolType(SymbolView symbolView, String agnosticString) {
+        ICommand command = new ICommand() {
+            String previousType;
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                previousType = agnosticStaffView.doChangeSymbolType(agnosticString, symbolView);
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                agnosticStaffView.doChangeSymbolType(previousType, symbolView);
+            }
+
+            @Override
+            public void redo() throws Exception {
+                agnosticStaffView.doChangeSymbolType(agnosticString, symbolView);
+            }
+
+            @Override
+            public String getEventName() {
+                return "Change type";
+            }
+        };
+        try {
+            controller.getDashboard().getCommandManager().executeCommand(command);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot change type", e);
+            ShowError.show(OMRApp.getMainStage(), "Cannot change type", e);
+        }
+    }
+
+    public void doFlipStem(SymbolView symbolView) {
+        String agnosticString = symbolView.getOMRSymbol().getGraphicalSymbol().getSymbol().toAgnosticString();
+        String newAgnosticString = null;
+        if (agnosticString.endsWith("_down")) {
+            newAgnosticString = agnosticString.substring(0, agnosticString.length()-5) + "_up";
+        } else if (agnosticString.endsWith("_up")) {
+            newAgnosticString = agnosticString.substring(0, agnosticString.length()-3) + "_down";
+        }
+        if (newAgnosticString != null) {
+            doChangeSymbolType(symbolView, newAgnosticString);
+        }
+    }
+
+
     public ImageView getImageView() {
         return imageView;
     }
+
+    @Override
+    public ISelectableTraversable getSelectionParent() {
+        return controller;
+    }
+
+    /*public void doEndEdit() {
+        getAgnosticStaffView().doEndEdit();
+    }*/
 }

@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.analysis.hierarchical.forms;
 
 import es.ua.dlsi.im3.core.score.ITimedElement;
 import es.ua.dlsi.im3.core.score.ScoreAnalysisHook;
+import es.ua.dlsi.im3.core.score.Time;
 
 public class DivisionLabel extends FormAnalysisTreeNodeLabel implements ITimedLabel {
 	String name;
@@ -63,7 +64,17 @@ public class DivisionLabel extends FormAnalysisTreeNodeLabel implements ITimedLa
 		return new DivisionLabel(name, scoreAnalysisHookStart);
 	}
 
-	@Override
+    @Override
+    public Time getTime() {
+        return scoreAnalysisHookStart.getTime();
+    }
+
+    @Override
+    public Double getPredefinedHorizontalPosition() {
+        return getTimedElement().getTime().getComputedTime();
+    }
+
+    @Override
 	public ITimedElement getTimedElement() {
 		return this.scoreAnalysisHookStart;
 	}

@@ -76,14 +76,28 @@ public class InteractionPresenter {
         }
     }
 
-    public void selectElements(GraphicsElement elementToSelect) {
-        for (GraphicsElement graphicElement : selectedElements) {
-            graphicElement.setRGBColor(defaultColor);
-        }
+    /**
+     * It removes previous selection
+     * @param elementsToSelect
+     */
+    public void selectElements(GraphicsElement ... elementsToSelect) {
+        clearSelection();
 
-        selectedElements.clear();
-        selectedElements.add(elementToSelect);
-        elementToSelect.setRGBColor(selectedColor);
+        for (GraphicsElement elementToSelect: elementsToSelect) {
+            selectedElements.add(elementToSelect);
+            elementToSelect.setRGBColor(selectedColor);
+        }
+    }
+
+    /**
+     * It does not remove previous selection
+     * @param elementsToSelect
+     */
+    public void selectMoreElements(GraphicsElement ... elementsToSelect) {
+        for (GraphicsElement elementToSelect: elementsToSelect) {
+            selectedElements.add(elementToSelect);
+            elementToSelect.setRGBColor(selectedColor);
+        }
     }
 
     public void onMouseEntererd(GraphicsElement graphicsElement) {
@@ -100,6 +114,14 @@ public class InteractionPresenter {
 
     public List<GraphicsElement> getSelectedElements() {
         return selectedElements;
+    }
+
+    public void clearSelection() {
+        for (GraphicsElement graphicElement : selectedElements) {
+            graphicElement.setRGBColor(defaultColor);
+        }
+
+        selectedElements.clear();
     }
 
     //TODO Seleccionar varios elements

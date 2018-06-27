@@ -1,33 +1,38 @@
 package es.ua.dlsi.im3.omr.muret.symbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.PositionInStaff;
+import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.muret.IOMRSymbolBaseView;
 import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
+import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * @autor drizo
  */
-public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
+public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements IOMRSymbolBaseView {
     private static final Paint HOVER = Color.BLUE;
     private static final Paint SELECTED = Color.RED;
     private final RegionView regionView;
-
     Shape shapeInStaff;
+    boolean editing;
 
-    public SymbolView(ImageBasedAbstractController controller, RegionView regionView, OMRSymbol owner, Color color) throws IM3Exception {
-        super(controller, regionView, owner.getX()-regionView.getOwner().getFromX(), owner.getY()-regionView.getOwner().getFromY(), owner.getWidth(), owner.getHeight(), owner, color);
+    public SymbolView(String ID, ImageBasedAbstractController controller, RegionView regionView, OMRSymbol owner, Color color) throws IM3Exception {
+        super(ID, controller, regionView, owner.getX()-regionView.getOwner().getFromX(), owner.getY()-regionView.getOwner().getFromY(), owner.getWidth(), owner.getHeight(), owner, color);
         this.regionView = regionView;
         shapeInStaff = regionView.getAgnosticStaffView().addSymbol(this);
         initInteractionOnShape();
@@ -35,6 +40,7 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
 
     //TODO Armonizar todo esto (p.ej. tecla corrección....) - que lo lleve todo el controlador - ahora hacemos doble click - también botón arriba
     private void initInteractionOnShape() {
+        editing = false;
         shapeInStaff.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -56,7 +62,15 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
         shapeInStaff.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                selected.setValue(true);
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                    try {
+                        controller.doSelect(owner);
+                    } catch (IM3Exception e) {
+                        Logger.getLogger(SymbolView.class.getName()).log(Level.WARNING, "Cannot select symbol", e);
+                        ShowError.show(OMRApp.getMainStage(), "Cannot select symbol", e);
+                    }
+                    //selected.setValue(true);
+                }
             }
         });
 
@@ -71,7 +85,7 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
     @Override
     protected void doHover(boolean enable) {
         super.doHover(enable);
-        if (shapeInStaff != null) {
+        if (shapeInStaff != null && !selected.get()) {
             if (enable) {
                 shapeInStaff.setFill(HOVER);
             } else {
@@ -102,20 +116,35 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
         }
     }
 
-    public void doEdit() {
-        this.doHighlight(true);
-        shapeInStaff.setFill(SELECTED);
-        regionView.getAgnosticStaffView().correctSymbol(this);
+    /*public void doEdit() {
+        if (!editing) {
+            editing = true;
+            this.doHighlight(true);
+            shapeInStaff.setFill(SELECTED);
+            regionView.getAgnosticStaffView().correctSymbol(this);
+        }
+    }*/
+
+   /* public void endEdit() {
+        if (editing) {
+            editing = false;
+            shapeInStaff.setFill(Color.BLACK);
+            this.doHighlight(false);
+            regionView.doEndEdit();
+        }
+    }*/
+
+    public PositionInStaff changePosition(int lineSpaces) {
+        return owner.chageRelativePosition(lineSpaces);
     }
 
-    public void endEdit() {
-        shapeInStaff.setFill(Color.BLACK);
-        this.doHighlight(false);
+    /*public PositionInStaff getPositionInStaff() {
+        return owner.getPositionInStaff();
     }
 
-    public void changePosition(int lineSpaces) {
-        owner.chagePosition(lineSpaces);
-    }
+    public void setPositionInStaff(PositionInStaff positionInStaff) {
+        owner.setPositionInStaff(positionInStaff);
+    }*/
 
     public AgnosticSymbolType changeSymbolType(AgnosticSymbolType agnosticSymbolType) {
         return owner.changeAgnosticSymbolType(agnosticSymbolType);
@@ -133,24 +162,61 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> {
             case DELETE:
                 this.regionView.delete(this);
                 break;
-            case C:
+            /*case C:
                 ((SymbolCorrectionController)controller).doChangeSymbol();
+                break;*/
+            case ENTER:
+                acceptCorrection();
                 break;
             case ESCAPE:
-                this.regionView.getAgnosticStaffView().doCloseCorrectionPane();
+                cancelCorrection();
+                //regionView.doEndEdit();
+                break;
+            case F:
+                doFlipStem();
                 break;
             case UP:
                 if (event.isShortcutDown()) {
-                    regionView.getAgnosticStaffView().doChangePosition(1);
+                    regionView.getAgnosticStaffView().doChangePosition(1, this);
                     break;
                 }
                 break;
             case DOWN:
                 if (event.isShortcutDown()) {
-                    regionView.getAgnosticStaffView().doChangePosition(-1);
+                    regionView.getAgnosticStaffView().doChangePosition(-1, this);
                     break;
                 }
                 break;
         }
+    }
+
+    @Override
+    public ISelectableTraversable getSelectionParent() {
+        return controller;
+    }
+
+    @Override
+    public OMRSymbol getOMRSymbol() {
+        return this.owner;
+    }
+
+    public void acceptCorrection() {
+        throw new UnsupportedOperationException("TO-DO");
+    }
+
+    public void cancelCorrection() {
+        throw new UnsupportedOperationException("TO-DO");
+    }
+
+    public void doChangePosition(int linespace) {
+        regionView.doChangePosition(this, linespace);
+    }
+
+    public void doChangeSymbolType(String agnosticString) {
+        regionView.doChangeSymbolType(this, agnosticString);
+    }
+
+    public void doFlipStem() {
+        regionView.doFlipStem(this);
     }
 }

@@ -131,7 +131,7 @@ public class LayoutBeamGroup extends NotationSymbol {
      * Create the beams between the notes
      */
     public void createBeams() throws IM3Exception {
-        group = new Group(null, InteractionElementType.beams);
+        group = new Group(this, InteractionElementType.beams);
 
         if (layoutCoreSymbols.isEmpty()) {
             throw new IM3Exception("Emtpy beam group");

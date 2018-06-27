@@ -1,7 +1,12 @@
 package es.ua.dlsi.im3.gui.score.javafx;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.ITimedElement;
+import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.gui.javafx.GUIException;
@@ -16,6 +21,7 @@ import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,12 +30,14 @@ import java.util.logging.Logger;
 public class ScoreSongView {
     private Group mainPanel;
     private ScoreLayout layout;
-    InteractionPresenter interactionController;
+    InteractionPresenter interactionPresenter;
+    HashMap<String, Node> nodesByID;
 
     public ScoreSongView(ScoreLayout layout) throws IM3Exception {
         //layout = new HorizontalLayout(scoreSong, font, new CoordinateComponent(width.doubleValue()), new CoordinateComponent(height.doubleValue()));
         this.layout = layout;
-        interactionController = new InteractionPresenter();
+        interactionPresenter = new InteractionPresenter();
+        nodesByID = new HashMap<>();
         init(layout);
     }
 
@@ -56,6 +64,7 @@ public class ScoreSongView {
                 try {
                     final Node node = element.generateJavaFXRoot();
                     node.setId(element.getID());
+                    nodesByID.put(element.getID(), node);
                     registerNodeInteraction(element, node);
                     mainPanel.getChildren().add(node);
                     mainPanel.setTranslateX(25);
@@ -85,7 +94,7 @@ public class ScoreSongView {
 
     private void registerNodeInteraction(GraphicsElement element, Node node) throws IM3Exception {
         // used to identify the interaction - we use ID and not directly object to unify the method with web services
-        interactionController.register(element);
+        interactionPresenter.register(element);
         node.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
             @Override
             public void handle(ContextMenuEvent event) {
@@ -137,7 +146,7 @@ public class ScoreSongView {
     private void doHandleMouseExitedRequest(Node node) {
         String ID = node.getId(); // this ID comes from the score
         try {
-            interactionController.handleEvent(EventType.mouseExited, node.getId());
+            interactionPresenter.handleEvent(EventType.mouseExited, node.getId());
         } catch (IM3Exception e) {
             String message = "Cannot handle context menu request event";
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, message, e);
@@ -148,7 +157,7 @@ public class ScoreSongView {
     private void doHandleMouseEnteredRequest(Node node) {
         String ID = node.getId(); // this ID comes from the score
         try {
-            interactionController.handleEvent(EventType.mouseEntered, node.getId());
+            interactionPresenter.handleEvent(EventType.mouseEntered, node.getId());
         } catch (IM3Exception e) {
             String message = "Cannot handle context menu request event";
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, message, e);
@@ -159,7 +168,7 @@ public class ScoreSongView {
     private void doHandleDblClickRequest(Node node) {
         String ID = node.getId(); // this ID comes from the score
         try {
-            interactionController.handleEvent(EventType.dblClick, node.getId());
+            interactionPresenter.handleEvent(EventType.dblClick, node.getId());
         } catch (IM3Exception e) {
             String message = "Cannot handle context menu request event";
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, message, e);
@@ -170,7 +179,7 @@ public class ScoreSongView {
     private void doHandleClickRequest(Node node) {
         String ID = node.getId(); // this ID comes from the score
         try {
-            interactionController.handleEvent(EventType.click, node.getId());
+            interactionPresenter.handleEvent(EventType.click, node.getId());
         } catch (IM3Exception e) {
             String message = "Cannot handle context menu request event";
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, message, e);
@@ -182,7 +191,7 @@ public class ScoreSongView {
     private void doHandleMenuRequest(Node node) {
         String ID = node.getId(); // this ID comes from the score
         try {
-            interactionController.handleEvent(EventType.contextMenuRequest, node.getId());
+            interactionPresenter.handleEvent(EventType.contextMenuRequest, node.getId());
         } catch (IM3Exception e) {
             String message = "Cannot handle context menu request event";
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, message, e);
@@ -190,11 +199,51 @@ public class ScoreSongView {
         }
     }
 
-    public InteractionPresenter getInteractionController() {
-        return interactionController;
+    public InteractionPresenter getInteractionPresenter() {
+        return interactionPresenter;
     }
 
     public ScoreLayout getLayout() {
         return layout;
+    }
+
+    private void selectIfContained(GraphicsElement element, Time fromTime, Time toTime) {
+        if (element instanceof es.ua.dlsi.im3.core.score.layout.graphics.Group) {
+            es.ua.dlsi.im3.core.score.layout.graphics.Group group = (es.ua.dlsi.im3.core.score.layout.graphics.Group) element;
+            for (GraphicsElement child: group.getChildren()) {
+                selectIfContained(child, fromTime, toTime);
+            }
+        } else {
+            NotationSymbol notationSymbol = element.getNotationSymbol();
+            boolean select = false;
+            if (notationSymbol instanceof LayoutCoreSymbol) {
+                LayoutCoreSymbol layoutCoreSymbol = (LayoutCoreSymbol) notationSymbol;
+                select = layoutCoreSymbol.getTime().isContainedIn(fromTime, toTime);
+            } else if (notationSymbol instanceof Component) {
+                Component component = (Component) notationSymbol;
+                if (component.getModelElement() instanceof ITimedElement) {
+                    ITimedElement timedElement = (ITimedElement) component.getModelElement();
+                    select = timedElement.getTime().isContainedIn(fromTime, toTime);
+                }
+            }
+            if (select) {
+                interactionPresenter.selectMoreElements(element);
+            }
+        }
+
+    }
+
+    public void select(Time fromTime, Time toTime) {
+        interactionPresenter.clearSelection();
+
+        for (Canvas canvas: layout.getCanvases()) {
+            for (GraphicsElement element : canvas.getElements()) {
+                selectIfContained(element, fromTime, toTime);
+            }
+        }
+    }
+
+    public Node getNode(String ID) {
+        return nodesByID.get(ID);
     }
 }

@@ -6,7 +6,9 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
+import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 import es.ua.dlsi.im3.core.score.layout.graphics.Shape;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
@@ -52,7 +54,17 @@ public class StaffRenderer {
             CoordinateComponent coordinateComponentY = new CoordinateComponent(STAFF_TOP_MARGIN+i*LINE_SEPARATION);
             Coordinate coordinateFrom = new Coordinate(fromX, coordinateComponentY);
             Coordinate coordinateTo = new Coordinate(toX, coordinateComponentY);
-            Line line = new Line(null, InteractionElementType.staffLine, coordinateFrom, coordinateTo);
+            Line line = new Line(new NotationSymbol() {
+                @Override
+                public GraphicsElement getGraphics() {
+                    return null;
+                }
+
+                @Override
+                protected void doLayout() throws IM3Exception {
+
+                }
+            }, InteractionElementType.staffLine, coordinateFrom, coordinateTo);
             line.setThickness(3); // TODO: 7/11/17 Comprobarlo
             shapes.add(line);
             staffLines.add(line);

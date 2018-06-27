@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.muret;
 
+import es.ua.dlsi.im3.gui.interaction.ISelectable;
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.omr.muret.model.IOMRBoundingBox;
 import javafx.beans.property.ObjectProperty;
@@ -20,7 +21,7 @@ import javafx.scene.text.Text;
  * View of any element selectable as a bounding box
  * @param <OwnerType>
  */
-public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> extends Group {
+public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> extends Group implements ISelectable {
     protected static final double FILL_OPACITY = 0.2;
     protected Text label;
     protected OwnerType owner;
@@ -32,6 +33,8 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
     protected ObjectProperty<Boolean> selected;
     protected ImageBasedAbstractController controller;
 
+    protected String ID;
+
     /**
      *
      * @param parentBoundingBox It may be null
@@ -42,7 +45,8 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
      * @param owner
      * @param color
      */
-    public BoundingBoxBasedView(ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, double fromX, double fromY, double width, double height, OwnerType owner, Color color) {
+    public BoundingBoxBasedView(String ID, ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, double fromX, double fromY, double width, double height, OwnerType owner, Color color) {
+        this.ID = ID;
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.hideHandles();
         rectangle.xProperty().setValue(fromX);
@@ -59,7 +63,8 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
      * @param owner
      * @param color
      */
-    public BoundingBoxBasedView(ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color) {
+    public BoundingBoxBasedView(String ID, ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color) {
+        this.ID = ID;
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.hideHandles();
         rectangle.xProperty().bindBidirectional(owner.fromXProperty());
@@ -107,7 +112,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
             @Override
             public void handle(MouseEvent event) {
                 if (!selected.get()) {
-                    setHover(true);
+                    onStartHover();
                 }
             }
         });
@@ -116,7 +121,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
             @Override
             public void handle(MouseEvent event) {
                 if (!selected.get()) {
-                    setHover(false);
+                    onEndHover();
                 }
             }
         });
@@ -147,7 +152,9 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         hoverProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                doHover(newValue);
+                if (!selected.get()) {
+                    doHover(newValue);
+                }
             }
         });
 
@@ -209,9 +216,23 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         if (select != this.selected.get()) {
             this.selected.setValue(select);
             if (notifyController) {
-                controller.doSelect(this);
+                if (select) {
+                    controller.doSelect(this);
+                } else {
+                    controller.unselect();
+                }
             }
         }
+    }
+
+    @Override
+    public void onSelect() {
+        this.selected.setValue(true);
+    }
+
+    @Override
+    public void onUnselect() {
+        this.selected.setValue(false);
     }
 
     public void handle(KeyEvent event) {
@@ -235,5 +256,18 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         // no op - used for being overriden
     }
 
+    @Override
+    public String getUniqueID() {
+        return ID;
+    }
 
+    @Override
+    public void onStartHover() {
+        setHover(true);
+    }
+
+    @Override
+    public void onEndHover() {
+        setHover(false);
+    }
 }

@@ -25,7 +25,7 @@
                   <Button mnemonicParsing="false" onAction="#handleClose" text="Close" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
                   <Button mnemonicParsing="false" onAction="#handleGotoDocumentAnalysis" text="Go to document analysis" />
-                  <ToggleButton fx:id="toggleButtonEditMusic" mnemonicParsing="false" text="Edit music" />
+                  <ToggleButton fx:id="toggleButtonEditMusic" mnemonicParsing="false" onAction="#handleEditMusic" text="Edit music" />
                   <Button mnemonicParsing="false" onAction="#handleZoomIn" text="Zoom in" />
                   <Button mnemonicParsing="false" onAction="#handleZoomOut" text="Zoom out" />
                   <Button mnemonicParsing="false" onAction="#handleZoomToFit" text="Zoom to fit" />
@@ -33,7 +33,6 @@
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
                   <Button mnemonicParsing="false" onAction="#handleRecognizeSymbols" text="Recognize symbols" />
-                  <Button fx:id="btnChangeSymbol" mnemonicParsing="false" onAction="#handleChangeSymbol" text="Change symbol (c)" />
                     </items>
                 </ToolBar>
             </children>

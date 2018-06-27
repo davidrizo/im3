@@ -33,7 +33,7 @@ import es.ua.dlsi.im3.core.adt.tree.Tree;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
-import es.ua.dlsi.im3.gui.graph.javafx.DirectedGraphViewFX;
+import es.ua.dlsi.im3.gui.adt.graph.javafx.DirectedGraphViewFX;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;

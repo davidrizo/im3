@@ -66,8 +66,8 @@ public class MensuralAgnosticSymbolFont extends AgnosticSymbolFont {
         add(new Rest(RestFigures.fusa), "mensuralRestFusa");
         add(new Rest(RestFigures.semifusa), "mensuralRestSemifusa");
 
-        add(new VerticalLine(AgnosticVersion.v2), "mensuralRestLongaPerfecta");
-        //add(new VerticalLine(AgnosticVersion.v1), "mensuralRestLongaPerfecta");
+        add(new VerticalLine(AgnosticVersion.v2), "barlineSingle");
+        //add(new VerticalLine(AgnosticVersion.v1), "barlineSingle");
 
         add(new Ligature(), "ligature");
 

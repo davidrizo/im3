@@ -7,9 +7,7 @@ import es.ua.dlsi.im3.core.adt.tree.Tree;
 import es.ua.dlsi.im3.core.score.ScoreAnalysisHook;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
-import es.ua.dlsi.im3.core.score.layout.graphics.Group;
-import es.ua.dlsi.im3.core.score.layout.graphics.Line;
-import es.ua.dlsi.im3.core.score.layout.graphics.Text;
+import es.ua.dlsi.im3.core.score.layout.graphics.*;
 
 /**
  * A whole tree, contains root and children connected by lines
@@ -18,8 +16,18 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Text;
 public class TreeGraphic extends Group {
     private static final InteractionElementType INTERACTION_ELEMENT_TYPE = InteractionElementType.analysis; //TODO NotationType and interactionElemntType
     Text text;
-    public TreeGraphic(HorizontalLayout horizontalLayout, Tree<FormAnalysisTreeNodeLabel> tree, LayoutFont layoutFont, double ySeparationBetweenLevels) throws IM3Exception {
-        super(null, INTERACTION_ELEMENT_TYPE);
+    public TreeGraphic(HorizontalLayout horizontalLayout, Tree<FormAnalysisTreeNodeLabel> tree, LayoutFont layoutFont, double ySeparationBetweenLevels, RGBA rgba) throws IM3Exception {
+        super(new NotationSymbol() {
+            @Override
+            public GraphicsElement getGraphics() {
+                return null;
+            }
+
+            @Override
+            protected void doLayout() throws IM3Exception {
+
+            }
+        }, INTERACTION_ELEMENT_TYPE);
 
         Coordinate rootCoordinate;
         if (tree.getLabel() instanceof DivisionLabel) {
@@ -37,15 +45,17 @@ public class TreeGraphic extends Group {
         }
 
 
-        text = new Text(null, INTERACTION_ELEMENT_TYPE, layoutFont, tree.getLabel().getStringLabel(), rootCoordinate);
+        text = new Text(this.getNotationSymbol(), INTERACTION_ELEMENT_TYPE, layoutFont, tree.getLabel().getStringLabel(), rootCoordinate);
         this.add(text);
+        text.setRGBColor(rgba);
 
         // draw children
         for (int i=0; i<tree.getNumChildren(); i++) {
-            TreeGraphic child = new TreeGraphic(horizontalLayout, tree.getChild(i), layoutFont, ySeparationBetweenLevels);
+            TreeGraphic child = new TreeGraphic(horizontalLayout, tree.getChild(i), layoutFont, ySeparationBetweenLevels, rgba);
             this.add(child);
 
-            Line line = new Line(null, INTERACTION_ELEMENT_TYPE, rootCoordinate, child.getPosition());
+            Line line = new Line(this.getNotationSymbol(), INTERACTION_ELEMENT_TYPE, rootCoordinate, child.getPosition());
+            line.setRGBColor(rgba);
             line.setThickness(4); //TODO
             this.add(line);
         }
