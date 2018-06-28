@@ -18,7 +18,7 @@
         <!--<module>mhontanilla</module>-->
         <module>mavr</module>
         <module>typographydesignhelper</module>
-        <module>pruebas</module>
+        <!--<module>pruebas</module>-->
         <module>imvisual</module>
         <module>muret</module>
     </modules>
