@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.analysis.hierarchical.gui;
 
+import es.ua.dlsi.im3.analysis.hierarchical.Graphical;
 import es.ua.dlsi.im3.analysis.hierarchical.forms.FormAnalysis;
 import es.ua.dlsi.im3.analysis.hierarchical.forms.FormAnalysisTreeNodeLabel;
 import es.ua.dlsi.im3.analysis.hierarchical.io.MEIHierarchicalAnalysesModernImporter;
@@ -87,7 +88,7 @@ public class HierarchicalAnalysisViewerController implements Initializable {
             scrollPaneBottom.setContent(scoreSongView.getMainPanel());
 
             TreeFXBuilder treeFXBuilder = new TreeFXBuilder();
-            TreeViewFX treeFX = treeFXBuilder.create(tree, treeHorizontalSeparationSlider.valueProperty(), treeVerticalSeparationSlider.valueProperty(), false, true);
+            TreeViewFX treeFX = treeFXBuilder.create(tree, treeHorizontalSeparationSlider.valueProperty(), treeVerticalSeparationSlider.valueProperty(), false, true, formAndMotivesAnalysis.getGraphical());
             scrollPaneTop.setContent(treeFX.getRoot());
 
             initTreeInteraction(treeFX);

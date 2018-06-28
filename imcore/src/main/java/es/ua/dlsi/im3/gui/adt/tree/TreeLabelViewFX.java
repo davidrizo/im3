@@ -16,9 +16,14 @@
  */
 package es.ua.dlsi.im3.gui.adt.tree;
 
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -33,21 +38,22 @@ public class TreeLabelViewFX  {
     private final FloatProperty nodey = new SimpleFloatProperty();
 
     
-    public TreeLabelViewFX(String text) {
-	label = new Text();
-	if (text != null) {	    
-	    this.label.setText(text);
-	}
-	this.label.setFont(new Font(9));
-	this.label.translateXProperty().bind(nodex);
-	this.label.translateYProperty().bind(nodey);
-	
-	// center to x
-	//this.label.setTranslateX(-this.label.getWidth()/2);
-	//this.label.setTranslateY(-this.label.getHeight()/2);
-	//label.setPadding(new Insets(5));
-	//Background b = new Background(new BackgroundFill(Color.WHITE, new CornerRadii(5), Insets.EMPTY));
-	//this.label.setBackground(b);
+    public TreeLabelViewFX(String text, Color color) {
+        label = new Text();
+        if (text != null) {
+            this.label.setText(text);
+        }
+        this.label.setFont(new Font(9));
+        this.label.translateXProperty().bind(nodex);
+        this.label.translateYProperty().bind(nodey);
+        this.label.setFill(color);
+
+        // center to x
+        //this.label.setTranslateX(-this.label.getWidth()/2);
+        //this.label.setTranslateY(-this.label.getHeight()/2);
+        //label.setPadding(new Insets(5));
+        //Background b = new Background(new BackgroundFill(Color.WHITE, new CornerRadii(5), Insets.EMPTY));
+        //this.label.setBackground(b);
     }
     
 
@@ -81,5 +87,21 @@ public class TreeLabelViewFX  {
 
     public Node getRoot() {
 	return label;
+    }
+
+    public DoubleBinding xConnectionPointProperty() {
+        return nodex.add(label.getLayoutBounds().getWidth()/2);
+    }
+
+    public DoubleBinding topConnectionPointProperty() {
+        return nodey.subtract(label.getLayoutBounds().getHeight()+5.0); //TODO Margen
+    }
+
+    public DoubleBinding bottomConnectionPointProperty() {
+        return nodey.add(5.0); //TODO Margen
+    }
+
+    public ObservableValue<? extends Paint> colorProperty() {
+        return label.fillProperty();
     }
 }

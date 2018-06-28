@@ -1,10 +1,12 @@
 package es.ua.dlsi.im3.gui.adt.tree;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.tree.ILabelColorMapping;
 import es.ua.dlsi.im3.core.adt.tree.Tree;
 import es.ua.dlsi.im3.core.adt.tree.TreeException;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.scene.paint.Color;
 
 public class TreeFXBuilder {
     /**
@@ -17,20 +19,26 @@ public class TreeFXBuilder {
      * @throws TreeException
      * @throws IM3Exception
      */
-	public TreeViewFX create(Tree stree, DoubleProperty xfactor, DoubleProperty yfactor, boolean showOnlyLeaves, boolean useHorizontalPosition)
+	public TreeViewFX create(Tree stree, DoubleProperty xfactor, DoubleProperty yfactor, boolean showOnlyLeaves, boolean useHorizontalPosition, ILabelColorMapping labelColorMapping)
 			throws TreeException, IM3Exception {
 		if (stree == null) {
 			throw new IM3Exception("Cannot build an empty tree");
 		}
-		// int depth = stree.getLevel();
-
 		TreeLabelViewFX nodeFX;
 		if (!showOnlyLeaves || stree.isLeaf()) {
-			nodeFX = new TreeLabelViewFX(stree.getLabel().getStringLabel());
+            String stringLabel = stree.getLabel().getStringLabel();
+		    Color color = Color.BLACK;
+		    if (labelColorMapping != null) {
+		        String colorName = labelColorMapping.getColorMapping(stringLabel);
+		        if (colorName != null) {
+		            color = Color.web(colorName);
+                }
+            }
+			nodeFX = new TreeLabelViewFX(stringLabel, color);
 		} else {
-			nodeFX = new TreeLabelViewFX(null);
+			nodeFX = new TreeLabelViewFX(null, Color.BLACK);
 		}
-		TreeViewFX treeViewFX = new TreeViewFX(stree, nodeFX, xfactor, yfactor, showOnlyLeaves);
+		TreeViewFX treeViewFX = new TreeViewFX(stree, nodeFX, xfactor, yfactor, showOnlyLeaves, labelColorMapping);
 		//stree.setView(treeViewFX);
 
         if (!useHorizontalPosition) {
@@ -42,7 +50,7 @@ public class TreeFXBuilder {
         }
 		if (!stree.isLeaf()) {
 			for (int i = 0; i < stree.getNumChildren(); i++) {
-				TreeViewFX cg = create(stree.getChild(i), xfactor, yfactor, showOnlyLeaves, useHorizontalPosition);
+				TreeViewFX cg = create(stree.getChild(i), xfactor, yfactor, showOnlyLeaves, useHorizontalPosition, labelColorMapping);
 				treeViewFX.addChild(cg);
 			}
 
@@ -55,8 +63,11 @@ public class TreeFXBuilder {
 																									// is
 																									// not
 																									// empty
-			NumberBinding sum = first.getLabelView().nodexProperty().add(last.getLabelView().nodexProperty());
-			nodeFX.nodexProperty().bind(sum.divide(2.0));
+            //if (!useHorizontalPosition)
+            {
+                NumberBinding sum = first.getLabelView().nodexProperty().add(last.getLabelView().nodexProperty());
+                nodeFX.nodexProperty().bind(sum.divide(2.0));
+            }
 		}
 		nodeFX.nodeyProperty().bind(yfactor.multiply(stree.getLevel()));
 
@@ -65,7 +76,8 @@ public class TreeFXBuilder {
 	}
 
 	public void update(TreeViewFX treeFX, Tree tree, boolean useHorizontalPosition) throws IM3Exception, TreeException {
-		TreeViewFX updatedTreeFX = create(tree, treeFX.getXFactor(), treeFX.getYfactor(), treeFX.isShowOnlyLeaves(), useHorizontalPosition);
+		TreeViewFX updatedTreeFX = create(tree, treeFX.getXFactor(), treeFX.getYfactor(), treeFX.isShowOnlyLeaves(), useHorizontalPosition, treeFX.getLabelColorMapping());
 		treeFX.replaceWith(updatedTreeFX);
 	}
+
 }

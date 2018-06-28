@@ -98,6 +98,18 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 				this.lastTree = null;
 				this.inAnalysisElement = true;
 				break;
+				//TODO Más genérico
+            case "graphical":
+            case "colors":
+                break;
+            case "mapping":
+                String nodeName = getAttribute(attributesMap, "name");
+                String color = getAttribute(attributesMap, "color");
+                if (lastAnalysis == null) {
+                    throw new ImportException("Cannot import a graphical color mapping without an analysis");
+                }
+                lastAnalysis.getGraphical().addColorMapping(nodeName, color);
+                break;
 			default:
 				if (this.inAnalysisElement) {
 					AttributesLabel treeLabel = new AttributesLabel(element);

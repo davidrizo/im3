@@ -18,6 +18,7 @@ package es.ua.dlsi.im3.gui.adt.tree;
 
 import java.util.ArrayList;
 
+import es.ua.dlsi.im3.core.adt.tree.ILabelColorMapping;
 import es.ua.dlsi.im3.core.adt.tree.Tree;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
@@ -36,9 +37,11 @@ public class TreeViewFX {
 	TreeLabelViewFX labelView;
 	ArrayList<TreeViewFX> children;
 	Tree tree;
+    ILabelColorMapping labelColorMapping;
 
-	public TreeViewFX(Tree tree, TreeLabelViewFX labelView, DoubleProperty xfactor, DoubleProperty yfactor2, boolean showOnlyLeaves2) {
+	public TreeViewFX(Tree tree, TreeLabelViewFX labelView, DoubleProperty xfactor, DoubleProperty yfactor2, boolean showOnlyLeaves2, ILabelColorMapping labelColorMapping) {
 		this.tree = tree;
+		this.labelColorMapping = labelColorMapping;
 		this.labelView = labelView;
 		group = new Group(labelView.getRoot());
 		this.children = new ArrayList<>();
@@ -47,7 +50,11 @@ public class TreeViewFX {
 		this.showOnlyLeaves = showOnlyLeaves2;
 	}
 
-	public DoubleProperty getYfactor() {
+    public ILabelColorMapping getLabelColorMapping() {
+        return labelColorMapping;
+    }
+
+    public DoubleProperty getYfactor() {
 		return yfactor;
 	}
 
@@ -68,11 +75,12 @@ public class TreeViewFX {
 		children.add(cg);
 
 		Line line = new Line();
-		line.startXProperty().bind(labelView.nodexProperty());
-		line.startYProperty().bind(labelView.nodeyProperty());
-		line.endXProperty().bind(cg.getLabelView().nodexProperty());
-		line.endYProperty().bind(cg.getLabelView().nodeyProperty());
-		line.setStroke(Color.BLACK);
+		line.startXProperty().bind(labelView.xConnectionPointProperty());
+		line.startYProperty().bind(labelView.bottomConnectionPointProperty());
+		line.endXProperty().bind(cg.getLabelView().xConnectionPointProperty());
+		line.endYProperty().bind(cg.getLabelView().topConnectionPointProperty());
+		line.strokeProperty().bind(cg.getLabelView().colorProperty());
+
 
 		if (cg.getTree() == tree.getPropagatedFrom()) {
 			line.setStrokeWidth(3); // TODO ver

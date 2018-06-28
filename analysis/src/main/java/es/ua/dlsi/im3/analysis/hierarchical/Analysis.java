@@ -24,13 +24,15 @@ public abstract class Analysis {
 	protected ObjectProperty<Date> date;
 	protected ScoreSong scoreSong;
 	protected List<HierarchicalAnalysis<?>> hierarchicalAnalyses;
-	
+    protected Graphical graphical;
+
 	public Analysis(String type)  {
 		this.type = type;
 		hierarchicalAnalyses = new ArrayList<>();
 		this.name = new SimpleStringProperty();
 		this.author = new SimpleStringProperty();
-		this.date = new SimpleObjectProperty<>();		
+		this.date = new SimpleObjectProperty<>();
+        graphical = new Graphical();
 	}
 	
 	
@@ -97,6 +99,9 @@ public abstract class Analysis {
 	public String toString() {
 		return "Analysis [name=" + name + "]";
 	}
-	
-	
+
+
+    public Graphical getGraphical() {
+	    return graphical;
+    }
 }
