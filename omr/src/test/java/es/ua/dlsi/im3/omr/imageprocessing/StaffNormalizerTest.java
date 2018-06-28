@@ -16,6 +16,7 @@ public class StaffNormalizerTest {
         StaffNormalizer staffNormalizer = new StaffNormalizer();
         File input = TestFileUtils.getFile("/testdata/imageprocessing/48.jpg");
         File output = TestFileUtils.createTempFile("processed48.jpg");
+        //TODO De momento sólo funciona en el ordenador de David - está pendiente de migración
         staffNormalizer.normalize(input, output);
     }
 }
