@@ -4,7 +4,8 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.Accidentals;
-import es.ua.dlsi.im3.core.score.Clef;
+import es.ua.dlsi.im3.core.score.KeySignature;
+import es.ua.dlsi.im3.core.score.TimeSignature;
 import es.ua.dlsi.im3.core.score.Trill;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
@@ -12,19 +13,19 @@ import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Fermata;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Multirest;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Slur;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticEncoding;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbol;
-import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Barline;
-import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.MajorMinor;
-import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.MeterSignTimeSignature;
-import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Tie;
+import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.*;
 
 
 import java.util.ArrayList;
@@ -40,6 +41,8 @@ public class Encoder {
     private static final PositionInStaff FERMATA_POSITION_ABOVE  = PositionsInStaff.SPACE_6;
     private static final PositionInStaff FERMATA_POSITION_BELOW = PositionsInStaff.SPACE_MINUS_1;
     private static VerticalLine barline;
+    private static AgnosticSystemBreak agnosticSystemBreak;
+    private static SemanticSystemBreak semanticSystemBreak;
     private static Dot dot = new Dot();
     private final AgnosticVersion version;
 
@@ -49,16 +52,20 @@ public class Encoder {
     private final VerticalSeparator verticalSeparator;
     private static final JuxtapositionSeparator juxtapositionSeparator = new JuxtapositionSeparator();
     private final HorizontalSeparator horizontalSeparator;
+    private boolean processSystemBreaks;
 
-    public Encoder(AgnosticVersion version) {
+    public Encoder(AgnosticVersion version, boolean processSystemBreaks) {
         this.version = version;
+        this.processSystemBreaks = processSystemBreaks;
         horizontalSeparator = new HorizontalSeparator(version);
         barline = new VerticalLine(version);
         verticalSeparator = new VerticalSeparator(version);
+        agnosticSystemBreak = new AgnosticSystemBreak();
+        semanticSystemBreak = new SemanticSystemBreak();
     }
 
-    public Encoder() {
-        this(AgnosticVersion.v2);
+    public Encoder(boolean processSystemBreaks) {
+        this(AgnosticVersion.v2, processSystemBreaks);
     }
 
     private void addVerticalSeparator() {
@@ -87,26 +94,46 @@ public class Encoder {
         Measure lastMeasure = null;
         List<ITimedElementInStaff> coreSymbolsOrdered = staff.getCoreSymbolsOrdered();
         Time lastEndTime = null;
+        boolean newSystem = true;
         for (ITimedElementInStaff symbol : coreSymbolsOrdered) {
-            Measure measure = null;
-            if (scoreSong.hasMeasures()) {
-                measure = scoreSong.getMeasureActiveAtTime(symbol.getTime());
-            }
-            if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
-                agnosticEncoding.add(new AgnosticSymbol(barline, PositionsInStaff.LINE_1));
-                agnosticEncoding.add(horizontalSeparator);
-                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
+            if (processSystemBreaks && symbol instanceof SystemBreak) {
                 semanticEncoding.add(new SemanticSymbol(new Barline()));
-                ////semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
+                agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
+                agnosticEncoding.add(agnosticSystemBreak);
+                semanticEncoding.add(semanticSystemBreak);
+                newSystem = true;
+            } else {
+                Measure measure = null;
+                if (scoreSong.hasMeasures()) {
+                    measure = scoreSong.getMeasureActiveAtTime(symbol.getTime());
+                }
+
+                if (newSystem && processSystemBreaks) {
+                    es.ua.dlsi.im3.core.score.Clef lastClef = staff.getRunningClefAt(symbol);
+                    encodeClef(lastClef);
+
+                    KeySignature lastKeySignature = staff.getRunningKeySignatureAt(symbol);
+                    encodeKeySignature(lastKeySignature);
+                    newSystem = false;
+                    //TODO slurs
+                } else {
+                    if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
+                        agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
+                        agnosticEncoding.add(horizontalSeparator);
+                        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
+                        semanticEncoding.add(new SemanticSymbol(new Barline()));
+                        ////semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
+                    }
+                }
+
+                convert(symbol, drawnAccidentals, null);
+
+                if (symbol instanceof Atom) {
+                    lastEndTime = ((Atom) symbol).getOffset();
+                }
+
+                lastMeasure = measure;
             }
-
-            convert(symbol, drawnAccidentals);
-
-            if (symbol instanceof Atom) {
-                lastEndTime = ((Atom) symbol).getOffset();
-            }
-
-            lastMeasure = measure;
         }
 
         if (lastEndTime == null) {
@@ -117,7 +144,7 @@ public class Encoder {
         if (lastEndTime.equals(measureEndTime)) {
             // add bar line just if the measure is complete
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
-            agnosticEncoding.add(new AgnosticSymbol(barline, PositionsInStaff.LINE_1));
+            agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
             agnosticEncoding.add(horizontalSeparator);
             //semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
             semanticEncoding.add(new SemanticSymbol(new Barline()));
@@ -135,120 +162,199 @@ public class Encoder {
 
     private void convertDots(AtomFigure figure, PositionInStaff positionInStaff) {
         for (int i = 0; i < figure.getDots(); i++) {
-            agnosticEncoding.add(new AgnosticSymbol(dot, positionInStaff));
+            agnosticEncoding.add(new AgnosticSymbol(version, dot, positionInStaff));
             agnosticEncoding.add(horizontalSeparator);
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.dot, null, positionInStaff));
         }
     }
 
-    private void convert(ITimedElementInStaff symbol, HashMap<AtomPitch, Accidentals> drawnAccidentals) throws IM3Exception {
-        if (symbol instanceof Clef) {
-            PositionInStaff positionInStaff = PositionInStaff.fromLine(((Clef) symbol).getLine());
-            Clef clef = (Clef) symbol;
-            if (clef.getOctaveChange() != 0) {
-                throw new IM3Exception("Unsupported octave changes: " + clef);
-            }
-            ClefNote clefNote;
-            switch (clef.getNote()) {
-                case C:
-                    clefNote = ClefNote.C;
-                    break;
-                case G:
-                    clefNote = ClefNote.G;
-                    break;
-                case F:
-                    clefNote = ClefNote.F;
-                    break;
-                // TODO: 23/2/18 Octava bassa, alta....
-                default: throw new IM3Exception("Invalid clef note: " + clef.getNote());
-            }
-            agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef(clefNote), positionInStaff));
-            agnosticEncoding.add(horizontalSeparator);
-            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.clef, clef.getNote().name(), positionInStaff));
-            //semanticTokens.add(new SemanticToken(SemanticSymbol.clef, clef.getNote() + "" + clef.getLine()));
-            semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Clef(clefNote, clef.getLine())));
-
+    private void convert(ITimedElementInStaff symbol, HashMap<AtomPitch, Accidentals> drawnAccidentals, Integer tupletNumber) throws IM3Exception {
+        if (symbol instanceof es.ua.dlsi.im3.core.score.Clef) {
+            es.ua.dlsi.im3.core.score.Clef clef = (es.ua.dlsi.im3.core.score.Clef) symbol;
+            encodeClef(clef);
         } else if (symbol instanceof KeySignature) {
             KeySignature ks = (KeySignature) symbol;
-            PositionInStaff[] positions = ks.computePositionsOfAccidentals();
-            if (positions != null) {
-                boolean first = true;
-                for (PositionInStaff position : positions) {
-                    es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(ks.getAccidental());
-                    for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
-                        agnosticEncoding.add(new AgnosticSymbol(new Accidental(acc), position));
-                        agnosticEncoding.add(horizontalSeparator);
+            encodeKeySignature(ks);
+        } else if (symbol instanceof TimeSignature) {
+            encodeTimeSignature((TimeSignature) symbol);
+        } else if (symbol instanceof SimpleChord) {
+            if (version == AgnosticVersion.v1) {
+                throw new IM3Exception("Unsupported chords in V1");
+            } else {
+                SimpleChord chord = (SimpleChord) symbol;
+
+                PositionInStaff [] positionInStaffs = new PositionInStaff[chord.getAtomPitches().size()];
+                int i=0;
+                boolean tiedFromPreviousGenerated = false;
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    positionInStaffs[i] = symbol.getStaff().computePositionInStaff(chord.getTime(),
+                            atomPitch.getScientificPitch().getPitchClass().getNoteName(), atomPitch.getScientificPitch().getOctave());
+
+                    if (atomPitch.isTiedFromPrevious()) {
+                        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, END, positionInStaff));
+                        if (tiedFromPreviousGenerated) {
+                            addVerticalSeparator();
+                        }
+                        agnosticEncoding.add(new AgnosticSymbol(version, new Slur(StartEnd.end), positionInStaffs[i]));
+                        tiedFromPreviousGenerated = true;
                     }
-                    //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, ks.getAccidental().name().toLowerCase(), position));
+
+                    i++;
+                }
+                if (tiedFromPreviousGenerated) {
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+                if (chord.getAtomFigure().getFermata() != null && (chord.getAtomFigure().getFermata().getPosition() == null || chord.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
+                    addVerticalSeparator();
+
+                    //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
+                }
+
+                i=0;
+                boolean accdidentalsGenerated = false;
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    Accidentals accidentalToDraw = drawnAccidentals.get(atomPitch.getScientificPitch());
+                    if (accidentalToDraw != null) {
+                        es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(accidentalToDraw);
+                        for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
+                            if (accdidentalsGenerated) {
+                                addVerticalSeparator();
+                            }
+                            agnosticEncoding.add(new AgnosticSymbol(version, new Accidental(acc), positionInStaffs[i]));
+                            accdidentalsGenerated = true;
+                        }
+                        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, accidentalToDraw.name().toLowerCase(), positionInStaff));
+                    }
+                    i++;
+                }
+                if (accdidentalsGenerated) {
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+
+                //String figureString = generateFigureString(note);
+                INoteDurationSpecification figureString = generateFigureString(chord);
+
+                //  GraphicalSymbol graphicalSymbol;
+            /*if (note.isGrace()) {
+                graphicalSymbol = GraphicalSymbol.gracenote;
+            } else {
+                graphicalSymbol = GraphicalSymbol.note;
+            }*/
+
+                // TODO: 18/10/17 Otras marcas
+                boolean trill = false;
+                if (chord.getMarks() != null) {
+                    for (StaffMark mark : chord.getMarks()) {
+                        if (mark instanceof Trill) {
+                            agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
+                            addVerticalSeparator();
+                            trill = true;
+                            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, FERMATA_POSITION_ABOVE));
+                        } else {
+                            throw new IM3Exception("Unsupported mark: " + mark.getClass());
+                        }
+                    }
+                }
+
+                for (i=0; i<positionInStaffs.length; i++) {
+                    if (i>0) {
+                        addVerticalSeparator();
+                    }
+                    if (chord.isGrace()) {
+                        agnosticEncoding.add(new AgnosticSymbol(version, new GraceNote(figureString), positionInStaffs[i]));
+                    } else {
+                        agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaffs[i]));
+                    }
+                }
+                //graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
+
+                if (chord.getAtomFigure().getFermata() != null && chord.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
+                    //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
+                    addVerticalSeparator();
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(Positions.below), FERMATA_POSITION_BELOW));
+                } else {
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+                if (chord.getAtomFigure().getDots()>0) {
+                    for (i = 0; i < positionInStaffs.length; i++) {
+                        if (i > 0) {
+                            addVerticalSeparator();
+                        }
+                        PositionInStaff dotPositionInStaff;
+                        if (positionInStaffs[i].laysOnLine()) {
+                            dotPositionInStaff = positionInStaffs[i].move(1);
+                        } else {
+                            dotPositionInStaff = positionInStaffs[i];
+                        }
+                        convertDots(chord.getAtomFigure(), dotPositionInStaff);
+                    }
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+                boolean tiedToNextGenerated = false;
+                i=0;
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    if (atomPitch.isTiedToNext()) {
+                        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, START, positionInStaff));
+                        if (tiedToNextGenerated) {
+                            addVerticalSeparator();
+                        }
+                        agnosticEncoding.add(new AgnosticSymbol(version, new Slur(StartEnd.start), positionInStaffs[i]));
+                        tiedToNextGenerated = true;
+                    }
+                    i++;
+                }
+
+                if (tiedToNextGenerated) {
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note semanticNote =
+                            new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note(chord.isGrace(), atomPitch.getScientificPitch(), chord.getAtomFigure().getFigure(), chord.getAtomFigure().getDots(),
+                                    chord.getAtomFigure().getFermata() != null,
+                                    trill, tupletNumber);
+                    semanticEncoding.add(new SemanticSymbol(semanticNote));
+                }
+
+                i=0;
+                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    if (atomPitch.isTiedToNext()) {
+                        semanticEncoding.add(new SemanticSymbol(new Tie())); //TODO Esto no está bien
+                        //semanticTokens.add(new SemanticToken(SemanticSymbol.tie));
+                    }
                 }
             }
-            /*StringBuilder sb = new StringBuilder();
-            sb.append(ks.getConcertPitchKey().getPitchClass().toString());
-            if (ks.getConcertPitchKey().getMode() != null && ks.getConcertPitchKey().getMode() != Mode.UNKNOWN) {
-                sb.append(ks.getConcertPitchKey().getMode().getName());
-            }*/
-            //semanticTokens.add(new SemanticToken(SemanticSymbol.keySignature, sb.toString()));
-            semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.KeySignature(
-                    ks.getConcertPitchKey().getPitchClass().getNoteName(),
-                    ks.getConcertPitchKey().getPitchClass().getAccidental(),
-                    convert(ks.getConcertPitchKey().getMode()))));
-            //semanticTokens.add(new SemanticToken(SemanticSymbol.keySignature, sb.toString()));
-
-        } else if (symbol instanceof TimeSignature) {
-            es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.TimeSignature timeSignature;
-
-            if (symbol instanceof SignTimeSignature) {
-                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.metersign, ((SignTimeSignature) symbol).getSignString(), PositionsInStaff.LINE_3));
-                MeterSigns meterSign = convert((SignTimeSignature) symbol);
-                agnosticEncoding.add(new AgnosticSymbol(new MeterSign(meterSign), PositionsInStaff.LINE_3));
-                agnosticEncoding.add(horizontalSeparator);
-                timeSignature = new MeterSignTimeSignature(meterSign);
-                //sb.append(((SignTimeSignature) symbol).getSignString());
-            } else if (symbol instanceof FractionalTimeSignature) {
-                FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
-                agnosticEncoding.add(new AgnosticSymbol(new Digit(ts.getNumerator()), PositionsInStaff.LINE_4));
-                addVerticalSeparator();
-                agnosticEncoding.add(new AgnosticSymbol(new Digit(ts.getDenominator()), PositionsInStaff.LINE_2));
-                agnosticEncoding.add(horizontalSeparator);
-                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getNumerator()), PositionsInStaff.LINE_4));
-                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getDenominator()), PositionsInStaff.LINE_2));
-                //sb.append(ts.getNumerator());
-                //sb.append('/');
-                //sb.append(ts.getDenominator());
-                timeSignature = new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.FractionalTimeSignature(ts.getNumerator(), ts.getDenominator());
-            } else {
-                throw new ExportException("Unsupported time signature" + symbol.getClass());
-            }
-
-
-            //semanticTokens.add(new SemanticToken(SemanticSymbol.timeSignature, sb.toString()));
-            semanticEncoding.add(new SemanticSymbol(timeSignature));
-        } else if (symbol instanceof SimpleChord) {
-            throw new IM3Exception("Unsupported chords"); // TODO - separar con verticalSeparator
         } else if (symbol instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) symbol;
-
-            if (note.getAtomFigure().getFermata() != null && (note.getAtomFigure().getFermata().getPosition() == null || note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
-                addVerticalSeparator();
-
-                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
-            }
 
             PositionInStaff positionInStaff = symbol.getStaff().computePositionInStaff(note.getTime(),
                     note.getPitch().getPitchClass().getNoteName(), note.getPitch().getOctave());
 
             if (note.getAtomPitch().isTiedFromPrevious()) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, END, positionInStaff));
-                agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.end), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Slur(StartEnd.end), positionInStaff));
                 agnosticEncoding.add(horizontalSeparator);
             }
+
+            if (note.getAtomFigure().getFermata() != null && (note.getAtomFigure().getFermata().getPosition() == null || note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(Positions.above), FERMATA_POSITION_ABOVE));
+                addVerticalSeparator();
+
+                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
+            }
+
+
 
             Accidentals accidentalToDraw = drawnAccidentals.get(note.getAtomPitch());
             if (accidentalToDraw != null) {
                 es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(accidentalToDraw);
                 for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Accidental(acc), positionInStaff));
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Accidental(acc), positionInStaff));
                     agnosticEncoding.add(horizontalSeparator);
                 }
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, accidentalToDraw.name().toLowerCase(), positionInStaff));
@@ -269,7 +375,7 @@ public class Encoder {
             if (note.getMarks() != null) {
                 for (StaffMark mark : note.getMarks()) {
                     if (mark instanceof Trill) {
-                        agnosticEncoding.add(new AgnosticSymbol(new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
+                        agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Trill(), PositionsInStaff.SPACE_6));
                         addVerticalSeparator();
                         trill = true;
                         //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.trill, null, FERMATA_POSITION_ABOVE));
@@ -280,16 +386,16 @@ public class Encoder {
             }
 
             if (note.isGrace()) {
-                agnosticEncoding.add(new AgnosticSymbol(new GraceNote(figureString), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new GraceNote(figureString), positionInStaff));
             } else {
-                agnosticEncoding.add(new AgnosticSymbol(new Note(figureString), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaff));
             }
             //graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
 
             if (note.getAtomFigure().getFermata() != null && note.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, note.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
                 addVerticalSeparator();
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(Positions.below), FERMATA_POSITION_BELOW));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(Positions.below), FERMATA_POSITION_BELOW));
             } else {
                 agnosticEncoding.add(horizontalSeparator);
             }
@@ -304,7 +410,7 @@ public class Encoder {
 
             if (note.getAtomPitch().isTiedToNext()) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.slur, START, positionInStaff));
-                agnosticEncoding.add(new AgnosticSymbol(new Slur(StartEnd.start), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Slur(StartEnd.start), positionInStaff));
                 agnosticEncoding.add(horizontalSeparator);
             }
 
@@ -324,7 +430,7 @@ public class Encoder {
             es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note semanticNote =
                     new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note(note.isGrace(), note.getPitch(), note.getAtomFigure().getFigure(), note.getAtomFigure().getDots(),
                             note.getAtomFigure().getFermata() != null,
-                            trill);
+                            trill, tupletNumber);
             semanticEncoding.add(new SemanticSymbol(semanticNote));
 
 
@@ -338,24 +444,24 @@ public class Encoder {
             int n = multiMeasureRest.getNumMeasures();
 
             if (n > 2) { // the digit is placed on top of the symbol by Verovio but after the physical start of multirest
-                agnosticEncoding.add(new AgnosticSymbol(new Multirest(), PositionsInStaff.LINE_3));
+                agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Multirest(), PositionsInStaff.LINE_3));
                 agnosticEncoding.add(horizontalSeparator);
             }
 
             if (multiMeasureRest.getAtomFigure().getFermata() != null && multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE) {
                 Positions positions = convert(multiMeasureRest.getAtomFigure().getFermata().getPosition());
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_ABOVE));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(positions), FERMATA_POSITION_ABOVE));
                 addVerticalSeparator();
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_ABOVE));
             }
 
             if (n <= 2) { // the digit is placed on top of the symbol by Verovio
-                agnosticEncoding.add(new AgnosticSymbol(new Digit(n), PositionsInStaff.SPACE_5));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(n), PositionsInStaff.SPACE_5));
                 addVerticalSeparator();
                 if (n == 1) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Rest(RestFigures.whole), PositionsInStaff.LINE_4)); // Verovio encodes these rests this way
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Rest(RestFigures.whole), PositionsInStaff.LINE_4)); // Verovio encodes these rests this way
                 } else {
-                    agnosticEncoding.add(new AgnosticSymbol(new Rest(RestFigures.breve), PositionsInStaff.LINE_3)); // Verovio encodes these rests this way
+                    agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest(RestFigures.breve), PositionsInStaff.LINE_3)); // Verovio encodes these rests this way
                 }
                 agnosticEncoding.add(horizontalSeparator);
             } else {
@@ -366,7 +472,7 @@ public class Encoder {
                     digits.add(0, digit);
                 }
                 for (Integer digit : digits) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Digit(digit), PositionsInStaff.SPACE_5));
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Digit(digit), PositionsInStaff.SPACE_5));
                     agnosticEncoding.add(horizontalSeparator);
                     //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(digit), PositionsInStaff.SPACE_5));
                 }
@@ -380,7 +486,7 @@ public class Encoder {
 
                 Positions positions = convert(multiMeasureRest.getAtomFigure().getFermata().getPosition());
                 addVerticalSeparator();
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_BELOW));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(positions), FERMATA_POSITION_BELOW));
             }
 
             //semanticTokens.add(new SemanticToken(SemanticSymbol.multirest, Integer.toString(multiMeasureRest.getNumMeasures())));
@@ -392,7 +498,7 @@ public class Encoder {
             if (rest.getAtomFigure().getFermata() != null && (rest.getAtomFigure().getFermata().getPosition() == null || rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.ABOVE)) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_ABOVE));
                 Positions positions = convert(rest.getAtomFigure().getFermata().getPosition());
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_ABOVE));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(positions), FERMATA_POSITION_ABOVE));
                 addVerticalSeparator();
             }
 
@@ -404,14 +510,14 @@ public class Encoder {
             }
 
             RestFigures restFigure = convert(rest.getAtomFigure().getFigure());
-            agnosticEncoding.add(new AgnosticSymbol(new Rest(restFigure), positionsInStaff));
+            agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest(restFigure), positionsInStaff));
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.rest, rest.getAtomFigure().getFigure().toString().toLowerCase(), positionsInStaff));
 
             if (rest.getAtomFigure().getFermata() != null && rest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, rest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
                 Positions positions = convert(rest.getAtomFigure().getFermata().getPosition());
                 addVerticalSeparator();
-                agnosticEncoding.add(new AgnosticSymbol(new Fermata(positions), FERMATA_POSITION_BELOW));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Fermata(positions), FERMATA_POSITION_BELOW));
             } else {
                 agnosticEncoding.add(horizontalSeparator);
             }
@@ -424,11 +530,153 @@ public class Encoder {
             semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Rest(
                     rest.getAtomFigure().getFigure(),
                     rest.getAtomFigure().getDots(),
-                    rest.getAtomFigure().getFermata() != null
+                    rest.getAtomFigure().getFermata() != null,
+                    tupletNumber
             )));
 
-        } else {
+        } else if (symbol instanceof SimpleTuplet) {
+            SimpleTuplet simpleTuplet = (SimpleTuplet) symbol;
+            if (simpleTuplet.getCardinality() != 3) {
+                throw new ExportException("Unsupported tuplets different of tiplets, this is cardinality " + simpleTuplet.getCardinality());
+            }
+
+            PositionInStaff tupletPositionInStaff = computePositionInStaff(simpleTuplet);
+
+            tupletNumber = simpleTuplet.getCardinality();
+            //if (simpleTuplet.getEachFigure().getMeterUnit() <= Figures.QUARTER.getMeterUnit()) {
+            boolean inBeam = false;
+            if (simpleTuplet.getAtoms().get(0) instanceof SingleFigureAtom) {
+                inBeam = ((SingleFigureAtom)simpleTuplet.getAtoms().get(0)).getBelongsToBeam() != null;
+            } else {
+                throw new IM3Exception("Unsupported compound tuplets");
+            }
+
+            if (!inBeam) {
+                // if quarter, half,.... or eighth without beam
+                agnosticEncoding.add(new AgnosticSymbol(version, new Bracket(StartEnd.start), tupletPositionInStaff));
+                addVerticalSeparator();
+                convert(simpleTuplet.getAtoms().get(0), drawnAccidentals, tupletNumber);
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(3), tupletPositionInStaff));
+                addVerticalSeparator();
+                convert(simpleTuplet.getAtoms().get(1), drawnAccidentals, tupletNumber);
+                agnosticEncoding.add(new AgnosticSymbol(version, new Bracket(StartEnd.end), tupletPositionInStaff));
+                addVerticalSeparator();
+                convert(simpleTuplet.getAtoms().get(2), drawnAccidentals, tupletNumber);
+
+                //TODO SEMANTIC
+            } else {
+                // if 8th, 16th...
+                convert(simpleTuplet.getAtoms().get(0), drawnAccidentals, tupletNumber);
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(3), tupletPositionInStaff));
+                agnosticEncoding.add(horizontalSeparator);
+                convert(simpleTuplet.getAtoms().get(1), drawnAccidentals, tupletNumber);
+                convert(simpleTuplet.getAtoms().get(2), drawnAccidentals, tupletNumber);
+            }
+        } else if (!(symbol instanceof StaffTimedPlaceHolder)) {
             throw new ExportException("Unsupported symbol conversion of: " + symbol.getClass());
+
+        }
+    }
+
+    private void encodeClef(es.ua.dlsi.im3.core.score.Clef clef) throws IM3Exception {
+        PositionInStaff positionInStaff = PositionInStaff.fromLine(clef.getLine());
+        if (clef.getOctaveChange() != 0) {
+            throw new IM3Exception("Unsupported octave changes: " + clef);
+        }
+        ClefNote clefNote;
+        switch (clef.getNote()) {
+            case C:
+                clefNote = ClefNote.C;
+                break;
+            case G:
+                clefNote = ClefNote.G;
+                break;
+            case F:
+                clefNote = ClefNote.F;
+                break;
+            // TODO: 23/2/18 Octava bassa, alta....
+            default: throw new IM3Exception("Invalid clef note: " + clef.getNote());
+        }
+        agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef(clefNote), positionInStaff));
+        agnosticEncoding.add(horizontalSeparator);
+        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.clef, clef.getNote().name(), positionInStaff));
+        //semanticTokens.add(new SemanticToken(SemanticSymbol.clef, clef.getNote() + "" + clef.getLine()));
+        semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Clef(clefNote, clef.getLine())));
+    }
+
+    private void encodeTimeSignature(TimeSignature symbol) throws IM3Exception {
+        es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.TimeSignature timeSignature;
+
+        if (symbol instanceof SignTimeSignature) {
+            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.metersign, ((SignTimeSignature) symbol).getSignString(), PositionsInStaff.LINE_3));
+            MeterSigns meterSign = convert((SignTimeSignature) symbol);
+            agnosticEncoding.add(new AgnosticSymbol(version, new MeterSign(meterSign), PositionsInStaff.LINE_3));
+            agnosticEncoding.add(horizontalSeparator);
+            timeSignature = new MeterSignTimeSignature(meterSign);
+            //sb.append(((SignTimeSignature) symbol).getSignString());
+        } else if (symbol instanceof FractionalTimeSignature) {
+            FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
+            agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getNumerator()), PositionsInStaff.LINE_4));
+            addVerticalSeparator();
+            agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getDenominator()), PositionsInStaff.LINE_2));
+            agnosticEncoding.add(horizontalSeparator);
+            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getNumerator()), PositionsInStaff.LINE_4));
+            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getDenominator()), PositionsInStaff.LINE_2));
+            //sb.append(ts.getNumerator());
+            //sb.append('/');
+            //sb.append(ts.getDenominator());
+            timeSignature = new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.FractionalTimeSignature(ts.getNumerator(), ts.getDenominator());
+        } else {
+            throw new ExportException("Unsupported time signature" + symbol.getClass());
+        }
+
+
+        //semanticTokens.add(new SemanticToken(SemanticSymbol.timeSignature, sb.toString()));
+        semanticEncoding.add(new SemanticSymbol(timeSignature));
+
+    }
+
+    private void encodeKeySignature(KeySignature ks) throws IM3Exception {
+        PositionInStaff[] positions = ks.computePositionsOfAccidentals();
+        if (positions != null) {
+            boolean first = true;
+            for (PositionInStaff position : positions) {
+                es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(ks.getAccidental());
+                for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
+                    agnosticEncoding.add(new AgnosticSymbol(version, new Accidental(acc), position));
+                    agnosticEncoding.add(horizontalSeparator);
+                }
+                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, ks.getAccidental().name().toLowerCase(), position));
+            }
+        }
+            /*StringBuilder sb = new StringBuilder();
+            sb.append(ks.getConcertPitchKey().getPitchClass().toString());
+            if (ks.getConcertPitchKey().getMode() != null && ks.getConcertPitchKey().getMode() != Mode.UNKNOWN) {
+                sb.append(ks.getConcertPitchKey().getMode().getName());
+            }*/
+        //semanticTokens.add(new SemanticToken(SemanticSymbol.keySignature, sb.toString()));
+        semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.KeySignature(
+                ks.getConcertPitchKey().getPitchClass().getNoteName(),
+                ks.getConcertPitchKey().getPitchClass().getAccidental(),
+                convert(ks.getConcertPitchKey().getMode()))));
+        //semanticTokens.add(new SemanticToken(SemanticSymbol.keySignature, sb.toString()));
+    }
+
+    private PositionInStaff computePositionInStaff(SimpleTuplet simpleTuplet) throws IM3Exception {
+        //TODO si está forzado el stem arriba o abajo
+        int averageLineSpace = 0;
+        int count = 0;
+        for (AtomPitch atomPitch: simpleTuplet.getAtomPitches()) {
+            PositionInStaff positionInStaff = atomPitch.getStaff().computePositionInStaff(atomPitch.getTime(),
+                    atomPitch.getScientificPitch().getPitchClass().getNoteName(), atomPitch.getScientificPitch().getOctave());
+            averageLineSpace += positionInStaff.getLineSpace();
+        }
+
+        int line3 = PositionsInStaff.LINE_3.getLineSpace();
+        if (averageLineSpace >= line3) {
+            return PositionsInStaff.SPACE_MINUS_1;
+        } else {
+            return PositionsInStaff.SPACE_6;
         }
     }
 
@@ -511,14 +759,14 @@ public class Encoder {
             return note.getAtomFigure().getFigure().toString().toLowerCase();
         }*
     }*/
-    private INoteDurationSpecification generateFigureString(SimpleNote note) throws IM3Exception {
-        BeamGroup beam = note.getBelongsToBeam();
+    private INoteDurationSpecification generateFigureString(SingleFigureAtom singleFigureAtom) throws IM3Exception {
+        BeamGroup beam = singleFigureAtom.getBelongsToBeam();
         if (beam != null) {
-            int flags = note.getAtomFigure().getFigure().getNumFlags();
-            if (beam.getFirstFigure() == note) {
+            int flags = singleFigureAtom.getAtomFigure().getFigure().getNumFlags();
+            if (beam.getFirstFigure() == singleFigureAtom) {
                 //return "beamedRight" + flags;
                 return new Beam(BeamType.right, flags);
-            } else if (beam.getLastFigure() == note) {
+            } else if (beam.getLastFigure() == singleFigureAtom) {
                 //return "beamedLeft" + flags;
                 return new Beam(BeamType.left, flags);
             } else {
@@ -526,7 +774,7 @@ public class Encoder {
                 return new Beam(BeamType.both, flags);
             }
         } else {
-            switch (note.getAtomFigure().getFigure()) {
+            switch (singleFigureAtom.getAtomFigure().getFigure()) {
                 case DOUBLE_WHOLE: return NoteFigures.doubleWhole;
                 case WHOLE: return NoteFigures.whole;
                 case HALF: return NoteFigures.half;
@@ -536,7 +784,7 @@ public class Encoder {
                 case THIRTY_SECOND: return NoteFigures.thirtySecond;
                 case SIXTY_FOURTH: return NoteFigures.sixtyFourth;
                 case HUNDRED_TWENTY_EIGHTH: return NoteFigures.hundredTwentyEighth;
-                default: throw new IM3Exception("Unsupported note figure: " + note.getAtomFigure().getFigure());
+                default: throw new IM3Exception("Unsupported note figure: " + singleFigureAtom.getAtomFigure().getFigure());
             }
             //return note.getAtomFigure().getFigure().toString().toLowerCase();
         }

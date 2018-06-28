@@ -93,7 +93,7 @@ public abstract class MelodicAnalyzerMachineLearning extends MelodicAnalyzer {
                     logger.log(Level.INFO, "Learning from ", lsong.getTitle());
                     TonalAnalysis tonalAnalysis = new TonalAnalysis(lsong);
                     tonalAnalysis.loadFromSong();
-                    ArrayList<Segment> sonorities = new SonoritySegmenter().segmentSonorities(lsong);
+                    List<Segment> sonorities = new SonoritySegmenter().segmentSonorities(lsong);
                     HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features = computeFeatures(lsong, sonorities, tonalAnalysis);
                     readTrainingFeatures(lsong, sonorities, features, tonalAnalysis);
                 }
@@ -121,7 +121,7 @@ public abstract class MelodicAnalyzerMachineLearning extends MelodicAnalyzer {
                     logger.log(Level.INFO, "Learning from ", lsong.getTitle());
                     TonalAnalysis tonalAnalysis = new TonalAnalysis(lsong);
                     tonalAnalysis.loadFromSong();
-                    ArrayList<Segment> sonorities = new SonoritySegmenter().segmentSonorities(lsong);
+                    List<Segment> sonorities = new SonoritySegmenter().segmentSonorities(lsong);
                     HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features = computeFeatures(lsong, sonorities, tonalAnalysis);
                     readTrainingFeatures(lsong, sonorities, features, tonalAnalysis);
                 }
@@ -159,7 +159,7 @@ public abstract class MelodicAnalyzerMachineLearning extends MelodicAnalyzer {
                     TonalAnalysis tonalAnalysis = new TonalAnalysis(lsong);
                     tonalAnalysis.loadFromSong();
 
-                    ArrayList<Segment> sonorities = new SonoritySegmenter().segmentSonorities(lsong);
+                    List<Segment> sonorities = new SonoritySegmenter().segmentSonorities(lsong);
                     HashMap<AtomPitch, NoteMelodicAnalysisFeatures> features = computeFeatures(lsong, sonorities, tonalAnalysis);
                     readTrainingFeatures(lsong, sonorities, features, tonalAnalysis);
                 }

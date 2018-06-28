@@ -3,6 +3,9 @@ package es.ua.dlsi.im3.core.score;
 import es.ua.dlsi.im3.core.IM3Exception;
 import org.apache.commons.lang3.math.Fraction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimpleMultiMeasureRest extends SimpleRest {
 	/**
 	 * Number of measures
@@ -32,4 +35,21 @@ public class SimpleMultiMeasureRest extends SimpleRest {
 	public int getNumMeasures() {
 		return numMeasures;
 	}
+
+    /**
+     * Create SimpleMeasureRests for each measure it takes
+     * @return
+     */
+    public List<Atom> getAtoms() {
+        List<Atom> subatoms = new ArrayList<>();
+        Time dur = getDuration().divide(numMeasures);
+        Time time = this.getTime();
+        for (int i=0; i<numMeasures; i++) {
+            SimpleMeasureRest simpleMeasureRest = new SimpleMeasureRest(Figures.WHOLE, dur);
+            simpleMeasureRest.setTime(time);
+            subatoms.add(simpleMeasureRest);
+            time = time.add(dur);
+        }
+        return subatoms;
+    }
 }

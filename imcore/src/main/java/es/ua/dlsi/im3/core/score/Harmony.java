@@ -13,7 +13,7 @@ import es.ua.dlsi.im3.core.score.scales.ScaleSelectorFactory;
 
 //TODO Dejar sólo lo que haga falta
 /**
- * @deprecated Use analysis.tonal.RomanNumeralAnalysis
+ * @deprecated Use Harm
  * @author drizo
  * @date 05/06/2011
  *
@@ -974,5 +974,8 @@ public class Harmony implements ITimedElement, Comparable<Harmony>, IUniqueIDObj
 		
 	}
 
-	
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        this.time = time.add(offset);
+    }
 }

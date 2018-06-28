@@ -1,4 +1,4 @@
-!!!OTL: O alutari hotia (incipit)
+!!!OTL: O salutaris hostia (incipit)
 **mens	**mens	**mens	**mens
 !Bassus.	!TEnor.	!COntra.	![Superius]
 *staff4	*staff3	*staff2	*staff1
@@ -6,17 +6,17 @@
 *k[b-]	*k[b-]	*k[b-]	*k[b-]
 *M2/2	*M2/2	*M2/2	*M2/2
 *met(c|)	*met(c|)	*met(c|)	*met(c|)
-SD	Sa	Sdd	Sg
-SGG	Sb-	Sdd	Sg
-SD	Sa	Sdd	Sf
+SD	SA	Sd	Sf
+SGG	SB-	Sd	Sg
+SD	SA	Sd	Sf
 *k[b-e-]	.	.	.
-SE-	Sg	Sgg	Sb-
-SD	Sdd	Sff	Sb-
-SF	Scc	Sff	Sa
-SG	Sb-	Sdd	Sg
-SD;	Sa;	Sdd;	Sa;
-SD	Sa	Sdd	Sf
-SG	Sb-	Sdd	Sg
-SGG	Sg;	Sdd;	Sg
+SE-	SG	Sg	Sb-
+SBB-	Sd	Sf	Sb-
+SF	Sc	Sf	Sa
+SG	SB-	Sd	Sg
+SD;	SA;	Sd;	Sa;
+SD	SA	Sd	Sf
+SG	SB-	Sd	Sg
+LGG	LG;	Ld;	Lg
 !!!ENC: David Rizo
 !!!END: 2018/03/28

@@ -9,13 +9,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.ua.dlsi.im3.omr.model.StringToSymbolFactory;
 
 public class BimodalDatasetReader implements IBimodalDatasetReader {
-    StringToSymbolFactory stringToSymbolFactory;
+    //TODO Abril StringToSymbolFactory stringToSymbolFactory;
 
     public BimodalDatasetReader() {
-        this.stringToSymbolFactory = new StringToSymbolFactory();
+        //TODO Abril this.stringToSymbolFactory = new StringToSymbolFactory();
     }
 
     @Override
@@ -29,7 +28,8 @@ public class BimodalDatasetReader implements IBimodalDatasetReader {
 			throw new IOException("Inputstream is null");
 		}
 		ArrayList<BimodalSymbol> result = new ArrayList<>();
-		InputStreamReader isr = new InputStreamReader(is);
+        //TODO Abril
+		/*InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
 		String line;
 		while ((line=br.readLine())!=null) {
@@ -41,7 +41,7 @@ public class BimodalDatasetReader implements IBimodalDatasetReader {
 			String strokes = components[1];
 			String grayscalePixels = components[2];
 			
-			BimodalSymbol symbol = new BimodalSymbol(stringToSymbolFactory.parseString(label));
+			BimodalSymbol symbol = new BimodalSymbol(stringToSymbolFactory.parseAgnosticString(label));
 			
 			String [] coordList = strokes.split(";");
 			for (String sl : coordList) {
@@ -56,7 +56,7 @@ public class BimodalDatasetReader implements IBimodalDatasetReader {
 				symbol.addGrayscalePixel(Integer.parseInt(px));
 			}
 			result.add(symbol);
-		}
+		}*/
 		return result;
 		
 	}

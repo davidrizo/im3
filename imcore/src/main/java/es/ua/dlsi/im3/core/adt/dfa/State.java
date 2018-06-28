@@ -4,7 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 
 import java.util.List;
 
-public class State<AlphabetSymbolType extends Comparable<AlphabetSymbolType>, InputTokenType extends Token<AlphabetSymbolType>, TransductionType extends Transduction> implements Comparable<State<AlphabetSymbolType, InputTokenType, TransductionType>> {
+public class State<AlphabetSymbolType extends IAlphabetSymbolType, InputTokenType extends Token<AlphabetSymbolType>, TransductionType extends Transduction> implements Comparable<State<AlphabetSymbolType, InputTokenType, TransductionType>> {
 	protected int number;
 	private String name;
 	

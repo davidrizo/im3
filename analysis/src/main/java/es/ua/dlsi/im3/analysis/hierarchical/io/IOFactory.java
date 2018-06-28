@@ -6,7 +6,8 @@ import es.ua.dlsi.im3.analysis.hierarchical.Analysis;
 import es.ua.dlsi.im3.analysis.hierarchical.FreeAnalysis;
 import es.ua.dlsi.im3.analysis.hierarchical.forms.FormAnalysis;
 import es.ua.dlsi.im3.analysis.hierarchical.forms.RootLabel;
-import es.ua.dlsi.im3.analysis.hierarchical.forms.SectionLabel;
+import es.ua.dlsi.im3.analysis.hierarchical.forms.DivisionLabel;
+import es.ua.dlsi.im3.analysis.hierarchical.gui.FormAndMotivesAnalysis;
 import es.ua.dlsi.im3.analysis.hierarchical.motives.MelodicMotive;
 import es.ua.dlsi.im3.analysis.hierarchical.motives.MelodicMotivesAnalysis;
 import es.ua.dlsi.im3.analysis.hierarchical.motives.MotiveNodeLabel;
@@ -31,9 +32,10 @@ public class IOFactory {
 		//TODO Se podría hacer en otro sitio
 		registerExporter(FormAnalysis.class, new MEITreeAnalysisModernExporter("forms"));
 		registerExporter(RootLabel.class, new MEIFormsRootLabelExporter());
-		registerExporter(SectionLabel.class, new MEIFormsSectionLabelExporter());
+		registerExporter(DivisionLabel.class, new MEIFormsSectionLabelExporter());
 		//registerExporter(LeafLabel.class, new MEIFormsLeafLabelExporter());
 		registerAnalysisCreator(FreeAnalysis.TYPE, FreeAnalysis.class);
+        registerAnalysisCreator(FormAndMotivesAnalysis.TYPE, FormAndMotivesAnalysis.class);
 		registerImporter("forms", new FormTreeAnalysisImporter());
 		
 		registerExporter(MelodicMotivesAnalysis.class, new MEIGraphAnalysisModernExporter("motives"));
@@ -67,7 +69,7 @@ public class IOFactory {
 	public Analysis createAnalysis(String type) throws ImportException {
 		Class<? extends Analysis> analysisClass = analysisCreators.get(type);
 		if (analysisClass == null) {
-			throw new ImportException("Cannot find a class for analysis type '"+type+"'");
+			throw new ImportException("Cannot find a class for analysis type '" + type + "', valid types are: " + analysisCreators.keySet());
 		}
 		try {
 			return analysisClass.newInstance();

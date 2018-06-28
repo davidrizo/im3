@@ -5,6 +5,8 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.ISongExporter;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -14,6 +16,9 @@ import java.util.*;
 
 import static es.ua.dlsi.im3.core.score.io.XMLExporterHelper.*;
 
+/**
+ * @author pierre
+ */
 public class MusicXMLExporter implements ISongExporter {
     protected ScoreSong scoreSong;
     protected StringBuilder sb;
@@ -342,9 +347,8 @@ public class MusicXMLExporter implements ISongExporter {
                                 if (note.getAtom() instanceof SimpleChord) {
                                     boolean firstInChord = true;
                                     SimpleChord chord = (SimpleChord) note.getAtom();
-                                    List<SimpleNote> notes = chord.getNotes();
+                                    List<SimpleNote> notes = chord.getNotesForMusicXML();
                                     for (SimpleNote simpleNote : notes) {
-
                                         //was im2: ScoreNote.createTempScoreNote(note.getVoice(), song.getResolution(), chord.getTime(), pitch, chord.getRhythm());
                                         exportNoteOrRest(simpleNote, !firstInChord, chord.getParentAtom());
                                         firstInChord = false;
@@ -439,7 +443,7 @@ public class MusicXMLExporter implements ISongExporter {
         }
 
 
-        if (atom.getStaff() != null) {
+        if (atom.getAtomSpecificStaff() != atom.getLayer().getStaff()) {
             startEndTextContentSingleLine(sb, 5, "staff", String.valueOf(atom.getStaff().getNumberIdentifier()));
         }
 
@@ -569,39 +573,41 @@ public class MusicXMLExporter implements ISongExporter {
             }
 
             TimeSignature ts = scoreSong.getUniqueMeterWithOnset(measure.getTime());
-            // TODO: Only modern notation time signatures, for now
-            if (ts instanceof FractionalTimeSignature) {
-                FractionalTimeSignature fts = (FractionalTimeSignature) ts;
-                start(sb, 4, "time");
-                startEndTextContentSingleLine(sb, 5, "beats", String.valueOf(fts.getNumerator()));
-                startEndTextContentSingleLine(sb, 5, "beat-type", String.valueOf(fts.getDenominator()));
-                end(sb, 4, "time");
+            if (ts != null) {
+                // TODO: Only modern notation time signatures, for now
+                if (ts instanceof FractionalTimeSignature) {
+                    FractionalTimeSignature fts = (FractionalTimeSignature) ts;
+                    start(sb, 4, "time");
+                    startEndTextContentSingleLine(sb, 5, "beats", String.valueOf(fts.getNumerator()));
+                    startEndTextContentSingleLine(sb, 5, "beat-type", String.valueOf(fts.getDenominator()));
+                    end(sb, 4, "time");
+                } else if (ts instanceof TimeSignatureCommonTime) {
+                    start(sb, 4, "time", "symbol", "common");
+                    startEndTextContentSingleLine(sb, 5, "beats", "4");
+                    startEndTextContentSingleLine(sb, 5, "beat-type", "4");
+                    end(sb, 4, "time");
+                } else if (ts instanceof TimeSignatureCutTime) {
+                    start(sb, 4, "time", "symbol", "cut");
+                    startEndTextContentSingleLine(sb, 5, "beats", "2");
+                    startEndTextContentSingleLine(sb, 5, "beat-type", "2");
+                    end(sb, 4, "time");
+                } else {
+                    throw new IM3Exception("Unsupported meter " + ts);
+                }
+            }
+            // staves
+            List<Staff> staves = part.getStaves();
 
-                // staves
-                List<Staff> staves = part.getStaves();
-                startEndTextContentSingleLine(sb, 4, "staves", String.valueOf(staves.size()));
-                for (Staff s : part.getStaves()) {
+            //TODO poder cambiar de clave en medio de un compás
+            for (Staff s : part.getStaves()) {
+                Clef newClef = s.getClefAtTime(measure.getTime());
+                if (newClef != null) {
                     start(sb, 4, "clef", "number", String.valueOf(s.getNumberIdentifier()));
                     startEndTextContentSingleLine(sb, 5, "sign", s.getRunningClefAt(measure.getTime()).getNote().toString());
                     startEndTextContentSingleLine(sb, 5, "line", String.valueOf(s.getRunningClefAt(measure.getTime()).getLine()));
                     end(sb, 4, "clef");
-
-                    // We need this, I don't know exactly why
-                    startEnd(sb,4,"staff-details","number",String.valueOf(s.getNumberIdentifier()), "print-object","yes");
                 }
-
-
-			/*out.println("<clef>");
-			if (useFClef) {
-				out.println("<sign>F</sign>");
-				out.println("<line>4</line>");
-			} else {
-				out.println("<sign>G</sign>");
-				out.println("<line>2</line>");
-			}
-			out.println("</clef>");		*/ //TODO Revisar
             }
-
             // multimeasure rests
             List<AtomFigure> atomFigures = part.getAtomFiguresWithOnsetWithin(measure.getTime(), measure.getEndTime());
             if (!atomFigures.isEmpty()) {
@@ -647,4 +653,3 @@ public class MusicXMLExporter implements ISongExporter {
 
 
 }
-

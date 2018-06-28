@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.conversions.RhythmUtils;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
@@ -42,7 +43,13 @@ public class KernExporter {
         }
     }
 
-    public String exportSong(ScoreSong song) throws IM3Exception {
+    /**
+     * @param song
+     * @return
+     * @throws ExportException
+     * @throws IM3Exception
+     */
+    public String exportSong(ScoreSong song) throws ExportException, IM3Exception {
         sb = new StringBuilder();
         this.song = song;
         stavesReversed = new ArrayList<>();
@@ -157,11 +164,12 @@ public class KernExporter {
             sb.append('/');
             sb.append(meter.getDenominator());
             return sb.toString();
-        } else if (ts instanceof TimeSignatureCommonTime) {
+        } else if (ts instanceof TimeSignatureCommonTime ||ts instanceof TempusImperfectumCumProlationeImperfecta) {
             return "M4/4";
         } else if (ts instanceof TimeSignatureCutTime) {
             return "M2/2";
         } else {
+            // TODO: 15/4/18 Resto de compases - además añadir los símbolos
             throw new ExportException("Unsupported time signature type: " + ts.getClass());
         }
     }
@@ -206,7 +214,7 @@ public class KernExporter {
         }
     }
 
-    private void printContent() throws IM3Exception {
+    private void printContent() throws IM3Exception, ExportException {
         List<Segment> segments = new SonoritySegmenter().segmentSonorities(song);
 
         // Now, for each segment and each layer, fill the segments. Later, layers not always present will be trimmed
@@ -355,10 +363,14 @@ public class KernExporter {
 
     private String generateMeterSign(TimeSignature timeSig) {
         if (timeSig instanceof TimeSignatureCommonTime) {
-            return "C";
+            //return "C";
+            return "c"; // TODO: 15/4/18 ¿Seguro? 
         } else if (timeSig instanceof TimeSignatureCutTime) {
             return "C|";
+        } else if (timeSig instanceof TempusImperfectumCumProlationeImperfecta) {
+            return "C";
         } else {
+            // TODO: 15/4/18 Resto de prolaciones 
             return null;
         }
     }
@@ -370,7 +382,7 @@ public class KernExporter {
      * @throws IM3Exception
      * @throws ExportException
      */
-    private void encodeAtom(ArrayList<String> record, Atom atom) throws IM3Exception {
+    private void encodeAtom(ArrayList<String> record, Atom atom) throws IM3Exception, ExportException {
         if (atom instanceof SingleFigureAtom) {
             Fraction multiplier;
             if (atom.getParentAtom() != null && atom.getParentAtom() instanceof SimpleTuplet) {
@@ -383,9 +395,18 @@ public class KernExporter {
 
             if (atom instanceof SimpleNote) {
                 SimpleNote sn = (SimpleNote) atom;
-                record.add(generateNote(sn.getAtomPitch(), duration));
+                String noteStr = generateNote(sn.getAtomPitch(), duration);
+                if (sn.getAtomFigure().getFermata() != null) {
+                    noteStr += ";";
+                }
+                record.add(noteStr);
             } else if (atom instanceof SimpleRest) {
-                record.add(duration + "r");
+                if (((SimpleRest) atom).getAtomFigure().getFermata() != null) {
+                    record.add(duration + "r;");
+                } else {
+                    record.add(duration + "r");
+                }
+
             } else if (atom instanceof SimpleChord) {
                 StringBuilder cb = new StringBuilder();
                 SimpleChord sc = (SimpleChord) atom;
@@ -394,6 +415,9 @@ public class KernExporter {
                         cb.append(' ');
                     }
                     cb.append(generateNote(atomPitch, duration));
+                }
+                if (sc.getAtomFigure().getFermata() != null) {
+                    cb.append(';');
                 }
                 record.add(cb.toString());
             } else {

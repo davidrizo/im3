@@ -52,8 +52,12 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 	void setLayer(ScoreLayer layer) {
 		this.layer = layer;
 	}
-	
 
+
+    /**
+     * It returns the atom staff or the one of the its parent atom
+     * @return
+     */
 	@Override
 	public Staff getStaff() {
 		if (staff != null) {
@@ -66,6 +70,10 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 			return null;
 		}
 	}
+
+	public Staff getAtomSpecificStaff() {
+	    return staff;
+    }
 
 	@Override
 	public void setStaff(Staff staff) {
@@ -220,9 +228,11 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 		return "onset=" + onset + ", duration=" + duration + ", ID=" + ID;
 	}
 
-	public void onFigureDurationChanged(Time oldDuration, Time newDuration) throws IM3Exception {
+	public void onFigureDurationChanged(Time oldDuration, Time newDuration, boolean notifyChangesToLayer) throws IM3Exception {
 		duration = new Time(duration.getExactTime().subtract(oldDuration.getExactTime()).add(newDuration.getExactTime()));
-		notifyDurationChange();
+		if (notifyChangesToLayer) {
+            notifyDurationChange();
+        }
 	}
 	
 	private void notifyDurationChange() throws IM3Exception {
@@ -260,5 +270,10 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 	public void setDuration(Time duration) {
 		this.duration = duration;
 	}
+
+    // TODO: 16/4/18 Test unitario
+    public void move(Time offset) {
+	    setTime(getTime().add(offset));
+    }
 }
 

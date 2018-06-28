@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 /**
@@ -8,6 +9,14 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
  */
 public class Smudge extends AgnosticSymbolType {
     private static final String SMUDGE = "smudge";
+
+    public Smudge() {
+    }
+
+    @Override
+    public void setSubtype(String string) throws IM3Exception {
+
+    }
 
     @Override
     public String toAgnosticString() {

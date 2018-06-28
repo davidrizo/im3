@@ -1,6 +1,9 @@
 package es.ua.dlsi.im3.core.score.mensural.meters;
 
+import es.ua.dlsi.im3.core.score.AtomFigure;
 import es.ua.dlsi.im3.core.score.Time;
+
+import java.util.List;
 
 /**
  * Visually rendered as C
@@ -20,4 +23,10 @@ public class TempusImperfectumCumProlationeImperfecta extends TimeSignatureMensu
     public String getSignString() {
         return "C";
     }
+
+    @Override
+    public void applyImperfectionRules(List<AtomFigure> figureList) {
+
+    }
+
 }

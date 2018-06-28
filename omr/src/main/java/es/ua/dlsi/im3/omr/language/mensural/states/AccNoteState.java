@@ -6,7 +6,6 @@ import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.language.modern.states.OMRState;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
 
 public class AccNoteState extends OMRState {
     private Accidentals accidental;

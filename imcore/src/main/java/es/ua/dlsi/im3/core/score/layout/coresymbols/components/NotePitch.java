@@ -207,9 +207,9 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
 
         double ydisplacement;
         if (direction == Direction.up) {
-            ydisplacement = -LayoutConstants.SEPARATION_NOTE_SLUR;
+            ydisplacement = -LayoutConstants.VERTICAL_SEPARATION_NOTE_SLUR;
         } else {
-            ydisplacement = LayoutConstants.SEPARATION_NOTE_SLUR;
+            ydisplacement = LayoutConstants.VERTICAL_SEPARATION_NOTE_SLUR;
         }
 
         return new Coordinate(new CoordinateComponent(getNoteHeadPosition().getX(), xdiplacement),

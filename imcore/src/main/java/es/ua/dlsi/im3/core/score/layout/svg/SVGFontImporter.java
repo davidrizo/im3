@@ -41,7 +41,7 @@ public class SVGFontImporter extends XMLSAXImporter {
             case "glyph":
                 // non unicode symbols are not imported
                 String unicode = getOptionalAttribute(attributesMap, "unicode");
-                if (unicode != null) {
+                if (unicode != null && unicode.trim().length() > 0) {
                     String horiz_adv_x = getOptionalAttribute(attributesMap, "horiz-adv-x");
                     String d = getOptionalAttribute(attributesMap, "d");
                     // if d is empty we don't import it

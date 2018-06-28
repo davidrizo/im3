@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 /**
@@ -7,6 +8,14 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
  */
 public class Multirest extends AgnosticSymbolType {
     private static final String MR = "multirest";
+
+    public Multirest() {
+    }
+
+    @Override
+    public void setSubtype(String string) throws IM3Exception {
+
+    }
 
     @Override
     public String toAgnosticString() {

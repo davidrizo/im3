@@ -10,7 +10,7 @@ public class SymbolRecognizerFactory {
     private SymbolRecognizerFactory() {
     }
 
-    public ISymbolsRecognizer create() {
-        return new DummySymbolRecognizer(); //TODO
+    public IImageSymbolRecognizer create() {
+        return new StubImage00531SymbolRecognizer(); //TODO
     }
 }

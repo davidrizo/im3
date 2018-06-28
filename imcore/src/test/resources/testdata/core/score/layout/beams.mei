@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="3.0.0">
+<meiHead xml:id="m-2">
+    <fileDesc xml:id="m-3">
+        <titleStmt xml:id="m-4">
+            <title xml:id="m-10">Test beams</title>
+        </titleStmt>
+        <pubStmt xml:id="m-15">
+            <availability xml:id="m-16">
+                <useRestrict xml:id="m-17">drizo</useRestrict>
+            </availability>
+        </pubStmt>
+    </fileDesc>
+    <workDesc xml:id="m-5">
+        <work xml:id="m-6">
+            <titleStmt xml:id="m-7">
+                <title xml:id="m-8">Beam test</title>
+            </titleStmt>
+        </work>
+    </workDesc>
+</meiHead>
+<music xml:id="m-24">
+    <body xml:id="m-25">
+        <mdiv xml:id="m-26">
+            <score xml:id="m-27">
+                <scoreDef xml:id="m-28" meter.count="4" meter.unit="4">
+                    <staffGrp xml:id="m-29">
+                        <staffGrp xml:id="m-36" n="1">
+                            <staffDef xml:id="m-30" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Melody" lines="5" n="1">
+                                <instrDef xml:id="m-32" midi.channel="1" midi.pan="88" midi.volume="90"/>
+                            </staffDef>
+                        </staffGrp>
+                    </staffGrp>
+                </scoreDef>
+                <section xml:id="m-37">
+                    <measure xml:id="m-38" label="1" n="1">
+                        <staff>
+                            <layer>
+                                <beam xml:id="b1">
+                                    <note xml:id="n1" dur="8" oct="4" pname="g"/>
+                                    <rest xml:id="n2" dur="8"/>
+                                    <note xml:id="n3" dur="16" oct="4" pname="a"/>
+                                    <note xml:id="n4" dur="16" oct="4" pname="b"/>
+                                    <note xml:id="n5" dur="8" oct="5" pname="e"/>
+                                    <note xml:id="n6" dur="8" oct="4" pname="d"/>                                    
+                                </beam>
+                                <rest xml:id="n7" dur="8"/>
+                                <beam xml:id="b2">
+                                    <note xml:id="n8" dur="8" oct="4" pname="c"/>
+                                    <note xml:id="n9" dur="8" oct="4" pname="d"/>
+                                </beam>
+                            </layer>
+                        </staff>
+                    </measure>
+                    <measure n="2">
+                        <staff>
+                            <layer>
+                                <beam xml:id="b3">
+                                    <note xml:id="n10" dur="8" oct="5" pname="c"/>
+                                    <note xml:id="n11" dur="8" oct="5" pname="d"/>
+                                </beam>
+                                <beam xml:id="b4">
+                                    <note xml:id="n12" dur="8" oct="4" pname="e"/>
+                                    <note xml:id="n13" dur="8" oct="4" pname="c"/>
+                                </beam>
+                                <beam xml:id="b5">
+                                    <note xml:id="n14" dur="8" oct="5" pname="e"/>
+                                    <note xml:id="n15" dur="8" oct="5" pname="c"/>
+                                </beam>
+                                <beam xml:id="b6">
+                                    <note xml:id="n16" dur="16" oct="4" pname="c"/>
+                                    <note xml:id="n17" dur="16" oct="4" pname="d"/>
+                                    <note xml:id="n18" dur="16" oct="4" pname="e"/>
+                                    <note xml:id="n19" dur="16" oct="4" pname="g"/>
+                                </beam>
+                            </layer>
+                        </staff>
+                    </measure>       
+                    <measure n="3">
+                        <staff>
+                            <layer>
+                                <beam xml:id="b7">
+                                    <note xml:id="n20" dur="16" oct="5" pname="c"/>
+                                    <note xml:id="n21" dur="16" oct="5" pname="d"/>
+                                    <note xml:id="n22" dur="16" oct="5" pname="e"/>
+                                    <note xml:id="n23" dur="16" oct="5" pname="g"/>
+                                </beam>
+                                <beam xml:id="b8">
+                                    <note xml:id="n24" dur="16" oct="4" pname="g"/>
+                                    <note xml:id="n25" dur="16" oct="4" pname="e"/>
+                                    <note xml:id="n26" dur="16" oct="4" pname="d"/>
+                                    <note xml:id="n27" dur="16" oct="4" pname="c"/>
+                                </beam>                                
+                                <beam xml:id="b9">
+                                    <note xml:id="n28" dur="16" oct="5" pname="g"/>
+                                    <note xml:id="n29" dur="16" oct="5" pname="e"/>
+                                    <note xml:id="n30" dur="16" oct="5" pname="d"/>
+                                    <note xml:id="n31" dur="16" oct="5" pname="c"/>
+                                </beam>
+                                <beam xml:id="b10">
+                                    <chord dur="8" stem.dir="up" dots="1">
+                                        <note xml:id="n32" dur="8" dots="1" oct="3" pname="b"/>
+                                        <note xml:id="n33" dur="8" dots="1" oct="4" pname="e"/>
+                                    </chord>
+                                    <chord dur="16" stem.dir="up">
+                                        <note xml:id="n34" dur="16" oct="4" pname="d"/>
+                                        <note xml:id="n35" dur="16" oct="4" pname="g"/>
+                                    </chord>
+                                </beam>
+                            </layer>
+                        </staff>
+                    </measure>   
+                    <measure n="4">
+                        <staff>
+                            <layer>
+                                <beam xml:id="b11">
+                                    <note xml:id="n36" dur="16" oct="5" pname="c"/>
+                                    <note xml:id="n37" dur="8" dots="1" oct="5" pname="f"/>
+                                </beam>
+                                <beam xml:id="b12">
+                                    <note xml:id="n38" dur="8" dots="1" oct="5" pname="f"/>
+                                    <note xml:id="n39" dur="16" oct="5" pname="c"/>
+                                </beam>                                
+                                <beam xml:id="b13">
+                                    <note xml:id="n40" dur="8" oct="5" pname="g"/>
+                                    <note xml:id="n41" dur="16" oct="5" pname="e"/>
+                                    <note xml:id="n42" dur="8" dots="1" oct="4" pname="c"/>
+                                </beam>                                
+                            </layer>
+                        </staff>
+                    </measure>                           
+                    
+                </section>
+            </score>
+        </mdiv>
+    </body>
+</music>
+</mei>

@@ -9,8 +9,8 @@ import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
 public class Rest extends DurationalSymbol  {
     private static final String SEMANTIC = "rest" + SEPSYMBOL;
 
-    public Rest(Figures figures, int dots, boolean fermata) {
-        super(figures, dots, fermata);
+    public Rest(Figures figures, int dots, boolean fermata, Integer tupletNumber) {
+        super(figures, dots, fermata, tupletNumber);
     }
 
 
@@ -21,6 +21,11 @@ public class Rest extends DurationalSymbol  {
         sb.append(figures.name().toLowerCase()); //TODO ¿Para moderno y mensural?
         for (int i=0; i<dots; i++) {
             sb.append('.');
+        }
+        if (tupletNumber != null) {
+            sb.append(SEPVALUES);
+            sb.append(TUPLET);
+            sb.append(tupletNumber);
         }
         if (fermata) {
             sb.append(SEPVALUES);

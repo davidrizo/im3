@@ -3,13 +3,18 @@ package es.ua.dlsi.im3.core.score.layout.fonts;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.Figures;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.core.score.layout.NotationSymbol;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
+import es.ua.dlsi.im3.core.score.layout.graphics.Polygon;
+import es.ua.dlsi.im3.core.score.layout.graphics.StrokeType;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class SMuFLMap implements IFontMap {
     public static final String NOTE_HEAD_WIDTH_CODEPOINT = "noteheadBlack";
@@ -58,8 +63,20 @@ public class SMuFLMap implements IFontMap {
 
     @Override
     public GraphicsElement createBeam(NotationSymbol notationSymbol, Coordinate fromPosition, Coordinate toPosition) {
-        Line line = new Line(notationSymbol, InteractionElementType.beam, fromPosition, toPosition);
-        return line;
+        Coordinate p0 = new Coordinate(fromPosition.getX(), fromPosition.getY());
+        Coordinate p1 = new Coordinate(fromPosition.getX(), new CoordinateComponent(fromPosition.getY(), LayoutConstants.BEAM_THICKNESS));
+        Coordinate p2 = new Coordinate(toPosition.getX(), new CoordinateComponent(toPosition.getY(), LayoutConstants.BEAM_THICKNESS));
+        Coordinate p3 = new Coordinate(toPosition.getX(), toPosition.getY());
+
+        LinkedList<Coordinate> points = new LinkedList<>();
+        points.add(p0);
+        points.add(p1);
+        points.add(p2);
+        points.add(p3);
+
+        Polygon polygon = new Polygon(notationSymbol, InteractionElementType.beam, points, 0, StrokeType.eSolid, LayoutConstants.BEAM_COLOR);
+        //Line line = new Line(notationSymbol, InteractionElementType.beam, fromPosition, toPosition);
+        return polygon;
     }
 
     @Override

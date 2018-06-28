@@ -20,7 +20,8 @@ import java.util.Map.Entry;
 
 
 /**
- * It parses the MEI file, obtains a generic tree representation that is given to the specialized hierarchical analyses
+ * It parses the MEI file, obtains a generic tree representation from the XML (it follows the XML tree structure)
+ * that is given to the specialized hierarchical analyses
  * that build specific objects
  * @author drizo
  *
@@ -31,7 +32,10 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 	 * Cannot convert into regular HierarchicalAnalysis until the song has been imported
 	 */
 	private ArrayList<ArrayList<GenericTreeAndGraphAnalysis>> genericTreeAndGraphAnalyses;
-	
+
+    /**
+     * Tree XML structure
+     */
 	Tree<AttributesLabel> lastTree;
 	private boolean inAnalysisElement;
 	ScoreSong scoreSong;
@@ -92,11 +96,22 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 					}
 				}
 				this.lastTree = null;
-                System.out.println("Last tree nulo");
 				this.inAnalysisElement = true;
 				break;
+				//TODO Más genérico
+            case "graphical":
+            case "colors":
+                break;
+            case "mapping":
+                String nodeName = getAttribute(attributesMap, "name");
+                String color = getAttribute(attributesMap, "color");
+                if (lastAnalysis == null) {
+                    throw new ImportException("Cannot import a graphical color mapping without an analysis");
+                }
+                lastAnalysis.getGraphical().addColorMapping(nodeName, color);
+                break;
 			default:
-				if (inAnalysisElement) {
+				if (this.inAnalysisElement) {
 					AttributesLabel treeLabel = new AttributesLabel(element);
 					Tree<AttributesLabel> tree = new Tree<>(treeLabel);
 					if (lastTree != null) {
@@ -106,8 +121,8 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 							throw new ImportException(e);
 						} 
 					} else {
-						type = getAttribute(attributesMap, "type");
-						lastGenericTreeAndGraphAnalysis.add(new GenericTreeAndGraphAnalysis(type, tree)); 					
+						type = getOptionalAttribute(attributesMap, "type");
+						lastGenericTreeAndGraphAnalysis.add(new GenericTreeAndGraphAnalysis(type, tree));
 					}
 					lastTree = tree;
 					for (Entry<String, String> entry: attributesMap.entrySet()) {
@@ -118,6 +133,8 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 		}
 	}
 
+
+
 	
 	private String getOptionalAttribute(HashMap<String, String> attributesMap, String key) throws ImportException {
 		String result = attributesMap.get(key);
@@ -127,7 +144,7 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 	private String getAttribute(HashMap<String, String> attributesMap, String key) throws ImportException {
 		String result = attributesMap.get(key);
 		if (result == null) {
-			throw new ImportException("Cannot find attribute " + key);
+			throw new ImportException("Cannot find attribute " + key + " among attributes " + attributesMap);
 		}
 		return result;
 	}
@@ -148,10 +165,10 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 		switch (elementTag) {
 			case "analysis":
 				inAnalysisElement = false;
-				break;
+				// break
 			default:
 				if (inAnalysisElement && lastTree != null) {
-					lastTree = lastTree.getParent();
+                    lastTree = lastTree.getParent();
 				}
 				break;			
 			}

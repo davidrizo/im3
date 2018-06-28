@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.played.PlayedSong;
 import es.ua.dlsi.im3.core.played.io.MidiSongExporter;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
+import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.encoding.Encoder;
@@ -36,7 +37,7 @@ public class PrIMuSGenerator {
         try {
             //fw = new FileWriter(outputFile);
             //BufferedWriter bw = new BufferedWriter(fw);
-            Encoder encoder = new Encoder();
+            Encoder encoder = new Encoder(AgnosticVersion.v1, false);
             encoder.encode(scoreSong);
             SemanticExporter exporter = new SemanticExporter();
             exporter.export(encoder.getSemanticEncoding(), outputFile);
@@ -64,24 +65,28 @@ public class PrIMuSGenerator {
             //MEISongImporter importer = new MEISongImporter();
             ScoreSongImporter importer = new ScoreSongImporter();
             //ScoreGraphicalDescriptionWriter writer = new ScoreGraphicalDescriptionWriter();
-            Encoder encoder = new Encoder(agnosticVersion);
+            Encoder encoder = new Encoder(agnosticVersion, false);
             AgnosticExporter agnosticExporter = new AgnosticExporter();
             SemanticExporter semanticExporter = new SemanticExporter();
             try {
                 ScoreSong scoreSong = importer.importSong(file);
                 encoder.encode(scoreSong);
 
-                File outputFile = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".agnostic");
-                agnosticExporter.export(encoder.getAgnosticEncoding());
+                String basename = FileUtils.getFileNameWithoutExtension(file.getName());
+                File outputFile = new File(file.getParent(), basename + ".agnostic");
+                agnosticExporter.export(encoder.getAgnosticEncoding(), outputFile);
                 //writer.write(outputFile, graficalDescription);
 
-                File outputFileSemantic = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".semantic");
+                File outputFileSemantic = new File(file.getParent(), basename + ".semantic");
                 semanticExporter.export(encoder.getSemanticEncoding(), outputFileSemantic);
+
+                File kernOutput = new File(file.getParent(), basename + ".krn");
+                exportKern(scoreSong, kernOutput);
 
                 ScoreToPlayed scoreToPlayed = new ScoreToPlayed();
                 PlayedSong played = scoreToPlayed.createPlayedSongFromScore(scoreSong);
                 MidiSongExporter midiSongExporter = new MidiSongExporter();
-                File midiOutput = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".mid");
+                File midiOutput = new File(file.getParent(), FileUtils.getFileNameWithoutExtension(file.getName()) + ".mid"); //TODO Exportación correcta de las tonalidades y cambios de compás
                 midiSongExporter.exportSong(midiOutput, played);
             } catch (Exception e) {
                 System.err.print("---------------------------------------------------------------");
@@ -91,12 +96,17 @@ public class PrIMuSGenerator {
         }
     }
 
+    private void exportKern(ScoreSong scoreSong, File kernOutput) throws ExportException {
+        KernExporter exporter = new KernExporter();
+        exporter.exportSong(kernOutput, scoreSong);
+    }
+
     /**
      * @param args
      */
     public static final void main(String [] args) {
         if (args.length != 2) {
-            System.err.println("Use: MEI2GraphicsSymbosl {v1, v2} <mei or musicxml files folder (it leaves here the output file with extension .agnostic and .semantic)>");
+            System.err.println("Use: MEI2GraphicsSymbosl {v1, v2} <mei or musicxml files folder (it leaves here the output file with extension .agnostic and .semantic and .krn)>");
             return;
         }
 

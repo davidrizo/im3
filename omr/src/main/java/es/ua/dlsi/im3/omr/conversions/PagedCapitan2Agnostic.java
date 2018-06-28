@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 /**
  * It converts the old Calvo's Capitan dataset to the new Hispamus Agnostic encoding (not the one with staves split
- * but the one with the whole pages).
+ * but the one with the whole images).
  * @autor drizo
  */
 public class PagedCapitan2Agnostic {
@@ -52,7 +52,7 @@ public class PagedCapitan2Agnostic {
 
 
         //restFigures.put("MAXIMAREST", RestFigures.); // tagged as vertical line
-        restFigures.put("LONGAREST", RestFigures.longa);
+        restFigures.put("LONGAREST", RestFigures.longa2);
         restFigures.put("BREVISREST", RestFigures.breve);
         restFigures.put("MINIMAREST", RestFigures.half);
         restFigures.put("SEMIBREVISREST", RestFigures.whole);
@@ -97,13 +97,73 @@ public class PagedCapitan2Agnostic {
         return result;
     }
 
+    public AgnosticSymbol convert(String symbol) throws ImportException {
+        if (symbol.equals("BARLINE")) {
+            return new AgnosticSymbol(AgnosticVersion.v1, new VerticalLine(), PositionsInStaff.LINE_1);
+        } else if (symbol.equals("SMUDGE")) {
+            return new AgnosticSymbol(AgnosticVersion.v1, new Smudge(), PositionsInStaff.LINE_1);
+        } else if (symbol.startsWith("GREGORIAN")) {
+            return new AgnosticSymbol(AgnosticVersion.v1, new Ligature(), PositionsInStaff.LINE_3);
+         /*   return new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.SPACE_3));
+            agnosticEncoding.add(juxtapositionSeparator);
+            agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.LINE_3));
+        } else if (symbol.equals("GREGORIAN.01.-1")) {
+            agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.SPACE_4));
+            agnosticEncoding.add(juxtapositionSeparator);
+            agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.FIRST_TOP_LEDGER_LINE));
+        } else if (symbol.equals("GREGORIAN.223")) {
+            agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.LINE_3));
+            agnosticEncoding.add(juxtapositionSeparator);
+            agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.SPACE_2));
+        } else if (symbol.equals("GREGORIAN.2.C01")) {
+            agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.LINE_3));
+            agnosticEncoding.add(juxtapositionSeparator);
+            agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longaBlack), PositionsInStaff.SPACE_4));
+        } else {*/
+        } else {
+            String[] subsymbols = symbol.split(SYMBOL_SEPARATOR);
+            AgnosticSymbolType symbolType = parseNotationSymbol(subsymbols[0]);
+
+            if (symbolType instanceof LigatureComponent) {
+                return new AgnosticSymbol(AgnosticVersion.v1, new Ligature(), PositionsInStaff.LINE_3);
+            } else {
+                if (subsymbols.length != 2) {
+                    throw new ImportException("Expected two subsymbols at '" + symbol + "' and found " + subsymbols.length);
+                }
+                PositionInStaff positionInStaff = parsePosition(subsymbols[1]);
+
+                if (symbolType.toAgnosticString().equals("clef.G") && subsymbols[1].equals("5")) {
+                    // correct mistake in dataset
+                    positionInStaff = PositionsInStaff.LINE_2;
+                } else if (symbolType instanceof Rest) {
+                    Rest rest = (Rest) symbolType;
+                    if (subsymbols[1].equals("01") && rest.getRestFigures() == RestFigures.breve) {
+                        positionInStaff = PositionsInStaff.LINE_3;
+                    } else if (!positionInStaff.laysOnLine()) { // Jorge codified in spaces
+                        // put in line below
+                        positionInStaff = new PositionInStaff(positionInStaff.getLineSpace() - 1);
+                    }
+                } else if (symbolType.toAgnosticString().equals("fermata.")) {
+                    Fermata fermata = (Fermata) symbolType;
+                    if (positionInStaff.compareTo(PositionsInStaff.LINE_3) < 0) {
+                        fermata.setPositions(Positions.below);
+                    } else {
+                        fermata.setPositions(Positions.above);
+                    }
+                }
+
+                AgnosticSymbol pst = new AgnosticSymbol(AgnosticVersion.v1, symbolType, positionInStaff);
+                return pst;
+            }
+        }
+    }
     /**
      * Package for tests
      * @param line
      * @return
      * @throws ImportException
      */
-    AgnosticEncoding parseLine(String line) throws ImportException {
+    public AgnosticEncoding parseLine(String line) throws ImportException {
         String [] tokens = line.split(TOKEN_SEPARATOR);
         AgnosticEncoding agnosticEncoding = new AgnosticEncoding();
         for (String token: tokens) {
@@ -114,67 +174,13 @@ public class PagedCapitan2Agnostic {
             for (String symbol: compound) {
                 if (symbol.equals("VOID")) {
                     skip = true;
-                } else if (symbol.equals("BARLINE")) {
-                    agnosticEncoding.add(new AgnosticSymbol(new VerticalLine(), PositionsInStaff.LINE_1));
-                } else if (symbol.equals("SMUDGE")) {
-                    agnosticEncoding.add(new AgnosticSymbol(new Smudge(), PositionsInStaff.LINE_1));
-                } else if (symbol.equals("GREGORIAN.12.2")) {
-                    agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.SPACE_3));
-                    agnosticEncoding.add(juxtapositionSeparator);
-                    agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.LINE_3));
-                } else if (symbol.equals("GREGORIAN.01.-1")) {
-                    agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.SPACE_4));
-                    agnosticEncoding.add(juxtapositionSeparator);
-                    agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.FIRST_TOP_LEDGER_LINE));
-                } else if (symbol.equals("GREGORIAN.223")) {
-                    agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.LINE_3));
-                    agnosticEncoding.add(juxtapositionSeparator);
-                    agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.breve), PositionsInStaff.SPACE_2));
-                } else if (symbol.equals("GREGORIAN.2.C01")) {
-                    agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.LINE_3));
-                    agnosticEncoding.add(juxtapositionSeparator);
-                    agnosticEncoding.add(new AgnosticSymbol(new LigatureComponent(NoteFigures.longaBlack), PositionsInStaff.SPACE_4));
                 } else {
                     if (!first) {
                         agnosticEncoding.add(verticalSeparator);
                     }
+                    AgnosticSymbol agnosticSymbol = convert(symbol);
 
-                    String[] subsymbols = symbol.split(SYMBOL_SEPARATOR);
-                    AgnosticSymbolType symbolType = parseNotationSymbol(subsymbols[0]);
-
-                    if (symbolType instanceof LigatureComponent) {
-                        System.err.println("TO-DO Ligature de " + symbol);
-                    } else {
-                        if (subsymbols.length != 2) {
-                            throw new ImportException("Expected two subsymbols at '" + token + "' and found " + subsymbols.length);
-                        }
-
-
-                        PositionInStaff positionInStaff = parsePosition(subsymbols[1]);
-
-                        if (symbolType.toAgnosticString().equals("clef.G") && subsymbols[1].equals("5")) {
-                            // correct mistake in dataset
-                            positionInStaff = PositionsInStaff.LINE_2;
-                        } else if (symbolType instanceof Rest) {
-                            Rest rest = (Rest) symbolType;
-                            if (subsymbols[1].equals("01") && rest.getRestFigures() == RestFigures.breve) {
-                                positionInStaff = PositionsInStaff.LINE_3;
-                            } else if (!positionInStaff.laysOnLine()) { // Jorge codified in spaces
-                                // put in line below
-                                positionInStaff = new PositionInStaff(positionInStaff.getLineSpace() - 1);
-                            }
-                        } else if (symbolType.toAgnosticString().equals("fermata.")) {
-                            Fermata fermata = (Fermata) symbolType;
-                            if (positionInStaff.compareTo(PositionsInStaff.LINE_3) < 0) {
-                                fermata.setPositions(Positions.below);
-                            } else {
-                                fermata.setPositions(Positions.above);
-                            }
-                        }
-
-                        AgnosticSymbol pst = new AgnosticSymbol(symbolType, positionInStaff);
-                        agnosticEncoding.add(pst);
-                    }
+                    agnosticEncoding.add(agnosticSymbol);
                 }
                 first = false;
             }
@@ -274,7 +280,7 @@ public class PagedCapitan2Agnostic {
         }
     }
 
-    private PositionInStaff parsePosition(String positionStr) throws ImportException {
+    public PositionInStaff parsePosition(String positionStr) throws ImportException {
         switch (positionStr) {
             case "-4":
                 return PositionsInStaff.FOURTH_TOP_LEDGER_LINE;

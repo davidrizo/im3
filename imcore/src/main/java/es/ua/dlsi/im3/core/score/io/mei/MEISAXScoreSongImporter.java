@@ -30,6 +30,7 @@ import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.XMLSAXScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureFactory;
 import es.ua.dlsi.im3.core.score.mensural.meters.*;
 import org.apache.commons.lang3.math.Fraction;
 import org.xml.sax.SAXException;
@@ -58,6 +59,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
  */
 public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     DurationEvaluator durationEvaluator;
+    private ArrayList<SimpleNote> ligatureElements;
 
     public MEISAXScoreSongImporter(DurationEvaluator durationEvaluator) {
         this.durationEvaluator = durationEvaluator;
@@ -252,6 +254,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private Integer tupletNumBase;
 	private ArrayList<Atom> tupletElements;
 	private String tupletXMLID;
+    private String ligatureXMLID;
+    private String ligatureForm;
 	private ArrayList<SimpleMeasureRest> pendingMeasureRestsToSetDuration;
     private ArrayList<SimpleMultiMeasureRest> pendingMultiMeasureRestsToSetDuration;
 	private Measure currentMeasure;
@@ -340,7 +344,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		xmlIDs.put(xmlid, object);
 	}
 
-	private void addElementToVoiceStaffOrTuplet(Atom atom, String xmlid, HashMap<String, String> attributesMap, Staff elementStaff) throws ImportException, IM3Exception {
+	private void addElementToVoiceStaffOrTupletOrLigature(Atom atom, String xmlid, HashMap<String, String> attributesMap, Staff elementStaff) throws ImportException, IM3Exception {
 		setXMLID(xmlid, atom);
 
 		if (beamedGroupElements != null && atom instanceof SingleFigureAtom) {
@@ -349,6 +353,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 		if (tupletElements != null) {
             tupletElements.add(atom);
+        } else if (ligatureElements != null) {
+		    if (!(atom instanceof SimpleNote)) {
+		        throw new IM3Exception("Cannot create a ligature with non notes: " + atom.getClass());
+            }
+		    ligatureElements.add((SimpleNote) atom);
         } else {
             lastVoice.add(atom); // sets the time
             //lastChord.setTime(getCurrentTime());
@@ -482,8 +491,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						tempusStr = lastTempusStr;
 						prolatioStr	 = lastProlatioStr;					
 					}
-					
-					processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+
+					if (meterCount != null || meterUnit != null || meterSym != null || modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null) {
+                        processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+                    }
 					String staffKeySig = getOptionalAttribute(attributesMap, "key.sig");
 					String staffKeyMode = getOptionalAttribute(attributesMap, "key.mode");
 					String staffTransDiat = getOptionalAttribute(attributesMap, "trans.diat");
@@ -612,7 +623,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					//}
 					
 					lastChord = new SimpleChord(figure, dots);
-					addElementToVoiceStaffOrTuplet(lastChord, xmlid, attributesMap, lastStaff);
+					addElementToVoiceStaffOrTupletOrLigature(lastChord, xmlid, attributesMap, lastStaff);
 					break;
 				case "note":
 					xmlid = getOptionalAttribute(attributesMap, "xml:id");
@@ -722,7 +733,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							lastStaff.addCoreSymbol(currentNote);
 						}*/
 						//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
-						addElementToVoiceStaffOrTuplet(currentNote, xmlid, attributesMap, elementStaff);
+						addElementToVoiceStaffOrTupletOrLigature(currentNote, xmlid, attributesMap, elementStaff);
 						//currentNote.setTime(getCurrentTime());
 						//if (currentBeam != null) {
 						//	currentBeam.addNoteOrChord(currentNote);
@@ -815,7 +826,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						elementStaff = lastStaff;
 					}
 
-					addElementToVoiceStaffOrTuplet(rest, xmlid, attributesMap, elementStaff);
+					addElementToVoiceStaffOrTupletOrLigature(rest, xmlid, attributesMap, elementStaff);
 
                     // after the note has time
                     processFermata(rest.getAtomFigure(), attributesMap);
@@ -855,7 +866,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
                     horizontalOrderInStaff++;
                     //rest.setTime(getCurrentTime());
-					addElementToVoiceStaffOrTuplet(mrest, xmlid, attributesMap, elementStaff);
+					addElementToVoiceStaffOrTupletOrLigature(mrest, xmlid, attributesMap, elementStaff);
 					break;
                 case "multiRest":
 						//TODO
@@ -872,7 +883,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         horizontalOrderInStaff++;
 
                     //rest.setTime(getCurrentTime());
-						addElementToVoiceStaffOrTuplet(multiMeasureRest, xmlid, attributesMap, lastStaff);
+						addElementToVoiceStaffOrTupletOrLigature(multiMeasureRest, xmlid, attributesMap, lastStaff);
 						break;
                 case "clef":
 					//TODO No sé para qué vale el parámetro staff aquí, cuando está dentro de uno ya...
@@ -984,6 +995,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     horizontalOrderInStaff++;
                     lastAtomPitch.addDisplacedDot(new DisplacedDot(getCurrentTime(), lastAtomPitch));
                     setCurrentTime(getCurrentTime().add(addedDuration));
+                    break;
+                case "ligature":
+                    ligatureElements = new ArrayList<>();
+                    ligatureForm = getAttribute(attributesMap, "form");
+                    ligatureXMLID = getOptionalAttribute(attributesMap, "xml:id");
                     break;
 				}
 			}
@@ -1098,12 +1114,15 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			AtomFigure currentAtomFigure) throws IM3Exception, ImportException {
 		String numBase = getOptionalAttribute(attributesMap, "numbase");
 		String num = getOptionalAttribute(attributesMap, "num");
-		TimeSignature lastTimeSignature = lastStaff.getRunningTimeSignatureAt(currentAtomFigure);
-		if (lastTimeSignature instanceof TimeSignatureMensural) {
+		/*Done TimeSignature lastTimeSignature = null;
+		lastTimeSignature = lastStaff.getRunningTimeSignatureAt(currentAtomFigure);
+
+		in ScoreSong.processMensuralImperfectionRules()
+		    if (lastTimeSignature instanceof TimeSignatureMensural) {
 			TimeSignatureMensural mmeter = (TimeSignatureMensural) lastTimeSignature;
-			figureDuration = mmeter.getDuration(currentAtomFigure.getFigure());
+			figureDuration = mmeter.getDuration(currentAtomFigure.getFigure(), currentAtomFigure.getDots());
 			currentAtomFigure.setSpecialDuration(figureDuration);
-		}
+		}*/
 		if (numBase != null || num != null) {
 			if (numBase == null || num == null) {
 				throw new ImportException("When @numbase or @num are specified, both must be present");
@@ -1111,13 +1130,21 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			// e.g. imperfection in mensural //TODO Tuplets
 			int irregularGroupActualFigures = Integer.parseInt(num);
 			int irregularGroupInSpaceOfFigures = Integer.parseInt(numBase);
-			// it computes the duration
-			currentAtomFigure.setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
+
+			if (irregularGroupActualFigures == 2 && irregularGroupInSpaceOfFigures == 2) {
+                currentAtomFigure.setExplicitMensuralPerfection(Perfection.imperfectum);
+            } else if (irregularGroupActualFigures == 3 && irregularGroupInSpaceOfFigures == 2) {
+                currentAtomFigure.setExplicitMensuralPerfection(Perfection.perfectum);
+            } else {
+			    throw new ImportException("Invalid values for numbase ("+numBase+") and num ("+num+"), they should be 2 or 3");
+                // it computes the duration
+                //TODO This could be correct, it worked: currentAtomFigure.setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
+            }
 		}
 		
 		String colored = getOptionalAttribute(attributesMap, "colored");
 		if (colored != null) {
-			currentAtomFigure.setColored(Boolean.getBoolean(colored));
+			currentAtomFigure.setColored(Boolean.parseBoolean(colored));
 		}
 	}
 
@@ -1171,11 +1198,18 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	}
 
 	private Staff findStaff(String number) throws ImportException {
-		Staff result = staffNumbers.get(number);
-		if (result == null) {
-			throw new ImportException("Cannot find staff with number '" + number + "'");
-		}
-		return result;
+	    if (number == null) {
+	        if (staffNumbers.size() != 1) {
+                throw new ImportException("Staff number not provided and there are " + staffNumbers.size() + " staves");
+            }
+            return staffNumbers.values().iterator().next();
+        } else {
+            Staff result = staffNumbers.get(number);
+            if (result == null) {
+                throw new ImportException("Cannot find staff with number '" + number + "'");
+            }
+            return result;
+        }
 	}
 
 	/**
@@ -1307,7 +1341,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			}
 		}
 		Mode mode;
-		if (keyMode == null || keyMode.equals("major")) {
+        if (keyMode == null) {
+            mode = Mode.UNKNOWN;
+        } else if (keyMode == null || keyMode.equals("major")) {
 			mode = Mode.MAJOR;
 		} else if (keyMode.equals("minor")) {
 			mode = Mode.MINOR;
@@ -1382,12 +1418,14 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				//Atom fromAtom = tiedFrom.getAtomFigure().getAtom();
 				//SimpleNote tiedNote = new SimpleNote(figure, dots, tiedFrom.getScientificPitch());
 				//tiedNote.getAtomPitch().setTiedFromPrevious(tiedFrom);
-				//20180208 tiedFrom.setTiedToNext(lastAtomPitch);
+				//tiedFrom.setTiedToNext(lastAtomPitch);
+                // we don't tie here because the accidental may not be set yet
 				pendingTieTo.put(System.identityHashCode(lastAtomPitch), tiedFrom);
 				currentTies.remove(tieCode);
-				//addElementToVoiceStaffOrTuplet(tiedNote, xmlid, attributesMap);
+				//addElementToVoiceStaffOrTupletOrLigature(tiedNote, xmlid, attributesMap);
 			} else if (type.equals("m")) { // middle
-                //20180208 tiedFrom.setTiedToNext(lastAtomPitch);
+                // tiedFrom.setTiedToNext(lastAtomPitch);
+                // we don't tie here because the accidental may not be set yet
                 pendingTieTo.put(System.identityHashCode(lastAtomPitch), tiedFrom);
 				currentTies.remove(tieCode);
 				
@@ -1573,7 +1611,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				
 				SimpleTuplet tuplet = new SimpleTuplet(tupletNum, tupletNumBase, eachFigure, tupletElements);
 				tupletElements = null;
-				addElementToVoiceStaffOrTuplet(tuplet, tupletXMLID, null, lastStaff);
+				addElementToVoiceStaffOrTupletOrLigature(tuplet, tupletXMLID, null, lastStaff);
                 tupletXMLID = null;
 				break;
 			case "music":
@@ -1695,6 +1733,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 int octave = lastAtomPitch.getScientificPitch().getOctave();
                 int previousAccidentalMapKey = generatePreviousAccidentalMapKey(pc.getNoteName(), octave);
                 Staff elementStaff = lastNoteStaff;
+
+                Accidentals lastAccidObj = lastAccid==null?null:accidToAccidental(lastAccid);
+
                 Accidentals previousAccidental = previousAccidentals.get(previousAccidentalMapKey);
                 if (previousAccidental == null) {
                     try {
@@ -1705,7 +1746,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     }
                 }
 
-                if (lastAccid != null) {
+                /*if (lastAccid != null) {
                     lastAtomPitch.setWrittenExplicitAccidental(accidToAccidental(lastAccid));
                 }
 
@@ -1716,6 +1757,36 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 if (lastAccid == null && lastAccidGes == null && previousAccidental != null) {
 
                     pc.setAccidental(previousAccidental); // TODO: 24/9/17 Diferenciar explicit e implicit. Igual en MEIExporter que aún lo exporta todo
+                }
+
+                if (pc.getAccidental() != null) {
+                    previousAccidentals.put(previousAccidentalMapKey, pc.getAccidental());
+                }*/
+
+
+                Accidentals accidObj = lastAccidObj;
+                if (previousAccidental != null && lastAccidObj == null) {
+                    lastAccidObj = previousAccidental;
+                }
+
+                if (lastAccidObj != null && lastAccidGes == null) {
+                    pc.setAccidental(lastAccidObj);
+                    if (accidObj != null && accidObj.equals(previousAccidental)) {
+                        lastAtomPitch.setWrittenExplicitAccidental(accidObj);
+                    }
+                } else if (lastAccidObj == null && lastAccidGes != null) {
+                    Accidentals accidental = accidToAccidental(lastAccidGes);
+                    pc.setAccidental(accidental);
+                } else if (lastAccidObj != null && lastAccidGes != null) {
+                    Accidentals accidGesObj = accidToAccidental(lastAccidGes);
+                    pc.setAccidental(accidGesObj);
+                    if (!lastAccidObj.equals(accidGesObj)) {
+                        if (lastAccid != null) { // it is explicitly encoded
+                            lastAtomPitch.setWrittenExplicitAccidental(lastAccidObj);
+                        } else {
+                            lastAtomPitch.setHideAccidental(true); // att.ges != null, different from previous played pitch, but it is not notated
+                        }
+                    }
                 }
 
                 if (pc.getAccidental() != null) {
@@ -1755,6 +1826,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 }
 
                 break;
+            case "ligature":
+                LigaturaBinaria ligature = LigatureFactory.createLigature(ligatureElements);
+                ligatureElements = null;
+                addElementToVoiceStaffOrTupletOrLigature(ligature, ligatureXMLID, null, lastStaff);
+                break;
+
 			}
 		}
 	}

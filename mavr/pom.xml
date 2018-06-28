@@ -16,6 +16,12 @@
             <artifactId>imcore</artifactId>
             <version>3.0-SNAPSHOT</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.jenetics/jenetics -->
+        <dependency>
+            <groupId>io.jenetics</groupId>
+            <artifactId>jenetics</artifactId>
+            <version>4.2.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import org.apache.commons.lang3.math.Fraction;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
@@ -15,6 +16,13 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	private Time duration;
 	private int dots;
 	private Figures figure;
+	private Perfection mensuralPerfection;
+    /**
+     * If mensuralPerfection and this value is true it is because it has explicitly set, of not, it has been computed
+     */
+	private boolean explicitMensuralPerfection;
+
+	private String perfectionRuleApplied;
 	/**
 	 * Used in mensural
 	 */
@@ -44,6 +52,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		this.dots = dots;
 		duration = figure.getDurationWithDots(dots);
 		onsetRelativeToAtom = new Time(Fraction.ZERO);
+        this.explicitMensuralPerfection = false;
 	}
 	
 	/**
@@ -63,6 +72,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		this.dots = dots;
 		this.duration = alteredDuration;
 		onsetRelativeToAtom = new Time(Fraction.ZERO);
+		this.explicitMensuralPerfection = false;
 	}
 	
 	/**
@@ -71,8 +81,8 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	 * @param duration
 	 * @throws IM3Exception 
 	 */
- 	public void setSpecialDuration(Time duration) throws IM3Exception {
- 		atom.onFigureDurationChanged(this.duration, duration);
+ 	public void setSpecialDuration(Time duration, boolean notifyDurationChangeToLayer) throws IM3Exception {
+ 		atom.onFigureDurationChanged(this.duration, duration, notifyDurationChangeToLayer);
  		this.duration = duration;
  	}
 
@@ -91,10 +101,12 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	 * @throws IM3Exception
 	 */
  	public void setIrregularGroup(int irregularGroupActualFigures, int irregularGroupInSpaceOfFigures) throws IM3Exception {
- 		this.irregularGroupActualFigures = irregularGroupActualFigures;
- 		this.irregularGroupInSpaceOfFigures = irregularGroupInSpaceOfFigures;
- 		Fraction nd = duration.getExactTime().multiplyBy(Fraction.getFraction(irregularGroupInSpaceOfFigures, irregularGroupActualFigures));
- 		setSpecialDuration(new Time(nd));
+ 	    if (this.irregularGroupActualFigures != irregularGroupActualFigures || this.irregularGroupInSpaceOfFigures != irregularGroupActualFigures) {
+            this.irregularGroupActualFigures = irregularGroupActualFigures;
+            this.irregularGroupInSpaceOfFigures = irregularGroupInSpaceOfFigures;
+            Fraction nd = duration.getExactTime().multiplyBy(Fraction.getFraction(irregularGroupInSpaceOfFigures, irregularGroupActualFigures));
+            setSpecialDuration(new Time(nd), true);
+        }
  	}
  	
 	public final Integer getIrregularGroupActualFigures() {
@@ -121,7 +133,6 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		this.onsetRelativeToAtom = relativeOnset;
 	}
 	
-	//TODO Guardarla para que no haya que recalcularla siempre
 	@Override
 	/**
 	 * It returns the absolute time
@@ -130,8 +141,13 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	public Time getTime()  {
 		return atom.getTime().add(onsetRelativeToAtom);
 	}
-	
-	public Time getRelativeOnset() {
+
+    @Override
+    public void move(Time offset) throws IM3Exception {
+
+    }
+
+    public Time getRelativeOnset() {
 		return this.onsetRelativeToAtom;
 	}
 
@@ -265,6 +281,9 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         this.fermata = fermata;
     }
 
+    /**
+     * @return null if not a fermata found
+     */
     public Fermata getFermata() {
         return fermata;
     }
@@ -283,5 +302,47 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
             ratioDot /= 2.0;
         }
         return minDur;
+    }
+
+    private void setMensuralPerfection(boolean explicit, Perfection perfection) throws IM3Exception {
+        this.explicitMensuralPerfection = explicit;
+        this.mensuralPerfection = perfection;
+        /*durationBeforePerfection = duration;
+        if (perfection == Perfection.perfectum) {
+            irregularGroupActualFigures = 3;
+            irregularGroupInSpaceOfFigures = 2;
+            // it computes the duration
+            setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
+        } else if (mensuralPerfection != null) { // it is a change - remove the irregular group
+            // TODO: 16/4/18 Test unitario
+            irregularGroupActualFigures = 2;
+            irregularGroupInSpaceOfFigures = 2;
+            setIrregularGroup(irregularGroupActualFigures, irregularGroupInSpaceOfFigures);
+        }*/
+    }
+
+    public void setExplicitMensuralPerfection(Perfection perfection) throws IM3Exception {
+        setMensuralPerfection(true, perfection);
+    }
+
+    public void setComputedMensuralPerfection(Perfection perfection, String perfectionRuleApplied) throws IM3Exception {
+        setMensuralPerfection(false, perfection);
+        this.perfectionRuleApplied = perfectionRuleApplied;
+    }
+
+    public Perfection getMensuralPerfection() {
+        return mensuralPerfection;
+    }
+
+    public boolean isExplicitMensuralPerfection() {
+        return explicitMensuralPerfection;
+    }
+
+    public Boolean getColored() {
+        return colored;
+    }
+
+    public String getPerfectionRuleApplied() {
+        return perfectionRuleApplied;
     }
 }

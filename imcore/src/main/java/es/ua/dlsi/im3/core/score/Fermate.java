@@ -64,11 +64,12 @@ public class Fermate extends StaffMark implements INotationTypeDependant {
 
 	public final void addDurationalSymbol(AtomFigure snr, PositionAboveBelow position) {
 		associatedDurationalSymbols.add(snr);
-		if (!fermate.containsKey(position)) {
-			Fermata ll = new Fermata(this, position);
+		Fermata ll = fermate.get(position);
+		if (ll == null) {
+			ll = new Fermata(this, position);
 			fermate.put(position, ll);
-			snr.setFermata(ll);
 		}
+        snr.setFermata(ll);
 	}
 
 	public HashMap<PositionAboveBelow, Fermata> getFermate() {
@@ -83,5 +84,12 @@ public class Fermate extends StaffMark implements INotationTypeDependant {
 	public NotationType getNotationType() {
 		return notationType;
 	}
+
+    @Override
+    public void move(Time offset) throws IM3Exception {
+	    Time newTime = getTime().add(offset);
+	    getStaff().moveFermate(this.getTime(), newTime);
+	    this.setTime(newTime);
+    }
 
 }

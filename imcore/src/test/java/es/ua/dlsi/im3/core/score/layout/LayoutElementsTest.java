@@ -58,7 +58,7 @@ public class LayoutElementsTest {
 
         TreeSet<LayoutCoreSymbolInStaff> layoutSymbols = layout.getSystem().getTopStaff().getLayoutSymbolsInStaff();
 
-        assertEquals("Layout symbols in staff", 12, layoutSymbols.size());
+        assertEquals("Layout symbols in staff", 13, layoutSymbols.size());
         ArrayList<LayoutCoreSymbolInStaff> v = new ArrayList<>();
         Iterator<LayoutCoreSymbolInStaff> iter = layoutSymbols.iterator();
         for (int i=0; i<layoutSymbols.size(); i++) {

@@ -22,8 +22,16 @@ public class MEISongImporter implements IScoreSongImporter {
 		importer = new MEISAXScoreSongImporter(new DurationEvaluator());
 	}
 
+    /**
+     *
+     * @param durationEvaluator If null, the basic DurationEvaluator() is used
+     */
     public MEISongImporter(DurationEvaluator durationEvaluator) {
-        importer = new MEISAXScoreSongImporter(durationEvaluator);
+	    if (durationEvaluator == null) {
+	        importer = new MEISAXScoreSongImporter(new DurationEvaluator());
+        } else {
+            importer = new MEISAXScoreSongImporter(durationEvaluator);
+        }
     }
 
     @Override

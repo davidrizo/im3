@@ -71,13 +71,13 @@
  <part-list>
   <score-part id="P1">
    <part-name>P1</part-name>
-   <score-instrument id="P1-I1">
-    <instrument-name> </instrument-name>
-    <virtual-instrument>
+   <score-comment id="P1-I1">
+    <comment-name> </comment-name>
+    <virtual-comment>
      <virtual-library>General MIDI</virtual-library>
      <virtual-name>Bright Piano</virtual-name>
-    </virtual-instrument>
-   </score-instrument>
+    </virtual-comment>
+   </score-comment>
   </score-part>
  </part-list>
  <part id="P1">
@@ -116,7 +116,7 @@
      <octave>4</octave>
     </pitch>
     <duration>256</duration>
-    <instrument id="P1-I1" />
+    <comment id="P1-I1" />
     <voice>1</voice>
     <type>quarter</type>
     <stem>up</stem>
@@ -128,7 +128,7 @@
      <octave>4</octave>
     </pitch>
     <duration>256</duration>
-    <instrument id="P1-I1" />
+    <comment id="P1-I1" />
     <voice>1</voice>
     <type>quarter</type>
     <stem>up</stem>
@@ -141,7 +141,7 @@
      <octave>5</octave>
     </pitch>
     <duration>256</duration>
-    <instrument id="P1-I1" />
+    <comment id="P1-I1" />
     <voice>1</voice>
     <type>quarter</type>
     <stem>down</stem>
@@ -153,7 +153,7 @@
      <octave>4</octave>
     </pitch>
     <duration>256</duration>
-    <instrument id="P1-I1" />
+    <comment id="P1-I1" />
     <voice>1</voice>
     <type>quarter</type>
     <stem>up</stem>
@@ -168,7 +168,7 @@
      <octave>4</octave>
     </pitch>
     <duration>256</duration>
-    <instrument id="P1-I1" />
+    <comment id="P1-I1" />
     <voice>1</voice>
     <type>quarter</type>
     <stem>up</stem>
@@ -181,7 +181,7 @@
      <octave>5</octave>
     </pitch>
     <duration>256</duration>
-    <instrument id="P1-I1" />
+    <comment id="P1-I1" />
     <voice>1</voice>
     <type>quarter</type>
     <stem>down</stem>
@@ -193,7 +193,7 @@
      <octave>4</octave>
     </pitch>
     <duration>256</duration>
-    <instrument id="P1-I1" />
+    <comment id="P1-I1" />
     <voice>1</voice>
     <type>quarter</type>
     <stem>up</stem>
@@ -206,7 +206,7 @@
      <octave>4</octave>
     </pitch>
     <duration>256</duration>
-    <instrument id="P1-I1" />
+    <comment id="P1-I1" />
     <voice>1</voice>
     <type>quarter</type>
     <stem>up</stem>

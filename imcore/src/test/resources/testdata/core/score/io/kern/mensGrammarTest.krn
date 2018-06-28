@@ -1,0 +1,18 @@
+!!This is a global comment
+**mens	**text
+*clefG2	G clef
+*k[b-]	F Major key
+*met(C)	C meter
+*>A	Section A
+*ISoprano	Soprano instrument
+*MM73	Metronome = 73
+*	*
+=	=
+.	.
+!Field comment	Comment
+!LO:R:v=L2	Layout command, rest at second line
+Sr	Semibrevis rest
+s~pA#x	Coloured perfect semibrevis, A sharp explicitly shown
+<ScR	Ligature start, semibrevis C, recta shape
+LeQ	Ligature continuation, longa E, oblique shape
+Sd>	Ligature end, brevis d

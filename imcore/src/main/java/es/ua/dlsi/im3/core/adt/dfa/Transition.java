@@ -7,7 +7,7 @@ import org.apache.commons.math3.fraction.Fraction;
  * @param <StateType>
  * @param <AlphabetSymbolType>
  */
-public class Transition<StateType extends State, AlphabetSymbolType extends Comparable<AlphabetSymbolType>> {
+public class Transition<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType> {
     private StateType from;
     private AlphabetSymbolType token;
     private StateType to;
@@ -41,14 +41,14 @@ public class Transition<StateType extends State, AlphabetSymbolType extends Comp
         Transition<?, ?> that = (Transition<?, ?>) o;
 
         if (!from.equals(that.from)) return false;
-        if (!token.equals(that.token)) return false;
+        if (!token.getType().equals(that.token.getType())) return false;
         return to.equals(that.to);
     }
 
     @Override
     public int hashCode() {
         int result = from.hashCode();
-        result = 31 * result + token.hashCode();
+        result = 31 * result + token.getType().hashCode();
         result = 31 * result + to.hashCode();
         return result;
     }

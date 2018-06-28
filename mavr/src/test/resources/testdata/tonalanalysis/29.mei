@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.music-encoding.org/ns/mei" meiversion="3.0.0">
+	<meiHead>
+		<fileDesc>
+			<titleStmt>
+				<title>29. Auf meinen lieben Gott</title>
+			</titleStmt>
+			<pubStmt/>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application>
+					<name>drizo's IM3 Library @Universidad de Alicante</name>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<workDesc>
+			<work>
+			<titleStmt>
+				<title>29. Auf meinen lieben Gott</title>
+				<respStmt>
+					<persName role="composer">J. s. Bach</persName>
+					<persName role="lyricist">J. h. Schein</persName>
+				</respStmt>
+			</titleStmt>
+			</work>
+		</workDesc>
+	</meiHead>
+	<music>
+		<body>
+			<mdiv>
+				<score>
+					<scoreDef meter.sym="common">
+						<staffGrp>
+							<staffDef n="1" clef.line="2" clef.shape="G" lines="5" key.sig="3s" key.mode="minor"/>
+							<staffDef n="2" clef.line="2" clef.shape="G" lines="5" key.sig="3s" key.mode="minor"/>
+							<staffDef n="3" clef.line="4" clef.shape="F" lines="5" key.sig="3s" key.mode="minor"/>
+							<staffDef n="4" clef.line="4" clef.shape="F" lines="5" key.sig="3s" key.mode="minor"/>
+						</staffGrp>
+					</scoreDef>
+					<section>
+						<scoreDef meter.sym="common" key.sig="3s" key.mode="minor"/>
+						<measure n="0" xml:id="M4" metcon="false">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A21" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A22" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A23" dur="8" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A24" dur="8" pname="b" oct="3" mfunc="upt"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A25" dur="8" pname="f" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A26" dur="8" pname="g" oct="3" accid.ges="s" mfunc="upt"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">I</harm>
+							<harm tstamp="1" type="tonalFunction">T</harm>
+						</measure>
+						<measure n="1" xml:id="M6">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A27" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A28" dur="4" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A29" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A30" dur="4" pname="b" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A31" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A32" dur="8" pname="d" oct="4" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A33" dur="8" pname="e" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A34" dur="8" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A35" dur="8" pname="e" oct="4" accid.ges="s" mfunc="un"/>
+									<note xml:id="A36" dur="8" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A37" dur="8" pname="g" oct="4" accid.ges="s" mfunc="et"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A38" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A39" dur="4" pname="b" oct="3" mfunc="ct"/>
+									<note xml:id="A40" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A41" dur="4" pname="d" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A42" dur="4" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A43" dur="4" pname="g" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A44" dur="4" pname="f" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A45" dur="4" pname="d" oct="3" mfunc="ct"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">I</harm>
+							<harm tstamp="1" type="tonalFunction">T</harm>
+							<harm tstamp="2" type="degree">VII</harm>
+							<harm tstamp="2" type="tonalFunction">D</harm>
+							<harm tstamp="3" type="degree">I</harm>
+							<harm tstamp="3" type="tonalFunction">T</harm>
+							<harm tstamp="4" type="degree">IV</harm>
+							<harm tstamp="4" type="tonalFunction">S</harm>
+						</measure>
+						<measure n="2" xml:id="M7">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A46" dur="2" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<rest xml:id="A47" dur="4"/>
+									<note xml:id="A48" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A49" dur="2" pname="e" oct="4" accid.ges="s" mfunc="ct"/>
+									<rest xml:id="A50" dur="4"/>
+									<note xml:id="A51" dur="4" pname="e" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A52" dur="2" pname="g" oct="3" accid.ges="s" mfunc="ct"/>
+									<rest xml:id="A53" dur="4"/>
+									<note xml:id="A54" dur="4" pname="a" oct="3" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A55" dur="2" pname="c" oct="3" accid.ges="s" mfunc="ct"/>
+									<rest xml:id="A56" dur="4"/>
+									<note xml:id="A57" dur="8" pname="a" oct="2" mfunc="ct"/>
+									<note xml:id="A58" dur="8" pname="b" oct="2" mfunc="upt"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">V</harm>
+							<harm tstamp="1" type="tonalFunction">D</harm>
+							<harm tstamp="4" type="degree">III</harm>
+							<harm tstamp="4" type="tonalFunction">S</harm>
+						</measure>
+						<measure n="3" xml:id="M8">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A59" dur="4" dots="1" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A60" dur="8" pname="b" oct="4" mfunc="upt"/>
+									<note xml:id="A61" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A62" dur="4" pname="b" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A63" dur="8" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A64" dur="8" pname="f" oct="4" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A65" dur="4" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A66" dur="8" pname="g" oct="4" accid.ges="s" mfunc="app"/>
+									<note xml:id="A67" dur="8" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A68" dur="8" pname="e" oct="4" accid.ges="s" mfunc="un"/>
+									<note xml:id="A69" dur="8" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A70" dur="4" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A71" dur="4" pname="g" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A72" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A73" dur="4" pname="d" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A74" dur="8" pname="c" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A75" dur="8" pname="d" oct="3" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A76" dur="4" pname="e" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A77" dur="4" pname="f" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A78" dur="4" pname="b" oct="2" mfunc="ct"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">III</harm>
+							<harm tstamp="1" type="tonalFunction">S</harm>
+							<harm tstamp="2" type="degree">V</harm>
+							<harm tstamp="2" type="tonalFunction">D</harm>
+							<harm tstamp="3" type="degree">I</harm>
+							<harm tstamp="3" type="tonalFunction">T</harm>
+							<harm tstamp="4" type="degree">IV</harm>
+							<harm tstamp="4" type="tonalFunction">S</harm>
+						</measure>
+						<measure n="4" xml:id="M9">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A79" dur="2" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+									<rest xml:id="A80" dur="4"/>
+									<note xml:id="A81" dur="4" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A82" dur="2" pname="e" oct="4" accid.ges="s" mfunc="ct"/>
+									<rest xml:id="A83" dur="4"/>
+									<note xml:id="A84" dur="4" pname="e" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A85" dur="2" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<rest xml:id="A86" dur="4"/>
+									<note xml:id="A87" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A88" dur="2" pname="c" oct="3" accid.ges="s" mfunc="ct"/>
+									<rest xml:id="A89" dur="4"/>
+									<note xml:id="A90" dur="4" pname="c" oct="3" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">V</harm>
+							<harm tstamp="1" type="tonalFunction">D</harm>
+							<harm tstamp="4" type="degree">V</harm>
+							<harm tstamp="4" type="tonalFunction">D</harm>
+						</measure>
+						<measure n="5" xml:id="M10">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A91" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A92" dur="4" pname="b" oct="4" mfunc="ct"/>
+									<note xml:id="A93" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A94" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A95" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A96" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A97" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A98" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A99" dur="8" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A100" dur="8" pname="d" oct="4" mfunc="un"/>
+									<note xml:id="A101" dur="8" pname="c" oct="4" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A102" dur="8" pname="b" oct="3" mfunc="ct"/>
+									<note xml:id="A103" dur="4" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A104" dur="4" pname="a" oct="3" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A105" dur="4" pname="f" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A106" dur="4" pname="g" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A107" dur="8" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A108" dur="8" pname="g" oct="3" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A109" dur="8" pname="f" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A110" dur="8" pname="e" oct="3" mfunc="upt"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">I</harm>
+							<harm tstamp="1" type="tonalFunction">T</harm>
+							<harm tstamp="2" type="key">AM</harm>
+							<harm tstamp="2" type="degree">V</harm>
+							<harm tstamp="2" type="tonalFunction">D</harm>
+							<harm tstamp="3" type="degree">I</harm>
+							<harm tstamp="3" type="tonalFunction">T</harm>
+							<harm tstamp="4" type="degree">VI</harm>
+							<harm tstamp="4" type="tonalFunction">S</harm>
+						</measure>
+						<measure n="6" xml:id="M11">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A111" dur="2" pname="b" oct="4" mfunc="ct"/>
+									<note xml:id="A112" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A113" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A114" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A115" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A116" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A117" dur="4" pname="e" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A118" dur="4" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A119" dur="4" pname="g" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A120" dur="4" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A121" dur="4" pname="a" oct="3" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A122" dur="4" pname="d" oct="3" mfunc="ct"/>
+									<note xml:id="A123" dur="4" pname="e" oct="3" mfunc="ct"/>
+									<note xml:id="A124" dur="4" pname="a" oct="2" mfunc="ct"/>
+									<note xml:id="A125" dur="4" pname="a" oct="2" mfunc="ct"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">II</harm>
+							<harm tstamp="1" type="tonalFunction">S</harm>
+							<harm tstamp="2" type="degree">V</harm>
+							<harm tstamp="2" type="tonalFunction">D</harm>
+							<harm tstamp="3" type="degree">I</harm>
+							<harm tstamp="3" type="tonalFunction">T</harm>
+						</measure>
+						<measure n="7" xml:id="M12">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A126" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A127" dur="4" pname="b" oct="4" mfunc="ct"/>
+									<note xml:id="A128" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A129" dur="8" pname="d" oct="5" mfunc="ct"/>
+									<note xml:id="A130" dur="8" pname="e" oct="5" mfunc="et"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A131" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A132" dur="8" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A133" dur="8" pname="g" oct="4" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A134" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A135" dur="4" pname="a" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A136" dur="4" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A137" dur="4" pname="d" oct="4" mfunc="ct"/>
+									<note xml:id="A138" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A139" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A140" dur="8" pname="d" oct="3" mfunc="ct"/>
+									<note xml:id="A141" dur="8" pname="c" oct="3" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A142" dur="4" pname="b" oct="2" mfunc="ct"/>
+									<note xml:id="A143" dur="8" pname="f" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A144" dur="8" pname="e" oct="3" mfunc="upt"/>
+									<note xml:id="A145" dur="4" pname="d" oct="3" mfunc="ct"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">IV</harm>
+							<harm tstamp="1" type="tonalFunction">S</harm>
+							<harm tstamp="2" type="degree">II</harm>
+							<harm tstamp="2" type="tonalFunction">S</harm>
+							<harm tstamp="3" type="degree">VI</harm>
+							<harm tstamp="3" type="tonalFunction">S</harm>
+							<harm tstamp="4" type="degree">IV</harm>
+							<harm tstamp="4" type="tonalFunction">S</harm>
+						</measure>
+						<measure n="8" xml:id="M13">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A146" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A147" dur="8" pname="b" oct="4" mfunc="ct"/>
+									<note xml:id="A148" dur="8" pname="a" oct="4" mfunc="ant"/>
+									<note xml:id="A149" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A150" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A151" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A152" dur="4" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A153" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A154" dur="4" pname="a" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A155" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A156" dur="8" pname="d" oct="4" mfunc="ct"/>
+									<note xml:id="A157" dur="8" pname="c" oct="4" accid.ges="s" mfunc="ant"/>
+									<note xml:id="A158" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A159" dur="4" pname="e" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A160" dur="4" pname="e" oct="3" tie="i" mfunc="ct"/>
+									<note xml:id="A161" dur="4" pname="e" oct="3" tie="t" mfunc="ct"/>
+									<note xml:id="A162" dur="4" pname="a" oct="2" mfunc="ct"/>
+									<note xml:id="A163" dur="4" pname="a" oct="3" mfunc="ct"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">I</harm>
+							<harm tstamp="1" type="tonalFunction">T</harm>
+							<harm tstamp="2" type="degree">V</harm>
+							<harm tstamp="2" type="tonalFunction">D</harm>
+							<harm tstamp="3" type="degree">I</harm>
+							<harm tstamp="3" type="tonalFunction">T</harm>
+						</measure>
+						<measure n="9" xml:id="M14">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A164" dur="4" pname="e" oct="5" mfunc="ct"/>
+									<note xml:id="A165" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A166" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A167" dur="4" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A168" dur="4" pname="b" oct="4" mfunc="ct"/>
+									<note xml:id="A169" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A170" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A171" dur="4" pname="a" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A172" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A173" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A174" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A175" dur="4" pname="e" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A176" dur="4" pname="g" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A177" dur="8" pname="a" oct="3" mfunc="ct"/>
+									<note xml:id="A178" dur="8" pname="g" oct="3" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A179" dur="8" pname="f" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A180" dur="8" pname="e" oct="3" mfunc="upt"/>
+									<note xml:id="A181" dur="8" pname="d" oct="3" mfunc="upt"/>
+									<note xml:id="A182" dur="8" pname="c" oct="3" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">V</harm>
+							<harm tstamp="1" type="tonalFunction">D</harm>
+							<harm tstamp="2" type="degree">I</harm>
+							<harm tstamp="2" type="tonalFunction">T</harm>
+							<harm tstamp="3" type="degree">VI</harm>
+							<harm tstamp="3" type="tonalFunction">S</harm>
+							<harm tstamp="4" type="degree">I</harm>
+							<harm tstamp="4" type="tonalFunction">T</harm>
+						</measure>
+						<measure n="10" xml:id="M15">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A183" dur="2" pname="b" oct="4" mfunc="ct"/>
+									<note xml:id="A184" dur="4" pname="b" oct="4" mfunc="ct"/>
+									<note xml:id="A185" dur="4" pname="b" oct="4" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A186" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A187" dur="8" pname="g" oct="4" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A188" dur="8" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A189" dur="4" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A190" dur="4" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A191" dur="8" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A192" dur="8" pname="e" oct="4" mfunc="upt"/>
+									<note xml:id="A193" dur="4" pname="d" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A194" dur="4" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A195" dur="8" pname="e" oct="4" mfunc="ct"/>
+									<note xml:id="A196" dur="8" pname="d" oct="4" mfunc="upt"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A197" dur="4" pname="d" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A198" dur="4" pname="b" oct="2" mfunc="ct"/>
+									<note xml:id="A199" dur="4" pname="e" oct="3" mfunc="ct"/>
+									<note xml:id="A200" dur="8" pname="g" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A201" dur="8" pname="f" oct="3" accid.ges="s" mfunc="upt"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="key">EM</harm>
+							<harm tstamp="1" type="degree">V</harm>
+							<harm tstamp="1" type="tonalFunction">D</harm>
+							<harm tstamp="2" type="degree">V</harm>
+							<harm tstamp="2" type="tonalFunction">D</harm>
+							<harm tstamp="3" type="degree">I</harm>
+							<harm tstamp="3" type="tonalFunction">T</harm>
+						</measure>
+						<measure n="11" xml:id="M16">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A202" dur="4" dots="1" pname="c" oct="5" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A203" dur="8" pname="b" oct="4" mfunc="upt"/>
+									<note xml:id="A204" dur="4" pname="a" oct="4" mfunc="ct"/>
+									<note xml:id="A205" dur="8" pname="b" oct="4" mfunc="ct"/>
+									<note xml:id="A206" dur="8" pname="a" oct="4" mfunc="upt"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A207" dur="8" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A208" dur="8" pname="f" oct="4" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A209" dur="4" pname="e" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A210" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A211" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A212" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A213" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A214" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A215" dur="8" pname="b" oct="3" mfunc="ct"/>
+									<note xml:id="A216" dur="8" pname="c" oct="4" accid.ges="s" mfunc="upt"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A217" dur="8" pname="e" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A218" dur="8" pname="d" oct="3" accid.ges="s" mfunc="upt"/>
+									<note xml:id="A219" dur="4" pname="c" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A220" dur="8" pname="f" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A221" dur="8" pname="e" oct="3" mfunc="upt"/>
+									<note xml:id="A222" dur="8" pname="d" oct="3" mfunc="ct"/>
+									<note xml:id="A223" dur="8" pname="c" oct="3" accid.ges="s" mfunc="upt"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="key">F#m</harm>
+							<harm tstamp="1" type="degree">V</harm>
+							<harm tstamp="1" type="tonalFunction">D</harm>
+							<harm tstamp="3" type="degree">I</harm>
+							<harm tstamp="3" type="tonalFunction">T</harm>
+							<harm tstamp="4" type="degree">IV</harm>
+							<harm tstamp="4" type="tonalFunction">S</harm>
+						</measure>
+						<measure n="12" xml:id="M17">
+							<staff n="1">
+								<layer n="1">
+									<note xml:id="A224" dur="2" pname="g" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A225" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note xml:id="A226" dur="4" pname="f" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A227" dur="4" pname="e" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A228" dur="4" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note xml:id="A229" dur="4" pname="d" oct="4" mfunc="ct"/>
+									<note xml:id="A230" dur="8" pname="c" oct="4" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A231" dur="8" pname="b" oct="3" mfunc="upt"/>
+									<note xml:id="A232" dur="4" pname="a" oct="3" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<staff n="4">
+								<layer n="1">
+									<note xml:id="A233" dur="4" pname="b" oct="2" mfunc="ct"/>
+									<note xml:id="A234" dur="4" pname="c" oct="3" accid.ges="s" mfunc="ct"/>
+									<note xml:id="A235" dur="4" pname="f" oct="2" accid.ges="s" mfunc="ct"/>
+								</layer>
+							</staff>
+							<harm tstamp="1" type="degree">II</harm>
+							<harm tstamp="1" type="tonalFunction">S</harm>
+							<harm tstamp="2" type="degree">V</harm>
+							<harm tstamp="2" type="tonalFunction">D</harm>
+							<harm tstamp="3" type="degree">I</harm>
+							<harm tstamp="3" type="tonalFunction">T</harm>
+						</measure>
+					</section>
+				</score>
+			</mdiv>
+		</body>
+	</music>
+</mei>

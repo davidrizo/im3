@@ -1,0 +1,263 @@
+This is not a context free grammar for contents like the **text spines, where any text is recognized, such as the one valid for a note, rest, barline, etc...
+Elements such as comments are processed in a different lexical parser (named 'mode' in ANTLR4)
+Text spines are processed in ANTLR4 with semantic predicates (the "island grammars") cannot be used because we don't have any character that can be used to change the mode.  Thus, the rule "lyricsText" can just be processed when we are in a **text spine.
+
+
+-------- SYNTAX GRAMMAR -----
+start ::= (referenceRecord EOL)* header (EOL record)+ EOL? (referenceRecord EOL?)* EOF
+
+referenceRecord ::= composer | encoder | endEncoding
+
+composer ::= REFERENCE_RECORD 'COM:' FULL_LINE_TEXT
+
+encoder ::= REFERENCE_RECORD 'ENC' FULL_LINE_TEXT
+
+endEncoding ::= REFERENCE_RECORD 'END' FULL_LINE_TEXT
+
+header ::= headerField (TAB headerField)*
+
+headerField ::= headerMens // in full **kern specification it includes also headerKern | headerRoot | headerHarm
+
+headerMens ::= MENS
+
+record ::= globalComment | fields
+
+fields ::= field (TAB field)*
+
+globalComment ::= GLOBAL_COMMENT FIELD_TEXT?
+
+field ::= graphicalToken | placeHolder | fieldComment
+
+placeHolder ::= DOT
+
+fieldComment ::= FIELD_COMMENT FIELD_TEXT?
+
+graphicalToken ::= tandemInterpretation | barLine | rest | note | lyricsText | spineOperation
+
+tandemInterpretation ::= staff | clef | keySignature | meterSign | keyChange | sectionLabel |instrument | metronome | nullInterpretation
+
+staff ::= TANDEM_STAFF NUMBER
+
+clef ::= TANDEM_CLEF clefValue
+
+clefValue ::= clefNote clefLine
+
+clefNote: 'C' | 'F' | 'G'
+clefLine: '1'..'5'
+
+
+keySignature ::= TANDEM_KEY LEFT_BRACKET keySignatureNote* RIGHT_BRACKET
+
+keySignatureNote ::= LOWERCASE_PITCH keyAccidental?
+
+keyAccidental ::= CHAR_n | OCTOTHORPE | MINUS
+
+keyChange ::= ASTERISK (minorKey | majorKey) keyAccidental? COLON
+
+minorKey ::= LOWERCASE_PITCH
+
+majorKey ::= UPPERCASE_PITCH
+
+meterSign ::= TANDEM_MET LEFT_PARENTHESIS meterSignValue RIGHT_PARENTHESIS
+
+meterSignValue ::= ('C' | 'c|' | 'C·' | 'O' | 'O·' | 'C32' | 'C|32' )
+
+sectionLabel ::= SECTION_LABEL FIELD_TEXT
+
+instrument ::= INSTRUMENT FIELD_TEXT
+
+metronome ::= METRONOME NUMBER
+
+nullInterpretation ::= ASTERISK 
+
+barLine ::= EQUAL+ NUMBER? (COLON? partialBarLine? COLON?)
+
+partialBarLine ::= GRAVE_ACCENT  | APOSTROPHE | MINUS
+
+spineOperation ::= spineTerminator | spineSplit | spineJoin
+
+spineTerminator ::= ASTERISK MINUS
+
+spineSplit ::= ASTERISK CIRCUMFLEX
+
+spineJoin ::= ASTERISK CHAR_v
+
+rest ::= duration (CHAR_r) pause?
+
+duration ::= mensuralDuration dots?
+
+pause ::= SEMICOLON
+
+mensuralDuration ::= mensuralFigure coloured? mensuralPerfection?
+
+coloured ::= TILDE
+
+mensuralFigure ::= ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u')
+
+// p=perfect, i=imperfect, I=imperfect by alteratio
+mensuralPerfection ::= 'p' | 'i' | 'I'
+
+dots ::= augmentationDots | graphicalDot
+
+augmentationDots ::= augmentationDots | graphicalDot
+
+augmentationDots ::= DOT+
+
+graphicalDot ::= COLON
+
+graphicalDot ::= COLON;
+
+note ::=  beforeNote duration noteName (alteration alterationVisualMode?)? afterNote
+
+beforeNote ::= (slurStart | tieStart | ligatureStart | barLineCrossedNoteStart)*
+
+noteName ::= UPPERCASE_PITCH_CHARACTER+ | LOWERCASE_PITCH_CHARACTER+
+
+alteration ::= OCTOTHORPE | (OCTOTHORPE OCTOTHORPE) | MINUS | (MINUS MINUS) | CHAR_n
+
+// x is show, xx is shows editorial
+alterationVisualMode ::= CHAR_x CHAR_x?
+
+afterNote ::= (slurEnd | stem| tieMiddle | tieEnd| ligatureEnd | ligatureType | beam | pause | barLineCrossedNoteEnd)*
+
+tieStart ::= LEFT_BRACKET
+
+tieMiddle ::= UNDERSCORE
+
+tieEnd ::= RIGHT_BRACKET
+
+slurStart ::= LEFT_PARENTHESIS
+
+ligatureStart ::= ANGLE_BRACKET_OPEN
+
+ligatureEnd ::= ANGLE_BRACKET_CLOSE
+
+ligatureType ::= CHAR_R | CHAR_Q
+
+slurEnd ::= RIGHT_PARENTHESIS
+
+barLineCrossedNoteStart ::= CHAR_T
+barLineCrossedNoteEnd ::= CHAR_t
+
+stem ::= SLASH | BACKSLASH
+
+beam ::= CHAR_L | CHAR_J
+
+layout ::= LAYOUT layoutCommand
+
+layoutCommand ::= layoutVisualAccidental | layoutRestPosition
+
+layoutVisualAccidental ::= 'N:va=' alteration
+
+layoutRestPosition ::= 'R:v' staffPosition
+
+// bottom line = L1, bottom space = S1, first bottom ledger line = L0, space between first ledger line and bottom line = S0, second bottom ledger line = L-1, first top ledger line = L6
+staffPosition ::= lineSpace NUMBER
+
+// l = line, s = space
+lineSpace ::= CHAR_L | CHAR_S
+
+lyricsText ::= FIELD_TEXT // just if we are in **text spine
+
+
+-------- LEXICAL GRAMMAR -----
+
+UPPERCASE_PITCH ::= 'A'..'G'
+
+LOWERCASE_PITCH ::= 'a'..'g'
+
+CHAR_n ::= 'n'
+
+CHAR_r ::= 'r'
+
+CHAR_v ::= 'v'
+
+CHAR_L ::= 'L'
+
+CHAR_J ::= 'J'
+
+CHAR_R ::= 'R'
+
+CHAR_Q ::= 'Q'
+
+CHAR_S ::= 'S'
+
+CHAR_T ::= 'T'
+
+ASTERISK ::= '*'
+
+EXCLAMATION ::= '!'
+
+MENS ::= '**mens'
+
+LYRICS ::= '**text';
+
+TANDEM_STAFF ::= '*staff'
+
+TANDEM_CLEF ::= '*clef'
+
+TANDEM_KEY ::= '*k'
+
+TANDEM_MET ::= '*met'
+
+SECTION_LABEL ::= '*>'
+
+METRONOME ::= '*MM'
+
+INSTRUMENT ::= '*I'
+
+REFERENCE_RECORD := '!!!'
+
+LAYOUT ::= '!LO'
+
+LEFT_BRACKET ::= '['
+
+RIGHT_BRACKET ::= ']'
+
+OCTOTHORPE ::= '#'
+
+MINUS ::= '-'
+
+EQUAL ::= '='
+
+NUMBER ::= ('0'..'9')+
+
+DOT ::= '.'
+
+AT ::= ''@''
+
+PIPE ::= '|'
+
+GRAVE_ACCENT ::= '`'
+
+APOSTROPHE ::= '\''
+
+EOL ::= '\r'?'\n'
+
+CIRCUMFLEX ::= '^'
+
+TILDE ::= '~'
+
+ANGLE_BRACKET_OPEN ::= '<'
+
+ANGLE_BRACKET_CLOSE ::= '>'
+
+SLASH ::= '/'
+
+BACKSLASH ::= '\\'
+
+UNDERSCORE ::= '_'
+
+TAB ::= '\t'
+
+LEFT_PARENTHESIS ::= '('
+
+RIGHT_PARENTHESIS ::= ')'
+
+COLON ::= ':'
+
+SEMICOLON ::= ';'
+
+FIELD_TEXT ::= ~[\t\n\r]+
+
+FULL_LINE_TEXT ::= ~[\n\r]'+

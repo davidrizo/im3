@@ -93,4 +93,8 @@ public class Coordinate {
     public String toString() {
         return "("+ x.getAbsoluteValue() + "," + y.getAbsoluteValue() + ")";
     }
+
+    public double getDisplacementY() {
+        return y.getDisplacement();
+    }
 }

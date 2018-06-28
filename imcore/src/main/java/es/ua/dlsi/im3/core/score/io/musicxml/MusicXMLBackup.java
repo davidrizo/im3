@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.io.musicxml;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.Time;
@@ -27,6 +28,10 @@ public class MusicXMLBackup implements ITimedElementInStaff{
 		return time;
 	}
 
+    @Override
+    public void move(Time offset) throws IM3Exception {
+        this.time = time.add(offset);
+    }
 	@Override
 	public Staff getStaff() {
 		return null;

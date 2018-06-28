@@ -20,6 +20,7 @@ public class BravuraFont extends LayoutFont {
         super("Bravura", LayoutFonts.bravura,
                 BravuraFont.class.getResourceAsStream(SVGFONT),
                 BravuraFont.class.getResourceAsStream(OTFMUSICFONT),
+                OTFMUSICFONT,
                 BravuraFont.class.getResourceAsStream(OTFTEXTCFONT),
                 BravuraFont.class.getResourceAsStream(METADATA),
                 new SMuFLMap());

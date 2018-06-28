@@ -186,15 +186,44 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return fermate;
 	}
 
+    // TODO: 7/4/18 ¿Esta suposición de poner el calderón según la clave está bien?
+    /**
+     * It adds the fermata depending on the clef
+     * @param snr
+     * @throws IM3Exception
+     */
+    public void addFermata(AtomFigure snr) throws IM3Exception {
+        Clef clef = null;
+        try {
+            clef = this.getRunningClefAt(snr); // harmony spines...
+        } catch (IM3Exception e) {
+            //no-op
+        }
+        if (clef == null || clef.getNoteOctave() >= 4) {
+            addFermata(snr, PositionAboveBelow.ABOVE);
+        } else {
+            addFermata(snr, PositionAboveBelow.BELOW);
+        }
+    }
+
+    /**
+     * Add a specific fermata
+     * @param snr
+     * @param position
+     * @throws IM3Exception
+     */
 	public void addFermata(AtomFigure snr, PositionAboveBelow position) throws IM3Exception {
+	    if (position == PositionAboveBelow.UNDEFINED) {
+	        addFermata(snr);
+        }
+
 		Fermate f = fermate.get(snr.getTime());
-		if (!fermate.containsKey(snr.getTime())) {
+		if (f == null) {
 			f = new Fermate(getNotationType(), this, snr, position);
 			fermate.put(snr.getTime(), f);
 			this.addMark(f);
-		} else {
-			f.addDurationalSymbol(snr, position);
 		}
+		f.addDurationalSymbol(snr, position);
 	}
 
 	// ----------------------------------------------------------------------
@@ -204,16 +233,19 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return this.lines;
 	}
 
+	public static int computeNumberLedgerLinesNeeded(PositionInStaff positionInStaff, int lines) {
+        int lineSpace = positionInStaff.getLineSpace();
+        if (lineSpace < 0) {
+            return -lineSpace / 2;
+        } else if (lineSpace > (lines - 1) * 2) {
+            return -(lineSpace - (lines - 1) * 2) / 2;
+        } else {
+            return 0;
+        }
+    }
 
 	public int computeNumberLedgerLinesNeeded(PositionInStaff positionInStaff) {
-		int lineSpace = positionInStaff.getLineSpace();
-		if (lineSpace < 0) {
-			return -lineSpace / 2;
-		} else if (lineSpace > (lines - 1) * 2) {
-			return -(lineSpace - (lines - 1) * 2) / 2;
-		} else {
-			return 0;
-		}
+	    return computeNumberLedgerLinesNeeded(positionInStaff, lines);
 	}
 
 	// ----------------------------------------------------------------------
@@ -226,7 +258,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		Map.Entry<Time, Clef> c = this.clefs.floorEntry(symbol.getTime());
 		if (c == null) {
 			throw new IM3Exception(
-					"There is no clef set at symbol " + symbol.toString() + " at time  " + symbol.getTime());
+					"There is no clef set at symbol " + symbol.toString() + " at time  " + symbol.getTime() + " in staff " + this);
 		}
 		return c.getValue();
 	}
@@ -241,7 +273,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return c.getValue();
 	}
 
-	public Clef getRunningClefAtOrNull(Time time) {
+	public Clef getRunningClefAtOrNull(Time time) throws IM3Exception {
 		// The treeset with all clefs ordered by onsets is built after
 		// computeOnsets
 		Map.Entry<Time, Clef> c = this.clefs.floorEntry(time);
@@ -349,12 +381,12 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		// computeOnsets
 		Map.Entry<Time, KeySignature> c = this.keySignatures.floorEntry(time);
 		if (c == null) {
-			throw new IM3Exception("There is no instrumentKey signature set at time " + time);
+			throw new IM3Exception("There is no instrumentKey signature set at time " + time + " in staff " + toString());
 		}
 		return c.getValue();
 	}
 
-	public KeySignature getRunningKeySignatureOrNullAt(Time time) {
+	public KeySignature getRunningKeySignatureOrNullAt(Time time) throws IM3Exception {
 		// The treeset with all clefs ordered by onsets is built after
 		// computeOnsets
 		Map.Entry<Time, KeySignature> c = this.keySignatures.floorEntry(time);
@@ -382,8 +414,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		}
 		
 		this.clefs.put(clef.getTime(), clef);
-		this.coreSymbols.add(clef);
-		clef.setStaff(this);
+        this.addCoreSymbol(clef);
 	}
 
 	public void addTimeSignature(TimeSignature ts) throws IM3Exception {		
@@ -396,14 +427,15 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			}
 		}
 		this.timeSignatures.put(ts.getTime(), ts);
-		this.coreSymbols.add(ts);
-		ts.setStaff(this);
+		this.addCoreSymbol(ts);
+		//this.coreSymbols.add(ts);
+		//ts.setStaff(this);
 	}
 
-    public void removeTimeSignature(TimeSignature meter) {
+    /*public void removeTimeSignature(TimeSignature meter) {
 	    this.coreSymbols.remove(meter);
 	    this.timeSignatures.remove(meter.getTime());
-    }
+    }*/
 
 
 	public void addKeySignature(KeySignature ts) throws IM3Exception {
@@ -416,8 +448,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			}
 		}
 		this.keySignatures.put(ts.getTime(), ts);
-		this.coreSymbols.add(ts);
-		ts.setStaff(this);
+        this.addCoreSymbol(ts);
 	}
 
     public void addMarkBarline(MarkBarline ts) throws IM3Exception {
@@ -430,9 +461,8 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
             }
         }
         this.markBarlines.put(ts.getTime(), ts);
-        this.coreSymbols.add(ts);
-        ts.setStaff(this);
-    }
+        this.addCoreSymbol(ts);
+	}
 
 
 	// ----------------------------------------------------------------------
@@ -447,7 +477,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 * @return
 	 * @throws IM3Exception 
 	 */
-	public List<ITimedElementInStaff> getCoreSymbolsOrderedWithOnsets(Time fromTime, Time toTime) {
+	public List<ITimedElementInStaff> getCoreSymbolsOrderedWithOnsets(Time fromTime, Time toTime) throws IM3Exception {
 		if (!fromTime.isZero() || !toTime.isMaxValue()) { // to avoid doing the loop when all possible elements fit
             ArrayList<ITimedElementInStaff> symbols = new ArrayList<>();
 
@@ -467,8 +497,13 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		ArrayList<ITimedElementInStaff> symbols = new ArrayList<>(coreSymbols);
 		SymbolsOrderer.sortList(symbols);
 		return symbols;
-	}	
-	public void addMark(StaffMark mark) {
+	}
+
+    public List<ITimedElementInStaff> getCoreSymbols() {
+	    return coreSymbols;
+    }
+
+	public void addMark(StaffMark mark) throws IM3Exception {
 		this.marks.add(mark);
 	}
 
@@ -500,9 +535,13 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return attachments;
 	}
 	
-	public void addCoreSymbol(ITimedElementInStaff e) {
+	public void addCoreSymbol(ITimedElementInStaff e) throws IM3Exception {
 		e.setStaff(this);
         this.coreSymbols.add(e);
+        /*System.out.println(name + " ADDED " + e);
+        for (ITimedElementInStaff ee: coreSymbols) {
+            System.out.println("\t" + ee);
+        }*/
     }
 
 	/**
@@ -514,7 +553,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 *         is D in G2 clef
 	 * @throws IM3Exception
 	 */
-	public PositionInStaff computePositionInStaff(Clef clef, DiatonicPitch noteName, int octave) {
+	public PositionInStaff computePositionInStaff(Clef clef, DiatonicPitch noteName, int octave) throws IM3Exception {
 		DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
 		int bottomClefOctave = clef.getBottomLineOctave();
 
@@ -537,7 +576,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      * @return
      * @throws IM3Exception When no possible pitch is found
      */
-    public ScientificPitch computeScientificPitch(Clef clef, PositionInStaff positionInStaff) {
+    public ScientificPitch computeScientificPitch(Clef clef, PositionInStaff positionInStaff) throws IM3Exception {
         int bottomClefOctave = clef.getBottomLineOctave();
         DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
         int intervalWithC = bottomClefNoteName.getOrder() - DiatonicPitch.C.getOrder();
@@ -584,7 +623,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return layers;
 	}
 	
-	public List<AtomPitch> getAtomPitches() {
+	public List<AtomPitch> getAtomPitches() throws IM3Exception {
 		ArrayList<AtomPitch> result = new ArrayList<>();
 		
 		for (ITimedElementInStaff symbol: coreSymbols) {
@@ -634,7 +673,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
     }
 
 
-	public List<Atom> getAtoms() {
+	public List<Atom> getAtoms() throws IM3Exception {
 		ArrayList<Atom> result = new ArrayList<>();
 		
 		for (ITimedElementInStaff symbol: coreSymbols) {
@@ -672,6 +711,26 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
     public void remove(ITimedElementInStaff element) {
         if (coreSymbols.remove(element)) { // if not removed yet
             element.setStaff(null);
+        }
+        //TODO Algo más elegante
+        if (element instanceof Custos) {
+            custos.remove(element.getTime());
+        }
+
+        if (element instanceof KeySignature) {
+            keySignatures.remove(element.getTime());
+        }
+
+        if (element instanceof TimeSignature) {
+            timeSignatures.remove(element.getTime());
+        }
+
+        if (element instanceof MarkBarline) {
+            markBarlines.remove(element.getTime());
+        }
+
+        if (element instanceof Fermate) {
+            markBarlines.remove(element.getTime());
         }
     }
 
@@ -732,7 +791,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
     void computeRequiredAccidentalsForPitch(TreeMap<DiatonicPitchAndOctave, PitchClass> alteredNoteNamesInBar,
 											TreeMap<DiatonicPitch, PitchClass> alteredNoteNamesInKeySignature,
-                                            HashMap<AtomPitch, Accidentals> result, AtomPitch ps) {
+                                            HashMap<AtomPitch, Accidentals> result, AtomPitch ps) throws IM3Exception {
 
 	    ScientificPitch pc = ps.getScientificPitch();
         DiatonicPitchAndOctave diatonicPitchAndOctave = new DiatonicPitchAndOctave(pc.getPitchClass().getNoteName(), pc.getOctave());
@@ -788,6 +847,17 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		}
 		return requiredAccidental;
 	}
+
+    //20180208 This cannot be computed fromTime - toTime to take into account previous context - public HashMap<AtomPitch, Accidentals> createNoteAccidentalsToShow(Time fromTime, Time toTime) throws IM3Exception {
+    public Accidentals findCurrentKeySignatureAccidental(Time time, DiatonicPitch diatonicPitch) throws IM3Exception {
+	    try {
+	        KeySignature keySignature = getRunningKeySignatureAt(time);
+            return keySignature.getAccidentalOf(diatonicPitch);
+        } catch (IM3Exception e) {
+	        return null; // no key signature
+        }
+
+    }
 
     /**
      * It returns the y position for a given diatonic pitch at a given time (for taking into account the clef changes)
@@ -882,6 +952,8 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
             throw new IM3Exception("System break has not time set");
         }
         systemBreaks.put(sb.getTime(), sb);
+        sb.setStaff(this);
+        this.coreSymbols.add(sb);
     }
 
     public HashMap<Time, SystemBreak> getSystemBreaks() {
@@ -920,7 +992,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      * It changes the old clef with the new one
      * @param oldClef
      * @param newClef
-     * @param changePitches If true, notes are true note pitches are changed according to the change, e-g-
+     * @param changePitches If true, notes are true note pitches are changed according to the change, e-g-  
      *                      repositioned to reflect the clef change,
      *
      * @throws IM3Exception
@@ -955,6 +1027,23 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
                 pitch.transpose(interval);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        if (name != null) {
+            return "#" + getNumberIdentifier() + " (" + name + ")";
+        } else {
+            return "#" + getNumberIdentifier();
+        }
+    }
+
+    public void moveFermate(Time oldTime, Time newTime) {
+        Fermate oldFermate = fermate.remove(oldTime);
+        if (oldFermate == null) {
+            throw new IM3RuntimeException("Cannot find a previous fermate at time " + oldTime);
+        }
+        this.fermate.put(newTime, oldFermate);
     }
 
 }

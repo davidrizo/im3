@@ -8,14 +8,10 @@ import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidental;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Digit;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.MeterSign;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalToken;
-import es.ua.dlsi.im3.omr.model.pojo.Symbol;
 
 public class TimeSignatureState extends OMRState {
     // TODO: 4/10/17 C3, C, C/...

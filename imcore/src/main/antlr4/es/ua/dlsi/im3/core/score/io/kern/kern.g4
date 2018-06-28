@@ -51,14 +51,14 @@ field: graphicalToken
 fieldComment: FIELDCCOMMENT;
 //repeatToken: 
 
-//graphicalToken: interpretation | tandemInterpretation | splineOperations | localComment | note | rest | barline;
-graphicalToken: interpretation | tandemInterpretation | noteRestChord | barline | splineOperations | harm;
+//graphicalToken: interpretation | tandemInterpretation | spineOperations | localComment | note | rest | barline;
+graphicalToken: interpretation | tandemInterpretation | noteRestChord | barline | spineOperations | harm;
 
 interpretation: INTERPRETATION;
 
 
 tandemInterpretation:
-    (TANDEM_CLEF clef) //| meter | key | metronome | instrument | instrumentClass | instrumentGroup;
+    (TANDEM_CLEF clef) //| meter | key | metronome | comment | instrumentClass | instrumentGroup;
     | (TANDEM_KEY LEFTBRACKET keysignature RIGHTBRACKET)
     | (TANDEM_METER meter)
     | (TANDEM_MET LEFTPAR meterSign RIGHTPAR)
@@ -67,12 +67,12 @@ tandemInterpretation:
     | (UNKNOWN_KEY  // unknown key
     | ATONAL_PASSAGE // atonal passage
     | SECTIONLABEL // section labels
-    | INSTRUMENT //TODO Add a ScorePart for each instrument
+    | INSTRUMENT //TODO Add a ScorePart for each comment
     | METRONOME
     | ASTERISK) // a null interpretation (placeholder) will have just an asterisk
     ;
 
-meterSign: ('C' | 'c' | 'C|' | 'c|'); //TODO Como fragment
+meterSign: ('C' | 'c' | 'C|' | 'c|' | 'C·' | 'O' | 'O·'); //TODO Como fragment
 keyChange: (minorKey | majorKey) keyAccidental?;
 
 //keyAccidental: (LETTER_n | OCTOTHORPE | MINUS);
@@ -114,9 +114,10 @@ denominator: NUMBER;
 
 //duration: figure editorialTokenSignifier? ('.'* editorialTokenSignifier?);
 duration: (modernDuration | mensuralDuration) augmentationDots;
-augmentationDots: (DOT)*;
+augmentationDots: (DOT | COLON)*;
 modernDuration: NUMBER;
-mensuralDuration: ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u');
+mensuralDuration: ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u') COLOURED? mensuralPerfection?;
+mensuralPerfection: 'p' | 'i';
 
 
 noteRestChord: chord | note | rest;
@@ -132,17 +133,21 @@ note:  beforeNote duration noteName alteration? afterNote;
 
 beforeNote:  //TODO Regla semantica (boolean) para que no se repitan
     (slurstart
-    | tiestart)*
+    | tiestart
+    | ligatureStart
+    )*
     ;
 
 afterNote://TODO Regla semantica (boolean) para que no se repitan
-	     (slurend | stem| tiemiddle | tieend| mordent| trill | beam| pause| partialbeam | tenuto)*;
+	     (slurend | stem| tiemiddle | tieend| ligatureEnd | mordent| trill | beam| pause| partialbeam | tenuto)*;
 
 tiestart: LEFTBRACKET;
 slurstart: LEFTPAR;
 slurend: RIGHTPAR;
 tiemiddle: UNDERSCORE;
 tieend: RIGHTBRACKET;
+ligatureStart: LIGATURE_START;
+ligatureEnd: LIGATURE_END;
 //partialbeam: LETTER_k;
 partialbeam: 'k';
 tenuto: TILDE;
@@ -203,10 +208,10 @@ partialBarLine:
 
 //globalComment: GLOBALCOMMENT;
 
-splineOperations: splineTerminator; // terminator
-splineTerminator: ASTERISK MINUS;
-splineSplit: ASTERISK CIRCUMFLEX;
-splineJoin: '*v'; // 'v' literal here to avoid confusion with 'v' degree
+spineOperations: spineTerminator | spineSplit | spineJoin; // terminator
+spineTerminator: ASTERISK MINUS;
+spineSplit: ASTERISK CIRCUMFLEX;
+spineJoin: '*v'; // 'v' literal here to avoid confusion with 'v' degree //TODO Se puede hacer con fragment
 
 ///// ----------- HARM ---------
 harm: harmChord alternateHarm? pause?;
@@ -288,11 +293,14 @@ LEFTPAR: '(';
 RIGHTPAR: ')';
 LEFTBRACKET: '[';
 RIGHTBRACKET: ']';
+LIGATURE_START: '<';
+LIGATURE_END: '>';
 SLASH: '/';
 OCTOTHORPE: '#';
 MINUS: '-';
 COLON: ':';
 SEMICOLON: ';';
+COLOURED: '~';
 
 G2:'G2';
 F4:'F4';
@@ -360,7 +368,7 @@ FIELDCCOMMENT: EXCLAMATION_SIGN COMMENTTEXT?;
 
 fragment COMMENTTEXT: ~[\t\n\r!|]+ ; // | and ! to avoid confusing a comment with a bar line
 fragment TEXT: ~[\t\n\r]+ ;
-
+//TODO fragment MENSURAL_PERFECTION: 'p' | 'i';
 
 
 

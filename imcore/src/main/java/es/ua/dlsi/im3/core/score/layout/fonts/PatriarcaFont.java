@@ -17,6 +17,7 @@ public class PatriarcaFont extends LayoutFont {
     public PatriarcaFont() throws IM3Exception {
         super("Patriarca", LayoutFonts.patriarca, PatriarcaFont.class.getResourceAsStream(SVGFONT),
                 PatriarcaFont.class.getResourceAsStream(OTFMUSICFONT),
+                OTFMUSICFONT,
                 PatriarcaFont.class.getResourceAsStream(OTFTEXTCFONT),
                 PatriarcaFont.class.getResourceAsStream(METADATA),
                 new PatriarcaMap());

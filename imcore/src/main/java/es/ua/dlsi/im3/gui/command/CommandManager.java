@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.gui.javafx.TaskJFX2;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;

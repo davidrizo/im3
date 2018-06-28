@@ -1,0 +1,35 @@
+!!!OTL: O salutatis hostia (incipit)
+!!!COM: De la Rue, Pierre
+**mens	**mens	**mens	**mens
+![Bassus]	![Tenor]	![Contratenor]	![Superius]
+*staff4	*staff3	*staff2	*staff1
+*clefF3	*clefC3	*clefC2	*clefG2
+*k[b-]	*k[b-]	*k[b-]	*k[b-]
+!Double bb	!	!	!
+*M2/2	*M2/2	*M2/2	*M2/2
+*met(c|)	*met(c|)	*met(c|)	*met(c|)
+*>[INCIPIT,FINALIS]	*>[INCIPIT,FINALIS]	*>[INCIPIT,FINALIS]
+*>INCIPIT	*>INCIPIT	*>INCIPIT	*>INCIPIT
+SF	Lc	Sf	Sa
+sF	.	sf	sa
+sF	.	sf	sa
+sC	scc	se	sg
+sF	scc	sf	sa
+sC	scc	se	sg
+sD	sa	sd	sf
+SA	Scc	M:c	se
+.	.	md	.
+.	.	Me	Mr
+.	.	.	sa
+SD	Sdd	.	.
+SD	Sdd	.	.
+*^	*	.	.
+s~A;	Scc;	.	.	.
+*v	*v	*	*
+.	Scc	.	.
+.	Sdd	.	.
+*>FINALIS	*>FINALIS	*>FINALIS	*>FINALIS
+LF	Lc;	Lf;	Lf;
+*-	*-	*-	*-
+!!!ENC: David Rizo
+!!!END: 2018/04/06

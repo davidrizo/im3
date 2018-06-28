@@ -9,7 +9,6 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Dot;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.RestFigures;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.model.pojo.GraphicalSymbol;
 
 public class RestState extends OMRState{
     public RestState(int number, String name) {

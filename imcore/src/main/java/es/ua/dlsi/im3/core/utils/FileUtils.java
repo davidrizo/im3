@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -302,5 +303,19 @@ public class FileUtils {
         if(fileName.lastIndexOf(FileUtils.DOT) != -1 && fileName.lastIndexOf(DOT) != 0)
             return fileName.substring(fileName.lastIndexOf(DOT)+1);
         else return EMPTY_STR;
+    }
+
+    static Comparator<File> fileNameComparator = null;
+    public static Comparator<File> getFileNameComparator() {
+        if (fileNameComparator == null) {
+            fileNameComparator = new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            };
+        }
+        return fileNameComparator;
+
     }
 }

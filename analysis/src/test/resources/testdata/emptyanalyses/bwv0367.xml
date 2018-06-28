@@ -69,53 +69,53 @@
   <part-list>
     <score-part id="P1">
       <part-name>soprn</part-name>
-      <score-instrument id="P1-I1">
-        <instrument-name>Grand Piano</instrument-name>
-      </score-instrument>
-      <midi-instrument id="P1-I1">
+      <score-comment id="P1-I1">
+        <comment-name>Grand Piano</comment-name>
+      </score-comment>
+      <midi-comment id="P1-I1">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
         <volume>80</volume>
         <pan>0</pan>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
     <score-part id="P2">
       <part-name>calto</part-name>
-      <score-instrument id="P2-I1">
-        <instrument-name>Grand Piano</instrument-name>
-      </score-instrument>
-      <midi-instrument id="P2-I1">
+      <score-comment id="P2-I1">
+        <comment-name>Grand Piano</comment-name>
+      </score-comment>
+      <midi-comment id="P2-I1">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
         <volume>80</volume>
         <pan>0</pan>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
     <score-part id="P3">
       <part-name>tenor</part-name>
-      <score-instrument id="P3-I1">
-        <instrument-name>Grand Piano</instrument-name>
-        <instrument-sound>wind.flutes.overtone.tenor</instrument-sound>
-      </score-instrument>
-      <midi-instrument id="P3-I1">
+      <score-comment id="P3-I1">
+        <comment-name>Grand Piano</comment-name>
+        <comment-sound>wind.flutes.overtone.tenor</comment-sound>
+      </score-comment>
+      <midi-comment id="P3-I1">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
         <volume>80</volume>
         <pan>0</pan>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
     <score-part id="P4">
       <part-name>bass</part-name>
-      <score-instrument id="P4-I1">
-        <instrument-name>Grand Piano</instrument-name>
-        <instrument-sound>voice.bass</instrument-sound>
-      </score-instrument>
-      <midi-instrument id="P4-I1">
+      <score-comment id="P4-I1">
+        <comment-name>Grand Piano</comment-name>
+        <comment-sound>voice.bass</comment-sound>
+      </score-comment>
+      <midi-comment id="P4-I1">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
         <volume>80</volume>
         <pan>0</pan>
-      </midi-instrument>
+      </midi-comment>
     </score-part>
   </part-list>
   <!--=========================================================-->

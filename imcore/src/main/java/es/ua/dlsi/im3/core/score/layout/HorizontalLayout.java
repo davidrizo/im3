@@ -35,6 +35,11 @@ public class HorizontalLayout extends ScoreLayout {
     }
 
     @Override
+    protected boolean skipSymbol(ITimedElementInStaff symbol) {
+        return symbol instanceof SystemBreak || symbol instanceof PageBreak;
+    }
+
+    @Override
     protected void createConnectors() throws IM3Exception {
         super.createConnectors();
     }
@@ -48,7 +53,7 @@ public class HorizontalLayout extends ScoreLayout {
         //TODO scoreSong.getStaffGroups()
         system = new LayoutStaffSystem();
 
-        double nextY = LayoutConstants.TOP_MARGIN;
+        double nextY = topMargin;
         for (Staff staff: staves) {
             CoordinateComponent y = new CoordinateComponent(nextY);
             nextY += LayoutConstants.STAFF_SEPARATION;
@@ -161,5 +166,9 @@ public class HorizontalLayout extends ScoreLayout {
         coreSymbolViews.replace(clef, oldLayoutClef, newLayoutClef);
         //this.simultaneities.replace(oldLayoutClef, newLayoutClef); //TODO Recalcular posiciones - si es necesario borrar o insertar nuevos símbolos
         System.err.println("TO-DO Notificar score view para que cambie - también simultaneities");*/
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
     }
 }

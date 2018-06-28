@@ -1,12 +1,11 @@
 package es.ua.dlsi.im3.omr.classifiers.segmentation;
 
-import es.ua.dlsi.im3.omr.model.pojo.Page;
-import es.ua.dlsi.im3.omr.model.pojo.Region;
-import es.ua.dlsi.im3.omr.model.pojo.RegionType;
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.omr.model.entities.Region;
+import es.ua.dlsi.im3.omr.model.entities.RegionType;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,8 +13,7 @@ import java.util.List;
  */
 public class DummyDocumentSegmenter implements IDocumentSegmenter {
 
-    @Override
-    public List<Region> segment(URL imageFile) {
+    public List<Region> segment(URL imageFile) throws IM3Exception {
         ArrayList<Region> result = new ArrayList<>();
         result.add(new Region(RegionType.title, 1630, 47, 2122, 118));
         result.add(new Region(RegionType.title, 2520, 28, 2642, 130));

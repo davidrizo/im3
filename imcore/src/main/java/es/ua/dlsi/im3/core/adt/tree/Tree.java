@@ -64,6 +64,8 @@ public class Tree<LabelType extends ITreeLabel> implements ITree<LabelType>, Com
 
 	protected Tree<LabelType> leftSibling;
 
+    protected Tree<LabelType> rightSibling;
+
 	/**
 	 * Calculated with preorderTraversal
 	 */
@@ -127,7 +129,15 @@ public class Tree<LabelType extends ITreeLabel> implements ITree<LabelType>, Com
 		this.leftSibling = aleftSibling;
 	}
 
-	/**
+    public Tree<LabelType> getRightSibling() {
+        return rightSibling;
+    }
+
+    public void setRightSibling(Tree<LabelType> rightSibling) {
+        this.rightSibling = rightSibling;
+    }
+
+    /**
 	 * Children of the tree
 	 */
 	private ArrayList<Tree<LabelType>> children;
@@ -306,7 +316,6 @@ public class Tree<LabelType extends ITreeLabel> implements ITree<LabelType>, Com
 
 	/**
 	 * @return 
-	 * @see es.ua.dlsi.tree.ITree#getChildrenIterator()
 	 */
 	@Override
 	public Iterator<Tree<LabelType>> getChildrenIterator() {
@@ -538,10 +547,17 @@ public class Tree<LabelType extends ITreeLabel> implements ITree<LabelType>, Com
 		// now put the links
 		for (int lvl = 0; lvl < vvs.size(); lvl++) {
 			ArrayList<Tree<LabelType>> vlevel=vvs.get(lvl);
-			for (int j = 1; j < vlevel.size(); j++) {
-				Tree<LabelType> pt = vlevel.get(j - 1);
-				Tree<LabelType> t = vlevel.get(j);
-				t.setLeftSibling(pt);
+			for (int j = 0; j < vlevel.size(); j++) {
+                Tree<LabelType> t = vlevel.get(j);
+			    if (j>0) {
+                    Tree<LabelType> pt = vlevel.get(j - 1);
+                    t.setLeftSibling(pt);
+                }
+                if (j<vlevel.size()-1) {
+                    Tree<LabelType> pt = vlevel.get(j + 1);
+                    t.setRightSibling(pt);
+                }
+
 				// //System.out.println("Linking " + t.toString() +
 				// "["+t.hashCode() + "]"+ " to " + pt.toString() +
 				// "["+pt.hashCode() + "]");

@@ -11,13 +11,19 @@ public interface ITreeLabel {
 	 * Returns the label in string format
 	 * @return
 	 */
-    String getStringLabel();
+	public String getStringLabel();
 	/**
 	 * Used to print the instrumentKey in GraphvizTreeExporter
 	 * @return
 	 * @throws Exception 
 	 */
-    String getColor() throws Exception;
+	public String getColor() throws Exception;
 	
-	ITreeLabel clone();
+	public ITreeLabel clone();
+
+    /**
+     * Horizontal position for being drawn
+     * @return null if it does not have this information
+     */
+	public Double getPredefinedHorizontalPosition();
 }

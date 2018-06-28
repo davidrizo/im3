@@ -31,6 +31,11 @@ public class PageLayout extends ScoreLayout {
     }
 
     @Override
+    protected boolean skipSymbol(ITimedElementInStaff symbol) {
+        return false;
+    }
+
+    @Override
     protected void createConnectors() throws IM3Exception {
         super.createConnectors();
         System.err.println("TO-DO CONNECTORS IN PAGE LAYOUT"); // TODO: 1/10/17 Connectors en Page Layout
@@ -77,7 +82,7 @@ public class PageLayout extends ScoreLayout {
         if (includePageAndSystemBreaks) {
             for (SystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
                 // use the first layout font, it can be any one
-                LayoutSystemBreak lsb = new LayoutSystemBreak(layoutFonts.values().iterator().next(), sb);
+                LayoutCoreSystemBreak lsb = new LayoutCoreSystemBreak(layoutFonts.values().iterator().next(), sb);
                 simultaneities.add(lsb);
             }
             // TODO: 20/11/17 He quitado los page breaks
@@ -150,6 +155,7 @@ public class PageLayout extends ScoreLayout {
                             newSimultaneitiesToAdd.add(layoutCoreClef);
                             layoutCoreClef.setTime(time);
                             layoutStaff.add(layoutCoreClef);
+                            layoutCoreClef.layout();
                         } // if not it will be inserted because it is explicit
 
                         KeySignature ks = staff.getKeySignatureWithOnset(time);
@@ -160,6 +166,7 @@ public class PageLayout extends ScoreLayout {
                             layoutCoreKs.setTime(time);
                             newSimultaneitiesToAdd.add(layoutCoreKs);
                             layoutStaff.add(layoutCoreKs);
+                            layoutCoreKs.layout();
                         } // if not it will be inserted because it is explicit
                     }
 
@@ -193,6 +200,7 @@ public class PageLayout extends ScoreLayout {
                         } else {
                             LayoutStaff layoutStaff = lastSystem.get(staff);
                             layoutCoreBarline.setLayoutStaff(layoutStaff, layoutStaff);
+                            layoutCoreBarline.layout();
                             lastPage.getCanvas().getElements().add(layoutCoreBarline.getGraphics());
 
                             lastSystem.addLayoutCoreBarline(layoutCoreBarline);
@@ -201,7 +209,7 @@ public class PageLayout extends ScoreLayout {
                     //TODO Quizás mejor en el system
                    // page.getCanvas().add(coreSymbol.getGraphics());
                 }
-
+                coreSymbol.layout();
             }
 
         }

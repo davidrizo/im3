@@ -10,7 +10,7 @@ public enum AgnosticVersion {
      */
     v1,
     /**
-     * Used for HISPAMUS Project
+     * Used for HISPAMUS Project. It adds slur position and stem direction
      */
     v2
 }

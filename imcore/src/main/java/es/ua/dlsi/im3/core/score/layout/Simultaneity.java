@@ -3,8 +3,8 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSystemBreak;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutPageBreak;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutSystemBreak;
 import es.ua.dlsi.im3.core.score.layout.graphics.BoundingBox;
 
 import java.util.ArrayList;
@@ -187,7 +187,7 @@ public class Simultaneity implements Comparable<Simultaneity> {
     public boolean isSystemBreak() {
         boolean result = false;
         for (LayoutCoreSymbol layoutCoreSymbol : symbols) {
-            if (layoutCoreSymbol instanceof LayoutSystemBreak) {
+            if (layoutCoreSymbol instanceof LayoutCoreSystemBreak) {
                 return true;
             }
         }

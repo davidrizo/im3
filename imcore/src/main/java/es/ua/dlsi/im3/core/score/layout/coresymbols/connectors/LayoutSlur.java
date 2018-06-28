@@ -4,7 +4,6 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.layout.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.IConnectableWithSlurInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.InteractionElementType;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutCoreSingleFigureAtom;
 import es.ua.dlsi.im3.core.score.layout.graphics.Bezier;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 
@@ -53,7 +52,9 @@ public class LayoutSlur extends LayoutConnector {
                     to.getConnectionPoint(directionTo).getY());
 
         } else {
-            fromPoint = from.getConnectionPoint(directionFrom);
+            fromPoint = new Coordinate(
+                    new CoordinateComponent(from.getConnectionPoint(directionFrom).getX(), LayoutConstants.HORIZONTAL_SEPARATION_NOTE_SLUR),
+                    from.getConnectionPoint(directionFrom).getY());
         }
         Coordinate toPoint;
         if (to == null) {
@@ -62,13 +63,15 @@ public class LayoutSlur extends LayoutConnector {
                     from.getConnectionPoint(directionFrom).getY());
 
         } else {
-            toPoint = to.getConnectionPoint(directionTo);
+            toPoint = new Coordinate(
+                    new CoordinateComponent(to.getConnectionPoint(directionTo).getX(), -LayoutConstants.HORIZONTAL_SEPARATION_NOTE_SLUR),
+                    to.getConnectionPoint(directionTo).getY());
         }
 
 
         init(fromPoint, directionFrom, toPoint, directionTo);
     }
-    private void init(Coordinate from, Direction directionFrom, Coordinate to, Direction directionTo) {
+    private void init(Coordinate from, Direction directionFrom, Coordinate to, Direction directionTo) throws IM3Exception {
         Coordinate controlFrom = null;
         Coordinate controlTo = null;
 

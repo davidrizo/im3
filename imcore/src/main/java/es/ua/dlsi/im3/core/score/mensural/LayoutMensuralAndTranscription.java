@@ -15,6 +15,7 @@ import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.core.score.io.lilypond.LilypondExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
+import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLExporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.PageLayout;
@@ -32,13 +33,15 @@ public class LayoutMensuralAndTranscription {
     public static final void main(String [] args) throws IOException, IM3Exception {
         // TODO: 16/10/17 Que se pueda elegir el tipo de renderización y salida
 
-        if (args.length != 5) {
-            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file (it generates also parts)> <output midi file> <output ly file> <output krn>");
+        if (args.length != 6) {
+            System.err.println("Use LayoutMensuralAndTranscription: <input file> <output svg file (it generates also parts)> <output midi file> <output ly file> <output krn> <output musicXML>");
         }
 
         System.out.println("Input: " + args[0]);
         ScoreSongImporter importer = new ScoreSongImporter();
-        ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]), new BinaryDurationEvaluator(new Time(2)));
+        // TODO: 16/4/18 Es posible que haya que poner el multiplicador
+        //ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]), new BinaryDurationEvaluator(new Time(2)));
+        ScoreSong mensural = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]));
 
         // exportamos también a lilypond
         LilypondExporter lilypondExporter = new LilypondExporter();
@@ -50,21 +53,27 @@ public class LayoutMensuralAndTranscription {
         File kernFile = new File(args[4]);
         kernExporter.exportSong(kernFile, mensural);
 
+        File musicXMLFile = new File(args[5]);
+
 
         // TODO: 2/11/17 Esto deberá seguir unas normas - no éstas puestas casi a piñón
-        if (mensural.getStaves().size() != 8) {
+        if (mensural.getStaves().size() != 9) {
             throw new IM3Exception("TO-DO ESTO ESTÁ HECHO PARA PATRIARCA!!!! - CAMBIAR MAPAS DE CLAVES DE FORMA INTERACTIVA O CON REGLAS");
         }
 
         Clef [] modernClefs = new Clef [] {
             new ClefG2(), new ClefG2(), new ClefG2(), new ClefF4(),
-            new ClefG2(), new ClefG2(), new ClefF4(), new ClefF4()
+            new ClefG2(), new ClefG2(), new ClefF4(), new ClefF4(),
+                new ClefF4()
         };
 
         MensuralToModern mensuralToModern = new MensuralToModern(modernClefs);
         //TODO Parámetro
         //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FOURTH_PERFECT_DESC); // ésta genera más sostenidos
         ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.FIFTH_PERFECT_DESC);
+
+        MusicXMLExporter musicXMLExporter = new MusicXMLExporter(true);
+        musicXMLExporter.exportSong(musicXMLFile, modern);
 
         //ScoreSong modern = mensuralToModern.convertIntoNewSong(mensural, Intervals.UNISON_PERFECT);
         String midiFile = args[2];
@@ -107,7 +116,7 @@ public class LayoutMensuralAndTranscription {
         System.out.println("Done!");
 
 
-        // Generate pages for all parts
+        // Generate images for all parts
         String svgFileName = FileUtils.getFileWithoutPathOrExtension(svgHorizontalFile);
         for (ScorePart part: mensural.getParts()) {
             String partSVGNamePrefix = svgFileName + "_" + FileUtils.leaveValidCaracters(part.getName());

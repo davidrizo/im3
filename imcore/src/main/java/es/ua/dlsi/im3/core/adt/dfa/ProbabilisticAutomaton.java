@@ -16,7 +16,7 @@ import org.apache.commons.math3.fraction.Fraction;
  * Probabilistic automaton. Use BigFraction for probabilities to avoid problems with underflows
  * @author drizo
  */
-public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends Comparable<AlphabetSymbolType>> {
+public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType> {
 	Set<StateType> states;
     Alphabet<AlphabetSymbolType> alphabet;
 	HashMap<StateType, BigFraction> startProbabilities;

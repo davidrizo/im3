@@ -238,7 +238,12 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 	public void setTime(Time time) {
 		this.time = time;
 	}
-
+    @Override
+    public void move(Time offset) throws IM3Exception {
+	    staff.remove(this);
+        this.time = time.add(offset);
+        staff.addKeySignature(this);
+    }
     public TreeMap<DiatonicPitch, PitchClass> getAlteredDiatonicPitchSet() {
         return alteredDiatonicPitchSet;
     }

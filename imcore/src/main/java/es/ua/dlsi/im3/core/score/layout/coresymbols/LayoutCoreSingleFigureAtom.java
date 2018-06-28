@@ -16,6 +16,8 @@ import java.util.List;
  * Not used for rests
  */
 public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<SingleFigureAtom>  implements IConnectableWithSlurInStaff {
+    private double stemXDisplacement;
+    private double headWidth;
     private boolean stemUp;
     Group group;
     ArrayList<NotePitch> notePitches;
@@ -29,10 +31,11 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
 
         notePitches = new ArrayList<>();
 
-        stemUp = true; // FIXME: 22/9/17 step up or down depending on beams
-
-        double stemXDisplacement = 0;
+        stemXDisplacement = 0;
         CoordinateComponent stemYPosition = null;
+
+        int sumLinePosition = 0;
+
         for (AtomPitch atomPitch: coreSymbol.getAtomPitches()) {
             // Computed here and not inside NodePitch because the position is required to compute the stem direction
             // and the stem is required for computing some notePitch elements at constructor such as the unicode for
@@ -40,28 +43,26 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
             PositionInStaff positionInStaff = getCoreSymbol().getStaff().computePositionInStaff(getTime(), atomPitch.getScientificPitch().getPitchClass().getNoteName(),
                     atomPitch.getScientificPitch().getOctave());
 
-            // FIXME: 22/9/17 Esto funciona cuando es una nota, en acordes?
-            if (coreSymbol.getExplicitStemDirection() != null) {
-                stemUp = coreSymbol.getExplicitStemDirection() == StemDirection.up;
-            } else {
-                stemUp = positionInStaff.getLine() <= 2; // TODO actually we should check surrounding notes (Behind bars book)
-            }
-
+            sumLinePosition += positionInStaff.getLineSpace();
 
             NotePitch notePitch = new NotePitch(layoutFont, this, atomPitch, position, positionInStaff);
             notePitches.add(notePitch);
             addComponent(notePitch); // TODO: 28/10/17 Añadir todos los demás componentes !!!!
             group.add(notePitch.getGraphics());
 
-            if (stemUp) {
-                stemXDisplacement = notePitch.getNoteHeadWidth();
-            }
+            headWidth = notePitch.getNoteHeadWidth();
         }
-
+        if (coreSymbol.getExplicitStemDirection() != null) {
+            stemUp = coreSymbol.getExplicitStemDirection() == StemDirection.up;
+        } else {
+            int avgSumLinePosition = sumLinePosition / coreSymbol.getAtomPitches().size();
+            //stemUp = positionInStaff.getLine() <= 2; // TODO actually we should check surrounding notes (Behind bars book)
+            stemUp = avgSumLinePosition < PositionsInStaff.LINE_3.getLineSpace();
+        }
 
         if (coreSymbol.getAtomFigure().getFigure().usesStem()) {
             Coordinate stemPosition = new Coordinate(
-                    new CoordinateComponent(position.getX(), stemXDisplacement),
+                    new CoordinateComponent(position.getX()),
                     null
             );
             stem = new Stem(this, stemPosition, stemUp);
@@ -72,17 +73,14 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
                 flag = new Flag(layoutFont, this, coreSymbol.getAtomFigure().getFigure(), flagPosition, stemUp);
                 group.add(flag.getGraphics());
             }
+
+            if (stemUp) {
+                stemXDisplacement = headWidth;
+                stem.setXDisplacement(stemXDisplacement);
+            }
         }
-
-
-        //// FIXME: 21/9/17 Move stem to the correct position given step up / down and note heads
-        /*double stemXDisplacement = 0;
-
-        if (!stemUp) {
-            stemXDisplacement -
-        }*/
-
     }
+
 
     @Override
     public GraphicsElement getGraphics() {
@@ -136,7 +134,9 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
     public void removeFlag() throws IM3Exception {
         if (notePitches.size() != 1) {
             // TODO: 17/10/17 Por mensural
-            throw new IM3Exception("Unsupported " + notePitches.size() + " pitches for removeFlag");
+            if (this.getCoreSymbol().getStaff().getNotationType() == NotationType.eMensural) {
+                throw new IM3Exception("Unsupported " + notePitches.size() + " pitches for removeFlag");
+            }
         }
         if (notePitches.get(0).headIncludesFlag()) {
             notePitches.get(0).useHeadWithoutFlag();
@@ -165,9 +165,9 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         } else {
             double ydisplacement;
             if (stemUp) {
-                ydisplacement = LayoutConstants.SEPARATION_NOTE_SLUR;
+                ydisplacement = LayoutConstants.VERTICAL_SEPARATION_NOTE_SLUR;
             } else {
-                ydisplacement = -LayoutConstants.SEPARATION_NOTE_SLUR;
+                ydisplacement = -LayoutConstants.VERTICAL_SEPARATION_NOTE_SLUR;
             }
             Coordinate connectionPoint = new Coordinate(
                     notePitches.get(0).getNoteHeadPosition().getX(),
@@ -178,8 +178,6 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
     }
     @Override
     protected void doLayout() throws IM3Exception {
-        //TODO Para acordes
-        CoordinateComponent stemYPosition = null;
         for (NotePitch notePitch: notePitches) {
             ScientificPitch scientificPitch = notePitch.getScientificPitch();
             PositionInStaff positionInStaff = getCoreSymbol().getStaff().computePositionInStaff(getTime(),scientificPitch.getPitchClass().getNoteName(),
@@ -190,11 +188,93 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
             notePitch.setLayoutStaff(layoutStaff);
             notePitch.layout();
             layoutStaff.addNecessaryLedgerLinesFor(notePitch.getAtomPitch().getTime(), notePitch.getPositionInStaff(), notePitch.getPosition(), notePitch.getNoteHeadWidth());
-            stemYPosition = notePitch.getNoteHeadPosition().getY();
         }
 
         if (stem != null) {
-            stem.setReferenceY(stemYPosition);
+            if (stemUp) {
+                stem.setStartY(getBottomNote().getNoteHeadPosition().getY(), 0);
+                stem.setEndY(new CoordinateComponent(getTopNote().getNoteHeadPosition().getY()), -LayoutConstants.STEM_HEIGHT);
+            } else {
+                stem.setStartY(getTopNote().getNoteHeadPosition().getY(), 0);
+                stem.setEndY(new CoordinateComponent(getBottomNote().getNoteHeadPosition().getY()), LayoutConstants.STEM_HEIGHT);
+            }
         }
+    }
+
+    @Override
+    public int getNumBeams() {
+        return this.coreSymbol.getAtomFigure().getFigure().getNumFlags();
+    }
+
+    @Override
+    public double getBottomPitchAbsoluteY() throws IM3Exception {
+        double y = Double.MIN_VALUE;
+        for (NotePitch notePitch: notePitches) {
+            y = Math.max(y, notePitch.getNoteHeadPosition().getAbsoluteY());
+        }
+
+        return y;
+    }
+
+    @Override
+    public double getTopPitchAbsoluteY() throws IM3Exception {
+        double y = Double.MAX_VALUE;
+        for (NotePitch notePitch: notePitches) {
+            y = Math.min(y, notePitch.getNoteHeadPosition().getAbsoluteY());
+        }
+
+        return y;
+    }
+
+    // TODO: 4/5/18 Cuando es acorde y tenemos en los dos lados del stem
+    public void setStemUp(boolean stemUp) {
+        if (stem != null) {
+            if (this.stemUp != stemUp) {
+                this.stemUp = stemUp;
+
+                stem.changeStemDirection();
+            }
+
+            if (this.stemUp) {
+                stemXDisplacement = headWidth;
+            } else {
+                stemXDisplacement = 0;
+            }
+            stem.setXDisplacement(stemXDisplacement);
+        }
+    }
+
+    public NotePitch getBottomNote() throws IM3Exception {
+        double maxY = -Double.MAX_VALUE;
+        NotePitch result = null;
+        for (NotePitch notePitch: notePitches) {
+            double absY = notePitch.getNoteHeadPosition().getAbsoluteY();
+            if (absY > maxY) {
+                maxY = absY;
+                result = notePitch;
+            }
+        }
+        return result;
+    }
+
+    public NotePitch getTopNote() throws IM3Exception {
+        double minY = Double.MAX_VALUE;
+        NotePitch result = null;
+        for (NotePitch notePitch: notePitches) {
+            double absY = notePitch.getNoteHeadPosition().getAbsoluteY();
+            if (absY < minY) {
+                minY = absY;
+                result = notePitch;
+            }
+        }
+        return result;
+    }
+
+    public void setStemEndY(CoordinateComponent referenceY, double ydisplacement) throws IM3Exception {
+        this.stem.setEndY(referenceY, ydisplacement);
+    }
+
+    public void setStemEndY(double stemFromYAbsolute) throws IM3Exception {
+        this.stem.setEndAbsoluteY(stemFromYAbsolute);
     }
 }

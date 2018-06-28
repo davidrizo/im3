@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * The figures must be mantained in descending length
  */
-public enum Figures {
+public enum Figures implements Comparable<Figures> {
 	MAX_FIGURE (Integer.MAX_VALUE, 1, Integer.MAX_VALUE, NotationType.eModern, false, 0), // used the same way Integer.MAX_VALUE
 	QUADRUPLE_WHOLE (16,1,-1, NotationType.eModern, false, 0),
 	DOUBLE_WHOLE (8,1,0, NotationType.eModern, false, 0),
@@ -23,14 +23,22 @@ public enum Figures {
 	SIXTY_FOURTH (1, 16, 64,NotationType.eModern, true, 4),
 	HUNDRED_TWENTY_EIGHTH (1, 32, 128, NotationType.eModern, true, 5),
 	TWO_HUNDRED_FIFTY_SIX (1, 64, 256, NotationType.eModern, true, 6),
-	MAXIMA (16, 1, -2, NotationType.eMensural, false, 0), //TODO Dejar con MAXIMA 32, etc...
+	/*MAXIMA (16, 1, -2, NotationType.eMensural, false, 0), //TODO Dejar con MAXIMA 32, etc...
 	LONGA (8, 1, -1, NotationType.eMensural, false, 0),
 	BREVE (4, 1, 0, NotationType.eMensural, false, 0),
 	SEMIBREVE (2, 1, 1, NotationType.eMensural, false, 0),
 	MINIM(1, 1, 2, NotationType.eMensural, false, 0),
 	SEMIMINIM(1, 2, 4, NotationType.eMensural, false, 0),
 	FUSA (1, 4, 8, NotationType.eMensural, false, 1),
-	SEMIFUSA (1, 8, 16, NotationType.eMensural, false, 2),
+	SEMIFUSA (1, 8, 16, NotationType.eMensural, false, 2),*/
+    MAXIMA (32, 1, -2, NotationType.eMensural, false, 0),
+    LONGA (16, 1, -1, NotationType.eMensural, false, 0),
+    BREVE (8, 1, 0, NotationType.eMensural, false, 0),
+    SEMIBREVE (4, 1, 1, NotationType.eMensural, false, 0),
+    MINIM(2, 1, 2, NotationType.eMensural, false, 0),
+    SEMIMINIM(1, 1, 4, NotationType.eMensural, false, 0),
+    FUSA (1, 2, 8, NotationType.eMensural, false, 1),
+    SEMIFUSA (1, 4, 16, NotationType.eMensural, false, 2),
 	NO_DURATION (0,1,0, NotationType.eModern, false, 0); // TODO: 22/9/17 Que tenga plica o no depende de la tipografía?
 
     static Figures [] SORTED_DESC_MENSURAL = new Figures[] {
@@ -144,5 +152,4 @@ public enum Figures {
             throw new IM3RuntimeException("Unknown notation type " + notationType);
         }
     }
-
 }

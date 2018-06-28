@@ -17,6 +17,7 @@ public class CapitanFont extends LayoutFont {
     public CapitanFont() throws IM3Exception {
         super("Capitán", LayoutFonts.capitan, CapitanFont.class.getResourceAsStream(SVGFONT),
                 CapitanFont.class.getResourceAsStream(OTFMUSICFONT),
+                OTFMUSICFONT,
                 CapitanFont.class.getResourceAsStream(OTFTEXTCFONT),
                 CapitanFont.class.getResourceAsStream(METADATA),
                 new CapitanMap());

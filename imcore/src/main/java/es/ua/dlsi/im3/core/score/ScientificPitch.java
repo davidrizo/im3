@@ -162,6 +162,19 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
 	public Base40 computeBase40() {
 	    return new Base40(this);
     }
+
+    // see https://newt.phys.unsw.edu.au/jw/notes.html
+    public double computeFrequency(double aTunning) {
+        //return (aTunning / 32) * (2 ^ ((computeMidiPitch() - 9) / 12));
+        int midiPitch = computeMidiPitch();
+        int midiPitchNoteA = 69;
+        return Math.pow(2, (midiPitch-midiPitchNoteA)/12.0)*aTunning;
+    }
+
+    public double computeFrequency() {
+        return computeFrequency(440.0);
+    }
+
 	/*
 	public int getBase40() {
 	    return base40;

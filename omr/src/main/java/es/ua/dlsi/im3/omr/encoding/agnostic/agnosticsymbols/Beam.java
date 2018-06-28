@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+
 /**
  * @author drizo
  */
@@ -14,6 +16,16 @@ public class Beam implements INoteDurationSpecification {
 
     public Beam(int beams) {
         this.beams = 1;
+    }
+
+    public static INoteDurationSpecification parseAgnosticString(String string) throws IM3Exception {
+        for (BeamType bt: BeamType.values()) {
+            if (string.startsWith(bt.toAgnosticString())) {
+                String beamsStr = string.substring(bt.toAgnosticString().length());
+                return new Beam(bt, Integer.parseInt(beamsStr));
+            }
+        }
+        throw new IM3Exception("Cannot parse '" + string + "' as a beam");
     }
 
     public BeamType getBeamType() {
@@ -39,5 +51,10 @@ public class Beam implements INoteDurationSpecification {
         } else {
             return "<UNSETBEAM> " + beams;
         }
+    }
+
+    @Override
+    public boolean isUsesStem() {
+        return true;
     }
 }

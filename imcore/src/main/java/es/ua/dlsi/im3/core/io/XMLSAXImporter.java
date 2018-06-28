@@ -71,9 +71,9 @@ public abstract class XMLSAXImporter {
                 //System.out.println("End:" + qName);
                 try {
                     handleCloseElement(qName);
-                    /*for (IXMLSAXImporterExtension extension: extensions) {
-                        extension.handleCloseElement(qName);
-                    }*/
+                    //for (IXMLSAXImporterExtension extension: extensions) {
+                    //    extension.handleCloseElement(qName);
+                    //}
 
                 } catch (ImportException e) {
                     throw new SAXException(e);
@@ -144,9 +144,14 @@ public abstract class XMLSAXImporter {
                     extension.handleElementContent(elementStack, closingElement, content);
                 }
             }
+            currentStringBuilder = null;
         }
         try {
             handleElementClose(closingElement);
+            for (IXMLSAXImporterExtension extension: extensions) {
+                extension.handleCloseElement(element);
+            }
+
         } catch (IM3Exception e) {
             throw new ImportException(e);
         }
@@ -166,7 +171,7 @@ public abstract class XMLSAXImporter {
 
 
     protected void showUnimplemented(String element) {
-        Logger.getLogger(XMLSAXScoreSongImporter.class.getName()).log(Level.INFO, "Unimplemented element {0}", element);
+        Logger.getLogger(XMLSAXScoreSongImporter.class.getName()).log(Level.WARNING, "Unimplemented element {0}", element);
     }
 
     protected String getElementContentFor(String expectedElement) throws ImportException {

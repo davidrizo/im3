@@ -29,6 +29,8 @@ public class KeySignature extends SemanticSymbolType {
         }
         if (majorMinor != null) {
             sb.append(majorMinor.toSemanticString());
+        } else {
+            sb.append(MajorMinor.major.toSemanticString());
         }
         return sb.toString();
     }

@@ -129,6 +129,9 @@ public class MensuralToModern {
                 convert(modernStaff, modernLayer, (Atom) symbol, interval);
             } else if (symbol instanceof DisplacedDot) {
                 // no-op It is never displaced, if always accompanies the pitch
+            } else if (symbol instanceof SystemBreak) {
+                SystemBreak systemBreak = new SystemBreak(symbol.getTime(), ((SystemBreak) symbol).isManual());
+                modernStaff.addSystemBreak(systemBreak);
             } else if (symbol instanceof Custos) {
                 // no-op
             } else {
@@ -322,7 +325,9 @@ public class MensuralToModern {
             return;
         }
 
-        MEISongImporter importer = new MEISongImporter(new BinaryDurationEvaluator(new Time(2)));
+        // TODO: 16/4/18 Es posible que hay que poner esto que he comentado
+        //MEISongImporter importer = new MEISongImporter(new BinaryDurationEvaluator(new Time(2)));
+        MEISongImporter importer = new MEISongImporter();
         ScoreSong mensural = importer.importSong(new File(args[0]));
 
         MensuralToModern mensuralToModern = new MensuralToModern(new Clef[] {new ClefF4()});

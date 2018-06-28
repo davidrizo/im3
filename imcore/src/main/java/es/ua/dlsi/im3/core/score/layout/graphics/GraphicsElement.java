@@ -35,6 +35,9 @@ public abstract class GraphicsElement implements IJavaFXGUIElement, IPDFElement,
     private Instant lastRepaint;
 
     public GraphicsElement(NotationSymbol notationSymbol, InteractionElementType interactionElementType) {
+        if (notationSymbol == null) {
+            throw new IM3RuntimeException("notationSymbol cannot be null for class " + this.getClass().getName());
+        }
         this.notationSymbol = notationSymbol;
         if (interactionElementType == null) {
             throw new IM3RuntimeException("interactionElementType cannot be null for class " + this.getClass().getName());

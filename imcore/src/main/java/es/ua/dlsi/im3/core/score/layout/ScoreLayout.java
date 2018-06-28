@@ -9,10 +9,11 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
+import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.BelliniLayoutEngine;
-import es.ua.dlsi.im3.core.score.layout.layoutengines.NaiveEngine;
 import es.ua.dlsi.im3.core.score.layout.layoutengines.NonProportionalLayoutEngine;
+import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
 import java.util.*;
 
@@ -32,7 +33,7 @@ public abstract class ScoreLayout {
     protected HashMap<Staff, Pictogram> noteHeads;
     protected HashMap<Staff, Double> noteHeadWidths;
     protected HashMap<Staff, LayoutStaff> layoutStaves;
-    protected HashMap<BeamGroup, List<LayoutCoreSingleFigureAtom>> singleLayoutFigureAtomsInBeam;
+    protected HashMap<BeamGroup, List<LayoutCoreSymbolWithDuration<?>>> layoutSymbolsWithDurationInBeam;
     protected HashMap<Object, NotationSymbol> coreSymbolViews;
     /**
      * Used for building connectors
@@ -42,6 +43,7 @@ public abstract class ScoreLayout {
     protected HashMap<Staff, List<LayoutCoreBarline>> barlines;
     protected List<LayoutConnector> connectors;
     protected List<LayoutBeamGroup> beams;
+    protected double topMargin;
 
 
     // TODO: 20/11/17 mejor que el parámetro staves esté en el método abstract layout() y que toda la inicialización se haga ahí
@@ -51,6 +53,7 @@ public abstract class ScoreLayout {
      * @throws IM3Exception
      */
     public ScoreLayout(ScoreSong song, Collection<Staff> staves, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+        topMargin = LayoutConstants.TOP_MARGIN;
         this.scoreSong = song;
         layoutFonts = new HashMap<>();
         initStaves(staves);
@@ -59,6 +62,14 @@ public abstract class ScoreLayout {
             layoutFonts.put(staff, layoutFont);
         }
         init();
+    }
+
+    public double getTopMargin() {
+        return topMargin;
+    }
+
+    public void setTopMargin(double topMargin) {
+        this.topMargin = topMargin;
     }
 
     private void initStaves(Collection<Staff> staves) {
@@ -107,7 +118,18 @@ public abstract class ScoreLayout {
     }
 
     private void initWidths(Staff staff, LayoutFont layoutFont) throws IM3Exception {
-        Pictogram noteHead = new Pictogram(null, InteractionElementType.none, layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
+        NotationSymbol emptyNotationSymbol = new NotationSymbol() {
+            @Override
+            public GraphicsElement getGraphics() {
+                    return null;
+            }
+
+            @Override
+            protected void doLayout() throws IM3Exception {
+            }
+        };
+
+        Pictogram noteHead = new Pictogram(emptyNotationSymbol, InteractionElementType.none, layoutFont, layoutFont.getFontMap().getUnicodeNoteHeadWidth(),
                 new Coordinate(new CoordinateComponent(0),
                         new CoordinateComponent(0)
                 ));
@@ -126,7 +148,7 @@ public abstract class ScoreLayout {
         // TODO: 1/10/17 Beaming - parámetro para que se pueda deshabilitar
         //layoutStaff.createBeaming();
         coreSymbolViews = new HashMap<>();
-        singleLayoutFigureAtomsInBeam = new HashMap<>();
+        layoutSymbolsWithDurationInBeam = new HashMap<>();
         coreSymbolsInStaves = new HashMap<>();
         layoutConnectorEnds = new HashMap<>();
         for (Staff staff: staves) {
@@ -175,6 +197,10 @@ public abstract class ScoreLayout {
         }
     }
 
+    public NotationSymbol getCoreSymbolView(Object coreSymbol) {
+        return coreSymbolViews.get(coreSymbol);
+    }
+
     public LayoutFont getLayoutFont(Staff staff) throws IM3Exception {
         LayoutFont layoutFont = layoutFonts.get(staff);
         if (layoutFont == null) {
@@ -192,38 +218,42 @@ public abstract class ScoreLayout {
     }
 
     private void createLayoutSymbol(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, ITimedElementInStaff symbol) throws IM3Exception {
-        if (symbol instanceof CompoundAtom) {
-            for (Atom subatom : ((CompoundAtom) symbol).getAtoms()) {
-                createLayoutSymbol(coreSymbolsInStaff, subatom);
-            }
-        } else {
-            LayoutCoreSymbol layoutCoreSymbol = createLayoutCoreSymbol(symbol);
-
-            coreSymbolViews.put(symbol, layoutCoreSymbol);
-            if (layoutCoreSymbol.getComponents() != null) {
-                List<Component<LayoutCoreSymbol>> components = layoutCoreSymbol.getComponents();
-                for (Component<LayoutCoreSymbol> component : components) {
-                    coreSymbolViews.put(component.getModelElement(), component);
+        if (!skipSymbol(symbol)) {
+            if (symbol instanceof CompoundAtom) {
+                for (Atom subatom : ((CompoundAtom) symbol).getAtoms()) {
+                    createLayoutSymbol(coreSymbolsInStaff, subatom);
                 }
-            }
+            } else {
+                LayoutCoreSymbol layoutCoreSymbol = createLayoutCoreSymbol(symbol);
 
-            if (symbol instanceof ITimedSymbolWithConnectors) {
-                if (!(layoutCoreSymbol instanceof IConnectableWithSlurInStaff)) { // TODO: 31/10/17 Esto no está bien diseñado
-                    throw new IM3Exception("Design Inconsistency, " + layoutCoreSymbol + " should implement IConnectableWithSlurInStaff because "+ symbol + " is a ITimedSymbolWithConnectors");
+                coreSymbolViews.put(symbol, layoutCoreSymbol);
+                if (layoutCoreSymbol.getComponents() != null) {
+                    List<Component<LayoutCoreSymbol>> components = layoutCoreSymbol.getComponents();
+                    for (Component<LayoutCoreSymbol> component : components) {
+                        coreSymbolViews.put(component.getModelElement(), component);
+                    }
                 }
-                layoutConnectorEnds.put((ITimedSymbolWithConnectors)symbol, (IConnectableWithSlurInStaff)layoutCoreSymbol);
-            }
-            addCoreSymbolToSimultaneities(coreSymbolsInStaff, layoutCoreSymbol);
 
-            // now add the symbols dependant of the main symbol (e.g. displaced dot)
-            /*Collection<LayoutCoreSymbol> dependantSymbols = layoutCoreSymbol.getDependantCoreSymbols();
-            if (dependantSymbols != null) {
-                for (LayoutCoreSymbol ds : dependantSymbols) {
-                    addCoreSymbolToSimultaneities(coreSymbolsInStaff, ds);
+                if (symbol instanceof ITimedSymbolWithConnectors) {
+                    if (!(layoutCoreSymbol instanceof IConnectableWithSlurInStaff)) { // TODO: 31/10/17 Esto no está bien diseñado
+                        throw new IM3Exception("Design Inconsistency, " + layoutCoreSymbol + " should implement IConnectableWithSlurInStaff because " + symbol + " is a ITimedSymbolWithConnectors");
+                    }
+                    layoutConnectorEnds.put((ITimedSymbolWithConnectors) symbol, (IConnectableWithSlurInStaff) layoutCoreSymbol);
                 }
-            }*/
+                addCoreSymbolToSimultaneities(coreSymbolsInStaff, layoutCoreSymbol);
+
+                // now add the symbols dependant of the main symbol (e.g. displaced dot)
+                /*Collection<LayoutCoreSymbol> dependantSymbols = layoutCoreSymbol.getDependantCoreSymbols();
+                if (dependantSymbols != null) {
+                    for (LayoutCoreSymbol ds : dependantSymbols) {
+                        addCoreSymbolToSimultaneities(coreSymbolsInStaff, ds);
+                    }
+                }*/
+            }
         }
     }
+
+    protected abstract boolean skipSymbol(ITimedElementInStaff symbol);
 
     private void addCoreSymbolToSimultaneities(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, LayoutCoreSymbol layoutCoreSymbol) throws IM3Exception {
         //createLayout(symbol, layoutStaff);
@@ -231,7 +261,7 @@ public abstract class ScoreLayout {
             simultaneities.add(layoutCoreSymbol);
             if (layoutCoreSymbol instanceof LayoutCoreSymbolInStaff) {
                 coreSymbolsInStaff.add((LayoutCoreSymbolInStaff) layoutCoreSymbol);
-            } else {
+            } else if (!(layoutCoreSymbol instanceof LayoutCoreSystemBreak)) { // TODO: 23/4/18 LayoutCoreSystemBreak debería heredar de  LayoutCoreSymbolInStaff?
                 throw new IM3RuntimeException("Unimplemented " + layoutCoreSymbol.getClass()); // TODO: 24/9/17 Debemos ponerlos en otra lista? Beamed groups?
             }
 
@@ -241,10 +271,10 @@ public abstract class ScoreLayout {
 
                 BeamGroup beam = sfa.getCoreSymbol().getBelongsToBeam();
                 if (beam != null) {
-                    List<LayoutCoreSingleFigureAtom> layoutAtomsInBeam = singleLayoutFigureAtomsInBeam.get(beam);
+                    List<LayoutCoreSymbolWithDuration<?>> layoutAtomsInBeam = layoutSymbolsWithDurationInBeam.get(beam);
                     if (layoutAtomsInBeam == null) {
                         layoutAtomsInBeam = new ArrayList<>();
-                        singleLayoutFigureAtomsInBeam.put(sfa.getCoreSymbol().getBelongsToBeam(), layoutAtomsInBeam);
+                        layoutSymbolsWithDurationInBeam.put(sfa.getCoreSymbol().getBelongsToBeam(), layoutAtomsInBeam);
                     }
                     layoutAtomsInBeam.add(sfa);
                 }
@@ -260,7 +290,7 @@ public abstract class ScoreLayout {
     protected void createBeams() throws IM3Exception {
         beams = new ArrayList<>();
 
-        for (Map.Entry<BeamGroup, List<LayoutCoreSingleFigureAtom>> entry: singleLayoutFigureAtomsInBeam.entrySet()) {
+        for (Map.Entry<BeamGroup, List<LayoutCoreSymbolWithDuration<?>>> entry: layoutSymbolsWithDurationInBeam.entrySet()) {
             LayoutFont layoutFont = getLayoutFont(entry.getValue().get(0).getCoreStaff());
             LayoutBeamGroup layoutBeamGroup = new LayoutBeamGroup(entry.getKey(), entry.getValue(), layoutFont);
             layoutBeamGroup.createBeams();
@@ -412,4 +442,13 @@ public abstract class ScoreLayout {
     }*/
 
     public abstract void replace(Clef clef, Clef newClef, boolean changePitches) throws IM3Exception;
+
+    public void add(Clef clef) throws IM3Exception {
+        System.err.println("THIS ADD CLEF IS JUST A TEST");
+        //TODO Hacerlo bien
+        if (this.scoreSong.getStaves().size() == 0) {
+            this.scoreSong.addStaff(new Pentagram(this.scoreSong, "1", 1));
+        }
+        this.scoreSong.getStaves().get(0).addClef(clef);
+    }
 }

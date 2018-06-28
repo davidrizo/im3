@@ -21,6 +21,14 @@ public class Digit extends AgnosticSymbolType {
 
     }
 
+    @Override
+    public void setSubtype(String string) throws IM3Exception {
+        digit = Integer.parseInt(string);
+        if (digit >= 10 || digit < 0) {
+            throw new IM3Exception("Invalid digit: " + digit);
+        }
+    }
+
     public int getDigit() {
         return digit;
     }

@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.omr.encoding;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -30,6 +32,12 @@ public abstract class Exporter<SymbolType> {
     }
 
     private void doExport() {
+        if (encoding == null) {
+            throw new IM3RuntimeException("Encoding is null");
+        }
+        if (encoding.getSymbols() == null) {
+            throw new IM3RuntimeException("Encoding symbols are null");
+        }
         int size = encoding.getSymbols().size();
         for (int i=0; i<size; i++) {
             SymbolType symbol = encoding.getSymbols().get(i);

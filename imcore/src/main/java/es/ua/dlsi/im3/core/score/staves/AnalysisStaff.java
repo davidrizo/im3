@@ -35,6 +35,7 @@ public class AnalysisStaff extends Staff {
 			int numberIdentifier) {
 		super(song, hierarchicalOrder, numberIdentifier, 1);
 		analysisHooks = new TreeMap<>();
+		this.setName("Analysis");
 	}
 
 	@Override
@@ -50,6 +51,7 @@ public class AnalysisStaff extends Staff {
 
 	public void addAnalysisHook(ScoreAnalysisHook e) {
 		analysisHooks.put(e.getTime(), e);
+		this.addCoreSymbol(e);
 		e.setStaff(this);
 	}
 

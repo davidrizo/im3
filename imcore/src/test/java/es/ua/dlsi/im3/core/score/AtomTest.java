@@ -91,7 +91,7 @@ public class AtomTest {
 	@Test
 	public void testSimpleLigatures() {
 		LigatureCumPropietateEtCumPerfectione l1 = new LigatureCumPropietateEtCumPerfectione(
-				new ScientificPitch(PitchClasses.G, 3), new ScientificPitch(PitchClasses.A, 3));
+				new ScientificPitch(PitchClasses.G, 3), 0, new ScientificPitch(PitchClasses.A, 3), 0);
 		
 		assertEquals(2, l1.getAtomFigures().size());
 		//TODO

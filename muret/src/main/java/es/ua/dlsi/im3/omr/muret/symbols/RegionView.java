@@ -1,0 +1,393 @@
+package es.ua.dlsi.im3.omr.muret.symbols;
+
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
+import es.ua.dlsi.im3.core.patternmatching.RankingItem;
+import es.ua.dlsi.im3.core.score.PositionsInStaff;
+import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
+import es.ua.dlsi.im3.gui.command.ICommand;
+import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
+import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
+import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.GrayscaleImageData;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolImagePrototype;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
+import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
+import es.ua.dlsi.im3.omr.muret.OMRApp;
+import es.ua.dlsi.im3.omr.muret.model.OMRRegion;
+import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
+import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * @autor drizo
+ */
+public class RegionView extends BoundingBoxBasedView<OMRRegion> {
+    private static final double STAFF_HEIGHT = LayoutConstants.EM * 3;
+    VBox vBox;
+    /**
+     * For overlaying imageView and symbols
+     */
+    Group imageViewWithSymbols;
+    /**
+     * Extract of the full image using a viewport over the full image
+     */
+    ImageView imageView;
+    /**
+     * Bounding boxes
+     */
+    Group symbolsBoundingBoxesGroup;
+    /**
+     * Full image from the file
+     */
+    Image fullImage;
+    /**
+     * Contains a staff with agnostic symbols on top
+     */
+    AgnosticStaffView agnosticStaffView;
+    /**
+     * Contains a staff view of a rendered score
+     */
+    SemanticStaffView semanticStaffView;
+    /**
+     * The font for the agnostic staff view
+     */
+    private AgnosticSymbolFont agnosticSymbolFont;
+
+    DraggableRectangle newSymbolBoundingBox;
+
+    public RegionView(String ID, ImageBasedAbstractController controller, AgnosticSymbolFont agnosticSymbolFont, PageView parentBoundingBox, OMRRegion owner, Color color) throws IM3Exception {
+        super(ID, controller, parentBoundingBox, 0.0, 0.0, owner.getWidth(), owner.getHeight() + STAFF_HEIGHT, owner, color);
+        this.agnosticSymbolFont = agnosticSymbolFont;
+        createImageView();
+        createAgnosticStaffView();
+        createSemanticStaffView();
+        vBox = new VBox(5);
+        vBox.getChildren().addAll(imageViewWithSymbols, agnosticStaffView);
+        this.getChildren().add(vBox);
+        initSemantic();
+    }
+
+    private void initSemantic() {
+        vBox.getChildren().add(semanticStaffView);
+        SymbolCorrectionController scontroller = (SymbolCorrectionController) controller;
+        semanticStaffView.visibleProperty().bind(scontroller.agnosticModeProperty().not());
+    }
+
+    private void createImageView() throws IM3Exception {
+        fullImage = owner.getOMRPage().getOMMRImage().getImage();
+        imageView = new ImageView(fullImage);
+        imageView.setViewport(new Rectangle2D(owner.getFromX(), owner.getFromY(), owner.getWidth(), owner.getHeight()));
+        symbolsBoundingBoxesGroup = new Group();
+        imageViewWithSymbols = new Group();
+        imageViewWithSymbols.getChildren().addAll(imageView, symbolsBoundingBoxesGroup); // order is important
+    }
+
+    private void createAgnosticStaffView() throws IM3Exception {
+        agnosticStaffView = new AgnosticStaffView(controller, agnosticSymbolFont, owner.getWidth(), STAFF_HEIGHT, -getOwner().getFromX());
+    }
+
+    private void createSemanticStaffView() {
+        semanticStaffView = new SemanticStaffView();
+    }
+
+    @Override
+    protected void onLabelContextMenuRequested(ContextMenuEvent event) {
+
+    }
+
+    @Override
+    protected void onRegionMouseClicked(MouseEvent event) {
+        controller.unselect();
+    }
+
+    public AgnosticStaffView getAgnosticStaffView() {
+        return agnosticStaffView;
+    }
+
+    public void addSymbolView(SymbolView symbolView) {
+        symbolsBoundingBoxesGroup.getChildren().add(symbolView);
+    }
+
+    /*@Override
+    public void handle(KeyEvent event) {
+        super.handle(event);
+        switch (event.getCode()) {
+            default:
+                agnosticStaffView.handle(event);
+        }
+    }*/
+
+    public void delete(SymbolView symbolView) {
+        ICommand command = new ICommand() {
+            OMRSymbol deletedSymbol = symbolView.getOwner();
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                // it changes the model and ImageBasedAbstractController, that is bound to model changes propagates all changes in the view
+                owner.removeSymbol(deletedSymbol);
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                owner.addSymbol(deletedSymbol);
+            }
+
+            @Override
+            public void redo() throws Exception {
+                owner.addSymbol(deletedSymbol);
+            }
+
+            @Override
+            public String getEventName() {
+                return "Delete symbol " + deletedSymbol.toString();
+            }
+        };
+
+        try {
+            controller.getDashboard().getCommandManager().executeCommand(command);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot delete symbol", e);
+            ShowError.show(OMRApp.getMainStage(), "Cannot delete symbol", e);
+        }
+
+    }
+
+    @Override
+    public void onSymbolRemoved(BoundingBoxBasedView elementView) {
+        super.onSymbolRemoved(elementView);
+        symbolsBoundingBoxesGroup.getChildren().remove(elementView);
+        agnosticStaffView.onSymbolRemoved(elementView);
+    }
+
+    @Override
+    protected void doMousePressed(MouseEvent event) {
+        super.doMousePressed(event);
+
+        SymbolCorrectionController symbolCorrectionController = (SymbolCorrectionController) controller;
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+            newSymbolBoundingBox = new DraggableRectangle(event.getX(), event.getY(), 1, 1, Color.GOLD);
+            newSymbolBoundingBox.setFill(Color.TRANSPARENT);
+            newSymbolBoundingBox.setStroke(Color.GOLD);
+            newSymbolBoundingBox.setStrokeWidth(2);
+            this.getChildren().add(newSymbolBoundingBox);
+        }
+     }
+
+    @Override
+    protected void doMouseReleased(MouseEvent event) {
+        super.doMouseReleased(event);
+        if (newSymbolBoundingBox != null) { // if adding a symbol
+            addNewSymbolWithBoundingBox(
+                    newSymbolBoundingBox.xProperty().get()+owner.getFromX(),
+                    newSymbolBoundingBox.yProperty().get()+owner.getFromY(),
+                    newSymbolBoundingBox.widthProperty().get(),
+                    newSymbolBoundingBox.heightProperty().get());
+
+            this.getChildren().remove(newSymbolBoundingBox);
+            newSymbolBoundingBox = null;
+        }
+    }
+
+    @Override
+    protected void doMouseDragged(MouseEvent event) {
+        super.doMouseDragged(event);
+        if (newSymbolBoundingBox != null) {
+            newSymbolBoundingBox.widthProperty().setValue(event.getX() - newSymbolBoundingBox.xProperty().getValue() );
+            newSymbolBoundingBox.heightProperty().setValue(event.getY() - newSymbolBoundingBox.yProperty().getValue());
+        }
+    }
+
+    private GrayscaleImageData getGrayScaleImage(double x, double y, double width, double height) throws IM3Exception {
+        es.ua.dlsi.im3.omr.model.entities.Image image = this.owner.getOMRPage().getOMMRImage().createPOJO();
+        BoundingBox boundingBox = new BoundingBoxXY(x, y, x+width, y+height);
+        int[] pixels = image.getGrayscaleImagePixels(owner.getOMRPage().getOMMRImage().getOmrProject().getImagesFolder(), boundingBox);
+        return new GrayscaleImageData(pixels);
+    }
+
+    private void addNewSymbolWithBoundingBox(double x, double y, double width, double height) {
+        if (width > 1 && height > 1) {
+            try {
+                GrayscaleImageData grayscaleImageData = getGrayScaleImage(x, y, width, height);
+                TreeSet<RankingItem<SymbolImagePrototype>> orderedRecognizedSymbols = controller.getDashboard().getModel().classifySymbolFromImage(grayscaleImageData);
+                if (orderedRecognizedSymbols == null || orderedRecognizedSymbols.isEmpty()) {
+                    throw new IM3Exception("No symbols returned");
+                }
+
+                //TODO Mostrar barra corrección con símbolos ordenados
+                RankingItem<SymbolImagePrototype> firstRankedElement = orderedRecognizedSymbols.first();
+                AgnosticSymbol agnosticSymbol = AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, firstRankedElement.getClassType().getPrototypeClass().getAgnosticString());
+
+                if (agnosticSymbol.getSymbol() instanceof Note) { //TODO resto de tipos
+                    Note note = (Note) agnosticSymbol.getSymbol();
+                    if (note.getStemDirection() == null && note.getDurationSpecification().isUsesStem()) {
+                        if (agnosticSymbol.getPositionInStaff().getLineSpace() < PositionsInStaff.LINE_3.getLineSpace()) {
+                            note.setStemDirection(Directions.up);
+                        } else {
+                            note.setStemDirection(Directions.down);
+                        }
+                    }
+                }
+
+                OMRSymbol omrSymbol = new OMRSymbol(owner, agnosticSymbol, x, y, width, height);
+                ICommand command = new ICommand() {
+                    OMRSymbol newSymbol;
+                    @Override
+                    public void execute(IObservableTaskRunner observer) throws Exception {
+                        newSymbol = omrSymbol;
+                        owner.addSymbol(omrSymbol); // ImageBasedAbstractController is listening the model for changes and it propagates any change
+                    }
+
+                    @Override
+                    public boolean canBeUndone() {
+                        return true;
+                    }
+
+                    @Override
+                    public void undo() throws Exception {
+                        owner.removeSymbol(newSymbol);
+
+                    }
+
+                    @Override
+                    public void redo() throws Exception {
+                        owner.addSymbol(newSymbol);
+                    }
+
+                    @Override
+                    public String getEventName() {
+                        return "Add symbol " + newSymbol.toString();
+                    }
+                };
+
+                controller.getDashboard().getCommandManager().executeCommand(command);
+                SymbolView symbolView = (SymbolView) controller.doSelect(omrSymbol);
+                //symbolView.doEdit();
+
+            } catch (IM3Exception e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot add symbol", e);
+                ShowError.show(OMRApp.getMainStage(), "Cannot add a symbol", e);
+            }
+        } else {
+            ShowError.show(OMRApp.getMainStage(), "Cannot add a symbols with bounding box of width or height with less than 2 pixels");
+        }
+    }
+
+    public void doChangePosition(SymbolView symbolView, int linespaceDifference) {
+        ICommand command = new ICommand() {
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                agnosticStaffView.doChangePosition(linespaceDifference, symbolView);
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                agnosticStaffView.doChangePosition(-linespaceDifference, symbolView);
+            }
+
+            @Override
+            public void redo() throws Exception {
+                agnosticStaffView.doChangePosition(linespaceDifference, symbolView);
+            }
+
+            @Override
+            public String getEventName() {
+                return "Change position";
+            }
+        };
+        try {
+            controller.getDashboard().getCommandManager().executeCommand(command);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot change position", e);
+            ShowError.show(OMRApp.getMainStage(), "Cannot change position", e);
+        }
+    }
+
+    public void doChangeSymbolType(SymbolView symbolView, String agnosticString) {
+        ICommand command = new ICommand() {
+            String previousType;
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                previousType = agnosticStaffView.doChangeSymbolType(agnosticString, symbolView);
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return true;
+            }
+
+            @Override
+            public void undo() throws Exception {
+                agnosticStaffView.doChangeSymbolType(previousType, symbolView);
+            }
+
+            @Override
+            public void redo() throws Exception {
+                agnosticStaffView.doChangeSymbolType(agnosticString, symbolView);
+            }
+
+            @Override
+            public String getEventName() {
+                return "Change type";
+            }
+        };
+        try {
+            controller.getDashboard().getCommandManager().executeCommand(command);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot change type", e);
+            ShowError.show(OMRApp.getMainStage(), "Cannot change type", e);
+        }
+    }
+
+    public void doFlipStem(SymbolView symbolView) {
+        String agnosticString = symbolView.getOMRSymbol().getGraphicalSymbol().getSymbol().toAgnosticString();
+        String newAgnosticString = null;
+        if (agnosticString.endsWith("_down")) {
+            newAgnosticString = agnosticString.substring(0, agnosticString.length()-5) + "_up";
+        } else if (agnosticString.endsWith("_up")) {
+            newAgnosticString = agnosticString.substring(0, agnosticString.length()-3) + "_down";
+        }
+        if (newAgnosticString != null) {
+            doChangeSymbolType(symbolView, newAgnosticString);
+        }
+    }
+
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    @Override
+    public ISelectableTraversable getSelectionParent() {
+        return controller;
+    }
+
+    /*public void doEndEdit() {
+        getAgnosticStaffView().doEndEdit();
+    }*/
+}

@@ -5,6 +5,8 @@ import java.util.Collection;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.IADT;
+import es.ua.dlsi.im3.core.adt.IIndexed;
+import es.ua.dlsi.im3.core.adt.IndexedMap;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -52,6 +54,11 @@ public class DirectedGraph<LabelNodeType extends INodeLabel, LabelEdgeType exten
 		return result;
 	}
 
+    public GraphNode<LabelNodeType, LabelEdgeType> getNodeOrNull(String ID) throws IM3Exception {
+        GraphNode<LabelNodeType, LabelEdgeType> result = nodes.get(ID);
+        return result;
+    }
+
 	/**
 	 * Package visibility. Edges are inserted from the nodes
 	 * @param edge
@@ -78,7 +85,9 @@ public class DirectedGraph<LabelNodeType extends INodeLabel, LabelEdgeType exten
 	public ObservableList<GraphEdge<LabelEdgeType>> edgesProperty() {
 		return edges;
 	}
-	
-	
-	
+
+
+    public ObservableList<GraphEdge<LabelEdgeType>> getEdges() {
+        return edges;
+    }
 }

@@ -21,7 +21,7 @@ import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 
 /**
- *
+ * @deprecated
  * @author drizo
  */
 public class ClefNone extends Clef {
