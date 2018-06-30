@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.harmony;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.Degree;
 
 /**
@@ -27,9 +28,17 @@ public class QualifiedDegree {
 
     @Override
     public String toString() {
-        return "QualifiedDegree{" +
-                "degree=" + degree +
-                ", degreeType=" + degreeType +
-                '}';
+        switch (degreeType) {
+            case major:
+                return degree.name().toUpperCase();
+            case minor:
+                return degree.name().toLowerCase();
+            case augmented:
+                return degree.name().toUpperCase() + "aug";
+            case diminished:
+                return degree.name().toUpperCase() + "dim";
+            default:
+                throw new IM3RuntimeException("Invalid degree type: " + degreeType);
+        }
     }
 }

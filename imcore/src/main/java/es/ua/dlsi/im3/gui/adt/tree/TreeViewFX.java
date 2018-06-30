@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import es.ua.dlsi.im3.core.adt.tree.ILabelColorMapping;
 import es.ua.dlsi.im3.core.adt.tree.Tree;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -38,9 +39,13 @@ public class TreeViewFX {
 	ArrayList<TreeViewFX> children;
 	Tree tree;
     ILabelColorMapping labelColorMapping;
+    boolean useStraightLines;
+    double labelAngle;
+    boolean topDown;
 
-	public TreeViewFX(Tree tree, TreeLabelViewFX labelView, DoubleProperty xfactor, DoubleProperty yfactor2, boolean showOnlyLeaves2, ILabelColorMapping labelColorMapping) {
+	public TreeViewFX(Tree tree, TreeLabelViewFX labelView, DoubleProperty xfactor, DoubleProperty yfactor2, boolean showOnlyLeaves2, ILabelColorMapping labelColorMapping, boolean useStraightLines, double labelAngle, boolean topDown) {
 		this.tree = tree;
+		this.topDown = topDown;
 		this.labelColorMapping = labelColorMapping;
 		this.labelView = labelView;
 		group = new Group(labelView.getRoot());
@@ -48,10 +53,24 @@ public class TreeViewFX {
 		this.xfactor = xfactor;
 		this.yfactor = yfactor2;
 		this.showOnlyLeaves = showOnlyLeaves2;
+		this.useStraightLines = useStraightLines;
+		this.labelAngle = labelAngle;
 	}
 
     public ILabelColorMapping getLabelColorMapping() {
         return labelColorMapping;
+    }
+
+    public boolean isUseStraightLines() {
+        return useStraightLines;
+    }
+
+    public double getLabelAngle() {
+        return labelAngle;
+    }
+
+    public boolean isTopDown() {
+        return topDown;
     }
 
     public DoubleProperty getYfactor() {
@@ -74,20 +93,58 @@ public class TreeViewFX {
 		group.getChildren().add(cg.getRoot());
 		children.add(cg);
 
-		Line line = new Line();
-		line.startXProperty().bind(labelView.xConnectionPointProperty());
-		line.startYProperty().bind(labelView.bottomConnectionPointProperty());
-		line.endXProperty().bind(cg.getLabelView().xConnectionPointProperty());
-		line.endYProperty().bind(cg.getLabelView().topConnectionPointProperty());
-		line.strokeProperty().bind(cg.getLabelView().colorProperty());
+        DoubleBinding fromY;
+        DoubleBinding toY;
+
+        //TODO Valores
+        if (topDown) {
+            fromY = labelView.bottomConnectionPointProperty().add(5.0);
+            toY = cg.getLabelView().topConnectionPointProperty().subtract(5.0);
+        } else {
+            fromY = cg.getLabelView().topConnectionPointProperty().add(15.0);
+            toY = labelView.bottomConnectionPointProperty().subtract(15.0);
+        }
+
+		if (!useStraightLines || labelView.xConnectionPointProperty().get() == cg.getLabelView().xConnectionPointProperty().get()) {
+		    // never create two lines if vertical line
+            Line line = new Line();
+            line.startXProperty().bind(labelView.xConnectionPointProperty());
+            line.startYProperty().bind(fromY);
+            line.endXProperty().bind(cg.getLabelView().xConnectionPointProperty());
+            line.endYProperty().bind(toY);
+            line.strokeProperty().bind(cg.getLabelView().colorProperty());
+            group.getChildren().add(line);
+        } else {
+            // two lines creating a square angle
+            Line horizontal = new Line();
+            horizontal.startXProperty().bind(labelView.xConnectionPointProperty());
+            if (topDown) {
+                horizontal.startYProperty().bind(fromY);
+            } else {
+                horizontal.startYProperty().bind(toY);
+            }
+            horizontal.endYProperty().bind(horizontal.startYProperty());
 
 
-		if (cg.getTree() == tree.getPropagatedFrom()) {
+            horizontal.endXProperty().bind(cg.getLabelView().xConnectionPointProperty());
+            horizontal.strokeProperty().bind(labelView.colorProperty());
+            group.getChildren().add(horizontal);
+
+            Line vertical = new Line();
+            vertical.endXProperty().bind(cg.getLabelView().xConnectionPointProperty());
+            vertical.startXProperty().bind(vertical.endXProperty());
+            vertical.startYProperty().bind(fromY);
+            vertical.endYProperty().bind(toY);
+            vertical.strokeProperty().bind(cg.getLabelView().colorProperty());
+            group.getChildren().add(vertical);
+        }
+
+
+		/*if (cg.getTree() == tree.getPropagatedFrom()) {
 			line.setStrokeWidth(3); // TODO ver
 		} else {
 			line.setStrokeWidth(1);
-		}
-		group.getChildren().add(line);
+		}*/
 	}
 
 	public ArrayList<TreeViewFX> getChildren() {

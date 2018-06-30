@@ -17,6 +17,7 @@
 package es.ua.dlsi.im3.gui.adt.tree;
 
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
@@ -38,7 +39,7 @@ public class TreeLabelViewFX  {
     private final FloatProperty nodey = new SimpleFloatProperty();
 
     
-    public TreeLabelViewFX(String text, Color color) {
+    public TreeLabelViewFX(String text, Color color, double labelAngle) {
         label = new Text();
         if (text != null) {
             this.label.setText(text);
@@ -47,6 +48,7 @@ public class TreeLabelViewFX  {
         this.label.translateXProperty().bind(nodex);
         this.label.translateYProperty().bind(nodey);
         this.label.setFill(color);
+        this.label.setRotate(labelAngle);
 
         // center to x
         //this.label.setTranslateX(-this.label.getWidth()/2);
@@ -55,7 +57,6 @@ public class TreeLabelViewFX  {
         //Background b = new Background(new BackgroundFill(Color.WHITE, new CornerRadii(5), Insets.EMPTY));
         //this.label.setBackground(b);
     }
-    
 
     public float getNodex() {
 	return nodex.get();
@@ -89,16 +90,16 @@ public class TreeLabelViewFX  {
 	return label;
     }
 
-    public DoubleBinding xConnectionPointProperty() {
-        return nodex.add(label.getLayoutBounds().getWidth()/2);
+    public FloatProperty xConnectionPointProperty() {
+        return nodex; // .add(label.getLayoutBounds().getWidth()/2);
     }
 
     public DoubleBinding topConnectionPointProperty() {
-        return nodey.subtract(label.getLayoutBounds().getHeight()+5.0); //TODO Margen
+        return nodey.subtract(label.getLayoutBounds().getHeight());
     }
 
-    public DoubleBinding bottomConnectionPointProperty() {
-        return nodey.add(5.0); //TODO Margen
+    public FloatProperty bottomConnectionPointProperty() {
+        return nodey;
     }
 
     public ObservableValue<? extends Paint> colorProperty() {
