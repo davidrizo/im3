@@ -38,12 +38,17 @@ public class RomanNumberChordSpecification extends ChordSpecification{
 
     @Override
     public String toString() {
-        return "RomanNumberChordSpecification{" +
+        //TODO
+        /*return "RomanNumberChordSpecification{" +
                 "implicit=" + implicit +
                 ", root=" + root +
                 ", inversion=" + inversion +
                 ", extensions=" + Arrays.toString(extensions) +
-                '}';
+                '}';*/
+        StringBuilder sb = new StringBuilder(root.toString());
+        //TODO Inversion
+        //TODO Extensions
+        return root.toString();
     }
 
     public ChordRootAlteration getAlteration() {

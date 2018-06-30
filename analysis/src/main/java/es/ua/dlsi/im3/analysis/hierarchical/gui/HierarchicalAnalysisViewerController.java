@@ -1,13 +1,11 @@
 package es.ua.dlsi.im3.analysis.hierarchical.gui;
 
-import es.ua.dlsi.im3.analysis.hierarchical.Graphical;
 import es.ua.dlsi.im3.analysis.hierarchical.forms.FormAnalysis;
 import es.ua.dlsi.im3.analysis.hierarchical.forms.FormAnalysisTreeNodeLabel;
 import es.ua.dlsi.im3.analysis.hierarchical.io.MEIHierarchicalAnalysesModernImporter;
 import es.ua.dlsi.im3.analysis.hierarchical.layout.FormTreeAnalysisLayout;
-import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.analysis.hierarchical.tonal.TonalHierarchicalAnalysis;
 import es.ua.dlsi.im3.core.adt.tree.Tree;
-import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
@@ -22,15 +20,12 @@ import es.ua.dlsi.im3.gui.javafx.JavaFXUtils;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.io.File;
@@ -87,11 +82,22 @@ public class HierarchicalAnalysisViewerController implements Initializable {
             scoreSongView = new ScoreSongView(layout);
             scrollPaneBottom.setContent(scoreSongView.getMainPanel());
 
-            TreeFXBuilder treeFXBuilder = new TreeFXBuilder();
-            TreeViewFX treeFX = treeFXBuilder.create(tree, treeHorizontalSeparationSlider.valueProperty(), treeVerticalSeparationSlider.valueProperty(), false, true, formAndMotivesAnalysis.getGraphical());
-            scrollPaneTop.setContent(treeFX.getRoot());
+            VBox vBoxTrees = new VBox(10);
+            scrollPaneTop.setContent(vBoxTrees);
 
-            initTreeInteraction(treeFX);
+            // forms analysis
+            TreeFXBuilder treeFXBuilderForms = new TreeFXBuilder();
+            TreeViewFX treeFXForms = treeFXBuilderForms.create(tree, treeHorizontalSeparationSlider.valueProperty(), treeVerticalSeparationSlider.valueProperty(), false, true, formAndMotivesAnalysis.getGraphical(), true, 45, true);
+            vBoxTrees.getChildren().add(treeFXForms.getRoot());
+            initTreeInteraction(treeFXForms);
+
+            // tonal analysis
+            TonalHierarchicalAnalysis tonalHierarchicalAnalysis = new TonalHierarchicalAnalysis(scoreSong);
+            TreeFXBuilder treeFXBuilderTonal = new TreeFXBuilder();
+            TreeViewFX treeFXTonal = treeFXBuilderForms.create(tonalHierarchicalAnalysis.getTree(), treeHorizontalSeparationSlider.valueProperty(), treeVerticalSeparationSlider.valueProperty(), false, true, formAndMotivesAnalysis.getGraphical(), true, 70, false);
+            vBoxTrees.getChildren().add(treeFXTonal.getRoot());
+            initTreeInteraction(treeFXTonal);
+
         } catch (Exception e) {
             e.printStackTrace();
             ShowError.show(HierarchicalAnalysisViewerApp.getMainStage(), "Cannot open file", e);
