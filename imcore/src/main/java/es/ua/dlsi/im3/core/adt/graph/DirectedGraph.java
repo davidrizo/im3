@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 
 import com.sun.java.swing.plaf.gtk.GTKConstants;
@@ -109,6 +110,16 @@ public class DirectedGraph<LabelNodeType extends INodeLabel, LabelEdgeType exten
         return edges;
     }
 
+    public Collection<GraphNode<LabelNodeType, LabelEdgeType>> getNodesWithoutOutEdge() {
+        LinkedList<GraphNode<LabelNodeType, LabelEdgeType>> result = new LinkedList<>();
+        for (GraphNode<LabelNodeType, LabelEdgeType> node: nodes.values()) {
+            if (node.getOutEdges() == null || node.getOutEdges().isEmpty()) {
+                result.add(node);
+            }
+        }
+        return result;
+    }
+
 
     public void writeDot(File file, boolean printEdgeLabels) throws FileNotFoundException, IM3Exception {
         PrintStream os = new PrintStream(new FileOutputStream(file));
@@ -116,7 +127,14 @@ public class DirectedGraph<LabelNodeType extends INodeLabel, LabelEdgeType exten
 
         // first add all nodes
         for (Map.Entry<String, GraphNode<LabelNodeType, LabelEdgeType>> entry: nodes.entrySet()) {
-            os.println("s" + entry.getKey() + "[label=\"" + entry.getValue().getLabel() + "\", shape=circle];");
+            String hexaColor = entry.getValue().getHexaColor();
+            if (hexaColor != null) {
+                os.println("s" + entry.getKey() + "[label=\"" + entry.getValue().getLabel() + "\", shape=circle, style=filled, fillcolor=\"" + hexaColor + "\"];");
+            } else {
+                os.println("s" + entry.getKey() + "[label=\"" + entry.getValue().getLabel() + "\", shape=circle];");
+            }
+
+
         }
 
         // then edges

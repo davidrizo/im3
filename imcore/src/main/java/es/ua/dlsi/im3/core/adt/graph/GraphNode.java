@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.core.adt.graph;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import es.ua.dlsi.im3.core.IDGenerator;
@@ -11,8 +13,9 @@ public class GraphNode<LabelNodeType extends INodeLabel, LabelEdgeType extends I
 	HashSet<GraphEdge<LabelEdgeType>> outedges;
 	String ID;
 	private DirectedGraph<LabelNodeType, LabelEdgeType> graph;
-	
-	public GraphNode(DirectedGraph<LabelNodeType, LabelEdgeType> graph, LabelNodeType label) {
+    private String hexaColor;
+
+    public GraphNode(DirectedGraph<LabelNodeType, LabelEdgeType> graph, LabelNodeType label) {
 		super();
 		this.graph = graph;
 		this.label = label;
@@ -33,6 +36,17 @@ public class GraphNode<LabelNodeType extends INodeLabel, LabelEdgeType extends I
 	public Set<GraphEdge<LabelEdgeType>> getOutEdges() {
 		return outedges;
 	}
+
+    public Collection<GraphEdge<LabelEdgeType>> getInEdges() {
+        LinkedList<GraphEdge<LabelEdgeType>> result = new LinkedList<>();
+        //TODO Optimizar esto?
+        for (GraphEdge<LabelEdgeType> edge: graph.getEdges()) {
+            if (edge.getTargetNode() == this) {
+                result.add(edge);
+            }
+        }
+        return result;
+    }
 	
 	public void addEdge(GraphEdge<LabelEdgeType> edge) {
 		if (outedges == null) {
@@ -83,4 +97,11 @@ public class GraphNode<LabelNodeType extends INodeLabel, LabelEdgeType extends I
 		return edge;
 	}
 
+    public void setColor(String hexaColor) {
+	    this.hexaColor = hexaColor;
+    }
+
+    public String getHexaColor() {
+        return hexaColor;
+    }
 }

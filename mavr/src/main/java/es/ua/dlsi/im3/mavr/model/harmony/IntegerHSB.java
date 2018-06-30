@@ -14,8 +14,8 @@ public class IntegerHSB {
     /**
      *
      * @param hue [0,355]
-     * @param saturation [0,99]
-     * @param bright [0,99]
+     * @param saturation [0,100]
+     * @param bright [0,100]
      */
     public IntegerHSB(int hue, int saturation, int bright) {
         this.hue = hue;
