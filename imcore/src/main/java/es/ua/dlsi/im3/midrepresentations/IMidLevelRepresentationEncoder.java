@@ -36,5 +36,5 @@ public interface IMidLevelRepresentationEncoder<InputType, MidLevelRepresentatio
      * @return
      * @throws IM3Exception
      */
-    public List<MidLevelRepresentationType> encode(InputType input, int windowSize, int windowStep) throws IM3Exception;
+    public List<MidLevelRepresentationType> encode(InputType input, int windowSize, int windowStep);
 }

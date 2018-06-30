@@ -22,7 +22,7 @@ public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbol
 	}
 
     @Override
-    public void move(Time offset) throws IM3Exception {
+    public void move(Time offset) {
         this.time = time.add(offset);
     }
 	@Override

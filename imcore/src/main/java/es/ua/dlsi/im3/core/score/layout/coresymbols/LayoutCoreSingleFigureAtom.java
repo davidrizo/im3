@@ -270,7 +270,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
         return result;
     }
 
-    public void setStemEndY(CoordinateComponent referenceY, double ydisplacement) throws IM3Exception {
+    public void setStemEndY(CoordinateComponent referenceY, double ydisplacement) {
         this.stem.setEndY(referenceY, ydisplacement);
     }
 

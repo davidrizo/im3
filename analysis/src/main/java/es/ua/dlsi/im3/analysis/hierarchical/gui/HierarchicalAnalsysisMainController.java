@@ -124,7 +124,7 @@ public class HierarchicalAnalsysisMainController implements Initializable {
 
 
 
-	private void initFormAnalysis() throws Exception {
+	private void initFormAnalysis() {
 		panelAnalysis.disableProperty().bind(lvAnalyses.getSelectionModel().selectedItemProperty().isNull());
 		
 		btnRemoveFormAnalysis.disableProperty().unbind();
@@ -155,12 +155,12 @@ public class HierarchicalAnalsysisMainController implements Initializable {
 
 	protected void onAnalysisChanged(Analysis newValue) {
         if (newValue == null) {
-			try {
+			//try {
                 clearTree();
-			} catch (IM3Exception e) {
+			/*} catch (IM3Exception e) {
 				Logger.getLogger(HierarchicalAnalsysisMainController.class.getName()).log(Level.SEVERE, "Cannot clear tree", e);
 				ShowError.show(mainStage, "Cannot clear tree", e);
-			}
+			}*/
 		} else {
             try {
                 paintFormAnalysisTree();
@@ -172,7 +172,7 @@ public class HierarchicalAnalsysisMainController implements Initializable {
         }
 	}
 
-    private void clearTree() throws IM3Exception {
+    private void clearTree() {
     }
 
 
@@ -455,7 +455,7 @@ public class HierarchicalAnalsysisMainController implements Initializable {
 			ShowError.show(mainStage,"Cannot create form analysis", e);
 		}*/
 	}
-	private void paintMotiveAnalysis() throws Exception {
+	private void paintMotiveAnalysis() {
         throw new UnsupportedOperationException();
 		/*IM3 if (graphView != null) {
 			getScoreView().removeExternalNotationGroupView(graphView);

@@ -31,7 +31,7 @@ public class LayoutCoreDisplacedDot extends LayoutAttachmentInStaff<DisplacedDot
         throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
     }
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         position.setReferenceY(attachedToView.getDotsYCoordinate());
     }
 }

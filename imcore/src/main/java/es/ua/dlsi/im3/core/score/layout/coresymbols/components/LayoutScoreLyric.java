@@ -43,7 +43,7 @@ public class LayoutScoreLyric extends Component<NotePitch> {
     }
 
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

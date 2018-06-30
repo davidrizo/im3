@@ -143,7 +143,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	}
 
     @Override
-    public void move(Time offset) throws IM3Exception {
+    public void move(Time offset) {
 
     }
 
@@ -307,7 +307,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         return minDur;
     }
 
-    private void setMensuralPerfection(boolean explicit, Perfection perfection) throws IM3Exception {
+    private void setMensuralPerfection(boolean explicit, Perfection perfection)  {
         this.explicitMensuralPerfection = explicit;
         this.mensuralPerfection = perfection;
         /*durationBeforePerfection = duration;

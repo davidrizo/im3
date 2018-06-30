@@ -53,13 +53,13 @@ public class DraggableRectangle extends Group {
     public void endEdit(boolean accept) {
         if (accept) {
             if (changeHandler != null) {
-                try {
+                //try {
                     changeHandler.onChanged(prevX, prevY, prevWidth, prevHeight, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-                } catch (IM3Exception e) {
+                /*} catch (IM3Exception e) {
                     Logger.getLogger(DraggableRectangle.class.getName()).log(Level.INFO, "Cannot apply edit to rectangle", e);
                     endEdit(false);
                     return;
-                }
+                }*/
             }
         } else {
             rect.setX(prevX);

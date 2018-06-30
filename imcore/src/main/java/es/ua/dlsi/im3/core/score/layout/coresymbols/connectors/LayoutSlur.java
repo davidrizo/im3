@@ -71,7 +71,7 @@ public class LayoutSlur extends LayoutConnector {
 
         init(fromPoint, directionFrom, toPoint, directionTo);
     }
-    private void init(Coordinate from, Direction directionFrom, Coordinate to, Direction directionTo) throws IM3Exception {
+    private void init(Coordinate from, Direction directionFrom, Coordinate to, Direction directionTo) {
         Coordinate controlFrom = null;
         Coordinate controlTo = null;
 
@@ -108,7 +108,7 @@ public class LayoutSlur extends LayoutConnector {
     }
 
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

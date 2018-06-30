@@ -16,7 +16,7 @@ public interface IGraphLabelView {
 	 * @param scaleY
 	 * @throws IM3Exception
 	 */
-	void paint(DoubleBinding scaleX, DoubleBinding scaleY) throws IM3Exception;
+	void paint(DoubleBinding scaleX, DoubleBinding scaleY);
 
 	ObjectProperty<Color> colorProperty();
 }

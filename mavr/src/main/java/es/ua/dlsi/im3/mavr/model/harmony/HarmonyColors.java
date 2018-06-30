@@ -75,7 +75,7 @@ public class HarmonyColors {
      * @param currentColors Colors are changed as the algorithm runs
      * @throws IM3Exception
      */
-    public void computeColors(ArrayList<ObjectProperty<Color>> currentColors, DoubleProperty currentFitness, IntegerProperty currentGeneration, ArrayList<DoubleProperty> colorDistances, ArrayList<DoubleProperty> chordDistances) throws IM3Exception {
+    public void computeColors(ArrayList<ObjectProperty<Color>> currentColors, DoubleProperty currentFitness, IntegerProperty currentGeneration, ArrayList<DoubleProperty> colorDistances, ArrayList<DoubleProperty> chordDistances) {
         fitBestColors(currentColors, currentFitness, currentGeneration, colorDistances, chordDistances);
     }
 

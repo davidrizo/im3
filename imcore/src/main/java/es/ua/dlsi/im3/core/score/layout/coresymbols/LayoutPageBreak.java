@@ -61,7 +61,7 @@ public class LayoutPageBreak extends LayoutCoreSymbol<PageBreak> {
         throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
     }
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

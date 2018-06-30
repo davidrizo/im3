@@ -17,7 +17,7 @@ public interface ITreeLabel {
 	 * @return
 	 * @throws Exception 
 	 */
-	public String getColor() throws Exception;
+	public String getColor();
 	
 	public ITreeLabel clone();
 

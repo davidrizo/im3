@@ -24,7 +24,7 @@ public class MetronomeMark implements ITimedElement {
     }
 
     @Override
-    public void move(Time offset) throws IM3Exception {
+    public void move(Time offset) {
         if (time == null) {
             time = offset;
         } else {

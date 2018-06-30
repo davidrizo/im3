@@ -214,7 +214,7 @@ public class ImagesController extends MuretAbstractController {
         ICommand command = new ICommand() {
             ArrayList<ImageThumbnailView> currentOrdering;
             @Override
-            public void execute(IObservableTaskRunner observer) throws Exception {
+            public void execute(IObservableTaskRunner observer) {
                 currentOrdering = new ArrayList<>();
                 for (int i=0; i<flowPane.getChildren().size()-1; i++) {
                     currentOrdering.add((ImageThumbnailView) flowPane.getChildren().get(i));
@@ -248,7 +248,7 @@ public class ImagesController extends MuretAbstractController {
             }
 
             @Override
-            public void undo() throws Exception {
+            public void undo() {
                 // set the saved ordering
                 flowPane.getChildren().clear();
                 for (ImageThumbnailView imageThumbnailView: currentOrdering) {
@@ -259,7 +259,7 @@ public class ImagesController extends MuretAbstractController {
             }
 
             @Override
-            public void redo() throws Exception {
+            public void redo() {
                 doExecute();
             }
 
@@ -375,7 +375,7 @@ public class ImagesController extends MuretAbstractController {
                     }
 
                     @Override
-                    public void undo() throws Exception {
+                    public void undo() {
                         dashboard.getModel().getCurrentProject().addImage(imageView.getOMRImage());
                     }
 

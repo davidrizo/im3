@@ -137,7 +137,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
     }
 
     @Override
-    protected void doDeleteTreeItems() throws IM3Exception {
+    protected void doDeleteTreeItems() {
         if (selectionManager.isCommonBaseClass(SymbolView.class)) {
             for (ISelectable selectable: selectionManager.getSelection()) {
                 SymbolView symbolView = (SymbolView) selectable;
@@ -202,7 +202,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
             throw new IM3Exception(e);
         }
     }
-    private void recognizeSymbolsInRegionDialog(RegionView regionView) throws IOException, IM3Exception {
+    private void recognizeSymbolsInRegionDialog(RegionView regionView) {
         //TODO Ver este dálogo
         WorkIndicatorDialog workIndicatorDialog = new WorkIndicatorDialog(OMRApp.getMainStage().getOwner(), "Recognizing symbol sequences in selected regions");
 

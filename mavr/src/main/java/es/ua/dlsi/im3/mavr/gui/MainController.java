@@ -172,7 +172,7 @@ public class MainController implements Initializable {
             PitchClasses.B.getPitchClass()
     };
 
-    private Group createRectangle(String text, Color color, double size) throws IM3Exception {
+    private Group createRectangle(String text, Color color, double size) {
         Rectangle rectangleMajor = new Rectangle(size, size, color);
         Text label = new Text(text);
         label.setX(rectangleMajor.getWidth()/2-label.getLayoutBounds().getWidth()/2);
@@ -608,7 +608,7 @@ public class MainController implements Initializable {
 
 
     //draw tonic in the center, dominant in the corner, subdominant in the middle between both
-    private void finishTonalFunctionRectangle(TonalFunction tonalFunction, Text lastTonalFunctionText, double lastKeyFromX, Rectangle lastTonalFunctionRectangle, double toX) throws IM3Exception {
+    private void finishTonalFunctionRectangle(TonalFunction tonalFunction, Text lastTonalFunctionText, double lastKeyFromX, Rectangle lastTonalFunctionRectangle, double toX) {
         lastTonalFunctionRectangle.setWidth(toX - lastKeyFromX);
         /*switch (tonalFunction) {
             case TONIC:

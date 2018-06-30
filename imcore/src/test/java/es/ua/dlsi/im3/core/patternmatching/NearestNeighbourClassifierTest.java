@@ -14,7 +14,7 @@ public class NearestNeighbourClassifierTest {
     public void classify() throws IM3Exception {
         NearestNeighbourClassifier<String, DoublePrototype> classifier = new NearestNeighbourClassifier<String, DoublePrototype>() {
             @Override
-            protected void train() throws IM3Exception {
+            protected void train() {
                 addPrototype(new DoublePrototype("B", 10.0));
                 addPrototype(new DoublePrototype("C", -40.0));
                 addPrototype(new DoublePrototype("B", 11.0));

@@ -43,7 +43,7 @@ public class AgnosticStaffView extends VBox {
     HashMap<OMRSymbol, Shape> shapesInStaff;
     private double regionXOffset;
 
-    public AgnosticStaffView(ImageBasedAbstractController controller, AgnosticSymbolFont agnosticSymbolFont, double width, double height, double regionXOffset) throws IM3Exception {
+    public AgnosticStaffView(ImageBasedAbstractController controller, AgnosticSymbolFont agnosticSymbolFont, double width, double height, double regionXOffset)  {
         this.controller = controller;
         shapesInStaff = new HashMap<>();
         this.regionXOffset = regionXOffset;

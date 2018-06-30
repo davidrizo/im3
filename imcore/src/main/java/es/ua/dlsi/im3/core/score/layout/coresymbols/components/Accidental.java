@@ -55,7 +55,7 @@ public class Accidental<ParentType extends NotationSymbol> extends Component<Par
     }
 
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout()  {
         // TODO: 26/3/18 ¿Si ha cambiado el pictograma?
     }
 

@@ -17,7 +17,7 @@ public class GraphicalSymbolsAutomaton {
     private final NotationType notationType;
     protected DeterministicProbabilisticAutomaton<State, AgnosticSymbolType, OMRTransduction> dpa;
 
-    public GraphicalSymbolsAutomaton(NotationType notationType) throws IM3Exception {
+    public GraphicalSymbolsAutomaton(NotationType notationType) {
         this.notationType = notationType;
     }
 

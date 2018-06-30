@@ -38,7 +38,7 @@ public class Model {
 	File file;
 	private StringProperty titleProperty;
 	
-	public Model() throws ImportException {
+	public Model() {
 		possibleAnalyses = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 		selectedAnalysis = new SimpleObjectProperty<>();
 		titleProperty = new SimpleStringProperty();

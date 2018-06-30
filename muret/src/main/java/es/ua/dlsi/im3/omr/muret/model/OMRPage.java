@@ -51,7 +51,7 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
     ObservableSet<OMRRegion> regions;
 
 
-    public OMRPage(OMRImage omrImage, double fromX, double fromY, double toX, double toY) throws IM3Exception {
+    public OMRPage(OMRImage omrImage, double fromX, double fromY, double toX, double toY) {
         this.omrImage = omrImage;
         this.fromX = new SimpleDoubleProperty(fromX);
         this.fromY = new SimpleDoubleProperty(fromY);

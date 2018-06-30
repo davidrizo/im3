@@ -38,7 +38,7 @@ public class InteractionPresenter {
         selectedElements = new LinkedList<>();
     }
 
-    public void register(GraphicsElement graphicsElement) throws IM3Exception {
+    public void register(GraphicsElement graphicsElement) {
         layoutElementsByID.put(graphicsElement.getID(), graphicsElement);
     }
 

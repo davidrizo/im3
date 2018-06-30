@@ -12,5 +12,5 @@ public interface IVoiceSeparator {
      * @return List of voices, where each voice is a list of atoms
      * @throws IM3Exception
      */
-    List<List<Atom>> separateVoices(SongTrack track) throws IM3Exception;
+    List<List<Atom>> separateVoices(SongTrack track);
 }

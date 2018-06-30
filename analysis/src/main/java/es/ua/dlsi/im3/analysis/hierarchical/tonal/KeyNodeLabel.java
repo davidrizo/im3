@@ -22,7 +22,7 @@ public class KeyNodeLabel extends TonalAnalysisTreeNodeLabel {
     }
 
     @Override
-    public String getColor() throws Exception {
+    public String getColor() {
         return null;
     }
 

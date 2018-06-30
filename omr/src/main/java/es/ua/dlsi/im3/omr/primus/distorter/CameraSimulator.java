@@ -45,7 +45,7 @@ public class CameraSimulator {
     }
 
 
-    private void imageInfo(String image) throws InfoException {
+    private void imageInfo(String image)  {
         /*Info imageInfo = new Info(image,true);
         System.out.println("Format: " + imageInfo.getImageFormat());
         System.out.println("Width: " + imageInfo.getImageWidth());
@@ -67,7 +67,7 @@ public class CameraSimulator {
         cmd.run(op);
     }*/
 
-    private void motionBlur(String image) throws InterruptedException, IOException, IM4JavaException, GMServiceException, GMException {
+    private void motionBlur(String image) throws InterruptedException, IOException, IM4JavaException {
         for (double var1 = -7; var1 <= 7; var1+=2) {
             for (double var2 = -7; var2 <= 7; var2+=2) {
                 for (double var3 = -7; var3 <= 7; var3+=2) {
@@ -365,7 +365,7 @@ public class CameraSimulator {
 
 
 
-    private void individualExperiments(String image) throws Exception {
+    private void individualExperiments(String image)  {
         // imagemagick
         //sketch(image);
         //distortBarrel(image);

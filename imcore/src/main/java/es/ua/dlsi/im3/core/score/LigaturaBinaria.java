@@ -54,7 +54,7 @@ public abstract class LigaturaBinaria extends Atom {
 	}
 
 	@Override
-	public List<PlayedScoreNote> computePlayedNotes() throws IM3Exception {
+	public List<PlayedScoreNote> computePlayedNotes() {
 		ArrayList<PlayedScoreNote> result = new ArrayList<>();
 		for (int i=0; i<figures.size(); i++) {
 			PlayedScoreNote pn = new PlayedScoreNote(pitches.get(i), pitches.get(i).getScientificPitch(), figures.get(i).getTime(), figures.get(i).getDuration());

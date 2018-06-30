@@ -43,27 +43,27 @@ public class Text extends Shape {
     }
 
     @Override
-    protected void doRepaint() throws IM3Exception {
+    protected void doRepaint() {
         // TODO: 14/3/18 ¿Qué hacemos aquí? 
     }
 
     @Override
-    public double getWidth() throws IM3Exception {
+    public double getWidth() {
         return width;
     }
 
     @Override
-    public Coordinate getPosition() throws IM3Exception {
+    public Coordinate getPosition() {
         return position;
     }
 
     @Override
-    public Node doGenerateJavaFXRoot() throws GUIException, ExportException {
+    public Node doGenerateJavaFXRoot() {
         return this.javaFXText;
     }
 
     @Override
-    public void updateJavaFXRoot() throws IM3Exception {
+    public void updateJavaFXRoot() {
         this.javaFXText.setText(this.text);
         this.width = this.javaFXText.getLayoutBounds().getWidth();
     }

@@ -21,7 +21,7 @@ public class AtomTest {
 	ArrayList<Fraction> expectedOnsets;
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp()  {
 	}
 	
 	private ScientificPitch createPitch(PitchClasses pc, int octave, Fraction onset) {
@@ -89,7 +89,7 @@ public class AtomTest {
 	 * @throws IM3Exception
 	 */
 	@Test
-	public void testSimpleLigatures() throws IM3Exception {
+	public void testSimpleLigatures()  {
 		LigatureCumPropietateEtCumPerfectione l1 = new LigatureCumPropietateEtCumPerfectione(
 				new ScientificPitch(PitchClasses.G, 3), 0, new ScientificPitch(PitchClasses.A, 3), 0);
 		
@@ -98,7 +98,7 @@ public class AtomTest {
 	}
 	
 	@Test
-	public void testSimpleChord() throws IM3Exception {
+	public void testSimpleChord() {
 		SimpleChord chord = new SimpleChord(Figures.QUARTER, 1, 
 				new ScientificPitch(PitchClasses.C, 3), 
 				new ScientificPitch(PitchClasses.E, 3),
@@ -109,7 +109,7 @@ public class AtomTest {
 	}
 	
 	@Test
-	public void testSimpleNote() throws IM3Exception {
+	public void testSimpleNote()  {
 		SimpleNote note = new SimpleNote(Figures.EIGHTH, 0, 
 				new ScientificPitch(PitchClasses.C, 3));
 		assertEquals(1, note.getAtomFigures().size());
@@ -117,7 +117,7 @@ public class AtomTest {
 	}
 
 	@Test
-	public void testSimpleRest() throws IM3Exception {
+	public void testSimpleRest()  {
 		SimpleRest rest = new SimpleRest(Figures.WHOLE, 0);
 		assertEquals(1, rest.getAtomFigures().size());
 		assertNull(rest.getAtomPitches());

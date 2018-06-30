@@ -16,7 +16,7 @@ public class Measures {
         measures = new TreeMap<>();
     }
 
-    public void add(Measure m) throws IM3Exception {
+    public void add(Measure m) {
         measures.put(m.getTime(), m);
     }
 

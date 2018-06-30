@@ -152,7 +152,7 @@ public class Line extends Shape {
     }
 
     @Override
-    protected void doRepaint() throws IM3Exception {
+    protected void doRepaint() {
         // TODO: 14/3/18 ¿Qué hacemos aquí? 
     }
 

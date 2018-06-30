@@ -39,7 +39,7 @@ public class LedgerLine extends Component<LedgerLines> {
     }
 
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

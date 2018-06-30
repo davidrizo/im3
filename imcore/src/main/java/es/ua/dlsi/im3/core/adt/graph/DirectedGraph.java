@@ -54,7 +54,7 @@ public class DirectedGraph<LabelNodeType extends INodeLabel, LabelEdgeType exten
 		return result;
 	}
 
-    public GraphNode<LabelNodeType, LabelEdgeType> getNodeOrNull(String ID) throws IM3Exception {
+    public GraphNode<LabelNodeType, LabelEdgeType> getNodeOrNull(String ID) {
         GraphNode<LabelNodeType, LabelEdgeType> result = nodes.get(ID);
         return result;
     }

@@ -30,7 +30,7 @@ public class EditScript {
     public EditScript() {
         script = new ArrayList<EditOperation>();
     }
-    public EditScript(EditScript previous, EditOperation e) throws CloneNotSupportedException {
+    public EditScript(EditScript previous, EditOperation e) {
         if (previous == null) {
             script = new ArrayList<EditOperation>();
         } else {
@@ -41,7 +41,7 @@ public class EditScript {
     public void addEditOperation(EditOperation e) {
         script.add(e);
     }
-    public EditScript(EditScript previous, int from, int to, double cost) throws CloneNotSupportedException {
+    public EditScript(EditScript previous, int from, int to, double cost) {
         if (previous == null) {
             script = new ArrayList<EditOperation>();
         } else {
@@ -50,7 +50,7 @@ public class EditScript {
         EditOperation e = new EditOperation(from, to, cost);
         script.add(e);
     }
-    public EditScript(int from, int to, double cost) throws CloneNotSupportedException {
+    public EditScript(int from, int to, double cost) {
         script = new ArrayList<EditOperation>();
         EditOperation e = new EditOperation(from, to, cost);
         script.add(e);

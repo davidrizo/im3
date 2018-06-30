@@ -20,5 +20,5 @@ public interface IMelodySegmenter {
 	 * @return An list of Segments
 	 * @throws IM3Exception
 	 */
-	List<Segment> segmentate(SongTrack track) throws IM3Exception;
+	List<Segment> segmentate(SongTrack track);
 }

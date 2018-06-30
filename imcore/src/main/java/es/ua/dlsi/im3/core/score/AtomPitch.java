@@ -142,7 +142,7 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 		return writtenExplicitAccidental;
 	}
 
-	public final void setWrittenExplicitAccidental(Accidentals writtenExplicitAccidental) throws IM3Exception {
+	public final void setWrittenExplicitAccidental(Accidentals writtenExplicitAccidental)  {
 		this.writtenExplicitAccidental = writtenExplicitAccidental;
 		//setAccidental(writtenExplicitAccidental); // the written accidental may be different from the actual pitch one
 	}
@@ -185,7 +185,7 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 	}
 
     @Override
-    public void move(Time offset) throws IM3Exception {
+    public void move(Time offset)  {
         //no-op
     }
 

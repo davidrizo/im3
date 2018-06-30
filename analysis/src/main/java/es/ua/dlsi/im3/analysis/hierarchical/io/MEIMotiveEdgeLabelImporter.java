@@ -13,7 +13,7 @@ import es.ua.dlsi.im3.core.io.ImportException;
 public class MEIMotiveEdgeLabelImporter implements IMEIComponentImporter<Tree<AttributesLabel>, MelodicMotive> {
 
 	@Override
-	public MelodicMotive importFrom(Tree<AttributesLabel> source, MEIHierarchicalAnalysesModernImporter importer) throws ImportException {
+	public MelodicMotive importFrom(Tree<AttributesLabel> source, MEIHierarchicalAnalysesModernImporter importer) {
 		
 		return null;
 	}

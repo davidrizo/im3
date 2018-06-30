@@ -24,7 +24,7 @@ public class TreeGraphic extends Group {
             }
 
             @Override
-            protected void doLayout() throws IM3Exception {
+            protected void doLayout() {
 
             }
         }, INTERACTION_ELEMENT_TYPE);

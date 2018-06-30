@@ -191,7 +191,7 @@ public class ImporterExporter {
         }
     }
 
-    public void writeXML(ScoreSong song, File file) throws IM3Exception, ExportException {
+    public void writeXML(ScoreSong song, File file) {
 		/*HashMap<Staff, ScoreLyricVerse> lyricLines = new HashMap<>();
 		// create lyrics for the analyses
 		ArrayList<AtomPitch> atomPitches = song.getAtomPitches();

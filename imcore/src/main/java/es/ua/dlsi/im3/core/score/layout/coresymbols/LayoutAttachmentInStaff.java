@@ -20,7 +20,7 @@ public abstract class LayoutAttachmentInStaff<CoreSymbolType extends AttachmentI
         return attachedToView;
     }
 
-    public void setAttachedToView(AttachedToViewType attachedToView) throws IM3Exception {
+    public void setAttachedToView(AttachedToViewType attachedToView) {
         this.attachedToView = attachedToView;
     }
 }

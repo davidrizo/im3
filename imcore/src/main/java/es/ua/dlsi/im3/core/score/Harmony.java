@@ -980,7 +980,7 @@ public class Harmony implements ITimedElement, Comparable<Harmony>, IUniqueIDObj
 	}
 
     @Override
-    public void move(Time offset) throws IM3Exception {
+    public void move(Time offset) {
         this.time = time.add(offset);
     }
 }

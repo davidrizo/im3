@@ -349,7 +349,7 @@ public class SemanticImporter implements IScoreSongImporter {
 
 
     @Override
-    public ScoreSong importSong(InputStream is) throws ImportException {
+    public ScoreSong importSong(InputStream is) {
         throw new UnsupportedOperationException("TO-DO");
     }
 

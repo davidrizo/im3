@@ -11,7 +11,7 @@ public class CompoundAtom extends Atom {
 	public CompoundAtom() {
 	    subatoms = new ArrayList<>();
 	}
-	public void addSubatom(Atom subatom) throws IM3Exception {
+	public void addSubatom(Atom subatom) {
 		this.subatoms.add(subatom);
 		subatom.setParentAtom(this);
         //1-Oct

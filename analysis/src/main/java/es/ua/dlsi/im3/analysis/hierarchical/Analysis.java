@@ -91,7 +91,7 @@ public abstract class Analysis {
 		}
 	}
 
-	public void removeAnalysis(HierarchicalAnalysis<?> ha) throws IM3Exception {
+	public void removeAnalysis(HierarchicalAnalysis<?> ha) {
 		this.hierarchicalAnalyses.remove(ha);
 	}
 

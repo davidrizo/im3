@@ -18,7 +18,7 @@ public class SAXParserFactoryImpl extends SAXParserFactory {
     };
     
     public boolean getFeature(String name)
-    throws SAXNotRecognizedException, SAXNotSupportedException {
+    throws SAXNotRecognizedException {
         return new SAXDriver().getFeature(name);
     }
 

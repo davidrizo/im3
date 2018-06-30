@@ -14,7 +14,7 @@ public class InkBlot extends AgnosticSymbolType {
     }
 
     @Override
-    public void setSubtype(String string) throws IM3Exception {
+    public void setSubtype(String string) {
 
     }
 

@@ -43,8 +43,8 @@ public interface IJavaFXSelectable extends ISelectable {
 
     Node getRoot();
 
-    void startEdit() throws IM3Exception;
-    void endEdit()  throws IM3Exception;
+    void startEdit();
+    void endEdit();
 
     /**
      * For traversing with tab skipping different types (e.g. from barline to barline)

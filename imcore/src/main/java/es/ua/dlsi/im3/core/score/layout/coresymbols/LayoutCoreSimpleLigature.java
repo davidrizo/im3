@@ -27,7 +27,7 @@ public class LayoutCoreSimpleLigature extends LayoutCoreSymbol<LigaturaBinaria> 
         throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
     }
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

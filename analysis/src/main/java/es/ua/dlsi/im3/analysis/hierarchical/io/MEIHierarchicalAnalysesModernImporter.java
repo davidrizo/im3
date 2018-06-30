@@ -136,7 +136,7 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 
 
 	
-	private String getOptionalAttribute(HashMap<String, String> attributesMap, String key) throws ImportException {
+	private String getOptionalAttribute(HashMap<String, String> attributesMap, String key) {
 		String result = attributesMap.get(key);
 		return result;
 	}
@@ -161,7 +161,7 @@ public class MEIHierarchicalAnalysesModernImporter implements IXMLSAXImporterExt
 	}
 
 	@Override
-	public void handleCloseElement(String elementTag) throws ImportException {
+	public void handleCloseElement(String elementTag) {
 		switch (elementTag) {
 			case "analysis":
 				inAnalysisElement = false;

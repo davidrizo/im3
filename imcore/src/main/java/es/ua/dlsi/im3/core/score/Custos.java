@@ -40,7 +40,7 @@ public class Custos implements ITimedElementInStaff {
     }
 
     @Override
-    public void move(Time offset) throws IM3Exception {
+    public void move(Time offset) {
         Staff prevStaff = staff;
         staff.remove(this);
         this.time = time.add(offset);

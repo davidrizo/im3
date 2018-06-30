@@ -100,7 +100,7 @@ public class WorkIndicatorDialog<P> {
 
         animationWorker = new Task() {
             @Override
-            protected Object call() throws Exception {
+            protected Object call() {
                 /*
                 This is activated when we have a "progressing" indicator.
                 This thread is used to advance progress every XXX milliseconds.

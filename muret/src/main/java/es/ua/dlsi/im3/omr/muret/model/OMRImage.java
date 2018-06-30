@@ -64,7 +64,7 @@ public class OMRImage implements Comparable<OMRImage> {
     private StringProperty comments;
 
 
-    public OMRImage(OMRProject omrProject, File file) throws IM3Exception {
+    public OMRImage(OMRProject omrProject, File file) {
         this.omrProject = omrProject;
         this.imageFile = file;
         this.order = new SimpleIntegerProperty();

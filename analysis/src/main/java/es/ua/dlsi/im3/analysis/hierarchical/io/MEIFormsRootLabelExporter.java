@@ -7,7 +7,7 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 public class MEIFormsRootLabelExporter implements IMEIComponentExporter<RootLabel> {
 
 	@Override
-	public void process(MEIHierarchicalAnalysesModernExporter exporter, StringBuilder sb, int tabs, RootLabel label) throws ExportException {
+	public void process(MEIHierarchicalAnalysesModernExporter exporter, StringBuilder sb, int tabs, RootLabel label) {
 		XMLExporterHelper.startEnd(sb, tabs, "label", "subtype", "root");
 
 	}

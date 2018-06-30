@@ -38,7 +38,7 @@ public class KeyView {
         return group;
     }
 
-    private Color keyToColor(Key key) throws IM3Exception {
+    private Color keyToColor(Key key) {
         int pc = key.getPitchClass().getSemitonesFromC();
         return colorWheel.getColors()[pc];
     }

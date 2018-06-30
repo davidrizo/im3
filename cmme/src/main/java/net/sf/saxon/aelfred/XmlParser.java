@@ -2813,9 +2813,7 @@ loop:
      *  [2] attribute hash table
      */
     private void setElement (String name, int contentType,
-		      String contentModel, Hashtable attributes)
-    throws Exception
-    {
+		      String contentModel, Hashtable attributes) {
 	Object element[] = (Object []) elementInfo.get (name);
 
 	// first <!ELEMENT ...> or <!ATTLIST ...> for this type?
@@ -3328,9 +3326,7 @@ loop:
      * - public id
      * - system id
      */
-    private void setNotation (String nname, String pubid, String sysid)
-    throws Exception
-    {
+    private void setNotation (String nname, String pubid, String sysid) {
 	Object notation[];
 
 	if (notationInfo.get (nname) == null) {

@@ -11,7 +11,7 @@ import es.ua.dlsi.im3.core.adt.graph.INodeLabel;
  * @author drizo
  */
 public interface IDirectedGraphRenderer<LabelNodeType extends INodeLabel, LabelEdgeType extends IEdgeLabel> {
-	DirectedGraphViewModel<LabelNodeType, LabelEdgeType> render(DirectedGraph<LabelNodeType, LabelEdgeType> graph, boolean drawEdges) throws IM3Exception;
+	DirectedGraphViewModel<LabelNodeType, LabelEdgeType> render(DirectedGraph<LabelNodeType, LabelEdgeType> graph, boolean drawEdges);
 	void render(GraphNodeViewModel<LabelNodeType, LabelEdgeType> nodeVM);
 	void render(GraphEdgeViewModel<LabelNodeType, LabelEdgeType> edgeVM);
 }

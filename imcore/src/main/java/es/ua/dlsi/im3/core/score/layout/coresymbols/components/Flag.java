@@ -56,7 +56,7 @@ public class Flag extends Component<LayoutCoreSingleFigureAtom> {
     }
 
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 }

@@ -83,7 +83,7 @@ public class OMRProject {
      * @param projectFolder In new files, if the project does not exist it will be created
      * @throws IM3Exception
      */
-    public OMRProject(File projectFolder) throws IM3Exception {
+    public OMRProject(File projectFolder) {
         this.projectFolder = projectFolder;
         if (!projectFolder.exists()) {
             projectFolder.mkdirs();

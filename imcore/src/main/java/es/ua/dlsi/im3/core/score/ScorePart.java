@@ -256,7 +256,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 		return sortedVoices;
 	}
 
-	public void invertVoiceNumbering() throws IM3Exception {
+	public void invertVoiceNumbering() {
 		ArrayList<ScoreLayer> sv = new ArrayList<>();
 		sv.addAll(this.layers.values());
 		Collections.sort(sv, new Comparator<ScoreLayer>() {

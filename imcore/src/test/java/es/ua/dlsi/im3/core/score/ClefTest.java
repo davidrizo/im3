@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 public class ClefTest {
     @Test
-    public void getBottomLineDiatonicPitchAndOctave() throws Exception {
+    public void getBottomLineDiatonicPitchAndOctave() {
         ClefG2 g2 = new ClefG2();
         assertEquals("Bottom line pitch of G2", DiatonicPitch.E, g2.getBottomLineDiatonicPitch());
         assertEquals("Bottom line octave of G2", 4, g2.getBottomLineOctave());

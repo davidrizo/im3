@@ -48,7 +48,7 @@ public abstract class AgnosticSymbolFont {
         agnosticSymbolTypes.put(agnosticSymbolType.toAgnosticString(), agnosticSymbolType);
     }
 
-    public Text createFontBasedText(String agnosticString) throws IM3Exception {
+    public Text createFontBasedText(String agnosticString)  {
         Glyph glyph = glyphs.get(agnosticString);
         Text text;
         if (glyph == null) {
@@ -68,7 +68,7 @@ public abstract class AgnosticSymbolFont {
         return text;
 
     }
-    public Shape createShape(String agnosticString) throws IM3Exception {
+    public Shape createShape(String agnosticString)  {
         Glyph glyph = glyphs.get(agnosticString);
         Shape shape = null;
         if (glyph == null) {

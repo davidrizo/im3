@@ -116,7 +116,7 @@ public class MelodicAnalyzerSimple extends MelodicAnalyzer {
     //TODO - seguramente podremos quitar dependsOnHarmony, porque s�lo vale para que pasen los tests!!!! 
 
     protected void setMelodicAnalysis(MelodicAnalysis melodicAnalysis, AtomPitch note,
-                                      MelodicAnalysisNoteKinds kind, boolean dependsOnHarmony, NoteMelodicAnalysisFeatures features, String rule) throws MelodicAnalysisException {
+                                      MelodicAnalysisNoteKinds kind, boolean dependsOnHarmony, NoteMelodicAnalysisFeatures features, String rule) {
 
         melodicAnalysis.addAnalysis(note, new NoteMelodicAnalysis(note, this, features, kind, rule));
     }

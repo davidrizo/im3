@@ -16,5 +16,5 @@ public interface ITreeExporter {
 	 * @param tree The tree to be exported
 	 * @throws ImportException Exception importing file
 	 */
-	void exportTree(File file, ITree<?> tree) throws ExportTreeException; 
+	void exportTree(File file, ITree<?> tree);
 }

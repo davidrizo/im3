@@ -138,7 +138,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         ICommand command = new ICommand() {
             OMRSymbol deletedSymbol = symbolView.getOwner();
             @Override
-            public void execute(IObservableTaskRunner observer) throws Exception {
+            public void execute(IObservableTaskRunner observer) {
                 // it changes the model and ImageBasedAbstractController, that is bound to model changes propagates all changes in the view
                 owner.removeSymbol(deletedSymbol);
             }
@@ -149,12 +149,12 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
             }
 
             @Override
-            public void undo() throws Exception {
+            public void undo() {
                 owner.addSymbol(deletedSymbol);
             }
 
             @Override
-            public void redo() throws Exception {
+            public void redo() {
                 owner.addSymbol(deletedSymbol);
             }
 
@@ -253,7 +253,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
                 ICommand command = new ICommand() {
                     OMRSymbol newSymbol;
                     @Override
-                    public void execute(IObservableTaskRunner observer) throws Exception {
+                    public void execute(IObservableTaskRunner observer) {
                         newSymbol = omrSymbol;
                         owner.addSymbol(omrSymbol); // ImageBasedAbstractController is listening the model for changes and it propagates any change
                     }
@@ -264,13 +264,13 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
                     }
 
                     @Override
-                    public void undo() throws Exception {
+                    public void undo() {
                         owner.removeSymbol(newSymbol);
 
                     }
 
                     @Override
-                    public void redo() throws Exception {
+                    public void redo() {
                         owner.addSymbol(newSymbol);
                     }
 
@@ -296,7 +296,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
     public void doChangePosition(SymbolView symbolView, int linespaceDifference) {
         ICommand command = new ICommand() {
             @Override
-            public void execute(IObservableTaskRunner observer) throws Exception {
+            public void execute(IObservableTaskRunner observer) {
                 agnosticStaffView.doChangePosition(linespaceDifference, symbolView);
             }
 
@@ -306,12 +306,12 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
             }
 
             @Override
-            public void undo() throws Exception {
+            public void undo() {
                 agnosticStaffView.doChangePosition(-linespaceDifference, symbolView);
             }
 
             @Override
-            public void redo() throws Exception {
+            public void redo() {
                 agnosticStaffView.doChangePosition(linespaceDifference, symbolView);
             }
 
@@ -332,7 +332,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         ICommand command = new ICommand() {
             String previousType;
             @Override
-            public void execute(IObservableTaskRunner observer) throws Exception {
+            public void execute(IObservableTaskRunner observer) {
                 previousType = agnosticStaffView.doChangeSymbolType(agnosticString, symbolView);
             }
 
@@ -342,12 +342,12 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
             }
 
             @Override
-            public void undo() throws Exception {
+            public void undo() {
                 agnosticStaffView.doChangeSymbolType(previousType, symbolView);
             }
 
             @Override
-            public void redo() throws Exception {
+            public void redo() {
                 agnosticStaffView.doChangeSymbolType(agnosticString, symbolView);
             }
 

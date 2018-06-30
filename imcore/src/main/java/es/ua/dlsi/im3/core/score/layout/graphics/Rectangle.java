@@ -59,7 +59,7 @@ public class Rectangle extends Shape {
 
 
     @Override
-    public void doGenerateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) throws ExportException {
+    public void doGenerateSVG(StringBuilder sb, int tabs, HashSet<Glyph> usedGlyphs) {
         /*try {
             String strokeWidth;
 
@@ -93,7 +93,7 @@ public class Rectangle extends Shape {
     }
 
     @Override
-    public void doGeneratePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
+    public void doGeneratePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) {
         /*try {
             contents.setStrokingColor(0, 0, 0);
             try {
@@ -151,7 +151,7 @@ public class Rectangle extends Shape {
     }
 
     @Override
-    protected void doRepaint() throws IM3Exception {
+    protected void doRepaint() {
         // TODO: 14/3/18 ¿Qué hacemos aquí? 
     }
 

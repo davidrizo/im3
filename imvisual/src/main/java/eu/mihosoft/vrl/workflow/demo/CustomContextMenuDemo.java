@@ -63,7 +63,7 @@ import javafx.stage.Stage;
 public class CustomContextMenuDemo extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         StackPane contentPane = new StackPane();
         VCanvas canvas = new VCanvas();
         contentPane.getChildren().add(canvas);

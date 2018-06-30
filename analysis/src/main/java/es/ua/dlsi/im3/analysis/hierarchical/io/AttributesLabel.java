@@ -32,7 +32,7 @@ public class AttributesLabel implements ITreeLabel {
 	}
 
 	@Override
-	public String getColor() throws Exception {
+	public String getColor()  {
 		return null;
 	}
 

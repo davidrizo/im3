@@ -1,0 +1,159 @@
+{
+    "cClef": {
+        "codepoint": "U+0061"
+    },
+    "gClef": {
+        "codepoint": "U+0062"
+    },
+    "fClef": {
+        "codepoint": "U+0063"
+    },
+    "mensuralFclefCompound": {
+        "codepoint": "U+0064"
+    },
+    "timeSigProporcionMenor": {
+        "codepoint": "U+0065"
+    },        
+    "timeSigProporcionMayor": {
+        "codepoint": "U+0066"
+    },    
+    "timeSigCommon": {
+        "codepoint": "U+0049"
+    },        
+    "timeSigCutTime": {
+        "codepoint": "U+004b"
+    },    
+    "calderonArriba": {
+        "codepoint": "U+005B"
+    },        
+    "calderonAbajo": {
+        "codepoint": "U+005E"
+    },                
+    "mensuralBlackMaxima": {
+        "codepoint": "U+0069"
+    },
+    "mensuralBlackLonga": {
+        "codepoint": "U+006A"
+    },
+    "mensuralBlackBrevis": {
+        "codepoint": "U+006B"
+    },
+    "mensuralBlackSemibrevis": {
+        "codepoint": "U+006C"
+    },
+    "mensuralBlackMinima": {
+        "codepoint": "U+006D"
+    },
+    "mensuralBlackSemiminima": {
+        "codepoint": "U+006E"
+    },
+    "mensuralBlackFusa": {
+        "codepoint": "U+006F"
+    },
+    "mensuralBlackSemifusa": {
+        "codepoint": "U+0070"
+    },    
+    "mensuralWhiteMaxima": {
+        "codepoint": "U+0071"
+    },
+    "mensuralWhiteLonga": {
+        "codepoint": "U+0072"
+    },
+    "mensuralWhiteBrevis": {
+        "codepoint": "U+0073"
+    },
+    "mensuralWhiteSemibrevis": {
+        "codepoint": "U+0074"
+    },
+    "noteheadBlack": {
+      "codepoint": "U+0075"
+    },
+    "mensuralWhiteMinima": {
+        "codepoint": "U+0075"
+    },
+    "mensuralWhiteSemiminima": {
+        "codepoint": "U+0076"
+    },
+    "mensuralWhiteFusa": {
+        "codepoint": "U+0077"
+    },
+    "mensuralWhiteSemifusa": {
+        "codepoint": "U+0078"
+    },
+    "mensuralBlackDuplexLonga": {
+        "codepoint": "U+0079"
+    },    
+   "mensuralRestMaxima": {
+        "codepoint": "U+0041"
+    },
+   "mensuralRestMaximaWithStaff": {
+        "codepoint": "U+1041"
+    },
+    "mensuralRestLonga": {
+        "codepoint": "U+0042"
+    },
+    "mensuralRestLongaWithStaff": {
+        "codepoint": "U+1042"
+    },
+    "mensuralRestBrevis": {
+        "codepoint": "U+0043"
+    },
+    "mensuralRestBrevisWithStaff": {
+        "codepoint": "U+1043"
+    },
+    "mensuralRestSemibrevis": {
+        "codepoint": "U+0044"
+    },
+    "mensuralRestSemibrevisWithStaff": {
+        "codepoint": "U+1044"
+    },
+    "mensuralRestMinima": {
+        "codepoint": "U+0045"
+    },
+    "mensuralRestMinimaWithStaff": {
+        "codepoint": "U+1045"
+    },
+    "mensuralRestSemiminima": {
+        "codepoint": "U+0046"
+    },
+    "mensuralRestSemiminimaWithStaff": {
+        "codepoint": "U+1046"
+    },
+    "mensuralRestFusa": {
+        "codepoint": "U+0047"
+    },
+    "mensuralRestFusaWithStaff": {
+        "codepoint": "U+1047"
+    },
+    "mensuralRestSemifusa": {
+        "codepoint": "U+0048"
+    },
+    "mensuralRestSemifusaWithStaff": {
+        "codepoint": "U+1048"
+    },
+    "accidentalFlat" : {
+	"codepoint": "U+002D"
+    },
+    "accidentalSharp" : {
+	"codepoint": "U+002B"
+    },
+    "accidentalNatural" : {
+	"codepoint": "U+003D"
+    },
+    "augmentationDot" : {
+	"codepoint": "U+002E"
+    },
+    "barline" : {
+	"codepoint": "U+2000"
+    },
+    "doublebarline" : {
+	"codepoint": "U+2001"
+    },
+    "custos" : {
+	"codepoint": "U+007a"
+    },
+    "beam" : {
+	"codepoint": "U+2005"
+    }
+}
+

@@ -371,7 +371,7 @@ public class MEISongExporter implements ISongExporter {
 		processClef(clef, params, "");
 	}
 
-	private void processClef(Clef clef, ArrayList<String> params, String prefix) throws ExportException {
+	private void processClef(Clef clef, ArrayList<String> params, String prefix) {
 		if (clef == null) {
 			//throw new ExportException("Clef is null");
             Logger.getLogger(MEISongExporter.class.getName()).log(Level.WARNING, "Clef is null");

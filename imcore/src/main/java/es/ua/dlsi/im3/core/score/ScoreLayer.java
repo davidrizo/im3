@@ -76,7 +76,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	 * 
 	 * @throws IM3Exception
 	 */
-	private void updateOnsets(int fromAtomIndex) throws IM3Exception {
+	private void updateOnsets(int fromAtomIndex) {
 		// correct onset times
 		Atom lastAtom = atoms.get(fromAtomIndex);
 		for (int i = fromAtomIndex + 1; i < atoms.size(); i++) {
@@ -85,12 +85,12 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	}
 
 	public void add(Atom atom) throws IM3Exception {
-		try {
+		//try {
 			atom.setTime(getDuration());
 			atom.setLayer(this);
-		} catch (IM3Exception e) {
+        /*} catch (IM3Exception e) {
 			throw new IM3RuntimeException("The onset should have been set for all atoms in a voice");
-		}
+		}*/
         evaluateDurationBeforeAdd(atom, atoms.size());
 		atoms.add(atom);
 	}
@@ -211,7 +211,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		return atoms.get(index);
 	}
 
-	public Time getDuration() throws IM3Exception {
+	public Time getDuration() {
 		/*
 		 * Fraction duration = Fraction.ZERO; for (Atom atom: atoms) { duration
 		 * = duration.add(atom.getExactDuration()); } return new Time(duration);
@@ -515,7 +515,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
         }
     }
 
-    private void constructBeamIfRequired(ArrayList<SingleFigureAtom> group) throws IM3Exception {
+    private void constructBeamIfRequired(ArrayList<SingleFigureAtom> group) {
 	    if (group != null && group.size() > 1) {
 	        BeamGroup beamedGroup = new BeamGroup(true);
 	        for (SingleFigureAtom atom: group) {

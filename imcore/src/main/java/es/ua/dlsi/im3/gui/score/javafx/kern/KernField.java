@@ -16,7 +16,7 @@ public class KernField {
     }
 
     //TODO Usar el KernExporter
-    public KernField(String value) throws ImportException {
+    public KernField(String value) {
         if (value != null) {
             MensImporter mensImporter = new MensImporter();
             //this.parsedObject = mensImporter.importField(value);

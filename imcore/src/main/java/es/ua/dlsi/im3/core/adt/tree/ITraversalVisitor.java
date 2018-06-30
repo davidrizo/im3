@@ -22,7 +22,7 @@ public interface ITraversalVisitor {
      * @param instrumentKey Tree node instrumentKey
      * @throws TreeException
      */
-    void visitKey(ITreeLabel key) throws TreeException;
+    void visitKey(ITreeLabel key);
 
     /**
      * End of traversal method on tree

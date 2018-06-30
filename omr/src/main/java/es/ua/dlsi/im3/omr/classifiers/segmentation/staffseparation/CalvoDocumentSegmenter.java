@@ -27,7 +27,7 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
         return findPagesDivisionPoint(imageMat);
     }
 
-    public int findPagesDivisionPoint(Mat score) throws IM3Exception {
+    public int findPagesDivisionPoint(Mat score) {
         PageSplitting pageSplitting = new PageSplitting();
         int pageDivisionPoint = pageSplitting.run(score);
         return pageDivisionPoint;

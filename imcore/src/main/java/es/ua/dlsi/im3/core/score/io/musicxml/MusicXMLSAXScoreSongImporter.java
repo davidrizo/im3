@@ -150,7 +150,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private TimeSignature lastTimeSignature;
 
 	@Override
-	protected void init() throws ParserConfigurationException, SAXException {
+	protected void init() {
 		song = new ScoreSong();
 		currentDivisions = null;
 		partNumbers  = new HashMap<>();
@@ -990,7 +990,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		return v;
 	}
 	
-	private void addElementToMeasure(ITimedElementInStaff element) throws ImportException, IM3Exception {
+	private void addElementToMeasure(ITimedElementInStaff element) {
 		getMeasureElementsToInsert().add(element);		
 	}
 

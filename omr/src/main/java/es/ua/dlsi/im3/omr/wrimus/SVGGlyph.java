@@ -39,7 +39,7 @@ public class SVGGlyph extends Shape {
             }
 
             @Override
-            protected void doLayout() throws IM3Exception {
+            protected void doLayout() {
 
             }
         }, interactionElementType);
@@ -48,28 +48,28 @@ public class SVGGlyph extends Shape {
     }
 
     @Override
-    protected void doRepaint() throws IM3Exception {
+    protected void doRepaint() {
 
     }
 
     @Override
-    public double getWidth() throws IM3Exception {
+    public double getWidth() {
         return glyph.getWidth();
     }
 
     @Override
-    public es.ua.dlsi.im3.core.score.layout.Coordinate getPosition() throws IM3Exception {
+    public es.ua.dlsi.im3.core.score.layout.Coordinate getPosition() {
         return position;
     }
 
     @Override
-    public Node doGenerateJavaFXRoot() throws GUIException, ExportException {
+    public Node doGenerateJavaFXRoot() {
         //not used
         return null;
     }
 
     @Override
-    public void updateJavaFXRoot() throws IM3Exception {
+    public void updateJavaFXRoot() {
 
     }
 
@@ -78,7 +78,7 @@ public class SVGGlyph extends Shape {
     }
 
     @Override
-    public void doGeneratePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) throws ExportException {
+    public void doGeneratePDF(PDPageContentStream contents, PDFExporter exporter, PDPage page) {
         //not used
     }
 

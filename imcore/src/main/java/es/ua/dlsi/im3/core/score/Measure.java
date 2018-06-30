@@ -204,7 +204,7 @@ public class Measure implements Comparable<Measure>, ITimedElement, IUniqueIDObj
 	}
 
     @Override
-    public void move(Time offset) throws IM3Exception {
+    public void move(Time offset) {
 	    this.duration = null;
         this.time = time.add(offset);
     }

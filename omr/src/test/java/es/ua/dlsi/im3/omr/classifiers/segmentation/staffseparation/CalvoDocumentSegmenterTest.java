@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class CalvoDocumentSegmenterTest {
-    private void test(String filename, int expectedRegions) throws IM3Exception, MalformedURLException {
+    private void test(String filename, int expectedRegions) throws IM3Exception {
         File imageFile = TestFileUtils.getFile(filename);
         CalvoDocumentSegmenter segmenter = new CalvoDocumentSegmenter(imageFile);
         List<Region> pages = segmenter.segment();

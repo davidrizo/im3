@@ -5,5 +5,5 @@ import es.ua.dlsi.im3.core.played.Key;
 import es.ua.dlsi.im3.core.score.ScientificPitch;
 
 public interface IPitchSpelling {
-    ScientificPitch computePitchSpelling(Key key, int midiPitch, boolean isLastNote, ScientificPitch previousScientificPitch) throws IM3Exception;
+    ScientificPitch computePitchSpelling(Key key, int midiPitch, boolean isLastNote, ScientificPitch previousScientificPitch);
 }

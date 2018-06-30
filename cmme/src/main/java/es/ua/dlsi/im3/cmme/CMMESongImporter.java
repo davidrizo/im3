@@ -523,7 +523,7 @@ public class CMMESongImporter implements IScoreSongImporter {
 
     }*/
 
-    private void importSignatureClef(Staff staff, ScoreLayer layer, ClefEvent clefEvent) throws IM3Exception {
+    private void importSignatureClef(Staff staff, ScoreLayer layer, ClefEvent clefEvent) {
         ModernKeySignature mks = clefEvent.getModernKeySig();
         // TODO: 28/3/18 Ver si hay otras claves no modernas que haya que gestionar distintas
         try {

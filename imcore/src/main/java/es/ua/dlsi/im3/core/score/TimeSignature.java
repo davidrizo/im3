@@ -112,7 +112,7 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
      * @return Integer value if it starts in a beat, float value with decimals
      * if the onset is located between two beats. It starts from 0
      */
-    public double getBeat(Time onset) throws IM3Exception {
+    public double getBeat(Time onset) {
         double offset = onset.substract(this.getTime()).mod(getDuration());
         return offset;
     }

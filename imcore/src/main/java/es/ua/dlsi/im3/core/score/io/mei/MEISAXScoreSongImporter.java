@@ -270,7 +270,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     private HashMap<Integer, AtomPitch> pendingTieTo; // key = toPitch.identityHashCode, value = fromPitch
 
     @Override
-	protected void init() throws ParserConfigurationException, SAXException, IM3Exception {
+	protected void init() {
 		song = new ScoreSong(); //TODO ¿Y si es una colección?
 		staffNumbers = new HashMap<>();
 		currentTies = new HashMap<>();
@@ -297,7 +297,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		return getLayerCode(lastStaff, lastVoice);
 	}*/
 
-    private String getLayerCode(Staff staff, ScoreLayer voice) throws ImportException {
+    private String getLayerCode(Staff staff, ScoreLayer voice) {
         //String code = lastStaff==null?"_":lastStaff.hashCode() + "_" + lastVoice.hashCode();
         String code = staff.hashCode() + "_" + voice.hashCode();
         return code;
@@ -1402,7 +1402,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	 * @throws ImportException
 	 * @throws IM3Exception
 	 */
-	private void handleTie(String type, Figures figure, int dots, ScientificPitch sp, String xmlid, HashMap<String, String> attributesMap) throws ImportException, IM3Exception {		
+	private void handleTie(String type, Figures figure, int dots, ScientificPitch sp, String xmlid, HashMap<String, String> attributesMap) {
 		String tieCode = lastStaff.hashCode() + "_" + lastVoice.hashCode() + "_" + sp.hashCode();
 
 		if (lastAtomPitch == null) {

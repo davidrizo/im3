@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
 
-    public TimeSignatureProporcionMenor() throws IM3Exception {
+    public TimeSignatureProporcionMenor() {
     		super(Perfection.perfectum, Perfection.imperfectum);
     }
 

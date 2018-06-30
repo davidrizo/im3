@@ -17,7 +17,7 @@ public class DoublePrototype implements IMetricPrototype<String> {
     }
 
     @Override
-    public double computeDistance(IMetricPrototype<String> to) throws IM3Exception {
+    public double computeDistance(IMetricPrototype<String> to) {
         return Math.abs(value - ((DoublePrototype)to).value);
     }
 

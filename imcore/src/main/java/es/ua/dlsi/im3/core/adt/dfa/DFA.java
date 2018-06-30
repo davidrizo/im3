@@ -20,7 +20,7 @@ public abstract class DFA<AlphabetType extends Comparable<AlphabetType>, StateTy
 	Set<StateType> acceptStates;
 	StateType currentState;
 	
-	protected abstract StateType delta(StateType from, AlphabetType alphabetSymbol) throws IM3Exception;
+	protected abstract StateType delta(StateType from, AlphabetType alphabetSymbol);
 
 	public DFA(Set<StateType> states, StateType startState, Set<StateType> acceptStates, Set<AlphabetType> alphabet) {
 		super();

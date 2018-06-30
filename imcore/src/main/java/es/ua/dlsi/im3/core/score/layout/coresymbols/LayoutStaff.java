@@ -35,7 +35,7 @@ public class LayoutStaff extends NotationSymbol {
 	Group group;
 
 
-    public LayoutStaff(ScoreLayout scoreLayout, Coordinate leftTop, Coordinate rightTop, Staff staff) throws IM3Exception {
+    public LayoutStaff(ScoreLayout scoreLayout, Coordinate leftTop, Coordinate rightTop, Staff staff) {
         lines = new ArrayList<>();
         ledgerLines = new TreeMap<>();
         this.staff = staff;
@@ -93,7 +93,7 @@ public class LayoutStaff extends NotationSymbol {
 
 
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         throw new UnsupportedOperationException("TO-DO layout LayoutStaff");    }
 
 
@@ -192,7 +192,7 @@ public class LayoutStaff extends NotationSymbol {
         return staff.computePositionInStaff(time, noteName, octave);
     }
 
-    public CoordinateComponent computeYPosition(PositionInStaff positionInStaff) throws IM3Exception {
+    public CoordinateComponent computeYPosition(PositionInStaff positionInStaff) {
         double heightDifference = -(LayoutConstants.SPACE_HEIGHT * ((double)positionInStaff.getLineSpace()) / 2.0);
         return new CoordinateComponent(lines.get(0).getFrom().getY(), heightDifference);
     }
@@ -205,7 +205,7 @@ public class LayoutStaff extends NotationSymbol {
         return ledgerLines;
     }
 
-    public LedgerLines getLedgerLineOrNullFor(Time time) throws IM3Exception {
+    public LedgerLines getLedgerLineOrNullFor(Time time) {
         return ledgerLines.get(time);
     }
 
@@ -218,7 +218,7 @@ public class LayoutStaff extends NotationSymbol {
         }
     }
 
-    public void addLedgerLines(Time time, int numberOfLines, PositionAboveBelow positionAboveBelow, Coordinate noteHeadsPosition, double noteHeadWidth) throws IM3Exception {
+    public void addLedgerLines(Time time, int numberOfLines, PositionAboveBelow positionAboveBelow, Coordinate noteHeadsPosition, double noteHeadWidth) {
         if (numberOfLines != 0) {
             LedgerLines ll = this.ledgerLines.get(time);
             if (ll == null) {

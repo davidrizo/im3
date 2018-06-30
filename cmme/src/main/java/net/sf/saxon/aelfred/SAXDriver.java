@@ -420,7 +420,7 @@ public class SAXDriver
      * motable.
      */
     public void setFeature (String featureId, boolean state)
-    throws SAXNotRecognizedException, SAXNotSupportedException
+    throws SAXNotSupportedException
     {
 	boolean	value;
 	
@@ -468,7 +468,7 @@ public class SAXDriver
      * these may be changed at any time.
      */
     public void setProperty (String propertyId, Object property)
-    throws SAXNotRecognizedException, SAXNotSupportedException
+    throws SAXNotSupportedException
     {
 	Object	value;
 	
@@ -531,8 +531,7 @@ public class SAXDriver
         attributeValues.removeAllElements ();
     }
 
-    void endDocument () throws SAXException
-    {
+    void endDocument () {
     	// SAX says endDocument _must_ be called (handy to close
     	// files etc) so it's in a "finally" clause
     }
@@ -567,15 +566,11 @@ public class SAXDriver
     	// through that entity could be less than reliable.
     }
 
-    void startExternalEntity (String systemId)
-    throws SAXException
-    {
+    void startExternalEntity (String systemId) {
 	    entityStack.push (systemId);
     }
 
-    void endExternalEntity (String systemId)
-    throws SAXException
-    {
+    void endExternalEntity (String systemId) {
 	    entityStack.pop ();
     }
 

@@ -55,7 +55,7 @@ public class DivisionLabel extends FormAnalysisTreeNodeLabel implements ITimedLa
 	}
 
 	@Override
-	public String getColor() throws Exception {
+	public String getColor() {
 		return hexaColor;
 	}
 	

@@ -272,8 +272,7 @@ public class MelodicAnalyzerWeka extends MelodicAnalyzerMachineLearning {
         }
     }
 
-    private Instance buildInstance(ScoreSong song, List<Segment> sonorities, AtomPitch note, NoteMelodicAnalysisFeatures features, Instances dataset, boolean setClassValue)
-            throws MelodicAnalysisException {
+    private Instance buildInstance(ScoreSong song, List<Segment> sonorities, AtomPitch note, NoteMelodicAnalysisFeatures features, Instances dataset, boolean setClassValue) {
         //NoteMelodicAnalysisFeatures features = Utils.getComputedMelodicAnalysis(scoreNote).getFeatures();
         //NoteMelodicAnalysisFeatures features = featuresExtractor.computeFeatures(song, sonorities, currentAnalysis);
         if (features != null) {
@@ -412,7 +411,7 @@ public class MelodicAnalyzerWeka extends MelodicAnalyzerMachineLearning {
      * @return
      */
     private boolean violatesConditionsFor(ScoreSong song, MelodicAnalysisNoteKinds noteKind, Instance instance,
-                                          MelodicAnalysisNoteKinds prev, AtomPitch note) throws IM3Exception {
+                                          MelodicAnalysisNoteKinds prev, AtomPitch note) {
         //TODO 2017
         return false;
 		/*if (debug) {
@@ -630,12 +629,12 @@ public class MelodicAnalyzerWeka extends MelodicAnalyzerMachineLearning {
         Instances dataToClassify = new Instances("Data2", attrs, 0); // TODO �?
         dataToClassify.setClassIndex(dataToClassify.numAttributes() - 1);
         long maxProgress;
-        try {
+        //try {
             maxProgress = (long) song.getNumDurationalSymbols();
-        } catch (IM3Exception ex) {
+        /*} catch (IM3Exception ex) {
             Logger.getLogger(MelodicAnalyzerWeka.class.getName()).log(Level.SEVERE, null, ex);
             throw new MelodicAnalysisException(ex);
-        }
+        }*/
 
         long progress = 0;
 

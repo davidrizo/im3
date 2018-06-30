@@ -292,12 +292,12 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
             }
 
             @Override
-            public void undo() throws Exception {
+            public void undo() {
 
             }
 
             @Override
-            public void redo() throws Exception {
+            public void redo() {
 
             }
 
@@ -328,12 +328,12 @@ public class DocumentAnalysisController extends ImageBasedAbstractController  {
             }
 
             @Override
-            public void undo() throws Exception {
+            public void undo() {
 
             }
 
             @Override
-            public void redo() throws Exception {
+            public void redo() {
 
             }
 

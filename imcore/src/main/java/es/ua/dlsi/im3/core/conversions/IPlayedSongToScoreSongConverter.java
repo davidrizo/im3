@@ -11,5 +11,5 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
  * @author drizo
  */
 public interface IPlayedSongToScoreSongConverter {
-    ScoreSong createScoreSongFromPlayed(PlayedSong played, IVoiceSeparator voiceSeparator, IDurationTranslator durationTranslator, IPitchSpelling pitchSpelling) throws IM3Exception;
+    ScoreSong createScoreSongFromPlayed(PlayedSong played, IVoiceSeparator voiceSeparator, IDurationTranslator durationTranslator, IPitchSpelling pitchSpelling);
 }

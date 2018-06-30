@@ -52,7 +52,7 @@ public class LanguageChecker {
         }
     }
 
-    private void run(ArrayList<File> files, File outputFolder) throws IM3Exception, IOException {
+    private void run(ArrayList<File> files, File outputFolder) throws IOException {
         //MEI2GraphicSymbols converter = new MEI2GraphicSymbols();
 
         PrintStream errors = new PrintStream(new FileOutputStream(new File(outputFolder, "errors.txt")));

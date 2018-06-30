@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class DiatonicPitchSequenceFromScoreSongEncoder implements IMidLevelRepresentationEncoder<ScoreSong, DiatonicPitchSequence> {
     @Override
-    public DiatonicPitchSequence encode(ScoreSong input) throws IM3Exception {
+    public DiatonicPitchSequence encode(ScoreSong input) {
         List<AtomPitch> aps = input.getAtomPitches();
         DiatonicPitch[] v = new DiatonicPitch[aps.size()];
         int i=0;
@@ -29,7 +29,7 @@ public class DiatonicPitchSequenceFromScoreSongEncoder implements IMidLevelRepre
     }
 
     @Override
-    public List<DiatonicPitchSequence> encode(ScoreSong input, int windowSize, int windowStep) throws IM3Exception {
+    public List<DiatonicPitchSequence> encode(ScoreSong input, int windowSize, int windowStep) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

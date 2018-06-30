@@ -15,7 +15,7 @@ import org.junit.Test;
 public class DummyFormAnalyzerTest {
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 	}
 
 	@Test

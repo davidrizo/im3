@@ -75,7 +75,7 @@ public class XML2AgnosticSymbolBoundingBoxesTextFile {
 
     }
 
-    private void printSymbol(PrintStream ps, File fileImagesFolder, Image image, int npage, Page page, int nregion, Region region, int nsymbol, Symbol symbol) throws IM3Exception {
+    private void printSymbol(PrintStream ps, File fileImagesFolder, Image image, int npage, Page page, int nregion, Region region, int nsymbol, Symbol symbol) {
         ps.print(image.getImageRelativeFileName());
         ps.print(FIELD_SEPARATOR);
         ps.print(npage);

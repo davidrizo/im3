@@ -52,7 +52,7 @@ public class EditDistance<ItemType> {
      * @return Normalizado entre 0 y 1
      * @throws IM3Exception
      */
-    public double computeDistance(List<ItemType> from, List<ItemType> to) throws IM3Exception {
+    public double computeDistance(List<ItemType> from, List<ItemType> to) {
         double res=0;
         double [][] m = new double[from.size()+1][to.size()+1];
         int i,j;

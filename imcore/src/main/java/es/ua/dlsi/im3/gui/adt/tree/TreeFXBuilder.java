@@ -22,7 +22,7 @@ public class TreeFXBuilder {
      * @throws IM3Exception
      */
 	public TreeViewFX create(Tree stree, DoubleProperty xfactor, DoubleProperty yfactor, boolean showOnlyLeaves, boolean useHorizontalPosition, ILabelColorMapping labelColorMapping, boolean useStraightLines, double labelAngle, boolean topDown)
-			throws TreeException, IM3Exception {
+			throws IM3Exception {
 		if (stree == null) {
 			throw new IM3Exception("Cannot build an empty tree");
 		}

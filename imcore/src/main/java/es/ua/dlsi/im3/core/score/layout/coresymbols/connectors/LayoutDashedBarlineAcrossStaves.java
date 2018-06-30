@@ -38,7 +38,7 @@ public class LayoutDashedBarlineAcrossStaves extends LayoutConnector {
         init(fromPoint, toPoint);
     }
 
-    private void init(Coordinate from, Coordinate to) throws IM3Exception {
+    private void init(Coordinate from, Coordinate to) {
         line = new Line(this, InteractionElementType.barlineAcrossStaves, from, to); //TODO ID
         line.setStrokeType(StrokeType.eDashed);
     }
@@ -48,7 +48,7 @@ public class LayoutDashedBarlineAcrossStaves extends LayoutConnector {
         return line;
     }
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
     }
 

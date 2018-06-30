@@ -60,6 +60,6 @@ public class LayoutCoreSystemBreak extends LayoutCoreSymbol<SystemBreak> {
         throw new UnsupportedOperationException("TO-DO Rebuild " + this.getClass().getName());
     }
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout() {
     }
 }

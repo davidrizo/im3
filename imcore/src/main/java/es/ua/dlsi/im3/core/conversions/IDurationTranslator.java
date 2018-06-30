@@ -8,6 +8,6 @@ public interface IDurationTranslator {
     /**
      * It generates a list of tied figures with dots
      */
-    public List<FigureAndDots> findRhythmForDuration(long onset, long duration) throws IM3Exception;
+    public List<FigureAndDots> findRhythmForDuration(long onset, long duration);
 
 }

@@ -21,7 +21,7 @@ public class NotationBuilder {
 	HashMap<String, StaffGroup> systems;
 	HashMap<String, Staff> staves;
 
-	public NotationBuilder(NotationType notationType) throws IM3Exception {
+	public NotationBuilder(NotationType notationType) {
 		super();
 
 		song = new ScoreSong();
