@@ -25,29 +25,33 @@ public class ColorGraphSolver {
     }
 
     public void findColors() throws IM3Exception {
+       findColors(0);
+
+    }
+
+    public void findColors(int startFromHue) throws IM3Exception {
         conceptColors = new HashMap<>();
         // first find nodes that have not an output edge
         Collection<GraphNode<ConceptLabel, ConceptRelationEdgeLabel>> mainNodes = conceptGraph.getGraph().getNodesWithoutOutEdge();
 
         // first fixed colors
         double angle = 360.0 / (double) mainNodes.size();
-        double nextHue = 0;
+        double nextHue = startFromHue;
         for (GraphNode<ConceptLabel, ConceptRelationEdgeLabel> graphNode: mainNodes) {
             ConceptLabel label = graphNode.getLabel();
             String concept = label.getConcept().toString();
             IntegerHSB color = computeColor(graphNode, nextHue, 100, 100);
             conceptColors.put(concept, color);
             graphNode.setColor(color.toLAB().hex());
-            nextHue += angle;
+            nextHue = (nextHue + angle) % 360;
 
         }
         // first primary colors, then related
-        nextHue = 0;
+        nextHue = startFromHue;
         for (GraphNode<ConceptLabel, ConceptRelationEdgeLabel> graphNode: mainNodes) {
             computeNodeColor(graphNode, nextHue, 100, 100);
-            nextHue += angle;
+            nextHue = (nextHue + angle) % 360;
         }
-
     }
 
     private void computeNodeColor(GraphNode<ConceptLabel,ConceptRelationEdgeLabel> graphNode, double hue, int saturation, int bright) throws IM3Exception {
@@ -96,4 +100,5 @@ public class ColorGraphSolver {
             throw new UnsupportedOperationException("TO-DO, more than 2 edges");
         }
     }
+
 }

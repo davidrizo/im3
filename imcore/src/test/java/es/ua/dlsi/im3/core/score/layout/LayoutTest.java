@@ -232,6 +232,65 @@ public class LayoutTest {
         // TODO: 1/5/18 Comprobarlo gráficamente
     }
 
+    //TODO ESTE TEST SALE MAL!!!!
+    @Test
+    public void halfBeam() throws Exception {
+        MEISongImporter importer = new MEISongImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/layout/halfbeam.mei");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(1800), new CoordinateComponent(700));
+        layout.layout(true);
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("halfbeam.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("halfbeam.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+    }
+
+
+    //TODO ESTE TEST SALE MAL!!!!
+    @Test
+    public void beams4Distances() throws Exception {
+        MEISongImporter importer = new MEISongImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/layout/beams4.mei");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(1800), new CoordinateComponent(700));
+        layout.layout(true);
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("beams4.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("beams4.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+    }
+
+    //TODO ESTE TEST SALE MAL!!!!
+    @Test
+    public void beams2Distances() throws Exception {
+        MEISongImporter importer = new MEISongImporter();
+        File file = TestFileUtils.getFile("/testdata/core/score/layout/beams2.mei");
+        ScoreSong song = importer.importSong(file);
+        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+                new CoordinateComponent(1800), new CoordinateComponent(700));
+        layout.layout(true);
+
+        SVGExporter svgExporter = new SVGExporter();
+        File svgFile = TestFileUtils.createTempFile("beams2.svg");
+        svgExporter.exportLayout(svgFile, layout);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        File pdfFile = TestFileUtils.createTempFile("beams2.pdf");
+        pdfExporter.exportLayout(pdfFile, layout);
+    }
+
+
         // Just test it does not crash
     // FIXME: 21/9/17 Commented until M
     /*@Test

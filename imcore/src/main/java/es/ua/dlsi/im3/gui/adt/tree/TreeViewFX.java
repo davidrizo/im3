@@ -108,6 +108,7 @@ public class TreeViewFX {
 		if (!useStraightLines || labelView.xConnectionPointProperty().get() == cg.getLabelView().xConnectionPointProperty().get()) {
 		    // never create two lines if vertical line
             Line line = new Line();
+            line.setStrokeWidth(2); //TODO
             line.startXProperty().bind(labelView.xConnectionPointProperty());
             line.startYProperty().bind(fromY);
             line.endXProperty().bind(cg.getLabelView().xConnectionPointProperty());
@@ -117,6 +118,7 @@ public class TreeViewFX {
         } else {
             // two lines creating a square angle
             Line horizontal = new Line();
+            horizontal.setStrokeWidth(2); //TODO
             horizontal.startXProperty().bind(labelView.xConnectionPointProperty());
             if (topDown) {
                 horizontal.startYProperty().bind(fromY);
@@ -131,6 +133,7 @@ public class TreeViewFX {
             group.getChildren().add(horizontal);
 
             Line vertical = new Line();
+            vertical.setStrokeWidth(2); //TODO
             vertical.endXProperty().bind(cg.getLabelView().xConnectionPointProperty());
             vertical.startXProperty().bind(vertical.endXProperty());
             vertical.startYProperty().bind(fromY);

@@ -249,6 +249,8 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
         if (layoutScoreLyric != null) {
             layoutScoreLyric.getPosition().setReferenceY(layoutStaff.getBottomLine().getPosition().getY());
         }
+
+
     }
 
     public void setPositionInStaff(PositionInStaff positionInStaff) {

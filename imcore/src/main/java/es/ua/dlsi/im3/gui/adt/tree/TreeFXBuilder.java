@@ -8,6 +8,8 @@ import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
+
 public class TreeFXBuilder {
     /**
      *

@@ -290,7 +290,7 @@ public class LayoutBeamGroup extends NotationSymbol {
             double xdiff = Math.abs(fromX - toX);
             // angle = Math.asin(h/xdiff);
             double h = Math.abs(fromY - stemDisplacementY);
-            angle = 0; //Math.atan(h / xdiff);
+            angle = Math.atan(h / xdiff);
 
             double stemFromYAbsolute = from.getStemEnd().getAbsoluteY();
             for (LayoutCoreSymbolWithDuration<?> symbolWithDuration : layoutCoreSymbols) {
@@ -420,17 +420,12 @@ public class LayoutBeamGroup extends NotationSymbol {
      * @throws IM3Exception
      */
     private void addBeam(LayoutCoreSymbolWithDuration<?> beamLineFrom, LayoutCoreSymbolWithDuration<?> beamLineTo, double displacement, double angle, boolean firstNote, StemDirection stemDirection) throws IM3Exception {
-        if (beamLineFrom == null || beamLineTo == null) {
-            // TODO: 2/5/18 Parciales (e.g. 8th puntillo + 16th)
-            throw new IM3Exception("TO-DO: Parciales (e.g. 8th puntillo + 16th) ");
-        }
-
         if (!(beamLineFrom instanceof LayoutCoreSingleFigureAtom)) { // TODO: 2/5/18 beam start rest
-            throw new IM3Exception("TO-DO: Parciales (e.g. 8th puntillo + 16th), from is not a SingleFigureAtom");
+            throw new IM3Exception("TO-DO: " + beamLineFrom.getClass().getName());
         }
 
         if (!(beamLineTo instanceof LayoutCoreSingleFigureAtom)) { // TODO: 2/5/18 beam start rest
-            throw new IM3Exception("TO-DO: Parciales (e.g. 8th puntillo + 16th), to is not a SingleFigureAtom");
+            throw new IM3Exception("TO-DO: " + beamLineTo.getClass().getName());
         }
 
         LayoutCoreSingleFigureAtom from = (LayoutCoreSingleFigureAtom) beamLineFrom;
@@ -439,11 +434,11 @@ public class LayoutBeamGroup extends NotationSymbol {
         Coordinate coordinateFrom;
         Coordinate coordinateTo;
 
-        if (from == to) {
-            double ydiference = LayoutConstants.HALF_STEM_WIDTH * Math.tan(angle);
-            if (stemDirection != StemDirection.up) {
+        if (from == to) { // half beam (e.g. the sixteenth note in a 8th+dot sixteenth
+            double ydiference = -LayoutConstants.HALF_STEM_WIDTH * Math.tan(angle);
+            /*if (stemDirection == StemDirection.up) {
                 ydiference = -ydiference;
-            }
+            }*/
             if (firstNote) { // draw small stem to the right
                 coordinateFrom = new Coordinate(from.getStemEnd().getX(),
                         new CoordinateComponent(from.getStemEnd().getY(), displacement));
@@ -455,7 +450,7 @@ public class LayoutBeamGroup extends NotationSymbol {
                 coordinateFrom = new Coordinate(new CoordinateComponent(from.getStemEnd().getX(), -LayoutConstants.HALF_STEM_WIDTH),
                         new CoordinateComponent(from.getStemEnd().getY(), displacement+ydiference));
 
-                coordinateTo = new Coordinate(new CoordinateComponent(to.getStemEnd().getX(), LayoutConstants.HALF_STEM_WIDTH),
+                coordinateTo = new Coordinate(new CoordinateComponent(to.getStemEnd().getX()),
                         new CoordinateComponent(to.getStemEnd().getY(), displacement));
 
             }

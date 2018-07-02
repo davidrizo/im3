@@ -133,7 +133,7 @@ public class Controller implements Initializable {
 
     private void select(SymbolView item) {
         item.setFill(Color.RED);
-        JavaFXUtils.ensureVisibleX(scrollPane, item);
+        JavaFXUtils.ensureVisible(scrollPane, item);
     }
 
     /*private void drawStaff() {

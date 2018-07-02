@@ -31,7 +31,22 @@ public class JavaFXUtils {
         }
         scrollPane.setVvalue(vValueCurrent + vValueDelta);
     }
-    public static void ensureVisibleX(ScrollPane scrollPane, Node node) {
+
+    public static void ensureVisible(ScrollPane pane, Node node) {
+        double width = pane.getContent().getBoundsInLocal().getWidth();
+        double height = pane.getContent().getBoundsInLocal().getHeight();
+
+        double x = node.getBoundsInParent().getMaxX();
+        double y = node.getBoundsInParent().getMaxY();
+
+        // scrolling values range from 0 to 1
+        pane.setVvalue(y/height);
+        pane.setHvalue(x/width);
+
+        // just for usability
+        node.requestFocus();
+    }
+    /*public static void ensureVisibleX(ScrollPane scrollPane, Node node) {
         Bounds viewport = scrollPane.getViewportBounds();
         double contentWidth = scrollPane.getContent().localToScene(scrollPane.getContent().getBoundsInLocal()).getWidth();
         double nodeMinX = node.localToScene(node.getBoundsInLocal()).getMinX();
@@ -48,6 +63,6 @@ public class JavaFXUtils {
             hValueDelta = (nodeMinX + viewport.getWidth()) / contentWidth;
         }
         scrollPane.setHvalue(hValueCurrent + hValueDelta);
-    }
+    }*/
 
 }

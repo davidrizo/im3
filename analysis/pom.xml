@@ -39,6 +39,11 @@
                     </descriptorRefs>
                     <finalName>${project.artifactId}-${project.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
+                    <archive>
+                        <manifest>
+                            <mainClass>es.ua.dlsi.im3.analysis.hierarchical.gui.HierarchicalAnalysisViewerApp</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
                 <executions>
                     <execution>

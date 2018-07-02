@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.analysis.hierarchical.gui.HierarchicalAnalysisViewerController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="481.0" prefWidth="906.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.analysis.hierarchical.gui.HierarchicalAnalysisViewerController">
    <center>
       <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
         <items>
@@ -67,16 +67,15 @@
                         <Insets left="20.0" />
                      </padding></Label>
                   <Slider fx:id="treeVerticalSeparationSlider" max="200.0" value="75.0" />
+                  <Button mnemonicParsing="false" onAction="#handleZoomIn" text="Zoom In" />
+                  <Button mnemonicParsing="false" onAction="#handleZoomOut" text="Zoom out" />
+                  <Button mnemonicParsing="false" onAction="#handleZoomReset" text="Zoom reset" />
               </items>
             </ToolBar>
          </children>
       </VBox>
    </top>
    <bottom>
-      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <items>
-          <Button mnemonicParsing="false" text="Button" />
-        </items>
-      </ToolBar>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </bottom>
 </BorderPane>

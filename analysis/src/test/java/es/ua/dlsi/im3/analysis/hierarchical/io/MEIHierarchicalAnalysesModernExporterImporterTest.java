@@ -18,6 +18,7 @@ import es.ua.dlsi.im3.analysis.hierarchical.motives.MelodicMotivesAnalysis;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.adt.tree.Tree;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
@@ -96,7 +97,5 @@ public class MEIHierarchicalAnalysesModernExporterImporterTest {
         File pdfFile = TestFileUtils.createTempFile("licion.pdf");
         pdfExporter.exportLayout(pdfFile, layout);
     }
-
-
 
 }

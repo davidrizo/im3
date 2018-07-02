@@ -78,6 +78,25 @@ public class LauraMolinaUltimaLicionAnalysisColors {
         metricalUnitGraph.getGraph().writeDot(new File("/tmp/ultimalicion_manual.dot"), false);
 
 
+        ConceptGraph<String> tonalGraph = new ConceptGraph<>();
+        tonalGraph.addConcept("I");
+        tonalGraph.addConcept("ii");
+        tonalGraph.addConcept("iii");
+        tonalGraph.addConcept("IV");
+        tonalGraph.addConcept("iv");
+        tonalGraph.addConcept("vii");
+        tonalGraph.addConcept("vi");
+        tonalGraph.addConcept("V");
+        tonalGraph.addConcept("V/V");
+        //tonalGraph.relateConcepts("V/V", "V", 0.5);
+        tonalGraph.relateConcepts("V/V", "ii", 0.5);
+        tonalGraph.addConcept("iv/ii");
+        tonalGraph.relateConcepts("iv/ii", "V", 0.5);
+        //tonalGraph.relateConcepts("iv/ii", "ii", 0.5);
+        //tonalGraph.relateConcepts("iv/ii", "iv", 0.5);
+        ColorGraphSolver colorGraphSolverTonal = new ColorGraphSolver(tonalGraph);
+        colorGraphSolverTonal.findColors(20);
+        tonalGraph.getGraph().writeDot(new File("/tmp/tonal.dot"), false);
 
     }
 

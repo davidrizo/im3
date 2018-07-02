@@ -10,6 +10,8 @@ import es.ua.dlsi.im3.core.score.harmony.ChordSpecification;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.harmony.RomanNumberChordSpecification;
 
+import java.util.HashMap;
+
 /**
  * It infers the tonal analysis from the Harm classes in the song
  * @autor drizo
