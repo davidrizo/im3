@@ -64,10 +64,12 @@ public class ImagesController extends MuretAbstractController {
         dashboard.getModel().getCurrentProject().imagesProperty().addListener(new SetChangeListener<OMRImage>() {
             @Override
             public void onChanged(Change<? extends OMRImage> c) {
-                if (c.wasAdded()) {
-                    createImageView(c.getElementAdded(), true);
-                } else if (c.wasRemoved()) {
-                    removeImageView(c.getElementRemoved());
+                if (!inRecomputeOrdering) {
+                    if (c.wasAdded()) {
+                        createImageView(c.getElementAdded(), true);
+                    } else if (c.wasRemoved()) {
+                        removeImageView(c.getElementRemoved());
+                    }
                 }
             }
         });
