@@ -77,7 +77,7 @@ public class HierarchicalAnalysisViewerController implements Initializable {
     private void handleOpen() {
         try {
             OpenSaveFileDialog dlg = new OpenSaveFileDialog();
-            File file = dlg.openFile("Open hierarchical MEI file", "MEI", ".mei");
+            File file = dlg.openFile("Open hierarchical MEI file", "MEI", "mei");
             if (file != null) {
                 MEIHierarchicalAnalysesModernImporter importer = new MEIHierarchicalAnalysesModernImporter();
                 importer.importSongAndAnalyses(file);

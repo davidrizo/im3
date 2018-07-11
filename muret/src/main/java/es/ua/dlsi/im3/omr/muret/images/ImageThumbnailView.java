@@ -1,6 +1,8 @@
 package es.ua.dlsi.im3.omr.muret.images;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowInput;
 import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.muret.PredefinedIcon;
@@ -31,6 +33,8 @@ import javafx.stage.StageStyle;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ImageThumbnailView extends BorderPane {
     private final VBox labels;
@@ -148,9 +152,16 @@ public class ImageThumbnailView extends BorderPane {
         imageView.fitWidthProperty().bind(stage.widthProperty());
         imageView.fitHeightProperty().bind(stage.heightProperty());
         imageView.setPreserveRatio(true);
-        imageView.setImage(image);
-        group.getChildren().add(imageView);
-        stage.showAndWait();
+        Image image = null;
+        try {
+            image = this.omrImage.getImage();
+            imageView.setImage(image);
+            group.getChildren().add(imageView);
+            stage.showAndWait();
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load image file", e);
+            ShowError.show(OMRApp.getMainStage(), "Cannot load image file", e);
+        }
     }
 
     private Node createInteractionIcon() {

@@ -13,6 +13,7 @@ import es.ua.dlsi.im3.omr.muret.MuretAbstractController;
 import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.muret.model.OMRModel;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
+import javafx.collections.SetChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -47,6 +48,8 @@ public class ImagesController extends MuretAbstractController {
 
     State state;
 
+    boolean inRecomputeOrdering;
+
     HashMap<OMRImage, ImageThumbnailView> imageThumbnailViewHashMap;
 
     @Override
@@ -58,27 +61,16 @@ public class ImagesController extends MuretAbstractController {
     }
 
     private void listenToImagesChanges() {
-        /*dashboard.getModel().getCurrentProject().imagesProperty().addListener(new ListChangeListener<OMRImage>() {
+        dashboard.getModel().getCurrentProject().imagesProperty().addListener(new SetChangeListener<OMRImage>() {
             @Override
             public void onChanged(Change<? extends OMRImage> c) {
-                while (c.next()) {
-                    if (c.wasPermutated()) {
-                        //for (int i = c.getFrom(); i < c.getTo(); ++i) {
-                        //    //TODO permutar
-                        //}
-                    } else if (c.wasUpdated()) {
-                        //update item - no lo necesitamos de momento porque lo tenemos todo con binding, si no podríamos actualizar aquí
-                    } else {
-                        for (OMRImage remitem : c.getRemoved()) {
-                            removeImageView(remitem);
-                        }
-                        for (OMRImage additem : c.getAddedSubList()) {
-                            createImageView(additem, true);
-                        }
-                    }
+                if (c.wasAdded()) {
+                    createImageView(c.getElementAdded(), true);
+                } else if (c.wasRemoved()) {
+                    removeImageView(c.getElementRemoved());
                 }
             }
-        });*/
+        });
     }
 
     private void loadProjectImages() {
@@ -95,6 +87,7 @@ public class ImagesController extends MuretAbstractController {
     }
 
     private void createImageView(OMRImage omrImage, boolean skipLoadIcon) {
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Creating image view for image {0}", omrImage.getImageFile());
         ImageThumbnailView imageView = new ImageThumbnailView(this, omrImage);
         if (skipLoadIcon) {
             flowPane.getChildren().add(flowPane.getChildren().size() - 1, imageView); // before the addImage icon
@@ -282,16 +275,26 @@ public class ImagesController extends MuretAbstractController {
     }
 
     private void recomputeOrdering() {
-        for (int i = 0; i< flowPane.getChildren().size()-1; i++) {
-            ImageThumbnailView tv = (ImageThumbnailView) flowPane.getChildren().get(i);
-            tv.getOMRImage().setOrder(i+1);
-            tv.updateLabel();
+        if (!inRecomputeOrdering) {
+            inRecomputeOrdering = true;
+            ArrayList<OMRImage> images = new ArrayList<>();
+
+            for (int i = 0; i< flowPane.getChildren().size()-1; i++) {
+                ImageThumbnailView tv = (ImageThumbnailView) flowPane.getChildren().get(i);
+                images.add(tv.getOMRImage());
+                tv.getOMRImage().setOrder(i+1);
+                //tv.updateLabel(); //it causes problems with OMRProject treeset
+            }
+
+            dashboard.getModel().getCurrentProject().replaceImages(images);
+
+            inRecomputeOrdering = false;
         }
     }
 
     private void doAddImages() {
         OpenSaveFileDialog dlg = new OpenSaveFileDialog();
-        List<File> files = dlg.openFiles("Select an image", new String[]{"JPG", "TIF", "TIFF"}, new String[]{"jpg", "tif", "tiff"});
+        List<File> files = dlg.openFiles("Select an image", new String[]{"JPG", "JPEG", "TIF", "TIFF"}, new String[]{"jpg", "jpeg", "tif", "tiff"});
 
         if (files != null) {
             try {
@@ -309,12 +312,18 @@ public class ImagesController extends MuretAbstractController {
                                 return o1.getName().compareTo(o2.getName());
                             }
                         });
-                        doExecute();
-                        dashboard.save();
+                        try {
+                            doExecute();
+                            dashboard.save();
+                        } catch (Throwable e) {
+                            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot add image", e);
+                            ShowError.show(OMRApp.getMainStage(), "Cannot add image", e);
+                        }
                     }
 
                     private void doExecute() throws IM3Exception {
                         for (File file: sortedFiles) {
+                            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Adding image {0}", file);
                             addedImages.add(dashboard.getModel().getCurrentProject().addImage(file));
                         }
                     }

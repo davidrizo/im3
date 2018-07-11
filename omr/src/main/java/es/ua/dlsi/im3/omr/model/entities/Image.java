@@ -112,7 +112,14 @@ public class Image implements Comparable<Image> {
         return diff;
     }
 
-    public int[] getGrayscaleImagePixels(File fileImagesFolder, BoundingBox boundingBox) throws IM3Exception {
+    /**
+     * Get rescaled pixels to RESIZE_W and RESIZE_H
+     * @param fileImagesFolder
+     * @param boundingBox
+     * @return
+     * @throws IM3Exception
+     */
+    public int[] getGrayscaleImagePixelsNormalized(File fileImagesFolder, BoundingBox boundingBox) throws IM3Exception {
         File imageFile = new File(fileImagesFolder, imageRelativeFileName);
         BufferedImage subimage = ImageUtils.getInstance().generateBufferedImage(imageFile, boundingBox);
         BufferedImage scaledImage = ImageUtils.getInstance().rescaleToGray(subimage, Image.RESIZE_W, Image.RESIZE_H);
@@ -132,5 +139,19 @@ public class Image implements Comparable<Image> {
             }
         }
         return result;
+    }
+
+    /**
+     * Get rescaled pixels to RESIZE_W and RESIZE_H
+     * @param fileImagesFolder
+     * @param boundingBox
+     * @return
+     * @throws IM3Exception
+     */
+    public int[][] getGrayscaleImagePixels(File fileImagesFolder, BoundingBox boundingBox) throws IM3Exception {
+        File imageFile = new File(fileImagesFolder, imageRelativeFileName);
+        BufferedImage subimage = ImageUtils.getInstance().generateBufferedImage(imageFile, boundingBox);
+        int[][] imagePixels = ImageUtils.getInstance().readGrayScaleImage(subimage);
+        return imagePixels;
     }
 }

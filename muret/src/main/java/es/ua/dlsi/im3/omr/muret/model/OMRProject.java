@@ -22,9 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class contains the same content than the es.ua.dlsi.im3.omr.model.entities.Project class. However, it is adapted
@@ -124,18 +124,18 @@ public class OMRProject {
         }
 
         OMRImage page = new OMRImage(this, targetFile);
-        int nextNumber;
+        int nextNumber = -1;
         if (imagesProperty.isEmpty()) {
             nextNumber = 1;
         } else {
-            Iterator<OMRImage> iterator = imagesProperty.iterator();
+            Iterator<OMRImage> iterator = imagesProperty.iterator(); // it does not return any order
             OMRImage lastImage = null;
             while (iterator.hasNext()) {
                 lastImage = iterator.next();
             }
-            nextNumber = lastImage.getOrder()+1;
+            nextNumber = Math.max(nextNumber, lastImage.getOrder());
         }
-        page.setOrder(nextNumber);
+        page.setOrder(nextNumber+1);
         imagesProperty.add(page);
         // TODO: 11/10/17 Debe añadir una página al layout del scoreSOng
         return page;
@@ -278,5 +278,17 @@ public class OMRProject {
 
     public void setChangedBy(String changedBy) {
         this.changedBy = changedBy;
+    }
+
+    /**
+     * It removes all images from the set and adds these ones with a new ordering
+     * @param images
+     */
+    public void replaceImages(ArrayList<OMRImage> images) {
+        this.imagesProperty.clear();
+        for (OMRImage image: images) {
+            this.imagesProperty.add(image);
+        }
+
     }
 }

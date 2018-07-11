@@ -6,7 +6,9 @@ Text spines are processed in ANTLR4 with semantic predicates (the "island gramma
 -------- SYNTAX GRAMMAR -----
 start ::= (referenceRecord EOL)* header (EOL record)+ EOL? (referenceRecord EOL?)* EOF
 
-referenceRecord ::= composer | encoder | endEncoding
+referenceRecord ::= composer | encoder | endEncoding | title
+
+title ::= REFERENCE_RECORD 'OTL:' FULL_LINE_TEXT
 
 composer ::= REFERENCE_RECORD 'COM:' FULL_LINE_TEXT
 
@@ -84,7 +86,7 @@ spineJoin ::= ASTERISK CHAR_v
 
 rest ::= duration (CHAR_r) pause?
 
-duration ::= mensuralDuration dots?
+duration ::= mensuralDuration augmentationDot?
 
 pause ::= SEMICOLON
 
@@ -97,17 +99,11 @@ mensuralFigure ::= ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u')
 // p=perfect, i=imperfect, I=imperfect by alteratio
 mensuralPerfection ::= 'p' | 'i' | 'I'
 
-dots ::= augmentationDots | graphicalDot
-
-augmentationDots ::= augmentationDots | graphicalDot
-
 augmentationDots ::= DOT+
 
 graphicalDot ::= COLON
 
-graphicalDot ::= COLON;
-
-note ::=  beforeNote duration noteName (alteration alterationVisualMode?)? afterNote
+note ::=  beforeNote duration noteName (alteration alterationVisualMode?)? graphicalDot? afterNote
 
 beforeNote ::= (slurStart | tieStart | ligatureStart | barLineCrossedNoteStart)*
 

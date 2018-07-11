@@ -28,7 +28,12 @@ start: header (EOL record)+ EOL? EOF;
     encoder
     |
     endEncoding
+    |
+    title
     ;
+
+// e.g. (including REFERENCE_RECORD)  !!!OTL: Piano Sonata...
+title: REFERENCE_RECORD_TITLE FULL_LINE_TEXT;
 
 // e.g. (including REFERENCE_RECORD)  !!!COM: Stravinsky, Igor Fyodorovich
 composer: REFERENCE_RECORD_COMPOSER FULL_LINE_TEXT;
@@ -170,7 +175,7 @@ spineJoin: ASTERISK CHAR_v;
 
 rest: duration (CHAR_r) pause?;
 
-duration: mensuralDuration dots?;
+duration: mensuralDuration augmentationDots?;
 
 pause: SEMICOLON; // fermata
 
@@ -183,13 +188,11 @@ mensuralFigure: CHAR_X | CHAR_L | CHAR_S | CHAR_s | CHAR_M | CHAR_m | CHAR_U | C
 // p=perfect, i=imperfect, I=imperfect by alteratio
 mensuralPerfection: CHAR_p | CHAR_i | CHAR_I;
 
-dots: augmentationDots | graphicalDot;
-
 augmentationDots: DOT+;
 
 graphicalDot: COLON;
 
-note:  beforeNote duration noteName (alteration alterationVisualMode?)? afterNote;
+note:  beforeNote duration noteName (alteration alterationVisualMode?)? graphicalDot? afterNote;
 
 beforeNote:  //TODO Regla semantica (boolean) para que no se repitan
     (slurStart

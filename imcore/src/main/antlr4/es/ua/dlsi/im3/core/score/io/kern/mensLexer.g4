@@ -131,6 +131,7 @@ SEMICOLON: ';';
 TAB: '\t' {incSpine();}; // incSpine changes mode depending on the spine type
 EOL : '\r'?'\n' {resetSpine();};
 
+//REFERENCE_RECORD_TITLE: REFERENCE_RECORD 'OTL'  -> pushMode(FREE_TEXT);
 //REFERENCE_RECORD_COMPOSER: REFERENCE_RECORD 'COM'  -> pushMode(FREE_TEXT);
 //REFERENCE_RECORD_PARENT_WORK: REFERENCE_RECORD 'OPT'  -> pushMode(FREE_TEXT);
 //REFERENCE_RECORD_ENCODER: REFERENCE_RECORD 'ENC'  -> pushMode(FREE_TEXT);

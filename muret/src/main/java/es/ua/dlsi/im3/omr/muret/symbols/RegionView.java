@@ -221,7 +221,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
     private GrayscaleImageData getGrayScaleImage(double x, double y, double width, double height) throws IM3Exception {
         es.ua.dlsi.im3.omr.model.entities.Image image = this.owner.getOMRPage().getOMMRImage().createPOJO();
         BoundingBox boundingBox = new BoundingBoxXY(x, y, x+width, y+height);
-        int[] pixels = image.getGrayscaleImagePixels(owner.getOMRPage().getOMMRImage().getOmrProject().getImagesFolder(), boundingBox);
+        int[] pixels = image.getGrayscaleImagePixelsNormalized(owner.getOMRPage().getOMMRImage().getOmrProject().getImagesFolder(), boundingBox);
         return new GrayscaleImageData(pixels);
     }
 
