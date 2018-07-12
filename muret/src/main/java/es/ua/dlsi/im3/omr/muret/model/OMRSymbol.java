@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.model.entities.Stroke;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
 import javafx.beans.property.*;
 
@@ -13,28 +14,28 @@ import java.util.Objects;
  * Order by x, then by y
  */
 public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
-    OMRRegion omrRegion;
+    private OMRRegion omrRegion;
     /**
      * Agnostic symbol type and its position in staff
      */
-    ObjectProperty<AgnosticSymbol> graphicalSymbol;
+    private ObjectProperty<AgnosticSymbol> graphicalSymbol;
 
     /**
      * Absolute value
      */
-    DoubleProperty x;
+    private DoubleProperty x;
     /**
      * Absolute value
      */
-    DoubleProperty y;
+    private DoubleProperty y;
     /**
      * Width of the bounding box
      */
-    DoubleProperty width;
+    private DoubleProperty width;
     /**
      * Height of the bounding box
      */
-    DoubleProperty height;
+    private DoubleProperty height;
     /**
      * Whether it has been accepted by the user
      */
@@ -43,6 +44,10 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
      * Name using agnostic encoding
      */
     private StringProperty name;
+    /**
+     * Optional
+     */
+    private ObjectProperty<OMRStrokes> strokes;
 
 
     public OMRSymbol(OMRRegion omrRegion, AgnosticSymbol graphicalSymbol, double x, double y, double width, double height) throws IM3Exception {
@@ -67,12 +72,29 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
         this.height = new SimpleDoubleProperty(height);
         this.accepted = new SimpleBooleanProperty(false);
         this.name = new SimpleStringProperty(this.graphicalSymbol.get().getAgnosticString());
+        strokes = new SimpleObjectProperty<>();
     }
 
     public OMRSymbol(OMRRegion omrRegion, Symbol symbol) throws IM3Exception {
         this(omrRegion, symbol.getAgnosticSymbol(), symbol.getBoundingBox().getFromX(), symbol.getBoundingBox().getFromY(), symbol.getWidth(), symbol.getHeight());
         this.accepted.setValue(symbol.isAccepted());
         this.name = new SimpleStringProperty(this.graphicalSymbol.get().getAgnosticString());
+        strokes = new SimpleObjectProperty<>();
+        if (symbol.getStrokes() != null && !symbol.getStrokes().getStrokeList().isEmpty()) {
+            this.strokes.setValue(new OMRStrokes(symbol.getStrokes()));
+        }
+    }
+
+    public OMRStrokes getStrokes() {
+        return strokes.get();
+    }
+
+    public ObjectProperty<OMRStrokes> strokesProperty() {
+        return strokes;
+    }
+
+    public void setStrokes(OMRStrokes strokes) {
+        this.strokes.set(strokes);
     }
 
     public double getX() {
@@ -165,6 +187,10 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
     public Symbol createPOJO() throws IM3Exception {
         Symbol pojoSymbol = new Symbol(graphicalSymbol.get(), x.get(), y.get(), x.get()+width.get(), y.get()+height.get());
         pojoSymbol.setAccepted(accepted.get());
+
+        if (strokes != null && strokes.isNotNull().get()) {
+            pojoSymbol.setStrokes(strokes.get().createPOJO());
+        }
         return pojoSymbol;
     }
 

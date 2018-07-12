@@ -49,6 +49,14 @@ public class Stroke {
         }
     }
 
+    public void setFirstPointTime(long firstPointTime) {
+        this.firstPointTime = firstPointTime;
+    }
+
+    public long getFirstPointTime() {
+        return firstPointTime;
+    }
+
     public List<Point> pointsProperty() {
 	    return points;
     }

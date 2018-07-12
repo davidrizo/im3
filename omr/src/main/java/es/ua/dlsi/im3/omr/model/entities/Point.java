@@ -44,6 +44,12 @@ public class Point {
         this.y = y;
     }
 
+    public Point(Point point) {
+        this.relativeTime = point.relativeTime;
+        this.x = point.x;
+        this.y = point.y;
+    }
+
     public long getRelativeTime() {
         return relativeTime;
     }

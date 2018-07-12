@@ -33,7 +33,7 @@ public class Symbol implements Comparable<Symbol> {
     /**
      * Optional: strokes used to trace the symbol.
      */
-    private List<Stroke> strokeList;
+    private Strokes strokes;
     /**
      * Optional: information about the pixels of the image. May be null
      */
@@ -93,12 +93,12 @@ public class Symbol implements Comparable<Symbol> {
         this.boundingBox = boundingBox;
     }
 
-    public List<Stroke> getStrokeList() {
-        return strokeList;
+    public Strokes getStrokes() {
+        return strokes;
     }
 
-    public void setStrokeList(List<Stroke> strokeList) {
-        this.strokeList = strokeList;
+    public void setStrokes(Strokes strokes) {
+        this.strokes = strokes;
     }
 
     /*public RasterImage getRasterMonochromeImage() {
@@ -131,13 +131,13 @@ public class Symbol implements Comparable<Symbol> {
         return accepted == symbol.accepted &&
                 Objects.equals(agnosticSymbol, symbol.agnosticSymbol) &&
                 Objects.equals(boundingBox, symbol.boundingBox) &&
-                Objects.equals(strokeList, symbol.strokeList);
+                Objects.equals(strokes, symbol.strokes);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(agnosticSymbol, accepted, boundingBox, strokeList);
+        return Objects.hash(agnosticSymbol, accepted, boundingBox, strokes);
     }
 
 

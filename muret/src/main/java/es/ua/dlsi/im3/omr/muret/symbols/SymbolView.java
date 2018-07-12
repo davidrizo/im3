@@ -30,12 +30,24 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements IOMRS
     private final RegionView regionView;
     Shape shapeInStaff;
     boolean editing;
+    StrokesView strokesView;
 
     public SymbolView(String ID, ImageBasedAbstractController controller, RegionView regionView, OMRSymbol owner, Color color) throws IM3Exception {
         super(ID, controller, regionView, owner.getX()-regionView.getOwner().getFromX(), owner.getY()-regionView.getOwner().getFromY(), owner.getWidth(), owner.getHeight(), owner, color);
         this.regionView = regionView;
         shapeInStaff = regionView.getAgnosticStaffView().addSymbol(this);
         initInteractionOnShape();
+        if (owner.getStrokes() != null) {
+            strokesView = new StrokesView(owner.getStrokes(), RegionView.STROKES_COLOR); //TODO Strokes color no así
+        }
+    }
+
+    public StrokesView getStrokesView() {
+        return strokesView;
+    }
+
+    public void setStrokesView(StrokesView strokesView) {
+        this.strokesView = strokesView;
     }
 
     //TODO Armonizar todo esto (p.ej. tecla corrección....) - que lo lleve todo el controlador - ahora hacemos doble click - también botón arriba
