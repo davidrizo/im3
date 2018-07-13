@@ -1,5 +1,8 @@
 package es.ua.dlsi.im3.omr.classifiers.traced;
 
+/**
+ * @deprecated Use package es.ua.dlsi.im3.omr.classifiers.symbolrecognition
+ */
 public class Coordinate {
 	double x;
 	double y;

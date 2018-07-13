@@ -4,6 +4,9 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 import java.util.ArrayList;
 
+/**
+ * @deprecated Use package es.ua.dlsi.im3.omr.classifiers.symbolrecognition
+ */
 public class BimodalSymbol {
 	AgnosticSymbolType label;
 	ArrayList<Coordinate> points;

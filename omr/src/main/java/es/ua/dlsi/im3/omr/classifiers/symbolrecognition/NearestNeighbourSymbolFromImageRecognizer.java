@@ -44,7 +44,7 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
     protected void train() throws IM3Exception {
         ArrayList<File> trainingFiles = new ArrayList<>();
         try {
-            FileUtils.readFiles(trainingDataFolder, trainingFiles, "symbolsimages_30x30.txt", true);
+            FileUtils.readFiles(trainingDataFolder, trainingFiles, "symbolsimages_30x30_strokes.txt", true);
             for (File trainingFile: trainingFiles) {
                 loadTrainingFile(trainingFile);
             }

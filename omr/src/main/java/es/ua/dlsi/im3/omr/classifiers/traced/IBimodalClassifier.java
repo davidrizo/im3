@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- *
+ * @deprecated Use package es.ua.dlsi.im3.omr.classifiers.symbolrecognition
  * @author drizo
  */
 public interface IBimodalClassifier {

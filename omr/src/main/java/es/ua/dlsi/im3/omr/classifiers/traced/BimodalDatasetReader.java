@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * @deprecated Use package es.ua.dlsi.im3.omr.classifiers.symbolrecognition
+ */
 public class BimodalDatasetReader implements IBimodalDatasetReader {
     //TODO Abril StringToSymbolFactory stringToSymbolFactory;
 

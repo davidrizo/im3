@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * @deprecated Use package es.ua.dlsi.im3.omr.classifiers.symbolrecognition
+ */
 public interface IBimodalDatasetReader {
 	List<BimodalSymbol> read(InputStream is) throws IOException;
 	List<BimodalSymbol> read(File file) throws IOException;

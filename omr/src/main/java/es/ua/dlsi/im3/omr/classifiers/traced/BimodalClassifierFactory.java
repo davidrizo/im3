@@ -20,7 +20,7 @@ package es.ua.dlsi.im3.omr.classifiers.traced;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
 /**
- *
+ * @deprecated Use package es.ua.dlsi.im3.omr.classifiers.symbolrecognition
  * @author drizo
  */
 public class BimodalClassifierFactory<SymbolType> {

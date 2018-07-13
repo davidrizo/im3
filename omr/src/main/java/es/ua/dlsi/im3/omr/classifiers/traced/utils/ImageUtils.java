@@ -24,7 +24,7 @@ import java.net.MalformedURLException;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * @deprecated Use package es.ua.dlsi.im3.omr.classifiers.symbolrecognition
  * @author drizo
  */
 public class ImageUtils {

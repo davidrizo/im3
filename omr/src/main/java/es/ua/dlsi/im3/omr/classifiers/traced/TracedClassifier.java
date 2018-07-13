@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * @deprecated Use BimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer
  * @author drizo
  */
 public class TracedClassifier implements IBimodalClassifier {

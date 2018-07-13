@@ -45,4 +45,7 @@ public class PointsData {
     }
 
 
+    public boolean isEmpty() {
+        return points.isEmpty();
+    }
 }
