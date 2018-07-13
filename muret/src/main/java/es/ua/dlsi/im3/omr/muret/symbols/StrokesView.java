@@ -12,9 +12,11 @@ import javafx.scene.paint.Color;
 public class StrokesView extends Group {
     private final Color strokesColor;
     OMRStrokes omrStrokes;
-    public StrokesView(OMRStrokes omrStrokes, Color strokesColor) {
+    public StrokesView(OMRStrokes omrStrokes, double offsetX, double offsetY, Color strokesColor) {
         this.omrStrokes = omrStrokes;
         this.strokesColor = strokesColor;
+        this.setTranslateX(offsetX);
+        this.setTranslateY(offsetY);
 
         for (OMRStroke omrStroke: omrStrokes.strokeListProperty()) {
             addStroke(omrStroke);

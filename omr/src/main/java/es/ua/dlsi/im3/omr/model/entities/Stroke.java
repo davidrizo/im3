@@ -16,6 +16,10 @@
  */
 package es.ua.dlsi.im3.omr.model.entities;
 
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxYX;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +50,15 @@ public class Stroke {
             points.add(new Point(0, x, y));
         } else {
             points.add(new Point(new Date().getTime() - firstPointTime, x, y));
+        }
+    }
+
+    public void addPoint(long relativeTime, double x, double y) {
+        if (points.isEmpty()) {
+            firstPointTime = new Date().getTime();
+            points.add(new Point(relativeTime, x, y));
+        } else {
+            points.add(new Point(relativeTime, x, y));
         }
     }
 
@@ -87,5 +100,19 @@ public class Stroke {
     public int hashCode() {
 
         return Objects.hash(points, firstPointTime);
+    }
+
+    public BoundingBox computeBoundingBox() throws IM3Exception {
+        double fromX = Double.MAX_VALUE;
+        double fromY = Double.MAX_VALUE;
+        double toX = -1;
+        double toY = -1;
+        for (Point point: points) {
+            fromX = Math.min(fromX, point.getX());
+            fromY = Math.min(fromY, point.getY());
+            toX = Math.max(toX, point.getX());
+            toY = Math.max(toY, point.getY());
+        }
+        return new BoundingBoxYX(fromX, fromY, toX, toY);
     }
 }

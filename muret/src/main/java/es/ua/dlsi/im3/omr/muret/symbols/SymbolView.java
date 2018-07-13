@@ -38,7 +38,7 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements IOMRS
         shapeInStaff = regionView.getAgnosticStaffView().addSymbol(this);
         initInteractionOnShape();
         if (owner.getStrokes() != null) {
-            strokesView = new StrokesView(owner.getStrokes(), RegionView.STROKES_COLOR); //TODO Strokes color no así
+            strokesView = new StrokesView(owner.getStrokes(), -regionView.getOwner().getFromX(), -regionView.getOwner().getFromY(), RegionView.STROKES_COLOR); //TODO Strokes color no así
         }
     }
 

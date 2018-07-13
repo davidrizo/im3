@@ -221,11 +221,11 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
             } else {
                 // try to create a stroke list
                 newOMRStroke = new OMRStroke();
-                newOMRStroke.addPoint(event.getX(), event.getY());
+                newOMRStroke.addPoint(event.getX()+owner.getFromX(), event.getY()+owner.getFromY());
 
                 if (newStrokesView == null) {
                     newOMRStrokes = new OMRStrokes();
-                    newStrokesView = new StrokesView(newOMRStrokes, STROKES_COLOR);
+                    newStrokesView = new StrokesView(newOMRStrokes, -owner.getFromX(), -owner.getFromY(), STROKES_COLOR);
                     this.imageViewWithSymbols.getChildren().add(newStrokesView);
                 }
 
@@ -262,7 +262,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
             newSymbolBoundingBox.widthProperty().setValue(event.getX() - newSymbolBoundingBox.xProperty().getValue() );
             newSymbolBoundingBox.heightProperty().setValue(event.getY() - newSymbolBoundingBox.yProperty().getValue());
         } else if (newOMRStroke != null) {
-            newOMRStroke.addPoint(event.getX(), event.getY());
+            newOMRStroke.addPoint(event.getX()+owner.getFromX(), event.getY()+owner.getFromY());
         }
     }
 

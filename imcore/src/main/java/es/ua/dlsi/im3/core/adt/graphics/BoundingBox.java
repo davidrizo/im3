@@ -125,4 +125,33 @@ public abstract class BoundingBox  {
     public boolean contains(double x, double y) {
         return x >= fromX && x <= toX && y >= fromY && y <= toY;
     }
+
+    /**
+     * Equals where an absolute difference threshold is taken into accound
+     * @param other
+     * @param threshold
+     * @return
+     */
+    public boolean equals(BoundingBox other, double threshold) {
+        if (Math.abs(fromX - other.fromX) > threshold) {
+            return false;
+        }
+        if (Math.abs(fromY - other.fromY) > threshold) {
+            return false;
+        }
+        if (Math.abs(toX - other.toX) > threshold) {
+            return false;
+        }
+        if (Math.abs(toY - other.toY) > threshold) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean overlaps(BoundingBox boundingBox) {
+        return boundingBox.contains(fromX, fromY) || boundingBox.contains(fromX, toY) || boundingBox.contains(toX, fromY) || boundingBox.contains(toX, toY)
+                || contains(boundingBox.fromX, boundingBox.fromY)  || contains(boundingBox.fromX, boundingBox.toY) || contains(boundingBox.toX, boundingBox.fromY) || contains(boundingBox.toX, boundingBox.toY);
+
+
+    }
 }
