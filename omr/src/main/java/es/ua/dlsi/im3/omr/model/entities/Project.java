@@ -48,8 +48,9 @@ public class Project {
     private String changedBy;
 
 
-    public Project(ProjectVersion version) {
+    public Project(ProjectVersion version, NotationType notationType) {
         this.version = version;
+        this.notationType = notationType;
         images = new TreeSet<>();
         instruments = new HashSet<>();
     }

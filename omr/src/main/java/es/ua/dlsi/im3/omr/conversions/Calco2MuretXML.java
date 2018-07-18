@@ -39,9 +39,8 @@ public class Calco2MuretXML {
     int nsymbols = 0;
 
     public void convert(String name, File imageFilesFolder, File folder, File output, int expectedNPages, boolean leaveAllInOnePageRegion) throws IOException, IM3Exception {
-        Project project = new Project(ProjectVersion.v1);
+        Project project = new Project(ProjectVersion.v1, NotationType.eMensural);
         project.setName(name);
-        project.setNotationType(NotationType.eMensural);
 
         ArrayList<File> files = new ArrayList<>();
         FileUtils.readFiles(folder, files, "txt");

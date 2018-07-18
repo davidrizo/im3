@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.model.io;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.core.score.StemDirection;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
@@ -19,7 +20,7 @@ public class XMLReaderWriterTest {
     AgnosticVersion agnosticVersion = AgnosticVersion.v2;
 
     private Project generateTestProject() throws IM3Exception {
-        Project project = new Project(ProjectVersion.v1);
+        Project project = new Project(ProjectVersion.v1, NotationType.eMensural);
         project.setName("Test");
         Instrument instrument1 = new Instrument("Soprano");
         project.addInstrument(instrument1);

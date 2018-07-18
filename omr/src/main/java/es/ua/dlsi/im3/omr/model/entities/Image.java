@@ -2,19 +2,12 @@ package es.ua.dlsi.im3.omr.model.entities;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
 import es.ua.dlsi.im3.core.utils.ImageUtils;
-import es.ua.dlsi.im3.core.utils.TimeUtils;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * An image file
@@ -112,6 +105,11 @@ public class Image implements Comparable<Image> {
         return diff;
     }
 
+    public BoundingBoxXY computeBoundingBox(File fileImagesFolder) throws IM3Exception {
+        File imageFile = new File(fileImagesFolder, imageRelativeFileName);
+        BufferedImage subimage = ImageUtils.getInstance().generateBufferedImage(imageFile);
+        return new BoundingBoxXY(0, 0, subimage.getWidth(), subimage.getHeight());
+    }
     /**
      * Get rescaled pixels to RESIZE_W and RESIZE_H
      * @param fileImagesFolder

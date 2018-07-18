@@ -57,6 +57,7 @@ public class InputOutput {
         Project pojoProject = reader.load(xmlFile);
 
         OMRProject omrProject = new OMRProject(projectFolder);
+        omrProject.setName(pojoProject.getName());
         omrProject.setChangedBy(pojoProject.getChangedBy());
         omrProject.setLastChangedDate(pojoProject.getLastChangedDate());
         omrProject.setNotationType(pojoProject.getNotationType());

@@ -79,11 +79,14 @@ public class OMRProject {
      */
     private String changedBy;
 
+    private String name;
+
     /**
      * @param projectFolder In new files, if the project does not exist it will be created
      * @throws IM3Exception
      */
     public OMRProject(File projectFolder) {
+        this.name = projectFolder.getName();
         this.projectFolder = projectFolder;
         if (!projectFolder.exists()) {
             projectFolder.mkdirs();
@@ -201,8 +204,8 @@ public class OMRProject {
     }
 
     public Project createPOJO() throws IM3Exception {
-        Project pojoProject = new Project(ProjectVersion.v1);
-        pojoProject.setNotationType(notationType);
+        Project pojoProject = new Project(ProjectVersion.v1, notationType);
+        pojoProject.setName(name);
         pojoProject.setComments(comments.get());
         for (OMRInstrument instrument: instruments.getInstrumentSet()) {
             Instrument pojoInstrument = new Instrument(instrument.getName());
@@ -289,6 +292,14 @@ public class OMRProject {
         for (OMRImage image: images) {
             this.imagesProperty.add(image);
         }
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }
