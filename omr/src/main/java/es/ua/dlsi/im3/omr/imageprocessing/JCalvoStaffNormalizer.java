@@ -22,7 +22,8 @@ import java.util.List;
  * This class implements the scripts by Jorge Calvo to to the staff normalization
  * @autor drizo
  */
-public class StaffNormalizer {
+public class JCalvoStaffNormalizer implements IStaffNormalizer {
+    @Override
     public void normalize(File inputImageFile, File outputImageFile) throws IM3Exception, IOException {
         OpenCVImageReader imageReader = new OpenCVImageReader();
         Mat imageMat = imageReader.readGrayImage(inputImageFile);

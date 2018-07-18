@@ -35,6 +35,18 @@ public class SymbolImagePrototype implements IMetricPrototype<AgnosticSymbol> {
         return imageData.computeDistance(((SymbolImagePrototype) to).imageData);
     }
 
+    /**
+     * If, while computing the distance, the accumulated distance is greater than threshold, the computation is stopped and a null value is returned
+     * @param to
+     * @param threshold
+     * @return
+     */
+    public Double computeDistance(SymbolImagePrototype to, double threshold) throws IM3Exception {
+        SymbolImagePrototype other = (SymbolImagePrototype) to;
+        return imageData.computeDistance(((SymbolImagePrototype) to).imageData, threshold);
+
+    }
+
     @Override
     public String toString() {
         return "SymbolImagePrototype{" +
@@ -42,4 +54,5 @@ public class SymbolImagePrototype implements IMetricPrototype<AgnosticSymbol> {
                 ", imageData=" + imageData +
                 '}';
     }
+
 }

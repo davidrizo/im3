@@ -108,7 +108,7 @@ public class EditDistance<ItemType> {
                 this.editScript.addEditOperation(eo);
             }
         }
-        //double distance  = res / (double) (from.size() + to.size());
+        //double measure  = res / (double) (from.size() + to.size());
         return res;
     }
 

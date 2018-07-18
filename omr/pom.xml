@@ -63,6 +63,14 @@
             <version>3.2.0-1</version>
         </dependency>
 
+        <!-- Fast Levenhstein distance -->
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>

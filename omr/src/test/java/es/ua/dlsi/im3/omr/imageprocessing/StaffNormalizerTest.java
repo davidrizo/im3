@@ -7,20 +7,21 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-
 public class StaffNormalizerTest {
 
     @Test
     public void normalize() throws IM3Exception, IOException {
-        StaffNormalizer staffNormalizer = new StaffNormalizer();
         File input = TestFileUtils.getFile("/testdata/imageprocessing/48.jpg");
-        File output = TestFileUtils.createTempFile("processed48.jpg");
-
+        File outputCalvo = TestFileUtils.createTempFile("calvo48.jpg");
+        File outputCardoso = TestFileUtils.createTempFile("cardoso48.jpg");
 
         //TODO De momento sólo funciona en el ordenador de David - está pendiente de migración
         if (System.getProperty("user.home").equals("/Users/drizo")) {
-            staffNormalizer.normalize(input, output);
+            CardosoStaffNormalizer cardosoStaffNormalizer = new CardosoStaffNormalizer();
+            cardosoStaffNormalizer.normalize(input, outputCardoso);
+
+            JCalvoStaffNormalizer calvoStaffNormalizer = new JCalvoStaffNormalizer();
+            calvoStaffNormalizer.normalize(input, outputCalvo);
         }
     }
 }

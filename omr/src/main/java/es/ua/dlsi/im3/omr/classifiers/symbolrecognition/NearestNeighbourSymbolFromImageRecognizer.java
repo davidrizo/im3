@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.classifiers.symbolrecognition;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassesRanking;
 import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassifier;
 import es.ua.dlsi.im3.core.patternmatching.RankingItem;
 import es.ua.dlsi.im3.core.utils.FileUtils;
@@ -9,6 +10,7 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 /**
@@ -18,33 +20,30 @@ import java.util.TreeSet;
  */
 public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourClassifier<AgnosticSymbol, SymbolImagePrototype>  implements ISymbolFromImageDataRecognizer {
     private final AgnosticVersion agnosticVersion;
-    private File trainingDataFolder;
 
     public NearestNeighbourSymbolFromImageRecognizer(AgnosticVersion agnosticVersion)  {
         this.agnosticVersion = agnosticVersion;
     }
 
     public NearestNeighbourSymbolFromImageRecognizer(AgnosticVersion agnosticVersion, File trainingDataFolder) throws IM3Exception {
-        this.trainingDataFolder = trainingDataFolder;
         this.agnosticVersion = agnosticVersion;
-        train();
+        trainFromFolder(trainingDataFolder);
     }
 
     @Override
-    public TreeSet<RankingItem<SymbolImagePrototype>> recognize(GrayscaleImageData imageData) throws IM3Exception {
+    public NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImagePrototype> recognize(GrayscaleImageData imageData) throws IM3Exception {
         SymbolImagePrototype prototype = new SymbolImagePrototype(null, imageData);
-        TreeSet<RankingItem<SymbolImagePrototype>> orderedValues = this.classify(prototype);
-        return orderedValues;
+        return this.classify(prototype, true);
     }
 
-    public void trainWithFile(File trainingFile) throws IM3Exception, IOException {
+    public void trainFromFile(File trainingFile) throws IM3Exception, IOException {
         loadTrainingFile(trainingFile);
     }
-    @Override
-    protected void train() throws IM3Exception {
+
+    public void trainFromFolder(File trainingDataFolder) throws IM3Exception {
         ArrayList<File> trainingFiles = new ArrayList<>();
         try {
-            FileUtils.readFiles(trainingDataFolder, trainingFiles, "symbolsimages_30x30_strokes.txt", true);
+            FileUtils.readFiles(trainingDataFolder, trainingFiles, "symbolsimages_30x30.txt", true);
             for (File trainingFile: trainingFiles) {
                 loadTrainingFile(trainingFile);
             }
@@ -78,4 +77,12 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
             }
         }
     }
+
+    public void traingFromBimodalDataset(List<SymbolImageAndPointsPrototype> prototypeList) throws IM3Exception, IOException {
+        for (SymbolImageAndPointsPrototype symbolImageAndPointsPrototype: prototypeList) {
+            SymbolImagePrototype prototype = new SymbolImagePrototype(symbolImageAndPointsPrototype.getPrototypeClass(), symbolImageAndPointsPrototype.getImageData());
+            addPrototype(prototype);
+        }
+    }
+
 }

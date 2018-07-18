@@ -9,36 +9,32 @@ import java.util.*;
  * @param <InstanceType> The type of the instance objects
  * @param <PrototypeClassType> The type of the class type
  */
-public abstract class NearestNeighbourClassifier<PrototypeClassType, InstanceType extends IMetricPrototype<PrototypeClassType>> {
-    private List<InstanceType> trainedSet;
+public class NearestNeighbourClassifier<PrototypeClassType, InstanceType extends IMetricPrototype<PrototypeClassType>> {
+    private List<InstanceType> trainingSet;
 
     public NearestNeighbourClassifier() {
-        trainedSet = null;
+        trainingSet = null;
     }
 
-    protected abstract void train() throws IM3Exception;
-
-    protected void addPrototype(InstanceType prototype) {
-        if (trainedSet == null) {
-            trainedSet = new LinkedList<>();
+    public void addPrototype(InstanceType prototype) {
+        if (trainingSet == null) {
+            trainingSet = new LinkedList<>();
         }
-        trainedSet.add(prototype);
-
+        trainingSet.add(prototype);
     }
-
-
 
     /**
+     * Return a ranking of instances
      * @param elementToClassify
-     * @return An ordered list of elements ordered by descreasing similarity
+     * @return An ordered list of items from the training set ordered by descreasing similarity
      */
-    public TreeSet<RankingItem<InstanceType>> classify(InstanceType elementToClassify) throws IM3Exception {
-        if (trainedSet == null) {
-            throw new IM3Exception("The classifier has not been trained yet");
+    public TreeSet<RankingItem<InstanceType>> classifyInstances(InstanceType elementToClassify) throws IM3Exception {
+        if (trainingSet == null) {
+            throw new IM3Exception("The classifier has not a training set yet");
         }
 
         TreeSet<RankingItem<InstanceType>> result = new TreeSet<>();
-        for(InstanceType symbol : trainedSet) {
+        for(InstanceType symbol : trainingSet) {
             double distance = elementToClassify.computeDistance(symbol);
             result.add(new RankingItem(symbol, distance));
         }
@@ -46,7 +42,19 @@ public abstract class NearestNeighbourClassifier<PrototypeClassType, InstanceTyp
         return result;
     }
 
-    public List<InstanceType> getTrainedSet() {
-        return trainedSet;
+    /**
+     * Return a ranking of classes
+     * @param instance
+     * @return
+     */
+    public NearestNeighbourClassesRanking<PrototypeClassType, InstanceType> classify(InstanceType instance, boolean normalizeUsingPseudoProbabilities) throws IM3Exception {
+        TreeSet<RankingItem<InstanceType>> sortedInstances = classifyInstances(instance);
+        NearestNeighbourClassesRanking<PrototypeClassType, InstanceType> result = new NearestNeighbourClassesRanking<>(sortedInstances, normalizeUsingPseudoProbabilities);
+        return result;
     }
+
+    public List<InstanceType> getTrainingSet() {
+        return trainingSet;
+    }
+
 }

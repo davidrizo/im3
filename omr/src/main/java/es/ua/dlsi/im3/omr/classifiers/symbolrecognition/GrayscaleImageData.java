@@ -36,10 +36,41 @@ public class GrayscaleImageData {
         }
         double acc = 0;
         for(int i = 0; i < thisPixels.size(); i++) {
-            acc += Math.pow(thisPixels.get(i)-otherPixels.get(i), 2);
+            //acc += Math.pow(thisPixels.get(i)-otherPixels.get(i), 2); L2
+
+            // use L1
+            acc += Math.abs(thisPixels.get(i)-otherPixels.get(i));
         }
 
-        return Math.sqrt(acc);
+        //return Math.sqrt(acc); L2
+        return acc;
+    }
+
+
+    /**
+     * If, while computing the distance, the accumulated distance is greater than threshold, the computation is stopped and a null value is returned
+     * @param threshold
+     * @return
+     */
+    public Double computeDistance(GrayscaleImageData imageData, double threshold) throws IM3Exception {
+        ArrayList<Integer> thisPixels = grayScalePixels;
+        ArrayList<Integer> otherPixels = imageData.grayScalePixels;
+
+        if (thisPixels.size() != otherPixels.size()) {
+            throw new IM3Exception("Cannot compute the distance between two images of different size: " +
+                    thisPixels.size() + " vs. " +  otherPixels.size());
+        }
+        double acc = 0;
+        for(int i = 0; i < thisPixels.size(); i++) {
+            // use L1
+            acc += Math.abs(thisPixels.get(i)-otherPixels.get(i));
+            if (acc > threshold) {
+                return null;
+            }
+        }
+
+        //return Math.sqrt(acc); L2
+        return acc;
     }
 
     @Override
@@ -56,4 +87,5 @@ public class GrayscaleImageData {
         stringBuilder.append(']');
         return stringBuilder.toString();
     }
+
 }

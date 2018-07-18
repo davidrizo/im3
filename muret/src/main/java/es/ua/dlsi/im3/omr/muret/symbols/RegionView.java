@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.omr.muret.symbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
+import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassesRanking;
 import es.ua.dlsi.im3.core.patternmatching.RankingItem;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
@@ -13,12 +14,13 @@ import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.GrayscaleImageData;
-import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolImagePrototype;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolImageAndPointsPrototype;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Smudge;
+import es.ua.dlsi.im3.omr.model.entities.Strokes;
 import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.muret.model.OMRRegion;
@@ -296,8 +298,6 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
     }
 
     private void addNewSymbol(StrokesView newStrokesView) {
-        System.err.println("usar los trazos para clasificar");
-        //ENLAZAMOS EL VIEW CON EL OBJECT DE ALGUNA FORMA?
         double x = newStrokesView.getBoundsInLocal().getMinX();
         double y = newStrokesView.getBoundsInLocal().getMinY();
         double w = newStrokesView.getBoundsInLocal().getWidth();
@@ -317,14 +317,14 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         }
     }
 
-    private void addNewSymbol(TreeSet<RankingItem<SymbolImagePrototype>> orderedRecognizedSymbols, double x, double y, double width, double height, OMRStrokes strokes) {
+    private void addNewSymbol(NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImageAndPointsPrototype> orderedRecognizedSymbols, double x, double y, double width, double height, OMRStrokes strokes) {
         AgnosticSymbol agnosticSymbol = null;
         if (orderedRecognizedSymbols != null) {
             try {
                 //TODO Mostrar barra corrección con símbolos ordenados
-                RankingItem<SymbolImagePrototype> firstRankedElement = orderedRecognizedSymbols.first();
+                AgnosticSymbol firstRankedElement = orderedRecognizedSymbols.first();
                 //TODO Version
-                agnosticSymbol = AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, firstRankedElement.getClassType().getPrototypeClass().getAgnosticString());
+                agnosticSymbol = AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, firstRankedElement.getAgnosticString());
 
                 if (agnosticSymbol.getSymbol() instanceof Note) { //TODO resto de tipos
                     Note note = (Note) agnosticSymbol.getSymbol();
@@ -389,10 +389,14 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
 
     private void addNewSymbolWithBoundingBox(double x, double y, double width, double height, OMRStrokes strokes) {
         if (width > 1 && height > 1) {
-            TreeSet<RankingItem<SymbolImagePrototype>> orderedRecognizedSymbols = null;
+            NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImageAndPointsPrototype> orderedRecognizedSymbols = null;
             try {
                 GrayscaleImageData grayscaleImageData = getGrayScaleImage(x, y, width, height);
-                orderedRecognizedSymbols = controller.getDashboard().getModel().classifySymbolFromImage(grayscaleImageData);
+                Strokes strokesPOJO = null;
+                if (strokes != null) {
+                    strokesPOJO = strokes.createPOJO();
+                }
+                orderedRecognizedSymbols = controller.getDashboard().getModel().classifySymbolFromImage(grayscaleImageData, strokesPOJO);
                 //symbolView.doEdit();
 
             } catch (IM3Exception e) {

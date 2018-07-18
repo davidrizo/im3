@@ -12,14 +12,11 @@ import java.util.TreeSet;
  * It recognizes a symbol given the image.
  * @autor drizo
  */
-public interface IBimodalSymbolFromImageDataAndStrokesRecognizer {
+public interface ISymbolFromStrokesRecognizer {
     /**
      *
-     * @param imageData
      * @param strokes
-     * @return Ordered list of AgnosticSymbol with positionInStaff or not depending on the classifier
+     * @return Orderred list of AgnosticSymbol with positionInStaff or not depending on the classifier
      */
-    NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImageAndPointsPrototype> recognize(GrayscaleImageData imageData, Strokes strokes) throws IM3Exception;
-
-    int getTrainingSetSize();
+    NearestNeighbourClassesRanking<AgnosticSymbol, SymbolPointsPrototype> recognize(Strokes strokes) throws IM3Exception;
 }
