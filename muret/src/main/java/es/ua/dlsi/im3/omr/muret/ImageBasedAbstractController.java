@@ -53,7 +53,7 @@ public abstract class ImageBasedAbstractController extends MuretAbstractControll
     /**
      * The superset of pages, regions and symbols and their views
      */
-    private HashMap<IOMRBoundingBox, BoundingBoxBasedView> mapOMRElementView;
+    protected HashMap<IOMRBoundingBox, BoundingBoxBasedView> mapOMRElementView;
 
     @FXML
     protected TextArea textAreaComments;

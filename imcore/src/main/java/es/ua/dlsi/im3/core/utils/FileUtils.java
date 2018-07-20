@@ -9,9 +9,7 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.logging.Level;
@@ -292,6 +290,10 @@ public class FileUtils {
 	    if (!fromFile.equals(targetFile)) {
             Path from = Paths.get(fromFile.toURI());
             Path to = Paths.get(targetFile.toURI());
+            if (targetFile.exists()) {
+                targetFile.delete();
+            }
+            // does not work Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
             Files.copy(from, to);
         } else {
             Logger.getLogger(FileUtils.class.getName()).log(Level.INFO, "Skipping copy because both files are the same: " + fromFile.getAbsolutePath() + " and " + targetFile.getAbsolutePath());

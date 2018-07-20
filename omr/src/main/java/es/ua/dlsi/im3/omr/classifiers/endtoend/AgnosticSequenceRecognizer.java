@@ -38,10 +38,12 @@ public class AgnosticSequenceRecognizer {
             AgnosticSymbol agnosticSymbol = pagedCapitan2Agnostic.convert(token);
             if (agnosticSymbol.getSymbol() instanceof Note) { //TODO Los demás
                 Note note = (Note) agnosticSymbol.getSymbol();
-                if (agnosticSymbol.getPositionInStaff().getLineSpace() < PositionsInStaff.LINE_3.getLineSpace()) {
-                    note.setStemDirection(Directions.up);
-                } else {
-                    note.setStemDirection(Directions.down);
+                if (note.getDurationSpecification().isUsesStem()) {
+                    if (agnosticSymbol.getPositionInStaff().getLineSpace() < PositionsInStaff.LINE_3.getLineSpace()) {
+                        note.setStemDirection(Directions.up);
+                    } else {
+                        note.setStemDirection(Directions.down);
+                    }
                 }
             }
             agnosticSymbolLinkedList.add(agnosticSymbol);

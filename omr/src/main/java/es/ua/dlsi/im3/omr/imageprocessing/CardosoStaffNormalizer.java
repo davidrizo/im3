@@ -13,18 +13,18 @@ import java.io.IOException;
  */
 public class CardosoStaffNormalizer implements IStaffNormalizer {
     @Override
-    public void normalize(File inputImageFile, File outputImageFile) throws IM3Exception, IOException {
+    public void normalize(File inputImageFile, File outputImageFile) throws IM3Exception {
         //TODO
         File workingFolder = new File("/Users/drizo/Documents/GCLOUDUA/HISPAMUS/software/normalizacionPentagramasCarlos/staff-detection-develop");
-        File input = new File(workingFolder, "input.jpg");
-        input.delete();
-        FileUtils.copy(inputImageFile, input);
+        //File input = new File(workingFolder, "input.jpg");
+        //input.delete();
+        //FileUtils.copy(inputImageFile, input);
 
-        CommandLine.execShellCommand(workingFolder, "normalize.sh");
+        CommandLine.execShellCommand(workingFolder, "normalize.sh " + inputImageFile.getAbsolutePath() + " " + outputImageFile.getAbsolutePath());
 
-        File output = new File(workingFolder, "output.jpg");
+        //File output = new File(workingFolder, "output.jpg");
         //TODO Png, jpg...
-        outputImageFile.delete();
-        FileUtils.copy(output, outputImageFile);
+        //outputImageFile.delete();
+        //FileUtils.copy(output, outputImageFile);
     }
 }

@@ -38,10 +38,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,14 +78,9 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
     }
 
     private void initCorrectionPanes() {
-        try {
-            createAgnosticCorrectionPane();
-            // set is by default
-            setAgnosticMode(true);
-        } catch (IM3Exception e) {
-            e.printStackTrace();
-            ShowError.show(OMRApp.getMainStage(), "Cannot create agnostic correction pane", e);
-        }
+        createAgnosticCorrectionPane();
+        // set is by default
+        setAgnosticMode(true);
     }
 
     private void initSymbolSelection() {
@@ -158,23 +153,56 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
 
     @FXML
     private void handleRecognizeSymbols() {
-        //TODO Barra progreso
-        try {
-            if (selectionManager.isCommonBaseClass(RegionView.class)) {
-                for (ISelectable selectedElement: selectionManager.getSelection()) {
-                    RegionView regionView = (RegionView) selectedElement;
-                    recognizeSymbolsInRegionDialog((RegionView) selectedElement);
+        WorkIndicatorDialog workIndicatorDialog = new WorkIndicatorDialog(OMRApp.getMainStage().getOwner(), "Recognizing symbol sequences in all regions");
+        workIndicatorDialog.addTaskEndNotification(result -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    ShowMessage.show(OMRApp.getMainStage(), "Recognition finished");
+                }
+            });
+        });
+
+        workIndicatorDialog.exec("", inputParam -> {
+            try {
+                ArrayList<OMRRegion> regionArrayList = new ArrayList<>();
+                ArrayList<Callable<Void>> threads = new ArrayList<>();
+                for (OMRPage omrPage: omrImage.getPages()) {
+                    for (OMRRegion omrRegion : omrPage.regionsProperty()) {
+                        regionArrayList.add(omrRegion);
+                        Callable<Void> thread = new Callable<Void>() {
+                            @Override
+                            public Void call() throws Exception {
+                                doRecognizeSymbolsInRegion(omrRegion);
+                                return null;
+                            }
+                        };
+                        threads.add(thread);
+                    }
                 }
 
+                final ExecutorService executor = Executors.newFixedThreadPool (regionArrayList.size());
+                executor.invokeAll(threads);
+                executor.shutdown();
+            } catch (Exception e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Error recognizing symbols", e);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ShowError.show(OMRApp.getMainStage(), "Cannot recognize symbols", e);
+                    }
+                });
             }
-        } catch (Exception e) {
-                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot recognize symbols", e);
-                ShowError.show(OMRApp.getMainStage(), "Cannot recognize regions", e);
-        }
+            return new Integer(1);
+        });
     }
 
-    private void doRecognizeSymbolsInRegion(RegionView regionView) throws IM3Exception {
+    private void doRecognizeSymbolsInRegion(OMRRegion omrRegion) throws IM3Exception {
         try {
+            RegionView regionView = (RegionView) mapOMRElementView.get(omrRegion);
+            if (regionView == null) {
+                throw new IM3Exception("Cannot find the view for the region: " + omrRegion);
+            }
             //TODO A modelo
             BufferedImage bImage = SwingFXUtils.fromFXImage(regionView.getImageView().getImage(), null).getSubimage(
                     (int) regionView.getOwner().getFromX(), (int) regionView.getOwner().getFromY(),
@@ -202,7 +230,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
             throw new IM3Exception(e);
         }
     }
-    private void recognizeSymbolsInRegionDialog(RegionView regionView) {
+    /*private void recognizeSymbolsInRegionDialog(RegionView regionView) {
         //TODO Ver este dálogo
         WorkIndicatorDialog workIndicatorDialog = new WorkIndicatorDialog(OMRApp.getMainStage().getOwner(), "Recognizing symbol sequences in selected regions");
 
@@ -232,7 +260,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
             return new Integer(1);
         });
 
-    }
+    }*/
 
     /*@FXML
     private void handleChangeSymbol() {
@@ -336,7 +364,7 @@ public class SymbolCorrectionController extends ImageBasedAbstractController {
     /**
      * We do not create the same for all staves because the order of symbols may change
      */
-    private void createAgnosticCorrectionPane() throws IM3Exception {
+    private void createAgnosticCorrectionPane()  {
         agnosticCorrectionPane = new FlowPane();
         agnosticCorrectionPane.disableProperty().bind(selectedSymbolView.isNull());
         agnosticCorrectionPane.prefWrapLengthProperty().bind(mainBorderPane.widthProperty());

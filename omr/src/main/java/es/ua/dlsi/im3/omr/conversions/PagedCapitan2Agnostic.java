@@ -127,10 +127,15 @@ public class PagedCapitan2Agnostic {
             if (symbolType instanceof LigatureComponent) {
                 return new AgnosticSymbol(AgnosticVersion.v1, new Ligature(), PositionsInStaff.LINE_3);
             } else {
-                if (subsymbols.length != 2) {
+                PositionInStaff positionInStaff;
+                if (subsymbols.length == 1) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Expected two subsymbols at '" + symbol + "' and found 1, setting a default vertical position");
+                    positionInStaff = PositionsInStaff.LINE_1;
+                } else if (subsymbols.length != 2) {
                     throw new ImportException("Expected two subsymbols at '" + symbol + "' and found " + subsymbols.length);
+                } else {
+                    positionInStaff = parsePosition(subsymbols[1]);
                 }
-                PositionInStaff positionInStaff = parsePosition(subsymbols[1]);
 
                 if (symbolType.toAgnosticString().equals("clef.G") && subsymbols[1].equals("5")) {
                     // correct mistake in dataset
