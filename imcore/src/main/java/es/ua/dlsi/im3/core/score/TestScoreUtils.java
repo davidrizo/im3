@@ -28,7 +28,7 @@ public class TestScoreUtils {
         checkEqual(aType, a, bType, b, new Configuration());
     }
     public static void checkEqual(String aType, ScoreSong a, String bType, ScoreSong b, Configuration configuration) throws IM3Exception {
-        assertEquals("Measure count, expected " + aType + ", tested " + bType, a.getMeaureCount(), b.getMeaureCount());
+        assertEquals("Measure count, expected " + aType + ", tested " + bType, a.getMeasureCount(), b.getMeasureCount());
 
         assertEquals("Staves", a.getStaves().size(), b.getStaves().size());
 

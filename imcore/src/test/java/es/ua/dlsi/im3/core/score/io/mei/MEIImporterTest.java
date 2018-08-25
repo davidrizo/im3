@@ -1,10 +1,8 @@
 package es.ua.dlsi.im3.core.score.io.mei;
 
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.SimpleMultiMeasureRest;
-import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,7 +21,7 @@ public class MEIImporterTest {
         ScoreSong song = importer.importSong(f3);
         assertEquals(1, song.getStaves().size());
         assertEquals(1, song.getStaves().get(0).getClefs().size());
-        assertEquals(3, song.getMeaureCount());
+        assertEquals(3, song.getMeasureCount());
         assertEquals(0, song.getStaves().get(0).getKeySignatures().size());
     }
 
@@ -46,7 +44,7 @@ public class MEIImporterTest {
         MEISongImporter importer = new MEISongImporter();
         ScoreSong song = importer.importSong(f3);
         assertEquals(1, song.getStaves().size());
-        assertEquals(14, song.getMeaureCount());
+        assertEquals(14, song.getMeasureCount());
         assertTrue(song.getStaves().get(0).getAtoms().get(0) instanceof SimpleMultiMeasureRest);
     }
 

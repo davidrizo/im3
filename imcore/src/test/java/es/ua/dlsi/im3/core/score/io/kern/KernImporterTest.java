@@ -9,7 +9,6 @@ import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.harmony.RomanNumberChordSpecification;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
-import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLExporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.io.ImportException;
@@ -17,14 +16,12 @@ import es.ua.dlsi.im3.core.io.ImportException;
 import static org.junit.Assert.*;
 
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
-import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
 import org.apache.commons.lang3.math.Fraction;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -90,7 +87,7 @@ public class KernImporterTest {
             assertEquals("Atoms in layer" , 9, staff.getLayers().get(0).getAtoms().size());
 
 
-            assertEquals(4, song.getMeaureCount());
+            assertEquals(4, song.getMeasureCount());
 
             assertTrue(atoms.get(8) instanceof SimpleRest);
 
@@ -166,7 +163,7 @@ public class KernImporterTest {
             assertTrue("Rest 1, staff 2", atoms1.get(0) instanceof SimpleRest);
             assertEquals("Duration first rest staff 2", 3, atoms2.get(0).getQuarterRatioDuration(), 0.001);
 
-            //assertEquals(4, song.getMeaureCount()); actually the last measure is empty
+            //assertEquals(4, song.getMeasureCount()); actually the last measure is empty
 
             assertTrue("Note 2, staff 1", atoms1.get(1) instanceof SimpleNote);
             assertEquals("Duration note 2 staff 1", 0.5, atoms1.get(1).getQuarterRatioDuration(), 0.001);
@@ -447,7 +444,7 @@ public class KernImporterTest {
                 assertEquals(PitchClasses.G.getPitchClass(), ks.getPitchClass());
             }
 
-            assertEquals("Measures", 23, song.getMeaureCount());
+            assertEquals("Measures", 23, song.getMeasureCount());
             ArrayList<Harm> harms = song.getOrderedHarms();
             assertNotNull("Has harmonies", harms);
             assertEquals("Number of harmonies", 56, harms.size());
@@ -497,7 +494,7 @@ public class KernImporterTest {
                 assertEquals(PitchClasses.G.getPitchClass(), ks.getPitchClass());
             }
 
-            assertEquals("Measures", 14, song.getMeaureCount());
+            assertEquals("Measures", 14, song.getMeasureCount());
             ArrayList<Harm> harms = song.getOrderedHarms();
             assertNotNull("Has harmonies", harms);
             assertEquals("Number of harmonies", 53, harms.size());

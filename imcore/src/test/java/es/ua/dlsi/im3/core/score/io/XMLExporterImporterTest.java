@@ -93,7 +93,7 @@ public class XMLExporterImporterTest {
 			TimeSignature ts = firstStaff.getTimeSignatureWithOnset(Time.TIME_ZERO);
 			assertEquals("Meter num", 4, ((FractionalTimeSignature)ts).getNumerator());
 			assertEquals("Meter den", 4, ((FractionalTimeSignature)ts).getDenominator());
-			assertEquals("Measures", 2, song.getMeaureCount());
+			assertEquals("Measures", 2, song.getMeasureCount());
 			List<AtomFigure> atomFigures = song.getParts().get(0).getUniqueVoice().getAtomFigures();		
 			Figures [] expectedFigs = {Figures.WHOLE, Figures.QUARTER, Figures.QUARTER, Figures.EIGHTH,
 					Figures.EIGHTH, Figures.QUARTER};
@@ -248,7 +248,7 @@ public class XMLExporterImporterTest {
 			assertEquals("Num atoms at modern staff", 19, staves.get(1).getLayers().get(0).size());
 			assertEquals("Num pitch onsets at modern staff ", 16, staves.get(1).getLayers().get(0).getPlayedNotes().size());
 			
-			assertEquals("Modern bars", 7, song.getMeaureCount());
+			assertEquals("Modern bars", 7, song.getMeasureCount());
 			
 			//ArrayList<AtomPitch> pitchesStaff1 = staves.get(0).getLayers().get(0).getOnsetPitches();
 			//ArrayList<AtomPitch> pitchesStaff2 = staves.get(1).getLayers().get(0).getOnsetPitches();
@@ -619,7 +619,7 @@ public class XMLExporterImporterTest {
 			assertEquals(1, song.getStaves().size());
 			assertTrue(song.isAnacrusis());
 			assertEquals(new Time(3, 1), song.getAnacrusisOffset());
-			assertEquals(2, song.getMeaureCount());
+			assertEquals(2, song.getMeasureCount());
 			ArrayList<Measure> measures = song.getMeasuresSortedAsArray();
 			assertEquals(Time.TIME_ZERO, measures.get(0).getTime());
 			assertEquals(new Time(1, 1), measures.get(1).getTime());
@@ -647,7 +647,7 @@ public class XMLExporterImporterTest {
 			assertEquals(4, song.getStaves().size());
 			assertTrue(song.isAnacrusis());
 			assertEquals(new Time(3, 1), song.getAnacrusisOffset());
-			assertEquals(2, song.getMeaureCount());
+			assertEquals(2, song.getMeasureCount());
 			ArrayList<Measure> measures = song.getMeasuresSortedAsArray();
 			assertEquals(Time.TIME_ZERO, measures.get(0).getTime());
 			assertEquals(new Time(1, 1), measures.get(1).getTime());

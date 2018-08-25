@@ -53,7 +53,7 @@ public class KernImporter implements IScoreSongImporter {
     }
 
     @Override
-    public ScoreSong importSong(InputStream is) {
+    public ScoreSong importSong(InputStream is) throws ImportException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -297,7 +297,7 @@ public class KernImporter implements IScoreSongImporter {
         //    return voiceTemp.get(currentSpineIndex);
         //}
 
-        private TimeSignature currentTimeSignature() throws IM3Exception {
+        private TimeSignature currentTimeSignature() throws NoMeterException, IM3Exception {
             Staff staff = getStaff();
             return staff.getRunningTimeSignatureAt(lastTime);
 
@@ -1660,14 +1660,14 @@ public class KernImporter implements IScoreSongImporter {
                     measureInserted = true;
                     int barNumber;
                     if (ctx.NUMBER() == null) {
-                        //try {
-                            barNumber = scoreSong.getMeaureCount() + 1;
+                        try {
+                            barNumber = scoreSong.getMeasureCount() + 1;
                             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE,
                                     "Barline without number, assigning {0}", barNumber);
-                        /*} catch (IM3Exception ex) {
+                        } catch (IM3Exception ex) {
                             Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
                             throw new GrammarParseRuntimeException(ex);
-                        }*/
+                        }
                     } else {
                         barNumber = new Integer(ctx.NUMBER().getText());
                         Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Barline with number {0}",
@@ -2223,7 +2223,7 @@ public class KernImporter implements IScoreSongImporter {
 		song.getAnalysisVoice().clearElementsWithRhythm();
 		song.createAnalysisHooks(staffLayer);
 	}*/
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ImportException, IM3Exception {
 		/*
 		 * Logger.getLogger(KernImporter.class.getName()).info(
 		 * "Changing level to FINEST to the stderr"); // LOG this level to the
