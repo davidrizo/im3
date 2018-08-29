@@ -1,0 +1,93 @@
+/*
+Copyright (C) 2018 David Rizo Valero
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.button {
+    -fx-background-color: #7DE2DB;
+    -fx-cursor: hand;
+}
+
+#mainpane {
+    -fx-background-color: #103339;
+}
+
+#mainpane * {
+    -fx-font-family: Roboto;
+}
+
+#menu {
+    -fx-background-color: #7DE2DB;
+    -fx-padding: 0 0 0 30;
+    -fx-alignment: center-left;
+}
+
+#menu * {
+    -fx-background-color: #7DE2DB;
+}
+
+#imageview_logologo {
+    -fx-image: url(images/muret.png);
+}
+
+.title_left {
+    -fx-translate-x: 150;
+}
+
+.title_right {
+    /* currently it is set using halignment in SceneBuilder */
+}
+
+#work_title {
+    -fx-font-size: 24;
+    -fx-fill: #7DE2DB;
+}
+
+#work_author {
+    -fx-font-size: 18;
+    -fx-fill: #7DE2DB;
+}
+
+#recentProjects_flowpane {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+.buttonRecentProject_anchorpane {
+    -fx-pref-width: 160;
+    -fx-pref-height: 160;
+    -fx-cursor: hand;
+}
+
+.buttonRecentProject {
+    -fx-pref-width: 145;
+    -fx-pref-height: 145;
+}
+
+.buttonRecentProject_vbox {
+    -fx-pref-width: 160;
+    -fx-pref-height: 160;
+    -fx-alignment: bottom-right;
+    -fx-padding: 0 20 20 0;
+    -fx-spacing: 10;
+}
+
+.buttonRecentProject_text {
+    -fx-fill: #FFFFFF;
+}
+
+.buttonRecentProject_image {
+    /*-fx-fit-to-height: 160; Does not work - added in OpenProjectController.java */
+}

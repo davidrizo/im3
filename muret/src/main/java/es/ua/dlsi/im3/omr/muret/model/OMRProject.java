@@ -81,6 +81,8 @@ public class OMRProject {
 
     private String name;
 
+    private String composer;
+
     /**
      * @param projectFolder In new files, if the project does not exist it will be created
      * @throws IM3Exception
@@ -206,6 +208,7 @@ public class OMRProject {
     public Project createPOJO() throws IM3Exception {
         Project pojoProject = new Project(ProjectVersion.v1, notationType);
         pojoProject.setName(name);
+        pojoProject.setComposer(composer);
         pojoProject.setComments(comments.get());
         for (OMRInstrument instrument: instruments.getInstrumentSet()) {
             Instrument pojoInstrument = new Instrument(instrument.getName());
@@ -296,6 +299,14 @@ public class OMRProject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getComposer() {
+        return composer;
+    }
+
+    public void setComposer(String composer) {
+        this.composer = composer;
     }
 
     @Override

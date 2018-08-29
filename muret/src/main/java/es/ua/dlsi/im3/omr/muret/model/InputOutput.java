@@ -58,6 +58,7 @@ public class InputOutput {
 
         OMRProject omrProject = new OMRProject(projectFolder);
         omrProject.setName(pojoProject.getName());
+        omrProject.setComposer(pojoProject.getComposer());
         omrProject.setChangedBy(pojoProject.getChangedBy());
         omrProject.setLastChangedDate(pojoProject.getLastChangedDate());
         omrProject.setNotationType(pojoProject.getNotationType());
