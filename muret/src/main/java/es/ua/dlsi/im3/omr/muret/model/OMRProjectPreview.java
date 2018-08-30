@@ -25,7 +25,7 @@ public class OMRProjectPreview  {
     String composer;
     String posterFrame;
     /**
-     * Image shown as the preview, currently it is the first one in the images folder
+     * Image shown as the preview, currently it is the first one in the imagesold folder
      */
     File posterFrameImage;
 

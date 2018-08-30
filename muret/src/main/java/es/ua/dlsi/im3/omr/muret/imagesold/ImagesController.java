@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret.images;
+package es.ua.dlsi.im3.omr.muret.imagesold;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
@@ -189,7 +189,7 @@ public class ImagesController extends MuretAbstractController {
 
         dropbox.setOnDragDropped(event -> {
             //TODO Refactorizar
-            // Reorder images
+            // Reorder imagesold
             Dragboard db = event.getDragboard();
             if (db.hasString()) {
                 int toOrder = imageView.getOMRImage().getOrder()-1;

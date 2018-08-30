@@ -91,3 +91,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .buttonRecentProject_image {
     /*-fx-fit-to-height: 160; Does not work - added in OpenProjectController.java */
 }
+
+#flowpane_orderimages {
+    -fx-hgap: 16;
+    -fx-vgap: 16;
+    -fx-background-color: #103339;
+}
+
+#scrollPane_orderimages {
+    -fx-background: #103339;
+    -fx-border-color: #103339;
+}
+
+#scrollPane_orderimages * {
+    -fx-border-color: #103339;
+}

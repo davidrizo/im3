@@ -23,19 +23,8 @@ public class StartController implements Initializable {
 
     @FXML
     private void handleOpenProject() {
-        openWindow("/fxml/muret/openproject.fxml", false);
+        MuRET.openWindow("/fxml/muret/openproject.fxml", false);
     }
 
-    private void openWindow(String urlFXML, boolean maximize)  {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        Parent root = null;
-        try {
-            root = fxmlLoader.load(getClass().getResource(urlFXML));
-            Scene scene = new Scene(root);
-            MuRET.getMainStage().setScene(scene);
-            MuRET.getMainStage().setMaximized(maximize);
-        } catch (IOException e) {
-            ShowError.show(MuRET.getMainStage(), "Cannot open window", e);
-        }
-    }
+
 }

@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret.images;
+package es.ua.dlsi.im3.omr.muret.imagesold;
 
 public enum State {
     idle, movingPage

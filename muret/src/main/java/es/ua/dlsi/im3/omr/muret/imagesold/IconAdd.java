@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret.images;
+package es.ua.dlsi.im3.omr.muret.imagesold;
 
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;

@@ -11,7 +11,10 @@ import es.ua.dlsi.im3.omr.muret.model.OMRProjectPreview;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -92,8 +95,8 @@ public class OpenProjectController implements Initializable {
         try {
             OMRProject omrProject = inputOutput.load(file.getParentFile());
             RecentProjectsModel.getInstance().addProject(file.getAbsolutePath());
-            //TODO
-            ShowError.show(MuRET.getMainStage(), "TO-DO Open project " + omrProject.getName());
+            OrderImagesController orderImagesController = MuRET.openWindow("/fxml/muret/orderimages.fxml", true);
+            orderImagesController.loadOMRProject(omrProject);
         } catch (IM3Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load project {0}", file.getAbsolutePath());
             ShowError.show(MuRET.getMainStage(), "Cannot load project file " + file.getName());
@@ -126,8 +129,8 @@ public class OpenProjectController implements Initializable {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             ShowError.show(MuRET.getMainStage(), "Cannot read poster frame", e);
-
         }
+
         ImageView posterFrameImageView = new ImageView(posterFrameImage);
         posterFrameImageView.getStyleClass().add("buttonRecentProject_image");
         posterFrameImageView.setFitHeight(160); //TODO The CSS does not work

@@ -3,16 +3,12 @@ package es.ua.dlsi.im3.omr.muret;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.gui.command.CommandManager;
-import es.ua.dlsi.im3.gui.command.IBackgroundCommand;
-import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
-import es.ua.dlsi.im3.gui.javafx.JavaFXUtils;
-import es.ua.dlsi.im3.gui.javafx.TaskJFX2;
 import es.ua.dlsi.im3.gui.javafx.ViewLoader;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
-import es.ua.dlsi.im3.omr.muret.images.ImageThumbnailView;
-import es.ua.dlsi.im3.omr.muret.images.ImagesController;
+import es.ua.dlsi.im3.omr.muret.imagesold.ImageThumbnailView;
+import es.ua.dlsi.im3.omr.muret.imagesold.ImagesController;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
 import es.ua.dlsi.im3.omr.muret.model.OMRModel;
 import es.ua.dlsi.im3.omr.muret.regions.DocumentAnalysisController;
@@ -26,7 +22,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
@@ -34,7 +29,6 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 /**
@@ -67,7 +61,7 @@ public class DashboardController implements Initializable {
      */
     CommandManager commandManager;
     /**
-     * View and controller of images view
+     * View and controller of imagesold view
      */
     private Pair<ImagesController,Parent> imagesViewPair;
 
@@ -233,14 +227,14 @@ public class DashboardController implements Initializable {
     public void openImagesView() {
         try {
             if (imagesViewPair == null) {
-                imagesViewPair = ViewLoader.loadView("muret/images.fxml");
+                imagesViewPair = ViewLoader.loadView("muret/imagesold.fxml");
                 imagesViewPair.getX().setDashboard(this);
             }
             setMainPane(imagesViewPair.getY());
             //pair.getX().initMenus(menuItemUndo, menuItemRedo);
         } catch (IOException e) {
             e.printStackTrace();
-            ShowError.show(OMRApp.getMainStage(), "Cannot load images screen", e);
+            ShowError.show(OMRApp.getMainStage(), "Cannot load imagesold screen", e);
         }
     }
 

@@ -1,11 +1,14 @@
 package es.ua.dlsi.im3.omr.muret;
 
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 
 public class MuRET extends Application {
@@ -33,4 +36,19 @@ public class MuRET extends Application {
         return mainStage;
     }
     public static KeyEventManager getKeyEventManager() {return keyEventManager; }
+
+    public static <ControllerType> ControllerType openWindow(String urlFXML, boolean maximize)  {
+        FXMLLoader fxmlLoader = new FXMLLoader(MuRET.class.getResource(urlFXML));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            MuRET.getMainStage().setScene(scene);
+            MuRET.getMainStage().setMaximized(maximize);
+            return fxmlLoader.getController();
+        } catch (IOException e) {
+            ShowError.show(MuRET.getMainStage(), "Cannot open window", e);
+            return null;
+        }
+    }
 }

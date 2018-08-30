@@ -120,7 +120,7 @@ public class OMRProject {
      * @throws IM3Exception
      */
     public OMRImage addImage(File file) throws IM3Exception {
-        // copy the image file into the images folder
+        // copy the image file into the imagesold folder
         File targetFile = new File(imagesFolder, file.getName());
         try {
             FileUtils.copy(file, targetFile);
@@ -156,6 +156,10 @@ public class OMRProject {
     }
 
     public String getName() {
+        return name;
+    }
+
+    public String getProjectFolderName() {
         return projectFolder.getName();
     }
 
@@ -287,7 +291,7 @@ public class OMRProject {
     }
 
     /**
-     * It removes all images from the set and adds these ones with a new ordering
+     * It removes all imagesold from the set and adds these ones with a new ordering
      * @param images
      */
     public void replaceImages(ArrayList<OMRImage> images) {
