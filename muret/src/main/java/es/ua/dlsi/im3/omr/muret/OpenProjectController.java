@@ -71,23 +71,16 @@ public class OpenProjectController implements Initializable {
     }
 
     private void addOpenOtherProjectButton() {
-        Button button = new Button();
-        button.getStyleClass().add("buttonRecentProject");
-        Image image = new Image(this.getClass().getResourceAsStream("/fxml/muret/images/recentprojects_folder.png"));
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(145); //TODO Does not work with css
-        imageView.setFitHeight(145);
-        button.setGraphic(imageView);
-        flowPaneLastProjects.getChildren().add(button);
-
-        button.setOnAction(new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> eventHandler = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 OpenSaveFileDialog openSaveFileDialog = new OpenSaveFileDialog();
                 File file = openSaveFileDialog.openFile("Select a MuRET project file", "MuRET files", "mrt");
                 openProject(file);
             }
-        });
+        };
+        Button button = Utils.addOpenOtherProjectButton("/fxml/muret/images/recentprojects_folder.png", 145, 145, "buttonRecentProject", eventHandler);
+        flowPaneLastProjects.getChildren().add(button);
     }
 
     private void openProject(File file) {

@@ -8,7 +8,6 @@ import es.ua.dlsi.im3.gui.interaction.ISelectionChangeListener;
 import es.ua.dlsi.im3.gui.interaction.SelectionManager;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.model.*;
-import es.ua.dlsi.im3.omr.muret.symbols.SymbolView;
 import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -33,7 +32,7 @@ import java.util.logging.Logger;
  * The selection is managed here, not in the element itself
  * @autor drizo
  */
-public abstract class ImageBasedAbstractController extends MuretAbstractController implements Initializable, ISelectableTraversable {
+public abstract class ImageBasedAbstractController extends MuretAbstractControllerOLD implements Initializable, ISelectableTraversable {
     @FXML
     protected ScrollPane scrollPane;
 

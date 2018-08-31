@@ -9,7 +9,7 @@ import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.DashboardController;
-import es.ua.dlsi.im3.omr.muret.MuretAbstractController;
+import es.ua.dlsi.im3.omr.muret.MuretAbstractControllerOLD;
 import es.ua.dlsi.im3.omr.muret.OMRApp;
 import es.ua.dlsi.im3.omr.muret.model.OMRModel;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
@@ -33,7 +33,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ImagesController extends MuretAbstractController {
+public class ImagesController extends MuretAbstractControllerOLD {
     @FXML
     FlowPane flowPane;
     @FXML

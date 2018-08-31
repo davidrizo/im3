@@ -8,7 +8,7 @@ import javafx.scene.Node;
  * All controllers have as parent the dashboard
  * @autor drizo
  */
-public abstract class MuretAbstractController implements Initializable {
+public abstract class MuretAbstractControllerOLD implements Initializable {
     protected DashboardController dashboard;
 
     public DashboardController getDashboard() {

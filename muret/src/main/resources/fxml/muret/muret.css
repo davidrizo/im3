@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-.button {
+.button, .toggle-button {
     -fx-background-color: #7DE2DB;
     -fx-cursor: hand;
 }
@@ -103,6 +103,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-border-color: #103339;
 }
 
+.imagethumbnail {
+    -fx-cursor: hand;
+}
+
 #scrollPane_orderimages * {
     -fx-border-color: #103339;
+}
+
+.buttonOrderImagesPortrait {
+    -fx-pref-width: 188;
+    -fx-pref-height: 245;
+}
+
+.tool-bar {
+    -fx-background-color: #7DE2DB;
+    -fx-pref-width: 75;
+}
+
+#vboxPhase {
+    -fx-pref-width: 100;
+    -fx-alignment: center-right;
+    -fx-spacing: 10;
+}
+
+#vboxPhase * {
+    -fx-pref-width: 100;
+    -fx-pref-height: 40;
+}
+
+.toggle-button:selected {
+    -fx-background-color: D91E63;
+}
+
+#documentAnalysis_scrollPane {
+    -fx-padding: 5;
 }
