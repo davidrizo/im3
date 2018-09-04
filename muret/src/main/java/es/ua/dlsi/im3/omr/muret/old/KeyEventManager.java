@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret;
+package es.ua.dlsi.im3.omr.muret.old;
 
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

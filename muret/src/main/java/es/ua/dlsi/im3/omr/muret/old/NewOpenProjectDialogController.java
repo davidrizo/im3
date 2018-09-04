@@ -1,10 +1,9 @@
-package es.ua.dlsi.im3.omr.muret;
+package es.ua.dlsi.im3.omr.muret.old;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.gui.javafx.dialogs.FXMLDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
-import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;

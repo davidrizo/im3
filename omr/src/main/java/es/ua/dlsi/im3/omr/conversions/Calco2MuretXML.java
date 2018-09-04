@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 /**
  * It converts a file, named equal to the image file plus .txt, with bounding boxes, symbol type, and position in staff
- * to a Muret XML file, all images in a project
+ * to a Muret XML file, all imagesold in a project
  * @autor drizo
  */
 public class Calco2MuretXML {
@@ -249,7 +249,7 @@ public class Calco2MuretXML {
         for (String subfolder: subfolders) {
             File outputFolderProject = new File(outputFolder, subfolder);
             outputFolderProject.mkdirs();
-            File imagesFolder = new File(outputFolderProject, "images");
+            File imagesFolder = new File(outputFolderProject, "imagesold");
             imagesFolder.mkdirs();
 
             File images = new File(imageFilesFolder, subfolder);

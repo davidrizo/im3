@@ -80,7 +80,7 @@ public class XMLReaderWriterTest {
             assertNotNull("Instrument " + instrument.getName(), readProject.findInstrumentByName(instrument.getName()));
         }
 
-        assertEquals("# images", project.getImages().size(), readProject.getImages().size());
+        assertEquals("# imagesold", project.getImages().size(), readProject.getImages().size());
         for (Image image: project.getImages()) {
             Image readImage = readProject.findImageByFileName(image.getImageRelativeFileName());
             assertEquals("Order", image.getOrder(), readImage.getOrder());

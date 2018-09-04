@@ -162,7 +162,7 @@ public class FastBimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer impl
             mergedProbabilites.put(entry.getKey(), mergedP);
         }
 
-        // now, if some symbol is not found in images, set the points probabilites
+        // now, if some symbol is not found in imagesold, set the points probabilites
         for (Map.Entry<AgnosticSymbol, Double> entry: bestPointsProbabilitiesForClasses.entrySet()) {
             if (!mergedProbabilites.containsKey(entry.getKey())) {
                 mergedProbabilites.put(entry.getKey(), entry.getValue());

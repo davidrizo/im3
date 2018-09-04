@@ -94,7 +94,7 @@ public class PageSplitting {
 	}
 
     /**
-     * It returns two images
+     * It returns two imagesold
      * @param original
      * @return
      */

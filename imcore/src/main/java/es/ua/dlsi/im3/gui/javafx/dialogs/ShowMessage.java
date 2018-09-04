@@ -19,6 +19,7 @@ package es.ua.dlsi.im3.gui.javafx.dialogs;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  *
@@ -36,4 +37,13 @@ public class ShowMessage {
         alert.initOwner(stage);
         alert.showAndWait();
     }
+
+    public static void show(Window window, String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(window);
+        alert.showAndWait();
+    }
+
 }

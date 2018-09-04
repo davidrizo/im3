@@ -271,10 +271,14 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
     }
 
     public void setStemEndY(CoordinateComponent referenceY, double ydisplacement) {
-        this.stem.setEndY(referenceY, ydisplacement);
+        if (this.stem != null) {
+            this.stem.setEndY(referenceY, ydisplacement);
+        }
     }
 
     public void setStemEndY(double stemFromYAbsolute) throws IM3Exception {
-        this.stem.setEndAbsoluteY(stemFromYAbsolute);
+        if (this.stem != null) {
+            this.stem.setEndAbsoluteY(stemFromYAbsolute);
+        }
     }
 }

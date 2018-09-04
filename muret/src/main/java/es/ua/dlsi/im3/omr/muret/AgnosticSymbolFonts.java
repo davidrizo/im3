@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret.symbols;
+package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;

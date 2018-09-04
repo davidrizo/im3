@@ -15,6 +15,10 @@ public class Project {
      */
     private String name;
     /**
+     * Composer
+     */
+    private String composer;
+    /**
      * Version with which the project is encoded. It will determine its contents
      */
     private ProjectVersion version;
@@ -23,7 +27,7 @@ public class Project {
      */
     private NotationType notationType;
 
-    // Don't put this field after images for XStream serializer work well (references to instruments)
+    // Don't put this field after imagesold for XStream serializer work well (references to instruments)
     /**
      * Unordered set of image files
      */
@@ -137,6 +141,7 @@ public class Project {
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;
         return Objects.equals(name, project.name) &&
+                Objects.equals(composer, project.composer) &&
                 version == project.version &&
                 notationType == project.notationType &&
                 Objects.equals(images, project.images) &&
@@ -147,6 +152,14 @@ public class Project {
     public int hashCode() {
 
         return Objects.hash(name, version, notationType, images, instruments);
+    }
+
+    public String getComposer() {
+        return composer;
+    }
+
+    public void setComposer(String composer) {
+        this.composer = composer;
     }
 
     public void setComments(String comments) {

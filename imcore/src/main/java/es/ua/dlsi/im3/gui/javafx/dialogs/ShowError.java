@@ -25,19 +25,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  *
  * @author drizo
  */
 public class ShowError {
-
-    public static void show(Stage stage, String message, Throwable e) {
+    private static Alert createAlert(String message, Throwable e) {
         Alert alert = new Alert(AlertType.ERROR);
-        if (stage != null) {
-            alert.setTitle(stage.getTitle());
-        }
-        alert.initOwner(stage);
         alert.setHeaderText(message);
         alert.setContentText(e.getLocalizedMessage());
 
@@ -63,8 +59,24 @@ public class ShowError {
         expContent.add(label, 0, 0);
         expContent.add(textArea, 0, 1);
 
-    // Set expandable Exception into the dialog pane.
+        // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
+        return alert;
+    }
+    public static void show(Window ownerWindow, String message, Throwable e) {
+        Alert alert = createAlert(message, e);
+        if (ownerWindow != null) {
+            alert.initOwner(ownerWindow);
+        }
+        alert.showAndWait();
+    }
+
+    public static void show(Stage stage, String message, Throwable e) {
+        Alert alert = createAlert(message, e);
+        if (stage != null) {
+            alert.setTitle(stage.getTitle());
+            alert.initOwner(stage);
+        }
         alert.showAndWait();
     }
     

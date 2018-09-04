@@ -31,7 +31,7 @@ public class GrayscaleImageData {
         ArrayList<Integer> otherPixels = imageData.grayScalePixels;
 
         if (thisPixels.size() != otherPixels.size()) {
-            throw new IM3Exception("Cannot compute the distance between two images of different size: " +
+            throw new IM3Exception("Cannot compute the distance between two imagesold of different size: " +
                     thisPixels.size() + " vs. " +  otherPixels.size());
         }
         double acc = 0;
@@ -57,7 +57,7 @@ public class GrayscaleImageData {
         ArrayList<Integer> otherPixels = imageData.grayScalePixels;
 
         if (thisPixels.size() != otherPixels.size()) {
-            throw new IM3Exception("Cannot compute the distance between two images of different size: " +
+            throw new IM3Exception("Cannot compute the distance between two imagesold of different size: " +
                     thisPixels.size() + " vs. " +  otherPixels.size());
         }
         double acc = 0;

@@ -1,7 +1,8 @@
 package es.ua.dlsi.im3.omr.muret;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.omr.muret.model.OMRImage;
+import es.ua.dlsi.im3.omr.muret.old.KeyEventManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -9,19 +10,32 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class MuRET extends Application {
-    private static Stage mainStage;
-    private static KeyEventManager keyEventManager;
+    private static MuRET instance;
+    private Stage mainStage;
+    private KeyEventManager keyEventManager;
+    private Model model;
+    private Navigation navigation;
+    private AgnosticSymbolFonts agnosticSymbolFonts;
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    public static final MuRET getInstance() {
+        return instance;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+        agnosticSymbolFonts = new AgnosticSymbolFonts();
+        navigation = new Navigation(primaryStage);
+        instance = this;
         mainStage = primaryStage;
         Scene scene = new Scene(new Group());
         primaryStage.setScene(scene);
@@ -31,25 +45,32 @@ public class MuRET extends Application {
         scene.setRoot(root);
         primaryStage.setMaximized(false);
         primaryStage.show();
+
+        model = new Model();
     }
 
-    public static Stage getMainStage() {
+
+    public Stage getMainStage() {
         return mainStage;
     }
-    public static KeyEventManager getKeyEventManager() {return keyEventManager; }
 
-    public static <ControllerType> ControllerType openWindow(String urlFXML, boolean maximize)  {
-        FXMLLoader fxmlLoader = new FXMLLoader(MuRET.class.getResource(urlFXML));
-        Parent root = null;
-        try {
-            root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            MuRET.getMainStage().setScene(scene);
-            MuRET.getMainStage().setMaximized(maximize);
-            return fxmlLoader.getController();
-        } catch (IOException e) {
-            ShowError.show(MuRET.getMainStage(), "Cannot open window", e);
-            return null;
-        }
+    public void openMrtFile(File mrtFile) throws IM3Exception {
+        model.openProject(mrtFile.getParentFile());
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public <ControllerType> ControllerType openWindow(String urlFXML, boolean maximize, boolean modal) {
+        return navigation.openWindow(urlFXML, maximize, modal);
+    }
+
+    public void closeCurrentWindow() {
+        navigation.closeCurrentWindow();
+    }
+
+    public AgnosticSymbolFonts getAgnosticSymbolFonts() {
+        return agnosticSymbolFonts;
     }
 }

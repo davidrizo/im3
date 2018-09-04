@@ -22,11 +22,15 @@ import java.util.ArrayList;
  */
 public class MusicXML2SemanticAndAgnostic {
     public static final void main(String [] args) throws Exception {
-        if (args.length != 1) {
+        String inputFolder;
+        if (args.length > 1) {
             throw new Exception("Missing folder with MusicXML files");
+        } else if (args.length == 0){
+            inputFolder = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/repositorios/jazzmus/dataset";
+        } else {
+            inputFolder = args[0];
         }
-
-        File folder = new File(args[0]);
+        File folder = new File(inputFolder);
         if (!folder.exists()) {
             throw new Exception("Input folder '" + folder.getAbsolutePath() + "' does not exist");
         }
@@ -45,17 +49,22 @@ public class MusicXML2SemanticAndAgnostic {
     }
 
     public void run(File file, File semantic, File agnostic, File kern) throws IM3Exception, IOException {
-        MusicXMLImporter importer = new MusicXMLImporter();
-        ScoreSong song = importer.importSong(file);
+        try {
+            MusicXMLImporter importer = new MusicXMLImporter();
+            ScoreSong song = importer.importSong(file);
 
-        Encoder encoder = new Encoder(AgnosticVersion.v2, true);
-        SemanticExporter semanticExporter = new SemanticExporter();
-        AgnosticExporter agnosticExporter = new AgnosticExporter();
-        encoder.encode(song);
-        semanticExporter.export(encoder.getSemanticEncoding(), semantic);
-        agnosticExporter.export(encoder.getAgnosticEncoding(), agnostic);
+            Encoder encoder = new Encoder(AgnosticVersion.v2, true);
+            SemanticExporter semanticExporter = new SemanticExporter();
+            AgnosticExporter agnosticExporter = new AgnosticExporter();
+            encoder.encode(song);
+            semanticExporter.export(encoder.getSemanticEncoding(), semantic);
+            agnosticExporter.export(encoder.getAgnosticEncoding(), agnostic);
 
-        KernExporter kernExporter = new KernExporter();
-        kernExporter.exportSong(kern, song);
+            KernExporter kernExporter = new KernExporter();
+            kernExporter.exportSong(kern, song);
+        } catch (Throwable e) {
+            System.err.println("Error with file " + file.getAbsolutePath() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

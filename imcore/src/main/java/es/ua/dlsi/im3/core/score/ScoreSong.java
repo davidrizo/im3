@@ -745,12 +745,12 @@ public class ScoreSong {
 
 	/*FRACCIONES public void addPages(int n) {
 		for (int i = 0; i < n; i++) {
-			images.add(new Page(this, i + 1));
+			imagesold.add(new Page(this, i + 1));
 		}
 	}
 
 	public List<Page> getPages() {
-		return images;
+		return imagesold;
 	}*/
 
 	// ----------------------------------------------------------------------

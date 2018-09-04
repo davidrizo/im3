@@ -16,7 +16,7 @@ public class AgnosticSequenceRecognizerTest {
     @Test
     public void recognize() throws IOException, IM3Exception {
         File input = TestFileUtils.getFile("/testdata/imageprocessing/48.jpg");
-        AgnosticSequenceRecognizer agnosticSequenceRecognizer = new AgnosticSequenceRecognizer();
+        AgnosticSequenceRecognizerOLD agnosticSequenceRecognizer = new AgnosticSequenceRecognizerOLD();
 
         //TODO De momento sólo funciona en el ordenador de David - está pendiente de migración
         if (System.getProperty("user.home").equals("/Users/drizo")) {

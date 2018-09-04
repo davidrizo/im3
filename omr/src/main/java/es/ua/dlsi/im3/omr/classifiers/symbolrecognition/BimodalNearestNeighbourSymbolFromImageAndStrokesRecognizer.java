@@ -48,7 +48,7 @@ public class BimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer implemen
         NearestNeighbourClassesRanking<AgnosticSymbol, SymbolPointsPrototype> pointsRanking = strokesRecognizer.classify(strokesPrototype, true);
 
         // Now, for each returned class combine results
-        // insert results from images
+        // insert results from imagesold
         HashMap<AgnosticSymbol, Double> classesProbabilities = new HashMap<>();
         for (RankingItem<AgnosticSymbol> rankingItem: imagesRanking.getRankingItems()) {
             classesProbabilities.put(rankingItem.getClassType(), rankingItem.getMeasure());
@@ -57,7 +57,7 @@ public class BimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer implemen
         for (RankingItem<AgnosticSymbol> rankingItem: pointsRanking.getRankingItems()) {
             Double prevValue = classesProbabilities.get(rankingItem.getClassType());
             if (prevValue == null) {
-                // just insert new value because we don't have images data
+                // just insert new value because we don't have imagesold data
                 classesProbabilities.put(rankingItem.getClassType(), rankingItem.getMeasure());
             } else {
                 double combinedValue = prevValue * IMAGES_CLASSIFIER_WEIGHT + (1.0 - IMAGES_CLASSIFIER_WEIGHT) * rankingItem.getMeasure();

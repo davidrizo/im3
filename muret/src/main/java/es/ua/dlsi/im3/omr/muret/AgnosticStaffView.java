@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret.symbols;
+package es.ua.dlsi.im3.omr.muret;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
@@ -8,11 +8,11 @@ import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
-import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
-import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Group;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class AgnosticStaffView extends VBox {
     private static final double LEDGER_LINE_EXTRA_LENGTH = 8;
     private static final double LEDGER_LINE_WIDTH = 20;
-    private final ImageBasedAbstractController controller;
+    private final SymbolsController controller;
     private final Line[] lines;
     Group staffGroup;
 
@@ -38,12 +38,10 @@ public class AgnosticStaffView extends VBox {
     Group linesGroup;
     Group symbolsGroup;
     double lineBottomPosition;
-    FlowPane correctionPane;
-    //private ObjectProperty<SymbolView> correctingSymbol;
     HashMap<OMRSymbol, Shape> shapesInStaff;
     private double regionXOffset;
 
-    public AgnosticStaffView(ImageBasedAbstractController controller, AgnosticSymbolFont agnosticSymbolFont, double width, double height, double regionXOffset)  {
+    public AgnosticStaffView(SymbolsController controller, AgnosticSymbolFont agnosticSymbolFont, ReadOnlyDoubleProperty widthProperty, double height, double regionXOffset)  {
         this.controller = controller;
         shapesInStaff = new HashMap<>();
         this.regionXOffset = regionXOffset;
@@ -54,7 +52,7 @@ public class AgnosticStaffView extends VBox {
         this.symbolsGroup = new Group();
         background = new Rectangle();
         background.setHeight(height);
-        background.setWidth(width);
+        background.widthProperty().bind(widthProperty);
         background.setFill(Color.WHITESMOKE);
 
         staffGroup.getChildren().addAll(background, linesGroup, symbolsGroup); // order is important
@@ -68,7 +66,7 @@ public class AgnosticStaffView extends VBox {
             line.setStartX(0);
             line.setStartY(y);
             line.setEndY(y);
-            line.setEndX(background.getWidth());
+            line.endXProperty().bind(background.widthProperty());
             line.setStroke(Color.BLACK);
             line.setStrokeWidth(1); //TODO
             linesGroup.getChildren().add(line);

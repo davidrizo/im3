@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret;
+package es.ua.dlsi.im3.omr.muret.old;
 
 import es.ua.dlsi.im3.gui.interaction.ISelectable;
 import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
@@ -31,7 +31,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
     protected Color color;
 
     protected ObjectProperty<Boolean> selected;
-    protected MuRETBaseController controller;
+    protected ImageBasedAbstractController controller;
 
     protected String ID;
 
@@ -45,7 +45,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
      * @param owner
      * @param color
      */
-    public BoundingBoxBasedView(String ID, MuRETBaseController controller, BoundingBoxBasedView parentBoundingBox, double fromX, double fromY, double width, double height, OwnerType owner, Color color) {
+    public BoundingBoxBasedView(String ID, ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, double fromX, double fromY, double width, double height, OwnerType owner, Color color) {
         this.ID = ID;
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.hideHandles();
@@ -63,7 +63,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
      * @param owner
      * @param color
      */
-    public BoundingBoxBasedView(String ID, MuRETBaseController controller, BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color) {
+    public BoundingBoxBasedView(String ID, ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color) {
         this.ID = ID;
         rectangle = new DraggableRectangle(Color.GOLD);
         rectangle.hideHandles();
@@ -75,7 +75,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
     }
 
 
-    private void init(MuRETBaseController controller, BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color, DraggableRectangle rectangle) {
+    private void init(ImageBasedAbstractController controller, BoundingBoxBasedView parentBoundingBox, OwnerType owner, Color color, DraggableRectangle rectangle) {
         this.controller = controller;
         this.setFocusTraversable(true); // to receive key events
         this.owner = owner;

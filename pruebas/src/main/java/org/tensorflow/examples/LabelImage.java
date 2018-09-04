@@ -31,14 +31,14 @@ import org.tensorflow.Tensor;
 import org.tensorflow.TensorFlow;
 import org.tensorflow.types.UInt8;
 
-/** Sample use of the TensorFlow Java API to label images using a pre-trained model. */
+/** Sample use of the TensorFlow Java API to label imagesold using a pre-trained model. */
 public class LabelImage {
     private static void printUsage(PrintStream s) {
         final String url =
                 "https://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip";
         s.println(
                 "Java program that uses a pre-trained Inception model (http://arxiv.org/abs/1512.00567)");
-        s.println("to label JPEG images.");
+        s.println("to label JPEG imagesold.");
         s.println("TensorFlow version: " + TensorFlow.version());
         s.println();
         s.println("Usage: label_image <model dir> <image file>");
@@ -79,7 +79,7 @@ public class LabelImage {
             // Some constants specific to the pre-trained model at:
             // https://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip
             //
-            // - The model was trained with images scaled to 224x224 pixels.
+            // - The model was trained with imagesold scaled to 224x224 pixels.
             // - The colors, represented as R, G, B in 1-byte each were converted to
             //   float using (value - Mean)/Scale.
             final int H = 224;
@@ -88,7 +88,7 @@ public class LabelImage {
             final float scale = 1f;
 
             // Since the graph is being constructed once per execution here, we can use a constant for the
-            // input image. If the graph were to be re-used for multiple input images, a placeholder would
+            // input image. If the graph were to be re-used for multiple input imagesold, a placeholder would
             // have been more appropriate.
             final Output<String> input = b.constant("input", imageBytes);
             final Output<Float> output =

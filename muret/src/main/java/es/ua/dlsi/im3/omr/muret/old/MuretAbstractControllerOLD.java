@@ -1,5 +1,6 @@
-package es.ua.dlsi.im3.omr.muret;
+package es.ua.dlsi.im3.omr.muret.old;
 
+import es.ua.dlsi.im3.omr.muret.old.DashboardController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;

@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Window;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,22 +45,27 @@ public class OpenSaveFileDialog  {
 
 	public File openFile(String title, String filetypeDescription,
 			String extension) {
-	    File lastFolder = getLastFolder();
-	    FileChooser fc = new FileChooser();
-	    fc.setTitle(title);
-	    fc.setInitialDirectory(lastFolder);
-	    if (extension != null && !extension.equals("*")) {
-		ExtensionFilter filter = new ExtensionFilter(filetypeDescription, ASTERISK + extension);
-		fc.getExtensionFilters().add(filter);
-	    }
-	    File file = fc.showOpenDialog(null);//FXUtils.getActiveWindow());
-	    if (file != null) {
-		saveLastFolder(file.getParentFile());
-	    }
-	    return file;
+        return openFile(null, title, filetypeDescription, extension);
 	}
 
-    public File openFile(String title, String [] filetypeDescriptions,
+    public File openFile(Window ownerWindow, String title, String filetypeDescription,
+                         String extension) {
+        File lastFolder = getLastFolder();
+        FileChooser fc = new FileChooser();
+        fc.setTitle(title);
+        fc.setInitialDirectory(lastFolder);
+        if (extension != null && !extension.equals("*")) {
+            ExtensionFilter filter = new ExtensionFilter(filetypeDescription, ASTERISK + extension);
+            fc.getExtensionFilters().add(filter);
+        }
+        File file = fc.showOpenDialog(ownerWindow);
+        if (file != null) {
+            saveLastFolder(file.getParentFile());
+        }
+        return file;
+    }
+
+    public File openFile(Window ownerWindow, String title, String [] filetypeDescriptions,
                          String [] extensions) {
         if (filetypeDescriptions.length != extensions.length) {
             throw new IM3RuntimeException("The file description length (" + filetypeDescriptions.length + ") show be the same as the extensions length (" + extensions.length + ")");
@@ -73,14 +79,19 @@ public class OpenSaveFileDialog  {
                 ExtensionFilter filter = new ExtensionFilter(filetypeDescriptions[i], ASTERISK + extensions[i]);
                 fc.getExtensionFilters().add(filter);
         }
-        File file = fc.showOpenDialog(null);//FXUtils.getActiveWindow());
+        File file = fc.showOpenDialog(ownerWindow);
         if (file != null) {
             saveLastFolder(file.getParentFile());
         }
         return file;
     }
 
-    public List<File> openFiles(String title, String [] filetypeDescriptions,
+    public File openFile(String title, String [] filetypeDescriptions,
+                         String [] extensions) {
+        return openFile(null, title, filetypeDescriptions, extensions);
+    }
+
+    public List<File> openFiles(Window ownerWindow, String title, String [] filetypeDescriptions,
                          String [] extensions) {
         if (filetypeDescriptions.length != extensions.length) {
             throw new IM3RuntimeException("The file description length (" + filetypeDescriptions.length + ") show be the same as the extensions length (" + extensions.length + ")");
@@ -94,14 +105,19 @@ public class OpenSaveFileDialog  {
             ExtensionFilter filter = new ExtensionFilter(filetypeDescriptions[i], ASTERISK + extensions[i]);
             fc.getExtensionFilters().add(filter);
         }
-        List<File> files = fc.showOpenMultipleDialog(null);
+        List<File> files = fc.showOpenMultipleDialog(ownerWindow);
         if (files != null && !files.isEmpty()) {
             saveLastFolder(files.get(0).getParentFile());
         }
         return files;
     }
 
-    public File saveFile(String title,
+    public List<File> openFiles(String title, String [] filetypeDescriptions,
+                                String [] extensions) {
+        return openFiles(null, title, filetypeDescriptions, extensions);
+    }
+
+    public File saveFile(Window ownerWindow, String title,
 			String filetypeDescription, String extension) {
 		FileChooser fc = new FileChooser();
 	    fc.setTitle(title);
@@ -110,7 +126,7 @@ public class OpenSaveFileDialog  {
 		ExtensionFilter filter = new ExtensionFilter(filetypeDescription, ASTERISK + extension);
 		fc.getExtensionFilters().add(filter);
 
-		File file = fc.showSaveDialog(null);//FXUtils.getActiveWindow());
+		File file = fc.showSaveDialog(ownerWindow);
 		if (file != null) {
 		    saveLastFolder(file.getParentFile());
 		    // windows does not return the extension
@@ -127,4 +143,9 @@ public class OpenSaveFileDialog  {
 		}
 		return file;
 	}
+
+    public File saveFile(String title,
+                         String filetypeDescription, String extension) {
+        return saveFile(null, title, filetypeDescription, extension);
+    }
 }

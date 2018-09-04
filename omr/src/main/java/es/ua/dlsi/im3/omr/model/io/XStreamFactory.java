@@ -12,7 +12,7 @@ import es.ua.dlsi.im3.omr.model.entities.*;
 public class XStreamFactory {
     public static XStream create(AgnosticVersion agnosticVersion) {
         //SortableFieldKeySorter sorter = new SortableFieldKeySorter();
-        //sorter.registerFieldOrder(Project.class, new String[] { "instruments", "images"}); // make instruments in project appear before the ones in pages
+        //sorter.registerFieldOrder(Project.class, new String[] { "instruments", "imagesold"}); // make instruments in project appear before the ones in pages
         //XStream xStream = new XStream();
         //xStream.new Sun14ReflectionProvider(new FieldDictionary(sorter)));
 

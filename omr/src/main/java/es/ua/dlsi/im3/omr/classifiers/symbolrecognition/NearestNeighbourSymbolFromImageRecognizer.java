@@ -15,7 +15,7 @@ import java.util.TreeSet;
 
 /**
  * This classifier returns the exact symbol most similar to this one in the training dataset, with its position included
- * It is trained from a list of folders contained files with tagged images (extension symbolsimages.txt-see HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images)
+ * It is trained from a list of folders contained files with tagged imagesold (extension symbolsimages.txt-see HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images)
  * @autor drizo
  */
 public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourClassifier<AgnosticSymbol, SymbolImagePrototype>  implements ISymbolFromImageDataRecognizer {

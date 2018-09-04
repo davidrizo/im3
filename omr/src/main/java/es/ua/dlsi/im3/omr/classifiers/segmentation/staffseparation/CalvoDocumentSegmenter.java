@@ -43,7 +43,7 @@ public class CalvoDocumentSegmenter implements IDocumentSegmenter {
      * @throws IM3Exception
      */
     public List<Region> segment(int fromCol, int toCol) throws IM3Exception {
-        // first split into images
+        // first split into imagesold
         List<Region> result = new ArrayList<>();
         fillRegions(result, imageMat, fromCol, toCol);
         return result;

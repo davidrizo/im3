@@ -10,7 +10,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * An page in an image. Usually we'll find one or two images in the same image. Compared first X, then Y
+ * An page in an image. Usually we'll find one or two imagesold in the same image. Compared first X, then Y
  * @autor drizo
  */
 public class Page implements Comparable<Page> {
@@ -71,7 +71,7 @@ public class Page implements Comparable<Page> {
     @Override
     public int compareTo(Page o) {
         if (boundingBox == null || o.boundingBox == null) {
-            throw new IM3RuntimeException("Cannot compare images without bounding boxes");
+            throw new IM3RuntimeException("Cannot compare imagesold without bounding boxes");
         }
         return boundingBox.compareTo(o.boundingBox);
     }

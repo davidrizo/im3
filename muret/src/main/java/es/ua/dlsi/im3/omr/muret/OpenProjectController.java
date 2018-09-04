@@ -5,23 +5,17 @@ import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.omr.muret.model.InputOutput;
-import es.ua.dlsi.im3.omr.muret.model.OMRProject;
 import es.ua.dlsi.im3.omr.muret.model.OMRProjectPreview;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -31,12 +25,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
-
 /**
  * @autor drizo
  */
@@ -75,7 +66,7 @@ public class OpenProjectController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 OpenSaveFileDialog openSaveFileDialog = new OpenSaveFileDialog();
-                File file = openSaveFileDialog.openFile("Select a MuRET project file", "MuRET files", "mrt");
+                File file = openSaveFileDialog.openFile(MuRET.getInstance().getMainStage().getOwner(), "Select a MuRET project file", "MuRET files", "mrt");
                 openProject(file);
             }
         };
@@ -83,16 +74,15 @@ public class OpenProjectController implements Initializable {
         flowPaneLastProjects.getChildren().add(button);
     }
 
-    private void openProject(File file) {
-        InputOutput inputOutput = new InputOutput();
+    private void openProject(File mrtFile) {
         try {
-            OMRProject omrProject = inputOutput.load(file.getParentFile());
-            RecentProjectsModel.getInstance().addProject(file.getAbsolutePath());
-            OrderImagesController orderImagesController = MuRET.openWindow("/fxml/muret/orderimages.fxml", true);
-            orderImagesController.loadOMRProject(omrProject);
+            MuRET.getInstance().openMrtFile(mrtFile);
+            RecentProjectsModel.getInstance().addProject(mrtFile.getAbsolutePath());
+            OrderImagesController orderImagesController = (OrderImagesController) MuRET.getInstance().openWindow("/fxml/muret/orderimages.fxml", true, true);
+            orderImagesController.loadOMRProject();
         } catch (IM3Exception e) {
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load project {0}", file.getAbsolutePath());
-            ShowError.show(MuRET.getMainStage(), "Cannot load project file " + file.getName());
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load project {0}", mrtFile.getAbsolutePath());
+            ShowError.show(MuRET.getInstance().getMainStage(), "Cannot load project file " + mrtFile.getName());
         }
     }
 
@@ -121,7 +111,7 @@ public class OpenProjectController implements Initializable {
             posterFrameImage = new Image(omrProjectPreview.getPosterFrameImage().toURI().toURL().toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            ShowError.show(MuRET.getMainStage(), "Cannot read poster frame", e);
+            ShowError.show(MuRET.getInstance().getMainStage(), "Cannot read poster frame", e);
         }
 
         ImageView posterFrameImageView = new ImageView(posterFrameImage);
@@ -143,7 +133,7 @@ public class OpenProjectController implements Initializable {
                 titleText.setText(FileUtils.getFileWithoutPathOrExtension(mrtFile));
             } catch (IOException e) {
                 e.printStackTrace();
-                ShowError.show(MuRET.getMainStage(), "Cannot read file name " + mrtFile.getName(), e);
+                ShowError.show(MuRET.getInstance().getMainStage(), "Cannot read file name " + mrtFile.getName(), e);
             }
         }
 
@@ -162,4 +152,10 @@ public class OpenProjectController implements Initializable {
         RecentProjectsModel.getInstance().clear();
         createRecentProjectsPanel();
     }
+
+    @FXML
+    private void handleClose() {
+        MuRET.getInstance().closeCurrentWindow();
+    }
+
 }

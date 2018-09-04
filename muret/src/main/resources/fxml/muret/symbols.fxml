@@ -6,10 +6,13 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -31,7 +34,10 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                           </accelerator></MenuItem>
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
@@ -62,6 +68,12 @@
             <Button mnemonicParsing="false" onAction="#handleZoomOut" text="Zoom out" />
             <Button mnemonicParsing="false" onAction="#handleZoomReset" text="Zoom reset" />
             <Button mnemonicParsing="false" onAction="#handleZoomToFit" text="Zoom to fit" />
+            <Separator prefHeight="5.0" prefWidth="0.0" />
+            <ToggleButton mnemonicParsing="false" onAction="#handleRecognitionTool" text="Recognition">
+               <toggleGroup>
+                  <ToggleGroup fx:id="toolGroup" />
+               </toggleGroup>
+            </ToggleButton>
         </items>
       </ToolBar>
    </left>
@@ -87,14 +99,28 @@
                   <ToggleButton mnemonicParsing="false" onAction="#handleOpenMusic" text="Music" toggleGroup="$phaseToggleGroup" />
                </children>
             </VBox>
+            <ToolBar fx:id="toolbarToolSpecific" orientation="VERTICAL" prefHeight="40.0" prefWidth="200.0" />
          </children>
       </GridPane>
    </right>
    <center>
-      <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <content>
-            <Pane id="documentAnalysis_mainPane" fx:id="mainPane" prefHeight="200.0" prefWidth="200.0" />
-         </content>
-      </ScrollPane>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPaneSelectedStaff" prefHeight="200.0" prefWidth="200.0">
+               <content>
+                  <BorderPane fx:id="borderPaneSelectedStaff" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+            </ScrollPane>
+            <AnchorPane fx:id="anchorPaneImageView" VBox.vgrow="ALWAYS">
+               <children>
+                  <Pane fx:id="resizedImagePane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
    </center>
 </BorderPane>

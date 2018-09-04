@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * It loads OpenCV library and process images
+ * It loads OpenCV library and process imagesold
  * @autor drizo
  */
 public class OpenCVImageReader {
@@ -22,7 +22,7 @@ public class OpenCVImageReader {
                 //String libraryPath = this.getClass().getResource("/opencv/").getPath();
                 //System.out.println(libraryPath);
 
-                nu.pattern.OpenCV.loadShared(); // it loads the native images
+                nu.pattern.OpenCV.loadShared(); // it loads the native imagesold
                 System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
 
                 //System.setProperty("java.library.path",libraryPath);

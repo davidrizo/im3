@@ -1,21 +1,21 @@
-package es.ua.dlsi.im3.omr.muret.regions;
+package es.ua.dlsi.im3.omr.muret;
 
+import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
-import es.ua.dlsi.im3.omr.muret.BoundingBoxBasedView;
-import es.ua.dlsi.im3.omr.muret.IOMRSymbolBaseView;
-import es.ua.dlsi.im3.omr.muret.ImageBasedAbstractController;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 
 /**
  * Symbol bounding box view
  * @autor drizo
  */
-public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements IOMRSymbolBaseView {
+public class SymbolView extends BoundingBoxBasedView<OMRSymbol>  {
 
-    public SymbolView(String ID, ImageBasedAbstractController controller, RegionView regionView, OMRSymbol owner, Color color) {
+    public SymbolView(String ID, MuRETBaseController controller, RegionView regionView, OMRSymbol owner, Color color) {
         super(ID, controller, regionView, owner, color);
     }
 
@@ -34,8 +34,14 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements IOMRS
         return controller;
     }
 
-    @Override
-    public OMRSymbol getOMRSymbol() {
-        return owner;
+    public PositionInStaff changePosition(int lineSpaces) {
+        return null;
+    }
+
+    public AgnosticSymbolType changeSymbolType(AgnosticSymbolType agnosticSymbolType) {
+        return null;
+    }
+
+    public void setShapeInStaff(Shape newShape) {
     }
 }

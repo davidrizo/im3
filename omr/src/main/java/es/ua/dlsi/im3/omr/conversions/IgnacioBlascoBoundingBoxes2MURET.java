@@ -34,7 +34,7 @@ public class IgnacioBlascoBoundingBoxes2MURET {
         String normalizedName = FileUtils.leaveValidCaracters(workFolder.getName());
         File projectFolder = new File(muretProjectsFolder, normalizedName);
         projectFolder.mkdir();
-        File projectImagesFolder = new File(projectFolder, "images");
+        File projectImagesFolder = new File(projectFolder, "imagesold");
         projectImagesFolder.mkdir();
 
         Project project = new Project(ProjectVersion.v1, NotationType.eMensural);

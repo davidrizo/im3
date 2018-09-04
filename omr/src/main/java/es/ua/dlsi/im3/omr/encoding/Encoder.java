@@ -94,7 +94,8 @@ public class Encoder {
         Measure lastMeasure = null;
         List<ITimedElementInStaff> coreSymbolsOrdered = staff.getCoreSymbolsOrdered();
         Time lastEndTime = null;
-        boolean newSystem = true;
+        boolean newSystem = false;
+        boolean firstSystem = true;
         for (ITimedElementInStaff symbol : coreSymbolsOrdered) {
             if (processSystemBreaks && symbol instanceof SystemBreak) {
                 semanticEncoding.add(new SemanticSymbol(new Barline()));

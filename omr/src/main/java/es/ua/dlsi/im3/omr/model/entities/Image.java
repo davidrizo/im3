@@ -23,11 +23,11 @@ public class Image implements Comparable<Image> {
     public final static int RESIZE_H = 30;
 
     /**
-     * Image name, relative to the path where images are saved
+     * Image name, relative to the path where imagesold are saved
      */
     private String imageRelativeFileName;
     /**
-     * Ordered in the sequence of images
+     * Ordered in the sequence of imagesold
      */
     private int order;
     /**

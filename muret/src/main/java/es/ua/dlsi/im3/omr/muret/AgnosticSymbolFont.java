@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret.symbols;
+package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
@@ -10,12 +10,8 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * It returns the font symbol associated to an agnostic symbol depending on the notation type

@@ -38,7 +38,8 @@ public class OrderImagesController implements Initializable {
         flowPaneOrderImages.prefWidthProperty().bind(scrollPane.widthProperty());
     }
 
-    public void loadOMRProject(OMRProject omrProject) {
+    public void loadOMRProject() {
+        OMRProject omrProject = MuRET.getInstance().getModel().getCurrentProject();
         textTitle.setText(omrProject.getName());
         textComposer.setText(omrProject.getComposer());
 
@@ -69,12 +70,12 @@ public class OrderImagesController implements Initializable {
     }
 
     private void openImage(OMRImage omrImage) {
-        DocumentAnalysisController controller = MuRET.openWindow("/fxml/muret/documentanalysis.fxml", true);
+        DocumentAnalysisController controller = (DocumentAnalysisController) MuRET.getInstance().openWindow("/fxml/muret/documentanalysis.fxml", true, true);
         try {
             controller.loadOMRImage(omrImage);
         } catch (IM3Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot open image", e);
-            ShowError.show(MuRET.getMainStage(), "Cannot open image", e);
+            ShowError.show(MuRET.getInstance().getMainStage(), "Cannot open image", e);
         }
     }
 
@@ -91,4 +92,10 @@ public class OrderImagesController implements Initializable {
         Button button = Utils.addOpenOtherProjectButton("/fxml/muret/images/orderimages_add.png", 188, 245, "buttonOrderImagesPortrait", eventHandler);
         flowPaneOrderImages.getChildren().add(button);
     }
+
+    @FXML
+    private void handleClose() {
+        MuRET.getInstance().closeCurrentWindow();
+    }
+
 }

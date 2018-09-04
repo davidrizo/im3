@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret.model;
+package es.ua.dlsi.im3.omr.muret.old;
 
 
 import es.ua.dlsi.im3.core.IM3Exception;
@@ -10,7 +10,9 @@ import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.*;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.Strokes;
-import es.ua.dlsi.im3.omr.muret.OMRApp;
+import es.ua.dlsi.im3.omr.muret.model.InputOutput;
+import es.ua.dlsi.im3.omr.muret.model.OMRProject;
+import es.ua.dlsi.im3.omr.muret.old.OMRApp;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 

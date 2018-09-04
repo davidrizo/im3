@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * It splits the document in images, and in turn each page into regions that will contain different types of content (title, staves...)
+ * It splits the document in imagesold, and in turn each page into regions that will contain different types of content (title, staves...)
  */
 public interface IDocumentSegmenter {
 }

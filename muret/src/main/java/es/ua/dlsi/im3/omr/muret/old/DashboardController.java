@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.omr.muret;
+package es.ua.dlsi.im3.omr.muret.old;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.Pair;
@@ -7,12 +7,11 @@ import es.ua.dlsi.im3.gui.javafx.ViewLoader;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowConfirmation;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
-import es.ua.dlsi.im3.omr.muret.imagesold.ImageThumbnailView;
-import es.ua.dlsi.im3.omr.muret.imagesold.ImagesController;
+import es.ua.dlsi.im3.omr.muret.old.imagesold.ImageThumbnailView;
+import es.ua.dlsi.im3.omr.muret.old.imagesold.ImagesController;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
-import es.ua.dlsi.im3.omr.muret.model.OMRModel;
-import es.ua.dlsi.im3.omr.muret.regions.DocumentAnalysisController;
-import es.ua.dlsi.im3.omr.muret.symbols.SymbolCorrectionController;
+import es.ua.dlsi.im3.omr.muret.old.regions.DocumentAnalysisController;
+import es.ua.dlsi.im3.omr.muret.old.symbols.SymbolCorrectionController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -227,7 +226,7 @@ public class DashboardController implements Initializable {
     public void openImagesView() {
         try {
             if (imagesViewPair == null) {
-                imagesViewPair = ViewLoader.loadView("muret/imagesold.fxml");
+                imagesViewPair = ViewLoader.loadView("muret/images.fxml");
                 imagesViewPair.getX().setDashboard(this);
             }
             setMainPane(imagesViewPair.getY());
@@ -245,7 +244,7 @@ public class DashboardController implements Initializable {
 
     public void openImageDocumentAnalysis(OMRImage omrImage) {
         try {
-            Pair<DocumentAnalysisController, Parent> pair = ViewLoader.loadView("muret/documentanalysis.fxml");
+            Pair<DocumentAnalysisController, Parent> pair = ViewLoader.loadView("muret/documentanalysisold.fxml");
             pair.getX().setDashboard(this);
             pair.getX().setOMRImage(omrImage);
             setMainPane(pair.getY());

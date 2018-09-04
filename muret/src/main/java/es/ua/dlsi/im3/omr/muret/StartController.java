@@ -23,7 +23,7 @@ public class StartController implements Initializable {
 
     @FXML
     private void handleOpenProject() {
-        MuRET.openWindow("/fxml/muret/openproject.fxml", false);
+        MuRET.getInstance().openWindow("/fxml/muret/openproject.fxml", false, true);
     }
 
 
