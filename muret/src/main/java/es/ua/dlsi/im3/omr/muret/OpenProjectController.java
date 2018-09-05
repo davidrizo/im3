@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.omr.muret;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.gui.javafx.BackgroundProcesses;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.model.OMRProjectPreview;
@@ -75,15 +76,8 @@ public class OpenProjectController implements Initializable {
     }
 
     private void openProject(File mrtFile) {
-        try {
-            MuRET.getInstance().openMrtFile(mrtFile);
-            RecentProjectsModel.getInstance().addProject(mrtFile.getAbsolutePath());
-            OrderImagesController orderImagesController = (OrderImagesController) MuRET.getInstance().openWindow("/fxml/muret/orderimages.fxml", true, true);
-            orderImagesController.loadOMRProject();
-        } catch (IM3Exception e) {
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load project {0}", mrtFile.getAbsolutePath());
-            ShowError.show(MuRET.getInstance().getMainStage(), "Cannot load project file " + mrtFile.getName());
-        }
+        OrderImagesController orderImagesController = (OrderImagesController) MuRET.getInstance().openWindow("/fxml/muret/orderimages.fxml", true, true);
+        orderImagesController.loadOMRProject(mrtFile);
     }
 
     private void addRecentProject(String mrtFilePath) throws FileNotFoundException, ImportException {

@@ -1,10 +1,12 @@
 package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.gui.javafx.BackgroundProcesses;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
 import es.ua.dlsi.im3.omr.muret.model.OMRProject;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,8 +17,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,26 +42,45 @@ public class OrderImagesController implements Initializable {
         flowPaneOrderImages.prefWidthProperty().bind(scrollPane.widthProperty());
     }
 
-    public void loadOMRProject() {
-        OMRProject omrProject = MuRET.getInstance().getModel().getCurrentProject();
-        textTitle.setText(omrProject.getName());
-        textComposer.setText(omrProject.getComposer());
+    public void loadOMRProject(File mrtFile) {
+        Callable<Void> loadImagesProcess = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                MuRET.getInstance().openMrtFile(mrtFile);
+                RecentProjectsModel.getInstance().addProject(mrtFile.getAbsolutePath());
+                OMRProject omrProject = MuRET.getInstance().getModel().getCurrentProject();
+                Platform.runLater(new Runnable() {
+                                      @Override
+                                      public void run() {
+                                          textTitle.setText(omrProject.getName());
+                                          textComposer.setText(omrProject.getComposer());
 
-        try {
-            for (OMRImage omrImage : omrProject.imagesProperty()) {
-                createImageButton(omrImage);
+                                      }
+                                  });
+
+                for (OMRImage omrImage : omrProject.imagesProperty()) {
+                    createImageButton(omrImage);
+                }
+                createAddButton();
+                return null;
             }
-        } catch (IM3Exception e) {
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load image", e);
-        }
+        };
 
-        createAddButton();
+        BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
+        backgroundProcesses.launch(flowPaneOrderImages.getScene().getWindow(), "Loading project", null, "Cannot load project images", loadImagesProcess);
+
     }
 
     private void createImageButton(OMRImage omrImage) throws IM3Exception {
         ImageThumbnailView imageThumbnailView = new ImageThumbnailView(omrImage);
         imageThumbnailView.getStyleClass().add("imagethumbnail");
-        flowPaneOrderImages.getChildren().add(imageThumbnailView);
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                flowPaneOrderImages.getChildren().add(imageThumbnailView);
+            }
+        });
 
         imageThumbnailView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
