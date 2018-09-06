@@ -18,6 +18,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .button, .toggle-button {
     -fx-background-color: #7DE2DB;
     -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.columnLabels {
+    -fx-text-fill: #7DE2DB;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+.moreButton {
+    -fx-background-color: transparent;
 }
 
 #mainpane {
@@ -84,6 +94,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-spacing: 10;
 }
 
+.buttonFileNameText {
+    -fx-fill: #FFFFFF;
+}
+
 .buttonRecentProject_text {
     -fx-fill: #FFFFFF;
 }
@@ -96,6 +110,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-hgap: 16;
     -fx-vgap: 16;
     -fx-background-color: #103339;
+}
+
+#flowpane_orderimages * {
+    -fx-border-width: 0;
 }
 
 #scrollPane_orderimages {
@@ -114,6 +132,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .buttonOrderImagesPortrait {
     -fx-pref-width: 188;
     -fx-pref-height: 245;
+}
+
+.statusFilename {
+    -fx-fill: #7DE2DB;
+}
+.orderImagesDropZoneRectangle_hidden {
+    -fx-fill: transparent;
+}
+
+.orderImagesDropZoneRectangle_visible {
+    -fx-fill: #7DE2DB;
+}
+
+.orderImagesInstruments {
+    -fx-text-fill: #FFFFFF;
+    -fx-fill: transparent;
 }
 
 .tool-bar {

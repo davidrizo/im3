@@ -36,7 +36,9 @@ public class BackgroundProcesses {
                 @Override
                 public void run() {
                     //TODO Mejor un flash
-                    ShowMessage.show(ownerWindow, finishedMessage);
+                    if (finishedMessage != null) {
+                        ShowMessage.show(ownerWindow, finishedMessage);
+                    }
                 }
             });
         });

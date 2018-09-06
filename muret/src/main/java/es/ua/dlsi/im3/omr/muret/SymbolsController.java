@@ -3,6 +3,8 @@ package es.ua.dlsi.im3.omr.muret;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.interaction.ISelectable;
 import es.ua.dlsi.im3.gui.javafx.BackgroundProcesses;
+import es.ua.dlsi.im3.gui.javafx.collections.ObservableListViewListModelLink;
+import es.ua.dlsi.im3.gui.javafx.collections.ObservableListViewSetModelLink;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.AgnosticSequenceRecognizer;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.HorizontallyPositionedSymbol;
@@ -10,8 +12,8 @@ import es.ua.dlsi.im3.omr.muret.model.*;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.FXCollections;
-import javafx.collections.SetChangeListener;
-import javafx.collections.transformation.SortedList;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,28 +72,12 @@ public class SymbolsController extends MuRETBaseController {
     ToolBar toolbarToolSpecific;
 
     AgnosticStaffView agnosticStaffView;
-    /**
-     * Use this one to browse
-     */
-    SortedList<RegionView> regionViews;
-    /**
-     * But add to the underlying list
-     */
-    LinkedList<RegionView> regionViews_data;
+
+    ObservableListViewListModelLink<OMRRegion, RegionView> regions;
+
+    ObservableListViewSetModelLink<OMRSymbol, SymbolView> symbols;
 
     private RegionView selectedRegionView;
-    /**
-     * Use this one to browse
-     */
-    SortedList<SymbolView> symbolViews;
-    /**
-     * But add to the underlying list
-     */
-    LinkedList<SymbolView> symbolViews_data;
-
-    HashMap<OMRSymbol, SymbolView> omrSymbolSymbolViewHashMap;
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -107,7 +94,6 @@ public class SymbolsController extends MuRETBaseController {
         //scrollPaneSelectedStaff.prefWidthProperty().bind(scrollPaneSelectedStaff.minWidthProperty());
         selectedStaffPane.minWidthProperty().bind(selectedStaffImageView.fitWidthProperty());
         selectedStaffPane.prefWidthProperty().bind(selectedStaffPane.minWidthProperty());
-
     }
 
     public void loadOMRImage(OMRImage omrImage) throws IM3Exception {
@@ -116,13 +102,24 @@ public class SymbolsController extends MuRETBaseController {
         imageView.setFitHeight(omrImage.getImage().getHeight());
         imageView.setFitWidth(omrImage.getImage().getWidth());
         imageView.setPreserveRatio(true);
-        regionViews_data = new LinkedList<>();
-        regionViews = new SortedList<>(FXCollections.observableList(regionViews_data), new Comparator<RegionView>() {
+
+        LinkedList<OMRRegion> regionsOfAllPages = new LinkedList<>();
+        for (OMRPage page : omrImage.getPages()) {
+            for (OMRRegion region : page.regionsProperty()) {
+                regionsOfAllPages.add(region);
+            }
+        }
+
+        ObservableList<OMRRegion> omrRegionObservableList = FXCollections.observableList(regionsOfAllPages);
+
+        regions = new ObservableListViewListModelLink<>(omrRegionObservableList, new Function<OMRRegion, RegionView>() {
             @Override
-            public int compare(RegionView o1, RegionView o2) {
-                return o1.owner.compareTo(o2.owner);
+            public RegionView apply(OMRRegion omrRegion) {
+                return new RegionView("Region" + omrRegion.hashCode(), SymbolsController.this, null, omrRegion, REGION_COLOR);
             }
         });
+
+        resizedImagePane.getChildren().addAll(regions.getViews()); //TODO Ver si es necesario sincronizar
 
         DoubleBinding scaleX = anchorPaneImageView.widthProperty().divide(omrImage.getImage().widthProperty());
         DoubleBinding scaleY = anchorPaneImageView.heightProperty().divide(omrImage.getImage().heightProperty());
@@ -133,16 +130,6 @@ public class SymbolsController extends MuRETBaseController {
         scaleTransformation.pivotXProperty().bind(resizedImagePane.layoutXProperty());
         scaleTransformation.pivotYProperty().bind(resizedImagePane.layoutYProperty());
         resizedImagePane.getTransforms().add(scaleTransformation);
-
-
-        for (OMRPage page : omrImage.getPages()) {
-            for (OMRRegion region : page.regionsProperty()) {
-                RegionView regionView = new RegionView("Region" + region.hashCode(), this, null, region, REGION_COLOR);
-                regionViews_data.add(regionView);
-                resizedImagePane.getChildren().add(regionView);
-                //TODO Que cuando se seleccione que se cambie lo de arriba y se muestre seleccionado
-            }
-        }
     }
 
     @Override
@@ -190,47 +177,46 @@ public class SymbolsController extends MuRETBaseController {
 
     private void loadSelectedRegionSymbols() {
         symbolViewsGroup.getChildren().clear();//TODO Asociarlo con data
-        omrSymbolSymbolViewHashMap = new HashMap<>();
-        symbolViews_data = new LinkedList<>();
-        symbolViews = new SortedList<>(FXCollections.observableList(symbolViews_data), new Comparator<SymbolView>() {
+        symbols = new ObservableListViewSetModelLink<OMRSymbol, SymbolView>(selectedRegionView.getOwner().symbolsProperty(), new Function<OMRSymbol, SymbolView>() {
             @Override
-            public int compare(SymbolView o1, SymbolView o2) {
-                return o1.owner.compareTo(o2.owner);
+            public SymbolView apply(OMRSymbol omrSymbol) {
+                return new SymbolView("Symbol" + omrSymbol.hashCode(), SymbolsController.this, selectedRegionView, omrSymbol, SYMBOL_COLOR);
             }
         });
 
-        // first load already existing symbols
-        for (OMRSymbol omrSymbol: selectedRegionView.getOwner().symbolsProperty()) {
-            addSymbol(omrSymbol);
+        for (SymbolView symbolView: symbols.getViews()) {
+            try {
+                agnosticStaffView.addSymbol(symbolView);
+            } catch (IM3Exception e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Error adding new symbol " + symbolView.owner + " to staff", e);
+                ShowError.show(MuRET.getInstance().getMainStage(), "Error adding new symbol " + symbolView.owner + " to staff", e);
+            }
         }
 
-        // then add a listener to update the view when the model changes
-        selectedRegionView.getOwner().symbolsProperty().addListener(new SetChangeListener<OMRSymbol>() {
+        symbolViewsGroup.getChildren().addAll(symbols.getViews());
+        symbols.getViews().addListener(new ListChangeListener<SymbolView>() {
             @Override
-            public void onChanged(Change<? extends OMRSymbol> change) {
-                Logger.getLogger(SymbolsController.class.getName()).log(Level.INFO, "Selected region symbols changed {0}", change);
-                //TODO Inserción
-                if (change.wasRemoved()) {
-                    OMRSymbol removedElement = change.getElementRemoved();
-                } else if (change.wasAdded()) {
-                    addSymbol(change.getElementAdded());
+            public void onChanged(Change<? extends SymbolView> change) {
+                while (change.next()) {
+                    if (change.wasRemoved()) {
+                        for (SymbolView removed : change.getRemoved()) {
+                            symbolViewsGroup.getChildren().remove(removed);
+                            agnosticStaffView.remove(removed);
+                        }
+                    } else if (change.wasAdded()) {
+                        for (SymbolView added : change.getAddedSubList()) {
+                            symbolViewsGroup.getChildren().add(added);
+                            try {
+                                agnosticStaffView.addSymbol(added);
+                            } catch (IM3Exception e) {
+                                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Error adding new symbol " + added.owner + " to staff", e);
+                                ShowError.show(MuRET.getInstance().getMainStage(), "Error adding new symbol " + added.owner + " to staff", e);
+                            }
+                        }
+                    }
                 }
             }
         });
-    }
-
-    private void addSymbol(OMRSymbol omrSymbol) {
-        SymbolView symbolView = new SymbolView("Symbol" + omrSymbol.hashCode(), this, selectedRegionView, omrSymbol, SYMBOL_COLOR);
-        omrSymbolSymbolViewHashMap.put(omrSymbol, symbolView);
-        symbolViews_data.add(symbolView);
-        symbolViewsGroup.getChildren().add(symbolView); //TODO enlazar group con data
-
-        try {
-            agnosticStaffView.addSymbol(symbolView);
-        } catch (IM3Exception e) {
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot a symbol to the agnostic staff", e);
-            ShowError.show(MuRET.getInstance().getMainStage(), "Cannot a symbol to the agnostic staff", e);
-        }
     }
 
     @FXML

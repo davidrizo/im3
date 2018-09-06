@@ -2,8 +2,10 @@ package es.ua.dlsi.im3.omr.muret.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.PatriarcaFont;
@@ -316,5 +318,11 @@ public class OMRProject {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    public void synchronizeAgnosticSemantic() throws ImportException {
+        //TODO
+        MEISongImporter importer = new MEISongImporter();
+        scoreSong = importer.importSong(new File("/Users/drizo/Documents/EASD.A/docencia/alicante-2017-2018/inv/imagenes_patriarca/PATRIARCA2017/patriarca.mei"));
     }
 }

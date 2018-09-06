@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 /**
  * @autor drizo
  */
-public class RegionView extends BoundingBoxBasedView<OMRRegion> {
+public class RegionView extends BoundingBoxBasedView<OMRRegion> implements Comparable<RegionView> {
     public RegionView(String ID, MuRETBaseController controller, PageView pageView, OMRRegion owner, Color color) {
         super(ID, controller, pageView, owner, color);
     }
@@ -27,5 +27,10 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
     @Override
     public ISelectableTraversable getSelectionParent() {
         return controller;
+    }
+
+    @Override
+    public int compareTo(RegionView o) {
+        return owner.compareTo(o.owner);
     }
 }

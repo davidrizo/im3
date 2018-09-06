@@ -2,7 +2,7 @@ package es.ua.dlsi.im3.omr.muret.old;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.NotationType;
-import es.ua.dlsi.im3.gui.javafx.dialogs.FXMLDialog;
+import es.ua.dlsi.im3.gui.javafx.dialogs.FXMLViewControllerDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.prefs.Preferences;
 
-public class NewOpenProjectDialogController extends FXMLDialog {
+public class NewOpenProjectDialogController extends FXMLViewControllerDialog {
     static final String PROPERTY_TRAINING = "OMRBIMODALTRAININGFILE";
     static final String PROPERTY_LASTPROJECT = "OMRLASTPROJECT";
 

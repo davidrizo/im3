@@ -19,6 +19,7 @@ package es.ua.dlsi.im3.gui.javafx.dialogs;
 import java.util.Optional;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  *
@@ -43,5 +44,24 @@ public class ShowInput {
 		} else {
 			return null;
 		}
+    }
+
+
+    /**
+     * @return null when cancelled
+     */
+    public static String show(Window ownerWindow, String title, String message) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.initOwner(ownerWindow);
+        dialog.setHeaderText(title);
+        dialog.setContentText(message);
+
+        // Traditional way to get the response value.
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            return result.get();
+        } else {
+            return null;
+        }
     }
 }

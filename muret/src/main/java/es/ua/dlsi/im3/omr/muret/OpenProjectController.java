@@ -137,6 +137,18 @@ public class OpenProjectController implements Initializable {
             vBoxTitleComposer.getChildren().add(composerText);
         }
 
+        EventHandler<ActionEvent> eventHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //TODO
+            }
+        };
+        Button moreButton = Utils.addOpenOtherProjectButton("/fxml/muret/images/dots.png", 22, 6, "moreButton", eventHandler);
+        anchorPane.getChildren().add(moreButton);
+        AnchorPane.setLeftAnchor(moreButton, 10.0);
+        AnchorPane.setTopAnchor(moreButton, 10.0);
+
+
         //button.setGraphic(stackPane);
         flowPaneLastProjects.getChildren().add(anchorPane);
     }

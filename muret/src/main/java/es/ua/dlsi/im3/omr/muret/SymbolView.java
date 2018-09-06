@@ -13,7 +13,7 @@ import javafx.scene.shape.Shape;
  * Symbol bounding box view
  * @autor drizo
  */
-public class SymbolView extends BoundingBoxBasedView<OMRSymbol>  {
+public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements Comparable<SymbolView> {
 
     public SymbolView(String ID, MuRETBaseController controller, RegionView regionView, OMRSymbol owner, Color color) {
         super(ID, controller, regionView, owner, color);
@@ -43,5 +43,10 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol>  {
     }
 
     public void setShapeInStaff(Shape newShape) {
+    }
+
+    @Override
+    public int compareTo(SymbolView o) {
+        return owner.compareTo(o.owner);
     }
 }

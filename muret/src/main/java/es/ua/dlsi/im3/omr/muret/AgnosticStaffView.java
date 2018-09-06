@@ -210,7 +210,7 @@ public class AgnosticStaffView extends VBox {
         }
     }*/
 
-    public void onSymbolRemoved(BoundingBoxBasedView elementView) {
+    public void remove(BoundingBoxBasedView elementView) {
         Shape shape = shapesInStaff.remove(elementView.getOwner());
         if (shape == null) {
             throw new IM3RuntimeException("Cannot find shape for element " + elementView.getOwner());

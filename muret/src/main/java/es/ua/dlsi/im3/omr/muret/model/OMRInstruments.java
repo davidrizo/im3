@@ -5,12 +5,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 public class OMRInstruments {
     ObservableSet<OMRInstrument> instrumentSet;
 
     public OMRInstruments() {
-        instrumentSet = FXCollections.emptyObservableSet();
+        instrumentSet = FXCollections.observableSet(new TreeSet<>());
     }
 
     public Set<OMRInstrument> getInstrumentSet() {

@@ -79,7 +79,13 @@ public abstract class MuRETBaseController implements Initializable, ISelectableT
 
     @FXML
     private void handleOpenMusic() {
-        MuRET.getInstance().openWindow("/fxml/muret/music.fxml", true, true);
+        MusicController musicController = MuRET.getInstance().openWindow("/fxml/muret/music.fxml", true, true);
+        try {
+            musicController.loadScoreSongView();
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load music screen", e);
+            ShowError.show(MuRET.getInstance().getMainStage(),"Cannot load music screen", e);
+        }
     }
 
     @FXML

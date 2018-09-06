@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
@@ -18,6 +19,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane id="mainpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="535.0" prefWidth="836.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.DocumentAnalysisController">
    <top>
@@ -66,6 +68,13 @@
             <Button mnemonicParsing="false" onAction="#handleZoomOut" text="Zoom out" />
             <Button mnemonicParsing="false" onAction="#handleZoomReset" text="Zoom reset" />
             <Button mnemonicParsing="false" onAction="#handleZoomToFit" text="Zoom to fit" />
+            <Separator prefHeight="1.0" prefWidth="0.0" />
+            <ToggleButton fx:id="toggleManual" mnemonicParsing="false" text="Manual">
+               <toggleGroup>
+                  <ToggleGroup fx:id="toolToggle" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton fx:id="toggleAutomatic" mnemonicParsing="false" text="Automatic" toggleGroup="$toolToggle" />
         </items>
       </ToolBar>
    </left>
@@ -91,14 +100,24 @@
                   <ToggleButton mnemonicParsing="false" onAction="#handleOpenMusic" text="Music" toggleGroup="$phaseToggleGroup" />
                </children>
             </VBox>
+            <ToolBar fx:id="toolbarToolSpecific" orientation="VERTICAL" prefHeight="40.0" prefWidth="200.0" />
          </children>
       </GridPane>
    </right>
    <center>
-      <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <content>
-            <AnchorPane id="documentAnalysis_mainPane" fx:id="imagePane" prefHeight="200.0" prefWidth="200.0" />
-         </content>
-      </ScrollPane>
+      <VBox spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <content>
+                  <AnchorPane id="documentAnalysis_mainPane" fx:id="imagePane" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+            </ScrollPane>
+            <AnchorPane prefHeight="15.0" prefWidth="637.0">
+               <children>
+                  <Text fx:id="textFileName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="statusFilename" text="Filename" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
    </center>
 </BorderPane>

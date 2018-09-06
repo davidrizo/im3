@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane id="mainpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="535.0" prefWidth="836.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.SymbolsController">
+<BorderPane id="mainpane" fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="535.0" prefWidth="836.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.SymbolsController">
    <top>
       <HBox id="menu" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
          <children>

@@ -11,10 +11,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.io.File;
@@ -54,13 +59,14 @@ public class OrderImagesController implements Initializable {
                                       public void run() {
                                           textTitle.setText(omrProject.getName());
                                           textComposer.setText(omrProject.getComposer());
-
+                                          createDropZone();
                                       }
                                   });
 
                 for (OMRImage omrImage : omrProject.imagesProperty()) {
                     createImageButton(omrImage);
                 }
+
                 createAddButton();
                 return null;
             }
@@ -71,14 +77,16 @@ public class OrderImagesController implements Initializable {
 
     }
 
+
     private void createImageButton(OMRImage omrImage) throws IM3Exception {
-        ImageThumbnailView imageThumbnailView = new ImageThumbnailView(omrImage);
+        ImageThumbnailView imageThumbnailView = new ImageThumbnailView(this, omrImage);
         imageThumbnailView.getStyleClass().add("imagethumbnail");
 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 flowPaneOrderImages.getChildren().add(imageThumbnailView);
+                createDropZone();
             }
         });
 
@@ -90,6 +98,8 @@ public class OrderImagesController implements Initializable {
                 }
             }
         });
+
+        createDragAndDrop(imageThumbnailView);
     }
 
     private void openImage(OMRImage omrImage) {
@@ -121,4 +131,77 @@ public class OrderImagesController implements Initializable {
         MuRET.getInstance().closeCurrentWindow();
     }
 
+
+    private void createDropZone() {
+        Rectangle dropbox = new Rectangle();
+        dropbox.getStyleClass().add("orderImagesDropZoneRectangle_hidden");
+        dropbox.setHeight(188); //cannot set it in css
+        dropbox.setWidth(5);
+        flowPaneOrderImages.getChildren().add(dropbox);
+        //rectangle.getStyleClass().add("orderImagesDropZoneRectangle_hidden");
+
+        dropbox.setOnDragEntered(event -> {
+            dropbox.getStyleClass().setAll("orderImagesDropZoneRectangle_visible");
+        });
+
+        dropbox.setOnDragExited(event -> {
+            dropbox.getStyleClass().setAll("orderImagesDropZoneRectangle_hidden");
+        });
+
+        /*dropbox.setOnDragOver((DragEvent event) -> {
+            //TODOif (event.getGestureSource() != bodyImage &&
+            //  event.getDragboard().hasString()) {
+
+            event.acceptTransferModes(TransferMode.MOVE);
+        });
+
+        dropbox.setOnDragDropped(event -> {
+            //TODO Refactorizar
+            // Reorder imagesold
+            Dragboard db = event.getDragboard();
+            if (db.hasString()) {
+                int toOrder = imageView.getOMRImage().getOrder()-1;
+                if (insertAfter) {
+                    toOrder++;
+                }
+                Logger.getLogger(ImagesController.class.getName()).log(Level.INFO, "Drag&drop: moving image at position {0} to position {1}", new Object[]{db.getString(), toOrder});
+                moveThumbnail(imageView, Integer.parseInt(db.getString()), toOrder);
+
+                event.setDropCompleted(true);
+                event.consume();
+            }
+        });*/
+
+    }
+
+    private void createDragAndDrop(ImageThumbnailView imageThumbnailView) {
+        imageThumbnailView.setOnDragDetected(event -> {
+            Dragboard db = imageThumbnailView.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            // Store the node ID in order to know what is dragged.
+            content.putString(new Integer(imageThumbnailView.getOMRImage().getOrder()-1).toString());
+            db.setContent(content);
+            event.consume();
+        });
+
+        //TODO Resto
+        /*initDropZone(imageView.getLeftDropbox(), imageView, false);
+        initDropZone(imageView.getRightDropbox(), imageView, true);
+
+        imageView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                doOpenImage(imageView);
+            }
+        });
+
+        imageView.setOnMouseEntered(event -> {
+            imageView.highlight(true);
+        });
+
+        imageView.setOnMouseExited(event -> {
+            imageView.highlight(false);
+        });*/
+
+
+    }
 }

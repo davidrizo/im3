@@ -34,7 +34,7 @@ public class SelectionManager {
     }
 
     public void select(ISelectable ... elements) {
-        selectedElements.clear();
+        clearSelection();
         for (ISelectable selectable: elements) {
             addElementToSelection(selectable);
         }
