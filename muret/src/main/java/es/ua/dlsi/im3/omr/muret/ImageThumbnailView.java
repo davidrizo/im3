@@ -1,20 +1,16 @@
 package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.gui.javafx.dialogs.FXMLDialog;
-import es.ua.dlsi.im3.gui.javafx.dialogs.FXMLViewControllerDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
-import es.ua.dlsi.im3.omr.muret.model.OMRInstrument;
 import es.ua.dlsi.im3.omr.muret.old.OMRApp;
+import es.ua.dlsi.im3.omr.muret.old.PredefinedIcon;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

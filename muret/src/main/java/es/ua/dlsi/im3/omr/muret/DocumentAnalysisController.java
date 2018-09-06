@@ -1,44 +1,37 @@
 package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.gui.command.CommandManager;
+import es.ua.dlsi.im3.gui.command.ICommand;
+import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
 import es.ua.dlsi.im3.gui.interaction.ISelectable;
 import es.ua.dlsi.im3.gui.interaction.SelectionManager;
-import es.ua.dlsi.im3.gui.javafx.collections.ObservableListViewListModelLink;
 import es.ua.dlsi.im3.gui.javafx.collections.ObservableListViewSetModelLink;
-import es.ua.dlsi.im3.gui.javafx.dialogs.FXMLDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.model.*;
 import es.ua.dlsi.im3.omr.muret.old.OMRApp;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.SetChangeListener;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 
 import java.net.URL;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @autor drizo
@@ -81,6 +74,8 @@ public class DocumentAnalysisController extends MuRETBaseController {
     enum InteractionMode {eIdle, eSplittingPages, eSplittingRegions, eDrawingPages, eDrawingRegions};
 
     InteractionMode interactionMode;
+
+    CommandManager commandManager;
 
     class PageContents implements Comparable<PageContents> {
         OMRPage omrPage;
@@ -128,10 +123,29 @@ public class DocumentAnalysisController extends MuRETBaseController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+        commandManager = new CommandManager();
         imagePane.prefWidthProperty().bind(scrollPane.widthProperty());
         selectionManager = new SelectionManager();
         interactionMode = InteractionMode.eIdle;
         initTools();
+        initInteraction();
+    }
+
+    private void initInteraction() {
+        imagePane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (interactionMode == InteractionMode.eSplittingPages) {
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                        doSplitPage(event.getX(), event.getY());
+                    }
+                } else if (interactionMode == InteractionMode.eSplittingRegions) {
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                        doSplitRegion(event.getX(), event.getY());
+                    }
+                }
+            }
+        });
     }
 
     private void initTools() {
@@ -139,6 +153,7 @@ public class DocumentAnalysisController extends MuRETBaseController {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
                 toolbarToolSpecific.getItems().clear();
+                interactionMode = InteractionMode.eIdle;
                 changeCursor(Cursor.DEFAULT);
                 if (newValue == toggleAutomatic) {
                     createAutomaticRecognitionTools();
@@ -162,6 +177,7 @@ public class DocumentAnalysisController extends MuRETBaseController {
         Button recognizePages = new Button("Pages");
         toolbarToolSpecific.getItems().add(recognizePages);
 
+
         Button recognizeRegions = new Button("Regions in pages");
         toolbarToolSpecific.getItems().add(recognizeRegions);
     }
@@ -178,6 +194,10 @@ public class DocumentAnalysisController extends MuRETBaseController {
                 doClear();
             }
         });
+
+        ToggleButton select = new ToggleButton("Select");
+        select.setToggleGroup(toolSpecificToggle);
+        toolbarToolSpecific.getItems().add(select);
 
         ToggleButton splitPages = new ToggleButton("Split pages");
         splitPages.setToggleGroup(toolSpecificToggle);
@@ -198,7 +218,7 @@ public class DocumentAnalysisController extends MuRETBaseController {
         toolSpecificToggle.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                if (newValue == null) {
+                if (newValue == null || newValue == select) {
                     changeCursor(Cursor.DEFAULT);
                     interactionMode = InteractionMode.eIdle;
                 } else if (newValue == splitPages) {
@@ -372,4 +392,79 @@ public class DocumentAnalysisController extends MuRETBaseController {
     public ISelectable next(ISelectable s) {
         return null;
     }
+
+
+    private void doSplitPage(double x, double y) {
+        ICommand command = new ICommand() {
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                omrImage.splitPageAt(x);
+                //loadPages(); //TODO observables
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return false; //TODO
+            }
+
+            @Override
+            public void undo() {
+
+            }
+
+            @Override
+            public void redo() {
+
+            }
+
+            @Override
+            public String getEventName() {
+                return "Create regions";
+            }
+        };
+
+        try {
+            commandManager.executeCommand(command);
+        } catch (IM3Exception e) {
+            e.printStackTrace();
+            ShowError.show(OMRApp.getMainStage(), "Cannot split page", e);
+        }
+    }
+
+    private void doSplitRegion(double x, double y) {
+        ICommand command = new ICommand() {
+            @Override
+            public void execute(IObservableTaskRunner observer) throws Exception {
+                omrImage.splitRegionAt(x, y);
+                //loadPages(); //TODO observables
+            }
+
+            @Override
+            public boolean canBeUndone() {
+                return false; //TODO
+            }
+
+            @Override
+            public void undo() {
+
+            }
+
+            @Override
+            public void redo() {
+
+            }
+
+            @Override
+            public String getEventName() {
+                return "Create regions";
+            }
+        };
+        try {
+            commandManager.executeCommand(command);
+        } catch (IM3Exception e) {
+            e.printStackTrace();
+            ShowError.show(OMRApp.getMainStage(), "Cannot split region", e);
+        }
+    }
+
 }

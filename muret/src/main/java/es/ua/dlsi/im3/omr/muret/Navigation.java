@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.omr.muret.old.Screen;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
