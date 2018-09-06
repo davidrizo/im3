@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -122,6 +123,7 @@
                   </VBox>
                </content>
             </ScrollPane>
+            <FlowPane fx:id="agnosticCorrectionPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="SOMETIMES" />
             <AnchorPane fx:id="anchorPaneImageView" VBox.vgrow="ALWAYS">
                <children>
                   <Pane fx:id="resizedImagePane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

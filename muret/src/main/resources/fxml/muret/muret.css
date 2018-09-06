@@ -34,7 +34,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-color: #103339;
 }
 
-#mainpane * {
+/**
+Don't set it for Text to avoid conflicts with java loaded fonts
+ */
+.toggle-button, .button, .menu *, .label {
     -fx-font-family: Roboto;
 }
 

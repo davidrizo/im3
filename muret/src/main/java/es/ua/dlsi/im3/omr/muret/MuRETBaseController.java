@@ -97,5 +97,5 @@ public abstract class MuRETBaseController implements Initializable, ISelectableT
 
     public abstract <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView);
 
-    public abstract void unselect();
+    public abstract <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView);
 }

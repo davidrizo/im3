@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -52,11 +53,11 @@ public class ImageThumbnailView extends AnchorPane {
     }
 
     private void createLabels() {
-        Text text = new Text(omrImage.getImageFile().getName());
-        text.getStyleClass().add("buttonFileNameText");
-        this.getChildren().add(text);
-        AnchorPane.setRightAnchor(text, 10.0);
-        AnchorPane.setBottomAnchor(text, 10.0);
+        Label label = new Label(omrImage.getImageFile().getName());
+        label.getStyleClass().add("buttonFileNameText");
+        this.getChildren().add(label);
+        AnchorPane.setRightAnchor(label, 10.0);
+        AnchorPane.setBottomAnchor(label, 10.0);
     }
 
     private void createImageView() throws IM3Exception {

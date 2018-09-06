@@ -12,13 +12,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -117,7 +117,7 @@ public class OpenProjectController implements Initializable {
         VBox vBoxTitleComposer = new VBox();
         vBoxTitleComposer.getStyleClass().add("buttonRecentProject_vbox");
         anchorPane.getChildren().add(vBoxTitleComposer);
-        Text titleText = new Text();
+        Label titleText = new Label();
         titleText.getStyleClass().add("buttonRecentProject_text");
         vBoxTitleComposer.getChildren().add(titleText);
         if (omrProjectPreview.getTitle() != null) {
@@ -132,7 +132,7 @@ public class OpenProjectController implements Initializable {
         }
 
         if (omrProjectPreview.getComposer() != null) {
-            Text composerText = new Text(omrProjectPreview.getComposer());
+            Label composerText = new Label(omrProjectPreview.getComposer());
             composerText.getStyleClass().add("buttonRecentProject_text");
             vBoxTitleComposer.getChildren().add(composerText);
         }

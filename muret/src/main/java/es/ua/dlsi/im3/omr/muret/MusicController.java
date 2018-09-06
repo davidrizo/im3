@@ -12,7 +12,6 @@ import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.omr.muret.model.IOMRBoundingBox;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.transform.Scale;
 
@@ -79,7 +78,7 @@ public class MusicController extends MuRETBaseController {
     }
 
     @Override
-    public void unselect() {
+    public <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
 
     }
 

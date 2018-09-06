@@ -103,7 +103,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         selected = new SimpleObjectProperty<>(false);
 
         rectangle.setOnMouseClicked(event -> {
-            doSelect(true, true);
+            sendSelectRequest();
             onRegionMouseClicked(event); //TODo ¿quitar - cambiar por el cambio de selected?
         });
 
@@ -165,7 +165,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
             }
         });
         doHighlight(false);
-        doSelect(false, true);
+        this.selected.setValue(false);
     }
 
     private Color getColor(Color color, double opacity) {
@@ -212,16 +212,9 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         return owner.toString();
     }
 
-    public void doSelect(boolean select, boolean notifyController) {
-        if (select != this.selected.get()) {
-            this.selected.setValue(select);
-            if (notifyController) {
-                if (select) {
-                    controller.doSelect(this);
-                } else {
-                    controller.unselect();
-                }
-            }
+    public void sendSelectRequest() {
+        if (!this.selected.get()) {
+            controller.doSelect(this);
         }
     }
 
@@ -232,7 +225,10 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
 
     @Override
     public void onUnselect() {
-        this.selected.setValue(false);
+        if (this.selected.get()) {
+            this.selected.setValue(false);
+            controller.onUnselected(this);
+        }
     }
 
     public void handle(KeyEvent event) {
@@ -269,5 +265,13 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
     @Override
     public void onEndHover() {
         setHover(false);
+    }
+
+    public void beginEdit() {
+        rectangle.beginEdit();
+    }
+
+    public void endEdit(boolean accept) {
+        rectangle.endEdit(accept);
     }
 }

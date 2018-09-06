@@ -11,7 +11,6 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Group;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -27,6 +26,9 @@ import java.util.logging.Logger;
  * @autor drizo
  */
 public class AgnosticStaffView extends VBox {
+    private static final Color DEFAULT_COLOR = Color.BLACK;
+    private static final Color SELECTED_COLOR = Color.RED;
+
     private static final double LEDGER_LINE_EXTRA_LENGTH = 8;
     private static final double LEDGER_LINE_WIDTH = 20;
     private final SymbolsController controller;
@@ -86,6 +88,7 @@ public class AgnosticStaffView extends VBox {
         try {
             OMRSymbol symbol = symbolView.getOwner();
             Shape shape = agnosticSymbolFont.createShape(symbol.getGraphicalSymbol().getSymbol());
+            shape.setFill(DEFAULT_COLOR);
             shape.setLayoutX(symbol.getCenterX()+regionXOffset);
 
             symbolsGroup.getChildren().add(shape);
@@ -157,25 +160,28 @@ public class AgnosticStaffView extends VBox {
                 }
                 updateVerticalLayoutInStaff(symbolToCorrect.getOwner(), shape);
         } catch (IM3Exception e) {
-            e.printStackTrace(); //TODO logs
-            ShowError.show(null, "Cannot change position", e); // TODO stage
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot change position", e);
+            ShowError.show(this.background.getScene().getWindow(), "Cannot change position", e);
         }
         return prev;
     }
 
+    private Shape getShape(SymbolView symbolView) throws IM3Exception {
+        Shape shape = shapesInStaff.get(symbolView.getOwner());
+        if (shape == null) {
+            throw new IM3Exception("Cannot find the shape associated to symbol " + symbolView.getOwner());
+        }
+        return shape;
+    }
     /**
      * Previous agnostic string type
      * @param agnosticString
      * @param symbolToCorrect
      * @return
      */
-    public String doChangeSymbolType(String agnosticString, SymbolView symbolToCorrect) {
+    public String doChangeSymbolType(String agnosticString, SymbolView symbolToCorrect) throws IM3Exception {
         AgnosticSymbolType agnosticSymbolType = agnosticSymbolFont.getAgnosticSymbolType(agnosticString);
-        Shape shape = shapesInStaff.get(symbolToCorrect.getOwner());
-        if (shape == null) {
-            ShowError.show(null, "Cannot find the shape associated to symbol " + symbolToCorrect);
-            return null;
-        }
+        Shape shape = getShape(symbolToCorrect);
 
         if (agnosticSymbolType == null) {
             ShowError.show(null, "Cannot find an agnostic symbol type for " + agnosticString); //TODO null
@@ -192,11 +198,11 @@ public class AgnosticStaffView extends VBox {
             symbolsGroup.getChildren().remove(shape);
             try {
                 Shape newShape = addSymbol(symbolToCorrect);
-                symbolToCorrect.setShapeInStaff(newShape); //TODO Esto está acoplado
+                //symbolToCorrect.setShapeInStaff(newShape); //TODO Esto está acoplado
                 symbolToCorrect.doHighlight(true); // force new symbol to be highlighted
             } catch (IM3Exception e) {
-                e.printStackTrace(); //TODO log
-                ShowError.show(null, "Cannot find an add symbol", e);
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find an add symbol", e);
+                ShowError.show(this.background.getScene().getWindow(), "Cannot find an add symbol", e);
             }
             return prev;
         }
@@ -231,4 +237,24 @@ public class AgnosticStaffView extends VBox {
                 break;
         }
     }*/
+
+    public void select(SymbolView symbolView) {
+        try {
+            Shape shape = getShape(symbolView);
+            shape.setFill(SELECTED_COLOR);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find symbol to select", e);
+            ShowError.show(this.background.getScene().getWindow(), "Cannot find symbol to select", e);
+        }
+    }
+
+    public void unSelect(SymbolView symbolView) {
+        try {
+            Shape shape = getShape(symbolView);
+            shape.setFill(DEFAULT_COLOR);
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find symbol to select", e);
+            ShowError.show(this.background.getScene().getWindow(), "Cannot find symbol to select", e);
+        }
+    }
 }

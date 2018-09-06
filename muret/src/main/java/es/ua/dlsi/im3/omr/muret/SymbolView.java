@@ -35,14 +35,19 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements Compa
     }
 
     public PositionInStaff changePosition(int lineSpaces) {
-        return null;
+        return owner.chageRelativePosition(lineSpaces);
     }
+
+    /*public PositionInStaff getPositionInStaff() {
+        return owner.getPositionInStaff();
+    }
+
+    public void setPositionInStaff(PositionInStaff positionInStaff) {
+        owner.setPositionInStaff(positionInStaff);
+    }*/
 
     public AgnosticSymbolType changeSymbolType(AgnosticSymbolType agnosticSymbolType) {
-        return null;
-    }
-
-    public void setShapeInStaff(Shape newShape) {
+        return owner.changeAgnosticSymbolType(agnosticSymbolType);
     }
 
     @Override

@@ -366,10 +366,12 @@ public class DocumentAnalysisController extends MuRETBaseController {
     @Override
     public <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
         selectionManager.select(ownerTypeBoundingBoxBasedView);
+        ownerTypeBoundingBoxBasedView.beginEdit();
     }
 
     @Override
-    public void unselect() {
+    public <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
+        ownerTypeBoundingBoxBasedView.endEdit(true); //TODO Command para Undo
         selectionManager.clearSelection();
     }
 
