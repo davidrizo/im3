@@ -31,7 +31,7 @@ public class AgnosticStaffView extends VBox {
 
     private static final double LEDGER_LINE_EXTRA_LENGTH = 8;
     private static final double LEDGER_LINE_WIDTH = 20;
-    private final SymbolsController controller;
+    private final DocumentAnalysisSymbolsController controller;
     private final Line[] lines;
     Group staffGroup;
 
@@ -43,7 +43,7 @@ public class AgnosticStaffView extends VBox {
     HashMap<OMRSymbol, Shape> shapesInStaff;
     private double regionXOffset;
 
-    public AgnosticStaffView(SymbolsController controller, AgnosticSymbolFont agnosticSymbolFont, ReadOnlyDoubleProperty widthProperty, double height, double regionXOffset)  {
+    public AgnosticStaffView(DocumentAnalysisSymbolsController controller, AgnosticSymbolFont agnosticSymbolFont, ReadOnlyDoubleProperty widthProperty, double height, double regionXOffset)  {
         this.controller = controller;
         shapesInStaff = new HashMap<>();
         this.regionXOffset = regionXOffset;
@@ -188,12 +188,7 @@ public class AgnosticStaffView extends VBox {
             return null;
         } else {
             String prev = symbolToCorrect.changeSymbolType(agnosticSymbolType).toAgnosticString();
-            try {
-                controller.onSymbolChanged(symbolToCorrect.getOwner());
-            } catch (IM3Exception e) {
-                e.printStackTrace();
-                ShowError.show(null, "Cannot change symbol", e); //TODO null
-            }
+            controller.onSymbolChanged(symbolToCorrect.getOwner());
             this.shapesInStaff.remove(symbolToCorrect.getOwner());
             symbolsGroup.getChildren().remove(shape);
             try {

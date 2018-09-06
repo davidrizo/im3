@@ -67,7 +67,7 @@ public class OpenProjectController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 OpenSaveFileDialog openSaveFileDialog = new OpenSaveFileDialog();
-                File file = openSaveFileDialog.openFile(MuRET.getInstance().getMainStage().getOwner(), "Select a MuRET project file", "MuRET files", "mrt");
+                File file = openSaveFileDialog.openFile(flowPaneLastProjects.getScene().getWindow(), "Select a MuRET project file", "MuRET files", "mrt");
                 openProject(file);
             }
         };

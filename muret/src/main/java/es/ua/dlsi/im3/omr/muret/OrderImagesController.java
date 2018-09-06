@@ -103,7 +103,7 @@ public class OrderImagesController implements Initializable {
     }
 
     private void openImage(OMRImage omrImage) {
-        DocumentAnalysisController controller = (DocumentAnalysisController) MuRET.getInstance().openWindow("/fxml/muret/documentanalysis.fxml", true, true);
+        DocumentAnalysisSymbolsController controller = MuRET.getInstance().openWindow("/fxml/muret/symbols.fxml", true, true);
         try {
             controller.loadOMRImage(omrImage);
         } catch (IM3Exception e) {

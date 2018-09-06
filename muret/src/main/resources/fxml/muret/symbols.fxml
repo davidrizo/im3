@@ -2,12 +2,15 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
@@ -22,8 +25,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane id="mainpane" fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="535.0" prefWidth="836.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.SymbolsController">
+<BorderPane id="mainpane" fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="535.0" prefWidth="836.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.DocumentAnalysisSymbolsController">
    <top>
       <HBox id="menu" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
          <children>
@@ -70,12 +74,17 @@
             <Button mnemonicParsing="false" onAction="#handleZoomOut" text="Zoom out" />
             <Button mnemonicParsing="false" onAction="#handleZoomReset" text="Zoom reset" />
             <Button mnemonicParsing="false" onAction="#handleZoomToFit" text="Zoom to fit" />
-            <Separator prefHeight="5.0" prefWidth="0.0" />
-            <ToggleButton mnemonicParsing="false" onAction="#handleRecognitionTool" text="Recognition">
+            <Separator prefHeight="1.0" prefWidth="0.0" />
+            <Label text="Document analysis" />
+            <ToggleButton fx:id="toggleDocumentAnalysisManual" mnemonicParsing="false" text="Manual">
                <toggleGroup>
-                  <ToggleGroup fx:id="toolGroup" />
+                  <ToggleGroup fx:id="toolToggle" />
                </toggleGroup>
             </ToggleButton>
+            <ToggleButton fx:id="toggleDocumentAnalysisAutomatic" mnemonicParsing="false" text="Automatic" toggleGroup="$toolToggle" />
+            <Separator prefHeight="5.0" prefWidth="0.0" />
+            <Label text="Symbols" />
+            <ToggleButton fx:id="toggleSymbolRecognition" mnemonicParsing="false" text="Recognition" toggleGroup="$toolToggle" />
         </items>
       </ToolBar>
    </left>
@@ -92,47 +101,67 @@
          <children>
             <VBox id="vboxPhase" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
                <children>
-                  <ToggleButton mnemonicParsing="false" onAction="#handleOpenDocumentAnalysis" selected="true" text="Document">
+                  <ToggleButton mnemonicParsing="false" selected="true" text="Symbols">
                      <toggleGroup>
                         <ToggleGroup fx:id="phaseToggleGroup" />
-                     </toggleGroup>
-                  </ToggleButton>
-                  <ToggleButton mnemonicParsing="false" selected="true" text="Symbols" toggleGroup="$phaseToggleGroup" />
+                     </toggleGroup></ToggleButton>
                   <ToggleButton mnemonicParsing="false" onAction="#handleOpenMusic" text="Music" toggleGroup="$phaseToggleGroup" />
                </children>
             </VBox>
-            <ToolBar fx:id="toolbarToolSpecific" orientation="VERTICAL" prefHeight="40.0" prefWidth="200.0" />
+            <ToolBar fx:id="toolbarToolSpecific" orientation="VERTICAL" prefHeight="164.0" prefWidth="83.0" />
          </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
       </GridPane>
    </right>
-   <center>
-      <VBox BorderPane.alignment="CENTER">
+   <bottom>
+      <AnchorPane prefHeight="15.0" BorderPane.alignment="CENTER">
          <children>
-            <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPaneSelectedStaff" prefHeight="256.0" prefWidth="636.0" VBox.vgrow="NEVER">
+            <Text fx:id="textFileName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="statusFilename" text="Filename" />
+         </children>
+      </AnchorPane>
+   </bottom>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPaneImage" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox fx:id="vboxSelectedStaff" prefHeight="200.0" prefWidth="609.0">
+                  <AnchorPane id="documentAnalysis_mainPane" fx:id="imagePane" prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Pane fx:id="selectedStaffPane" prefHeight="314.0" prefWidth="609.0" VBox.vgrow="NEVER">
-                           <children>
-                              <ImageView fx:id="selectedStaffImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                              <Group fx:id="symbolViewsGroup" />
-                           </children>
-                        </Pane>
-                        <Pane fx:id="agnosticStaffViewPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="NEVER" />
+                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="-14.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
-                  </VBox>
+                  </AnchorPane>
                </content>
             </ScrollPane>
-            <FlowPane fx:id="agnosticCorrectionPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="SOMETIMES" />
-            <AnchorPane fx:id="anchorPaneImageView" VBox.vgrow="ALWAYS">
-               <children>
-                  <Pane fx:id="resizedImagePane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </Pane>
-               </children>
-            </AnchorPane>
+            <Accordion>
+               <panes>
+                  <TitledPane fx:id="tittledPaneSymbols" animated="false" text="Symbols">
+                     <content>
+                        <VBox fx:id="vboxSymbols">
+                           <children>
+                              <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPaneSelectedStaff" prefHeight="256.0" prefWidth="636.0" VBox.vgrow="NEVER">
+                                 <content>
+                                    <VBox fx:id="vboxSelectedStaff" prefHeight="200.0" prefWidth="609.0">
+                                       <children>
+                                          <Pane fx:id="selectedStaffPane" prefHeight="314.0" prefWidth="609.0" VBox.vgrow="NEVER">
+                                             <children>
+                                                <ImageView fx:id="selectedStaffImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                                <Group fx:id="symbolViewsGroup" />
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="agnosticStaffViewPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="NEVER" />
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                              <FlowPane fx:id="agnosticCorrectionPane" prefHeight="85.0" prefWidth="591.0" VBox.vgrow="NEVER" />
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+               </panes>
+            </Accordion>
          </children>
       </VBox>
    </center>

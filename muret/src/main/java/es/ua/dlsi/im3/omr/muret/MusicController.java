@@ -12,7 +12,9 @@ import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.omr.muret.model.IOMRBoundingBox;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.transform.Scale;
 
 import java.net.URL;
@@ -24,6 +26,8 @@ import java.util.logging.Logger;
  * @autor drizo
  */
 public class MusicController extends MuRETBaseController {
+    @FXML
+    BorderPane rootBorderPane;
     @FXML
     ScrollPane scrollPaneMusic;
 
@@ -39,7 +43,7 @@ public class MusicController extends MuRETBaseController {
             loadScoreSongView();
         } catch (IM3Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load the score sheet", e);
-            ShowError.show(MuRET.getInstance().getMainStage(), "Cannot load the score sheet", e);
+            showError("Cannot load the score sheet", e);
         }
     }
 
@@ -80,6 +84,11 @@ public class MusicController extends MuRETBaseController {
     @Override
     public <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
 
+    }
+
+    @Override
+    protected Node getRoot() {
+        return rootBorderPane;
     }
 
     @Override

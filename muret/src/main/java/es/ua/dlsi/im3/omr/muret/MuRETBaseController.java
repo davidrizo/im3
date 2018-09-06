@@ -8,7 +8,9 @@ import es.ua.dlsi.im3.omr.muret.model.OMRImage;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.transform.Scale;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -62,13 +64,8 @@ public abstract class MuRETBaseController implements Initializable, ISelectableT
     }
 
     @FXML
-    private void handleOpenDocumentAnalysis() {
-        MuRET.getInstance().openWindow("/fxml/muret/documentanalysis.fxml", true, true);
-    }
-
-    @FXML
     private void handleOpenSymbols() {
-        SymbolsController symbolsController = MuRET.getInstance().openWindow("/fxml/muret/symbols.fxml", true, true);
+        DocumentAnalysisSymbolsController symbolsController = MuRET.getInstance().openWindow("/fxml/muret/symbols.fxml", true, true);
         try {
             symbolsController.loadOMRImage(omrImage);
         } catch (IM3Exception e) {
@@ -98,4 +95,10 @@ public abstract class MuRETBaseController implements Initializable, ISelectableT
     public abstract <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView);
 
     public abstract <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView);
+
+    protected abstract Node getRoot();
+
+    protected void showError(String message, Throwable t) {
+        ShowError.show(getRoot().getScene().getWindow(), message, t);
+    }
 }

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Optional;
 import javafx.scene.control.ChoiceDialog;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  * see http://code.makery.ch/blog/javafx-dialogs-official/
@@ -30,12 +31,11 @@ public class ShowChoicesDialog<T> {
     ChoiceDialog<T> dialog;
 
 
-    private void init(Stage stage, String title, String message) {
-        dialog.setTitle(stage.getTitle());
+    private void init(String title, String message) {
         dialog.setHeaderText(title);
         dialog.setContentText(message);
-        dialog.initOwner(stage);
     }
+
 
     /**
      * @param defaultChoice May be null
@@ -43,7 +43,9 @@ public class ShowChoicesDialog<T> {
      */
     public T show(Stage stage, String title, String message, Collection<T> choices, T defaultChoice) {
         dialog = new ChoiceDialog<>(defaultChoice, choices);
-        init(stage, title, message);
+        dialog.initOwner(stage);
+        dialog.setTitle(stage.getTitle());
+        init(title, message);
         Optional<T> result = dialog.showAndWait();
         if (result.isPresent()) {
             return result.get();
@@ -58,7 +60,25 @@ public class ShowChoicesDialog<T> {
      */
     public T show(Stage stage, String title, String message, T [] choices, T defaultChoice) {
         dialog = new ChoiceDialog<>(defaultChoice, choices);
-        init(stage, title, message);
+        dialog.initOwner(stage);
+        dialog.setTitle(stage.getTitle());
+        init(title, message);
+        Optional<T> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            return result.get();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param defaultChoice May be null
+     * @return true when user accepts
+     */
+    public T show(Window window, String title, String message, T [] choices, T defaultChoice) {
+        dialog = new ChoiceDialog<>(defaultChoice, choices);
+        dialog.initOwner(window);
+        init(title, message);
         Optional<T> result = dialog.showAndWait();
         if (result.isPresent()) {
             return result.get();

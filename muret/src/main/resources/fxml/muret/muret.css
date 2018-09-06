@@ -155,7 +155,7 @@ Don't set it for Text to avoid conflicts with java loaded fonts
 
 .tool-bar {
     -fx-background-color: #7DE2DB;
-    -fx-pref-width: 75;
+    -fx-pref-width: 100;
 }
 
 #vboxPhase {
