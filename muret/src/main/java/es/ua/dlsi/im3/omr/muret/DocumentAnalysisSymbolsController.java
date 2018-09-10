@@ -1,25 +1,39 @@
 package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
+import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassesRanking;
+import es.ua.dlsi.im3.core.score.PositionInStaff;
+import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.command.ICommand;
 import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
 import es.ua.dlsi.im3.gui.interaction.ISelectable;
 import es.ua.dlsi.im3.gui.interaction.SelectionManager;
 import es.ua.dlsi.im3.gui.javafx.BackgroundProcesses;
+import es.ua.dlsi.im3.gui.javafx.DraggableRectangle;
 import es.ua.dlsi.im3.gui.javafx.collections.ObservableListViewListModelLink;
 import es.ua.dlsi.im3.gui.javafx.collections.ObservableListViewSetModelLink;
+import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowChoicesDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.AgnosticSequenceRecognizer;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.HorizontallyPositionedSymbol;
 import es.ua.dlsi.im3.omr.classifiers.segmentation.ISymbolClusterer;
 import es.ua.dlsi.im3.omr.classifiers.segmentation.SymbolClusterer;
-import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.IImageSymbolRecognizer;
-import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolRecognizerFactory;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.*;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Smudge;
 import es.ua.dlsi.im3.omr.model.entities.Region;
+import es.ua.dlsi.im3.omr.model.entities.Strokes;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
 import es.ua.dlsi.im3.omr.muret.model.*;
+import es.ua.dlsi.im3.omr.muret.old.OMRApp;
+import es.ua.dlsi.im3.omr.muret.old.symbols.StrokesView;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -47,6 +61,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
+import javafx.stage.Window;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import javax.imageio.ImageIO;
@@ -54,10 +69,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.SortedSet;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -71,6 +84,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     static final Color PAGE_COLOR = Color.BLUE; //TODO
     static final Color REGION_COLOR = Color.RED;
     static final Color SYMBOL_COLOR = Color.GREEN; //TODO
+    static final Color STROKES_COLOR = Color.LIGHTGREEN;
 
     //// --- Common -----
     @FXML
@@ -85,11 +99,14 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     @FXML
     ToolBar toolbarToolSpecific;
 
-    enum InteractionMode {eIdle, eSplittingPages, eSplittingRegions, eDrawingPages, eDrawingRegions};
+    enum InteractionMode {eIdle, eDocAnalysisSplittingPages, eDocAnalysisSplittingRegions, eDocAnalysisDrawingPages, eDocAnalysisDrawingRegions, eSymbolsBoundingBox, eSymbolsStrokes};
 
     InteractionMode interactionMode;
 
     CommandManager commandManager;
+
+    @FXML
+    ToolBar toolBarClassifiers;
 
     //// --- Document analysis related ------
     @FXML
@@ -121,6 +138,8 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     @FXML
     ToggleButton toggleSymbolRecognition;
     @FXML
+    ToggleButton toggleSymbolManual;
+    @FXML
     ScrollPane scrollPaneSelectedStaff;
     @FXML
     VBox vboxSelectedStaff;
@@ -135,7 +154,6 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     @FXML
     FlowPane agnosticCorrectionPane;
 
-
     AgnosticStaffView agnosticStaffView;
 
     ObservableListViewListModelLink<OMRRegion, RegionView> regions;
@@ -148,12 +166,29 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
 
     AgnosticSymbolFont agnosticSymbolFont;
 
+    private Timer strokesTimer;
+
+    /**
+     * Used to draw new symbol bounding box
+     */
+    private DraggableRectangle newSymbolBoundingBox;
+
+    /**
+     * Symbol strokes mode
+     */
+    private OMRStroke newOMRStroke;
+    private OMRStrokes newOMRStrokes;
+    private StrokesView newStrokesView;
 
 
     ////// -----------------------------------------------
     public DocumentAnalysisSymbolsController() {
         commandManager = new CommandManager();
         selectionManager = new SelectionManager();
+    }
+    
+    private Window getWindow() {
+        return this.rootBorderPane.getScene().getWindow();
     }
 
     @Override
@@ -200,12 +235,16 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
                 toolbarToolSpecific.getItems().clear();
+                toolBarClassifiers.getItems().clear();
+
                 interactionMode = InteractionMode.eIdle;
                 changeCursor(Cursor.DEFAULT);
                 if (newValue == toggleDocumentAnalysisAutomatic) {
                     createDocumentAnalysisAutomaticRecognitionTools();
                 } else if (newValue == toggleDocumentAnalysisManual) {
                     createDocumentAnalysisManualEditingTools();
+                } else if (newValue == toggleSymbolManual) {
+                    createManualSymbolEditingTools();
                 } else if (newValue == toggleSymbolRecognition) {
                     createAutomaticSymbolRecognitionTools();
                 }
@@ -216,20 +255,248 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     }
 
     private void initInteraction() {
+        //TODO Cambio cursor según estemos en un panel u otro y dependiendo del modo
+
         imagePane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (interactionMode == InteractionMode.eSplittingPages) {
+                if (interactionMode == InteractionMode.eDocAnalysisSplittingPages) {
                     if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                         doSplitPage(event.getX(), event.getY());
                     }
-                } else if (interactionMode == InteractionMode.eSplittingRegions) {
+                } else if (interactionMode == InteractionMode.eDocAnalysisSplittingRegions) {
                     if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                         doSplitRegion(event.getX(), event.getY());
                     }
                 }
             }
         });
+
+        selectedStaffPane.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (interactionMode == InteractionMode.eSymbolsBoundingBox) {
+                    newSymbolBoundingBox = new DraggableRectangle(event.getX(), event.getY(), 1, 1, Color.GOLD);
+                    newSymbolBoundingBox.setFill(Color.TRANSPARENT);
+                    newSymbolBoundingBox.setStroke(Color.GOLD);
+                    newSymbolBoundingBox.setStrokeWidth(2);
+                    selectedStaffPane.getChildren().add(newSymbolBoundingBox);
+
+                } else if (interactionMode == InteractionMode.eSymbolsStrokes) {
+                    // try to create a stroke list
+                    newOMRStroke = new OMRStroke();
+                    newOMRStroke.addPoint(event.getX()+selectedRegionView.getOwner().getFromX(), event.getY()+selectedRegionView.getOwner().getFromY());
+
+                    if (newStrokesView == null) {
+                        newOMRStrokes = new OMRStrokes();
+                        newStrokesView = new StrokesView(newOMRStrokes, -selectedRegionView.getOwner().getFromX(), -selectedRegionView.getOwner().getFromY(), STROKES_COLOR);
+                        selectedStaffPane.getChildren().add(newStrokesView);
+                    }
+
+                    newOMRStrokes.addStroke(newOMRStroke);
+
+                }
+            }
+        });
+
+        selectedStaffPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (newSymbolBoundingBox != null) {
+                    newSymbolBoundingBox.widthProperty().setValue(event.getX() - newSymbolBoundingBox.xProperty().getValue() );
+                    newSymbolBoundingBox.heightProperty().setValue(event.getY() - newSymbolBoundingBox.yProperty().getValue());
+                } else if (newOMRStroke != null) {
+                    newOMRStroke.addPoint(event.getX()+selectedRegionView.getOwner().getFromX(), event.getY()+selectedRegionView.getOwner().getFromY());
+                }
+            }
+        });
+        selectedStaffPane.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (newSymbolBoundingBox != null) { // if adding a symbol
+                    addNewSymbolWithBoundingBox(
+                            newSymbolBoundingBox.xProperty().get()+selectedRegionView.getOwner().getFromX(),
+                            newSymbolBoundingBox.yProperty().get()+selectedRegionView.getOwner().getFromY(),
+                            newSymbolBoundingBox.widthProperty().get(),
+                            newSymbolBoundingBox.heightProperty().get(), null);
+
+                    selectedStaffPane.getChildren().remove(newSymbolBoundingBox); // it will be added on the insertion of the symbol
+                    newSymbolBoundingBox = null;
+                } else if (newOMRStroke != null) {
+                    newOMRStroke = null;
+                    startStrokesTimer(); // when it finishes, the strokes object is closed
+                    //TODO Añadir símbolo - timer creación nuevo símbolo sólo si tiene más de 1 punto
+                }
+            }
+        });
+    }
+
+    private GrayscaleImageData getGrayScaleImage(double x, double y, double width, double height) throws IM3Exception {
+        es.ua.dlsi.im3.omr.model.entities.Image image = omrImage.createPOJO();
+        BoundingBox boundingBox = new BoundingBoxXY(x, y, x+width, y+height);
+        int[] pixels = image.getGrayscaleImagePixelsNormalized(omrImage.getOmrProject().getImagesFolder(), boundingBox);
+        return new GrayscaleImageData(pixels);
+    }
+
+    private void addNewSymbolWithBoundingBox(double x, double y, double width, double height, OMRStrokes strokes) {
+        if (width > 1 && height > 1) {
+            Callable<Void> task = new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    GrayscaleImageData grayscaleImageData = getGrayScaleImage(x, y, width, height);
+                    Strokes strokesPOJO = null;
+
+                    AgnosticSymbol bestMatch = null;
+                    if (strokes != null) {
+                        strokesPOJO = strokes.createPOJO();
+                        NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImageAndPointsPrototype> orderedRecognizedSymbols= MuRET.getInstance().getModel().getClassifiers().getBimodalSymbolFromImageDataAndStrokesRecognizer().recognize(grayscaleImageData, strokesPOJO);
+
+                        if (orderedRecognizedSymbols.size() > 0) {
+                            bestMatch = orderedRecognizedSymbols.first();
+                        }
+                    } else {
+                        NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImagePrototype> orderedRecognizedSymbols = MuRET.getInstance().getModel().getClassifiers().getSymbolFromImageDataRecognizer().recognize(grayscaleImageData);
+                        bestMatch = null;
+                        if (orderedRecognizedSymbols.size() > 0) {
+                            bestMatch = orderedRecognizedSymbols.first();
+                        }
+                    }
+
+                    //symbolView.doEdit();
+                    AgnosticSymbol _bestMatch = bestMatch;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            addNewSymbol(_bestMatch, x, y, width, height, strokes);
+                        }
+                    });
+
+                    return null;
+                }
+            };
+            
+            BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
+            backgroundProcesses.launch(getWindow(), "Classifying symbol", null, "Cannot recognize or add symbol", true, task);
+        } else {
+            ShowError.show(OMRApp.getMainStage(), "Cannot add a symbols with bounding box of width or height with less than 2 pixels");
+        }
+    }
+
+    private void addNewSymbol(AgnosticSymbol bestMatch, double x, double y, double width, double height, OMRStrokes strokes) {
+        AgnosticSymbol agnosticSymbol = null;
+        if (bestMatch != null) {
+            try {
+                //TODO Version
+                agnosticSymbol = AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, bestMatch.getAgnosticString());
+
+                if (agnosticSymbol.getSymbol() instanceof Note) { //TODO resto de tipos
+                    Note note = (Note) agnosticSymbol.getSymbol();
+                    if (note.getStemDirection() == null && note.getDurationSpecification().isUsesStem()) {
+                        if (agnosticSymbol.getPositionInStaff().getLineSpace() < PositionsInStaff.LINE_3.getLineSpace()) {
+                            note.setStemDirection(Directions.up);
+                        } else {
+                            note.setStemDirection(Directions.down);
+                        }
+                    }
+                }
+            } catch (IM3Exception e) {
+                ShowError.show(OMRApp.getMainStage(), "Cannot get a symbol from recognized data", e);
+            }
+        }
+
+        if (agnosticSymbol == null) {
+            agnosticSymbol = new AgnosticSymbol(AgnosticVersion.v2, new Smudge(), PositionInStaff.fromLine(3)); //TODO Version
+        }
+        try {
+            OMRSymbol omrSymbol = new OMRSymbol(selectedRegionView.getOwner(), agnosticSymbol, x, y, width, height);
+            if (strokes != null) {
+                omrSymbol.setStrokes(strokes);
+            }
+            ICommand command = new ICommand() {
+                OMRSymbol newSymbol;
+                @Override
+                public void execute(IObservableTaskRunner observer) {
+                    newSymbol = omrSymbol;
+                    selectedRegionView.getOwner().addSymbol(omrSymbol); // ImageBasedAbstractController is listening the model for changes and it propagates any change
+                }
+
+                @Override
+                public boolean canBeUndone() {
+                    return true;
+                }
+
+                @Override
+                public void undo() {
+                    selectedRegionView.getOwner().removeSymbol(newSymbol);
+
+                }
+
+                @Override
+                public void redo() {
+                    selectedRegionView.getOwner().addSymbol(newSymbol);
+                }
+
+                @Override
+                public String getEventName() {
+                    return "Add symbol " + newSymbol.toString();
+                }
+            };
+
+            commandManager.executeCommand(command);
+            SymbolView symbolView = symbols.getView(omrSymbol);
+            symbolView.sendSelectRequest();
+        } catch (IM3Exception e) {
+            ShowError.show(OMRApp.getMainStage(), "Cannot add symbol", e);
+        }
+    }
+
+    private void startStrokesTimer() {
+        strokesTimer = new Timer();
+        TimerTask completeSymbolTask = new TimerTask() {
+            @Override
+            public void run() {
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Time expired, symbol complete");
+                // the timer runs in other thread
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        //TODO ActionLogger.log(UserActionsPool.symbolCompleteTimer, currentScoreImageTags.getName(), currentScoreImageTags.getCurrentSymbolView().hashCode());
+                        doStrokesComplete();
+                    }
+                });
+
+            }
+        };
+        //strokesTimer.schedule(completeSymbolTask, (long) (sliderTimer.getValue() * 1000.0));
+        strokesTimer.schedule(completeSymbolTask, (long) (2 * 1000.0)); //TODO Parametrizar - preferences - ahora son 300 ms
+    }
+
+    private void doStrokesComplete() {
+        if (newStrokesView.hasMoreThan1Point()) {
+            addNewSymbol(newStrokesView);
+        }
+        newStrokesView = null;
+        cancelStrolesTimer();
+    }
+
+    private void addNewSymbol(StrokesView newStrokesView) {
+        double x = newStrokesView.getBoundsInLocal().getMinX();
+        double y = newStrokesView.getBoundsInLocal().getMinY();
+        double w = newStrokesView.getBoundsInLocal().getWidth();
+        double h = newStrokesView.getBoundsInLocal().getHeight();
+
+        //TODO usar los trazos para clasificar en lugar de sólo el bounding box
+        addNewSymbolWithBoundingBox(x, y, w, h, newStrokesView.getOmrStrokes());
+        this.selectedStaffPane.getChildren().remove(newStrokesView); // add it
+        newStrokesView = null;
+    }
+
+
+    private void cancelStrolesTimer() {
+        if (strokesTimer != null) {
+            strokesTimer.cancel();
+            strokesTimer = null;
+        }
     }
 
 
@@ -237,7 +504,6 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
         hideSymbolsPane();
         Button recognizePages = new Button("Pages");
         toolbarToolSpecific.getItems().add(recognizePages);
-
 
         Button recognizeRegions = new Button("Regions in pages");
         toolbarToolSpecific.getItems().add(recognizeRegions);
@@ -281,20 +547,24 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
         toolSpecificToggle.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                toolBarClassifiers.getItems().clear();
+                interactionMode = InteractionMode.eIdle;
+                changeCursor(Cursor.DEFAULT);
+
                 if (newValue == null || newValue == select) {
                     changeCursor(Cursor.DEFAULT);
                     interactionMode = InteractionMode.eIdle;
                 } else if (newValue == splitPages) {
-                    interactionMode = InteractionMode.eSplittingPages;
+                    interactionMode = InteractionMode.eDocAnalysisSplittingPages;
                     changeCursor(Cursor.E_RESIZE);
                 } else if (newValue == splitRegions) {
-                    interactionMode = InteractionMode.eSplittingRegions;
+                    interactionMode = InteractionMode.eDocAnalysisSplittingRegions;
                     changeCursor(Cursor.S_RESIZE);
                 } else if (newValue == drawPages) {
-                    interactionMode = InteractionMode.eDrawingPages;
+                    interactionMode = InteractionMode.eDocAnalysisDrawingPages;
                     changeCursor(Cursor.CROSSHAIR);
                 } else if (newValue == drawRegions) {
-                    interactionMode = InteractionMode.eDrawingRegions;
+                    interactionMode = InteractionMode.eDocAnalysisDrawingRegions;
                     changeCursor(Cursor.CROSSHAIR);
                 }
             }
@@ -440,6 +710,100 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
         tittledPaneSymbols.setExpanded(false);
     }
 
+    private void createManualSymbolEditingTools() {
+        showSymbolsPane();
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        ToggleButton selectButton = new ToggleButton("Select");
+        selectButton.setToggleGroup(toggleGroup);
+        toolbarToolSpecific.getItems().add(selectButton);
+
+        ToggleButton boundingBoxButton = new ToggleButton("Bounding boxes");
+        boundingBoxButton.setToggleGroup(toggleGroup);
+        toolbarToolSpecific.getItems().add(boundingBoxButton);
+
+        ToggleButton strokesButton = new ToggleButton("Strokes");
+        strokesButton.setToggleGroup(toggleGroup);
+        toolbarToolSpecific.getItems().add(strokesButton);
+
+        toggleGroup.selectToggle(selectButton);
+
+        toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                interactionMode = InteractionMode.eIdle;
+                changeCursor(Cursor.DEFAULT);
+
+                if (newValue == selectButton) {
+                    // already changed above
+                } else if (newValue == boundingBoxButton) {
+                    if (loadSymbolFromImageClassifier()) {
+                        changeCursor(Cursor.SE_RESIZE);
+                        interactionMode = InteractionMode.eSymbolsBoundingBox;
+                    } else {
+                        toggleGroup.selectToggle(selectButton);
+                    }
+                } else if (newValue == strokesButton) {
+                    if (loadSymbolFromImageAndStrokesClassifier()) {
+                        changeCursor(Cursor.CROSSHAIR);
+                        interactionMode = InteractionMode.eSymbolsStrokes;
+                    } else {
+                        toggleGroup.selectToggle(selectButton);
+                    }
+                }
+            }
+        });
+    }
+
+    private boolean loadSymbolFromImageClassifier() {
+        ISymbolFromImageDataRecognizer symbolFromImageDataRecognizer = MuRET.getInstance().getModel().getClassifiers().getSymbolFromImageDataRecognizer();
+        if (!symbolFromImageDataRecognizer.isTrained()) {
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog();
+            File folder = openFolderDialog.openFolder(getWindow(), "Choose a training folder");
+
+            if (folder == null) {
+                return false;
+            }
+
+            Callable<Void> task = new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    symbolFromImageDataRecognizer.trainFromFolder(folder);
+                    return null;
+                }
+            };
+
+            BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
+            backgroundProcesses.launch(getWindow(), "Loading classifier", "Classifier loaded", "Cannot load classifier", true, task);
+        }
+        return true;
+    }
+
+    private boolean loadSymbolFromImageAndStrokesClassifier() {
+        IBimodalSymbolFromImageDataAndStrokesRecognizer bimodalSymbolFromImageDataAndStrokesRecognizer = MuRET.getInstance().getModel().getClassifiers().getBimodalSymbolFromImageDataAndStrokesRecognizer();
+        if (!bimodalSymbolFromImageDataAndStrokesRecognizer.isTrained()) {
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog();
+            File folder = openFolderDialog.openFolder(getWindow(), "Choose a training folder");
+            if (folder == null) {
+                return false;
+            }
+            Callable<Void> task = new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    bimodalSymbolFromImageDataAndStrokesRecognizer.trainFromFolder(folder);
+                    return null;
+                }
+            };
+
+            BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
+            backgroundProcesses.launch(getWindow(), "Loading classifier", "Classifier loaded", "Cannot load classifier", true, task);
+        }
+        return true;
+    }
+
+
+
     private void createAutomaticSymbolRecognitionTools() {
         showSymbolsPane();
 
@@ -520,7 +884,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
             }
         };
 
-        new BackgroundProcesses().launch(this.imagePane.getScene().getWindow(), "Recognizing symbol sequences in selected staff", "Recognition finished", "Cannot recognize symbols", process);
+        new BackgroundProcesses().launch(this.imagePane.getScene().getWindow(), "Recognizing symbol sequences in selected staff", "Recognition finished", "Cannot recognize symbols", true, process);
     }
 
     private void doRecognizeStaffEndToEnd(OMRRegion omrRegion) throws IM3Exception, IOException {
@@ -768,7 +1132,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
             ISymbolClusterer symbolClusterer = new SymbolClusterer();
             ShowChoicesDialog<Integer> choicesDialog = new ShowChoicesDialog<>();
             Integer[] staves = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-            Integer choice = choicesDialog.show(rootBorderPane.getScene().getWindow(), "Division of symbols in regions", "Select the expected number of staves", staves, 6);
+            Integer choice = choicesDialog.show(getWindow(), "Division of symbols in regions", "Select the expected number of staves", staves, 6);
             if (choice != null) {
                 SortedSet<Region> recognizedRegions = symbolClusterer.cluster(allSymbols, choice);
                 omrImage.clear();

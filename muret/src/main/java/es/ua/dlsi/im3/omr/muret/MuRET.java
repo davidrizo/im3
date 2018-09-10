@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.gui.useractionlogger.ActionLogger;
 import es.ua.dlsi.im3.omr.muret.old.KeyEventManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -33,6 +34,7 @@ public class MuRET extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        ActionLogger.init();
         agnosticSymbolFonts = new AgnosticSymbolFonts();
         navigation = new Navigation(primaryStage);
         instance = this;

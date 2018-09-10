@@ -84,6 +84,7 @@
             <ToggleButton fx:id="toggleDocumentAnalysisAutomatic" mnemonicParsing="false" text="Automatic" toggleGroup="$toolToggle" />
             <Separator prefHeight="5.0" prefWidth="0.0" />
             <Label text="Symbols" />
+            <ToggleButton fx:id="toggleSymbolManual" mnemonicParsing="false" text="Manual" toggleGroup="$toolToggle" />
             <ToggleButton fx:id="toggleSymbolRecognition" mnemonicParsing="false" text="Recognition" toggleGroup="$toolToggle" />
         </items>
       </ToolBar>
@@ -109,6 +110,7 @@
                </children>
             </VBox>
             <ToolBar fx:id="toolbarToolSpecific" orientation="VERTICAL" prefHeight="164.0" prefWidth="83.0" />
+            <ToolBar fx:id="toolBarClassifiers" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1" />
          </children>
          <BorderPane.margin>
             <Insets />
@@ -155,7 +157,7 @@
                                     </VBox>
                                  </content>
                               </ScrollPane>
-                              <FlowPane fx:id="agnosticCorrectionPane" prefHeight="85.0" prefWidth="591.0" VBox.vgrow="NEVER" />
+                              <FlowPane fx:id="agnosticCorrectionPane" prefHeight="120.0" prefWidth="591.0" VBox.vgrow="NEVER" />
                            </children>
                         </VBox>
                      </content>

@@ -6,7 +6,9 @@ import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.javafx.BackgroundProcesses;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.gui.useractionlogger.ActionLogger;
 import es.ua.dlsi.im3.omr.muret.model.OMRProjectPreview;
+import es.ua.dlsi.im3.omr.muret.useractionslog.UserActionsPool;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -76,6 +78,7 @@ public class OpenProjectController implements Initializable {
     }
 
     private void openProject(File mrtFile) {
+        ActionLogger.log(UserActionsPool.projectOpen, mrtFile.getParent());
         OrderImagesController orderImagesController = (OrderImagesController) MuRET.getInstance().openWindow("/fxml/muret/orderimages.fxml", true, true);
         orderImagesController.loadOMRProject(mrtFile);
     }

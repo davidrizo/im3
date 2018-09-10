@@ -4,8 +4,10 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.javafx.BackgroundProcesses;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.gui.useractionlogger.ActionLogger;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
 import es.ua.dlsi.im3.omr.muret.model.OMRProject;
+import es.ua.dlsi.im3.omr.muret.useractionslog.UserActionsPool;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -67,13 +69,20 @@ public class OrderImagesController implements Initializable {
                     createImageButton(omrImage);
                 }
 
-                createAddButton();
+
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        createAddButton();
+                    }
+                });
+
                 return null;
             }
         };
 
         BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
-        backgroundProcesses.launch(flowPaneOrderImages.getScene().getWindow(), "Loading project", null, "Cannot load project images", loadImagesProcess);
+        backgroundProcesses.launch(flowPaneOrderImages.getScene().getWindow(), "Loading project", null, "Cannot load project images", true, loadImagesProcess);
 
     }
 
@@ -128,6 +137,7 @@ public class OrderImagesController implements Initializable {
 
     @FXML
     private void handleClose() {
+        ActionLogger.log(UserActionsPool.projectClose, MuRET.getInstance().getModel().getCurrentProject().getProjectFolder().getAbsolutePath());
         MuRET.getInstance().closeCurrentWindow();
     }
 
