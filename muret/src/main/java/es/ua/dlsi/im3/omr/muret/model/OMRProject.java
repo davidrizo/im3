@@ -216,10 +216,6 @@ public class OMRProject {
         pojoProject.setName(name);
         pojoProject.setComposer(composer);
         pojoProject.setComments(comments.get());
-        for (OMRInstrument instrument: instruments.getInstrumentSet()) {
-            Instrument pojoInstrument = new Instrument(instrument.getName());
-            pojoProject.getInstruments().add(pojoInstrument);
-        }
 
         for (OMRImage image: imagesProperty) {
             Image pojoImage = image.createPOJO();

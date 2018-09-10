@@ -5,7 +5,11 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
 import java.io.File;
 
+/**
+ * @deprecated
+ */
 public class SymbolFromImageDataRecognizerFactory {
+
     private static SymbolFromImageDataRecognizerFactory ourInstance = new SymbolFromImageDataRecognizerFactory();
 
     public static SymbolFromImageDataRecognizerFactory getInstance() {
@@ -19,4 +23,6 @@ public class SymbolFromImageDataRecognizerFactory {
     public ISymbolFromImageDataRecognizer create(AgnosticVersion agnosticVersion, File trainingFolder) throws IM3Exception {
         return new NearestNeighbourSymbolFromImageRecognizer(agnosticVersion, trainingFolder);
     }
+
+
 }

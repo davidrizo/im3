@@ -29,89 +29,27 @@ import javafx.stage.DirectoryChooser;
 
 public class FXMLController implements Initializable {
     static File lastFolder;
-    
+    DateTimeFormatter dateTimeFormatter;
     @FXML
     private TextArea textAreaLogs;
-
     @FXML
     private ListView<WorkSession> lvWorkSessions;
-    
     @FXML
     private ListView<String> lvTargetItems;
-    
     @FXML
     private Label labelInteractions;
-
     @FXML
     private Label labelTime;
-
     @FXML
     private Label labelAccInteractions;
-
     @FXML
     private Label labelAccTime;
-    
     @FXML
     private Label sessionStarted;
-    
     private Reader reader;
-    
-    DateTimeFormatter dateTimeFormatter;
     
     public FXMLController() {
 	dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-    }
-    
-    @FXML
-    private void handleOpenLogsFolder(ActionEvent event) {
-	    DirectoryChooser fc = new DirectoryChooser();
-		fc.setTitle("Select the folder with the logs to be parsed");
-		if (lastFolder != null) {
-		    fc.setInitialDirectory(lastFolder);		    
-		}
-
-		File file = fc.showDialog(null);//FXUtils.getActiveWindow()); 
-		if (file != null) {
-			//lastFolder = file.getParentFile();
-			lastFolder = file;			
-			
-			readFolder(file);
-		}		
-    }
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-	lvWorkSessions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<WorkSession>() {
-
-	    @Override
-	    public void changed(ObservableValue<? extends WorkSession> observable, WorkSession oldValue, WorkSession newValue) {
-		showWorkSessionEntries(newValue);
-	    }
-	});
-	
-	lvTargetItems.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-
-	    @Override
-	    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-		showWorkTargetItemEntries(newValue);
-	    }
-	});	
-    }
-
-    private void readFolder(File file) {
-	try {
-	    reader = new Reader(file);
-	    
-	    lvWorkSessions.getItems().clear();
-	    lvWorkSessions.getItems().addAll(reader.getWorkSessions());
-	    
-	    this.labelAccInteractions.setText(Integer.toString(reader.getAcctInteractions()));
-	    this.labelAccTime.setText(reader.getAccTimeSpent().toString());
-	} catch (UserActionLoggerException ex) {
-	    Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
-	    showError("Cannot read the logs folder " + file.getAbsolutePath(), ex);
-	    
-	}
     }
     
     public static void showError(String message, Throwable e) {
@@ -146,7 +84,59 @@ public class FXMLController implements Initializable {
 	alert.getDialogPane().setExpandableContent(expContent);
 
 	alert.showAndWait();
-    }    
+    }
+    
+    @FXML
+    private void handleOpenLogsFolder(ActionEvent event) {
+	    DirectoryChooser fc = new DirectoryChooser();
+		fc.setTitle("Select the folder with the logs to be parsed");
+		if (lastFolder != null) {
+		    fc.setInitialDirectory(lastFolder);
+		}
+
+		File file = fc.showDialog(null);//FXUtils.getActiveWindow());
+		if (file != null) {
+			//lastFolder = file.getParentFile();
+			lastFolder = file;
+
+			readFolder(file);
+		}
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+	lvWorkSessions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<WorkSession>() {
+
+	    @Override
+	    public void changed(ObservableValue<? extends WorkSession> observable, WorkSession oldValue, WorkSession newValue) {
+		showWorkSessionEntries(newValue);
+	    }
+	});
+
+	lvTargetItems.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+
+	    @Override
+	    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+		showWorkTargetItemEntries(newValue);
+	    }
+	});
+    }
+    
+    private void readFolder(File file) {
+	try {
+	    reader = new Reader(file);
+
+	    lvWorkSessions.getItems().clear();
+	    lvWorkSessions.getItems().addAll(reader.getWorkSessions());
+
+	    this.labelAccInteractions.setText(Integer.toString(reader.getAcctInteractions()));
+	    this.labelAccTime.setText(reader.getAccTimeSpent().toString());
+	} catch (UserActionLoggerException ex) {
+	    Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
+	    showError("Cannot read the logs folder " + file.getAbsolutePath(), ex);
+
+	}
+    }
     
     private void showWorkSessionEntries(WorkSession ws) {	
 	lvTargetItems.getItems().clear();

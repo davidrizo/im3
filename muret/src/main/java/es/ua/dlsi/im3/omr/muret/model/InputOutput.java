@@ -63,9 +63,6 @@ public class InputOutput {
         omrProject.setLastChangedDate(pojoProject.getLastChangedDate());
         omrProject.setNotationType(pojoProject.getNotationType());
         omrProject.setComments(pojoProject.getComments());
-        for (Instrument pojoInstrument: pojoProject.getInstruments()) {
-            omrProject.addInstrument(pojoInstrument.getName());
-        }
 
         /*ArrayList<Image> pagesList = new ArrayList<>(pojoProject.getImages());
         pagesList.sort(new Comparator<Image>() {
@@ -81,6 +78,9 @@ public class InputOutput {
         int nregion = 1;
         for (Image image: pojoProject.getImages()) {
             OMRImage omrImage = new OMRImage(omrProject, new File(omrProject.getImagesFolder(), image.getImageRelativeFileName()));
+            if (image.getInstrument() != null) {
+                omrImage.instrumentProperty().setValue(omrProject.getInstruments().getInstrument(image.getInstrument().getName()));
+            }
             omrImage.setOrder(image.getOrder());
             omrImage.setComments(image.getComments());
             omrProject.addImage(omrImage);
@@ -88,16 +88,17 @@ public class InputOutput {
             for (Page page: image.getPages()) {
                 BoundingBox boundingBox = page.getBoundingBox();
                 OMRPage omrPage = new OMRPage(omrImage, boundingBox.getFromX(), boundingBox.getFromY(), boundingBox.getToX(), boundingBox.getToY());
+                if (page.getInstrument() != null) {
+                    omrPage.instrumentProperty().setValue(omrProject.getInstruments().getInstrument(page.getInstrument().getName()));
+                }
                 omrImage.addPage(omrPage);
 
                 for (Region region: page.getRegions()) {
                     OMRRegion omrRegion = new OMRRegion(omrPage, nregion++, region);
+                    if (region.getInstrument() != null) {
+                        omrRegion.instrumentProperty().setValue(omrProject.getInstruments().getInstrument(region.getInstrument().getName()));
+                    }
                     omrPage.addRegion(omrRegion);
-                }
-
-                for (Instrument instrument: page.getInstruments()) {
-                    OMRInstrument omrInstrument = omrProject.getInstruments().getInstrument(instrument.getName());
-                    omrPage.addInstrument(omrInstrument);
                 }
             }
         }

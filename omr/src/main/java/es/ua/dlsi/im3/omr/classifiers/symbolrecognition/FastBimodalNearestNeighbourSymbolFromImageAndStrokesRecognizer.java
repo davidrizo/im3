@@ -28,6 +28,7 @@ public class FastBimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer impl
     LinkedList<SymbolPointsPrototype> strokesTrainingSet;
     public static double IMAGES_CLASSIFIER_WEIGHT = 0.7;
     double imagesClassifierWeight;
+    boolean trained = false;
 
     public FastBimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer(AgnosticVersion agnosticVersion, double imagesClassifierWeight)  {
         this.agnosticVersion = agnosticVersion;
@@ -83,6 +84,11 @@ public class FastBimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer impl
         }
 
         return bestImagesDistanceForClass;
+    }
+
+    @Override
+    public boolean isTrained() {
+        return trained;
     }
 
     /**
@@ -192,8 +198,10 @@ public class FastBimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer impl
     public void trainFromFile(File trainingFile) throws IM3Exception, IOException {
         initTrainingSets();
         loadTrainingFile(trainingFile);
+        trained = true;
     }
 
+    @Override
     public void trainFromFolder(File trainingDataFolder) throws IM3Exception {
         initTrainingSets();
         ArrayList<File> trainingFiles = new ArrayList<>();
@@ -202,6 +210,7 @@ public class FastBimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer impl
             for (File trainingFile: trainingFiles) {
                 loadTrainingFile(trainingFile);
             }
+            trained = true;
         } catch (IOException e) {
             throw new IM3Exception(e);
         }

@@ -27,12 +27,6 @@ public class Project {
      */
     private NotationType notationType;
 
-    // Don't put this field after imagesold for XStream serializer work well (references to instruments)
-    /**
-     * Unordered set of image files
-     */
-    private Set<Instrument> instruments;
-
     /**
      * Ordered set (given a image number) of image files
      */
@@ -56,7 +50,6 @@ public class Project {
         this.version = version;
         this.notationType = notationType;
         images = new TreeSet<>();
-        instruments = new HashSet<>();
     }
 
     public String getName() {
@@ -83,14 +76,6 @@ public class Project {
         this.images = images;
     }
 
-    public Set<Instrument> getInstruments() {
-        return instruments;
-    }
-
-    public void setInstruments(Set<Instrument> instruments) {
-        this.instruments = instruments;
-    }
-
     public NotationType getNotationType() {
         return notationType;
     }
@@ -99,26 +84,8 @@ public class Project {
         this.notationType = notationType;
     }
 
-    public void addInstrument(Instrument instrument) {
-        instruments.add(instrument);
-    }
-
     public void addImage(Image image) {
         images.add(image);
-    }
-
-    /**
-     *
-     * @param name
-     * @return null if not found
-     */
-    public Instrument findInstrumentByName(String name) {
-        for (Instrument instrument: instruments) {
-            if (instrument.getName().equals(name)) {
-                return instrument;
-            }
-        }
-        return null;
     }
 
     /**
@@ -144,14 +111,13 @@ public class Project {
                 Objects.equals(composer, project.composer) &&
                 version == project.version &&
                 notationType == project.notationType &&
-                Objects.equals(images, project.images) &&
-                Objects.equals(instruments, project.instruments);
+                Objects.equals(images, project.images);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(name, version, notationType, images, instruments);
+        return Objects.hash(name, version, notationType, images);
     }
 
     public String getComposer() {

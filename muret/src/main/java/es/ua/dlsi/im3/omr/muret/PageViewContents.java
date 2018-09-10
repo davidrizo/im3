@@ -17,15 +17,15 @@ class PageViewContents implements Comparable<PageViewContents> {
     Group regionViewsGroup;
     ObservableListViewSetModelLink<OMRRegion, RegionView> regions;
 
-    public PageViewContents(DocumentAnalysisSymbolsController controller, OMRPage page) {
+    public PageViewContents(DocumentAnalysisSymbolsDiplomaticMusicController controller, OMRPage page) {
         this.omrPage = page;
-        this.pageView = new PageView("Page" + page.hashCode(), controller, page, DocumentAnalysisSymbolsController.PAGE_COLOR);
+        this.pageView = new PageView("Page" + page.hashCode(), controller, page, DocumentAnalysisSymbolsDiplomaticMusicController.PAGE_COLOR);
         regionViewsGroup = new Group();
 
         regions = new ObservableListViewSetModelLink<OMRRegion, RegionView>(page.regionsProperty(), new Function<OMRRegion, RegionView>() {
             @Override
             public RegionView apply(OMRRegion omrRegion) {
-                return new RegionView("Region" + omrRegion.hashCode(), controller, pageView, omrRegion, DocumentAnalysisSymbolsController.REGION_COLOR);
+                return new RegionView("Region" + omrRegion.hashCode(), controller, pageView, omrRegion, DocumentAnalysisSymbolsDiplomaticMusicController.REGION_COLOR);
             }
         });
 

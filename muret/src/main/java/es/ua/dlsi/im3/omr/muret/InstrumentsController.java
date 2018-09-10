@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowInput;
-import es.ua.dlsi.im3.omr.model.entities.Instrument;
 import es.ua.dlsi.im3.omr.muret.model.OMRInstrument;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,54 +17,33 @@ import java.util.ResourceBundle;
  */
 public class InstrumentsController implements Initializable {
     @FXML
-    Button btnAdd;
-
-    @FXML
     Button btnAddOther;
-
-    @FXML
-    Button btnRemove;
 
     @FXML
     ListView<OMRInstrument> lvAvailableInstruments;
 
-    @FXML
-    ListView<OMRInstrument> lvImageInstruments;
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btnAdd.disableProperty().bind(lvAvailableInstruments.getSelectionModel().selectedItemProperty().isNull());
-        btnRemove.disableProperty().bind(lvImageInstruments.getSelectionModel().selectedItemProperty().isNull());
-    }
-
-    @FXML
-    private void handleAdd() {
-        lvImageInstruments.getItems().add(lvAvailableInstruments.getSelectionModel().getSelectedItem());
-        lvAvailableInstruments.getItems().remove(lvAvailableInstruments.getSelectionModel().getSelectedItem());
+        lvAvailableInstruments.getItems().addAll(MuRET.getInstance().getModel().getCurrentProject().getInstruments().getInstrumentSet());
     }
 
     @FXML
     private void handleAddOther() {
-        String instrumentName = ShowInput.show(this.btnAdd.getScene().getWindow(), "Instruments", "Name of the new instrument");
+        String instrumentName = ShowInput.show(this.btnAddOther.getScene().getWindow(), "Instruments", "Name of the new instrument");
         if (instrumentName != null) {
-            lvImageInstruments.getItems().add(new OMRInstrument(instrumentName));
+            OMRInstrument newInstrument = MuRET.getInstance().getModel().getCurrentProject().addInstrument(instrumentName);
+            lvAvailableInstruments.getItems().add(newInstrument);
+            lvAvailableInstruments.getSelectionModel().select(newInstrument);
         }
     }
 
-    @FXML
-    private void handleRemove() {
-        lvAvailableInstruments.getItems().add(lvImageInstruments.getSelectionModel().getSelectedItem());
-        lvImageInstruments.getItems().remove(lvImageInstruments.getSelectionModel().getSelectedItem());
+    public OMRInstrument getSelectedInstrument() {
+        return lvAvailableInstruments.getSelectionModel().getSelectedItem();
     }
 
-
-    public List<OMRInstrument> getInstruments() {
-        return lvImageInstruments.getItems();
-    }
-
-    public void loadInstruments(Collection<OMRInstrument> projectInstruments, Collection<OMRInstrument> imageInstruments) {
-        lvAvailableInstruments.getItems().addAll(projectInstruments);
-        lvImageInstruments.getItems().addAll(imageInstruments);
+    public void selectInstrument(OMRInstrument instrument) {
+        if (instrument != null) {
+            lvAvailableInstruments.getSelectionModel().select(instrument);
+        }
     }
 }

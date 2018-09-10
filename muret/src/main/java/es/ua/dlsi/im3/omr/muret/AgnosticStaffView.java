@@ -31,7 +31,7 @@ public class AgnosticStaffView extends VBox {
 
     private static final double LEDGER_LINE_EXTRA_LENGTH = 8;
     private static final double LEDGER_LINE_WIDTH = 20;
-    private final DocumentAnalysisSymbolsController controller;
+    private final DocumentAnalysisSymbolsDiplomaticMusicController controller;
     private final Line[] lines;
     Group staffGroup;
 
@@ -43,7 +43,7 @@ public class AgnosticStaffView extends VBox {
     HashMap<OMRSymbol, Shape> shapesInStaff;
     private double regionXOffset;
 
-    public AgnosticStaffView(DocumentAnalysisSymbolsController controller, AgnosticSymbolFont agnosticSymbolFont, ReadOnlyDoubleProperty widthProperty, double height, double regionXOffset)  {
+    public AgnosticStaffView(DocumentAnalysisSymbolsDiplomaticMusicController controller, AgnosticSymbolFont agnosticSymbolFont, ReadOnlyDoubleProperty widthProperty, double height, double regionXOffset)  {
         this.controller = controller;
         shapesInStaff = new HashMap<>();
         this.regionXOffset = regionXOffset;

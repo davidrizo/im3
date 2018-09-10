@@ -19,9 +19,9 @@ public class Page implements Comparable<Page> {
      */
     BoundingBoxXY boundingBox;
     /**
-     * Instruments found in the page, all them should exist in the project set of instruments
+     * Instrument, it may be null if not the same for all regions or if defined in a higher level
      */
-    Set<Instrument> instruments;
+    Instrument instrument;
     /**
      * Sorted set of regions
      */
@@ -29,22 +29,12 @@ public class Page implements Comparable<Page> {
 
     public Page(int fromX, int fromY, int toX, int toY) throws IM3Exception {
         boundingBox = new BoundingBoxXY(fromX, fromY, toX, toY);
-        instruments = new TreeSet<>();
         regions = new TreeSet<>();
     }
 
     public Page(BoundingBoxXY boundingBox) {
         this.boundingBox = boundingBox;
-        instruments = new TreeSet<>();
         regions = new TreeSet<>();
-    }
-
-    public Set<Instrument> getInstruments() {
-        return instruments;
-    }
-
-    public void setInstruments(Set<Instrument> instruments) {
-        this.instruments = instruments;
     }
 
     public SortedSet<Region> getRegions() {
@@ -76,9 +66,6 @@ public class Page implements Comparable<Page> {
         return boundingBox.compareTo(o.boundingBox);
     }
 
-    public void addInstrument(Instrument instrument) {
-        instruments.add(instrument);
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -86,12 +73,20 @@ public class Page implements Comparable<Page> {
         if (o == null || getClass() != o.getClass()) return false;
         Page page = (Page) o;
         return Objects.equals(boundingBox, page.boundingBox) &&
-                Objects.equals(instruments, page.instruments) &&
+                Objects.equals(instrument, page.instrument) &&
                 Objects.equals(regions, page.regions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(boundingBox, instruments, regions);
+        return Objects.hash(boundingBox, instrument, regions);
+    }
+
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
     }
 }

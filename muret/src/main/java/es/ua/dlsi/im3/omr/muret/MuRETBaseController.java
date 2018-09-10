@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.transform.Scale;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -65,7 +64,7 @@ public abstract class MuRETBaseController implements Initializable, ISelectableT
 
     @FXML
     private void handleOpenSymbols() {
-        DocumentAnalysisSymbolsController symbolsController = MuRET.getInstance().openWindow("/fxml/muret/symbols.fxml", true, true);
+        DocumentAnalysisSymbolsDiplomaticMusicController symbolsController = MuRET.getInstance().openWindow("/fxml/muret/symbols.fxml", true, true);
         try {
             symbolsController.loadOMRImage(omrImage);
         } catch (IM3Exception e) {

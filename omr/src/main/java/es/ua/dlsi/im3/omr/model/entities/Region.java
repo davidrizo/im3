@@ -29,6 +29,11 @@ public class Region implements Comparable<Region> {
      * Ordered (first X, then Y) of symbols contained in the region
      */
     SortedSet<Symbol> symbols;
+    /**
+     * Instrument, it may be null if not the same for all symbols or if defined in a higher level
+     */
+    Instrument instrument;
+
 
     public Region(RegionType regionType, double fromX, double fromY, double toX, double toY) throws IM3Exception {
         if (fromX < 0) {
@@ -136,13 +141,14 @@ public class Region implements Comparable<Region> {
         Region region = (Region) o;
         return Objects.equals(boundingBox, region.boundingBox) &&
                 regionType == region.regionType &&
+                Objects.equals(instrument, region.instrument) &&
                 Objects.equals(symbols, region.symbols);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(boundingBox, regionType, symbols);
+        return Objects.hash(boundingBox, regionType, symbols, instrument);
     }
 
     /**
@@ -161,4 +167,11 @@ public class Region implements Comparable<Region> {
         }
     }
 
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
+    }
 }

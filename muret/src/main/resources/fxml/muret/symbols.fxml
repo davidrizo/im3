@@ -27,7 +27,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane id="mainpane" fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="535.0" prefWidth="836.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.DocumentAnalysisSymbolsController">
+<BorderPane id="mainpane" fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="535.0" prefWidth="836.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.DocumentAnalysisSymbolsDiplomaticMusicController">
    <top>
       <HBox id="menu" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
          <children>
@@ -40,6 +40,11 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleFileSave" text="Save">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
                     <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="ANY" />
@@ -86,6 +91,8 @@
             <Label text="Symbols" />
             <ToggleButton fx:id="toggleSymbolManual" mnemonicParsing="false" text="Manual" toggleGroup="$toolToggle" />
             <ToggleButton fx:id="toggleSymbolRecognition" mnemonicParsing="false" text="Recognition" toggleGroup="$toolToggle" />
+            <Separator prefHeight="5.0" prefWidth="0.0" />
+            <ToggleButton fx:id="toggleDiplomatic" mnemonicParsing="false" text="Diplomatic" toggleGroup="$toolToggle" />
         </items>
       </ToolBar>
    </left>
@@ -110,7 +117,7 @@
                </children>
             </VBox>
             <ToolBar fx:id="toolbarToolSpecific" orientation="VERTICAL" prefHeight="164.0" prefWidth="83.0" />
-            <ToolBar fx:id="toolBarClassifiers" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1" />
+            <ToolBar fx:id="toolBarToolSpecificOptions" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1" />
          </children>
          <BorderPane.margin>
             <Insets />
@@ -157,7 +164,7 @@
                                     </VBox>
                                  </content>
                               </ScrollPane>
-                              <FlowPane fx:id="agnosticCorrectionPane" prefHeight="120.0" prefWidth="591.0" VBox.vgrow="NEVER" />
+                              <FlowPane fx:id="symbolCorrectionPane" prefHeight="120.0" prefWidth="591.0" VBox.vgrow="NEVER" />
                            </children>
                         </VBox>
                      </content>

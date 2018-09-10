@@ -23,8 +23,6 @@ public class XMLReaderWriterTest {
         Project project = new Project(ProjectVersion.v1, NotationType.eMensural);
         project.setName("Test");
         Instrument instrument1 = new Instrument("Soprano");
-        project.addInstrument(instrument1);
-        project.addInstrument(new Instrument("Bass"));
 
         Image image1 = new Image("image1.jpg");
         image1.setOrder(0);
@@ -41,7 +39,7 @@ public class XMLReaderWriterTest {
 
         Page page2_2 = new Page(670, 450, 1250, 800);
         image2.addPage(page2_2);
-        page2_2.addInstrument(instrument1);
+        page2_2.setInstrument(instrument1);
 
         Region region1 = new Region(RegionType.all, 20, 30, 40, 50);
         page2_2.add(region1);

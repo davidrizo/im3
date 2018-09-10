@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Optional;
 
 public class FXMLDialog {
@@ -24,11 +26,15 @@ public class FXMLDialog {
     protected Node btnOKNode;
     protected Initializable controller;
 
-    public FXMLDialog(Window ownerDialog, String title, String urlFXML) throws IM3Exception {
+    public FXMLDialog(Window ownerDialog, String title, String fxml) throws IM3Exception {
         btnOK = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         btnCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(urlFXML));
+        URL url = this.getClass().getResource(fxml);
+        if (url == null) {
+            throw new IM3Exception("Cannot find resource " + fxml);
+        }
+        FXMLLoader fxmlLoader = new FXMLLoader(url);
         Parent root = null;
         try {
             root = fxmlLoader.load();

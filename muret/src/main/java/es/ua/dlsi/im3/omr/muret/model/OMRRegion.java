@@ -2,16 +2,19 @@ package es.ua.dlsi.im3.omr.muret.model;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.omr.model.entities.Instrument;
 import es.ua.dlsi.im3.omr.model.entities.Region;
 import es.ua.dlsi.im3.omr.model.entities.RegionType;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
@@ -48,6 +51,10 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
      * Set of ordered symbols
      */
     ObservableSet<OMRSymbol> symbols;
+    /**
+     * Instrument, it may be null if not the same for all symbols
+     */
+    ObjectProperty<OMRInstrument> instrument;
 
 
     public OMRRegion(OMRPage omrPage, int id, double fromX, double fromY, double width, double height, RegionType regionType) throws IM3Exception {
@@ -74,6 +81,7 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
         this.symbols = FXCollections.observableSet(new TreeSet<>());
         name = new SimpleStringProperty();
         name.bind(this.regionType.asString().concat(" #" + id));
+        this.instrument = new SimpleObjectProperty<>();
     }
 
     public OMRRegion(OMRPage omrPage, int id, Region region) throws IM3Exception {
@@ -87,9 +95,16 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
         this.symbols = FXCollections.observableSet(new TreeSet<>());
         name = new SimpleStringProperty();
         name.bind(this.regionType.asString().concat(" #" + id));
+        this.instrument = new SimpleObjectProperty<>();
         if (region.getSymbols() != null) {
             for (Symbol symbol : region.getSymbols()) {
                 OMRSymbol omrSymbol = new OMRSymbol(this, symbol);
+                if (symbol.getInstrument() != null) {
+                    if (symbol.getInstrument() != null) {
+                        omrSymbol.instrumentProperty().setValue(omrPage.getOMMRImage().getOmrProject().getInstruments().getInstrument(region.getInstrument().getName()));
+                    }
+
+                }
                 this.symbols.add(omrSymbol);
             }
         }
@@ -156,6 +171,11 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
         return name;
     }
 
+    @Override
+    public ObservableValue<? extends String> descriptionProperty() {
+        return name.concat(" ").concat(instrument);
+    }
+
     public ObjectProperty<RegionType> regionTypeProperty() {
         return regionType;
     }
@@ -180,6 +200,10 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
 
     public Region createPOJO() throws IM3Exception {
         Region pojoRegion = new Region(getRegionType(), getFromX(), getFromY(), getFromX() + getWidth(), getFromY() + getHeight());
+        if (instrument.isNotNull().get()) {
+            pojoRegion.setInstrument(new Instrument(instrument.get().getName()));
+        }
+
         for (OMRSymbol omrSymbol: symbols) {
             pojoRegion.addSymbol(omrSymbol.createPOJO());
         }
@@ -257,5 +281,29 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
     public int hashCode() {
 
         return Objects.hash(omrPage, id, fromX, fromY, width, height, name, regionType);
+    }
+
+    /**
+     * It not defined here look for the one defined in the parent
+     * @return
+     */
+    public OMRInstrument getInstrumentHierarchical() {
+        if (!instrument.isBound()) {
+            return omrPage.getInstrumentHierarchical();
+        } else {
+            return instrument.get();
+        }
+    }
+
+    public OMRInstrument getInstrument() {
+        return instrument.get();
+    }
+
+    public ObjectProperty<OMRInstrument> instrumentProperty() {
+        return instrument;
+    }
+
+    public void setInstrument(OMRInstrument instrument) {
+        this.instrument.set(instrument);
     }
 }

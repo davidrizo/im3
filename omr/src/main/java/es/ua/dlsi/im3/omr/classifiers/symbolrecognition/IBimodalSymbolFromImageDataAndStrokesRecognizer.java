@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.patternmatching.RankingItem;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.model.entities.Strokes;
 
+import java.io.File;
 import java.util.TreeSet;
 
 /**
@@ -22,4 +23,12 @@ public interface IBimodalSymbolFromImageDataAndStrokesRecognizer {
     NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImageAndPointsPrototype> recognize(GrayscaleImageData imageData, Strokes strokes) throws IM3Exception;
 
     int getTrainingSetSize();
+
+    boolean isTrained();
+
+    /**
+     * It locates the suitable files to train in the folder
+     * @param folder
+     */
+    void trainFromFolder(File folder) throws IM3Exception;
 }

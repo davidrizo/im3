@@ -4,9 +4,11 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
+import es.ua.dlsi.im3.omr.model.entities.Instrument;
 import es.ua.dlsi.im3.omr.model.entities.Stroke;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 
 import java.util.Objects;
 
@@ -48,6 +50,10 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
      * Optional
      */
     private ObjectProperty<OMRStrokes> strokes;
+    /**
+     * Instruments - if not the same as its region
+     */
+    ObjectProperty<OMRInstrument> instrument; //TODO
 
 
     public OMRSymbol(OMRRegion omrRegion, AgnosticSymbol graphicalSymbol, double x, double y, double width, double height) throws IM3Exception {
@@ -72,7 +78,8 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
         this.height = new SimpleDoubleProperty(height);
         this.accepted = new SimpleBooleanProperty(false);
         this.name = new SimpleStringProperty(this.graphicalSymbol.get().getAgnosticString());
-        strokes = new SimpleObjectProperty<>();
+        this.strokes = new SimpleObjectProperty<>();
+        this.instrument = new SimpleObjectProperty<>();
     }
 
     public OMRSymbol(OMRRegion omrRegion, Symbol symbol) throws IM3Exception {
@@ -156,6 +163,11 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
         return name;
     }
 
+    @Override
+    public ObservableValue<? extends String> descriptionProperty() {
+        return name;
+    }
+
     public void setHeight(double height) {
         this.height.set(height);
     }
@@ -186,6 +198,9 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
 
     public Symbol createPOJO() throws IM3Exception {
         Symbol pojoSymbol = new Symbol(graphicalSymbol.get(), x.get(), y.get(), x.get()+width.get(), y.get()+height.get());
+        if (instrument.isNotNull().get()) {
+            pojoSymbol.setInstrument(new Instrument(instrument.get().getName()));
+        }
         pojoSymbol.setAccepted(accepted.get());
 
         if (strokes != null && strokes.isNotNull().get()) {
@@ -283,5 +298,29 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
 
     public double getEndY() {
         return getY() + getHeight();
+    }
+
+    /**
+     * It not defined here look for the one defined in the parent
+     * @return
+     */
+    public OMRInstrument getInstrumentHierarchical() {
+        if (!instrument.isBound()) {
+            return omrRegion.getInstrumentHierarchical();
+        } else {
+            return instrument.get();
+        }
+    }
+
+    public OMRInstrument getInstrument() {
+        return instrument.get();
+    }
+
+    public ObjectProperty<OMRInstrument> instrumentProperty() {
+        return instrument;
+    }
+
+    public void setInstrument(OMRInstrument instrument) {
+        this.instrument.set(instrument);
     }
 }

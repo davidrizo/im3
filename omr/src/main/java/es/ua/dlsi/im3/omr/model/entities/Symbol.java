@@ -35,6 +35,11 @@ public class Symbol implements Comparable<Symbol> {
      */
     private Strokes strokes;
     /**
+     * Instrument, it may be null if defined in a higher level
+     */
+    Instrument instrument;
+
+    /**
      * Optional: information about the pixels of the image. May be null
      */
     //private RasterImage rasterMonochromeImage;
@@ -157,4 +162,11 @@ public class Symbol implements Comparable<Symbol> {
         }
     }
 
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
+    }
 }

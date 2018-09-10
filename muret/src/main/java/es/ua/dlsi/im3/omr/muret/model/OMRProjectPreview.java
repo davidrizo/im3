@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +29,8 @@ public class OMRProjectPreview  {
      * Image shown as the preview, currently it is the first one in the imagesold folder
      */
     File posterFrameImage;
+
+    private Stack<String> elements;
 
     public OMRProjectPreview(File mrtFile) throws ImportException {
         try {
@@ -56,6 +59,7 @@ public class OMRProjectPreview  {
      */
     private void loadPreviewData(InputSource mrt) throws ImportException {
         try {
+            elements = new Stack<>();
             XMLReader reader = XMLReaderFactory.createXMLReader();
             reader.setContentHandler(new SAXHandler());
             reader.parse(mrt);
@@ -75,37 +79,46 @@ public class OMRProjectPreview  {
     }
 
     private class SAXHandler extends DefaultHandler {
+        private static final String ELEMNENT_PROJECT = "project";
         private static final String ELEMENT_NAME = "name";
         private static final String ELEMENT_COMPOSER = "composer";
         private static final String ELEMENT_IMAGE_FILENAME = "imageRelativeFileName";
         static final String FINISHED = "__Finished__";
         String currentElement;
+        private String parentElement;
+
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            parentElement = currentElement;
             currentElement = localName;
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
             currentElement = null;
+            if (!elements.isEmpty()) {
+                elements.pop();
+            }
+            if (!elements.isEmpty()) {
+                parentElement = elements.peek();
+            }
         }
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             if (currentElement != null) {
-                switch (currentElement) {
-                    case ELEMENT_NAME:
-                        title = String.valueOf(ch, start, length);
-                        checkComplete();
-                        break;
-                    case ELEMENT_COMPOSER:
-                        composer = String.valueOf(ch, start, length);
-                        checkComplete();
-                        break;
-                    case ELEMENT_IMAGE_FILENAME:
-                        posterFrame = String.valueOf(ch, start, length);
-                        checkComplete();
-                        break;
+                if (parentElement != null && parentElement.equals(ELEMNENT_PROJECT)) {
+                    switch (currentElement) {
+                        case ELEMENT_NAME:
+                            title = String.valueOf(ch, start, length);
+                            checkComplete();
+                        case ELEMENT_COMPOSER:
+                            composer = String.valueOf(ch, start, length);
+                            checkComplete();
+                    }
+                } else if (currentElement.equals(ELEMENT_IMAGE_FILENAME)) {
+                    posterFrame = String.valueOf(ch, start, length);
+                    checkComplete();
                 }
             }
         }

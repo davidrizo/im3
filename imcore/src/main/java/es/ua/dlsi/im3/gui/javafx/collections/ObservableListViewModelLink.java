@@ -1,8 +1,8 @@
 package es.ua.dlsi.im3.gui.javafx.collections;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 
 import java.util.*;
 import java.util.function.Function;
@@ -45,4 +45,12 @@ public abstract class ObservableListViewModelLink<ModelObjectType, ModelCollecti
     }
 
     protected abstract void initChangeListener(ModelCollectionType modelCollection, Function<ModelObjectType, ViewObjectType> viewFactoryFunction);
+
+    public <ModelObjectType> ViewObjectType getView(ModelObjectType omrSymbol) throws IM3Exception {
+        ViewObjectType result = mapModelViews.get(omrSymbol);
+        if (result == null) {
+            throw new IM3Exception("Cannot find " + omrSymbol);
+        }
+        return result;
+    }
 }

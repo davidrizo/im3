@@ -20,6 +20,7 @@ import java.util.TreeSet;
  */
 public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourClassifier<AgnosticSymbol, SymbolImagePrototype>  implements ISymbolFromImageDataRecognizer {
     private final AgnosticVersion agnosticVersion;
+    boolean trained = false;
 
     public NearestNeighbourSymbolFromImageRecognizer(AgnosticVersion agnosticVersion)  {
         this.agnosticVersion = agnosticVersion;
@@ -36,10 +37,26 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
         return this.classify(prototype, true);
     }
 
-    public void trainFromFile(File trainingFile) throws IM3Exception, IOException {
-        loadTrainingFile(trainingFile);
+    public void trainFromFile(File trainingFile) throws IM3Exception {
+        try {
+            loadTrainingFile(trainingFile);
+            trained = true;
+        } catch (IOException e) {
+            throw new IM3Exception(e);
+        }
     }
 
+    @Override
+    public String getName() {
+        return "Nearest neighbour";
+    }
+
+    @Override
+    public boolean isTrained() {
+        return trained;
+    }
+
+    @Override
     public void trainFromFolder(File trainingDataFolder) throws IM3Exception {
         ArrayList<File> trainingFiles = new ArrayList<>();
         try {
@@ -47,6 +64,7 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
             for (File trainingFile: trainingFiles) {
                 loadTrainingFile(trainingFile);
             }
+            trained = true;
         } catch (IOException e) {
             throw new IM3Exception(e);
         }
@@ -78,7 +96,7 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
         }
     }
 
-    public void traingFromBimodalDataset(List<SymbolImageAndPointsPrototype> prototypeList) throws IM3Exception, IOException {
+    public void traingFromBimodalDataset(List<SymbolImageAndPointsPrototype> prototypeList)  {
         for (SymbolImageAndPointsPrototype symbolImageAndPointsPrototype: prototypeList) {
             SymbolImagePrototype prototype = new SymbolImagePrototype(symbolImageAndPointsPrototype.getPrototypeClass(), symbolImageAndPointsPrototype.getImageData());
             addPrototype(prototype);

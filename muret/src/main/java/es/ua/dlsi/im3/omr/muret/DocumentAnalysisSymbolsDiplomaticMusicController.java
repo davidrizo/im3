@@ -18,6 +18,7 @@ import es.ua.dlsi.im3.gui.javafx.collections.ObservableListViewSetModelLink;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowChoicesDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.AgnosticSequenceRecognizer;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.HorizontallyPositionedSymbol;
 import es.ua.dlsi.im3.omr.classifiers.segmentation.ISymbolClusterer;
@@ -48,10 +49,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
-import javafx.scene.Cursor;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -69,7 +67,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
@@ -80,7 +77,7 @@ import java.util.logging.Logger;
  * Document analysis and symbols editor controller
  * @autor drizo
  */
-public class DocumentAnalysisSymbolsController extends MuRETBaseController {
+public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseController {
     static final Color PAGE_COLOR = Color.BLUE; //TODO
     static final Color REGION_COLOR = Color.RED;
     static final Color SYMBOL_COLOR = Color.GREEN; //TODO
@@ -106,7 +103,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     CommandManager commandManager;
 
     @FXML
-    ToolBar toolBarClassifiers;
+    ToolBar toolBarToolSpecificOptions;
 
     //// --- Document analysis related ------
     @FXML
@@ -152,7 +149,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     @FXML
     Group symbolViewsGroup;
     @FXML
-    FlowPane agnosticCorrectionPane;
+    FlowPane symbolCorrectionPane;
 
     AgnosticStaffView agnosticStaffView;
 
@@ -180,9 +177,13 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     private OMRStrokes newOMRStrokes;
     private StrokesView newStrokesView;
 
+    //-------------- Diplomatic music edition related
+    @FXML
+    ToggleButton toggleDiplomatic;
+
 
     ////// -----------------------------------------------
-    public DocumentAnalysisSymbolsController() {
+    public DocumentAnalysisSymbolsDiplomaticMusicController() {
         commandManager = new CommandManager();
         selectionManager = new SelectionManager();
     }
@@ -199,8 +200,8 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
 
         imagePane.prefWidthProperty().bind(scrollPaneImage.widthProperty());
 
-        vboxSymbols.minHeightProperty().bind(scrollPaneSelectedStaff.minHeightProperty().add(agnosticCorrectionPane.minHeightProperty()));
-        vboxSymbols.prefHeightProperty().bind(scrollPaneSelectedStaff.prefHeightProperty().add(agnosticCorrectionPane.prefHeightProperty()));
+        vboxSymbols.minHeightProperty().bind(scrollPaneSelectedStaff.minHeightProperty().add(symbolCorrectionPane.minHeightProperty()));
+        vboxSymbols.prefHeightProperty().bind(scrollPaneSelectedStaff.prefHeightProperty().add(symbolCorrectionPane.prefHeightProperty()));
 
         vboxSelectedStaff.minHeightProperty().bind(selectedStaffPane.minHeightProperty().add(agnosticStaffViewPane.minHeightProperty()));
         vboxSelectedStaff.prefHeightProperty().bind(vboxSelectedStaff.minHeightProperty());
@@ -217,6 +218,12 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
         selectedStaffPane.prefWidthProperty().bind(selectedStaffPane.minWidthProperty());
 
         selectedSymbolView = new SimpleObjectProperty<>();
+
+        symbolCorrectionPane.disableProperty().bind(selectedSymbolView.isNull());
+        symbolCorrectionPane.prefWrapLengthProperty().bind(scrollPaneSelectedStaff.widthProperty());
+        symbolCorrectionPane.setOrientation(Orientation.HORIZONTAL);
+        symbolCorrectionPane.setRowValignment(VPos.CENTER);
+        symbolCorrectionPane.setColumnHalignment(HPos.CENTER);
 
         initTools();
         initInteraction();
@@ -235,8 +242,6 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
                 toolbarToolSpecific.getItems().clear();
-                toolBarClassifiers.getItems().clear();
-
                 interactionMode = InteractionMode.eIdle;
                 changeCursor(Cursor.DEFAULT);
                 if (newValue == toggleDocumentAnalysisAutomatic) {
@@ -244,9 +249,13 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
                 } else if (newValue == toggleDocumentAnalysisManual) {
                     createDocumentAnalysisManualEditingTools();
                 } else if (newValue == toggleSymbolManual) {
+                    createAgnosticCorrectionPane();
                     createManualSymbolEditingTools();
                 } else if (newValue == toggleSymbolRecognition) {
+                    createAgnosticCorrectionPane();
                     createAutomaticSymbolRecognitionTools();
+                } else if (newValue == toggleDiplomatic) {
+                    createDiplomaticEditionTools();
                 }
             }
         });
@@ -547,13 +556,14 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
         toolSpecificToggle.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                toolBarClassifiers.getItems().clear();
+                toolBarToolSpecificOptions.getItems().clear();
                 interactionMode = InteractionMode.eIdle;
                 changeCursor(Cursor.DEFAULT);
 
                 if (newValue == null || newValue == select) {
                     changeCursor(Cursor.DEFAULT);
                     interactionMode = InteractionMode.eIdle;
+                    //createDocumentAnalysisSelectOptions();
                 } else if (newValue == splitPages) {
                     interactionMode = InteractionMode.eDocAnalysisSplittingPages;
                     changeCursor(Cursor.E_RESIZE);
@@ -570,6 +580,37 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
             }
         });
     }
+
+    /*private void createDocumentAnalysisSelectOptions() {
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        ToggleButton toggleButtonSelectAny = new ToggleButton("Any");
+        toggleGroup.getToggles().add(toggleButtonSelectAny);
+        toolBarToolSpecificOptions.getItems().add(toggleButtonSelectAny);
+        toggleGroup.selectToggle(toggleButtonSelectAny);
+
+        ToggleButton toggleButtonSelectPages = new ToggleButton("Pages");
+        toggleGroup.getToggles().add(toggleButtonSelectPages);
+        toolBarToolSpecificOptions.getItems().add(toggleButtonSelectPages);
+
+        ToggleButton toggleButtonSelectRegions = new ToggleButton("Regions");
+        toggleGroup.getToggles().add(toggleButtonSelectRegions);
+        toolBarToolSpecificOptions.getItems().add(toggleButtonSelectRegions);
+
+        toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                interactionMode = InteractionMode.eIdle;
+                if (newValue == toggleButtonSelectAny) {
+                    interactionMode = InteractionMode.eDocAnalysisSelectingAny;
+                } else if (newValue == toggleButtonSelectPages) {
+                    interactionMode = InteractionMode.eDocAnalysisDrawingPages;
+                } else if (newValue == toggleButtonSelectRegions) {
+                    interactionMode = InteractionMode.eDocAnalysisSelectingRegions;
+                }
+            }
+        });
+    }*/
 
     public void loadOMRImage(OMRImage omrImage) throws IM3Exception {
         this.omrImage = omrImage;
@@ -590,7 +631,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
         pageViews = new ObservableListViewSetModelLink<OMRPage, PageViewContents>(omrImage.getPages(), new Function<OMRPage, PageViewContents>() {
             @Override
             public PageViewContents apply(OMRPage omrPage) {
-                return new PageViewContents(DocumentAnalysisSymbolsController.this, omrPage);
+                return new PageViewContents(DocumentAnalysisSymbolsDiplomaticMusicController.this, omrPage);
             }
         });
 
@@ -803,6 +844,44 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     }
 
 
+    private void createDiplomaticEditionTools() {
+        showSymbolsPane();
+        createDiplomaticEditionCorrectionPane();
+
+        Button selectButton = new Button("Select");
+        selectButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //TODO
+            }
+        });
+        toolbarToolSpecific.getItems().add(selectButton);
+
+        ShowMessage.show(getWindow(), "TO-DO Si no hay score que se convierta");
+    }
+
+    private void createDiplomaticEditionCorrectionPane() {
+        this.symbolCorrectionPane.getChildren().clear();
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        ToggleButton clefTB = new ToggleButton("Clef");
+        toggleGroup.getToggles().add(clefTB);
+        symbolCorrectionPane.getChildren().add(clefTB);
+
+        ToggleButton keyTB = new ToggleButton("Key");
+        toggleGroup.getToggles().add(keyTB);
+        symbolCorrectionPane.getChildren().add(keyTB);
+
+        ToggleButton meterTB = new ToggleButton("Meter");
+        toggleGroup.getToggles().add(meterTB);
+        symbolCorrectionPane.getChildren().add(meterTB);
+
+        ToggleButton notesRestsTB = new ToggleButton("Notes/rests");
+        toggleGroup.getToggles().add(notesRestsTB);
+        symbolCorrectionPane.getChildren().add(notesRestsTB);
+    }
+
 
     private void createAutomaticSymbolRecognitionTools() {
         showSymbolsPane();
@@ -836,7 +915,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
         symbols = new ObservableListViewSetModelLink<OMRSymbol, SymbolView>(selectedRegionView.getOwner().symbolsProperty(), new Function<OMRSymbol, SymbolView>() {
             @Override
             public SymbolView apply(OMRSymbol omrSymbol) {
-                return new SymbolView("Symbol" + omrSymbol.hashCode(), DocumentAnalysisSymbolsController.this, selectedRegionView, omrSymbol, SYMBOL_COLOR);
+                return new SymbolView("Symbol" + omrSymbol.hashCode(), DocumentAnalysisSymbolsDiplomaticMusicController.this, selectedRegionView, omrSymbol, SYMBOL_COLOR);
             }
         });
 
@@ -921,17 +1000,12 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
      * We do not create the same for all staves because the order of symbols may change
      */
     private void createAgnosticCorrectionPane()  {
-        agnosticCorrectionPane.disableProperty().bind(selectedSymbolView.isNull());
-        agnosticCorrectionPane.prefWrapLengthProperty().bind(scrollPaneSelectedStaff.widthProperty());
-        agnosticCorrectionPane.setOrientation(Orientation.HORIZONTAL);
-        agnosticCorrectionPane.setRowValignment(VPos.CENTER);
-        agnosticCorrectionPane.setColumnHalignment(HPos.CENTER);
-
+        this.symbolCorrectionPane.getChildren().clear();
         List<String> agnosticStrings =  new LinkedList<>(agnosticSymbolFont.getGlyphs().keySet());
 
         //TODO Diseñar la usabilidad de todo esto
         /*Button buttonAccept = new Button("Accepto correction\n(ENTER)", new FontIcon("oi-check"));
-        agnosticCorrectionPane.getChildren().add(buttonAccept);
+        symbolCorrectionPane.getChildren().add(buttonAccept);
         buttonAccept.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -942,7 +1016,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
 
         //Button buttonClose = new Button("Cancel correction\n(ESC)", new FontIcon("oi-x"));
         Button buttonClose = new Button("Cancel correction\n(ESC)", new FontIcon("oi-reload"));
-        agnosticCorrectionPane.getChildren().add(buttonClose);
+        symbolCorrectionPane.getChildren().add(buttonClose);
         buttonClose.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -967,8 +1041,8 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
                 doChangePosition(selectedSymbolView.get(), 1);
             }
         });
-        agnosticCorrectionPane.getChildren().add(buttonPositionDown);
-        agnosticCorrectionPane.getChildren().add(buttonPositionUp);
+        symbolCorrectionPane.getChildren().add(buttonPositionDown);
+        symbolCorrectionPane.getChildren().add(buttonPositionUp);
 
         // see http://aalmiray.github.io/ikonli/cheat-sheet-openiconic.html
         Button buttonFlipStem = new Button("Flip stem\n(F)", new FontIcon("oi-elevator"));
@@ -978,7 +1052,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
                 doFlipStem(selectedSymbolView.get());
             }
         });
-        agnosticCorrectionPane.getChildren().add(buttonFlipStem);
+        symbolCorrectionPane.getChildren().add(buttonFlipStem);
 
 
         for (String agnosticString: agnosticStrings) {
@@ -991,7 +1065,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
             Button button = new Button();
             button.setGraphic(pane);
             button.setTooltip(new Tooltip(agnosticString));
-            agnosticCorrectionPane.getChildren().add(button);
+            symbolCorrectionPane.getChildren().add(button);
             button.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
@@ -1007,7 +1081,7 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
                 if (newValue == null) {
                     symbolCorrectionController.removeSymbolCorrectionToolbar();
                 } else {
-                    symbolCorrectionController.setSymbolCorrectionToolbar(agnosticCorrectionPane);
+                    symbolCorrectionController.setSymbolCorrectionToolbar(symbolCorrectionPane);
                 }
             }
         });*/
@@ -1176,37 +1250,39 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
         selectionManager.select(ownerTypeBoundingBoxBasedView);
         ownerTypeBoundingBoxBasedView.beginEdit();
 
-        if (ownerTypeBoundingBoxBasedView instanceof RegionView) {
-            agnosticStaffView = new AgnosticStaffView(this,
-                    agnosticSymbolFont,
-                    scrollPaneSelectedStaff.widthProperty(), 200, 10); //TODO height
-            agnosticStaffViewPane.getChildren().setAll(agnosticStaffView);
-            agnosticStaffViewPane.setPrefHeight(300);
-            agnosticStaffViewPane.setMinHeight(200);
+        if (ownerTypeBoundingBoxBasedView instanceof PageView) {
 
-
-            createAgnosticCorrectionPane();
+        } else if (ownerTypeBoundingBoxBasedView instanceof RegionView) {
             RegionView regionView = (RegionView) ownerTypeBoundingBoxBasedView;
             OMRRegion omrRegion = regionView.getOwner();
 
-            try {
-                this.selectedRegionView = regionView;
-                selectedStaffImageView.setImage(omrImage.getImage());
-                selectedStaffImageView.setViewport(new Rectangle2D(omrRegion.getFromX(), omrRegion.getFromY(), omrRegion.getWidth(), omrRegion.getHeight()));
+                agnosticStaffView = new AgnosticStaffView(this,
+                        agnosticSymbolFont,
+                        scrollPaneSelectedStaff.widthProperty(), 200, 10); //TODO height
+                agnosticStaffViewPane.getChildren().setAll(agnosticStaffView);
+                agnosticStaffViewPane.setPrefHeight(300);
+                agnosticStaffViewPane.setMinHeight(200);
 
-                selectedStaffImageView.setFitHeight(omrRegion.getHeight());
-                selectedStaffImageView.setFitWidth(omrRegion.getWidth());
 
-                symbolViewsGroup.getChildren().clear();
-                symbolViewsGroup.setTranslateY(-omrRegion.getFromY());
-                symbolViewsGroup.setTranslateX(-omrRegion.getFromX());
 
-                loadSelectedRegionSymbols();
+                try {
+                    this.selectedRegionView = regionView;
+                    selectedStaffImageView.setImage(omrImage.getImage());
+                    selectedStaffImageView.setViewport(new Rectangle2D(omrRegion.getFromX(), omrRegion.getFromY(), omrRegion.getWidth(), omrRegion.getHeight()));
 
-            } catch (IM3Exception e) {
-                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot select region", e);
-                showError( "Cannot select region", e);
-            }
+                    selectedStaffImageView.setFitHeight(omrRegion.getHeight());
+                    selectedStaffImageView.setFitWidth(omrRegion.getWidth());
+
+                    symbolViewsGroup.getChildren().clear();
+                    symbolViewsGroup.setTranslateY(-omrRegion.getFromY());
+                    symbolViewsGroup.setTranslateX(-omrRegion.getFromX());
+
+                    loadSelectedRegionSymbols();
+
+                } catch (IM3Exception e) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot select region", e);
+                    showError("Cannot select region", e);
+                }
         } else if (ownerTypeBoundingBoxBasedView instanceof SymbolView) {
             selectedSymbolView.set((SymbolView) ownerTypeBoundingBoxBasedView);
             agnosticStaffView.select((SymbolView) ownerTypeBoundingBoxBasedView);
@@ -1247,5 +1323,15 @@ public class DocumentAnalysisSymbolsController extends MuRETBaseController {
     @Override
     public ISelectable next(ISelectable s) {
         return null;
+    }
+
+    @FXML
+    private void handleFileSave() {
+        try {
+            MuRET.getInstance().getModel().save();
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot save", e);
+            showError( "Cannot save", e);
+        }
     }
 }

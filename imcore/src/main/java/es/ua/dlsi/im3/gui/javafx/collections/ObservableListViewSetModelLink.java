@@ -23,6 +23,7 @@ public class ObservableListViewSetModelLink<ModelObjectType, ViewObjectType exte
             @Override
             public void onChanged(Change<? extends ModelObjectType> change) {
                 if (change.wasRemoved()) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Removing view from model object {0}", change.getElementRemoved());
                     ModelObjectType modelObject = change.getElementRemoved();
                     ViewObjectType view = mapModelViews.get(modelObject);
                     if (view == null) {
@@ -32,6 +33,7 @@ public class ObservableListViewSetModelLink<ModelObjectType, ViewObjectType exte
                         views_data.remove(view);
                     }
                 } else if (change.wasAdded()) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Adding view from model object {0}", change.getElementAdded());
                     ModelObjectType modelObject = change.getElementAdded();
                     ViewObjectType view = viewFactoryFunction.apply(modelObject);
                     add(modelObject, view);

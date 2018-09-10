@@ -7,17 +7,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
-public class MainApp extends Application {
+/**
+ * @author drizo
+ */
+public class UserActionLoggerApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/SceneUserActionLogger.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/useractionlogger/SceneUserActionLogger.fxml"));
         
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/StylesUserActionLogger.css");
+        scene.getStylesheets().add("/fxml/useractionlogger/StylesUserActionLogger.css");
         
-        stage.setTitle("JavaFX and Maven");
+        stage.setTitle("User action logger viewer");
         stage.setScene(scene);
         stage.show();
     }

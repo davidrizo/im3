@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyEvent;
@@ -84,11 +85,18 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         this.getChildren().add(rectangle);
 
         label = new Text();
-        label.setFont(Font.font("Arial", FontWeight.BOLD, 10));
-        label.textProperty().bind(owner.nameProperty());
+        label.setCursor(Cursor.HAND);
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        label.textProperty().bind(owner.descriptionProperty());
         label.fillProperty().bind(rectangle.strokeProperty());
+
         label.xProperty().bind(rectangle.xProperty().add(20)); // don't overlap with rectangle
-        label.yProperty().bind(rectangle.yProperty().add(20)); // don't overlap with rectangle
+        if (parentBoundingBox != null) {
+            label.yProperty().bind(rectangle.yProperty().add(40)); // don't overlap with parent label
+        } else {
+            label.yProperty().bind(rectangle.yProperty().add(20)); // don't overlap with rectangle
+        }
+
         this.getChildren().add(label);
         label.setOnContextMenuRequested(event -> {
             onLabelContextMenuRequested(event);
@@ -166,6 +174,8 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         });
         doHighlight(false);
         this.selected.setValue(false);
+
+
     }
 
     private Color getColor(Color color, double opacity) {
@@ -187,11 +197,11 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         if (highlight) {
             rectangle.setStrokeWidth(2); //TODO
             rectangle.setFill(backgroundColor);
-            label.setVisible(true);
+            //label.setVisible(true);
         } else {
             rectangle.setStrokeWidth(1); //TODO
             rectangle.setFill(Color.TRANSPARENT);
-            label.setVisible(false);
+            //label.setVisible(false);
         }
     }
 
@@ -273,5 +283,9 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
 
     public void endEdit(boolean accept) {
         rectangle.endEdit(accept);
+    }
+
+    public BoundingBoxBasedView getParentBoundingBox() {
+        return parentBoundingBox;
     }
 }

@@ -7,6 +7,9 @@ import javafx.collections.ObservableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Used to avoid adding several times the same instrument name with a slight difference
+ */
 public class OMRInstruments {
     ObservableSet<OMRInstrument> instrumentSet;
 
@@ -42,14 +45,16 @@ public class OMRInstruments {
      *
      * @param name
      * @return
-     * @throws IM3Exception If not found
      */
-    public OMRInstrument getInstrument(String name) throws IM3Exception {
+    public OMRInstrument getInstrument(String name)  {
         for (OMRInstrument instrument: instrumentSet) { // the size is tiny
             if (instrument.getName().equals(name)) {
                 return instrument;
             }
         }
-        throw new IM3Exception("Cannot find an instrument with name '" + name + "'");
+        // not found, add it
+        OMRInstrument omrInstrument = new OMRInstrument(name);
+        instrumentSet.add(omrInstrument);
+        return omrInstrument;
     }
 }

@@ -13,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ClipboardContent;
@@ -112,7 +111,7 @@ public class OrderImagesController implements Initializable {
     }
 
     private void openImage(OMRImage omrImage) {
-        DocumentAnalysisSymbolsController controller = MuRET.getInstance().openWindow("/fxml/muret/symbols.fxml", true, true);
+        DocumentAnalysisSymbolsDiplomaticMusicController controller = MuRET.getInstance().openWindow("/fxml/muret/symbols.fxml", true, true);
         try {
             controller.loadOMRImage(omrImage);
         } catch (IM3Exception e) {
@@ -211,7 +210,16 @@ public class OrderImagesController implements Initializable {
         imageView.setOnMouseExited(event -> {
             imageView.highlight(false);
         });*/
+    }
 
+    @FXML
+    private void handleFileSave() {
+        try {
+            MuRET.getInstance().getModel().save();
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot save project", e);
+            ShowError.show(MuRET.getInstance().getMainStage(), "Cannot save project", e);
 
+        }
     }
 }

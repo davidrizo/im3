@@ -4,12 +4,10 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxYX;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.model.entities.Image;
-import es.ua.dlsi.im3.omr.model.entities.Page;
-import es.ua.dlsi.im3.omr.model.entities.RegionType;
-import es.ua.dlsi.im3.omr.model.entities.Symbol;
+import es.ua.dlsi.im3.omr.model.entities.*;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
@@ -63,6 +61,12 @@ public class OMRImage implements Comparable<OMRImage> {
      */
     private StringProperty comments;
 
+    /**
+     * Instrument, it may be null if not the same for all pages
+     */
+    ObjectProperty<OMRInstrument> instrument;
+
+
 
     public OMRImage(OMRProject omrProject, File file) {
         this.omrProject = omrProject;
@@ -70,7 +74,8 @@ public class OMRImage implements Comparable<OMRImage> {
         this.order = new SimpleIntegerProperty();
         this.pages = FXCollections.observableSet(new TreeSet<>());
         this.comments = new SimpleStringProperty();
-        image = new SimpleObjectProperty<>();
+        this.image = new SimpleObjectProperty<>();
+        this.instrument = new SimpleObjectProperty<>();
         //loadImageFile();
     }
 
@@ -183,6 +188,9 @@ public class OMRImage implements Comparable<OMRImage> {
 
     public Image createPOJO() throws IM3Exception {
         Image pojoImage = new Image(FileUtils.getFileWithoutPath(imageFile.getName()));
+        if (instrument.isNotNull().get()) {
+            pojoImage.setInstrument(new Instrument(instrument.get().getName()));
+        }
         pojoImage.setOrder(order.get());
         pojoImage.setComments(comments.get());
         for (OMRPage omrPage: pages) {
@@ -212,24 +220,6 @@ public class OMRImage implements Comparable<OMRImage> {
 
     public String getImageRelativeFileName() {
         return FileUtils.getFileWithoutPath(imageFile.getName());
-    }
-
-    public List<OMRInstrument> getInstrumentList() {
-        LinkedList<OMRInstrument> result = new LinkedList<>();
-        for (OMRPage omrPage: pages) {
-            result.addAll(omrPage.getInstruments());
-        }
-        return result;
-    }
-
-    //TODo Abril ¿Tiene sentido?
-    public boolean containsInstrument(OMRInstrument instrument) {
-        for (OMRPage omrPage: pages) {
-            if (omrPage.containsInstrument(instrument)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void addPage(OMRPage omrPage) {
@@ -433,6 +423,15 @@ public class OMRImage implements Comparable<OMRImage> {
         pages.clear();
         pages.add(onePage);
     }
+
+    public OMRInstrument getInstrument() {
+        return instrument.get();
+    }
+
+    public ObjectProperty<OMRInstrument> instrumentProperty() {
+        return instrument;
+    }
+
 }
 
 

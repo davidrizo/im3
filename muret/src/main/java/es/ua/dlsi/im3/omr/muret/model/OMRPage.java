@@ -4,11 +4,13 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.omr.model.entities.Instrument;
 import es.ua.dlsi.im3.omr.model.entities.Page;
 import es.ua.dlsi.im3.omr.model.entities.Region;
 import es.ua.dlsi.im3.omr.model.entities.RegionType;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
@@ -42,9 +44,9 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
      */
     private final OMRImage omrImage;
     /**
-     * List of instruments - they must belong to the OMRProject
+     * Instrument, it may be null if not the same for all regions or if defined in a higher level
      */
-    Set<OMRInstrument> instruments;
+    ObjectProperty<OMRInstrument> instrument;
     /**
      * List of regions, orderer by cartesian position
      */
@@ -57,7 +59,7 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
         this.fromY = new SimpleDoubleProperty(fromY);
         this.width = new SimpleDoubleProperty(toX-fromX);
         this.height = new SimpleDoubleProperty(toY-fromY);
-        this.instruments = new TreeSet<>(); // we mantain it ordered
+        this.instrument = new SimpleObjectProperty<>();
         this.regions = FXCollections.observableSet(new TreeSet<>());
         this.name = new SimpleStringProperty();
         this.name.bind(Bindings.concat("Page ", this.fromX, ", ", this.fromY));
@@ -69,14 +71,12 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
     }*/
 
 
-    public Set<OMRInstrument> getInstruments() {
-        return instruments;
+    public OMRInstrument getInstrument() {
+        return instrument.get();
     }
-    public void addInstrument(OMRInstrument instrument) {
-        this.instruments.add(instrument);
-    }
-    public void removeInstrument(OMRInstrument instrument) {
-        this.instruments.remove(instrument);
+
+    public ObjectProperty<OMRInstrument> instrumentProperty() {
+        return instrument;
     }
 
     public void addRegion(OMRRegion region) {
@@ -110,10 +110,6 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
     }*/
 
 
-    public boolean containsInstrument(OMRInstrument instrument) {
-        return instruments.contains(instrument);
-    }
-
     public void clearRegions() {
         this.regions.clear();
     }
@@ -126,6 +122,10 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
 
     public Page createPOJO() throws IM3Exception {
         Page pojoPage = new Page(new BoundingBoxXY(fromX.get(), fromY.get(), fromX.get()+width.get(), fromY.get()+height.get()));
+        if (instrument.isNotNull().get()) {
+            pojoPage.setInstrument(new Instrument(instrument.get().getName()));
+        }
+
         for (OMRRegion region: regions) {
             pojoPage.getRegions().add(region.createPOJO());
         }
@@ -199,6 +199,11 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
     @Override
     public StringProperty nameProperty() {
         return name;
+    }
+
+    @Override
+    public ObservableValue<? extends String> descriptionProperty() {
+        return name.concat(" ").concat(instrument);
     }
 
     @Override
@@ -323,4 +328,17 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
 
         return Objects.hash(fromX, fromY, width, height, name, omrImage);
     }
+
+    /**
+     * It not defined here look for the one defined in the parent
+     * @return
+     */
+    public OMRInstrument getInstrumentHierarchical() {
+        if (!instrument.isBound()) {
+            return omrImage.getInstrument();
+        } else {
+            return instrument.get();
+        }
+    }
+
 }

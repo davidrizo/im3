@@ -35,6 +35,10 @@ public class Image implements Comparable<Image> {
      */
     private SortedSet<Page> pages;
     /**
+     * Instrument, it may be null if not the same for all pages
+     */
+    private Instrument instrument;
+    /**
      * Comments about the image
      */
     private String comments;
@@ -82,14 +86,14 @@ public class Image implements Comparable<Image> {
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
         return order == image.order &&
+                Objects.equals(instrument, image.instrument) &&
                 Objects.equals(imageRelativeFileName, image.imageRelativeFileName) &&
                 Objects.equals(pages, image.pages);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(imageRelativeFileName, order, pages);
+        return Objects.hash(imageRelativeFileName, order, pages, instrument);
     }
 
     public void addPage(Page page) {
@@ -151,5 +155,13 @@ public class Image implements Comparable<Image> {
         BufferedImage subimage = ImageUtils.getInstance().generateBufferedImage(imageFile, boundingBox);
         int[][] imagePixels = ImageUtils.getInstance().readGrayScaleImage(subimage);
         return imagePixels;
+    }
+
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
     }
 }

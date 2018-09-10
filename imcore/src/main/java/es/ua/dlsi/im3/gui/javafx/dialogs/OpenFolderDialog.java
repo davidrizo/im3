@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Window;
 
 
 /**
@@ -15,7 +16,11 @@ public class OpenFolderDialog {
 	
 	public OpenFolderDialog() {
 	}
-	public File openFolder(String title, String lastFolderPath) {
+    public File openFolder(String title, String lastFolderPath) {
+	    return openFolder(title, lastFolderPath);
+
+    }
+	public File openFolder(Window owner, String title, String lastFolderPath) {
 		//FileChooser fc = new FileChooser();
 		DirectoryChooser fc = new DirectoryChooser();
 		fc.setTitle(title);
@@ -27,7 +32,7 @@ public class OpenFolderDialog {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot set initial directory {0}", lastFolderPath);
             }
         }
-		File file = fc.showDialog(null);
+		File file = fc.showDialog(owner);
 		File lastFolder = null;
 		if (file != null) {
 			//lastFolder = file.getParentFile();
@@ -36,6 +41,11 @@ public class OpenFolderDialog {
 		}
 		return lastFolder;
 	}
+
+    public File openFolder(Window owner, String title) {
+        return openFolder(owner, title, OpenSaveFileDialog.getLastFolder().getAbsolutePath());
+    }
+
 	public File openFolder(String title) {
 		return openFolder(title, OpenSaveFileDialog.getLastFolder().getAbsolutePath());
 	}

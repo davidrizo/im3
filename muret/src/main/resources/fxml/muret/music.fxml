@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -67,6 +68,13 @@
             <Button mnemonicParsing="false" onAction="#handleZoomOut" text="Zoom out" />
             <Button mnemonicParsing="false" onAction="#handleZoomReset" text="Zoom reset" />
             <Button mnemonicParsing="false" onAction="#handleZoomToFit" text="Zoom to fit" />
+            <Separator prefHeight="1.0" prefWidth="0.0" />
+            <ToggleButton mnemonicParsing="false" selected="true" text="Diplomatic">
+               <toggleGroup>
+                  <ToggleGroup fx:id="toggleGroupTool" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton mnemonicParsing="false" text="Editorial" toggleGroup="$toggleGroupTool" />
         </items>
       </ToolBar>
    </left>
@@ -83,12 +91,10 @@
          <children>
             <VBox id="vboxPhase" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
                <children>
-                  <ToggleButton mnemonicParsing="false" onAction="#handleOpenDocumentAnalysis" selected="true" text="Document">
+                  <ToggleButton mnemonicParsing="false" onAction="#handleOpenSymbols" text="Symbols">
                      <toggleGroup>
                         <ToggleGroup fx:id="phaseToggleGroup" />
-                     </toggleGroup>
-                  </ToggleButton>
-                  <ToggleButton mnemonicParsing="false" onAction="#handleOpenSymbols" text="Symbols" toggleGroup="$phaseToggleGroup" />
+                     </toggleGroup></ToggleButton>
                   <ToggleButton mnemonicParsing="false" selected="true" text="Music" toggleGroup="$phaseToggleGroup" />
                </children>
             </VBox>

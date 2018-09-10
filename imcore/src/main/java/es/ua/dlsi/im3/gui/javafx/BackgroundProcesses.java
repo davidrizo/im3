@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,15 +21,15 @@ import java.util.logging.Logger;
  * @autor drizo
  */
 public class BackgroundProcesses {
-    public void launch(Window ownerWindow, String message, String finishedMessage, String errorMessage, Callable<Void> ... processes) {
+    public void launch(Window ownerWindow, String message, String finishedMessage, String errorMessage, boolean waitForProcessesToFinish, Callable<Void> ... processes) {
         LinkedList<Callable<Void>> list = new LinkedList<>();
         for (Callable<Void> process: processes) {
             list.add(process);
         }
-        launch(ownerWindow, message, finishedMessage, errorMessage, list);
+        launch(ownerWindow, message, finishedMessage, errorMessage, waitForProcessesToFinish, list);
     }
 
-    public void launch(Window ownerWindow, String message, String finishedMessage, String errorMessage, List<Callable<Void>> processes) {
+    public void launch(Window ownerWindow, String message, String finishedMessage, String errorMessage, boolean waitForProcessesToFinish, List<Callable<Void>> processes) {
 
         WorkIndicatorDialog workIndicatorDialog = new WorkIndicatorDialog(ownerWindow, message);
         workIndicatorDialog.addTaskEndNotification(result -> {
@@ -44,10 +45,14 @@ public class BackgroundProcesses {
         });
 
         workIndicatorDialog.exec("", inputParam -> {
+            final ExecutorService executor = Executors.newFixedThreadPool (processes.size());
             try {
-                final ExecutorService executor = Executors.newFixedThreadPool (processes.size());
-                executor.invokeAll(processes);
-                executor.shutdown();
+                List<Future<Void>> results = executor.invokeAll(processes);
+                if (waitForProcessesToFinish) {
+                    for (Future<Void> f : results) {
+                        f.get(); // just wait for it to finish
+                    }
+                }
             } catch (Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, errorMessage, e);
                 Platform.runLater(new Runnable() {
@@ -57,8 +62,8 @@ public class BackgroundProcesses {
                     }
                 });
             }
+            executor.shutdown();
             return new Integer(1);
         });
-
     }
 }

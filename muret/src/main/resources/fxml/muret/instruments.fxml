@@ -9,12 +9,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
 
-<BorderPane id="mainpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.InstrumentsController">
+<BorderPane id="mainpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="815.0" prefWidth="585.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.InstrumentsController">
    <top>
-      <GridPane BorderPane.alignment="CENTER">
+      <GridPane prefHeight="93.0" prefWidth="585.0" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="306.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="530.0" />
@@ -29,14 +29,15 @@
                </image>
             </ImageView>
          </children>
+         <BorderPane.margin>
+            <Insets top="10.0" />
+         </BorderPane.margin>
       </GridPane>
    </top>
    <center>
       <GridPane BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="202.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
@@ -44,17 +45,13 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label styleClass="columnLabels" text="Avaliable instruments in project" />
-            <Label styleClass="columnLabels" text="Instruments present in image" GridPane.columnIndex="2" />
-            <ListView fx:id="lvAvailableInstruments" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-            <ListView fx:id="lvImageInstruments" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label styleClass="columnLabels" text="Select an instrument" />
+            <ListView fx:id="lvAvailableInstruments" prefHeight="356.0" prefWidth="325.0" GridPane.rowIndex="1" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#handleAdd" prefWidth="150.0" text="Add" />
                   <Button fx:id="btnAddOther" mnemonicParsing="false" onAction="#handleAddOther" prefWidth="150.0" text="Add other one" />
-                  <Button fx:id="btnRemove" mnemonicParsing="false" onAction="#handleRemove" prefWidth="150.0" text="Remove" />
                </children>
-            </VBox>
+            </HBox>
          </children>
          <BorderPane.margin>
             <Insets left="75.0" right="75.0" />

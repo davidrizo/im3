@@ -23,6 +23,7 @@ public class BimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer implemen
     LinkedList<SymbolImageAndPointsPrototype> trainingSet;
     public static double IMAGES_CLASSIFIER_WEIGHT = 0.7;
     double imagesClassifierWeight;
+    private boolean trained=false;
 
     public BimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer(AgnosticVersion agnosticVersion, double imagesClassifierWeight)  {
         this.agnosticVersion = agnosticVersion;
@@ -84,13 +85,19 @@ public class BimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer implemen
         return this.trainingSet.size();
     }
 
+    @Override
+    public boolean isTrained() {
+        return trained;
+    }
+
     public void trainFromFile(File trainingFile) throws IM3Exception, IOException {
         trainingSet = new LinkedList<>();
         loadTrainingFile(trainingFile);
         imagesRecognizer.traingFromBimodalDataset(trainingSet);
         strokesRecognizer.traingFromBimodalDataset(trainingSet);
+        trained = true;
     }
-    public void trainFromFolder(File trainingDataFolder) throws IM3Exception, IOException {
+    public void trainFromFolder(File trainingDataFolder) throws IM3Exception {
         trainingSet = new LinkedList<>();
         ArrayList<File> trainingFiles = new ArrayList<>();
         try {
@@ -98,11 +105,12 @@ public class BimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer implemen
             for (File trainingFile: trainingFiles) {
                 loadTrainingFile(trainingFile);
             }
+            imagesRecognizer.traingFromBimodalDataset(trainingSet);
+            strokesRecognizer.traingFromBimodalDataset(trainingSet);
+            trained = true;
         } catch (IOException e) {
             throw new IM3Exception(e);
         }
-        imagesRecognizer.traingFromBimodalDataset(trainingSet);
-        strokesRecognizer.traingFromBimodalDataset(trainingSet);
     }
 
     private void loadTrainingFile(File trainingFile) throws IOException, IM3Exception {

@@ -1,16 +1,19 @@
 package es.ua.dlsi.im3.omr.muret;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.gui.javafx.dialogs.FXMLDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.omr.muret.model.OMRImage;
 import es.ua.dlsi.im3.omr.muret.old.OMRApp;
 import es.ua.dlsi.im3.omr.muret.old.PredefinedIcon;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -58,6 +61,47 @@ public class ImageThumbnailView extends AnchorPane {
         this.getChildren().add(label);
         AnchorPane.setRightAnchor(label, 10.0);
         AnchorPane.setBottomAnchor(label, 10.0);
+
+        vBoxInstruments = new VBox(5);
+        this.getChildren().add(vBoxInstruments);
+        vBoxInstruments.setAlignment(Pos.BOTTOM_CENTER);
+        AnchorPane.setLeftAnchor(vBoxInstruments, 0.0);
+        AnchorPane.setRightAnchor(vBoxInstruments, 0.0);
+        AnchorPane.setBottomAnchor(vBoxInstruments, 10.0);
+
+        Hyperlink hyperlinkInstrument = new Hyperlink();
+        vBoxInstruments.getChildren().add(hyperlinkInstrument);
+        changeInstrumentHypertextName(hyperlinkInstrument);
+        hyperlinkInstrument.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    String fxml = "/fxml/muret/instruments.fxml";
+                    FXMLDialog dialog = new FXMLDialog(ImageThumbnailView.this.getScene().getWindow(), "Select an instrument for the image", fxml);
+                    InstrumentsController controller = (InstrumentsController) dialog.getController();
+                    if (omrImage.getInstrument() != null) {
+                        controller.selectInstrument(omrImage.getInstrument());
+                    }
+                    if (dialog.show()) {
+                        omrImage.instrumentProperty().setValue(controller.getSelectedInstrument());
+                        changeInstrumentHypertextName(hyperlinkInstrument);
+                    }
+                } catch (IM3Exception e) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot load dialog", e);
+
+                }
+
+            }
+        });
+    }
+
+    private void changeInstrumentHypertextName(Hyperlink hyperlinkInstrument) {
+        if (omrImage.getInstrument() != null) {
+            hyperlinkInstrument.setText(omrImage.getInstrument().getName());
+        } else {
+            hyperlinkInstrument.setText("Set image instrument...");
+        }
+
     }
 
     private void createImageView() throws IM3Exception {
@@ -127,7 +171,7 @@ public class ImageThumbnailView extends AnchorPane {
         } else {
             stage.setTitle("Image " + omrImage.getOrder() + ", " +  omrImage.getInstrumentList() + " " + omrImage.getImageRelativeFileName());
         }*/
-        stage.setTitle("Image " + omrImage.getOrder() + ", " +  omrImage.getInstrumentList() + " " + omrImage.getImageRelativeFileName());
+        stage.setTitle("Image " + omrImage.getOrder()  + " " + omrImage.getImageRelativeFileName());
 
         stage.setWidth(900); //TODO
         stage.setHeight(700);
