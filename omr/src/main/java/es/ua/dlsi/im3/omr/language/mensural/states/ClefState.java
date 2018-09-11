@@ -39,9 +39,6 @@ public class ClefState extends OMRState {
         // TODO: 3/10/17 Cálculo de la probabilidad - ej. que para G2 esté en la línea 5
 
         try {
-            //TODO ¿Aquí el añadir el tipo?
-            transduction.getStaff().setNotationType(NotationType.eMensural);
-
             transduction.getStaff().addClef(clef);
 
         } catch (IM3Exception e) {

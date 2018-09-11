@@ -16,9 +16,12 @@ public class OMRTransduction extends Transduction {
         super(initialProbability);
         song = new ScoreSong();
         part = song.addPart();
+        part.setName("Part #" + song.getParts().size());
         staff = new Pentagram(song, "1", 1); // TODO: 4/10/17 Esto no debe estar aquí
+        staff.setName("Staff #" + (song.getStaves().size()+1));
         staff.setNotationType(notationType);
         song.addStaff(staff);
+        part.addStaff(staff);
         layer = part.addScoreLayer(staff);
         staff.addLayer(layer);
     }

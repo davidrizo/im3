@@ -112,9 +112,11 @@ public class OMRProjectPreview  {
                         case ELEMENT_NAME:
                             title = String.valueOf(ch, start, length);
                             checkComplete();
+                            break;
                         case ELEMENT_COMPOSER:
                             composer = String.valueOf(ch, start, length);
                             checkComplete();
+                            break;
                     }
                 } else if (currentElement.equals(ELEMENT_IMAGE_FILENAME)) {
                     posterFrame = String.valueOf(ch, start, length);

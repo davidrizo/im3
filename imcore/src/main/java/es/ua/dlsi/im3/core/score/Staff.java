@@ -138,7 +138,9 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
     }
 
     public void addPart(ScorePart part) {
-	    parts.add(part);
+	    if (!parts.contains(part)) {
+            parts.add(part);
+        }
     }
 
     public List<ScorePart> getParts() {

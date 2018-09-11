@@ -3,10 +3,11 @@ package es.ua.dlsi.im3.omr.muret;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
+import es.ua.dlsi.im3.core.conversions.MensuralToModern;
 import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassesRanking;
-import es.ua.dlsi.im3.core.score.PositionInStaff;
-import es.ua.dlsi.im3.core.score.PositionsInStaff;
-import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.clefs.ClefF4;
+import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
@@ -1339,13 +1340,18 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
             OMRTransduction transduction = graphicalMensuralSymbolsAutomaton.probabilityOf(agnosticTokens, true);
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Probability {0} of sequence {1}", new Object[]{transduction.getProbability(), agnosticTokens});
 
-            ScoreSong scoreSong = transduction.getSong();
+            ScoreSong mensuralSong = transduction.getSong();
+
+            MensuralToModern mensuralToModern = new MensuralToModern(new Clef[] {new ClefG2()}); // sólo para el ejemplo
+            ScoreSong modern = mensuralToModern.convertIntoNewSong(mensuralSong, Intervals.UNISON_PERFECT);
+
+            mensuralToModern.merge(mensuralSong, modern);
 
             //TODO QUITAR DE AQUI - refactorizar todo ---
             /*MEISongImporter importer = new MEISongImporter();
             ScoreSong scoreSong = importer.importSong(new File("/Users/drizo/Desktop/harpa.mei"));*/
             // TODO: 17/9/17 Enlazar el modelo con el scoreSongView - usar ids como en JS
-            ScoreLayout layout = new HorizontalLayout(scoreSong ,
+            ScoreLayout layout = new HorizontalLayout(mensuralSong,
                     new CoordinateComponent(1000),
                     new CoordinateComponent(200));
             ScoreSongView scoreSongView = new ScoreSongView(layout);
