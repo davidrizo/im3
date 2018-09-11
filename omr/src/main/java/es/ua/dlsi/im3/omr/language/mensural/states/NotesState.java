@@ -10,7 +10,6 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Custos;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
-import es.ua.dlsi.im3.omr.language.modern.states.AccNoteState;
 import org.apache.commons.math3.fraction.BigFraction;
 
 // TODO: 5/10/17 Mirar si podemos compartir algo con modern 
@@ -22,7 +21,7 @@ public class NotesState extends OMRState {
     @Override
     public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
         Accidentals accidental = null;
-        if (previousState instanceof es.ua.dlsi.im3.omr.language.modern.states.AccNoteState) {
+        if (previousState instanceof AccNoteState) {
             accidental = ((AccNoteState)previousState).getAccidental(); //Ojo, si en el mismo compas hay otra nota alterada no lo ve
         }
 
