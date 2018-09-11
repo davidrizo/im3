@@ -8,8 +8,10 @@ import es.ua.dlsi.im3.core.score.Accidentals;
 import es.ua.dlsi.im3.core.score.Clef;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Custos;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.language.modern.states.AccNoteState;
+import org.apache.commons.math3.fraction.BigFraction;
 
 // TODO: 5/10/17 Mirar si podemos compartir algo con modern 
 public class NotesState extends OMRState {
@@ -26,20 +28,22 @@ public class NotesState extends OMRState {
 
         // TODO: 5/10/17 Dots en la gramática - no aqui
         Staff staff = transduction.getStaff();
-        if (token.getSymbol() instanceof Note) {
+
+        ScientificPitch pitch = null;
+        if (token.getSymbol() instanceof Note ||token.getSymbol() instanceof Custos) { //TODO Mejor añadir un interface (IPitched)
             // TODO: 5/10/17 Chords
             Clef clef = transduction.getStaff().getLastClef();
             if (clef == null) {
                 throw new IM3RuntimeException("No clef found to determine pitch");
             }
-            ScientificPitch pitch = null;
             try {
                 pitch = parsePitch(staff, clef, token.getPositionInStaff(), accidental);
             } catch (IM3Exception e) {
                 transduction.setZeroProbability();
                 return;
             }
-
+        }
+        if (token.getSymbol() instanceof Note) {
             try {
                 Note value = ((Note) token.getSymbol());
                 SimpleNote note = new SimpleNote(parseFigure(value.getDurationSpecification()), 0, pitch);
@@ -62,14 +66,22 @@ public class NotesState extends OMRState {
                 throw new IM3RuntimeException(e);
             }
 
-        }
-        else {
-            if (!(token.getSymbol() instanceof Dot) && previousState.toString().equals("notes")) {
-                //TODO En futuras implementaciones se cambiara la forma de añadir notas a partituras
+        } else if (token.getSymbol() instanceof Dot) {
+            try {
+                Atom lastAtom = transduction.getLayer().getLastAtom();
+                if (lastAtom instanceof SingleFigureAtom) {
+                    ((SingleFigureAtom)lastAtom).getAtomFigure().addDot();
+                } else {
+                    transduction.setProbability(new BigFraction(0));
+                }
+            } catch (IM3Exception e) {
+                throw new IM3RuntimeException(e);
             }
-            else {
-                throw new IM3RuntimeException("Symbol should be note or dot");
-            }
+        } else if (token.getSymbol() instanceof Custos) {
+            es.ua.dlsi.im3.core.score.Custos custos = new es.ua.dlsi.im3.core.score.Custos(transduction.getStaff(), transduction.getLayer().getDuration(), pitch.getPitchClass().getNoteName(), pitch.getOctave());
+            transduction.getStaff().addCustos(custos);
+        } else {
+            throw new IM3RuntimeException("Symbol should be note or dot");
         }
     }
 

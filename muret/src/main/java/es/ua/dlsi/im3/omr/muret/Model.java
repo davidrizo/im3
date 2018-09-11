@@ -4,6 +4,9 @@ package es.ua.dlsi.im3.omr.muret;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassesRanking;
 import es.ua.dlsi.im3.core.score.NotationType;
+import es.ua.dlsi.im3.core.score.layout.DiplomaticLayout;
+import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaffSystem;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.AgnosticSequenceRecognizer;
@@ -15,7 +18,9 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.Strokes;
 import es.ua.dlsi.im3.omr.muret.model.InputOutput;
+import es.ua.dlsi.im3.omr.muret.model.OMRInstrument;
 import es.ua.dlsi.im3.omr.muret.model.OMRProject;
+import es.ua.dlsi.im3.omr.muret.model.OMRRegion;
 import es.ua.dlsi.im3.omr.muret.old.OMRApp;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -76,5 +81,16 @@ public class Model {
 
     public Classifiers getClassifiers() {
         return classifiers;
+    }
+
+    /**
+     * It returns the layout that corresponds to the selected region for the diplomatic edition
+     * @param instrumentHierarchical
+     * @param owner
+     * @return
+     * @throws IM3Exception
+     */
+    public DiplomaticLayout getDiplomaticScoreLayout(OMRInstrument instrumentHierarchical, OMRRegion owner) throws IM3Exception {
+        return currentProject.get().getDiplomaticLayout(instrumentHierarchical, owner);
     }
 }

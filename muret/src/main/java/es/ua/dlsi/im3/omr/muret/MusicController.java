@@ -52,14 +52,8 @@ public class MusicController extends MuRETBaseController {
         MuRET.getInstance().getModel().getCurrentProject().synchronizeAgnosticSemantic();
         ScoreSong scoreSong = MuRET.getInstance().getModel().getCurrentProject().getScoreSong();
 
-        LayoutFonts font;
-        if (MuRET.getInstance().getModel().getCurrentProject().getNotationType() == NotationType.eMensural) { //TODO Mensural "internacional"
-            font = LayoutFonts.patriarca;
-        } else {
-            font = LayoutFonts.bravura;
-        }
 
-        ScoreLayout layout = new HorizontalLayout(scoreSong, font,
+        ScoreLayout layout = new HorizontalLayout(scoreSong,
                 new CoordinateComponent(scrollPaneMusic.widthProperty().doubleValue()),
                 new CoordinateComponent(scrollPaneMusic.heightProperty().doubleValue()));
         scoreSongView = new ScoreSongView(layout);

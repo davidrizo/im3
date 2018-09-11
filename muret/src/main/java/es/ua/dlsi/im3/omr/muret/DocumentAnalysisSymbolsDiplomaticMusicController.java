@@ -6,6 +6,15 @@ import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
 import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassesRanking;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
+import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
+import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
+import es.ua.dlsi.im3.core.score.layout.DiplomaticLayout;
+import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
+import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaffSystem;
+import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.gui.command.CommandManager;
 import es.ua.dlsi.im3.gui.command.ICommand;
 import es.ua.dlsi.im3.gui.command.IObservableTaskRunner;
@@ -18,17 +27,20 @@ import es.ua.dlsi.im3.gui.javafx.collections.ObservableListViewSetModelLink;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenFolderDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowChoicesDialog;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
-import es.ua.dlsi.im3.gui.javafx.dialogs.ShowMessage;
+import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.AgnosticSequenceRecognizer;
 import es.ua.dlsi.im3.omr.classifiers.endtoend.HorizontallyPositionedSymbol;
 import es.ua.dlsi.im3.omr.classifiers.segmentation.ISymbolClusterer;
 import es.ua.dlsi.im3.omr.classifiers.segmentation.SymbolClusterer;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.*;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Smudge;
+import es.ua.dlsi.im3.omr.language.OMRTransduction;
+import es.ua.dlsi.im3.omr.language.mensural.GraphicalMensuralSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.model.entities.Region;
 import es.ua.dlsi.im3.omr.model.entities.Strokes;
 import es.ua.dlsi.im3.omr.model.entities.Symbol;
@@ -98,7 +110,11 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
     enum InteractionMode {eIdle, eDocAnalysisSplittingPages, eDocAnalysisSplittingRegions, eDocAnalysisDrawingPages, eDocAnalysisDrawingRegions, eSymbolsBoundingBox, eSymbolsStrokes};
 
+    enum Phase {eDocAnalysis, eSymbols, eMusic};
+
     InteractionMode interactionMode;
+
+    Phase phase;
 
     CommandManager commandManager;
 
@@ -141,7 +157,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     @FXML
     VBox vboxSelectedStaff;
     @FXML
-    Pane agnosticStaffViewPane;
+    Pane staffEditViewPane;
     @FXML
     Pane selectedStaffPane;
     @FXML
@@ -197,13 +213,14 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
         super.initialize(location, resources);
 
         interactionMode = InteractionMode.eIdle;
+        phase = Phase.eDocAnalysis;
 
         imagePane.prefWidthProperty().bind(scrollPaneImage.widthProperty());
 
         vboxSymbols.minHeightProperty().bind(scrollPaneSelectedStaff.minHeightProperty().add(symbolCorrectionPane.minHeightProperty()));
         vboxSymbols.prefHeightProperty().bind(scrollPaneSelectedStaff.prefHeightProperty().add(symbolCorrectionPane.prefHeightProperty()));
 
-        vboxSelectedStaff.minHeightProperty().bind(selectedStaffPane.minHeightProperty().add(agnosticStaffViewPane.minHeightProperty()));
+        vboxSelectedStaff.minHeightProperty().bind(selectedStaffPane.minHeightProperty().add(staffEditViewPane.minHeightProperty()));
         vboxSelectedStaff.prefHeightProperty().bind(vboxSelectedStaff.minHeightProperty());
         scrollPaneSelectedStaff.minHeightProperty().bind(vboxSelectedStaff.minHeightProperty());
         scrollPaneSelectedStaff.prefHeightProperty().bind(scrollPaneSelectedStaff.minHeightProperty());
@@ -245,16 +262,21 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
                 interactionMode = InteractionMode.eIdle;
                 changeCursor(Cursor.DEFAULT);
                 if (newValue == toggleDocumentAnalysisAutomatic) {
+                    phase = Phase.eDocAnalysis;
                     createDocumentAnalysisAutomaticRecognitionTools();
                 } else if (newValue == toggleDocumentAnalysisManual) {
+                    phase = Phase.eDocAnalysis;
                     createDocumentAnalysisManualEditingTools();
                 } else if (newValue == toggleSymbolManual) {
+                    phase = Phase.eSymbols;
                     createAgnosticCorrectionPane();
                     createManualSymbolEditingTools();
                 } else if (newValue == toggleSymbolRecognition) {
+                    phase = Phase.eSymbols;
                     createAgnosticCorrectionPane();
                     createAutomaticSymbolRecognitionTools();
                 } else if (newValue == toggleDiplomatic) {
+                    phase = Phase.eMusic;
                     createDiplomaticEditionTools();
                 }
             }
@@ -856,8 +878,6 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
             }
         });
         toolbarToolSpecific.getItems().add(selectButton);
-
-        ShowMessage.show(getWindow(), "TO-DO Si no hay score que se convierta");
     }
 
     private void createDiplomaticEditionCorrectionPane() {
@@ -1254,40 +1274,96 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
         } else if (ownerTypeBoundingBoxBasedView instanceof RegionView) {
             RegionView regionView = (RegionView) ownerTypeBoundingBoxBasedView;
+
             OMRRegion omrRegion = regionView.getOwner();
-
-                agnosticStaffView = new AgnosticStaffView(this,
-                        agnosticSymbolFont,
-                        scrollPaneSelectedStaff.widthProperty(), 200, 10); //TODO height
-                agnosticStaffViewPane.getChildren().setAll(agnosticStaffView);
-                agnosticStaffViewPane.setPrefHeight(300);
-                agnosticStaffViewPane.setMinHeight(200);
+            try {
+                selectedStaffImageView.setImage(omrImage.getImage());
+                selectedStaffImageView.setViewport(new Rectangle2D(omrRegion.getFromX(), omrRegion.getFromY(), omrRegion.getWidth(), omrRegion.getHeight()));
+                selectedStaffImageView.setFitHeight(omrRegion.getHeight());
+                selectedStaffImageView.setFitWidth(omrRegion.getWidth());
 
 
-
-                try {
-                    this.selectedRegionView = regionView;
-                    selectedStaffImageView.setImage(omrImage.getImage());
-                    selectedStaffImageView.setViewport(new Rectangle2D(omrRegion.getFromX(), omrRegion.getFromY(), omrRegion.getWidth(), omrRegion.getHeight()));
-
-                    selectedStaffImageView.setFitHeight(omrRegion.getHeight());
-                    selectedStaffImageView.setFitWidth(omrRegion.getWidth());
-
-                    symbolViewsGroup.getChildren().clear();
-                    symbolViewsGroup.setTranslateY(-omrRegion.getFromY());
-                    symbolViewsGroup.setTranslateX(-omrRegion.getFromX());
-
-                    loadSelectedRegionSymbols();
-
-                } catch (IM3Exception e) {
-                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot select region", e);
-                    showError("Cannot select region", e);
+                if (phase == Phase.eSymbols) {
+                    loadAgnosticStaff(regionView);
+                } else if (phase == Phase.eMusic){
+                    loadDiplomaticEditionStaff(regionView);
                 }
+            } catch (IM3Exception e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot select region", e);
+                showError("Cannot select region", e);
+            }
         } else if (ownerTypeBoundingBoxBasedView instanceof SymbolView) {
             selectedSymbolView.set((SymbolView) ownerTypeBoundingBoxBasedView);
-            agnosticStaffView.select((SymbolView) ownerTypeBoundingBoxBasedView);
+            if (phase == Phase.eSymbols) {
+                agnosticStaffView.select((SymbolView) ownerTypeBoundingBoxBasedView);
+            } else if (phase == Phase.eMusic) {
+
+            }
         }
     }
+
+    private void loadAgnosticStaff(RegionView regionView) {
+        OMRRegion omrRegion = regionView.getOwner();
+
+        agnosticStaffView = new AgnosticStaffView(this,
+                agnosticSymbolFont,
+                scrollPaneSelectedStaff.widthProperty(), 200, 10); //TODO height
+        staffEditViewPane.getChildren().setAll(agnosticStaffView);
+        staffEditViewPane.setPrefHeight(300); //TODO Height
+        staffEditViewPane.setMinHeight(200);
+        this.selectedRegionView = regionView;
+
+        symbolViewsGroup.getChildren().clear();
+        symbolViewsGroup.setTranslateY(-omrRegion.getFromY());
+        symbolViewsGroup.setTranslateX(-omrRegion.getFromX());
+
+        loadSelectedRegionSymbols();
+    }
+
+    private void loadDiplomaticEditionStaff(RegionView regionView) {
+        try {
+            //TODO Comprobar que no es una región no pentagrama
+            OMRRegion omrRegion = regionView.getOwner();
+            OMRInstrument omrInstrument = omrRegion.getInstrumentHierarchical();
+            if (omrInstrument == null) {
+                throw new IM3Exception("Instrument not assigned yet to the region, page, or image");
+            }
+
+            GraphicalMensuralSymbolsAutomaton graphicalMensuralSymbolsAutomaton = new GraphicalMensuralSymbolsAutomaton();
+
+            List<AgnosticToken> agnosticTokens = new LinkedList<>();
+            for (OMRSymbol omrSymbol: omrRegion.symbolsProperty()) {
+                agnosticTokens.add(omrSymbol.getGraphicalSymbol());
+            }
+
+            OMRTransduction transduction = graphicalMensuralSymbolsAutomaton.probabilityOf(agnosticTokens, true);
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Probability {0} of sequence {1}", new Object[]{transduction.getProbability(), agnosticTokens});
+
+            ScoreSong scoreSong = transduction.getSong();
+
+            //TODO QUITAR DE AQUI - refactorizar todo ---
+            /*MEISongImporter importer = new MEISongImporter();
+            ScoreSong scoreSong = importer.importSong(new File("/Users/drizo/Desktop/harpa.mei"));*/
+            // TODO: 17/9/17 Enlazar el modelo con el scoreSongView - usar ids como en JS
+            ScoreLayout layout = new HorizontalLayout(scoreSong ,
+                    new CoordinateComponent(1000),
+                    new CoordinateComponent(200));
+            ScoreSongView scoreSongView = new ScoreSongView(layout);
+
+
+            /*iplomaticLayout diplomaticLayout = MuRET.getInstance().getModel().getDiplomaticScoreLayout(omrInstrument, omrRegion);
+            ScoreSongView scoreSongView = new ScoreSongView(diplomaticLayout); //TODO Mostrar sólo los pentagramas que necesitamos*/
+
+            staffEditViewPane.getChildren().setAll(scoreSongView.getMainPanel());
+            staffEditViewPane.setPrefHeight(300); //TODO Height
+            staffEditViewPane.setMinHeight(200);
+
+        } catch (IM3Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot select region", e);
+            showError("Cannot select region", e);
+        }
+    }
+
 
     @Override
     public <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {

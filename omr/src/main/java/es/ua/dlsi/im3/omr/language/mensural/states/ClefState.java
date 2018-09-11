@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.io.ImportException;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
@@ -38,6 +39,9 @@ public class ClefState extends OMRState {
         // TODO: 3/10/17 Cálculo de la probabilidad - ej. que para G2 esté en la línea 5
 
         try {
+            //TODO ¿Aquí el añadir el tipo?
+            transduction.getStaff().setNotationType(NotationType.eMensural);
+
             transduction.getStaff().addClef(clef);
 
         } catch (IM3Exception e) {

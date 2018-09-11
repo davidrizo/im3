@@ -3,12 +3,14 @@ package es.ua.dlsi.im3.omr.muret.model;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ImportException;
-import es.ua.dlsi.im3.core.score.NotationType;
-import es.ua.dlsi.im3.core.score.ScoreSong;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
+import es.ua.dlsi.im3.core.score.layout.DiplomaticLayout;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.fonts.PatriarcaFont;
+import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.Instrument;
@@ -84,6 +86,8 @@ public class OMRProject {
     private String name;
 
     private String composer;
+
+    DiplomaticLayout diplomaticLayout;
 
     /**
      * @param projectFolder In new files, if the project does not exist it will be created
@@ -316,9 +320,51 @@ public class OMRProject {
         return this.name;
     }
 
+    public DiplomaticLayout getDiplomaticLayout(OMRInstrument instrumentHierarchical, OMRRegion owner) throws IM3Exception {
+        if (diplomaticLayout == null) {
+            if (scoreSong == null) {
+                //TODO translate symbols to music and reverse
+                //TODO URGENT QUITAR
+                MEISongImporter importer = new MEISongImporter();
+                scoreSong = importer.importSong(new File("/Users/drizo/Desktop/harpa.mei"));
+
+            }
+
+            Collection<Staff> staves = new ArrayList<>();
+
+            Staff instrumentStaff = null;
+            /*TODO Dejar este bucle for (Staff staff: scoreSong.getStaves()) {
+                //TODO Equivalencia Instrumento nombre?
+                //Mejor asociar a layer? - habría que poner en IMCore el nombre del instrumento
+                if (Objects.equals(staff.getName(), instrumentHierarchical.getName())) {
+                    instrumentStaff = staff;
+                    break;
+                }
+            }*/
+            instrumentStaff = scoreSong.getStaves().iterator().next();
+            if (instrumentStaff == null) {
+                instrumentStaff = new Pentagram(scoreSong, "1", 1); //TODO hierarchical order!!!
+                scoreSong.addStaff(instrumentStaff);
+                ScorePart scorePart = scoreSong.addPart();
+                scorePart.addStaff(instrumentStaff);
+
+            }
+
+            //TODO ¿Dónde? synchronizeAgnosticSemantic(owner, instrumentStaff);
+
+
+            diplomaticLayout = new DiplomaticLayout(getScoreSong(), staves); //TODO Cuando es mensural que salga la versión moderna también (usar hashmap y conversor como en Patriarca)
+            diplomaticLayout.layout(false);
+
+        }
+        //TODO Que este layout sólo tenga el StaffSystem que corresponde con la región
+        return diplomaticLayout;
+    }
+
     public void synchronizeAgnosticSemantic() throws ImportException {
-        //TODO
+        //TODO URGENT QUITAR
         MEISongImporter importer = new MEISongImporter();
         scoreSong = importer.importSong(new File("/Users/drizo/Documents/EASD.A/docencia/alicante-2017-2018/inv/imagenes_patriarca/PATRIARCA2017/patriarca.mei"));
     }
+
 }

@@ -145,7 +145,7 @@
             </ScrollPane>
             <Accordion>
                <panes>
-                  <TitledPane fx:id="tittledPaneSymbols" animated="false" text="Symbols">
+                  <TitledPane fx:id="tittledPaneSymbols" animated="false" text="Selected region">
                      <content>
                         <VBox fx:id="vboxSymbols">
                            <children>
@@ -159,7 +159,7 @@
                                                 <Group fx:id="symbolViewsGroup" />
                                              </children>
                                           </Pane>
-                                          <Pane fx:id="agnosticStaffViewPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="NEVER" />
+                                          <Pane fx:id="staffEditViewPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="NEVER" />
                                        </children>
                                     </VBox>
                                  </content>

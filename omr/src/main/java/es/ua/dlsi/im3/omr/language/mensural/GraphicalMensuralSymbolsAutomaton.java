@@ -20,7 +20,7 @@ public class GraphicalMensuralSymbolsAutomaton extends GraphicalSymbolsAutomaton
    // AgnosticVersion agnosticVersion = AgnosticVersion.v1;
 
     public GraphicalMensuralSymbolsAutomaton() throws IM3Exception {
-        super(NotationType.eModern);
+        super(NotationType.eMensural);
         HashSet<State> states = new HashSet<>();
         State start = new State(1, "start");
         State clef = new ClefState(2);
@@ -56,6 +56,8 @@ public class GraphicalMensuralSymbolsAutomaton extends GraphicalSymbolsAutomaton
 
         transitions.add(new Transition<>(notes, new Rest(), notes));
         transitions.add(new Transition<>(notes, new Note(), notes));
+        transitions.add(new Transition<>(notes, new Dot(), notes));
+        transitions.add(new Transition<>(notes, new Custos(), notes)); //TODO
         transitions.add(new Transition<>(barline, new Note(), notes));
         transitions.add(new Transition<>(barline, new Rest(), notes));
         transitions.add(new Transition<>(noteacc, new Note(), notes));
