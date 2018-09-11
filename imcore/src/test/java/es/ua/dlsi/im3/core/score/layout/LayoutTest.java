@@ -3,7 +3,6 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
@@ -22,7 +21,7 @@ public class LayoutTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/simple1.xml");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -53,11 +52,11 @@ public class LayoutTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/manual_system_break.xml");
         ScoreSong song = importer.importSong(file);
-        PageLayout pageLayout = new PageLayout(song, song.getStaves(), true, LayoutFonts.bravura,
+        AutomaticPageLayout pageLayout = new AutomaticPageLayout(song, song.getStaves(), true,
                 new CoordinateComponent(1500), new CoordinateComponent(1000));
         systemBreaks(song, pageLayout, "manual_system_break_page");
 
-        HorizontalLayout horizontalLayout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout horizontalLayout = new HorizontalLayout(song,
                 new CoordinateComponent(1500), new CoordinateComponent(1000));
 
         systemBreaks(song, horizontalLayout, "manual_system_break_horizontal");
@@ -70,7 +69,7 @@ public class LayoutTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/two_staves_homophonic_vertical_aligned.xml");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -89,7 +88,7 @@ public class LayoutTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/two_staves_non_homophonic.xml");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(1280), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -109,7 +108,7 @@ public class LayoutTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/nodiviertanllantoninyo_mensural_only.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -130,7 +129,7 @@ public class LayoutTest {
         ScoreSong song = importer.importSong(file);
 
 
-        PageLayout layout = new PageLayout(song, song.getStaves(), true, LayoutFonts.capitan,
+        AutomaticPageLayout layout = new AutomaticPageLayout(song, song.getStaves(), true,
                 new CoordinateComponent(3000), new CoordinateComponent(1700));
         layout.layout(true);
 
@@ -142,7 +141,7 @@ public class LayoutTest {
         File pdfFile = TestFileUtils.createTempFile("patriarca1_pages.pdf");
         pdfExporter.exportLayout(pdfFile, layout);
 
-        HorizontalLayout hlayout = new HorizontalLayout(song, LayoutFonts.capitan,
+        HorizontalLayout hlayout = new HorizontalLayout(song,
                 new CoordinateComponent(3000), new CoordinateComponent(1700));
         hlayout.layout(true);
 
@@ -161,7 +160,7 @@ public class LayoutTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/simple_tie.xml");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -180,7 +179,7 @@ public class LayoutTest {
         // TODO: 31/10/17 Importar slur con MusicXML (simple_slur.xml) 
         File file = TestFileUtils.getFile("/testdata/core/score/io/simple_slur.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -199,7 +198,7 @@ public class LayoutTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/simple_beam.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -217,7 +216,7 @@ public class LayoutTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/beams.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(1800), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -238,7 +237,7 @@ public class LayoutTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/halfbeam.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(1800), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -258,7 +257,7 @@ public class LayoutTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/beams4.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(1800), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -277,7 +276,7 @@ public class LayoutTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/beams2.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(1800), new CoordinateComponent(700));
         layout.layout(true);
 

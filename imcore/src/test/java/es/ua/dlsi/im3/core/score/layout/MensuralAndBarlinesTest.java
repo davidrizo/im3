@@ -44,7 +44,7 @@ public class MensuralAndBarlinesTest {
         assertEquals("Sound #11", PitchClasses.A_FLAT.getPitchClass(), pitches.get(11).getScientificPitch().getPitchClass());
         assertEquals("Sound #12", PitchClasses.B.getPitchClass(), pitches.get(12).getScientificPitch().getPitchClass());
 
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 

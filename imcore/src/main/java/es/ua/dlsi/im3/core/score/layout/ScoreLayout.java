@@ -49,18 +49,13 @@ public abstract class ScoreLayout {
     // TODO: 20/11/17 mejor que el parámetro staves esté en el método abstract layout() y que toda la inicialización se haga ahí
     /**
      * @param song
-     * @param font Same font for all staves
      * @throws IM3Exception
      */
-    public ScoreLayout(ScoreSong song, Collection<Staff> staves, LayoutFonts font) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+    public ScoreLayout(ScoreSong song, Collection<Staff> staves) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         topMargin = LayoutConstants.TOP_MARGIN;
         this.scoreSong = song;
-        layoutFonts = new HashMap<>();
+        layoutFonts = FontFactory.getInstance().getFontsForScoreSong(scoreSong);
         initStaves(staves);
-        for (Staff staff: staves) {
-            LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
-            layoutFonts.put(staff, layoutFont);
-        }
         init();
     }
 
@@ -82,22 +77,6 @@ public abstract class ScoreLayout {
         this.staves.addAll(staves);
 
     }
-
-    public ScoreLayout(ScoreSong song, Collection<Staff> staves, HashMap<Staff, LayoutFonts> fonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
-        this.scoreSong = song;
-        layoutFonts = new HashMap<>();
-        initStaves(staves);
-        for (Staff staff: staves) {
-            LayoutFonts font = fonts.get(staff);
-            if (font == null) {
-                throw new IM3Exception("Cannot find the staff " + staff + " in the parameter");
-            }
-            LayoutFont layoutFont = FontFactory.getInstance().getFont(font);
-            layoutFonts.put(staff, layoutFont);
-        }
-        init();
-    }
-
 
     private void init() throws IM3Exception {
         layoutSymbolFactory = new LayoutSymbolFactory();

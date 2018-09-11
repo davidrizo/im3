@@ -4,11 +4,8 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.conversions.MensuralToModern;
 import es.ua.dlsi.im3.core.conversions.ScoreToPlayed;
 import es.ua.dlsi.im3.core.played.PlayedSong;
-import es.ua.dlsi.im3.core.played.SongTrack;
 import es.ua.dlsi.im3.core.played.io.MidiSongExporter;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.clefs.ClefC2;
-import es.ua.dlsi.im3.core.score.clefs.ClefC3;
 import es.ua.dlsi.im3.core.score.clefs.ClefF4;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
@@ -18,10 +15,9 @@ import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLExporter;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
-import es.ua.dlsi.im3.core.score.layout.PageLayout;
+import es.ua.dlsi.im3.core.score.layout.AutomaticPageLayout;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
-import es.ua.dlsi.im3.core.score.layout.pdf.PDFExporter;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGExporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 
@@ -91,22 +87,11 @@ public class LayoutMensuralAndTranscription {
 
         mensuralToModern.merge(mensural, modern);
 
-        // TODO: 16/10/17 Poder cambiar esto
-        HashMap<Staff, LayoutFonts> fontsHashMap = new HashMap<>();
-        for (Staff staff: mensural.getStaves()) {
-            if (staff.getNotationType() == NotationType.eMensural) {
-                fontsHashMap.put(staff, LayoutFonts.patriarca);
-            } else if (staff.getNotationType() == NotationType.eModern) {
-                fontsHashMap.put(staff, LayoutFonts.bravura);
-            } else {
-                throw new IM3Exception("The staff " + staff + " has not a notation type");
-            }
-        }
 
         mensural.debugPutIDsAsLyrics(); // FIXME: 17/10/17 Quitar
         // TODO: 16/10/17 Tamaño
         //PageLayout layout = new PageLayout(mensural, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
-        HorizontalLayout hlayout = new HorizontalLayout(mensural, fontsHashMap, new CoordinateComponent(40000), new CoordinateComponent(2800));
+        HorizontalLayout hlayout = new HorizontalLayout(mensural, new CoordinateComponent(40000), new CoordinateComponent(2800));
         hlayout.layout(true);
         //PDFExporter pdfExporter = new PDFExporter();
         //pdfExporter.exportLayout(new File(args[1]), layout);
@@ -120,7 +105,7 @@ public class LayoutMensuralAndTranscription {
         String svgFileName = FileUtils.getFileWithoutPathOrExtension(svgHorizontalFile);
         for (ScorePart part: mensural.getParts()) {
             String partSVGNamePrefix = svgFileName + "_" + FileUtils.leaveValidCaracters(part.getName());
-            PageLayout pageLayout = new PageLayout(mensural, part.getStaves(), true, fontsHashMap,
+            AutomaticPageLayout pageLayout = new AutomaticPageLayout(mensural, part.getStaves(), true,
                     new CoordinateComponent(30000), new CoordinateComponent(4800));
             pageLayout.layout(false);
             int pageNumber = 1;

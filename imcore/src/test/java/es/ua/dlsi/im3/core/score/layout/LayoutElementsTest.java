@@ -28,7 +28,7 @@ public class LayoutElementsTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/stemdir.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -52,7 +52,7 @@ public class LayoutElementsTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/accidentals.xml");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.bravura,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 

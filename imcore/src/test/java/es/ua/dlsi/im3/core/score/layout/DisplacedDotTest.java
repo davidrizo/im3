@@ -25,7 +25,7 @@ public class DisplacedDotTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/layout/displaceddot.mei");
         ScoreSong song = importer.importSong(file);
-        HorizontalLayout layout = new HorizontalLayout(song, LayoutFonts.capitan,
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 

@@ -14,14 +14,11 @@ import java.util.HashMap;
 public class ScoreEditModel {
     private final HorizontalLayout layout;
     ScoreSong scoreSong;
-    HashMap<Staff, LayoutFonts> fontHashMap;
 
     // TODO: 12/3/18 No tiene sentido tener width y height como double, deberían ser properties
     public ScoreEditModel(ScoreSong scoreSong, double width, double height) throws IM3Exception {
         this.scoreSong = scoreSong;
-        fontHashMap = FontFactory.getInstance().getFontsForScoreSong(scoreSong);
-
-        layout = new HorizontalLayout(scoreSong, fontHashMap,
+        layout = new HorizontalLayout(scoreSong,
                 new CoordinateComponent(width),
                 new CoordinateComponent(height));
     }

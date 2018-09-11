@@ -81,7 +81,7 @@ public class FontFactory {
 
     }
 
-    public HashMap<Staff, LayoutFonts> getFontsForScoreSong(ScoreSong scoreSong) throws IM3Exception {
+    public HashMap<Staff, LayoutFonts> getFontNameForScoreSong(ScoreSong scoreSong) throws IM3Exception {
         HashMap<Staff, LayoutFonts> fontHashMap = new HashMap<>();
         for (Staff staff: scoreSong.getStaves()) {
             LayoutFonts layoutFonts;
@@ -102,4 +102,27 @@ public class FontFactory {
         }
         return fontHashMap;
     }
+
+    public HashMap<Staff, LayoutFont> getFontsForScoreSong(ScoreSong scoreSong) throws IM3Exception {
+        HashMap<Staff, LayoutFont> fontHashMap = new HashMap<>();
+        for (Staff staff: scoreSong.getStaves()) {
+            LayoutFonts layoutFonts;
+            if (staff.getNotationType() == null) {
+                throw new IM3Exception("Notation type for staff '" + staff.getName() + "' not set");
+            }
+            switch (staff.getNotationType()) {
+                case eMensural:
+                    layoutFonts = LayoutFonts.patriarca;
+                    break;
+                case eModern:
+                    layoutFonts = LayoutFonts.bravura;
+                    break;
+                default:
+                    throw new IM3Exception("Unsupported notation type: " + staff.getNotationType());
+            }
+            fontHashMap.put(staff, getFont(layoutFonts));
+        }
+        return fontHashMap;
+    }
+
 }

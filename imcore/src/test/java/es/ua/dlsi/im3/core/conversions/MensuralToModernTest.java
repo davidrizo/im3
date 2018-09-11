@@ -20,8 +20,8 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 
 public class MensuralToModernTest {
-    private void printSVG(ScoreSong song, LayoutFonts font, String filename) throws IM3Exception {
-        HorizontalLayout layout = new HorizontalLayout(song, font,
+    private void printSVG(ScoreSong song, String filename) throws IM3Exception {
+        HorizontalLayout layout = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout.layout(true);
 
@@ -109,10 +109,7 @@ public class MensuralToModernTest {
         mensuralToModern2.convertIntoStaff(staff, newModernStaff, newLayer, Intervals.FOURTH_PERFECT_DESC, modernClefs[0]);
 
         // render it putting in the top staff the mensural one and in the bottom staff the modern one
-        HashMap<Staff, LayoutFonts> fonts = new HashMap<>();
-        fonts.put(staff, LayoutFonts.capitan);
-        fonts.put(newModernStaff, LayoutFonts.bravura);
-        HorizontalLayout layout2 = new HorizontalLayout(song, fonts,
+        HorizontalLayout layout2 = new HorizontalLayout(song,
                 new CoordinateComponent(960), new CoordinateComponent(700));
         layout2.layout(true);
 

@@ -101,15 +101,7 @@ public class ScoreEditController {
             String extension = FileUtils.getFileNameExtension(file.getName());
             ScoreSong song = importer.importSong(file, extension);
             // TODO: 17/9/17 Enlazar el modelo con el scoreSongView - usar ids como en JS
-            LayoutFonts font;
-            if (useHispanicVariant) {
-                font = LayoutFonts.capitan;
-            } else {
-                font = LayoutFonts.bravura;
-            }
-
-
-            ScoreLayout layout = new HorizontalLayout(song, font,
+            ScoreLayout layout = new HorizontalLayout(song,
                     new CoordinateComponent(stage.widthProperty().doubleValue()),
                     new CoordinateComponent(stage.heightProperty().doubleValue()));
             scoreSongView = new ScoreSongView(layout);

@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.Staff;
@@ -25,20 +24,8 @@ public class LayoutMain {
         ScoreSongImporter importer = new ScoreSongImporter();
         ScoreSong scoreSong = importer.importSong(new File(args[0]), FileUtils.getFileNameExtension(args[0]));
 
-        // TODO: 16/10/17 Poder cambiar esto
-        HashMap<Staff, LayoutFonts> fontsHashMap = new HashMap<>();
-        for (Staff staff: scoreSong.getStaves()) {
-            if (staff.getNotationType() == NotationType.eMensural) {
-                fontsHashMap.put(staff, LayoutFonts.capitan);
-            } else if (staff.getNotationType() == NotationType.eModern) {
-                fontsHashMap.put(staff, LayoutFonts.capitan);
-            } else {
-                throw new IM3Exception("The staff " + staff + " has not a notation type");
-            }
-        }
-
         // TODO: 16/10/17 Tamaño
-        PageLayout layout = new PageLayout(scoreSong, scoreSong.getStaves(), true, fontsHashMap, new CoordinateComponent(5000), new CoordinateComponent(5000));
+        AutomaticPageLayout layout = new AutomaticPageLayout(scoreSong, scoreSong.getStaves(), true, new CoordinateComponent(5000), new CoordinateComponent(5000));
         layout.layout(true);
         PDFExporter pdfExporter = new PDFExporter();
         pdfExporter.exportLayout(new File(args[1]), layout);

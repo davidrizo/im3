@@ -25,6 +25,7 @@ public class NearestNeighbourClassifierTest {
 
         NearestNeighbourClassesRanking<String, DoublePrototype> rank1 = classifier.classify(new DoublePrototype(null, 1.5), false);
         assertEquals(3, rank1.size());
-        assertEquals("A", new RankingItem<DoublePrototype>(new DoublePrototype("A", 1.0), 0.5), rank1.getRankingItems().get(0));
+        RankingItem<String> best = rank1.getRankingItems().get(0);
+        assertEquals("A", new RankingItem("A", 0.5), rank1.getRankingItems().get(0));
     }
 }

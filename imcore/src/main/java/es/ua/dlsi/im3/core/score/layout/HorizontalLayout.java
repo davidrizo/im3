@@ -24,13 +24,8 @@ public class HorizontalLayout extends ScoreLayout {
      * Everything is arranged in a single canvas
      */
     Canvas canvas;
-    public HorizontalLayout(ScoreSong song, LayoutFonts font, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
-        super(song, song.getStaves(), font);
-        canvas = new Canvas(width, height);
-    }
-
-    public HorizontalLayout(ScoreSong song, HashMap<Staff, LayoutFonts> fonts, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
-        super(song, song.getStaves(), fonts);
+    public HorizontalLayout(ScoreSong song, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
+        super(song, song.getStaves());
         canvas = new Canvas(width, height);
     }
 
