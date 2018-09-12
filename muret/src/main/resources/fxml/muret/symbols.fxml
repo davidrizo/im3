@@ -10,6 +10,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -132,46 +133,56 @@
       </AnchorPane>
    </bottom>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <HBox spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPaneImage" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-               <content>
-                  <AnchorPane id="documentAnalysis_mainPane" fx:id="imagePane" prefHeight="200.0" prefWidth="200.0">
-                     <children>
-                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="-14.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-               </content>
-            </ScrollPane>
-            <Accordion>
-               <panes>
-                  <TitledPane fx:id="tittledPaneSymbols" animated="false" text="Selected region">
+            <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPaneImage" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <content>
-                        <VBox fx:id="vboxSymbols">
+                        <AnchorPane id="documentAnalysis_mainPane" fx:id="imagePane" prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPaneSelectedStaff" prefHeight="256.0" prefWidth="636.0" VBox.vgrow="NEVER">
-                                 <content>
-                                    <VBox fx:id="vboxSelectedStaff" prefHeight="200.0" prefWidth="609.0">
-                                       <children>
-                                          <Pane fx:id="selectedStaffPane" prefHeight="314.0" prefWidth="609.0" VBox.vgrow="NEVER">
-                                             <children>
-                                                <ImageView fx:id="selectedStaffImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                                <Group fx:id="symbolViewsGroup" />
-                                             </children>
-                                          </Pane>
-                                          <Pane fx:id="staffEditViewPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="NEVER" />
-                                       </children>
-                                    </VBox>
-                                 </content>
-                              </ScrollPane>
-                              <FlowPane fx:id="symbolCorrectionPane" prefHeight="120.0" prefWidth="591.0" VBox.vgrow="NEVER" />
+                              <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="-14.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
-                        </VBox>
+                        </AnchorPane>
                      </content>
-                  </TitledPane>
-               </panes>
-            </Accordion>
+                  </ScrollPane>
+                  <Accordion>
+                     <panes>
+                        <TitledPane fx:id="tittledPaneSymbols" animated="false" text="Selected region">
+                           <content>
+                              <VBox fx:id="vboxSymbols">
+                                 <children>
+                                    <ScrollPane id="#documentAnalysis_scrollPane" fx:id="scrollPaneSelectedStaff" prefHeight="256.0" prefWidth="636.0" VBox.vgrow="NEVER">
+                                       <content>
+                                          <VBox fx:id="vboxSelectedStaff" prefHeight="200.0" prefWidth="609.0">
+                                             <children>
+                                                <Pane fx:id="selectedStaffPane" prefHeight="314.0" prefWidth="609.0">
+                                                   <children>
+                                                      <ImageView fx:id="selectedStaffImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                                      <Group fx:id="symbolViewsGroup" />
+                                                   </children>
+                                                </Pane>
+                                                <Pane fx:id="staffEditViewPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="NEVER" />
+                                             </children>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                    <FlowPane fx:id="symbolCorrectionPane" prefHeight="120.0" prefWidth="591.0" VBox.vgrow="NEVER" />
+                                 </children>
+                              </VBox>
+                           </content>
+                        </TitledPane>
+                     </panes>
+                  </Accordion>
+               </children>
+            </VBox>
+            <VBox minHeight="400.0" prefHeight="500.0" prefWidth="100.0" spacing="5.0">
+               <children>
+                  <Label text="Comments" />
+                  <TextArea fx:id="symbolCommentsTextArea" minWidth="250.0" prefHeight="500.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
          </children>
-      </VBox>
+      </HBox>
    </center>
 </BorderPane>

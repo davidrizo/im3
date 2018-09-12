@@ -51,6 +51,10 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
      * List of regions, orderer by cartesian position
      */
     ObservableSet<OMRRegion> regions;
+    /**
+     * Editorial comments
+     */
+    StringProperty comments;
 
 
     public OMRPage(OMRImage omrImage, double fromX, double fromY, double toX, double toY) {
@@ -63,6 +67,7 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
         this.regions = FXCollections.observableSet(new TreeSet<>());
         this.name = new SimpleStringProperty();
         this.name.bind(Bindings.concat("Page ", this.fromX, ", ", this.fromY));
+        this.comments = new SimpleStringProperty();
     }
 
     /*Abril public void addStaff(ToggleGroup staffToggleGroup, int leftTopX, int leftTopY, int bottomRightX, int bottomRightY) throws IM3Exception {
@@ -122,6 +127,7 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
 
     public Page createPOJO() throws IM3Exception {
         Page pojoPage = new Page(new BoundingBoxXY(fromX.get(), fromY.get(), fromX.get()+width.get(), fromY.get()+height.get()));
+        pojoPage.setComments(comments.get());
         if (instrument.isNotNull().get()) {
             pojoPage.setInstrument(new Instrument(instrument.get().getName()));
         }
@@ -199,6 +205,11 @@ public class OMRPage implements Comparable<OMRPage>, IOMRBoundingBox {
     @Override
     public StringProperty nameProperty() {
         return name;
+    }
+
+    @Override
+    public StringProperty commentsProperty() {
+        return comments;
     }
 
     @Override

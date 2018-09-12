@@ -10,6 +10,7 @@ public interface IOMRBoundingBox {
     DoubleProperty fromYProperty();
     DoubleProperty heightProperty();
     StringProperty nameProperty();
+    StringProperty commentsProperty();
 
     ObservableValue<? extends String> descriptionProperty();
 }

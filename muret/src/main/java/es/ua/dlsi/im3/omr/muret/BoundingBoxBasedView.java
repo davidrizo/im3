@@ -111,10 +111,11 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         selected = new SimpleObjectProperty<>(false);
 
         rectangle.setOnMouseClicked(event -> {
-            sendSelectRequest();
-            onRegionMouseClicked(event); //TODo ¿quitar - cambiar por el cambio de selected?
+            if (!selected.get()) {
+                sendSelectRequest();
+                onRegionMouseClicked(event); //TODo ¿quitar - cambiar por el cambio de selected?
+            }
         });
-
 
         rectangle.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override

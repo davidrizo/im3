@@ -88,6 +88,7 @@ public class InputOutput {
             for (Page page: image.getPages()) {
                 BoundingBox boundingBox = page.getBoundingBox();
                 OMRPage omrPage = new OMRPage(omrImage, boundingBox.getFromX(), boundingBox.getFromY(), boundingBox.getToX(), boundingBox.getToY());
+                omrPage.commentsProperty().setValue(page.getComments());
                 if (page.getInstrument() != null) {
                     omrPage.instrumentProperty().setValue(omrProject.getInstruments().getInstrument(page.getInstrument().getName()));
                 }

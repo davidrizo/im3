@@ -38,6 +38,10 @@ public class Symbol implements Comparable<Symbol> {
      * Instrument, it may be null if defined in a higher level
      */
     Instrument instrument;
+    /**
+     * Editorial comments
+     */
+    private String comments;
 
     /**
      * Optional: information about the pixels of the image. May be null
@@ -136,13 +140,14 @@ public class Symbol implements Comparable<Symbol> {
         return accepted == symbol.accepted &&
                 Objects.equals(agnosticSymbol, symbol.agnosticSymbol) &&
                 Objects.equals(boundingBox, symbol.boundingBox) &&
-                Objects.equals(strokes, symbol.strokes);
+                Objects.equals(strokes, symbol.strokes) &&
+                Objects.equals(comments, symbol.comments);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(agnosticSymbol, accepted, boundingBox, strokes);
+        return Objects.hash(agnosticSymbol, accepted, boundingBox, strokes, comments);
     }
 
 
@@ -168,5 +173,13 @@ public class Symbol implements Comparable<Symbol> {
 
     public void setInstrument(Instrument instrument) {
         this.instrument = instrument;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }

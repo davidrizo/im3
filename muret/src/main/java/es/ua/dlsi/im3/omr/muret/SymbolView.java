@@ -65,4 +65,6 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements Compa
     public int compareTo(SymbolView o) {
         return owner.compareTo(o.owner);
     }
+
+
 }

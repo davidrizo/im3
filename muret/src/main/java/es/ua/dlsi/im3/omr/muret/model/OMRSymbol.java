@@ -54,6 +54,10 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
      * Instruments - if not the same as its region
      */
     ObjectProperty<OMRInstrument> instrument; //TODO
+    /**
+     * Editorial comments
+     */
+    StringProperty comments;
 
 
     public OMRSymbol(OMRRegion omrRegion, AgnosticSymbol graphicalSymbol, double x, double y, double width, double height) throws IM3Exception {
@@ -80,6 +84,7 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
         this.name = new SimpleStringProperty(this.graphicalSymbol.get().getAgnosticString());
         this.strokes = new SimpleObjectProperty<>();
         this.instrument = new SimpleObjectProperty<>();
+        this.comments = new SimpleStringProperty();
     }
 
     public OMRSymbol(OMRRegion omrRegion, Symbol symbol) throws IM3Exception {
@@ -90,6 +95,7 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
         if (symbol.getStrokes() != null && !symbol.getStrokes().getStrokeList().isEmpty()) {
             this.strokes.setValue(new OMRStrokes(symbol.getStrokes()));
         }
+        this.comments = new SimpleStringProperty(symbol.getComments());
     }
 
     public OMRStrokes getStrokes() {
@@ -202,6 +208,7 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
             pojoSymbol.setInstrument(new Instrument(instrument.get().getName()));
         }
         pojoSymbol.setAccepted(accepted.get());
+        pojoSymbol.setComments(comments.getValue());
 
         if (strokes != null && strokes.isNotNull().get()) {
             pojoSymbol.setStrokes(strokes.get().createPOJO());
@@ -322,5 +329,17 @@ public class OMRSymbol implements IOMRBoundingBox, Comparable<OMRSymbol> {
 
     public void setInstrument(OMRInstrument instrument) {
         this.instrument.set(instrument);
+    }
+
+    public String getComments() {
+        return comments.get();
+    }
+
+    public StringProperty commentsProperty() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments.set(comments);
     }
 }

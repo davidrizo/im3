@@ -26,6 +26,10 @@ public class Page implements Comparable<Page> {
      * Sorted set of regions
      */
     SortedSet<Region> regions;
+    /**
+     * Editorial comments
+     */
+    private String comments;
 
     public Page(int fromX, int fromY, int toX, int toY) throws IM3Exception {
         boundingBox = new BoundingBoxXY(fromX, fromY, toX, toY);
@@ -88,5 +92,13 @@ public class Page implements Comparable<Page> {
 
     public void setInstrument(Instrument instrument) {
         this.instrument = instrument;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public String getComments() {
+        return comments;
     }
 }

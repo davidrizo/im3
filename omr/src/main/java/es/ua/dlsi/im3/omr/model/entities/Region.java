@@ -33,6 +33,10 @@ public class Region implements Comparable<Region> {
      * Instrument, it may be null if not the same for all symbols or if defined in a higher level
      */
     Instrument instrument;
+    /**
+     * Editorial comments
+     */
+    private String comments;
 
 
     public Region(RegionType regionType, double fromX, double fromY, double toX, double toY) throws IM3Exception {
@@ -173,5 +177,13 @@ public class Region implements Comparable<Region> {
 
     public void setInstrument(Instrument instrument) {
         this.instrument = instrument;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }

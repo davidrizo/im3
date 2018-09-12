@@ -51,6 +51,7 @@ import es.ua.dlsi.im3.omr.muret.old.symbols.StrokesView;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -108,6 +109,10 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
     @FXML
     ToolBar toolbarToolSpecific;
+    /**
+     * Used for binding comments
+     */
+    private BoundingBoxBasedView<? extends IOMRBoundingBox> lastSelectedView;
 
     enum InteractionMode {eIdle, eDocAnalysisSplittingPages, eDocAnalysisSplittingRegions, eDocAnalysisDrawingPages, eDocAnalysisDrawingRegions, eSymbolsBoundingBox, eSymbolsStrokes};
 
@@ -167,6 +172,8 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     Group symbolViewsGroup;
     @FXML
     FlowPane symbolCorrectionPane;
+    @FXML
+    TextArea symbolCommentsTextArea;
 
     AgnosticStaffView agnosticStaffView;
 
@@ -181,6 +188,8 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     AgnosticSymbolFont agnosticSymbolFont;
 
     private Timer strokesTimer;
+
+
 
     /**
      * Used to draw new symbol bounding box
@@ -1268,37 +1277,44 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
     @Override
     public <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
-        selectionManager.select(ownerTypeBoundingBoxBasedView);
-        ownerTypeBoundingBoxBasedView.beginEdit();
-
-        if (ownerTypeBoundingBoxBasedView instanceof PageView) {
-
-        } else if (ownerTypeBoundingBoxBasedView instanceof RegionView) {
-            RegionView regionView = (RegionView) ownerTypeBoundingBoxBasedView;
-
-            OMRRegion omrRegion = regionView.getOwner();
-            try {
-                selectedStaffImageView.setImage(omrImage.getImage());
-                selectedStaffImageView.setViewport(new Rectangle2D(omrRegion.getFromX(), omrRegion.getFromY(), omrRegion.getWidth(), omrRegion.getHeight()));
-                selectedStaffImageView.setFitHeight(omrRegion.getHeight());
-                selectedStaffImageView.setFitWidth(omrRegion.getWidth());
-
-
-                if (phase == Phase.eSymbols) {
-                    loadAgnosticStaff(regionView);
-                } else if (phase == Phase.eMusic){
-                    loadDiplomaticEditionStaff(regionView);
-                }
-            } catch (IM3Exception e) {
-                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot select region", e);
-                showError("Cannot select region", e);
+        if (!selectionManager.isSelected(ownerTypeBoundingBoxBasedView)) {
+            if (lastSelectedView != null) {
+                symbolCommentsTextArea.textProperty().unbindBidirectional(lastSelectedView.getOwner().commentsProperty());
             }
-        } else if (ownerTypeBoundingBoxBasedView instanceof SymbolView) {
-            selectedSymbolView.set((SymbolView) ownerTypeBoundingBoxBasedView);
-            if (phase == Phase.eSymbols) {
-                agnosticStaffView.select((SymbolView) ownerTypeBoundingBoxBasedView);
-            } else if (phase == Phase.eMusic) {
+            lastSelectedView = ownerTypeBoundingBoxBasedView;
+            symbolCommentsTextArea.textProperty().bindBidirectional(lastSelectedView.getOwner().commentsProperty());
 
+            selectionManager.select(ownerTypeBoundingBoxBasedView);
+            ownerTypeBoundingBoxBasedView.beginEdit();
+
+            if (ownerTypeBoundingBoxBasedView instanceof PageView) {
+
+            } else if (ownerTypeBoundingBoxBasedView instanceof RegionView) {
+                RegionView regionView = (RegionView) ownerTypeBoundingBoxBasedView;
+
+                OMRRegion omrRegion = regionView.getOwner();
+                try {
+                    selectedStaffImageView.setImage(omrImage.getImage());
+                    selectedStaffImageView.setViewport(new Rectangle2D(omrRegion.getFromX(), omrRegion.getFromY(), omrRegion.getWidth(), omrRegion.getHeight()));
+                    selectedStaffImageView.setFitHeight(omrRegion.getHeight());
+                    selectedStaffImageView.setFitWidth(omrRegion.getWidth());
+
+                    if (phase == Phase.eSymbols) {
+                        loadAgnosticStaff(regionView);
+                    } else if (phase == Phase.eMusic) {
+                        loadDiplomaticEditionStaff(regionView);
+                    }
+                } catch (IM3Exception e) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot select region", e);
+                    showError("Cannot select region", e);
+                }
+            } else if (ownerTypeBoundingBoxBasedView instanceof SymbolView) {
+                selectedSymbolView.set((SymbolView) ownerTypeBoundingBoxBasedView);
+                if (phase == Phase.eSymbols) {
+                    agnosticStaffView.select((SymbolView) ownerTypeBoundingBoxBasedView);
+                } else if (phase == Phase.eMusic) {
+
+                }
             }
         }
     }
@@ -1308,7 +1324,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
         agnosticStaffView = new AgnosticStaffView(this,
                 agnosticSymbolFont,
-                scrollPaneSelectedStaff.widthProperty(), 200, 10); //TODO height
+                scrollPaneSelectedStaff.widthProperty(), 200, -omrRegion.getFromX()); //TODO height
         staffEditViewPane.getChildren().setAll(agnosticStaffView);
         staffEditViewPane.setPrefHeight(300); //TODO Height
         staffEditViewPane.setMinHeight(200);
@@ -1352,7 +1368,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
             ScoreSong scoreSong = importer.importSong(new File("/Users/drizo/Desktop/harpa.mei"));*/
             // TODO: 17/9/17 Enlazar el modelo con el scoreSongView - usar ids como en JS
             ScoreLayout layout = new HorizontalLayout(mensuralSong,
-                    new CoordinateComponent(1000),
+                    new CoordinateComponent(2000),
                     new CoordinateComponent(200));
             ScoreSongView scoreSongView = new ScoreSongView(layout);
 
@@ -1361,7 +1377,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
             ScoreSongView scoreSongView = new ScoreSongView(diplomaticLayout); //TODO Mostrar sólo los pentagramas que necesitamos*/
 
             staffEditViewPane.getChildren().setAll(scoreSongView.getMainPanel());
-            staffEditViewPane.setPrefHeight(300); //TODO Height
+            staffEditViewPane.setPrefHeight(2000); //TODO Height
             staffEditViewPane.setMinHeight(200);
 
         } catch (IM3Exception e) {

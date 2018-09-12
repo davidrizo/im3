@@ -9,12 +9,9 @@ import es.ua.dlsi.im3.omr.model.entities.Symbol;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 
-import java.util.LinkedList;
 import java.util.Objects;
-import java.util.Set;
 import java.util.TreeSet;
 
 public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
@@ -55,6 +52,10 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
      * Instrument, it may be null if not the same for all symbols
      */
     ObjectProperty<OMRInstrument> instrument;
+    /**
+     * Editorial comments
+     */
+    SimpleStringProperty comments;
 
 
     public OMRRegion(OMRPage omrPage, int id, double fromX, double fromY, double width, double height, RegionType regionType) throws IM3Exception {
@@ -82,6 +83,7 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
         name = new SimpleStringProperty();
         name.bind(this.regionType.asString().concat(" #" + id));
         this.instrument = new SimpleObjectProperty<>();
+        this.comments = new SimpleStringProperty();
     }
 
     public OMRRegion(OMRPage omrPage, int id, Region region) throws IM3Exception {
@@ -108,6 +110,7 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
                 this.symbols.add(omrSymbol);
             }
         }
+        this.comments = new SimpleStringProperty(region.getComments());
     }
 
     public double getFromX() {
@@ -171,6 +174,19 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
         return name;
     }
 
+    public String getComments() {
+        return comments.get();
+    }
+
+    @Override
+    public SimpleStringProperty commentsProperty() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments.set(comments);
+    }
+
     @Override
     public ObservableValue<? extends String> descriptionProperty() {
         return name.concat(" ").concat(instrument);
@@ -200,6 +216,7 @@ public class OMRRegion implements Comparable<OMRRegion>, IOMRBoundingBox {
 
     public Region createPOJO() throws IM3Exception {
         Region pojoRegion = new Region(getRegionType(), getFromX(), getFromY(), getFromX() + getWidth(), getFromY() + getHeight());
+        pojoRegion.setComments(comments.get());
         if (instrument.isNotNull().get()) {
             pojoRegion.setInstrument(new Instrument(instrument.get().getName()));
         }

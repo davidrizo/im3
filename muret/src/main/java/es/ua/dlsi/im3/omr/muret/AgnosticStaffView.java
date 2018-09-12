@@ -6,11 +6,17 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.Staff;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
+import es.ua.dlsi.im3.gui.interaction.ISelectable;
+import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
+import es.ua.dlsi.im3.gui.interaction.SelectionManager;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -25,10 +31,7 @@ import java.util.logging.Logger;
  * A staff containing just information about positions
  * @autor drizo
  */
-public class AgnosticStaffView extends VBox {
-    private static final Color DEFAULT_COLOR = Color.BLACK;
-    private static final Color SELECTED_COLOR = Color.RED;
-
+public class AgnosticStaffView extends VBox implements ISelectableTraversable {
     private static final double LEDGER_LINE_EXTRA_LENGTH = 8;
     private static final double LEDGER_LINE_WIDTH = 20;
     private final DocumentAnalysisSymbolsDiplomaticMusicController controller;
@@ -40,11 +43,13 @@ public class AgnosticStaffView extends VBox {
     Group linesGroup;
     Group symbolsGroup;
     double lineBottomPosition;
-    HashMap<OMRSymbol, Shape> shapesInStaff;
+    HashMap<OMRSymbol, AgnosticSymbolView> shapesInStaff;
     private double regionXOffset;
+    SelectionManager selectionManager;
 
     public AgnosticStaffView(DocumentAnalysisSymbolsDiplomaticMusicController controller, AgnosticSymbolFont agnosticSymbolFont, ReadOnlyDoubleProperty widthProperty, double height, double regionXOffset)  {
         this.controller = controller;
+        this.selectionManager = new SelectionManager();
         shapesInStaff = new HashMap<>();
         this.regionXOffset = regionXOffset;
         //correctingSymbol = new SimpleObjectProperty();
@@ -79,6 +84,10 @@ public class AgnosticStaffView extends VBox {
         this.getChildren().addAll(staffGroup);
     }
 
+    public SelectionManager getSelectionManager() {
+        return selectionManager;
+    }
+
     private double getPosition(PositionInStaff positionInStaff) {
         double heightDifference = -(LayoutConstants.SPACE_HEIGHT * ((double)positionInStaff.getLineSpace()) / 2.0);
         return lineBottomPosition + heightDifference;
@@ -88,13 +97,13 @@ public class AgnosticStaffView extends VBox {
         try {
             OMRSymbol symbol = symbolView.getOwner();
             Shape shape = agnosticSymbolFont.createShape(symbol.getGraphicalSymbol().getSymbol());
-            shape.setFill(DEFAULT_COLOR);
             shape.setLayoutX(symbol.getCenterX()+regionXOffset);
 
             symbolsGroup.getChildren().add(shape);
             updateVerticalLayoutInStaff(symbol, shape);
 
-            shapesInStaff.put(symbol, shape);
+            AgnosticSymbolView agnosticSymbolView = new AgnosticSymbolView(controller, this, shape, symbolView); // it adds also the interaction
+            shapesInStaff.put(symbol, agnosticSymbolView);
             return shape;
             //TODO Ledger lines
         } catch (IM3Exception e) {
@@ -103,6 +112,7 @@ public class AgnosticStaffView extends VBox {
             throw e;
         }
     }
+
 
     private void updateVerticalLayoutInStaff(OMRSymbol omrSymbol, Shape shape) {
         PositionInStaff positionInStaff = omrSymbol.getGraphicalSymbol().getPositionInStaff();
@@ -154,11 +164,7 @@ public class AgnosticStaffView extends VBox {
         try {
                 //TODO Commands, undo, redo, cancel
                 prev = symbolToCorrect.changePosition(lineSpaces);
-                Shape shape = shapesInStaff.get(symbolToCorrect.getOwner());
-                if (shape == null) {
-                    throw new IM3Exception("Cannot find the shape associated to symbol " + symbolToCorrect);
-                }
-                updateVerticalLayoutInStaff(symbolToCorrect.getOwner(), shape);
+                updateVerticalLayoutInStaff(symbolToCorrect.getOwner(), getShape(symbolToCorrect));
         } catch (IM3Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot change position", e);
             ShowError.show(this.background.getScene().getWindow(), "Cannot change position", e);
@@ -166,12 +172,20 @@ public class AgnosticStaffView extends VBox {
         return prev;
     }
 
+    private AgnosticSymbolView getAgnosticSymbolView(OMRSymbol omrSymbol) throws IM3Exception {
+        AgnosticSymbolView agnosticSymbolView = shapesInStaff.get(omrSymbol);
+        if (agnosticSymbolView == null) {
+            throw new IM3Exception("Cannot find the shape associated to symbol " + omrSymbol);
+        }
+        return agnosticSymbolView;
+    }
+
     private Shape getShape(SymbolView symbolView) throws IM3Exception {
-        Shape shape = shapesInStaff.get(symbolView.getOwner());
-        if (shape == null) {
+        AgnosticSymbolView agnosticSymbolView = shapesInStaff.get(symbolView.getOwner());
+        if (agnosticSymbolView == null) {
             throw new IM3Exception("Cannot find the shape associated to symbol " + symbolView.getOwner());
         }
-        return shape;
+        return agnosticSymbolView.getRoot();
     }
     /**
      * Previous agnostic string type
@@ -212,11 +226,11 @@ public class AgnosticStaffView extends VBox {
     }*/
 
     public void remove(BoundingBoxBasedView elementView) {
-        Shape shape = shapesInStaff.remove(elementView.getOwner());
-        if (shape == null) {
+        AgnosticSymbolView agnosticSymbolView = shapesInStaff.remove(elementView.getOwner());
+        if (agnosticSymbolView == null) {
             throw new IM3RuntimeException("Cannot find shape for element " + elementView.getOwner());
         }
-        symbolsGroup.getChildren().remove(shape);
+        symbolsGroup.getChildren().remove(agnosticSymbolView.getRoot());
     }
 
     /*public void handle(KeyEvent event) {
@@ -235,8 +249,10 @@ public class AgnosticStaffView extends VBox {
 
     public void select(SymbolView symbolView) {
         try {
-            Shape shape = getShape(symbolView);
-            shape.setFill(SELECTED_COLOR);
+            AgnosticSymbolView agnosticSymbolView = getAgnosticSymbolView(symbolView.getOwner());
+            if (!agnosticSymbolView.isSelected()) {
+                selectionManager.select(agnosticSymbolView);
+            }
         } catch (IM3Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find symbol to select", e);
             ShowError.show(this.background.getScene().getWindow(), "Cannot find symbol to select", e);
@@ -245,11 +261,33 @@ public class AgnosticStaffView extends VBox {
 
     public void unSelect(SymbolView symbolView) {
         try {
-            Shape shape = getShape(symbolView);
-            shape.setFill(DEFAULT_COLOR);
+            AgnosticSymbolView agnosticSymbolView = getAgnosticSymbolView(symbolView.getOwner());
+            if (agnosticSymbolView.isSelected()) {
+                selectionManager.unSelect(agnosticSymbolView);
+            }
         } catch (IM3Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot find symbol to select", e);
             ShowError.show(this.background.getScene().getWindow(), "Cannot find symbol to select", e);
         }
+    }
+
+    @Override
+    public ISelectable first() {
+        return null;
+    }
+
+    @Override
+    public ISelectable last() {
+        return null;
+    }
+
+    @Override
+    public ISelectable previous(ISelectable s) {
+        return null;
+    }
+
+    @Override
+    public ISelectable next(ISelectable s) {
+        return null;
     }
 }
