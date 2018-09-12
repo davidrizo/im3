@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -34,6 +35,33 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleFileSave" text="Save">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <Menu fx:id="menuExportMensural" mnemonicParsing="false" text="Export mensural">
+                          <items>
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportMensuralMEI" text="MEI" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportMensuralMens" text="**mens" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportMensuralDiplomaticPDF" text="Diplomatic PDF" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportMensuralEditorialPDF" text="Editorial PDF" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportModernAndMensuralPDF" text="Mensural and modern aligned PDF" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportMensuralLilypond" text="LilyPond" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportImagesWithEditorialComments" text="Images with editorial comments" />
+                          </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Export modern">
+                           <items>
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportModernMusicXML" text="MusicXML" />
+                              <MenuItem fx:id="handleExportModernMEI" mnemonicParsing="false" text="MEI" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportModernKern" text="**kern" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportModernPDF" text="PDF" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportModernLilypond" text="Lilypond" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleExportModernMIDI" text="MIDI" />
+                           </items>
+                        </Menu>
+                        <SeparatorMenuItem mnemonicParsing="false" />
                     <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="ANY" />
