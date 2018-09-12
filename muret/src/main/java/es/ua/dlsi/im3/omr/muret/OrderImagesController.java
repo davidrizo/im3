@@ -222,4 +222,10 @@ public class OrderImagesController implements Initializable {
 
         }
     }
+
+    @FXML
+    private void handleShowUserInteractionLogs() {
+        MuRET.getInstance().showUserInteractionLogs();
+    }
+
 }

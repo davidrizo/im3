@@ -122,7 +122,7 @@ public class FXMLController implements Initializable {
 	});
     }
     
-    private void readFolder(File file) {
+    public void readFolder(File file) {
 	try {
 	    reader = new Reader(file);
 

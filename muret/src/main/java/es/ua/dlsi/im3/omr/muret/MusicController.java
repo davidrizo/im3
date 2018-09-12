@@ -299,4 +299,9 @@ public class MusicController extends MuRETBaseController {
         }
     }
 
+    @FXML
+    private void handleShowUserInteractionLogs() {
+        MuRET.getInstance().showUserInteractionLogs();
+    }
+
 }

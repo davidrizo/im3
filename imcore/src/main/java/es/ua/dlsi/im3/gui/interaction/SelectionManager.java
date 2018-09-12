@@ -21,8 +21,19 @@ public class SelectionManager {
     }
 
     private void addElementToSelection(ISelectable element) {
-        selectedElements.put(element.getUniqueID(), element);
-        element.onSelect();
+        String ID = element.getUniqueID();
+        if (!selectedElements.containsKey(ID)) {
+            selectedElements.put(ID, element);
+            element.onSelect();
+        }
+    }
+
+    private void removeElementFromSelection(ISelectable element) {
+        String ID = element.getUniqueID();
+        if (selectedElements.containsKey(ID)) {
+            selectedElements.remove(element.getUniqueID());
+            element.onUnselect();
+        }
     }
 
     public void clearSelection() {
@@ -45,6 +56,13 @@ public class SelectionManager {
         selectedElements.clear();
         for (ISelectable selectable: elements) {
             addElementToSelection(selectable);
+        }
+        notifySelectionChange();
+    }
+
+    public void unSelect(ISelectable ... elements) {
+        for (ISelectable selectable: elements) {
+            removeElementFromSelection(selectable);
         }
         notifySelectionChange();
     }

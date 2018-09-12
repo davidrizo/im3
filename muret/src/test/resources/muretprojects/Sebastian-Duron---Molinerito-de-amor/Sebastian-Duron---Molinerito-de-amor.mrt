@@ -1,0 +1,1779 @@
+<project id="1">
+  <name>Molinerito de amor</name>
+  <composer>Sebastián Durón</composer>
+  <version>v1</version>
+  <notationType>eMensural</notationType>
+  <instruments id="2"/>
+  <images id="3">
+    <image id="4">
+      <imageRelativeFileName>p0189.jpg</imageRelativeFileName>
+      <order>0</order>
+      <pages id="5">
+        <page id="6">
+          <boundingBox id="7">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2556.0</toX>
+            <toY>1843.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="8"/>
+          <regions id="9">
+            <region id="10">
+              <boundingBox id="11">
+                <fromX>1352.0</fromX>
+                <fromY>169.0</fromY>
+                <toX>2390.0</toX>
+                <toY>1054.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="12"/>
+            </region>
+            <region id="13">
+              <boundingBox id="14">
+                <fromX>1682.0</fromX>
+                <fromY>1333.0</fromY>
+                <toX>2030.0</toX>
+                <toY>1510.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="15"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="16">
+      <imageRelativeFileName>p0190.jpg</imageRelativeFileName>
+      <order>1</order>
+      <pages id="17">
+        <page id="18">
+          <boundingBox id="19">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2558.0</toX>
+            <toY>1844.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="20"/>
+          <regions id="21">
+            <region id="22">
+              <boundingBox id="23">
+                <fromX>410.0</fromX>
+                <fromY>74.0</fromY>
+                <toX>914.0</toX>
+                <toY>242.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="24"/>
+            </region>
+            <region id="25">
+              <boundingBox id="26">
+                <fromX>299.0</fromX>
+                <fromY>203.0</fromY>
+                <toX>2389.0</toX>
+                <toY>305.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="27"/>
+            </region>
+            <region id="28">
+              <boundingBox id="29">
+                <fromX>89.0</fromX>
+                <fromY>212.0</fromY>
+                <toX>278.0</toX>
+                <toY>344.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="30"/>
+            </region>
+            <region id="31">
+              <boundingBox id="32">
+                <fromX>410.0</fromX>
+                <fromY>308.0</fromY>
+                <toX>2317.0</toX>
+                <toY>401.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="33"/>
+            </region>
+            <region id="34">
+              <boundingBox id="35">
+                <fromX>146.0</fromX>
+                <fromY>422.0</fromY>
+                <toX>2377.0</toX>
+                <toY>524.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="36"/>
+            </region>
+            <region id="37">
+              <boundingBox id="38">
+                <fromX>230.0</fromX>
+                <fromY>524.0</fromY>
+                <toX>2320.0</toX>
+                <toY>572.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="39"/>
+            </region>
+            <region id="40">
+              <boundingBox id="41">
+                <fromX>221.0</fromX>
+                <fromY>548.0</fromY>
+                <toX>884.0</toX>
+                <toY>617.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="42"/>
+            </region>
+            <region id="43">
+              <boundingBox id="44">
+                <fromX>914.0</fromX>
+                <fromY>581.0</fromY>
+                <toX>2368.0</toX>
+                <toY>647.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="45"/>
+            </region>
+            <region id="46">
+              <boundingBox id="47">
+                <fromX>176.0</fromX>
+                <fromY>626.0</fromY>
+                <toX>2371.0</toX>
+                <toY>689.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="48"/>
+            </region>
+            <region id="49">
+              <boundingBox id="50">
+                <fromX>176.0</fromX>
+                <fromY>659.0</fromY>
+                <toX>1288.0</toX>
+                <toY>752.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="51"/>
+            </region>
+            <region id="52">
+              <boundingBox id="53">
+                <fromX>257.0</fromX>
+                <fromY>695.0</fromY>
+                <toX>2356.0</toX>
+                <toY>773.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="54"/>
+            </region>
+            <region id="55">
+              <boundingBox id="56">
+                <fromX>179.0</fromX>
+                <fromY>779.0</fromY>
+                <toX>2389.0</toX>
+                <toY>914.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="57"/>
+            </region>
+            <region id="58">
+              <boundingBox id="59">
+                <fromX>224.0</fromX>
+                <fromY>869.0</fromY>
+                <toX>2341.0</toX>
+                <toY>994.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="60"/>
+            </region>
+            <region id="61">
+              <boundingBox id="62">
+                <fromX>170.0</fromX>
+                <fromY>961.0</fromY>
+                <toX>2371.0</toX>
+                <toY>1093.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="63"/>
+            </region>
+            <region id="64">
+              <boundingBox id="65">
+                <fromX>215.0</fromX>
+                <fromY>1075.0</fromY>
+                <toX>2398.0</toX>
+                <toY>1189.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="66"/>
+            </region>
+            <region id="67">
+              <boundingBox id="68">
+                <fromX>170.0</fromX>
+                <fromY>1159.0</fromY>
+                <toX>2389.0</toX>
+                <toY>1300.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="69"/>
+            </region>
+            <region id="70">
+              <boundingBox id="71">
+                <fromX>215.0</fromX>
+                <fromY>1273.0</fromY>
+                <toX>2374.0</toX>
+                <toY>1369.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="72"/>
+            </region>
+            <region id="73">
+              <boundingBox id="74">
+                <fromX>164.0</fromX>
+                <fromY>1315.0</fromY>
+                <toX>2371.0</toX>
+                <toY>1450.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="75"/>
+            </region>
+            <region id="76">
+              <boundingBox id="77">
+                <fromX>251.0</fromX>
+                <fromY>1471.0</fromY>
+                <toX>2218.0</toX>
+                <toY>1549.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="78"/>
+            </region>
+            <region id="79">
+              <boundingBox id="80">
+                <fromX>173.0</fromX>
+                <fromY>1516.0</fromY>
+                <toX>2383.0</toX>
+                <toY>1624.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="81"/>
+            </region>
+            <region id="82">
+              <boundingBox id="83">
+                <fromX>233.0</fromX>
+                <fromY>1636.0</fromY>
+                <toX>2386.0</toX>
+                <toY>1717.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="84"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="85">
+      <imageRelativeFileName>p0191.jpg</imageRelativeFileName>
+      <order>2</order>
+      <pages id="86">
+        <page id="87">
+          <boundingBox id="88">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2558.0</toX>
+            <toY>1820.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="89"/>
+          <regions id="90">
+            <region id="91">
+              <boundingBox id="92">
+                <fromX>323.0</fromX>
+                <fromY>20.0</fromY>
+                <toX>710.0</toX>
+                <toY>161.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="93"/>
+            </region>
+            <region id="94">
+              <boundingBox id="95">
+                <fromX>248.0</fromX>
+                <fromY>170.0</fromY>
+                <toX>2416.0</toX>
+                <toY>326.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="96"/>
+            </region>
+            <region id="97">
+              <boundingBox id="98">
+                <fromX>428.0</fromX>
+                <fromY>293.0</fromY>
+                <toX>2368.0</toX>
+                <toY>383.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="99"/>
+            </region>
+            <region id="100">
+              <boundingBox id="101">
+                <fromX>305.0</fromX>
+                <fromY>368.0</fromY>
+                <toX>2380.0</toX>
+                <toY>548.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="102"/>
+            </region>
+            <region id="103">
+              <boundingBox id="104">
+                <fromX>47.0</fromX>
+                <fromY>374.0</fromY>
+                <toX>257.0</toX>
+                <toY>518.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="105"/>
+            </region>
+            <region id="106">
+              <boundingBox id="107">
+                <fromX>215.0</fromX>
+                <fromY>497.0</fromY>
+                <toX>2353.0</toX>
+                <toY>782.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="108"/>
+            </region>
+            <region id="109">
+              <boundingBox id="110">
+                <fromX>185.0</fromX>
+                <fromY>788.0</fromY>
+                <toX>2389.0</toX>
+                <toY>925.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="111"/>
+            </region>
+            <region id="112">
+              <boundingBox id="113">
+                <fromX>248.0</fromX>
+                <fromY>919.0</fromY>
+                <toX>1166.0</toX>
+                <toY>1189.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="114"/>
+            </region>
+            <region id="115">
+              <boundingBox id="116">
+                <fromX>1462.0</fromX>
+                <fromY>952.0</fromY>
+                <toX>1741.0</toX>
+                <toY>1099.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="117"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="118">
+      <imageRelativeFileName>p0192.jpg</imageRelativeFileName>
+      <order>3</order>
+      <pages id="119">
+        <page id="120">
+          <boundingBox id="121">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2558.0</toX>
+            <toY>1796.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="122"/>
+          <regions id="123">
+            <region id="124">
+              <boundingBox id="125">
+                <fromX>380.0</fromX>
+                <fromY>59.0</fromY>
+                <toX>857.0</toX>
+                <toY>182.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="126"/>
+            </region>
+            <region id="127">
+              <boundingBox id="128">
+                <fromX>59.0</fromX>
+                <fromY>128.0</fromY>
+                <toX>251.0</toX>
+                <toY>302.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="129"/>
+            </region>
+            <region id="130">
+              <boundingBox id="131">
+                <fromX>296.0</fromX>
+                <fromY>149.0</fromY>
+                <toX>2374.0</toX>
+                <toY>275.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="132"/>
+            </region>
+            <region id="133">
+              <boundingBox id="134">
+                <fromX>389.0</fromX>
+                <fromY>263.0</fromY>
+                <toX>2293.0</toX>
+                <toY>362.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="135"/>
+            </region>
+            <region id="136">
+              <boundingBox id="137">
+                <fromX>152.0</fromX>
+                <fromY>356.0</fromY>
+                <toX>2383.0</toX>
+                <toY>467.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="138"/>
+            </region>
+            <region id="139">
+              <boundingBox id="140">
+                <fromX>149.0</fromX>
+                <fromY>443.0</fromY>
+                <toX>2359.0</toX>
+                <toY>530.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="141"/>
+            </region>
+            <region id="142">
+              <boundingBox id="143">
+                <fromX>176.0</fromX>
+                <fromY>506.0</fromY>
+                <toX>2383.0</toX>
+                <toY>653.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="144"/>
+            </region>
+            <region id="145">
+              <boundingBox id="146">
+                <fromX>233.0</fromX>
+                <fromY>623.0</fromY>
+                <toX>2299.0</toX>
+                <toY>707.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="147"/>
+            </region>
+            <region id="148">
+              <boundingBox id="149">
+                <fromX>152.0</fromX>
+                <fromY>686.0</fromY>
+                <toX>2389.0</toX>
+                <toY>857.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="150"/>
+            </region>
+            <region id="151">
+              <boundingBox id="152">
+                <fromX>209.0</fromX>
+                <fromY>797.0</fromY>
+                <toX>2398.0</toX>
+                <toY>919.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="153"/>
+            </region>
+            <region id="154">
+              <boundingBox id="155">
+                <fromX>158.0</fromX>
+                <fromY>875.0</fromY>
+                <toX>2380.0</toX>
+                <toY>1021.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="156"/>
+            </region>
+            <region id="157">
+              <boundingBox id="158">
+                <fromX>170.0</fromX>
+                <fromY>994.0</fromY>
+                <toX>2347.0</toX>
+                <toY>1096.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="159"/>
+            </region>
+            <region id="160">
+              <boundingBox id="161">
+                <fromX>158.0</fromX>
+                <fromY>1069.0</fromY>
+                <toX>2386.0</toX>
+                <toY>1207.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="162"/>
+            </region>
+            <region id="163">
+              <boundingBox id="164">
+                <fromX>182.0</fromX>
+                <fromY>1171.0</fromY>
+                <toX>2374.0</toX>
+                <toY>1276.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="165"/>
+            </region>
+            <region id="166">
+              <boundingBox id="167">
+                <fromX>155.0</fromX>
+                <fromY>1249.0</fromY>
+                <toX>2389.0</toX>
+                <toY>1393.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="168"/>
+            </region>
+            <region id="169">
+              <boundingBox id="170">
+                <fromX>212.0</fromX>
+                <fromY>1351.0</fromY>
+                <toX>2320.0</toX>
+                <toY>1456.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="171"/>
+            </region>
+            <region id="172">
+              <boundingBox id="173">
+                <fromX>149.0</fromX>
+                <fromY>1420.0</fromY>
+                <toX>2374.0</toX>
+                <toY>1567.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="174"/>
+            </region>
+            <region id="175">
+              <boundingBox id="176">
+                <fromX>332.0</fromX>
+                <fromY>1546.0</fromY>
+                <toX>2308.0</toX>
+                <toY>1666.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="177"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="178">
+      <imageRelativeFileName>p0193.jpg</imageRelativeFileName>
+      <order>4</order>
+      <pages id="179">
+        <page id="180">
+          <boundingBox id="181">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2563.0</toX>
+            <toY>1803.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="182"/>
+          <regions id="183">
+            <region id="184">
+              <boundingBox id="185">
+                <fromX>340.0</fromX>
+                <fromY>38.0</fromY>
+                <toX>886.0</toX>
+                <toY>233.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="186"/>
+            </region>
+            <region id="187">
+              <boundingBox id="188">
+                <fromX>229.0</fromX>
+                <fromY>173.0</fromY>
+                <toX>2431.0</toX>
+                <toY>362.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="189"/>
+            </region>
+            <region id="190">
+              <boundingBox id="191">
+                <fromX>37.0</fromX>
+                <fromY>245.0</fromY>
+                <toX>187.0</toX>
+                <toY>419.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="192"/>
+            </region>
+            <region id="193">
+              <boundingBox id="194">
+                <fromX>424.0</fromX>
+                <fromY>329.0</fromY>
+                <toX>2380.0</toX>
+                <toY>455.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="195"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="196">
+      <imageRelativeFileName>p0194.jpg</imageRelativeFileName>
+      <order>5</order>
+      <pages id="197">
+        <page id="198">
+          <boundingBox id="199">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2567.0</toX>
+            <toY>1844.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="200"/>
+          <regions id="201">
+            <region id="202">
+              <boundingBox id="203">
+                <fromX>410.0</fromX>
+                <fromY>95.0</fromY>
+                <toX>833.0</toX>
+                <toY>221.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="204"/>
+            </region>
+            <region id="205">
+              <boundingBox id="206">
+                <fromX>257.0</fromX>
+                <fromY>176.0</fromY>
+                <toX>2395.0</toX>
+                <toY>329.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="207"/>
+            </region>
+            <region id="208">
+              <boundingBox id="209">
+                <fromX>35.0</fromX>
+                <fromY>182.0</fromY>
+                <toX>200.0</toX>
+                <toY>329.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="210"/>
+            </region>
+            <region id="211">
+              <boundingBox id="212">
+                <fromX>359.0</fromX>
+                <fromY>314.0</fromY>
+                <toX>2371.0</toX>
+                <toY>359.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="213"/>
+            </region>
+            <region id="214">
+              <boundingBox id="215">
+                <fromX>152.0</fromX>
+                <fromY>380.0</fromY>
+                <toX>2389.0</toX>
+                <toY>509.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="216"/>
+            </region>
+            <region id="217">
+              <boundingBox id="218">
+                <fromX>224.0</fromX>
+                <fromY>506.0</fromY>
+                <toX>2437.0</toX>
+                <toY>563.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="219"/>
+            </region>
+            <region id="220">
+              <boundingBox id="221">
+                <fromX>176.0</fromX>
+                <fromY>533.0</fromY>
+                <toX>2377.0</toX>
+                <toY>698.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="222"/>
+            </region>
+            <region id="223">
+              <boundingBox id="224">
+                <fromX>197.0</fromX>
+                <fromY>671.0</fromY>
+                <toX>2266.0</toX>
+                <toY>776.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="225"/>
+            </region>
+            <region id="226">
+              <boundingBox id="227">
+                <fromX>176.0</fromX>
+                <fromY>707.0</fromY>
+                <toX>2392.0</toX>
+                <toY>875.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="228"/>
+            </region>
+            <region id="229">
+              <boundingBox id="230">
+                <fromX>203.0</fromX>
+                <fromY>845.0</fromY>
+                <toX>2446.0</toX>
+                <toY>952.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="231"/>
+            </region>
+            <region id="232">
+              <boundingBox id="233">
+                <fromX>170.0</fromX>
+                <fromY>908.0</fromY>
+                <toX>2371.0</toX>
+                <toY>1066.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="234"/>
+            </region>
+            <region id="235">
+              <boundingBox id="236">
+                <fromX>206.0</fromX>
+                <fromY>1051.0</fromY>
+                <toX>2374.0</toX>
+                <toY>1129.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="237"/>
+            </region>
+            <region id="238">
+              <boundingBox id="239">
+                <fromX>176.0</fromX>
+                <fromY>1114.0</fromY>
+                <toX>2407.0</toX>
+                <toY>1231.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="240"/>
+            </region>
+            <region id="241">
+              <boundingBox id="242">
+                <fromX>239.0</fromX>
+                <fromY>1237.0</fromY>
+                <toX>2401.0</toX>
+                <toY>1300.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="243"/>
+            </region>
+            <region id="244">
+              <boundingBox id="245">
+                <fromX>176.0</fromX>
+                <fromY>1285.0</fromY>
+                <toX>2389.0</toX>
+                <toY>1435.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="246"/>
+            </region>
+            <region id="247">
+              <boundingBox id="248">
+                <fromX>302.0</fromX>
+                <fromY>1411.0</fromY>
+                <toX>2224.0</toX>
+                <toY>1510.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="249"/>
+            </region>
+            <region id="250">
+              <boundingBox id="251">
+                <fromX>170.0</fromX>
+                <fromY>1474.0</fromY>
+                <toX>2401.0</toX>
+                <toY>1636.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="252"/>
+            </region>
+            <region id="253">
+              <boundingBox id="254">
+                <fromX>260.0</fromX>
+                <fromY>1582.0</fromY>
+                <toX>1498.0</toX>
+                <toY>1684.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="255"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="256">
+      <imageRelativeFileName>p0195.jpg</imageRelativeFileName>
+      <order>6</order>
+      <pages id="257">
+        <page id="258">
+          <boundingBox id="259">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2576.0</toX>
+            <toY>1822.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="260"/>
+          <regions id="261">
+            <region id="262">
+              <boundingBox id="263">
+                <fromX>404.0</fromX>
+                <fromY>58.0</fromY>
+                <toX>986.0</toX>
+                <toY>223.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="264"/>
+            </region>
+            <region id="265">
+              <boundingBox id="266">
+                <fromX>323.0</fromX>
+                <fromY>193.0</fromY>
+                <toX>2506.0</toX>
+                <toY>331.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="267"/>
+            </region>
+            <region id="268">
+              <boundingBox id="269">
+                <fromX>446.0</fromX>
+                <fromY>310.0</fromY>
+                <toX>2455.0</toX>
+                <toY>436.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="270"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="271">
+      <imageRelativeFileName>p0196.jpg</imageRelativeFileName>
+      <order>7</order>
+      <pages id="272">
+        <page id="273">
+          <boundingBox id="274">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2568.0</toX>
+            <toY>1851.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="275"/>
+          <regions id="276">
+            <region id="277">
+              <boundingBox id="278">
+                <fromX>410.0</fromX>
+                <fromY>50.0</fromY>
+                <toX>899.0</toX>
+                <toY>218.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="279"/>
+            </region>
+            <region id="280">
+              <boundingBox id="281">
+                <fromX>50.0</fromX>
+                <fromY>173.0</fromY>
+                <toX>287.0</toX>
+                <toY>299.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="282"/>
+            </region>
+            <region id="283">
+              <boundingBox id="284">
+                <fromX>311.0</fromX>
+                <fromY>179.0</fromY>
+                <toX>2372.0</toX>
+                <toY>317.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="285"/>
+            </region>
+            <region id="286">
+              <boundingBox id="287">
+                <fromX>329.0</fromX>
+                <fromY>308.0</fromY>
+                <toX>2378.0</toX>
+                <toY>422.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="288"/>
+            </region>
+            <region id="289">
+              <boundingBox id="290">
+                <fromX>146.0</fromX>
+                <fromY>377.0</fromY>
+                <toX>2387.0</toX>
+                <toY>524.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="291"/>
+            </region>
+            <region id="292">
+              <boundingBox id="293">
+                <fromX>206.0</fromX>
+                <fromY>488.0</fromY>
+                <toX>2387.0</toX>
+                <toY>569.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="294"/>
+            </region>
+            <region id="295">
+              <boundingBox id="296">
+                <fromX>149.0</fromX>
+                <fromY>539.0</fromY>
+                <toX>2384.0</toX>
+                <toY>719.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="297"/>
+            </region>
+            <region id="298">
+              <boundingBox id="299">
+                <fromX>185.0</fromX>
+                <fromY>668.0</fromY>
+                <toX>2303.0</toX>
+                <toY>776.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="300"/>
+            </region>
+            <region id="301">
+              <boundingBox id="302">
+                <fromX>170.0</fromX>
+                <fromY>719.0</fromY>
+                <toX>2375.0</toX>
+                <toY>887.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="303"/>
+            </region>
+            <region id="304">
+              <boundingBox id="305">
+                <fromX>158.0</fromX>
+                <fromY>830.0</fromY>
+                <toX>2297.0</toX>
+                <toY>956.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="306"/>
+            </region>
+            <region id="307">
+              <boundingBox id="308">
+                <fromX>167.0</fromX>
+                <fromY>914.0</fromY>
+                <toX>2390.0</toX>
+                <toY>1085.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="309"/>
+            </region>
+            <region id="310">
+              <boundingBox id="311">
+                <fromX>293.0</fromX>
+                <fromY>1037.0</fromY>
+                <toX>2381.0</toX>
+                <toY>1157.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="312"/>
+            </region>
+            <region id="313">
+              <boundingBox id="314">
+                <fromX>143.0</fromX>
+                <fromY>1082.0</fromY>
+                <toX>2363.0</toX>
+                <toY>1268.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="315"/>
+            </region>
+            <region id="316">
+              <boundingBox id="317">
+                <fromX>197.0</fromX>
+                <fromY>1226.0</fromY>
+                <toX>2279.0</toX>
+                <toY>1322.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="318"/>
+            </region>
+            <region id="319">
+              <boundingBox id="320">
+                <fromX>149.0</fromX>
+                <fromY>1298.0</fromY>
+                <toX>2372.0</toX>
+                <toY>1442.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="321"/>
+            </region>
+            <region id="322">
+              <boundingBox id="323">
+                <fromX>215.0</fromX>
+                <fromY>1400.0</fromY>
+                <toX>2213.0</toX>
+                <toY>1511.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="324"/>
+            </region>
+            <region id="325">
+              <boundingBox id="326">
+                <fromX>143.0</fromX>
+                <fromY>1481.0</fromY>
+                <toX>2366.0</toX>
+                <toY>1649.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="327"/>
+            </region>
+            <region id="328">
+              <boundingBox id="329">
+                <fromX>143.0</fromX>
+                <fromY>1595.0</fromY>
+                <toX>2288.0</toX>
+                <toY>1700.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="330"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="331">
+      <imageRelativeFileName>p0197.jpg</imageRelativeFileName>
+      <order>8</order>
+      <pages id="332">
+        <page id="333">
+          <boundingBox id="334">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2567.0</toX>
+            <toY>1843.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="335"/>
+          <regions id="336">
+            <region id="337">
+              <boundingBox id="338">
+                <fromX>290.0</fromX>
+                <fromY>31.0</fromY>
+                <toX>788.0</toX>
+                <toY>184.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="339"/>
+            </region>
+            <region id="340">
+              <boundingBox id="341">
+                <fromX>284.0</fromX>
+                <fromY>169.0</fromY>
+                <toX>2407.0</toX>
+                <toY>316.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="342"/>
+            </region>
+            <region id="343">
+              <boundingBox id="344">
+                <fromX>272.0</fromX>
+                <fromY>277.0</fromY>
+                <toX>2188.0</toX>
+                <toY>589.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="345"/>
+            </region>
+            <region id="346">
+              <boundingBox id="347">
+                <fromX>164.0</fromX>
+                <fromY>595.0</fromY>
+                <toX>2395.0</toX>
+                <toY>727.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="348"/>
+            </region>
+            <region id="349">
+              <boundingBox id="350">
+                <fromX>200.0</fromX>
+                <fromY>691.0</fromY>
+                <toX>1190.0</toX>
+                <toY>1006.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="351"/>
+            </region>
+            <region id="352">
+              <boundingBox id="353">
+                <fromX>1459.0</fromX>
+                <fromY>772.0</fromY>
+                <toX>1786.0</toX>
+                <toY>907.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="354"/>
+            </region>
+            <region id="355">
+              <boundingBox id="356">
+                <fromX>158.0</fromX>
+                <fromY>1006.0</fromY>
+                <toX>2383.0</toX>
+                <toY>1150.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="357"/>
+            </region>
+            <region id="358">
+              <boundingBox id="359">
+                <fromX>116.0</fromX>
+                <fromY>1120.0</fromY>
+                <toX>2251.0</toX>
+                <toY>1240.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="360"/>
+            </region>
+            <region id="361">
+              <boundingBox id="362">
+                <fromX>152.0</fromX>
+                <fromY>1249.0</fromY>
+                <toX>2458.0</toX>
+                <toY>1417.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="363"/>
+            </region>
+            <region id="364">
+              <boundingBox id="365">
+                <fromX>197.0</fromX>
+                <fromY>1387.0</fromY>
+                <toX>2308.0</toX>
+                <toY>1501.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="366"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="367">
+      <imageRelativeFileName>p0198.jpg</imageRelativeFileName>
+      <order>9</order>
+      <pages id="368">
+        <page id="369">
+          <boundingBox id="370">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2555.0</toX>
+            <toY>1815.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="371"/>
+          <regions id="372">
+            <region id="373">
+              <boundingBox id="374">
+                <fromX>466.0</fromX>
+                <fromY>68.0</fromY>
+                <toX>802.0</toX>
+                <toY>173.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="375"/>
+            </region>
+            <region id="376">
+              <boundingBox id="377">
+                <fromX>313.0</fromX>
+                <fromY>149.0</fromY>
+                <toX>2405.0</toX>
+                <toY>329.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="378"/>
+            </region>
+            <region id="379">
+              <boundingBox id="380">
+                <fromX>91.0</fromX>
+                <fromY>179.0</fromY>
+                <toX>295.0</toX>
+                <toY>302.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="381"/>
+            </region>
+            <region id="382">
+              <boundingBox id="383">
+                <fromX>571.0</fromX>
+                <fromY>275.0</fromY>
+                <toX>874.0</toX>
+                <toY>350.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="384"/>
+            </region>
+            <region id="385">
+              <boundingBox id="386">
+                <fromX>157.0</fromX>
+                <fromY>305.0</fromY>
+                <toX>2408.0</toX>
+                <toY>467.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="387"/>
+            </region>
+            <region id="388">
+              <boundingBox id="389">
+                <fromX>199.0</fromX>
+                <fromY>482.0</fromY>
+                <toX>2408.0</toX>
+                <toY>617.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="390"/>
+            </region>
+            <region id="391">
+              <boundingBox id="392">
+                <fromX>163.0</fromX>
+                <fromY>635.0</fromY>
+                <toX>2417.0</toX>
+                <toY>737.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="393"/>
+            </region>
+            <region id="394">
+              <boundingBox id="395">
+                <fromX>193.0</fromX>
+                <fromY>773.0</fromY>
+                <toX>2408.0</toX>
+                <toY>902.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="396"/>
+            </region>
+            <region id="397">
+              <boundingBox id="398">
+                <fromX>181.0</fromX>
+                <fromY>911.0</fromY>
+                <toX>2402.0</toX>
+                <toY>1064.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="399"/>
+            </region>
+            <region id="400">
+              <boundingBox id="401">
+                <fromX>196.0</fromX>
+                <fromY>1082.0</fromY>
+                <toX>2402.0</toX>
+                <toY>1193.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="402"/>
+            </region>
+            <region id="403">
+              <boundingBox id="404">
+                <fromX>289.0</fromX>
+                <fromY>1268.0</fromY>
+                <toX>2420.0</toX>
+                <toY>1388.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="405"/>
+            </region>
+            <region id="406">
+              <boundingBox id="407">
+                <fromX>487.0</fromX>
+                <fromY>1379.0</fromY>
+                <toX>871.0</toX>
+                <toY>1451.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="408"/>
+            </region>
+            <region id="409">
+              <boundingBox id="410">
+                <fromX>181.0</fromX>
+                <fromY>1412.0</fromY>
+                <toX>2402.0</toX>
+                <toY>1562.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="411"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="412">
+      <imageRelativeFileName>p0199.jpg</imageRelativeFileName>
+      <order>10</order>
+      <pages id="413">
+        <page id="414">
+          <boundingBox id="415">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2550.0</toX>
+            <toY>1784.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="416"/>
+          <regions id="417">
+            <region id="418">
+              <boundingBox id="419">
+                <fromX>546.0</fromX>
+                <fromY>72.0</fromY>
+                <toX>730.0</toX>
+                <toY>156.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="420"/>
+            </region>
+            <region id="421">
+              <boundingBox id="422">
+                <fromX>246.0</fromX>
+                <fromY>128.0</fromY>
+                <toX>2366.0</toX>
+                <toY>272.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="423"/>
+            </region>
+            <region id="424">
+              <boundingBox id="425">
+                <fromX>68.0</fromX>
+                <fromY>136.0</fromY>
+                <toX>240.0</toX>
+                <toY>228.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="426"/>
+            </region>
+            <region id="427">
+              <boundingBox id="428">
+                <fromX>486.0</fromX>
+                <fromY>258.0</fromY>
+                <toX>800.0</toX>
+                <toY>310.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="429"/>
+            </region>
+            <region id="430">
+              <boundingBox id="431">
+                <fromX>134.0</fromX>
+                <fromY>270.0</fromY>
+                <toX>2370.0</toX>
+                <toY>418.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="432"/>
+            </region>
+            <region id="433">
+              <boundingBox id="434">
+                <fromX>128.0</fromX>
+                <fromY>432.0</fromY>
+                <toX>2360.0</toX>
+                <toY>572.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="435"/>
+            </region>
+            <region id="436">
+              <boundingBox id="437">
+                <fromX>142.0</fromX>
+                <fromY>564.0</fromY>
+                <toX>2346.0</toX>
+                <toY>718.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="438"/>
+            </region>
+            <region id="439">
+              <boundingBox id="440">
+                <fromX>146.0</fromX>
+                <fromY>730.0</fromY>
+                <toX>2352.0</toX>
+                <toY>878.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="441"/>
+            </region>
+            <region id="442">
+              <boundingBox id="443">
+                <fromX>148.0</fromX>
+                <fromY>862.0</fromY>
+                <toX>2360.0</toX>
+                <toY>1146.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="444"/>
+            </region>
+            <region id="445">
+              <boundingBox id="446">
+                <fromX>302.0</fromX>
+                <fromY>1130.0</fromY>
+                <toX>592.0</toX>
+                <toY>1266.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="447"/>
+            </region>
+            <region id="448">
+              <boundingBox id="449">
+                <fromX>210.0</fromX>
+                <fromY>1204.0</fromY>
+                <toX>2350.0</toX>
+                <toY>1386.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="450"/>
+            </region>
+            <region id="451">
+              <boundingBox id="452">
+                <fromX>374.0</fromX>
+                <fromY>1350.0</fromY>
+                <toX>788.0</toX>
+                <toY>1428.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="453"/>
+            </region>
+            <region id="454">
+              <boundingBox id="455">
+                <fromX>156.0</fromX>
+                <fromY>1388.0</fromY>
+                <toX>2360.0</toX>
+                <toY>1548.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="456"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="457">
+      <imageRelativeFileName>p0200.jpg</imageRelativeFileName>
+      <order>11</order>
+      <pages id="458">
+        <page id="459">
+          <boundingBox id="460">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2571.0</toX>
+            <toY>1815.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="461"/>
+          <regions id="462">
+            <region id="463">
+              <boundingBox id="464">
+                <fromX>224.0</fromX>
+                <fromY>38.0</fromY>
+                <toX>1064.0</toX>
+                <toY>212.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="465"/>
+            </region>
+            <region id="466">
+              <boundingBox id="467">
+                <fromX>296.0</fromX>
+                <fromY>155.0</fromY>
+                <toX>2393.0</toX>
+                <toY>353.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="468"/>
+            </region>
+            <region id="469">
+              <boundingBox id="470">
+                <fromX>71.0</fromX>
+                <fromY>176.0</fromY>
+                <toX>299.0</toX>
+                <toY>299.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="471"/>
+            </region>
+            <region id="472">
+              <boundingBox id="473">
+                <fromX>506.0</fromX>
+                <fromY>275.0</fromY>
+                <toX>830.0</toX>
+                <toY>380.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="474"/>
+            </region>
+            <region id="475">
+              <boundingBox id="476">
+                <fromX>140.0</fromX>
+                <fromY>317.0</fromY>
+                <toX>2387.0</toX>
+                <toY>866.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="477"/>
+            </region>
+            <region id="478">
+              <boundingBox id="479">
+                <fromX>530.0</fromX>
+                <fromY>827.0</fromY>
+                <toX>854.0</toX>
+                <toY>1055.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="480"/>
+            </region>
+            <region id="481">
+              <boundingBox id="482">
+                <fromX>344.0</fromX>
+                <fromY>989.0</fromY>
+                <toX>2393.0</toX>
+                <toY>1202.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="483"/>
+            </region>
+            <region id="484">
+              <boundingBox id="485">
+                <fromX>446.0</fromX>
+                <fromY>1160.0</fromY>
+                <toX>977.0</toX>
+                <toY>1265.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="486"/>
+            </region>
+            <region id="487">
+              <boundingBox id="488">
+                <fromX>149.0</fromX>
+                <fromY>1193.0</fromY>
+                <toX>2390.0</toX>
+                <toY>1355.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="489"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="490">
+      <imageRelativeFileName>p0201.jpg</imageRelativeFileName>
+      <order>12</order>
+      <pages id="491">
+        <page id="492">
+          <boundingBox id="493">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2551.0</toX>
+            <toY>1844.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="494"/>
+          <regions id="495">
+            <region id="496">
+              <boundingBox id="497">
+                <fromX>305.0</fromX>
+                <fromY>53.0</fromY>
+                <toX>856.0</toX>
+                <toY>224.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="498"/>
+            </region>
+            <region id="499">
+              <boundingBox id="500">
+                <fromX>239.0</fromX>
+                <fromY>176.0</fromY>
+                <toX>2394.0</toX>
+                <toY>362.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="501"/>
+            </region>
+            <region id="502">
+              <boundingBox id="503">
+                <fromX>68.0</fromX>
+                <fromY>197.0</fromY>
+                <toX>203.0</toX>
+                <toY>305.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="504"/>
+            </region>
+            <region id="505">
+              <boundingBox id="506">
+                <fromX>203.0</fromX>
+                <fromY>299.0</fromY>
+                <toX>574.0</toX>
+                <toY>401.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="507"/>
+            </region>
+            <region id="508">
+              <boundingBox id="509">
+                <fromX>182.0</fromX>
+                <fromY>371.0</fromY>
+                <toX>2382.0</toX>
+                <toY>512.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="510"/>
+            </region>
+            <region id="511">
+              <boundingBox id="512">
+                <fromX>158.0</fromX>
+                <fromY>524.0</fromY>
+                <toX>2394.0</toX>
+                <toY>677.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="513"/>
+            </region>
+            <region id="514">
+              <boundingBox id="515">
+                <fromX>170.0</fromX>
+                <fromY>689.0</fromY>
+                <toX>2403.0</toX>
+                <toY>866.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="516"/>
+            </region>
+            <region id="517">
+              <boundingBox id="518">
+                <fromX>158.0</fromX>
+                <fromY>827.0</fromY>
+                <toX>2382.0</toX>
+                <toY>1003.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="519"/>
+            </region>
+            <region id="520">
+              <boundingBox id="521">
+                <fromX>454.0</fromX>
+                <fromY>976.0</fromY>
+                <toX>694.0</toX>
+                <toY>1102.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="522"/>
+            </region>
+            <region id="523">
+              <boundingBox id="524">
+                <fromX>230.0</fromX>
+                <fromY>1030.0</fromY>
+                <toX>2385.0</toX>
+                <toY>1189.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="525"/>
+            </region>
+            <region id="526">
+              <boundingBox id="527">
+                <fromX>320.0</fromX>
+                <fromY>1183.0</fromY>
+                <toX>742.0</toX>
+                <toY>1288.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="528"/>
+            </region>
+            <region id="529">
+              <boundingBox id="530">
+                <fromX>1621.0</fromX>
+                <fromY>1198.0</fromY>
+                <toX>2035.0</toX>
+                <toY>1258.0</toY>
+              </boundingBox>
+              <regionType>lyrics</regionType>
+              <symbols id="531"/>
+            </region>
+            <region id="532">
+              <boundingBox id="533">
+                <fromX>170.0</fromX>
+                <fromY>1234.0</fromY>
+                <toX>2388.0</toX>
+                <toY>1354.0</toY>
+              </boundingBox>
+              <regionType>staff</regionType>
+              <symbols id="534"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+    <image id="535">
+      <imageRelativeFileName>p0202.jpg</imageRelativeFileName>
+      <order>13</order>
+      <pages id="536">
+        <page id="537">
+          <boundingBox id="538">
+            <fromX>0.0</fromX>
+            <fromY>0.0</fromY>
+            <toX>2556.0</toX>
+            <toY>1843.0</toY>
+          </boundingBox>
+          <instruments class="sorted-set" id="539"/>
+          <regions id="540">
+            <region id="541">
+              <boundingBox id="542">
+                <fromX>1328.0</fromX>
+                <fromY>166.0</fromY>
+                <toX>2396.0</toX>
+                <toY>1060.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="543"/>
+            </region>
+            <region id="544">
+              <boundingBox id="545">
+                <fromX>1691.0</fromX>
+                <fromY>1312.0</fromY>
+                <toX>2015.0</toX>
+                <toY>1468.0</toY>
+              </boundingBox>
+              <regionType>title</regionType>
+              <symbols id="546"/>
+            </region>
+          </regions>
+        </page>
+      </pages>
+    </image>
+  </images>
+  <lastChangedDate id="547">2018-07-18 18:22:06.602 UTC</lastChangedDate>
+  <changedBy>drizo</changedBy>
+</project>

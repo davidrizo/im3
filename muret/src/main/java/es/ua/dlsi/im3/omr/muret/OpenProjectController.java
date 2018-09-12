@@ -167,4 +167,9 @@ public class OpenProjectController implements Initializable {
         MuRET.getInstance().closeCurrentWindow();
     }
 
+    @FXML
+    private void handleShowUserInteractionLogs() {
+        MuRET.getInstance().showUserInteractionLogs();
+    }
+
 }

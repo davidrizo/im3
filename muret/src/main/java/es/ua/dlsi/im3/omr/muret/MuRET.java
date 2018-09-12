@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.omr.muret;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.useractionlogger.ActionLogger;
+import es.ua.dlsi.im3.gui.useractionlogger.frontend.FXMLController;
 import es.ua.dlsi.im3.omr.muret.old.KeyEventManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -74,5 +75,10 @@ public class MuRET extends Application {
 
     public AgnosticSymbolFonts getAgnosticSymbolFonts() {
         return agnosticSymbolFonts;
+    }
+
+    public void showUserInteractionLogs() {
+        FXMLController fxmlController = openWindow("/fxml/useractionlogger/SceneUserActionLogger.fxml", true, true);
+        fxmlController.readFolder(new File("actionlogs"));
     }
 }

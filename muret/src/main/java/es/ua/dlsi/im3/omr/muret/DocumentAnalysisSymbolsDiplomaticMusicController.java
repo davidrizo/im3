@@ -1432,4 +1432,10 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
             showError( "Cannot save", e);
         }
     }
+
+    @FXML
+    private void handleShowUserInteractionLogs() {
+        MuRET.getInstance().showUserInteractionLogs();
+    }
+
 }

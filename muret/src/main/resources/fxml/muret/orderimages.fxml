@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane id="mainpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.OpenProjectController">
+<BorderPane id="mainpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="535.0" prefWidth="836.0" stylesheets="@muret.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.ua.dlsi.im3.omr.muret.OrderImagesController">
    <center>
-      <FlowPane id="recentProjects_flowpane" fx:id="flowPaneLastProjects" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ScrollPane id="scrollPane_orderimages" fx:id="scrollPane" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets left="150.0" right="150.0" />
          </BorderPane.margin>
-      </FlowPane>
+         <content>
+            <FlowPane id="flowpane_orderimages" fx:id="flowPaneOrderImages" prefHeight="200.0" prefWidth="200.0" />
+         </content>
+      </ScrollPane>
    </center>
    <top>
       <GridPane BorderPane.alignment="CENTER">
@@ -45,11 +51,18 @@
                     <menus>
                       <Menu mnemonicParsing="false" text="File">
                         <items>
-                              <MenuItem mnemonicParsing="false" onAction="#handleClearRecentProjects" text="Clear recent projects" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleFileSave" text="Save">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                 </accelerator>
+                              </MenuItem>
                               <SeparatorMenuItem mnemonicParsing="false" />
                               <MenuItem mnemonicParsing="false" onAction="#handleShowUserInteractionLogs" text="Show user action logs" />
                               <SeparatorMenuItem mnemonicParsing="false" />
-                          <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close" />
+                          <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                                 </accelerator></MenuItem>
                         </items>
                       </Menu>
                       <Menu mnemonicParsing="false" text="Edit">
@@ -72,22 +85,17 @@
                   <Insets />
                </opaqueInsets>
             </HBox>
-            <ImageView pickOnBounds="true" preserveRatio="true" styleClass="title_left" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@images/lastprojects.png" />
-               </image>
-               <viewport>
-                  <Rectangle2D />
-               </viewport>
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-            </ImageView>
             <ImageView pickOnBounds="true" preserveRatio="true" styleClass="title_right" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                <image>
-                  <Image url="@images/openproject.png" />
+                  <Image url="@images/orderimages.png" />
                </image>
             </ImageView>
+            <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" styleClass="title_left" GridPane.rowIndex="1">
+               <children>
+                  <Text id="work_title" fx:id="textTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading" />
+                  <Text id="work_author" fx:id="textComposer" strokeType="OUTSIDE" strokeWidth="0.0" text="..." />
+               </children>
+            </VBox>
          </children>
       </GridPane>
    </top>
