@@ -103,6 +103,7 @@ Don't set it for Text to avoid conflicts with java loaded fonts
 
 .buttonRecentProject_text {
     -fx-fill: #FFFFFF;
+    -fx-text-fill: #FFFFFF;
 }
 
 .buttonRecentProject_image {

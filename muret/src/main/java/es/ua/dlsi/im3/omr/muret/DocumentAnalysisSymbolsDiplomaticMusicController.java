@@ -269,7 +269,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
                 toolbarToolSpecific.getItems().clear();
-                interactionMode = InteractionMode.eIdle;
+                interactionMode = InteractionMode.eIdle; //TODO Mejor un autómata y un onEnter o similar para cambiar el interfaz que tantos switch
                 changeCursor(Cursor.DEFAULT);
                 if (newValue == toggleDocumentAnalysisAutomatic) {
                     phase = Phase.eDocAnalysis;
@@ -279,14 +279,17 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
                     createDocumentAnalysisManualEditingTools();
                 } else if (newValue == toggleSymbolManual) {
                     phase = Phase.eSymbols;
+                    loadAgnosticStaff();
                     createAgnosticCorrectionPane();
                     createManualSymbolEditingTools();
                 } else if (newValue == toggleSymbolRecognition) {
                     phase = Phase.eSymbols;
+                    loadAgnosticStaff();
                     createAgnosticCorrectionPane();
                     createAutomaticSymbolRecognitionTools();
                 } else if (newValue == toggleDiplomatic) {
                     phase = Phase.eMusic;
+                    loadDiplomaticEditionStaff();
                     createDiplomaticEditionTools();
                 }
             }
@@ -1276,21 +1279,21 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     }
 
     @Override
-    public <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
-        if (!selectionManager.isSelected(ownerTypeBoundingBoxBasedView)) {
+    public <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> selectedBoundingBoxView) {
+        if (!selectionManager.isSelected(selectedBoundingBoxView)) {
             if (lastSelectedView != null) {
                 symbolCommentsTextArea.textProperty().unbindBidirectional(lastSelectedView.getOwner().commentsProperty());
             }
-            lastSelectedView = ownerTypeBoundingBoxBasedView;
+            lastSelectedView = selectedBoundingBoxView;
             symbolCommentsTextArea.textProperty().bindBidirectional(lastSelectedView.getOwner().commentsProperty());
 
-            selectionManager.select(ownerTypeBoundingBoxBasedView);
-            ownerTypeBoundingBoxBasedView.beginEdit();
+            selectionManager.select(selectedBoundingBoxView);
+            selectedBoundingBoxView.beginEdit();
 
-            if (ownerTypeBoundingBoxBasedView instanceof PageView) {
+            if (selectedBoundingBoxView instanceof PageView) {
 
-            } else if (ownerTypeBoundingBoxBasedView instanceof RegionView) {
-                RegionView regionView = (RegionView) ownerTypeBoundingBoxBasedView;
+            } else if (selectedBoundingBoxView instanceof RegionView) {
+                RegionView regionView = (RegionView) selectedBoundingBoxView;
 
                 OMRRegion omrRegion = regionView.getOwner();
                 try {
@@ -1308,10 +1311,10 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
                     Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot select region", e);
                     showError("Cannot select region", e);
                 }
-            } else if (ownerTypeBoundingBoxBasedView instanceof SymbolView) {
-                selectedSymbolView.set((SymbolView) ownerTypeBoundingBoxBasedView);
+            } else if (selectedBoundingBoxView instanceof SymbolView) {
+                selectedSymbolView.set((SymbolView) selectedBoundingBoxView);
                 if (phase == Phase.eSymbols) {
-                    agnosticStaffView.select((SymbolView) ownerTypeBoundingBoxBasedView);
+                    agnosticStaffView.select((SymbolView) selectedBoundingBoxView);
                 } else if (phase == Phase.eMusic) {
 
                 }
@@ -1319,12 +1322,19 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
         }
     }
 
+    private void loadAgnosticStaff() {
+        if (selectedRegionView != null) {
+            loadAgnosticStaff(selectedRegionView);
+        }
+
+    }
     private void loadAgnosticStaff(RegionView regionView) {
         OMRRegion omrRegion = regionView.getOwner();
 
         agnosticStaffView = new AgnosticStaffView(this,
                 agnosticSymbolFont,
                 scrollPaneSelectedStaff.widthProperty(), 200, -omrRegion.getFromX()); //TODO height
+        ////staffEditViewPane.getChildren().setAll(agnosticStaffView);
         staffEditViewPane.getChildren().setAll(agnosticStaffView);
         staffEditViewPane.setPrefHeight(300); //TODO Height
         staffEditViewPane.setMinHeight(200);
@@ -1337,6 +1347,11 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
         loadSelectedRegionSymbols();
     }
 
+    private void loadDiplomaticEditionStaff() {
+        if (selectedRegionView != null) {
+            loadDiplomaticEditionStaff(selectedRegionView);
+        }
+    }
     private void loadDiplomaticEditionStaff(RegionView regionView) {
         try {
             //TODO Comprobar que no es una región no pentagrama
@@ -1388,13 +1403,13 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
 
     @Override
-    public <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
-        ownerTypeBoundingBoxBasedView.endEdit(true);         //TODO Command para Undo - debería devolver el anterior valor
-        if (ownerTypeBoundingBoxBasedView instanceof SymbolView) {
-            agnosticStaffView.unSelect((SymbolView) ownerTypeBoundingBoxBasedView);
+    public <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> selectedBoundingBoxView) {
+        selectedBoundingBoxView.endEdit(true);         //TODO Command para Undo - debería devolver el anterior valor
+        if (selectedBoundingBoxView instanceof SymbolView) {
+            agnosticStaffView.unSelect((SymbolView) selectedBoundingBoxView);
         }
 
-        ownerTypeBoundingBoxBasedView.endEdit(true); //TODO Command para Undo
+        selectedBoundingBoxView.endEdit(true); //TODO Command para Undo
         selectionManager.clearSelection();
     }
 

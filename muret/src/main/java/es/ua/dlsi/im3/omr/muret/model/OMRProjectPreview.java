@@ -85,16 +85,19 @@ public class OMRProjectPreview  {
         private static final String ELEMENT_IMAGE_FILENAME = "imageRelativeFileName";
         static final String FINISHED = "__Finished__";
         String currentElement;
-        private String parentElement;
+        private String parentElement = null;
 
         @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            parentElement = currentElement;
+        public void startElement(String uri, String localName, String qName, Attributes attributes)  {
+            if (currentElement != null) {
+                parentElement = currentElement;
+            }
             currentElement = localName;
+            elements.push(localName);
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
+        public void endElement(String uri, String localName, String qName)  {
             currentElement = null;
             if (!elements.isEmpty()) {
                 elements.pop();

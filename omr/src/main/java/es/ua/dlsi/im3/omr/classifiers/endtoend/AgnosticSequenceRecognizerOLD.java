@@ -24,7 +24,7 @@ import java.util.List;
 public class AgnosticSequenceRecognizerOLD {
     public List<AgnosticSymbol> recognize(File inputImage) throws IOException, IM3Exception {
         IStaffNormalizer normalizer = StaffNormalizerFactory.getInstance().create();
-        String tmpFileName = FileUtils.getFileWithoutPathOrExtension(inputImage);
+        String tmpFileName = FileUtils.getFileWithoutPathOrExtension(inputImage) + "_prefix_";
         File tmp = File.createTempFile(tmpFileName, "_normalized.jpg");
         normalizer.normalize(inputImage, tmp);
 

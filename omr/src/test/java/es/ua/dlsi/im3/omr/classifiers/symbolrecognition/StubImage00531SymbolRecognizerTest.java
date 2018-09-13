@@ -21,7 +21,7 @@ public class StubImage00531SymbolRecognizerTest {
 
         Symbol symbol0 = symbols.get(0);
         // it is the new version in agnostic encoding of minima
-        assertEquals("Symbol agnostic string", "note.half-L3", symbol0.getAgnosticSymbol().getAgnosticString());
+        assertEquals("Symbol agnostic string", "note.half_down:L3", symbol0.getAgnosticSymbol().getAgnosticString());
         assertEquals("From X", 1764.4030314683914, symbol0.getBoundingBox().getFromX(), 0.0001);
         assertEquals("From Y", 784.610049188137, symbol0.getBoundingBox().getFromY(), 0.0001);
         assertEquals("To X", 1818.3234423398972, symbol0.getBoundingBox().getToX(), 0.0001);

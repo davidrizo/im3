@@ -7,13 +7,8 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.layout.DiplomaticLayout;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
-import es.ua.dlsi.im3.core.score.layout.fonts.BravuraFont;
-import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
-import es.ua.dlsi.im3.core.score.layout.fonts.PatriarcaFont;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
-import es.ua.dlsi.im3.omr.model.entities.Instrument;
 import es.ua.dlsi.im3.omr.model.entities.Image;
 import es.ua.dlsi.im3.omr.model.entities.Project;
 import es.ua.dlsi.im3.omr.model.entities.ProjectVersion;
@@ -27,8 +22,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class contains the same content than the es.ua.dlsi.im3.omr.model.entities.Project class. However, it is adapted
@@ -43,20 +36,7 @@ public class OMRProject {
      * Images inside the project folder
      */
     File imagesFolder;
-
-    /**
-     * Transcribed song
-     */
-    ScoreSong scoreSong;
-    /**
-     * Default notation type used for the staff creation
-     */
-    NotationType notationType;
-
-    /**
-     * Default layout font for manuscript
-     */
-    LayoutFont manuscriptLayoutFont;
+    //TODO ¿cómo codificamos las decisiones editoriales? - ver MEI 3.0, capítulos 10 y 11 - tener en cuenta que no haremos grandes cambios
 
     /**
      * Used by GUI for binding
@@ -87,7 +67,8 @@ public class OMRProject {
 
     private String composer;
 
-    DiplomaticLayout diplomaticLayout;
+    OMRScore scores;
+
 
     /**
      * @param projectFolder In new files, if the project does not exist it will be created
@@ -105,6 +86,7 @@ public class OMRProject {
         imagesProperty = FXCollections.observableSet(new TreeSet<>());
         instruments = new OMRInstruments();
         this.comments = new SimpleStringProperty();
+        this.scores = new OMRScore();
     }
 
     public String getComments() {
@@ -198,12 +180,12 @@ public class OMRProject {
         }
     }
 
-    public ScoreSong getScoreSong() {
-        return scoreSong;
+    public ScoreSong getDiplomaticEdition() {
+        return scores.getDiplomaticEdition();
     }
 
-    public void setScoreSong(ScoreSong scoreSong) {
-        this.scoreSong = scoreSong;
+    public void setDiplomaticEdition(ScoreSong diplomaticEdition) {
+        scores.setDiplomaticEdition(diplomaticEdition);
     }
 
     /**
@@ -216,7 +198,7 @@ public class OMRProject {
     }
 
     public Project createPOJO() throws IM3Exception {
-        Project pojoProject = new Project(ProjectVersion.v1, notationType);
+        Project pojoProject = new Project(ProjectVersion.v1, scores.getNotationType());
         pojoProject.setName(name);
         pojoProject.setComposer(composer);
         pojoProject.setComments(comments.get());
@@ -229,24 +211,17 @@ public class OMRProject {
     }
 
     public NotationType getNotationType() {
-        return notationType;
+        return scores.getNotationType();
     }
 
     public void setNotationType(NotationType notationType) throws IM3Exception {
-        this.notationType = notationType;
-        if (notationType == NotationType.eMensural) {
-            manuscriptLayoutFont = new PatriarcaFont();
-        } else if (notationType == NotationType.eModern) {
-            manuscriptLayoutFont = new BravuraFont();
-        } else {
-            throw new IM3Exception("Unuspported notation type '" + notationType + "'");
-        }
 
+        scores.setNotationType(notationType);
     }
 
 
     public LayoutFont getManuscriptLayoutFont() {
-        return manuscriptLayoutFont;
+        return scores.manuscriptLayoutFont;
     }
 
     /**
@@ -321,19 +296,19 @@ public class OMRProject {
     }
 
     public DiplomaticLayout getDiplomaticLayout(OMRInstrument instrumentHierarchical, OMRRegion owner) throws IM3Exception {
-        if (diplomaticLayout == null) {
-            if (scoreSong == null) {
+        if (scores.diplomaticLayout == null) {
+            if (scores.getDiplomaticEdition() == null) {
                 //TODO translate symbols to music and reverse
                 //TODO URGENT QUITAR
                 MEISongImporter importer = new MEISongImporter();
-                scoreSong = importer.importSong(new File("/Users/drizo/Desktop/harpa.mei"));
+                scores.setDiplomaticEdition(importer.importSong(new File("/Users/drizo/Desktop/harpa.mei")));
 
             }
 
             Collection<Staff> staves = new ArrayList<>();
 
             Staff instrumentStaff = null;
-            /*TODO Dejar este bucle for (Staff staff: scoreSong.getStaves()) {
+            /*TODO Dejar este bucle for (Staff staff: diplomaticEdition.getStaves()) {
                 //TODO Equivalencia Instrumento nombre?
                 //Mejor asociar a layer? - habría que poner en IMCore el nombre del instrumento
                 if (Objects.equals(staff.getName(), instrumentHierarchical.getName())) {
@@ -341,11 +316,11 @@ public class OMRProject {
                     break;
                 }
             }*/
-            instrumentStaff = scoreSong.getStaves().iterator().next();
+            instrumentStaff = scores.getDiplomaticEdition().getStaves().iterator().next();
             if (instrumentStaff == null) {
-                instrumentStaff = new Pentagram(scoreSong, "1", 1); //TODO hierarchical order!!!
-                scoreSong.addStaff(instrumentStaff);
-                ScorePart scorePart = scoreSong.addPart();
+                instrumentStaff = new Pentagram(scores.getDiplomaticEdition(), "1", 1); //TODO hierarchical order!!!
+                scores.getDiplomaticEdition().addStaff(instrumentStaff);
+                ScorePart scorePart = scores.getDiplomaticEdition().addPart();
                 scorePart.addStaff(instrumentStaff);
 
             }
@@ -353,18 +328,18 @@ public class OMRProject {
             //TODO ¿Dónde? synchronizeAgnosticSemantic(owner, instrumentStaff);
 
 
-            diplomaticLayout = new DiplomaticLayout(getScoreSong(), staves); //TODO Cuando es mensural que salga la versión moderna también (usar hashmap y conversor como en Patriarca)
-            diplomaticLayout.layout(false);
+            scores.diplomaticLayout = new DiplomaticLayout(scores.getDiplomaticEdition(), staves); //TODO Cuando es mensural que salga la versión moderna también (usar hashmap y conversor como en Patriarca)
+            scores.diplomaticLayout.layout(false);
 
         }
         //TODO Que este layout sólo tenga el StaffSystem que corresponde con la región
-        return diplomaticLayout;
+        return scores.diplomaticLayout;
     }
 
     public void synchronizeAgnosticSemantic() throws ImportException {
         //TODO URGENT QUITAR
         MEISongImporter importer = new MEISongImporter();
-        scoreSong = importer.importSong(new File("/Users/drizo/Documents/EASD.A/docencia/alicante-2017-2018/inv/imagenes_patriarca/PATRIARCA2017/patriarca.mei"));
+        scores.setDiplomaticEdition(importer.importSong(new File("/Users/drizo/Documents/EASD.A/docencia/alicante-2017-2018/inv/imagenes_patriarca/PATRIARCA2017/patriarca.mei")));
     }
 
 }

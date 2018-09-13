@@ -1,6 +1,5 @@
 package es.ua.dlsi.im3.omr.muret.model;
 
-import com.thoughtworks.xstream.XStream;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.io.ExportException;
@@ -15,7 +14,6 @@ import es.ua.dlsi.im3.omr.model.io.XMLWriter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 public class InputOutput {
     public static final AgnosticVersion AGNOSTIC_VERSION = AgnosticVersion.v2;
@@ -40,10 +38,10 @@ public class InputOutput {
         }
 
         // TODO: 21/4/18
-        if (project.getScoreSong() != null) {
+        if (project.getDiplomaticEdition() != null) {
             File meiFile = new File(projectFolder, createMEIFilename(projectFolder));
             MEISongExporter meiSongExporter = new MEISongExporter();
-            meiSongExporter.exportSong(meiFile, project.getScoreSong());
+            meiSongExporter.exportSong(meiFile, project.getDiplomaticEdition());
         }
     }
 
@@ -110,7 +108,7 @@ public class InputOutput {
             // just read it if it exists
             MEISongImporter meiSongImporter = new MEISongImporter();
             ScoreSong scoreSong = meiSongImporter.importSong(meiFile);
-            omrProject.setScoreSong(scoreSong);
+            omrProject.setDiplomaticEdition(scoreSong);
         }
         return omrProject;
     }

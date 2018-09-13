@@ -6,10 +6,8 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.HorizontalLayout;
 import es.ua.dlsi.im3.core.score.layout.ScoreLayout;
-import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.gui.interaction.ISelectable;
 import es.ua.dlsi.im3.gui.javafx.dialogs.OpenSaveFileDialog;
-import es.ua.dlsi.im3.gui.javafx.dialogs.ShowError;
 import es.ua.dlsi.im3.gui.score.javafx.ScoreSongView;
 import es.ua.dlsi.im3.omr.muret.model.IOMRBoundingBox;
 import javafx.fxml.FXML;
@@ -59,7 +57,7 @@ public class MusicController extends MuRETBaseController {
     public void loadScoreSongView() throws IM3Exception {
         //TODO convertir sólo si hace falta
         MuRET.getInstance().getModel().getCurrentProject().synchronizeAgnosticSemantic();
-        ScoreSong scoreSong = MuRET.getInstance().getModel().getCurrentProject().getScoreSong();
+        ScoreSong scoreSong = MuRET.getInstance().getModel().getCurrentProject().getDiplomaticEdition();
 
 
         ScoreLayout layout = new HorizontalLayout(scoreSong,
@@ -80,12 +78,12 @@ public class MusicController extends MuRETBaseController {
     }
 
     @Override
-    public <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
+    public <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> selectedBoundingBoxView) {
 
     }
 
     @Override
-    public <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView) {
+    public <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> selectedBoundingBoxView) {
 
     }
 

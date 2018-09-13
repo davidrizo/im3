@@ -91,9 +91,9 @@ public abstract class MuRETBaseController implements Initializable, ISelectableT
 
     protected abstract double computeZoomToFitRatio();
 
-    public abstract <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView);
+    public abstract <OwnerType extends IOMRBoundingBox> void doSelect(BoundingBoxBasedView<OwnerType> selectedBoundingBoxView);
 
-    public abstract <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> ownerTypeBoundingBoxBasedView);
+    public abstract <OwnerType extends IOMRBoundingBox> void onUnselected(BoundingBoxBasedView<OwnerType> selectedBoundingBoxView);
 
     protected abstract Node getRoot();
 
