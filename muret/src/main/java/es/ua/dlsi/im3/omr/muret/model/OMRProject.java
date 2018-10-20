@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * This class contains the same content than the es.ua.dlsi.im3.omr.model.entities.Project class. However, it is adapted
+ * This class contains the same content than the es.ua.dlsi.im3.omr.model.entity.Project class. However, it is adapted
  * to work with observable properties to make it easy the coordination with JavaFX
  */
 public class OMRProject {

@@ -101,7 +101,7 @@ public class HierarchicalAnalysisViewerController implements Initializable {
                 FormAndMotivesAnalysis formAndMotivesAnalysis = (FormAndMotivesAnalysis) importer.getAnalyses().get(0);
                 FormAnalysis formAnalysis = formAndMotivesAnalysis.getFormAnalysis();
 
-                HorizontalLayout layout = new HorizontalLayout(scoreSong, LayoutFonts.bravura,
+                HorizontalLayout layout = new HorizontalLayout(scoreSong,
                         new CoordinateComponent(38000), new CoordinateComponent(700));
 
                 Tree<FormAnalysisTreeNodeLabel> tree = formAnalysis.getTree();

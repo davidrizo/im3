@@ -6,7 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 
 /**
- * All controllers have as parent the dashboard
+ * All controller have as parent the dashboard
  * @autor drizo
  */
 public abstract class MuretAbstractControllerOLD implements Initializable {

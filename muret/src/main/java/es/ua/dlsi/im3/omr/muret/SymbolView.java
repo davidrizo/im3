@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.gui.interaction.ISelectableTraversable;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.muret.model.OMRSymbol;
 import es.ua.dlsi.im3.omr.muret.old.symbols.StrokesView;
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.Group;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
@@ -20,12 +21,13 @@ public class SymbolView extends BoundingBoxBasedView<OMRSymbol> implements Compa
 
     private StrokesView strokesView;
 
-    public SymbolView(String ID, MuRETBaseController controller, RegionView regionView, OMRSymbol owner, Color color) {
+    public SymbolView(String ID, MuRETBaseController controller, RegionView regionView, OMRSymbol owner, Color color, BooleanProperty showStrokes) {
         super(ID, controller, regionView, owner, color);
 
         if (owner.getStrokes() != null) {
             //strokesView = new StrokesView(owner.getStrokes(), -regionView.getOwner().getFromX(), -regionView.getOwner().getFromY(), es.ua.dlsi.im3.omr.muret.old.symbols.RegionView.STROKES_COLOR); //TODO Strokes color no así
             strokesView = new StrokesView(owner.getStrokes(), 0, 0, STROKES_COLOR); //TODO Strokes color no así
+            strokesView.visibleProperty().bind(showStrokes);
             this.getChildren().add(strokesView);
         }
     }

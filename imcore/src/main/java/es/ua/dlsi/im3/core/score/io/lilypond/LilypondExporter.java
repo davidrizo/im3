@@ -6,6 +6,8 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.io.ISongExporter;
+import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
@@ -14,8 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.logging.Logger;
 
 //TODO Distintas voces dentro del staff
@@ -50,6 +51,22 @@ public class LilypondExporter implements ISongExporter {
     private String paperPreamble = null;
     private ArrayList<String> lastLyrics;
     private ScoreLyric lastLyric;
+    private boolean diplomaticEdition;
+
+    public LilypondExporter() {
+        this(false);
+    }
+    public LilypondExporter(boolean diplomaticEdition) {
+        this.diplomaticEdition = diplomaticEdition;
+    }
+
+    public boolean isDiplomaticEdition() {
+        return diplomaticEdition;
+    }
+
+    public void setDiplomaticEdition(boolean diplomaticEdition) {
+        this.diplomaticEdition = diplomaticEdition;
+    }
 
     private void printScoreStart(ScoreSong song, PrintStream out) {
         if (paperPreamble != null) {
@@ -94,6 +111,16 @@ public class LilypondExporter implements ISongExporter {
             sb.append("}");
         }
 
+        if (diplomaticEdition) {
+            sb.append("\n\\layout {\n" +
+                    "    \\context {\n" +
+                    "      \\Score\n" +
+                    "      \\override NonMusicalPaperColumn.line-break-permission = ##f\n" +
+                    "      \\override NonMusicalPaperColumn.page-break-permission = ##f\n" +
+                    "    }\n" +
+                    "  }\n");
+        }
+
         out.print(sb);
     }
     /**
@@ -116,7 +143,7 @@ public class LilypondExporter implements ISongExporter {
             out.println("\\version \"2.10.15\"");
             printScoreStart(song, out);
             out.println("<<" ); // if it is opened with {, when we have several staves it does not work well
-            out.println(exportLilypond(song));
+            out.println(exportStaves(song.getStaves()));
             out.println(">>");
             printScoreAnalisysBracketsEngraver(out);
             printScoreEnd(song,out);
@@ -130,16 +157,31 @@ public class LilypondExporter implements ISongExporter {
         }
     }
 
-    /**
-     * Export the song to the MusixTex code
-     * @param song
-     * @return
-     * @throws ExportException
-     */
-    public StringBuilder exportLilypond(ScoreSong song) throws ExportException {
+    public void exportPart(File file, ScorePart part) throws ExportException {
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream(file));
+            out.println("#(set-default-paper-size \"a4\" 'landscape')");
+            out.println("\\version \"2.10.15\"");
+            printScoreStart(part.getScoreSong(), out);
+            out.println("<<" ); // if it is opened with {, when we have several staves it does not work well
+            out.println(exportStaves(part.getStaves()));
+            out.println(">>");
+            printScoreAnalisysBracketsEngraver(out);
+            printScoreEnd(part.getScoreSong() ,out);
+
+            out.close();
+
+        } catch (FileNotFoundException e) {
+            throw new ExportException(e);
+        } catch (IM3Exception e) {
+            throw new ExportException(e);
+        }
+    }
+
+    private StringBuilder exportStaves(Collection<Staff> staves) throws ExportException {
         StringBuilder sb = new StringBuilder();
 
-        for (Staff staff: song.getStaves()) {
+        for (Staff staff: staves) {
             if (staff.getNotationType() == NotationType.eMensural) {
                 sb.append("\t\\new MensuralStaff {\n");
             } else {
@@ -151,7 +193,7 @@ public class LilypondExporter implements ISongExporter {
             sb.append("}\n"); // end staff
         }
         // lyrics
-        if (!lastLyrics.isEmpty()) {
+        if (lastLyrics != null && !lastLyrics.isEmpty()) {
             sb.append("\t\t\\new Lyrics \\lyricsto \"v1\"{\n"); //TODO v1 --> voz
             boolean first = true;
             for (String l: lastLyrics) {
@@ -168,6 +210,28 @@ public class LilypondExporter implements ISongExporter {
         return sb;
     }
 
+    /**
+     * It includes the atoms in the layers
+     * @return
+     */
+    public List<ITimedElementInStaff> getCoreSymbolsIncludingLayersOrdered(Staff staff) throws ExportException {
+        List<ITimedElementInStaff> symbols = staff.getCoreSymbols();
+
+        for (ScoreLayer scoreLayer: staff.getLayers()) {
+            symbols.addAll(scoreLayer.getAtoms());
+        }
+
+        SymbolsOrderer.sortList(symbols);
+
+        // now, in case of having several layers, distribute them by such layers
+        if (staff.getLayers().size() > 1) {
+            throw new ExportException("TO-DO VARIAS CAPAS EN LILYPOND");
+        }
+
+        return symbols;
+    }
+
+
     private void exportStaff(Staff staff, StringBuilder sb) throws ExportException {
         if (staff.getNotationType() == NotationType.eMensural) {
             sb.append("\t\\new MensuralVoice  = \"v1\" {\n"); //TODO v1 --> voz
@@ -176,9 +240,7 @@ public class LilypondExporter implements ISongExporter {
             sb.append("\t\\new Voice = \"v1\" {\n");
         }
 
-        // TODO: 28/9/17 Clef, key and meter changes
-        // TODO: 28/9/17 System break with \break
-        if (staff.getClefs().size() != 1) {
+        /*20181016 if (staff.getClefs().size() != 1) {
             throw new ExportException("Supported just 1 clef in the staff, there are: " + staff.getClefs().size());
         }
         if (staff.getKeySignatures().size() != 1) {
@@ -194,13 +256,60 @@ public class LilypondExporter implements ISongExporter {
 
         exportClef(staff, staff.getClefAtTime(Time.TIME_ZERO), sb);
         exportKeySignature(staff, staff.getKeySignatureWithOnset(Time.TIME_ZERO), sb);
-        exportTimeSignature(staff, staff.getTimeSignatureWithOnset(Time.TIME_ZERO), sb);
+        exportTimeSignature(staff, staff.getTimeSignatureWithOnset(Time.TIME_ZERO), sb);*/
+
+        lastLyrics = new ArrayList<>();
 
         sb.append("\\absolute {\n");
-        generateStaff(staff, staff.getKeySignatureWithOnset(Time.TIME_ZERO).getInstrumentKey(), sb);
+
+        List<ITimedElementInStaff> staffCoreSymbols = getCoreSymbolsIncludingLayersOrdered(staff);
+        Key lastKey = null;
+
+        for (ITimedElementInStaff timedElementInStaff: staffCoreSymbols) {
+            if (timedElementInStaff instanceof Clef) {
+                exportClef(staff, (Clef) timedElementInStaff, sb);
+            } else if (timedElementInStaff instanceof TimeSignature) {
+                exportTimeSignature(staff, (TimeSignature) timedElementInStaff, sb);
+            } else if (timedElementInStaff instanceof KeySignature) {
+                KeySignature keySignature = (KeySignature) timedElementInStaff;
+                lastKey = keySignature.getInstrumentKey();
+                exportKeySignature(staff,keySignature, sb);
+            } else if (timedElementInStaff instanceof SimpleRest) {
+                generateRest((SimpleRest) timedElementInStaff, sb);
+            } else if (timedElementInStaff instanceof SimpleNote) {
+                generateNote((SimpleNote) timedElementInStaff, lastKey, sb);
+            } else if (timedElementInStaff instanceof MarkBarline) {
+                generateMarkBarline((MarkBarline) timedElementInStaff, sb);
+            } else if (timedElementInStaff instanceof PartSystemBreak) {
+                generatePartSystemBreak(sb);
+            } else if (timedElementInStaff instanceof PartPageBreak) {
+                generatePartPageBreak(sb);
+            } else if (timedElementInStaff instanceof Custos){
+                System.err.println("TO-DO CUSTOS"); //TODO Custos
+            } else {
+                throw new ExportException("Unsupported export of type '" + timedElementInStaff.getClass() + "'");
+            }
+            sb.append(' ');
+        }
+
+
+        //generateStaff(staff, staff.getKeySignatureWithOnset(Time.TIME_ZERO).getInstrumentKey(), sb);
         sb.append("}\n"); // end of absolute
         sb.append("}\n"); // end of voice
 
+    }
+
+    private void generatePartPageBreak(StringBuilder sb) {
+        sb.append("\\pagebreak");
+    }
+
+    private void generatePartSystemBreak(StringBuilder sb) {
+        sb.append("\\break");
+    }
+
+    private void generateMarkBarline(MarkBarline markBarline, StringBuilder sb) {
+        //TODO repeticiones...
+        sb.append("|");
     }
 
     private void exportTimeSignature(Staff staff, TimeSignature timeSignature, StringBuilder sb) throws ExportException {
@@ -208,7 +317,7 @@ public class LilypondExporter implements ISongExporter {
             FractionalTimeSignature fts = (FractionalTimeSignature) timeSignature;
             sb.append("\t\t\\time " + fts.getNumerator() + "/"
                     + fts.getDenominator() + "\n");
-        } else if (timeSignature instanceof TimeSignatureCommonTime) {
+        } else if (timeSignature instanceof TimeSignatureCommonTime || timeSignature instanceof TempusImperfectumCumProlationeImperfecta) {
             sb.append("\t\t\\time 4/4");
         } else if (timeSignature instanceof TimeSignatureCutTime) {
             sb.append("\t\t\\time 2/2");
@@ -262,7 +371,7 @@ public class LilypondExporter implements ISongExporter {
     /**
      * Generates the Lilypond code for an staff
      */
-    private void generateStaff(Staff staff, Key lastKey, StringBuilder sb) throws ExportException {
+    /*private void generateStaff(Staff staff, Key lastKey, StringBuilder sb) throws ExportException {
         ScoreLayer voice = staff.getLayers().get(0);
         lastLyrics = new ArrayList<>();
         lastLyric = null;
@@ -276,7 +385,7 @@ public class LilypondExporter implements ISongExporter {
             }
             sb.append(' ');
         }
-    }
+    }*/
 
     private void generateNote(SimpleNote note, Key lastKey, StringBuilder sb) throws ExportException {
         generateNoteName(note.getPitch(), sb);
@@ -387,6 +496,7 @@ public class LilypondExporter implements ISongExporter {
             }
         }
     }
+
     /**
      * Export for a PNG format using measure
      * @param f

@@ -9,11 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class AgnosticSequenceRecognizerTest {
 
-    @Test
+    //@Test
     public void recognize() throws IOException, IM3Exception {
         File input = TestFileUtils.getFile("/testdata/imageprocessing/48.jpg");
         AgnosticSequenceRecognizerOLD agnosticSequenceRecognizer = new AgnosticSequenceRecognizerOLD();

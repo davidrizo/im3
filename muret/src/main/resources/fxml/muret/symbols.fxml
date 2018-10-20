@@ -61,6 +61,12 @@
                     <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="View">
+                    <items>
+                      <MenuItem fx:id="menuViewComments" mnemonicParsing="false" onAction="#handleShowHideComments" text="Hide comments" />
+                        <MenuItem fx:id="menuHideStrokes" mnemonicParsing="false" onAction="#handleShowHideStrokes" text="Hide strokes" />
+                    </items>
+                  </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
                     <MenuItem mnemonicParsing="false" text="About" />
@@ -102,7 +108,7 @@
       </ToolBar>
    </left>
    <right>
-      <GridPane BorderPane.alignment="CENTER">
+      <GridPane prefWidth="200.0" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -122,7 +128,7 @@
                </children>
             </VBox>
             <ToolBar fx:id="toolbarToolSpecific" orientation="VERTICAL" prefHeight="164.0" prefWidth="83.0" />
-            <ToolBar fx:id="toolBarToolSpecificOptions" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1" />
+            <ToolBar fx:id="toolBarToolSpecificOptions" orientation="VERTICAL" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1" />
          </children>
          <BorderPane.margin>
             <Insets />
@@ -137,7 +143,7 @@
       </AnchorPane>
    </bottom>
    <center>
-      <HBox spacing="5.0" BorderPane.alignment="CENTER">
+      <HBox fx:id="hboxCentral" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
@@ -180,7 +186,7 @@
                   </Accordion>
                </children>
             </VBox>
-            <VBox minHeight="400.0" prefHeight="500.0" prefWidth="100.0" spacing="5.0">
+            <VBox fx:id="vboxComments" minHeight="400.0" prefHeight="500.0" prefWidth="100.0" spacing="5.0">
                <children>
                   <Label text="Comments" />
                   <TextArea fx:id="symbolCommentsTextArea" minWidth="250.0" prefHeight="500.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />

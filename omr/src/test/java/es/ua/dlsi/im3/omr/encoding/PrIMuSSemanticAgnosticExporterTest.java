@@ -1,18 +1,15 @@
 package es.ua.dlsi.im3.omr.encoding;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import es.ua.dlsi.im3.omr.encoding.Encoder;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticExporter;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticImporter;
-import org.apache.commons.math3.stat.inference.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

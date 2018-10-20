@@ -35,10 +35,10 @@
 
     </dependencies>
 
+    <!-- Create Native packaging: http://javafx-maven-plugin.github.io -->
 
-    <build>
+    <!--<build>
         <plugins>
-            <!-- Create Native packaging: http://javafx-maven-plugin.github.io -->
             <plugin>
                 <groupId>com.zenjava</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -50,7 +50,6 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <!-- required before build-native -->
                         <id>create-jfxjar</id>
                         <phase>package</phase>
                         <goals>
@@ -67,5 +66,5 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 </project>

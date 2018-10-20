@@ -41,6 +41,11 @@ public class AgnosticSequenceRecognizer {
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "{0} symbols recognized in image file {1}", new Object[] {result.size(), inputImage.getAbsolutePath()});
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "CRNN+CTC";
+    }
 }
 
         /*String [] tokens = output.substring(1, output.length()-2).split(",");

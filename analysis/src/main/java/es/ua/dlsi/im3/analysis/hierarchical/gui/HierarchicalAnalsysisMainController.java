@@ -271,7 +271,7 @@ public class HierarchicalAnalsysisMainController implements Initializable {
 	}
 
 	private void addDocument(File file, Model model) throws Exception {
-	    HorizontalLayout horizontalLayout = new HorizontalLayout(model.getScoreSong(), LayoutFonts.bravura, new CoordinateComponent(100000), new CoordinateComponent(500)); // TODO: 1/5/18
+	    HorizontalLayout horizontalLayout = new HorizontalLayout(model.getScoreSong(), new CoordinateComponent(100000), new CoordinateComponent(500)); // TODO: 1/5/18
 	    scoreView = new ScoreSongView(horizontalLayout);
         mainScrollPane.setContent(scoreView.getMainPanel());
 

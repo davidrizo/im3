@@ -22,13 +22,15 @@ headerField ::= headerMens // in full **kern specification it includes also head
 
 headerMens ::= MENS
 
-record ::= globalComment | fields
+record ::= globalComment | fields | fieldCommentLine;
 
 fields ::= field (TAB field)*
 
+fieldCommentLine ::= fieldComment (TAB fieldComment)*
+
 globalComment ::= GLOBAL_COMMENT FIELD_TEXT?
 
-field ::= graphicalToken | placeHolder | fieldComment
+field ::= graphicalToken | placeHolder | FIELD_TEXT
 
 placeHolder ::= DOT
 
@@ -36,7 +38,9 @@ fieldComment ::= FIELD_COMMENT FIELD_TEXT?
 
 graphicalToken ::= tandemInterpretation | barLine | rest | note | lyricsText | spineOperation
 
-tandemInterpretation ::= staff | clef | keySignature | meterSign | keyChange | sectionLabel |instrument | metronome | nullInterpretation
+tandemInterpretation ::= staff | clef | keySignature | fractionalMeter | meterSign | keyChange | sectionLabel |instrument | metronome | nullInterpretation
+
+part ::= TANDEM_PART NUMBER
 
 staff ::= TANDEM_STAFF NUMBER
 
@@ -60,6 +64,12 @@ minorKey ::= LOWERCASE_PITCH
 
 majorKey ::= UPPERCASE_PITCH
 
+fractionalMeter ::= TANDEM_TIMESIGNATURE numerator SLASH denominator
+
+numerator ::= NUMBER
+
+denominator ::= NUMBER
+
 meterSign ::= TANDEM_MET LEFT_PARENTHESIS meterSignValue RIGHT_PARENTHESIS
 
 meterSignValue ::= ('C' | 'c|' | 'C·' | 'O' | 'O·' | 'C32' | 'C|32' )
@@ -72,9 +82,9 @@ metronome ::= METRONOME NUMBER
 
 nullInterpretation ::= ASTERISK 
 
-barLine ::= EQUAL+ NUMBER? (COLON? partialBarLine? COLON?)
+barLine ::= EQUAL+ NUMBER? (COLON? barlineProperties? COLON?)
 
-partialBarLine ::= GRAVE_ACCENT  | APOSTROPHE | MINUS
+barlineProperties ::= GRAVE_ACCENT  | APOSTROPHE | MINUS | PIPE PINE
 
 spineOperation ::= spineTerminator | spineSplit | spineJoin
 
@@ -86,7 +96,7 @@ spineJoin ::= ASTERISK CHAR_v
 
 rest ::= duration (CHAR_r) pause?
 
-duration ::= mensuralDuration augmentationDot?
+duration ::= mensuralDuration (augmentationDot | separationDot)?
 
 pause ::= SEMICOLON
 
@@ -99,11 +109,11 @@ mensuralFigure ::= ('X'|'L'|'S'|'s'|'M'|'m'|'U'|'u')
 // p=perfect, i=imperfect, I=imperfect by alteratio
 mensuralPerfection ::= 'p' | 'i' | 'I'
 
-augmentationDots ::= DOT+
+augmentationDot ::= DOT
 
-graphicalDot ::= COLON
+separationDot ::= COLON
 
-note ::=  beforeNote duration noteName (alteration alterationVisualMode?)? graphicalDot? afterNote
+note ::=  beforeNote duration noteName (alteration alterationVisualMode?)? afterNote
 
 beforeNote ::= (slurStart | tieStart | ligatureStart | barLineCrossedNoteStart)*
 
@@ -158,9 +168,9 @@ lyricsText ::= FIELD_TEXT // just if we are in **text spine
 
 -------- LEXICAL GRAMMAR -----
 
-UPPERCASE_PITCH ::= 'A'..'G'
+UPPERCASE_PITCH_CHARACTER ::= 'A'..'G'
 
-LOWERCASE_PITCH ::= 'a'..'g'
+LOWERCASE_PITCH_CHARACTER ::= 'a'..'g'
 
 CHAR_n ::= 'n'
 
@@ -188,11 +198,15 @@ MENS ::= '**mens'
 
 LYRICS ::= '**text';
 
+TANDEM_PART ::= '*part'
+
 TANDEM_STAFF ::= '*staff'
 
 TANDEM_CLEF ::= '*clef'
 
 TANDEM_KEY ::= '*k'
+
+TANDEM_TIMESIGNATURE ::= '*M'
 
 TANDEM_MET ::= '*met'
 

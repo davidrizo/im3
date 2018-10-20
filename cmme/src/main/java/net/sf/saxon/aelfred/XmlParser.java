@@ -145,7 +145,7 @@ final class XmlParser
 
 	initializeVariables ();
 
-	// predeclare the built-in entities here (replacement texts)
+	// predeclare the built-in entity here (replacement texts)
 	// we don't need to intern(), since we're guaranteed literals
 	// are always (globally) interned.
 	setInternalEntity ("amp", "&#38;");
@@ -415,13 +415,13 @@ final class XmlParser
     private final static int LIT_NORMALIZE = 4;
 	// literal is an attribute value 
     private final static int LIT_ATTRIBUTE = 8;
-	// don't expand parameter entities
+	// don't expand parameter entity
     private final static int LIT_DISABLE_PE = 16;
 	// don't expand [or parse] character refs
     private final static int LIT_DISABLE_CREF = 32;
 	// don't parse general entity refs
     private final static int LIT_DISABLE_EREF = 64;
-	// don't expand general entities, but make sure we _could_
+	// don't expand general entity, but make sure we _could_
     private final static int LIT_ENTITY_CHECK = 128;
 	// literal is a public ID value 
     private final static int LIT_PUBID = 256;
@@ -1773,7 +1773,7 @@ loop2:
      * [68] EntityRef ::= '&' Name ';'
      * </pre>
      * <p>NOTE: the '&amp;' has already been read.
-     * @param externalAllowed External entities are allowed here.
+     * @param externalAllowed External entity are allowed here.
      */
     private void parseEntityRef (boolean externalAllowed)
     throws SAXException, IOException
@@ -1892,7 +1892,7 @@ loop2:
 	unread (c);
 	if (c == '"' || c == '\'') {
 	    // Internal entity ... replacement text has expanded refs
-	    // to characters and PEs, but not to general entities
+	    // to characters and PEs, but not to general entity
 	    String value = readLiteral (0);
 	    setInternalEntity (name, value);
 	} else {
@@ -2975,7 +2975,7 @@ loop:
 
     /**
      * Retrieve the expanded value of a declared attribute.
-     * <p>General entities (and char refs) will be expanded (once).
+     * <p>General entity (and char refs) will be expanded (once).
      * @param name The name of the associated element.
      * @param aname The name of the attribute.
      * @return The expanded default value, or null if the attribute was
@@ -3085,8 +3085,8 @@ loop:
     //
 
     /**
-     * Get declared entities.
-     * @return An Enumeration of all the entities declared for
+     * Get declared entity.
+     * @return An Enumeration of all the entity declared for
      *	 this XML document.  The results will be valid only
      *	 after the DTD (if any) has been parsed.
      * @see #getEntityType
@@ -3378,7 +3378,7 @@ loop:
      * entity boundaries, but this is not currently a validating
      * parser).
      * <p>This routine also attempts to keep track of the current
-     * position in external entities, but it's not entirely accurate.
+     * position in external entity, but it's not entirely accurate.
      * @return The next available input character.
      * @see #unread (char)
      * @see #unread (String)
@@ -4810,7 +4810,7 @@ loop:
 
 
     //
-    // Hashtables for DTD information on elements, entities, and notations.
+    // Hashtables for DTD information on elements, entity, and notations.
     //
     private Hashtable	elementInfo;
     private Hashtable	entityInfo;

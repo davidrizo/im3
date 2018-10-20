@@ -154,7 +154,7 @@ public abstract class VerticalScoreDivision implements Comparable<VerticalScoreD
 	}
 
     /**
-     * Use with caution. Used just by some converters of the library
+     * Use with caution. Used just by some converter of the library
      */
     public void setSong(ScoreSong song) {
         this.notationSong = song;

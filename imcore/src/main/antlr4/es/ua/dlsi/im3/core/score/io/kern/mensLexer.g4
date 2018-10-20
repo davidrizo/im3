@@ -9,7 +9,7 @@ import java.util.ArrayList;
     // record whether each spine is **text
     private ArrayList<Boolean> textSpines = new ArrayList<>();
     private int currentSpine;
-    private boolean inTextMode = false;
+
     public boolean inTextSpine() {
         if (currentSpine >= textSpines.size()) {
             return false;
@@ -21,10 +21,8 @@ import java.util.ArrayList;
         currentSpine++;
         if (inTextSpine()) {
             pushMode(FREE_TEXT);
-            inTextMode = true;
-        } else if (inTextMode) {
-            popMode();
-            inTextMode = false;
+        } else {
+            mode(0);
         }
     }
     private void splitSpine() {
@@ -33,8 +31,15 @@ import java.util.ArrayList;
     private void joinSpine() {
         textSpines.remove(currentSpine);
     }
-    private void resetSpine() {
-        currentSpine=0;
+
+    private void resetMode() {
+        mode(0);
+    }
+
+    private void resetSpineAndMode() {
+        resetMode();
+        currentSpine=-1; // incSpine increments it
+        incSpine();
     }
     public void addMensSpine() {
         textSpines.add(false);
@@ -42,6 +47,7 @@ import java.util.ArrayList;
     public void addTextSpine() {
         textSpines.add(true);
     }
+
 }
 
 
@@ -52,15 +58,17 @@ fragment EXCLAMATION_FRAGMENT : '!';
 
 MENS: ASTERISK_FRAGMENT ASTERISK_FRAGMENT 'mens' {addMensSpine();};
 TEXT: ASTERISK_FRAGMENT ASTERISK_FRAGMENT 'text' {addTextSpine();};
+TANDEM_PART: ASTERISK_FRAGMENT 'part';
 TANDEM_STAFF: ASTERISK_FRAGMENT 'staff';
 TANDEM_CLEF: ASTERISK_FRAGMENT 'clef';
 TANDEM_KEY: ASTERISK_FRAGMENT 'k';
 TANDEM_MET: ASTERISK_FRAGMENT 'met';
 METRONOME: ASTERISK_FRAGMENT 'MM';
+TANDEM_TIMESIGNATURE: ASTERISK_FRAGMENT 'M';
 
 
 CHAR_A: 'A';
-CHAR_B: 'A';
+CHAR_B: 'B';
 CHAR_C: 'C';
 CHAR_D: 'D';
 CHAR_E: 'E';
@@ -114,7 +122,6 @@ PIPE: '|';
 GRAVE_ACCENT: '`';
 APOSTROPHE: '\'';
 CIRCUMFLEX: '^';
-//CHAR: ('a'..'l'| CHAR_m_FRAGMENT | CHAR_n_FRAGMENT | 'o'..'q' | CHAR_r_FRAGMENT | CHAR_s_FRAGMENT | CHAR_t_FRAGMENT | CHAR_u_FRAGMENT | CHAR_v_FRAGMENT | 'w' | CHAR_x_FRAGMENT | 'y..z');
 TILDE: '~';
 ANGLE_BRACKET_OPEN: '<';
 ANGLE_BRACKET_CLOSE: '>';
@@ -129,7 +136,7 @@ SEMICOLON: ';';
 
 // with pushMode, the lexer uses the rules below FREE_TEXT
 TAB: '\t' {incSpine();}; // incSpine changes mode depending on the spine type
-EOL : '\r'?'\n' {resetSpine();};
+EOL : '\r'?'\n' {resetSpineAndMode();};
 
 //REFERENCE_RECORD_TITLE: REFERENCE_RECORD 'OTL'  -> pushMode(FREE_TEXT);
 //REFERENCE_RECORD_COMPOSER: REFERENCE_RECORD 'COM'  -> pushMode(FREE_TEXT);
@@ -137,16 +144,19 @@ EOL : '\r'?'\n' {resetSpine();};
 //REFERENCE_RECORD_ENCODER: REFERENCE_RECORD 'ENC'  -> pushMode(FREE_TEXT);
 //REFERENCE_RECORD_ENDENCODING: REFERENCE_RECORD 'END'  -> pushMode(FREE_TEXT);
 
-SECTION_LABEL: ASTERISK_FRAGMENT '>' -> pushMode(FREE_TEXT);
-INSTRUMENT: ASTERISK_FRAGMENT 'I'  -> pushMode(FREE_TEXT);
-LAYOUT: EXCLAMATION_FRAGMENT 'LO:' -> pushMode(LAYOUT_MODE);
-FIELD_COMMENT: EXCLAMATION_FRAGMENT -> pushMode(FREE_TEXT);
-GLOBAL_COMMENT: EXCLAMATION_FRAGMENT EXCLAMATION_FRAGMENT .*? '\n' -> skip ;
+SECTION_LABEL: ASTERISK_FRAGMENT '>' -> mode(FREE_TEXT);
+INSTRUMENT: ASTERISK_FRAGMENT 'I'  -> mode(FREE_TEXT);
+LAYOUT: EXCLAMATION_FRAGMENT 'LO:' -> mode(LAYOUT_MODE);
+FIELD_COMMENT: EXCLAMATION_FRAGMENT -> mode(FREE_TEXT);
+GLOBAL_COMMENT: EXCLAMATION_FRAGMENT EXCLAMATION_FRAGMENT .*? '\n' -> skip;
+
 
 
 mode FREE_TEXT;
-FIELD_TEXT: ~[\t\n\r]+  -> popMode;
+FIELD_TEXT: ~[\t\n\r]+ -> mode(0); // must reset mode here to let lexer recognize the tab or newline
+FREE_TEXT_TAB: '\t' {incSpine();}; // incSpine changes mode depending on the spine type
+FREE_TEXT_EOL : '\r'?'\n' {resetSpineAndMode();};
 
 mode LAYOUT_MODE;
-LAYOUT_NOTE_VISUAL_ACCIDENTAL: 'N:va='  -> popMode;
-LAYOUT_REST_POSITION: 'R:v='  -> popMode;
+LAYOUT_NOTE_VISUAL_ACCIDENTAL: 'N:va=' -> mode(0);
+LAYOUT_REST_POSITION: 'R:v=' -> mode(0);

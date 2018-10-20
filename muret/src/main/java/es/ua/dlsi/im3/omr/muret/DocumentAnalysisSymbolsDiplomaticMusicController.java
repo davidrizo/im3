@@ -49,9 +49,7 @@ import es.ua.dlsi.im3.omr.muret.model.*;
 import es.ua.dlsi.im3.omr.muret.old.OMRApp;
 import es.ua.dlsi.im3.omr.muret.old.symbols.StrokesView;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -109,6 +107,9 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
     @FXML
     ToolBar toolbarToolSpecific;
+
+    @FXML
+    VBox vboxComments;
     /**
      * Used for binding comments
      */
@@ -126,6 +127,12 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
     @FXML
     ToolBar toolBarToolSpecificOptions;
+
+    @FXML
+    MenuItem menuViewComments;
+
+    @FXML
+    HBox hboxCentral;
 
     //// --- Document analysis related ------
     @FXML
@@ -174,6 +181,10 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     FlowPane symbolCorrectionPane;
     @FXML
     TextArea symbolCommentsTextArea;
+    @FXML
+    MenuItem menuHideStrokes;
+
+    BooleanProperty strokesVisible;
 
     AgnosticStaffView agnosticStaffView;
 
@@ -252,8 +263,10 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
         symbolCorrectionPane.setRowValignment(VPos.CENTER);
         symbolCorrectionPane.setColumnHalignment(HPos.CENTER);
 
+        strokesVisible = new SimpleBooleanProperty(true);
         initTools();
         initInteraction();
+
 
     }
 
@@ -833,7 +846,16 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     }
 
     private boolean loadSymbolFromImageClassifier() {
+        toolBarToolSpecificOptions.getItems().clear();
+        toolBarToolSpecificOptions.getItems().add(new Label("Classifier"));
+
+        ChoiceBox<ISymbolFromImageDataRecognizer> classifiersChoiceBox = new ChoiceBox<>();
+        toolBarToolSpecificOptions.getItems().add(classifiersChoiceBox);
+        //TODO Carga de plugins
+
         ISymbolFromImageDataRecognizer symbolFromImageDataRecognizer = MuRET.getInstance().getModel().getClassifiers().getSymbolFromImageDataRecognizer();
+        classifiersChoiceBox.getItems().add(symbolFromImageDataRecognizer);
+
         if (!symbolFromImageDataRecognizer.isTrained()) {
             OpenFolderDialog openFolderDialog = new OpenFolderDialog();
             File folder = openFolderDialog.openFolder(getWindow(), "Choose a training folder");
@@ -852,12 +874,23 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
             BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
             backgroundProcesses.launch(getWindow(), "Loading classifier", "Classifier loaded", "Cannot load classifier", true, task);
+
+            classifiersChoiceBox.getSelectionModel().select(symbolFromImageDataRecognizer); //TODO Cuando cambie el choiceBox que se mire si está entrenado...
         }
         return true;
     }
 
     private boolean loadSymbolFromImageAndStrokesClassifier() {
+        toolBarToolSpecificOptions.getItems().clear();
+        toolBarToolSpecificOptions.getItems().add(new Label("Classifier"));
+        ChoiceBox<IBimodalSymbolFromImageDataAndStrokesRecognizer> classifiersChoiceBox = new ChoiceBox<>();
+        toolBarToolSpecificOptions.getItems().add(classifiersChoiceBox);
+
         IBimodalSymbolFromImageDataAndStrokesRecognizer bimodalSymbolFromImageDataAndStrokesRecognizer = MuRET.getInstance().getModel().getClassifiers().getBimodalSymbolFromImageDataAndStrokesRecognizer();
+        classifiersChoiceBox.getItems().add(bimodalSymbolFromImageDataAndStrokesRecognizer);
+        //TODO Carga de plugins
+
+
         if (!bimodalSymbolFromImageDataAndStrokesRecognizer.isTrained()) {
             OpenFolderDialog openFolderDialog = new OpenFolderDialog();
             File folder = openFolderDialog.openFolder(getWindow(), "Choose a training folder");
@@ -874,6 +907,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
             BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
             backgroundProcesses.launch(getWindow(), "Loading classifier", "Classifier loaded", "Cannot load classifier", true, task);
+            classifiersChoiceBox.getSelectionModel().select(bimodalSymbolFromImageDataAndStrokesRecognizer); //TODO Cuando cambie el choiceBox que se mire si está entrenado...
         }
         return true;
     }
@@ -919,6 +953,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     private void createAutomaticSymbolRecognitionTools() {
         showSymbolsPane();
 
+
         Button imageEndToEndRecognition = new Button("Image end to end");
         imageEndToEndRecognition.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -948,7 +983,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
         symbols = new ObservableListViewSetModelLink<OMRSymbol, SymbolView>(selectedRegionView.getOwner().symbolsProperty(), new Function<OMRSymbol, SymbolView>() {
             @Override
             public SymbolView apply(OMRSymbol omrSymbol) {
-                return new SymbolView("Symbol" + omrSymbol.hashCode(), DocumentAnalysisSymbolsDiplomaticMusicController.this, selectedRegionView, omrSymbol, SYMBOL_COLOR);
+                return new SymbolView("Symbol" + omrSymbol.hashCode(), DocumentAnalysisSymbolsDiplomaticMusicController.this, selectedRegionView, omrSymbol, SYMBOL_COLOR, strokesVisible);
             }
         });
 
@@ -1000,7 +1035,21 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     }
 
     private void doRecognizeStaffEndToEnd(OMRRegion omrRegion) throws IM3Exception, IOException {
+
         AgnosticSequenceRecognizer agnosticSequenceRecognizer = MuRET.getInstance().getModel().getClassifiers().getEndToEndAgnosticSequenceRecognizerInstance();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                toolBarToolSpecificOptions.getItems().clear();
+                toolBarToolSpecificOptions.getItems().add(new Label("Classifier"));
+                ChoiceBox<AgnosticSequenceRecognizer> classifiersChoiceBox = new ChoiceBox<>(); //TODO Interface + plugins
+                toolBarToolSpecificOptions.getItems().add(classifiersChoiceBox);
+
+                classifiersChoiceBox.getItems().add(agnosticSequenceRecognizer);
+                classifiersChoiceBox.getSelectionModel().select(agnosticSequenceRecognizer);
+            }
+        });
+
 
         File tmpFile = File.createTempFile("staff" + omrRegion.hashCode(), "jpg");
         //TODO A modelo
@@ -1212,8 +1261,15 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     private void recognizeImageEndToEnd() {
         doRegionsClear();
 
-        //TODO Pasar a un modelo + comando
+        toolBarToolSpecificOptions.getItems().clear();
+        toolBarToolSpecificOptions.getItems().add(new Label("Classifier"));
+        ChoiceBox<IImageSymbolRecognizer> classifiersChoiceBox = new ChoiceBox<>();
+        toolBarToolSpecificOptions.getItems().add(classifiersChoiceBox);
+
         IImageSymbolRecognizer symbolRecognizer = SymbolRecognizerFactory.getInstance().create();
+        classifiersChoiceBox.getItems().add(symbolRecognizer);
+        classifiersChoiceBox.getSelectionModel().select(symbolRecognizer);
+        //TODO Pasar a un modelo + comando
         //TODO Proceso background - diálogo
         try {
             List<Symbol> recognizedSymbols = symbolRecognizer.recognize(omrImage.getImageFile());
@@ -1453,4 +1509,25 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
         MuRET.getInstance().showUserInteractionLogs();
     }
 
+    @FXML
+    private void handleShowHideComments() {
+        if (hboxCentral.getChildren().contains(vboxComments)) {
+            hboxCentral.getChildren().remove(vboxComments); // with show / hide the score pane does not change (expands, shrinks)
+            this.menuViewComments.setText("Show comments");
+        } else {
+            hboxCentral.getChildren().add(vboxComments); // with show / hide the score pane does not change (expands, shrinks)
+            this.menuViewComments.setText("Hide comments");
+        }
+    }
+
+    @FXML
+    private void handleShowHideStrokes() {
+        if (strokesVisible.get()) {
+            strokesVisible.setValue(false);
+            this.menuHideStrokes.setText("Show strokes");
+        } else {
+            strokesVisible.setValue(true);
+            this.menuHideStrokes.setText("Hide strokes");
+        }
+    }
 }

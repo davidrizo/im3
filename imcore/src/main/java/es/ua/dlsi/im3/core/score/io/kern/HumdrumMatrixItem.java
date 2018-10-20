@@ -31,4 +31,9 @@ public class HumdrumMatrixItem {
     public void setParsedObject(Object parsedObject) {
         this.parsedObject = parsedObject;
     }
+
+    @Override
+    public String toString() {
+        return humdrumEncoding;
+    }
 }

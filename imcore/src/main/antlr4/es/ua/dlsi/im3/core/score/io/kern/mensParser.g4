@@ -60,9 +60,15 @@ record
     :
     globalComment
     |
-    fields;
+    fields
+    |
+    fieldCommentLine;
 
 fields: field (TAB field)*;
+
+fieldCommentLine:
+    fieldComment ((TAB | FREE_TEXT_TAB) fieldComment)*;
+
 
 // e.g. !! This is a comment that spans several spines until the end of line
 globalComment:
@@ -72,14 +78,14 @@ field
     :
     graphicalToken
      |
-     placeHolder // nothing is done, it is just a placeholder
-     |
-     fieldComment
-     ;
+     placeHolder; // nothing is done, it is just a placeholder
 
 placeHolder: DOT;
 
-fieldComment: FIELD_COMMENT FIELD_TEXT?;
+fieldComment:
+    FIELD_COMMENT FIELD_TEXT?
+    |
+    FIELD_TEXT; // for allowing comments in **text spines
 
 graphicalToken:
     tandemInterpretation
@@ -98,11 +104,15 @@ graphicalToken:
     ;
 
 tandemInterpretation:
+    part
+    |
     staff
     |
     clef
     |
     keySignature
+    |
+    fractionalMeter
     |
     meterSign
     |
@@ -119,7 +129,9 @@ tandemInterpretation:
 
 number: (DIGIT_1 | DIGIT_2 | DIGIT_3 | DIGIT_4 | DIGIT_5 | DIGIT_6 | DIGIT_7 | DIGIT_8 | DIGIT_9)+;
 lowerCasePitch: LOWERCASE_PITCH_CHARACTER;
-upperCasePitch: CHAR_A | CHAR_B | CHAR_C | CHAR_D | CHAR_E | CHAR_F | CHAR_G;
+upperCasePitch: (CHAR_A | CHAR_B | CHAR_C | CHAR_D | CHAR_E | CHAR_F | CHAR_G);
+
+part: TANDEM_PART number;
 
 staff: TANDEM_STAFF number;
 
@@ -136,6 +148,11 @@ keyChange: ASTERISK (minorKey | majorKey) keyAccidental? COLON;
 minorKey: lowerCasePitch;
 majorKey: upperCasePitch;
 
+fractionalMeter: TANDEM_TIMESIGNATURE numerator SLASH denominator;
+
+numerator: number;
+
+denominator: number;
 
 meterSign: TANDEM_MET LEFT_PARENTHESIS meterSignValue RIGHT_PARENTHESIS;
 meterSignValue: CHAR_C | CHAR_C PIPE | CHAR_C CENTER_DOT | CHAR_O | CHAR_O CENTER_DOT | CHAR_C DIGIT_3 DIGIT_2 | CHAR_C PIPE DIGIT_3 DIGIT_2;
@@ -149,16 +166,18 @@ metronome: METRONOME number;
 nullInterpretation: ASTERISK; // a null interpretation (placeholder) will have just an ASTERISK_FRAGMENT
 
 //barline: EQUAL+ (NUMBER)? (COLON? barlineWidth? partialBarLine? COLON?) ; // COLON = repetition mark
-barLine: EQUAL+ number? (COLON? partialBarLine? COLON?); // COLON = repetition mark
+barLine: EQUAL+ number? (COLON? barlineProperties? COLON?); // COLON = repetition mark
 
 //barlineWidth: (EXCLAMATION? PIPE EXCLAMATION?);
 
-partialBarLine:
+barlineProperties:
     GRAVE_ACCENT // partialBarLineTop
     |
     APOSTROPHE // partialBarLineMid
     |
     MINUS // no bar line;
+    |
+    PIPE PIPE // double bar line
 	;
 
 spineOperation:
@@ -175,7 +194,7 @@ spineJoin: ASTERISK CHAR_v;
 
 rest: duration (CHAR_r) pause?;
 
-duration: mensuralDuration augmentationDots?;
+duration: mensuralDuration (augmentationDot | separationDot)?;
 
 pause: SEMICOLON; // fermata
 
@@ -188,11 +207,13 @@ mensuralFigure: CHAR_X | CHAR_L | CHAR_S | CHAR_s | CHAR_M | CHAR_m | CHAR_U | C
 // p=perfect, i=imperfect, I=imperfect by alteratio
 mensuralPerfection: CHAR_p | CHAR_i | CHAR_I;
 
-augmentationDots: DOT+;
+dot: separationDot | augmentationDot;
 
-graphicalDot: COLON;
+augmentationDot: DOT;
 
-note:  beforeNote duration noteName (alteration alterationVisualMode?)? graphicalDot? afterNote;
+separationDot: COLON;
+
+note:  beforeNote duration noteName (alteration alterationVisualMode?)? afterNote;
 
 beforeNote:  //TODO Regla semantica (boolean) para que no se repitan
     (slurStart

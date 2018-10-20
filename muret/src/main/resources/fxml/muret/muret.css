@@ -156,17 +156,17 @@ Don't set it for Text to avoid conflicts with java loaded fonts
 
 .tool-bar {
     -fx-background-color: #7DE2DB;
-    -fx-pref-width: 100;
+    -fx-pref-width: 200;
 }
 
 #vboxPhase {
-    -fx-pref-width: 100;
+    -fx-pref-width: 200;
     -fx-alignment: center-right;
     -fx-spacing: 10;
 }
 
 #vboxPhase * {
-    -fx-pref-width: 100;
+    -fx-pref-width: 200;
     -fx-pref-height: 40;
 }
 

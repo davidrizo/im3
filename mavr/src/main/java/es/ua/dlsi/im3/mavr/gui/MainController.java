@@ -471,7 +471,7 @@ public class MainController implements Initializable {
         mainPane.getChildren().clear();
         modelProperty.setValue(new Model(scoreSong));
         //motivesController.setModel(model);
-        HorizontalLayout horizontalLayout = new HorizontalLayout(modelProperty.get().getScoreSong(), LayoutFonts.bravura, new CoordinateComponent(100000), new CoordinateComponent(500)); // TODO: 1/5/18
+        HorizontalLayout horizontalLayout = new HorizontalLayout(modelProperty.get().getScoreSong(), new CoordinateComponent(100000), new CoordinateComponent(500)); // TODO: 1/5/18
         scoreView = new ScoreSongView(horizontalLayout);
         mainPane.getChildren().add(scoreView.getMainPanel());
     }

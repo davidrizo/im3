@@ -6,8 +6,6 @@ import es.ua.dlsi.im3.omr.model.entities.Region;
 import org.junit.Test;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import static org.junit.Assert.*;

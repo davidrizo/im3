@@ -512,15 +512,16 @@ public class ScoreSong {
 	 * @throws IM3Exception
 	 */
 	public void addPart(ScorePart part) throws IM3Exception {
-		if (part.getNumber() < parts.size() && parts.get(part.getNumber()) != null) {
+		/*if (parts.get(part.getNumber()) != null) {
 			throw new IM3Exception("Part with number " + part.getNumber() + " already exists");
-		}
+		}*/
+		part.setSong(this);
 		parts.add(part);
 		this.idManager.assignNextID(part);
 	}
 
 	/**
-	 * It inverts the number and possition in the list of the layers and the
+	 * It inverts the number and position in the list of the layers and the
 	 * score parts
 	 *
 	 * @throws IM3Exception

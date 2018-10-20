@@ -41,4 +41,31 @@ public class HumdrumMatrix {
     public HumdrumMatrixItem get(int row, int column) {
         return matrix.get(row).get(column);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i=0; i<matrix.size(); i++) {
+            stringBuilder.append("Row #");
+            stringBuilder.append(i);
+
+            for (int j=0; j<matrix.get(i).size(); j++) {
+                stringBuilder.append('\t');
+                stringBuilder.append(matrix.get(i).get(j));
+            }
+
+            stringBuilder.append('\n');
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public int getRowCount() {
+        return matrix.size();
+    }
+
+    public int getSpineCount(int row) {
+        return matrix.get(row).size();
+    }
 }

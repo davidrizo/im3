@@ -3,7 +3,6 @@ package es.ua.dlsi.im3.omr.classifiers.symbolrecognition;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.patternmatching.NearestNeighbourClassesRanking;
-import es.ua.dlsi.im3.core.patternmatching.RankingItem;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.model.entities.Point;
@@ -15,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TreeSet;
 
 import static org.junit.Assert.*;
 

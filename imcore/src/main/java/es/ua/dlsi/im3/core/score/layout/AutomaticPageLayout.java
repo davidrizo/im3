@@ -76,13 +76,13 @@ public class AutomaticPageLayout extends PageLayout {
         }
         // add the system breaks, with a default duration that will be able to fit the new clef and new key signature
         if (includePageAndSystemBreaks) {
-            for (SystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
+            // TODO: 20/11/17 He quitado los system y page breaks
+            /*for (PartSystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
                 // use the first layout font, it can be any one
                 LayoutCoreSystemBreak lsb = new LayoutCoreSystemBreak(layoutFonts.values().iterator().next(), sb);
                 simultaneities.add(lsb);
-            }
-            // TODO: 20/11/17 He quitado los page breaks
-            /*for (PageBreak sb: staves.iterator().next().getPageBreaks().values()) {
+            }*/
+            /*for (SystemPageBreak sb: staves.iterator().next().getPageBreaks().values()) {
                 // use the first layout font, it can be any one
                 LayoutPageBreak lsb = new LayoutPageBreak(layoutFonts.values().iterator().next(), sb);
                 simultaneities.add(lsb);

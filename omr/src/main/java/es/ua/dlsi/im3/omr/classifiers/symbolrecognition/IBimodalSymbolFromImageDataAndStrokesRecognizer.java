@@ -31,4 +31,6 @@ public interface IBimodalSymbolFromImageDataAndStrokesRecognizer {
      * @param folder
      */
     void trainFromFolder(File folder) throws IM3Exception;
+
+    String toString();
 }

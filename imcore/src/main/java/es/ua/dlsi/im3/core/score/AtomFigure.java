@@ -36,8 +36,14 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 	 */
 	Integer irregularGroupInSpaceOfFigures;
     private Fermata fermata;
+	/**
+	 * In mensural notation, if followed by a division dot
+	 */
+	private boolean followedByMensuralDivisionDot;
 
-    /**
+
+
+	/**
 	 * Package visibility, use  Atom.addFigure
 	 * @param atom
 	 * @param figure
@@ -348,4 +354,12 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
     public String getPerfectionRuleApplied() {
         return perfectionRuleApplied;
     }
+
+	public boolean isFollowedByMensuralDivisionDot() {
+		return followedByMensuralDivisionDot;
+	}
+
+	public void setFollowedByMensuralDivisionDot(boolean followedByMensuralDivisionDot) {
+		this.followedByMensuralDivisionDot = followedByMensuralDivisionDot;
+	}
 }

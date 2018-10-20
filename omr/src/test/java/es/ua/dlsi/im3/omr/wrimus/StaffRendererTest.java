@@ -3,7 +3,6 @@ package es.ua.dlsi.im3.omr.wrimus;
 import es.ua.dlsi.im3.core.TestFileUtils;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
-import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import org.junit.Test;
 
 import java.io.File;

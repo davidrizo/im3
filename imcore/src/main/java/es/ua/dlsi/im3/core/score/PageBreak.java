@@ -1,9 +1,7 @@
 package es.ua.dlsi.im3.core.score;
 
-import es.ua.dlsi.im3.core.IM3Exception;
-
 /**
- * An explicit system break
+ * An explicit page break
  */
 public class PageBreak implements ITimedElement {
     private Time time;

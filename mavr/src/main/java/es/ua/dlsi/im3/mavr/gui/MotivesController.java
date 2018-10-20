@@ -37,7 +37,7 @@ public class MotivesController implements Initializable {
     private void load() throws IM3Exception {
         CoordinateComponent width = new CoordinateComponent(1000); //TODO
         CoordinateComponent height = new CoordinateComponent(500); //TODO
-        HorizontalLayout horizontalLayout = new HorizontalLayout(model.getScoreSong(), LayoutFonts.bravura, width, height);
+        HorizontalLayout horizontalLayout = new HorizontalLayout(model.getScoreSong(), width, height);
         scoreSongView = new ScoreSongView(horizontalLayout);
         scoreViewPane.getChildren().add(scoreSongView.getMainPanel());
     }

@@ -114,4 +114,9 @@ public class StubImage00531SymbolRecognizer implements IImageSymbolRecognizer {
             i++;
         }
     }*/
+
+    @Override
+    public String toString() {
+        return "CRNN";
+    }
 }

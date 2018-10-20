@@ -62,4 +62,10 @@ public class MarkBarline implements ITimedElementInStaff {
 
         return Objects.hash(staff, time);
     }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+
 }

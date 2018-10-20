@@ -1,20 +1,21 @@
 package es.ua.dlsi.im3.core.score.io.kern;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.conversions.FigureAndDots;
 import es.ua.dlsi.im3.core.io.ImportException;
+import es.ua.dlsi.im3.core.io.antlr.ANTLRUtils;
 import es.ua.dlsi.im3.core.io.antlr.ErrorListener;
 import es.ua.dlsi.im3.core.io.antlr.GrammarParseRuntimeException;
 import es.ua.dlsi.im3.core.io.antlr.ParseError;
-import es.ua.dlsi.im3.core.metadata.Person;
-import es.ua.dlsi.im3.core.metadata.PersonRoles;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.meters.*;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
+import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
+import es.ua.dlsi.im3.core.score.staves.Pentagram;
+import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -24,6 +25,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +45,8 @@ public class MensImporter {
         private Perfection lastPerfection;
         private int octaveModif;
         private String noteName;
-        private int lastDots;
+        private int lastAgumentationDots;
+        private boolean lastHasSeparationDot;
         private boolean inLigature;
 
 
@@ -56,6 +59,12 @@ public class MensImporter {
         public void exitHeaderMens(mensParser.HeaderMensContext ctx) {
             super.exitHeaderMens(ctx);
             humdrumMatrix.addItemToCurrentRow(ctx.getText());
+        }
+
+        @Override
+        public void exitPart(mensParser.PartContext ctx) {
+            super.exitPart(ctx);
+            humdrumMatrix.addItemToCurrentRow(ctx.getText(), new ScorePart(null, Integer.parseInt(ctx.number().getText())));
         }
 
         @Override
@@ -218,6 +227,21 @@ public class MensImporter {
         }
 
         @Override
+        public void exitFractionalMeter(mensParser.FractionalMeterContext ctx) {
+            Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Meter sign {0}", ctx.getText());
+            TimeSignature ts; //TODO Ver qué hacer con esto, de momento lo pongo en la matrix
+
+            String numStr = ctx.numerator().getText();
+            int num = Integer.parseInt(numStr);
+            String denStr = ctx.denominator().getText();
+            int den = Integer.parseInt(denStr);
+
+            ts = new FractionalTimeSignature(num, den);
+            humdrumMatrix.addItemToCurrentRow(ctx.getText(), ts);
+        }
+
+
+        @Override
         public void exitMeterSign(mensParser.MeterSignContext ctx) {
             Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Meter sign {0}", ctx.getText());
             TimeSignature ts;
@@ -260,7 +284,8 @@ public class MensImporter {
             super.exitStaff(ctx);
 
             int staffNumber = Integer.parseInt(ctx.number().getText());
-            //TODO
+            Staff staff = new Pentagram(null, ctx.number().getText(), staffNumber);
+            humdrumMatrix.addItemToCurrentRow(ctx.getText(), staff);
         }
 
         @Override
@@ -294,14 +319,17 @@ public class MensImporter {
             super.exitNullInterpretation(ctx);
             KernNullInterpretation kernNullInterpretation = new KernNullInterpretation();
             humdrumMatrix.addItemToCurrentRow(ctx.getText(), kernNullInterpretation);
+            humdrumMatrix.addItemToCurrentRow(ctx.getText(), kernNullInterpretation);
         }
 
         @Override
         public void exitBarLine(mensParser.BarLineContext ctx) {
             Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "BarLine {0}", ctx.getText());
             super.exitBarLine(ctx);
-            MarkBarline markBarLine = new MarkBarline(); //TODO repetitions ....
-            humdrumMatrix.addItemToCurrentRow(ctx.getText(), markBarLine);
+            if (ctx.barlineProperties() == null || ctx.barlineProperties().MINUS() == null) {
+                MarkBarline markBarLine = new MarkBarline(); //TODO repetitions, double bar line ....
+                humdrumMatrix.addItemToCurrentRow(ctx.getText(), markBarLine);
+            } // if minus present it is hiddem
         }
 
 
@@ -318,7 +346,10 @@ public class MensImporter {
         public void exitFieldComment(mensParser.FieldCommentContext ctx) {
             super.exitFieldComment(ctx);
             Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Field comment {0}", ctx.getText());
-            String text = ctx.FIELD_TEXT().getText();
+            String text = ctx.FIELD_TEXT()==null?null:ctx.FIELD_TEXT().getText();
+            /*if (text != null && text.startsWith("!")) {
+                text = text.substring(1); // the parser returns the ! first
+            }*/
             humdrumMatrix.addItemToCurrentRow(ctx.getText(), new KernFieldComment(text));
         }
 
@@ -349,7 +380,9 @@ public class MensImporter {
         @Override
         public void exitDuration(mensParser.DurationContext ctx) {
             super.exitDuration(ctx);
-            lastDots = ctx.dots()==null?0:ctx.dots().getChildCount();
+            //lastAgumentationDots = ctx.augmentationDots()==null?0:ctx.augmentationDots().getChildCount();
+            lastAgumentationDots = ctx.augmentationDot()==null?0:ctx.augmentationDot().getChildCount();
+            lastHasSeparationDot = ctx.separationDot()!=null;
         }
 
         @Override
@@ -405,7 +438,8 @@ public class MensImporter {
             Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Mensural rest {0}", ctx.getText());
 
             super.exitRest(ctx);
-            SimpleRest rest = new SimpleRest(lastFigure, lastDots);
+            SimpleRest rest = new SimpleRest(lastFigure, lastAgumentationDots);
+            rest.getAtomFigure().setFollowedByMensuralDivisionDot(lastHasSeparationDot);
             handlePerfectionColoration(rest);
             humdrumMatrix.addItemToCurrentRow(ctx.getText(), rest);
         }
@@ -484,7 +518,8 @@ public class MensImporter {
             }
 
             ScientificPitch scientificPitch = new ScientificPitch(new PitchClass(nn, acc), octave);
-            SimpleNote note = new SimpleNote(lastFigure, lastDots, scientificPitch);
+            SimpleNote note = new SimpleNote(lastFigure, lastAgumentationDots, scientificPitch);
+            note.getAtomFigure().setFollowedByMensuralDivisionDot(lastHasSeparationDot);
 
             if (ctx.alterationVisualMode() != null) {
                 switch (ctx.alterationVisualMode().getText()) {
@@ -566,6 +601,9 @@ public class MensImporter {
 
             boolean debugLexer = false;
             mensLexer lexer = new MensLexer(input, debugLexer);
+
+            //new ANTLRUtils().printLexer(lexer);
+
             lexer.addErrorListener(errorListener);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             mensParser parser = new mensParser(tokens);
@@ -576,7 +614,6 @@ public class MensImporter {
             Loader loader = new Loader();
             walker.walk(loader, tree);
             if (errorListener.getNumberErrorsFound() != 0) {
-
                 throw new ImportException(errorListener.getNumberErrorsFound() + " errors found in "
                         + inputDescription + "\n" + errorListener.toString());
             }

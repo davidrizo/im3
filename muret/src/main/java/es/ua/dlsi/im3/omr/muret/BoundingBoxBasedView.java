@@ -104,6 +104,7 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
 
         backgroundColor = getColor(color, FILL_OPACITY);
         rectangle.setStroke(getColor(color, 1));
+
         initInteraction();
     }
 
@@ -175,8 +176,6 @@ public abstract class BoundingBoxBasedView<OwnerType extends IOMRBoundingBox> ex
         });
         doHighlight(false);
         this.selected.setValue(false);
-
-
     }
 
     private Color getColor(Color color, double opacity) {

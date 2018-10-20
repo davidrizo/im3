@@ -275,7 +275,7 @@ public class MusicXMLExporter implements ISongExporter {
                 Iterator<Measure> itm = measures.iterator();
 
                 // I don't know which staff contains the manual system breaks, so I iterate over all staffs
-                HashMap<Time, SystemBreak> system_breaks = new HashMap<>();
+                HashMap<Time, PartSystemBreak> system_breaks = new HashMap<>();
                 for (Staff st : part.getStaves())
                     system_breaks.putAll(st.getSystemBreaks());
 
@@ -528,7 +528,7 @@ public class MusicXMLExporter implements ISongExporter {
      * @param systemBreaks
      * @throws IM3Exception
      */
-    private void openBar(boolean useFClef, Measure measure, ScorePart part, Tempo tempo, HashMap<Time, SystemBreak> systemBreaks) throws IM3Exception {
+    private void openBar(boolean useFClef, Measure measure, ScorePart part, Tempo tempo, HashMap<Time, PartSystemBreak> systemBreaks) throws IM3Exception {
         // reset backup
         backup = 0;
         if (measure.getTime().equals(Time.TIME_ZERO) && measure.getSong().isAnacrusis())
@@ -546,7 +546,7 @@ public class MusicXMLExporter implements ISongExporter {
                     end(sb, 3, "print");
 
                 } else {
-                    SystemBreak systemBreak = systemBreaks.get(measure.getTime());
+                    PartSystemBreak systemBreak = systemBreaks.get(measure.getTime());
                     if (systemBreak != null && systemBreak.isManual()) {
                         start(sb, 3, "print", "new-system", "yes");
                         start(sb, 4, "system-layout");

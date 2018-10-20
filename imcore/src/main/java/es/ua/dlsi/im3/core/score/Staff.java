@@ -92,12 +92,12 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
     /**
      * Explicit system breaks
      */
-    HashMap<Time, SystemBreak> systemBreaks;
+    HashMap<Time, PartSystemBreak> systemBreaks;
     // TODO: 17/11/17 A system
     /**
-     * Explicit system breaks
+     * Explicit page breaks
      */
-    HashMap<Time, PageBreak> pageBreaks;
+    HashMap<Time, PartPageBreak> pageBreaks;
 
     /**
      * Parts represented in this staff, usually it will be just 1 part
@@ -454,7 +454,8 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	}
 
     public void addMarkBarline(MarkBarline ts) throws IM3Exception {
-        MarkBarline prev = markBarlines.get(ts.getTime());
+        MarkBarline prev = null;
+
         if (prev != null) {
             if (prev.equals(ts)) {
                 throw new IM3Exception("Inserting twice the same mark bar line " + ts);
@@ -949,7 +950,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
     }
 
 
-    public void addSystemBreak(SystemBreak sb) throws IM3Exception {
+    public void addSystemBreak(PartSystemBreak sb) throws IM3Exception {
         if (sb.getTime() == null) {
             throw new IM3Exception("System break has not time set");
         }
@@ -958,7 +959,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         this.coreSymbols.add(sb);
     }
 
-    public HashMap<Time, SystemBreak> getSystemBreaks() {
+    public HashMap<Time, PartSystemBreak> getSystemBreaks() {
         return systemBreaks;
     }
 
@@ -966,14 +967,14 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         return systemBreaks.containsKey(time);
     }
 
-    public void addPageBreak(PageBreak sb) throws IM3Exception {
+    public void addPageBreak(PartPageBreak sb) throws IM3Exception {
         if (sb.getTime() == null) {
             throw new IM3Exception("Page break has not time set");
         }
         pageBreaks.put(sb.getTime(), sb);
     }
 
-    public HashMap<Time, PageBreak> getPageBreaks() {
+    public HashMap<Time, PartPageBreak> getPageBreaks() {
         return pageBreaks;
     }
 

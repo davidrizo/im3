@@ -29,4 +29,6 @@ public interface ISymbolFromImageDataRecognizer {
      * @return Orderred list of AgnosticSymbol with positionInStaff or not depending on the classifier
      */
     NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImagePrototype> recognize(GrayscaleImageData imageData) throws IM3Exception;
+
+    String toString();
 }

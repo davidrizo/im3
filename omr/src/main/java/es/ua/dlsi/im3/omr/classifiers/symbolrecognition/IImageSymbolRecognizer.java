@@ -13,4 +13,5 @@ import java.util.List;
  */
 public interface IImageSymbolRecognizer {
     List<Symbol> recognize(File file) throws IM3Exception;
+    String toString();
 }

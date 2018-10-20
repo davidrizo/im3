@@ -103,4 +103,8 @@ public class NearestNeighbourSymbolFromImageRecognizer extends NearestNeighbourC
         }
     }
 
+    @Override
+    public String toString() {
+        return "Nearest neighbour";
+    }
 }

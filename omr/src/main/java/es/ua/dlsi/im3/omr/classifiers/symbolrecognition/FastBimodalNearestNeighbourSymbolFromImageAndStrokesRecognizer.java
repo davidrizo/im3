@@ -271,4 +271,10 @@ public class FastBimodalNearestNeighbourSymbolFromImageAndStrokesRecognizer impl
             n++;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Fast bimodal nearest neighbour";
+    }
+
 }

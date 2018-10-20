@@ -29,6 +29,17 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 
 	String ID;
 
+	/**
+	 * Use with caution. Used just by some converter of the library, such as MensImporter
+	 * @param number
+	 */
+	public ScorePart(int number) {
+		this.scoreSong = null;
+		this.number = number;
+		this.layers = new LinkedHashMap<>();
+		this.staves = new ArrayList<>();
+	}
+
 	public ScorePart(ScoreSong scoreSong, int number) {
 		this.scoreSong = scoreSong;
 		this.number = number;
@@ -47,7 +58,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 	 */
 	@Override
 	public String toString() {
-		return "ScorePart [name=" + name + "]";
+		return "ScorePart [name=" + name + ", number = " + number + "]";
 	}
 
 	public Time computeScoreDuration() throws IM3Exception {
@@ -427,7 +438,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 	}
 
     /**
-     * Use with caution. Used just by some converters of the library
+     * Use with caution. Used just by some converter of the library
      */
     public void setSong(ScoreSong song) {
         this.scoreSong = song;

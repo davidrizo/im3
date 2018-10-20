@@ -51,7 +51,7 @@ public class SymbolsOrderer {
 	// order them, the order of classes will be:
 	// first clefs, next instrumentKey signature, then time signature, finally sounding
 	// symbols
-	static int compareClasses(ITimedElementInStaff o1, ITimedElementInStaff o2) {
+	public static int compareClasses(ITimedElementInStaff o1, ITimedElementInStaff o2) {
         int order1 = getClassOrder(o1);
         int order2 = getClassOrder(o2);
 		if (order1 == order2) {

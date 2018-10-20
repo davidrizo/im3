@@ -68,9 +68,9 @@ import net.sf.saxon.aelfred.DefaultHandler;
  * <tr><td colspan=2><center><em>Features ... URL prefix is
  * <b>http://xml.org/sax/features/</b></em></center></td></tr>
  *
- * <tr><td>(URL)/external-general-entities</td>
+ * <tr><td>(URL)/external-general-entity</td>
  *	<td>Value is fixed at <em>true</em></td></tr>
- * <tr><td>(URL)/external-parameter-entities</td>
+ * <tr><td>(URL)/external-parameter-entity</td>
  *	<td>Value is fixed at <em>true</em></td></tr>
  * <tr><td>(URL)/namespace-prefixes</td>
  *	<td>Value defaults to <em>false</em> (but XML 1.0 names are
@@ -87,7 +87,7 @@ import net.sf.saxon.aelfred.DefaultHandler;
  *
  * <tr><td>(URL)/declaration-handler</td>
  *	<td>A declaration handler may be provided.  Declaration of general
- *	entities is exposed, but not parameter entities; none of the entity
+ *	entity is exposed, but not parameter entity; none of the entity
  *	names reported here will begin with "%". </td></tr>
  * <tr><td>(URL)/lexical-handler</td>
  *	<td>A lexical handler may be provided.  Entity boundaries and
@@ -177,7 +177,7 @@ public class SAXDriver
 
     /**
      * <b>SAX2</b>: Returns the object used when resolving external
-     * entities during parsing (both general and parameter entities).
+     * entity during parsing (both general and parameter entity).
      */
     public EntityResolver getEntityResolver ()
     {
@@ -198,7 +198,7 @@ public class SAXDriver
 
     /**
      * <b>SAX2</b>: Returns the object used to process declarations related
-     * to notations and unparsed entities.
+     * to notations and unparsed entity.
      */
     public DTDHandler getDTDHandler ()
     {
@@ -310,7 +310,7 @@ public class SAXDriver
         		systemId = tryToExpand(systemId);
 
         		// duplicate first entry, in case startDocument handler
-        		// needs to use Locator.getSystemId(), before entities
+        		// needs to use Locator.getSystemId(), before entity
         		// start to get reported by the parser
 
         		//if (systemId != null)
@@ -367,9 +367,9 @@ public class SAXDriver
 	if ((FEATURE + "validation").equals (featureId))
 	    return false;
 
-	// external entities (both types) are currently always included
-	if ((FEATURE + "external-general-entities").equals (featureId)
-		|| (FEATURE + "external-parameter-entities").equals (featureId))
+	// external entity (both types) are currently always included
+	if ((FEATURE + "external-general-entity").equals (featureId)
+		|| (FEATURE + "external-parameter-entity").equals (featureId))
 	    return true;
 
 	// element/attribute names are as written in document; no mangling
@@ -848,7 +848,7 @@ public class SAXDriver
 	    }
 	}
 
-	// Next, report all entities.
+	// Next, report all entity.
 	if (dtdHandler != base || declHandler != base) {
 	    Enumeration	entityNames = parser.declaredEntities ();
 	    int	type;

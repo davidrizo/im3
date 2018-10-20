@@ -2,9 +2,7 @@ package es.ua.dlsi.im3.omr.encoding;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.io.ScoreSongImporter;
-import es.ua.dlsi.im3.core.score.io.musicxml.MusicXMLImporter;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import org.junit.Test;
 

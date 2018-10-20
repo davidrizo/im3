@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.XMLSAXScoreSongImporter;
@@ -33,7 +31,6 @@ import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureFactory;
 import es.ua.dlsi.im3.core.score.mensural.meters.*;
 import org.apache.commons.lang3.math.Fraction;
-import org.xml.sax.SAXException;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
@@ -559,7 +556,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     Time sbtime = getCurrentTime();
                     // TODO: 17/11/17 A system en lugar de staff
                     if (!lastStaff.hasSystemBreak(sbtime )) {
-                        lastStaff.addSystemBreak(new SystemBreak(sbtime, true));
+                        lastStaff.addSystemBreak(new PartSystemBreak(sbtime, true));
                     }
                     break;
                 case "pb":
@@ -568,7 +565,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     Time pbtime = getCurrentTime();
                     // TODO: 17/11/17 A system en lugar de staff
                     if (!lastStaff.hasPageBreak(pbtime )) {
-                        lastStaff.addPageBreak(new PageBreak(pbtime, true));
+                        lastStaff.addPageBreak(new PartPageBreak(pbtime, true));
                     }
                     break;
 				case "barLine":

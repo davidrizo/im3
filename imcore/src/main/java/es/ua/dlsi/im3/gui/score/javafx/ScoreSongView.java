@@ -93,7 +93,7 @@ public class ScoreSongView {
 
 
     private void registerNodeInteraction(GraphicsElement element, Node node) throws IM3Exception {
-        // used to identify the interaction - we use ID and not directly object to unify the method with web services
+        // used to identify the interaction - we use ID and not directly object to unify the method with web service
         interactionPresenter.register(element);
         node.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
             @Override

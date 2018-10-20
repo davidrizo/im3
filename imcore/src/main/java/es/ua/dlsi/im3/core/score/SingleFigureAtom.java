@@ -16,6 +16,7 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
      * True if it is a grace note
      */
     private boolean grace;
+
     private HashSet<StaffMark> marks;
 
     private StemDirection explicitStemDirection;

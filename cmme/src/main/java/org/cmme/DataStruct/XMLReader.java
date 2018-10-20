@@ -64,7 +64,7 @@ public class XMLReader
 /*------------------------------------------------------------------------
 Inner Class: CMMEEntityResolver
 Implements:  org.xml.sax.EntityResolver
-Purpose:     Resolves entities so that the CMME music schema is always
+Purpose:     Resolves entity so that the CMME music schema is always
              loaded from the same location (regardless of the location of
              individual .cmme.xml docs)
 ------------------------------------------------------------------------*/
