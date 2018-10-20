@@ -20,7 +20,9 @@ options { tokenVocab=mensLexer; } // use tokens from mensLexer.g4
 
 // start rule
 //start: (referenceRecord EOL)* header (EOL record)+ EOL? (referenceRecord EOL?)* EOF;
-start: header (EOL record)+ EOL? EOF;
+start: header (eol record)+ eol? EOF;
+
+eol: FREE_TEXT_EOL | EOL;
 
 /*referenceRecord:
     composer
@@ -64,10 +66,11 @@ record
     |
     fieldCommentLine;
 
-fields: field (TAB field)*;
+tab: TAB | FREE_TEXT_TAB;
+fields: field (tab field)*;
 
 fieldCommentLine:
-    fieldComment ((TAB | FREE_TEXT_TAB) fieldComment)*;
+    fieldComment (tab fieldComment)*;
 
 
 // e.g. !! This is a comment that spans several spines until the end of line

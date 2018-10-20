@@ -20,7 +20,7 @@ import java.util.ArrayList;
     private void incSpine() {
         currentSpine++;
         if (inTextSpine()) {
-            pushMode(FREE_TEXT);
+            mode(FREE_TEXT);
         } else {
             mode(0);
         }

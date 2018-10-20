@@ -76,19 +76,18 @@ public class HumdrumMatrix2ScoreSong {
                         ScoreLayer layer = getSpineLayer(spine);
                         Atom atom = (Atom) item.getParsedObject();
                         layer.add(atom);
-                    } else if (item.getHumdrumEncoding().equals("!!sb")) {
-                        System.out.println("SB!!!!");
+                    } else if (item.getHumdrumEncoding().equals("!sb")) {
                         //TODO Normalizar esto
                         ScoreLayer layer = getSpineLayer(spine);
                         PartSystemBreak partSystemBreak = new PartSystemBreak(layer.getDuration(), true);
                         layer.getStaff().addSystemBreak(partSystemBreak);
 
-                    } else if (item.getHumdrumEncoding().equals("!!pb")) {
+                    } else if (item.getHumdrumEncoding().equals("!pb")) {
                         //TODO Normalizar esto
                         ScoreLayer layer = getSpineLayer(spine);
                         PartPageBreak partPageBreak = new PartPageBreak(layer.getDuration(), true);
                         layer.getStaff().addPageBreak(partPageBreak);
-                    } else {
+                    } else if (!item.getHumdrumEncoding().equals("!")) {
                     //TODO Acabar
                         System.err.println("TO-DO: " + item.getHumdrumEncoding());
                     }

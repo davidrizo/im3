@@ -16,10 +16,7 @@ import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.antlr.v4.gui.TreeViewer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
@@ -35,7 +32,10 @@ import java.util.logging.Logger;
  * @author drizo
  */
 public class MensImporter {
+    private boolean debug;
+
     public static class Loader extends mensParserBaseListener {
+        private final Parser parser;
         private int ksNotesCount;
         private String keyChangeString;
         private Mode keyChangeMode;
@@ -48,12 +48,33 @@ public class MensImporter {
         private int lastAgumentationDots;
         private boolean lastHasSeparationDot;
         private boolean inLigature;
+        private boolean debug;
 
-
-        public Loader() {
-            humdrumMatrix = new HumdrumMatrix();
-            inLigature = false;
+        public Loader(Parser parser, boolean debug) {
+            this.humdrumMatrix = new HumdrumMatrix();
+            this.inLigature = false;
+            this.debug = debug;
+            this.parser = parser;
         }
+
+        @Override
+        public void enterEveryRule(ParserRuleContext ctx) {
+            super.enterEveryRule(ctx);
+            if (debug) {
+                System.out.println(ANTLRUtils.getRuleDescription(parser, ctx, "Enter"));
+            }
+        }
+
+        @Override
+        public void exitEveryRule(ParserRuleContext ctx) {
+            super.enterEveryRule(ctx);
+            if (debug) {
+                System.out.print(ANTLRUtils.getRuleDescription(parser, ctx, "Exit"));
+                //System.out.print(", next token: " + parser.getTokenStream().getTokenSource().
+                System.out.println();
+            }
+        }
+
 
         @Override
         public void exitHeaderMens(mensParser.HeaderMensContext ctx) {
@@ -577,32 +598,16 @@ public class MensImporter {
         }
     }
 
-    static class MensLexer extends mensLexer {
-        boolean debug = false;
-        public MensLexer(CharStream input, boolean debug) {
-            super(input);
-            this.debug = debug;
-        }
-
-        @Override
-        public Token nextToken() {
-            Token token = super.nextToken();
-            if (debug) {
-                System.out.println("Lexer: '" + token + "'");
-            }
-            return token;
-        }
-    }
-
     private HumdrumMatrix importMens(CharStream input, String inputDescription) throws ImportException {
         ErrorListener errorListener = new ErrorListener();
         try {
             Logger.getLogger(MensImporter.class.getName()).log(Level.INFO, "Parsing {0}", inputDescription);
 
-            boolean debugLexer = false;
-            mensLexer lexer = new MensLexer(input, debugLexer);
+            mensLexer lexer = new mensLexer(input);
 
-            //new ANTLRUtils().printLexer(lexer);
+            if (debug) {
+                new ANTLRUtils().printLexer(lexer);
+            }
 
             lexer.addErrorListener(errorListener);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -611,7 +616,7 @@ public class MensImporter {
 
             ParseTree tree = parser.start();
             ParseTreeWalker walker = new ParseTreeWalker();
-            Loader loader = new Loader();
+            Loader loader = new Loader(parser, debug);
             walker.walk(loader, tree);
             if (errorListener.getNumberErrorsFound() != 0) {
                 throw new ImportException(errorListener.getNumberErrorsFound() + " errors found in "
@@ -642,5 +647,13 @@ public class MensImporter {
     public HumdrumMatrix importMens(String string) throws ImportException {
         CharStream input = CharStreams.fromString(string);
         return importMens(input, string);
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }

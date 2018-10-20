@@ -38,6 +38,8 @@ public class Mens2AgnosticAndSemantic {
 
     private void run(File file, File outputFolder) throws IM3Exception, IOException {
         MensImporter importer = new MensImporter();
+        importer.setDebug(false);
+
         HumdrumMatrix humdrumMatrix = importer.importMens(file);
         HumdrumMatrix2ScoreSong humdrumMatrix2ScoreSong = new HumdrumMatrix2ScoreSong();
         ScoreSong scoreSong = humdrumMatrix2ScoreSong.convert(humdrumMatrix);

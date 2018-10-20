@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * @author drizo
  */
 public class Importer {
-    private void doImport(CharStream input, String inputDescription) throws Exception {
+    private void doImport(CharStream input) {
         mensLexer lexer = new mensLexer(input);
 
         System.out.println("------- LEXER ------");
@@ -47,15 +47,15 @@ public class Importer {
     public void doImport(File file) throws Exception {
         try {
             CharStream input = CharStreams.fromFileName(file.getAbsolutePath());
-            doImport(input, file.getAbsolutePath());
+            doImport(input);
         } catch (IOException e) {
             throw new Exception(e);
         }
     }
 
-    public void doImport(String string) throws Exception {
+    public void doImport(String string)  {
         CharStream input = CharStreams.fromString(string);
-        doImport(input, string);
+        doImport(input);
     }
 
     public static final void main(String [] args) throws Exception {
@@ -72,7 +72,8 @@ public class Importer {
                 break;
             }
 
-            System.out.println("Token: <" + token.getText() + ">");
+            System.out.println("Token: <" + token.getText() + "> @ (" + token.getLine() + ", " + token.getCharPositionInLine() + ")");
         }
+        ((Lexer) tokenSource).reset();
     }
 }
