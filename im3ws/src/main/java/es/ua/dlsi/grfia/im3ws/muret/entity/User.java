@@ -2,6 +2,9 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 
 import javax.persistence.*;
 
+/**
+ * @author drizo
+ */
 @Entity
 public class User {
     @Id

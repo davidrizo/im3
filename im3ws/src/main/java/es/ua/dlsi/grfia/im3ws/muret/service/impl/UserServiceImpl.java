@@ -7,9 +7,9 @@ import es.ua.dlsi.grfia.im3ws.service.impl.CRUDServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
+/**
+ * @author drizo
+ */
 @Service
 public class UserServiceImpl extends CRUDServiceImpl<User, Integer, UserRepository> implements UserService {
     @Autowired

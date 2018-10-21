@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author drizo
+ */
 @Service
 public abstract class CRUDServiceImpl<EntityType, PrimaryKeyType, BaseJPARepositoryType extends JpaRepository<EntityType, PrimaryKeyType>> implements ICRUDService<EntityType, PrimaryKeyType> {
     BaseJPARepositoryType repository;

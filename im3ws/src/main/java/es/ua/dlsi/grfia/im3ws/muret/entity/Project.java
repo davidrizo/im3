@@ -3,6 +3,9 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * @author drizo
+ */
 @Entity
 public class Project {
     @Id
@@ -90,5 +93,18 @@ public class Project {
 
     public void setChangedBy(User changedBy) {
         this.changedBy = changedBy;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                ", created=" + created +
+                ", lastChange=" + lastChange +
+                ", createdBy=" + createdBy +
+                ", changedBy=" + changedBy +
+                '}';
     }
 }

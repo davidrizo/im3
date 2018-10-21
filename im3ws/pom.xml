@@ -23,6 +23,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-statemachine.version>2.0.1.RELEASE</spring-statemachine.version>
+        <!--<maven.test.skip>true</maven.test.skip>-->
     </properties>
 
     <dependencies>
@@ -53,6 +54,12 @@
             <scope>test</scope>
         </dependency>
         -->
+        <dependency> <!-- used for testing purposes -->
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+            <version>1.4.194</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
