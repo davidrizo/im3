@@ -20,11 +20,11 @@ public class Project {
     private Date created;
     @Column
     private Date lastChange;
-    //@Column (name = "createdBy")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="created_by", referencedColumnName="id")
     private User createdBy;
-    //@Column (name = "changedBy")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="changed_by", referencedColumnName="id")
     private User changedBy;
 
     public Project() {

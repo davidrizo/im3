@@ -1,6 +1,8 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author drizo
@@ -44,5 +46,6 @@ public class User {
                 ", username='" + username + '\'' +
                 '}';
     }
+
 }
 
