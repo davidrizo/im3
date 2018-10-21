@@ -8,6 +8,11 @@ import es.ua.dlsi.im3.core.score.io.kern.HumdrumMatrix2ScoreSong;
 import es.ua.dlsi.im3.core.score.io.kern.MensImporter;
 import es.ua.dlsi.im3.core.score.io.lilypond.LilypondExporter;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import es.ua.dlsi.im3.omr.encoding.Encoder;
+import es.ua.dlsi.im3.omr.encoding.Exporter;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticExporter;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +68,13 @@ public class Mens2AgnosticAndSemantic {
             lilypondExporterPart.exportPart(lilypondPart, part);
         }
 
-        //TODO Codificador semántico y agnóstico
+        Encoder encoder = new Encoder(AgnosticVersion.v2, true);
+        encoder.encode(scoreSong);
+        Exporter agnosticExporter = new AgnosticExporter(AgnosticVersion.v2);
+        agnosticExporter.export(encoder.getAgnosticEncoding(), new File(outputFolder, "out.agnostic"));
+
+        Exporter semanticExporter = new SemanticExporter();
+        semanticExporter.export(encoder.getSemanticEncoding(), new File(outputFolder, "out.semantic"));
+
     }
 }

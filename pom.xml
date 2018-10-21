@@ -22,6 +22,7 @@
         <module>imvisual</module>
         <module>muret</module>
         <module>grammardevelopment</module>
+        <module>im3ws</module>
     </modules>
 
     <properties>
