@@ -43,7 +43,7 @@ public class ProjectRepositoryTests {
         entityManager.flush();
 
         Date now = new Date();
-        Project project = new Project("Proyecto prueba", "prueba", now, now, admin, david);
+        Project project = new Project("Proyecto prueba", "prueba", now, now, admin, david, null);
         entityManager.persist(project);
         entityManager.flush();
 

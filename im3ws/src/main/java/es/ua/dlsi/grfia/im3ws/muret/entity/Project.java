@@ -2,6 +2,7 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author drizo
@@ -27,16 +28,27 @@ public class Project {
     @JoinColumn(name="changed_by", referencedColumnName="id")
     private User changedBy;
 
+    @OneToMany(fetch=FetchType.EAGER)
+    @JoinColumn(name="project_id", referencedColumnName="id")
+    private List<Image> images;
+
+    /**
+     * The image used as identifying image
+     */
+    @Column (name = "poster_frame_path")
+    private String posterFramePath;
+
     public Project() {
     }
 
-    public Project(String name, String path, Date created, Date lastChange, User createdBy, User changedBy) {
+    public Project(String name, String path, Date created, Date lastChange, User createdBy, User changedBy, List<Image> images) {
         this.name = name;
         this.path = path;
         this.created = created;
         this.lastChange = lastChange;
         this.createdBy = createdBy;
         this.changedBy = changedBy;
+        this.images = images;
     }
 
     public Integer getId() {
@@ -93,6 +105,22 @@ public class Project {
 
     public void setChangedBy(User changedBy) {
         this.changedBy = changedBy;
+    }
+
+    public String getPosterFramePath() {
+        return posterFramePath;
+    }
+
+    public void setPosterFramePath(String posterFramePath) {
+        this.posterFramePath = posterFramePath;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
     @Override
