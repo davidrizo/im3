@@ -28,6 +28,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>es.ua.dlsi.grfia</groupId>
+            <artifactId>omr</artifactId>
+            <version>3.0-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

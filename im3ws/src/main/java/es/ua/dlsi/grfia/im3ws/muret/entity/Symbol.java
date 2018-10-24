@@ -2,6 +2,7 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 
 import javax.persistence.*;
 
@@ -32,14 +33,15 @@ public class Symbol {
     private Strokes strokes;
 
     @Column (name="agnostic_encoding")
-    private String agnosticEncoding;
+    @Convert(converter = AgnosticSymbolConverter.class)
+    private AgnosticSymbol agnosticSymbol;
 
     public Symbol() {
     }
 
-    public Symbol(Region region, String agnosticEncoding, BoundingBox boundingBox, Strokes strokes) {
+    public Symbol(Region region, AgnosticSymbol agnosticSymbol, BoundingBox boundingBox, Strokes strokes) {
         this.region = region;
-        this.agnosticEncoding = agnosticEncoding;
+        this.agnosticSymbol = agnosticSymbol;
         this.boundingBox = boundingBox;
         this.strokes = strokes;
     }
@@ -52,15 +54,25 @@ public class Symbol {
         this.id = id;
     }
 
-    public String getAgnosticEncoding() {
-        return agnosticEncoding;
+    @JsonIgnore // use getAgnosticSymbolType + getPositionInStaff instead
+    public AgnosticSymbol getAgnosticSymbol() {
+        return agnosticSymbol;
     }
 
-    public void setAgnosticEncoding(String agnosticEncoding) {
-        this.agnosticEncoding = agnosticEncoding;
+    @Transient
+    public String getAgnosticSymbolType() {
+        return agnosticSymbol.getSymbol().toAgnosticString();
     }
 
-    @JsonIgnore
+    @Transient
+    public String getPositionInStaff() {
+        return agnosticSymbol.getPositionInStaff().toString();
+    }
+
+    public void setAgnosticSymbol(AgnosticSymbol agnosticSymbol) {
+        this.agnosticSymbol = agnosticSymbol;
+    }
+
     public Region getRegion() {
         return region;
     }

@@ -9,7 +9,7 @@ public class IPadStrokes extends Strokes {
     public static final String PREFIX = "I:";
 
     @Override
-    public List<? extends Stroke> getStrokes() {
+    public List<? extends Stroke> getStrokeList() {
         return null;
     }
 

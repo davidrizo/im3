@@ -64,7 +64,7 @@
                   <Menu mnemonicParsing="false" text="View">
                     <items>
                       <MenuItem fx:id="menuViewComments" mnemonicParsing="false" onAction="#handleShowHideComments" text="Hide comments" />
-                        <MenuItem fx:id="menuHideStrokes" mnemonicParsing="false" onAction="#handleShowHideStrokes" text="Hide strokes" />
+                        <MenuItem fx:id="menuHideStrokes" mnemonicParsing="false" onAction="#handleShowHideStrokes" text="Hide strokeList" />
                     </items>
                   </Menu>
                 <Menu mnemonicParsing="false" text="Help">

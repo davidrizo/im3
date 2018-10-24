@@ -1,6 +1,13 @@
 <div class="row" id="image">
   <div class="offset-1 col-10">
     <img class="img-fluid" src="{{image.path}}" alt="Image">
+    <div id="canvas" #imageSurface></div>
   </div>
-  <div #surface></div>
+  <div class="row" id="agnostic">
+    <div class="offset-1 col-10">
+      <div id="staff" #agnosticSurface></div>
+      <!--<svg-icon src="https://upload.wikimedia.org/wikipedia/commons/f/fb/C_%28indication_de_mesure%29.svg"></svg-icon>-->
+      <!--<p *ngFor="let svgpath of svgOfSymbols">HOLA: {{svgpath}}</p>-->
+      <svg-icon *ngFor="let svgpath of svgOfSymbols" src="{{svgpath}}"></svg-icon>
+  </div>
 </div>

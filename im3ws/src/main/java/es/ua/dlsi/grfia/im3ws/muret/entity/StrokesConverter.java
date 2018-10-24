@@ -21,7 +21,7 @@ public class StrokesConverter implements AttributeConverter<Strokes, String> {
             try {
                 return CalcoStrokes.parse(s);
             } catch (IOException e) {
-                String message = "Cannot parse strokes string: '" + s + "'";
+                String message = "Cannot parse strokeList string: '" + s + "'";
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, message, e);
                 throw new RuntimeException(message);
             }

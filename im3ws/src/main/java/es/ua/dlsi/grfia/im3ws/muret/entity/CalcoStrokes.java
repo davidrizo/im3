@@ -1,7 +1,5 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
-import org.springframework.aop.ThrowsAdvice;
-
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,27 +12,27 @@ public class CalcoStrokes extends Strokes {
     private static final String STROKESEP = "&";
     private static final String COMMA = ",";
     private static final String SEMICOLON = ";";
-    List<CalcoStroke> strokes;
+    List<CalcoStroke> strokeList;
 
-    public CalcoStrokes(List<CalcoStroke> strokes) {
-        this.strokes = strokes;
+    public CalcoStrokes(List<CalcoStroke> strokeList) {
+        this.strokeList = strokeList;
     }
 
     public CalcoStrokes() {
-        this.strokes = new LinkedList<>();
+        this.strokeList = new LinkedList<>();
     }
 
     public void addStroke(CalcoStroke stroke) {
-        this.strokes.add(stroke);
+        this.strokeList.add(stroke);
     }
 
     @Override
-    public List<? extends Stroke> getStrokes() {
-        return strokes;
+    public List<? extends Stroke> getStrokeList() {
+        return strokeList;
     }
 
-    public void setStrokes(List<CalcoStroke> strokes) {
-        this.strokes = strokes;
+    public void setStrokeList(List<CalcoStroke> strokeList) {
+        this.strokeList = strokeList;
     }
 
     public static CalcoStrokes parse(String s) throws IOException {
@@ -69,7 +67,7 @@ public class CalcoStrokes extends Strokes {
 
         stringBuilder.append(PREFIX); // To denote type
         boolean first = true;
-        for (CalcoStroke stroke: strokes) {
+        for (CalcoStroke stroke: strokeList) {
             if (first) {
                 first = false;
             } else {

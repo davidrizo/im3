@@ -1,3 +1,23 @@
 #image {
-  max-height: 100%;
+  max-height: 80%;
+}
+
+#agnostic {
+  height: 20%;
+}
+
+#agnostic div {
+  background-color: white;
+}
+
+#canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#staff {
+  /*position: absolute;*/
+  left: 0;
+  top: 0;
 }
