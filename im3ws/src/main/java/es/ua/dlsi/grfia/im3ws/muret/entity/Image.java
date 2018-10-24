@@ -1,9 +1,12 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author drizo
@@ -18,14 +21,16 @@ public class Image {
     private String path;
     @Column
     private int ordering;
-    @JsonIgnore // avoid circular references in REST result
-    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+
+    @JsonBackReference
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="project_id", referencedColumnName="id")
     private Project project;
 
+    @JsonManagedReference
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="image_id", referencedColumnName="id")
-    private Set<Page> pages;
+    private List<Page> pages;
 
 
     public Image() {
@@ -35,7 +40,7 @@ public class Image {
         this.path = path;
         this.project = project;
     }
-
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Long getId() {
         return id;
     }
@@ -44,6 +49,7 @@ public class Image {
         this.id = id;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public String getPath() {
         return path;
     }
@@ -60,6 +66,7 @@ public class Image {
         this.project = project;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public int getOrdering() {
         return ordering;
     }
@@ -68,11 +75,11 @@ public class Image {
         this.ordering = ordering;
     }
 
-    public Set<Page> getPages() {
+    public List<Page> getPages() {
         return pages;
     }
 
-    public void setPages(Set<Page> pages) {
+    public void setPages(List<Page> pages) {
         this.pages = pages;
     }
 

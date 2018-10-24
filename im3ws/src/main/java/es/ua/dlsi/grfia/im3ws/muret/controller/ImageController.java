@@ -17,7 +17,6 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
     @Autowired
     ImageService imageService;
 
-
     @Override
     protected ImageService initService() {
         return imageService;

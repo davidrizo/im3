@@ -1,6 +1,7 @@
 package es.ua.dlsi.grfia.im3ws.muret.controller;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.service.ProjectService;

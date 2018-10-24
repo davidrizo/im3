@@ -1,5 +1,7 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
+import java.util.Objects;
+
 /**
  * This is not persistent, it is constructed from the string fromX,fromY,toX,toY stored in the database
  */
@@ -49,4 +51,19 @@ public class BoundingBox {
         this.toY = toY;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoundingBox that = (BoundingBox) o;
+        return fromX == that.fromX &&
+                fromY == that.fromY &&
+                toX == that.toX &&
+                toY == that.toY;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fromX, fromY, toX, toY);
+    }
 }

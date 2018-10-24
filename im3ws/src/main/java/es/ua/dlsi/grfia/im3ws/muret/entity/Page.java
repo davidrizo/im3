@@ -1,11 +1,12 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author drizo
@@ -22,19 +23,21 @@ public class Page {
     @Column (name = "bounding_box")
     @Convert(converter = BoundingBoxConverter.class)
     private BoundingBox boundingBox;
-    @JsonIgnore // avoid circular references in REST result
-    @ManyToOne(cascade = CascadeType.ALL)
+
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="image_id", referencedColumnName="id")
     Image image;
 
+    @JsonManagedReference
     @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name="page_id", referencedColumnName="id")
-    private Set<Region> regions;
+    private List<Region> regions;
 
     public Page() {
     }
 
-    public Page(BoundingBox boundingBox, Image image, Set<Region> regions) throws IM3WSException {
+    public Page(BoundingBox boundingBox, Image image, List<Region> regions) throws IM3WSException {
         this.boundingBox = boundingBox;
         this.image = image;
         this.regions = regions;
@@ -50,10 +53,10 @@ public class Page {
     public BoundingBox getBoundingBox() {
         return boundingBox;
     }
-    public final void setBoundingBox(BoundingBox boundingBox) throws IM3WSException {
+    public void setBoundingBox(BoundingBox boundingBox) throws IM3WSException {
         this.boundingBox = boundingBox;
     }
-
+    @JsonIgnore
     public Image getImage() {
         return image;
     }
@@ -62,11 +65,11 @@ public class Page {
         this.image = image;
     }
 
-    public Set<Region> getRegions() {
+    public List<Region> getRegions() {
         return regions;
     }
 
-    public void setRegions(Set<Region> regions) {
+    public void setRegions(List<Region> regions) {
         this.regions = regions;
     }
 }

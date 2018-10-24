@@ -1,8 +1,11 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author drizo
@@ -21,17 +24,24 @@ public class Region {
     @Convert(converter = BoundingBoxConverter.class)
     private BoundingBox boundingBox;
 
-    @JsonIgnore // avoid circular references in REST result
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="page_id", referencedColumnName="id")
     private Page page;
+
+    @JsonManagedReference
+    @OneToMany(fetch=FetchType.EAGER)
+    @JoinColumn(name="region_id", referencedColumnName="id")
+    private List<Symbol> symbols;
+
 
     public Region() {
     }
 
-    public Region(BoundingBox boundingBox, Page page) {
+    public Region(BoundingBox boundingBox, Page page, List<Symbol> symbols) {
         this.boundingBox = boundingBox;
         this.page = page;
+        this.symbols = symbols;
     }
 
     public Long getId() {
@@ -50,12 +60,21 @@ public class Region {
         this.boundingBox = boundingBox;
     }
 
+    @JsonIgnore
     public Page getPage() {
         return page;
     }
 
     public void setPage(Page page) {
         this.page = page;
+    }
+
+    public List<Symbol> getSymbols() {
+        return symbols;
+    }
+
+    public void setSymbols(List<Symbol> symbols) {
+        this.symbols = symbols;
     }
 
     @Override

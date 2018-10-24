@@ -1,5 +1,9 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -21,15 +25,19 @@ public class Project {
     private Date created;
     @Column
     private Date lastChange;
-    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+
+    @JsonBackReference // it avoids circular relationships
+    @ManyToOne
     @JoinColumn(name="created_by", referencedColumnName="id")
     private User createdBy;
-    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+
+    @JsonBackReference // it avoids circular relationships
+    @ManyToOne
     @JoinColumn(name="changed_by", referencedColumnName="id")
     private User changedBy;
 
-    @OneToMany(fetch=FetchType.EAGER)
-    @JoinColumn(name="project_id", referencedColumnName="id")
+    @JsonManagedReference
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "project")
     private List<Image> images;
 
     /**
@@ -50,7 +58,7 @@ public class Project {
         this.changedBy = changedBy;
         this.images = images;
     }
-
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Integer getId() {
         return id;
     }
@@ -58,7 +66,7 @@ public class Project {
     public void setId(Integer id) {
         this.id = id;
     }
-
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public String getName() {
         return name;
     }
@@ -67,6 +75,7 @@ public class Project {
         this.name = name;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public String getPath() {
         return path;
     }
@@ -75,6 +84,7 @@ public class Project {
         this.path = path;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Date getCreated() {
         return created;
     }
@@ -83,6 +93,7 @@ public class Project {
         this.created = created;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Date getLastChange() {
         return lastChange;
     }
@@ -91,6 +102,7 @@ public class Project {
         this.lastChange = lastChange;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public User getCreatedBy() {
         return createdBy;
     }
@@ -99,6 +111,7 @@ public class Project {
         this.createdBy = createdBy;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public User getChangedBy() {
         return changedBy;
     }
@@ -107,6 +120,7 @@ public class Project {
         this.changedBy = changedBy;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public String getPosterFramePath() {
         return posterFramePath;
     }
