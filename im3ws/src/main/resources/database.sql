@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Oct 23, 2018 at 08:33 PM
+-- Generation Time: Oct 24, 2018 at 04:40 AM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.8
 
@@ -41,16 +41,17 @@ INSERT INTO `hibernate_sequence` (`next_val`) VALUES
 CREATE TABLE `image` (
   `id` bigint(20) NOT NULL,
   `path` varchar(1024) NOT NULL,
-  `project_id` int(11) NOT NULL
+  `project_id` int(11) NOT NULL,
+  `ordering` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `image`
 --
 
-INSERT INTO `image` (`id`, `path`, `project_id`) VALUES
-(1, 'https://www.researchgate.net/profile/Alexander_Pacha/publication/325871786/figure/fig1/AS:639563877871616@1529495319245/A-sample-page-of-ancient-music-written-in-mensural-notation_W640.jpg', 1),
-(2, 'https://ai2-s2-public.s3.amazonaws.com/figures/2017-08-08/f0bfe867f75bf1399eaf7fd4e880bd27b7a4cc14/2-Figure1-1.png', 1);
+INSERT INTO `image` (`id`, `path`, `project_id`, `ordering`) VALUES
+(1, 'https://www.researchgate.net/profile/Alexander_Pacha/publication/325871786/figure/fig1/AS:639563877871616@1529495319245/A-sample-page-of-ancient-music-written-in-mensural-notation_W640.jpg', 1, 0),
+(2, 'https://ai2-s2-public.s3.amazonaws.com/figures/2017-08-08/f0bfe867f75bf1399eaf7fd4e880bd27b7a4cc14/2-Figure1-1.png', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -60,9 +61,17 @@ INSERT INTO `image` (`id`, `path`, `project_id`) VALUES
 
 CREATE TABLE `page` (
   `id` bigint(20) NOT NULL,
-  `bounding_box` char(32) NOT NULL COMMENT 'Format: fromX,fromY,toX,toY (all them integer)',
+  `bounding_box` varchar(255) NOT NULL COMMENT 'Format: fromX,fromY,toX,toY (all them integer)',
   `image_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `page`
+--
+
+INSERT INTO `page` (`id`, `bounding_box`, `image_id`) VALUES
+(1, '0,0,200,400', 1),
+(2, '200,400,600,400', 1);
 
 -- --------------------------------------------------------
 
@@ -97,9 +106,17 @@ INSERT INTO `project` (`id`, `name`, `created`, `path`, `lastChange`, `last_chan
 
 CREATE TABLE `region` (
   `id` bigint(20) NOT NULL,
-  `bounding_box` char(32) NOT NULL COMMENT 'Format: fromX,fromY,toX,toY (all them integer)',
+  `bounding_box` varchar(255) NOT NULL COMMENT 'Format: fromX,fromY,toX,toY (all them integer)',
   `page_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `region`
+--
+
+INSERT INTO `region` (`id`, `bounding_box`, `page_id`) VALUES
+(1, '0,0,200,300', 1),
+(2, '0,300,200,400', 1);
 
 -- --------------------------------------------------------
 
@@ -172,7 +189,7 @@ ALTER TABLE `image`
 -- AUTO_INCREMENT for table `page`
 --
 ALTER TABLE `page`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `project`
@@ -184,7 +201,7 @@ ALTER TABLE `project`
 -- AUTO_INCREMENT for table `region`
 --
 ALTER TABLE `region`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
