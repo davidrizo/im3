@@ -1,0 +1,16 @@
+<div class="row" id="projects">
+  <div class="col-7 offset-1">
+      <div *ngFor="let project of projects" class="project">
+        <a [routerLink]="['user']" [queryParams]="myObj">My User Object</a>
+        <a href="project/{{project.id}}">
+          <p><img src="{{project.posterFramePath}}" alt="Project poster frame"></p>
+          <h3>{{project.name}}</h3>
+        </a>
+      </div>
+  </div>
+
+  <div class="col-4">
+    <img src="assets/images/lastprojects.png" alt="Last projects"/>
+  </div>
+</div>
+

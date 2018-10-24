@@ -1,0 +1,11 @@
+#projects .project {
+  height: 200px;
+  float: left; /*TODO FLEX */
+  margin: 5px;
+  display: inline-block;
+  text-align: center;
+}
+
+#projects li img {
+  height: 180px;
+}

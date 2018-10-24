@@ -1,0 +1,29 @@
+.jumbotron {
+  background-color: transparent;
+}
+
+.jumbotron img {
+  width: 50%;
+  margin-bottom: 5vh;
+}
+
+.jumbotron p {
+  text-align: center;
+}
+
+#logos p {
+  text-align: center;
+}
+#logos img {
+  width: 80%;
+}
+
+footer{
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
+}
+
+footer p {
+  text-align: right;
+}
