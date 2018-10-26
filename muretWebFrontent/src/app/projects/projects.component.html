@@ -3,7 +3,7 @@
       <div *ngFor="let project of projects" class="project">
         <a [routerLink]="['user']" [queryParams]="myObj">My User Object</a>
         <a href="project/{{project.id}}">
-          <p><img src="{{project.posterFramePath}}" alt="Project poster frame"></p>
+          <p><img src="{{project.thumbnailBase64Encoding}}" alt="Project thumbnail"></p>
           <h3>{{project.name}}</h3>
         </a>
       </div>

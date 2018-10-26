@@ -42,10 +42,12 @@ export class ProjectService {
 
   public getProject$(id: number): Observable<Project> {
     this.log('ProjectService: fetching project with id ' + id);
-    return this.http.get<Project>(this.urlProject + '/get/' + id)
+    const result: Observable<Project> = this.http.get<Project>(this.urlProject + '/get/' + id)
     .pipe(
         catchError(this.handleError('getProject$ with id=' + id, null))
       );
+    this.log('ProjectService: fetched ' + result.valueOf());
+    return result;
   }
 
   public getImage$(id: number): Observable<Image> {

@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-7 offset-1">
-    <h2>{{project.name}}</h2>
+    <h2>{{project?.name}}</h2>
     <p>TO-DO Autor/compositor</p>
   </div>
 
@@ -11,10 +11,14 @@
 
 <div class="row" id="images">
   <div class="offset-1 col-10">
-    <div *ngFor="let image of project.images" dragula="DRAGULA_FACTS" class="projectImage">
-      <a href="image/{{image.id}}">
-        <p><img class="img-thumbnail " src="{{image.path}}" alt="Image"></p>
-      </a>
+    <div *ngIf="project; let project; else loading">
+      <div *ngFor="let image of project.images" dragula="DRAGULA_FACTS" class="projectImage">
+        <a href="image/{{image.id}}">
+          <p><img class="img-thumbnail " src="{{image.path}}" alt="Image"></p>
+        </a>
+      </div>
     </div>
+    <ng-template #loading>Loading project...</ng-template>
+
   </div>
 </div>

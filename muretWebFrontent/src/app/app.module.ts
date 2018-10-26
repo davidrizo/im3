@@ -37,12 +37,11 @@ import { NgxImgModule } from 'ngx-img'; /* I've installed also npm i angular-cro
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    ReactiveFormsModule,
     UiModule,
     ReactiveFormsModule,
     AngularSvgIconModule,
-    NgxImgModule,
-    DragulaModule
+    NgxImgModule.forRoot(),
+    DragulaModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
