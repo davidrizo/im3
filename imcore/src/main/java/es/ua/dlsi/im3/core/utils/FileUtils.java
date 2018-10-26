@@ -169,23 +169,35 @@ public class FileUtils {
 		
 		return fileName.substring(pos + 1);
 	}
+
 	/**
 	 * Leave only alphanumeric, - and _ character
 	 * @param fct
 	 * @return
 	 */
-	public static String leaveValidCaracters(String fct) {
+	public static String leaveValidCaracters(String fct, char substituteWith) {
 		if (fct == null || fct.length() == 0) {
 			return EMPTY;
 		}
 		StringBuffer sb = new StringBuffer(fct);
 		for (int i=sb.length()-1; i>=0; i--) {
 			char car = sb.charAt(i);
-			if (car == '_' || !Character.isJavaIdentifierPart(car)) { // '_' to avoid problems with latex
-				sb.setCharAt(i, '-');
+			if (!(car == '_' || car == substituteWith
+					|| car >= 'A' && car <= 'Z'
+					|| car >= 'a' && car <= 'z'
+					|| car >= '0' && car <= '9')) {
+				sb.setCharAt(i, substituteWith);
 			}
 		}
 		return sb.toString();
+	}
+	/**
+	 * Leave only alphanumeric, - and _ character
+	 * @param fct
+	 * @return
+	 */
+	public static String leaveValidCaracters(String fct) {
+		return leaveValidCaracters(fct, '-'); // '_' to avoid problems with latex
 	}
 	
 	/**
