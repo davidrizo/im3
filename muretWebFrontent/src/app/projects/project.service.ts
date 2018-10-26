@@ -14,8 +14,8 @@ import {Image} from '../model/image';
 })
 
 export class ProjectService {
-  urlProject = 'http://localhost:8080/muret/project/';  // URL to web api
-  urlImage = 'http://localhost:8080/muret/image/';  // URL to web api
+  urlProject = 'http://localhost:8080/muret/project';  // URL to web api
+  urlImage = 'http://localhost:8080/muret/image';  // URL to web api
 
   constructor(
     private http: HttpClient,
@@ -29,9 +29,20 @@ export class ProjectService {
       );
   }
 
+  public newProject$(name: string, comments: string, base64Thumbnail: string): Observable<Project> {
+    this.log('ProjectService: creating project with name ' + name);
+    return this.http.post<Project>(this.urlProject + '/new', {
+      'name': name,
+      'comments': comments,
+      'thumbnailBase64Encoding': base64Thumbnail
+    }).pipe(
+        catchError(this.handleError('newProject$ with name=' + name, null))
+      );
+  }
+
   public getProject$(id: number): Observable<Project> {
     this.log('ProjectService: fetching project with id ' + id);
-    return this.http.get<Project>(this.urlProject + id)
+    return this.http.get<Project>(this.urlProject + '/get/' + id)
     .pipe(
         catchError(this.handleError('getProject$ with id=' + id, null))
       );
@@ -39,7 +50,7 @@ export class ProjectService {
 
   public getImage$(id: number): Observable<Image> {
     this.log('ProjectService: fetching image with id ' + id);
-    return this.http.get<Image>(this.urlImage + id)
+    return this.http.get<Image>(this.urlImage + '/get/' + id)
       .pipe(
         catchError(this.handleError('getImage$ with id=' + id, null))
       );

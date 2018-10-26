@@ -16,6 +16,13 @@ import { ImageComponent } from './image/image.component';
 
 import { DragulaModule } from 'ng2-dragula';
 
+import { AngularSvgIconModule } from 'angular-svg-icon';
+
+import {NewProjectFormComponent} from './new-project-form/new-project-form.component';
+
+import { NgxImgModule } from 'ngx-img'; /* I've installed also npm i angular-cropperjs */
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +30,8 @@ import { DragulaModule } from 'ng2-dragula';
     ProjectComponent,
     StartupComponent,
     AboutComponent,
-    ImageComponent
+    ImageComponent,
+    NewProjectFormComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +39,10 @@ import { DragulaModule } from 'ng2-dragula';
     AppRoutingModule,
     ReactiveFormsModule,
     UiModule,
-    DragulaModule.forRoot()
+    ReactiveFormsModule,
+    AngularSvgIconModule,
+    NgxImgModule,
+    DragulaModule
   ],
   providers: [],
   bootstrap: [AppComponent]
