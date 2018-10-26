@@ -15,7 +15,7 @@ import java.util.List;
 public class Project {
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
     private String name;
@@ -25,13 +25,18 @@ public class Project {
     private Date created;
     @Column
     private Date lastChange;
+    @Column
+    private String comments;
+    @Lob
+    @Column (name = "thumbnail_base64_encoding", columnDefinition = "LONGTEXT")
+    private String thumbnailBase64Encoding;
 
-    @JsonBackReference // it avoids circular relationships
+    @JsonBackReference (value="createdBy") // it avoids circular relationships
     @ManyToOne
     @JoinColumn(name="created_by", referencedColumnName="id")
     private User createdBy;
 
-    @JsonBackReference // it avoids circular relationships
+    @JsonBackReference (value="changedBy") // it avoids circular relationships
     @ManyToOne
     @JoinColumn(name="changed_by", referencedColumnName="id")
     private User changedBy;
@@ -40,23 +45,19 @@ public class Project {
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "project")
     private List<Image> images;
 
-    /**
-     * The image used as identifying image
-     */
-    @Column (name = "poster_frame_path")
-    private String posterFramePath;
-
     public Project() {
     }
 
-    public Project(String name, String path, Date created, Date lastChange, User createdBy, User changedBy, List<Image> images) {
+    public Project(String name, String path, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, List<Image> images) {
         this.name = name;
         this.path = path;
+        this.thumbnailBase64Encoding = thumbnailBase64Encoding;
         this.created = created;
         this.lastChange = lastChange;
         this.createdBy = createdBy;
         this.changedBy = changedBy;
         this.images = images;
+        this.comments = comments;
     }
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Integer getId() {
@@ -120,15 +121,6 @@ public class Project {
         this.changedBy = changedBy;
     }
 
-    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
-    public String getPosterFramePath() {
-        return posterFramePath;
-    }
-
-    public void setPosterFramePath(String posterFramePath) {
-        this.posterFramePath = posterFramePath;
-    }
-
     public List<Image> getImages() {
         return images;
     }
@@ -136,6 +128,24 @@ public class Project {
     public void setImages(List<Image> images) {
         this.images = images;
     }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public String getThumbnailBase64Encoding() {
+        return thumbnailBase64Encoding;
+    }
+
+    public void setThumbnailBase64Encoding(String thumbnailBase64Encoding) {
+        this.thumbnailBase64Encoding = thumbnailBase64Encoding;
+    }
+
 
     @Override
     public String toString() {

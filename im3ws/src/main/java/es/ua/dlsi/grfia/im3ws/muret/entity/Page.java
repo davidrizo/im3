@@ -15,7 +15,7 @@ import java.util.List;
 public class Page {
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
      * Format: fromX,fromY,toX,toY

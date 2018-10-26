@@ -33,7 +33,7 @@ public abstract class CRUDController<EntityType, PrimaryKeyType, CRUDServiceType
         return getService().create(entity);
     }
 
-    @GetMapping(path = {"/{id}"})
+    @GetMapping(path = {"/get/{id}"})
     public Optional<EntityType> findOne(@PathVariable("id") PrimaryKeyType id){
         Optional<EntityType> result = getService().findById(id);
         System.out.println(result);
