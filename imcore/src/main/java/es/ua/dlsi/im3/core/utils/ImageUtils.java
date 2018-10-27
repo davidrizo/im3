@@ -160,5 +160,20 @@ public class ImageUtils {
         }
         return subimage;
     }
+    
+    public void scaleToFitHeight(File inputImage, File outputImage, int height) throws IOException {
+        BufferedImage fullImage = ImageIO.read(inputImage);
+        Image scaledImage = fullImage.getScaledInstance(-1, height, Image.SCALE_SMOOTH);
+        String extension = FileUtils.getExtension(outputImage);
+
+        BufferedImage resized = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(scaledImage, 0, 0, null);
+        g2d.dispose();
+
+        ImageIO.write(resized, extension, outputImage);
+    }
+
+
 
 }
