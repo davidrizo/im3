@@ -31,7 +31,9 @@
     "zone.js": "~0.8.26",
     "ngx-img": "latest",
     "ngx-image-cropper": "latest",
-    "cropperjs": "latest"
+    "cropperjs": "latest",
+    "ng2-file-upload": "latest",
+    "angular2-image-upload": "latest"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.10.0",

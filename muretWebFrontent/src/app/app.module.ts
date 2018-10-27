@@ -20,7 +20,11 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import {NewProjectFormComponent} from './new-project-form/new-project-form.component';
 
-import { NgxImgModule } from 'ngx-img'; /* I've installed also npm i angular-cropperjs */
+import { NgxImgModule } from 'ngx-img';
+import { UploadImagesComponent } from './upload-images/upload-images.component';
+
+import { FileUploadModule } from 'ng2-file-upload';
+
 
 
 @NgModule({
@@ -31,7 +35,8 @@ import { NgxImgModule } from 'ngx-img'; /* I've installed also npm i angular-cro
     StartupComponent,
     AboutComponent,
     ImageComponent,
-    NewProjectFormComponent
+    NewProjectFormComponent,
+    UploadImagesComponent
   ],
   imports: [
     BrowserModule,
@@ -40,6 +45,7 @@ import { NgxImgModule } from 'ngx-img'; /* I've installed also npm i angular-cro
     UiModule,
     ReactiveFormsModule,
     AngularSvgIconModule,
+    FileUploadModule,
     NgxImgModule.forRoot(),
     DragulaModule.forRoot()
   ],

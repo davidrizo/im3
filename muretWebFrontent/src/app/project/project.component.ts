@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {ProjectService} from '../projects/project.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Project} from '../model/project';
-import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
 import {MessageService} from '../messages/message.service';
 
 @Component({
@@ -35,4 +33,5 @@ export class ProjectComponent implements OnInit {
   private log(message: string) {
     this.messageService.add(`ProjectService: ${message}`);
   }
+
 }
