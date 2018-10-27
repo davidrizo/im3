@@ -65,7 +65,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
         }
 
         File projectFolder = createProjectFileStructure(muretFolder, projectBaseName);
-        createProjectFileStructure(projectFolder, MASTER_IMAGES);
+        //createProjectFileStructure(projectFolder, MASTER_IMAGES);
 
         Project newProject = new Project(project.getName(),
                 projectBaseName,

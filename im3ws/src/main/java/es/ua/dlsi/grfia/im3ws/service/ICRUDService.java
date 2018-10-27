@@ -7,7 +7,7 @@ import java.util.Optional;
  * @author drizo
  */
 public interface ICRUDService<EntityType, PrimaryKeyType> {
-    EntityType create(EntityType user);
+    EntityType create(EntityType entity);
     Optional<EntityType> findById(PrimaryKeyType id);
     EntityType update(EntityType user);
     EntityType delete(PrimaryKeyType id);

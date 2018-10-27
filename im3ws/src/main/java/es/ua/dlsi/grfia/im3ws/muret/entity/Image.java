@@ -1,7 +1,6 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -18,7 +17,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
-    private String path;
+    private String filename;
     @Column
     private int ordering;
 
@@ -37,7 +36,7 @@ public class Image {
     }
 
     public Image(String path, int ordering, Project project) {
-        this.path = path;
+        this.filename = path;
         this.project = project;
     }
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
@@ -50,12 +49,12 @@ public class Image {
     }
 
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
-    public String getPath() {
-        return path;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     public Project getProject() {
@@ -87,7 +86,7 @@ public class Image {
     public String toString() {
         return "Image{" +
                 "id=" + id +
-                ", path='" + path + '\'' +
+                ", filename='" + filename + '\'' +
                 ", ordering='" + ordering + '\'' +
                 ", project=" + project +
                 '}';

@@ -13,7 +13,7 @@ import java.util.Optional;
  * The method findOne returns all objects and relationships. Note that SpringBoot + JPA ignore the LAZY or EAGER JPA annotations
  * @author drizo
  */
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600) // angular
+@CrossOrigin("${angular.url}")
 public abstract class CRUDController<EntityType, PrimaryKeyType, CRUDServiceType extends ICRUDService<EntityType, PrimaryKeyType>> {
     CRUDServiceType service;
 
