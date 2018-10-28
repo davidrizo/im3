@@ -9,6 +9,7 @@ import {isNull, isUndefined} from 'util';
 import {Image} from '../model/image';
 import {ConfigurationService} from '../configuration.service';
 import {StringReponse} from '../string-reponse';
+import {ProjectURLS} from '../model/project-urls';
 
 
 @Injectable({
@@ -56,9 +57,9 @@ export class ProjectService {
     return result;
   }
 
-  public getThumbnailsURL$(id: number): Observable<StringReponse> {
+  public getProjectURLs$(id: number): Observable<ProjectURLS> {
     this.log('ProjectService: fetching thumbnail URL of project with id ' + id);
-    const result: Observable<StringReponse> = this.http.get<StringReponse>(this.urlProject + '/thumbnails/' + id)
+    const result: Observable<ProjectURLS> = this.http.get<ProjectURLS>(this.urlProject + '/thumbnails/' + id)
       .pipe(
         catchError(this.handleError('getProject$ with id=' + id, null))
       );
@@ -96,5 +97,13 @@ export class ProjectService {
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
+  }
+
+  public saveProject(project: Project): Observable<any> {
+    const result = this.http.put(this.urlProject, project);
+    result.subscribe(res => {
+      console.log('Save project result: ' + res);
+    })
+    return result;
   }
 }

@@ -24,7 +24,9 @@ import { NgxImgModule } from 'ngx-img';
 import { UploadImagesComponent } from './upload-images/upload-images.component';
 
 import { FileUploadModule } from 'ng2-file-upload';
+import { ImageThumbnailComponent } from './image-thumbnail/image-thumbnail.component';
 
+/* import { LightboxModule } from 'ngx-lightbox';*/
 
 
 @NgModule({
@@ -36,7 +38,8 @@ import { FileUploadModule } from 'ng2-file-upload';
     AboutComponent,
     ImageComponent,
     NewProjectFormComponent,
-    UploadImagesComponent
+    UploadImagesComponent,
+    ImageThumbnailComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +50,8 @@ import { FileUploadModule } from 'ng2-file-upload';
     AngularSvgIconModule,
     FileUploadModule,
     NgxImgModule.forRoot(),
-    DragulaModule.forRoot()
+    DragulaModule.forRoot(),
+//    LightboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]
