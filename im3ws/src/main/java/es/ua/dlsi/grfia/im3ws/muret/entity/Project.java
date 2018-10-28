@@ -27,6 +27,12 @@ public class Project {
     private Date lastChange;
     @Column
     private String comments;
+    /**
+     * Comma separated list of image ids - when an image is not present here is sorted at the end of the list
+     */
+    @Column (name = "images_ordering")
+    private String imagesOrdering;
+
     @Lob
     @Column (name = "thumbnail_base64_encoding", columnDefinition = "LONGTEXT")
     private String thumbnailBase64Encoding;
@@ -48,7 +54,7 @@ public class Project {
     public Project() {
     }
 
-    public Project(String name, String path, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, List<Image> images) {
+    public Project(String name, String path, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, String imagesOrdering, List<Image> images) {
         this.name = name;
         this.path = path;
         this.thumbnailBase64Encoding = thumbnailBase64Encoding;
@@ -58,6 +64,7 @@ public class Project {
         this.changedBy = changedBy;
         this.images = images;
         this.comments = comments;
+        this.imagesOrdering = imagesOrdering;
     }
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Integer getId() {
@@ -146,6 +153,13 @@ public class Project {
         this.thumbnailBase64Encoding = thumbnailBase64Encoding;
     }
 
+    public String getImagesOrdering() {
+        return imagesOrdering;
+    }
+
+    public void setImagesOrdering(String imagesOrdering) {
+        this.imagesOrdering = imagesOrdering;
+    }
 
     @Override
     public String toString() {

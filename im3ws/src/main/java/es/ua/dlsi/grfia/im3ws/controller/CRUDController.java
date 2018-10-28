@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * It uses JsonView to filter JSON results. When using findAll it just returns the fields in the entity object annotated with @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class).
@@ -36,13 +38,15 @@ public abstract class CRUDController<EntityType, PrimaryKeyType, CRUDServiceType
     @GetMapping(path = {"/get/{id}"})
     public Optional<EntityType> findOne(@PathVariable("id") PrimaryKeyType id){
         Optional<EntityType> result = getService().findById(id);
-        System.out.println(result);
         return result;
     }
 
     @PutMapping
     public EntityType update(@RequestBody EntityType user){
-        return getService().update(user);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Updating {0}", user);
+        EntityType result = getService().update(user);
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Updated {0}", result);
+        return result;
     }
 
     @DeleteMapping(path ={"/{id}"})

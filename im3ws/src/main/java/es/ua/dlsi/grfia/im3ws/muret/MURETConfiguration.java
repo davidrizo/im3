@@ -8,18 +8,21 @@ import org.springframework.context.annotation.Configuration;
 public class MURETConfiguration {
     public static final String MASTER_IMAGES = "masters";
     public static final String THUMBNAIL_IMAGES = "thumbnails";
+    public static final String PREVIEW_IMAGES = "previews";
 
     private String folder;
     private String url;
     private int thumbnailHeight;
+    private int previewHeight;
 
     public MURETConfiguration() {
     }
 
-    public MURETConfiguration(String folder, String url, int thumbnailHeight) {
+    public MURETConfiguration(String folder, String url, int thumbnailHeight, int previewHeight) {
         this.folder = folder;
         this.url = url;
         this.thumbnailHeight = thumbnailHeight;
+        this.previewHeight = previewHeight;
     }
 
     public String getFolder() {
@@ -46,7 +49,11 @@ public class MURETConfiguration {
         this.thumbnailHeight = thumbnailHeight;
     }
 
+    public int getPreviewHeight() {
+        return previewHeight;
+    }
 
-
-
+    public void setPreviewHeight(int previewHeight) {
+        this.previewHeight = previewHeight;
+    }
 }

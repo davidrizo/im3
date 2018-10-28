@@ -18,9 +18,6 @@ public class Image {
     private Long id;
     @Column
     private String filename;
-    @Column
-    private int ordering;
-
     @JsonBackReference
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="project_id", referencedColumnName="id")
@@ -65,15 +62,6 @@ public class Image {
         this.project = project;
     }
 
-    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
-    public int getOrdering() {
-        return ordering;
-    }
-
-    public void setOrdering(int ordering) {
-        this.ordering = ordering;
-    }
-
     public List<Page> getPages() {
         return pages;
     }
@@ -87,7 +75,6 @@ public class Image {
         return "Image{" +
                 "id=" + id +
                 ", filename='" + filename + '\'' +
-                ", ordering='" + ordering + '\'' +
                 ", project=" + project +
                 '}';
     }

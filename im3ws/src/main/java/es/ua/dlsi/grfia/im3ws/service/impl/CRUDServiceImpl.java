@@ -52,6 +52,6 @@ public abstract class CRUDServiceImpl<EntityType, PrimaryKeyType, BaseJPAReposit
 
     @Override
     public EntityType update(EntityType entity) {
-        return null;
+        return getRepository().save(entity);
     }
 }

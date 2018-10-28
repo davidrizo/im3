@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 @CrossOrigin("${angular.url}")
 @RequestMapping("/muret/upload")
 @RestController
-public class FileController {
+public class ProjectImageController {
     @Autowired
     private FileStorageService fileStorageService;
     @Autowired
@@ -60,7 +60,10 @@ public class FileController {
 
         Path imagePath = mastersPath.resolve(fileName);
         Path thumbnailsPath = Paths.get(muretConfiguration.getFolder(), project.get().getPath(), MURETConfiguration.THUMBNAIL_IMAGES, fileName);
-        createImageThumbnail(imagePath, thumbnailsPath);
+        createSecondaryImage(imagePath, thumbnailsPath, muretConfiguration.getThumbnailHeight());
+
+        Path previewPath = Paths.get(muretConfiguration.getFolder(), project.get().getPath(), MURETConfiguration.PREVIEW_IMAGES, fileName);
+        createSecondaryImage(imagePath, previewPath, muretConfiguration.getPreviewHeight());
 
         //TODO Atómico
         //TODO Ordenación
@@ -70,8 +73,8 @@ public class FileController {
         return new UploadFileResponse(fileName, file.getContentType(), file.getSize());
     }
 
-    private void createImageThumbnail(Path inputImagePath, Path outputImagePath) throws IM3Exception {
-        ImageUtils.getInstance().scaleToFitHeight(inputImagePath.toFile(), outputImagePath.toFile(), muretConfiguration.getThumbnailHeight());
+    private void createSecondaryImage(Path inputImagePath, Path outputImagePath, int height) throws IM3Exception {
+        ImageUtils.getInstance().scaleToFitHeight(inputImagePath.toFile(), outputImagePath.toFile(), height);
     }
 
     // angular ng2-file-upload uses file as parameter name

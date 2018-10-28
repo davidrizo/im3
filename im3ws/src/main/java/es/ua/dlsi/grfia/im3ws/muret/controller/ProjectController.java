@@ -6,6 +6,7 @@ import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
 import es.ua.dlsi.grfia.im3ws.controller.StringResponse;
 import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
+import es.ua.dlsi.grfia.im3ws.muret.entity.ProjectURLs;
 import es.ua.dlsi.grfia.im3ws.muret.service.ProjectService;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,12 +60,15 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
      * @throws IM3WSException
      */
     @GetMapping(path = {"/thumbnails/{id}"})
-    public StringResponse constructThumbnailsURL(@PathVariable("id") Integer id) throws IM3WSException {
+    public ProjectURLs constructThumbnailsURL(@PathVariable("id") Integer id) throws IM3WSException {
         Optional<Project> project = projectService.findById(id);
         if (!project.isPresent()) {
             throw new IM3WSException("Cannot find a project with id " + id);
         }
-        return new StringResponse(muretConfiguration.getUrl() + "/" + project.get().getPath() + "/" + MURETConfiguration.THUMBNAIL_IMAGES);
+
+        return new ProjectURLs(
+                muretConfiguration.getUrl() + "/" + project.get().getPath() + "/" + MURETConfiguration.THUMBNAIL_IMAGES,
+                muretConfiguration.getUrl() + "/" + project.get().getPath() + "/" + MURETConfiguration.PREVIEW_IMAGES);
     }
 
     @PostMapping(path = {"/new"})
@@ -81,6 +85,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
         File projectFolder = createProjectFileStructure(muretFolder, projectBaseName);
         createProjectFileStructure(projectFolder, MURETConfiguration.MASTER_IMAGES);
         createProjectFileStructure(projectFolder, MURETConfiguration.THUMBNAIL_IMAGES);
+        createProjectFileStructure(projectFolder, MURETConfiguration.PREVIEW_IMAGES);
 
         Project newProject = new Project(project.getName(),
                 projectBaseName,
@@ -90,6 +95,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
                 null,
                 project.getThumbnailBase64Encoding(),
                 project.getComments(),
+                null,
                 null
                 );
 
