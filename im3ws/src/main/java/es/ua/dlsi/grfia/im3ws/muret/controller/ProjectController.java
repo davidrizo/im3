@@ -3,6 +3,7 @@ package es.ua.dlsi.grfia.im3ws.muret.controller;
 
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
+import es.ua.dlsi.grfia.im3ws.controller.StringResponse;
 import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.service.ProjectService;
@@ -23,9 +24,6 @@ import java.util.logging.Logger;
 @RequestMapping("/muret/project")
 @RestController
 public class ProjectController extends CRUDController<Project, Integer, ProjectService> {
-    private static final String MASTER_IMAGES = "masters";
-    private static final String THUMBNAIL_IMAGES = "thumbnails";
-
     @Autowired
     ProjectService projectService;
 
@@ -53,6 +51,22 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
         return path;
     }
 
+    /**
+     * It obtains the public path where thumbnails are to be found. We use this method rather than a service returning the images themselves
+     * to avoid the server computing things that can be done by the web server
+     * @param id
+     * @return
+     * @throws IM3WSException
+     */
+    @GetMapping(path = {"/thumbnails/{id}"})
+    public StringResponse constructThumbnailsURL(@PathVariable("id") Integer id) throws IM3WSException {
+        Optional<Project> project = projectService.findById(id);
+        if (!project.isPresent()) {
+            throw new IM3WSException("Cannot find a project with id " + id);
+        }
+        return new StringResponse(muretConfiguration.getUrl() + "/" + project.get().getPath() + "/" + MURETConfiguration.THUMBNAIL_IMAGES);
+    }
+
     @PostMapping(path = {"/new"})
     public Project newProject(@RequestBody Project project) throws IM3WSException {
         Date now = new Date();
@@ -65,7 +79,8 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
         }
 
         File projectFolder = createProjectFileStructure(muretFolder, projectBaseName);
-        //createProjectFileStructure(projectFolder, MASTER_IMAGES);
+        createProjectFileStructure(projectFolder, MURETConfiguration.MASTER_IMAGES);
+        createProjectFileStructure(projectFolder, MURETConfiguration.THUMBNAIL_IMAGES);
 
         Project newProject = new Project(project.getName(),
                 projectBaseName,
