@@ -7,6 +7,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import {isNull, isUndefined} from 'util';
 import {Image} from '../model/image';
+import {ConfigurationService} from '../configuration.service';
+import {StringReponse} from '../string-reponse';
 
 
 @Injectable({
@@ -14,12 +16,16 @@ import {Image} from '../model/image';
 })
 
 export class ProjectService {
-  urlProject = 'http://localhost:8080/muret/project';  // URL to web api
-  urlImage = 'http://localhost:8080/muret/image';  // URL to web api
-
+  private urlProject: string;
+  private urlImage: string;
   constructor(
+    private configurationService: ConfigurationService,
     private http: HttpClient,
-    private messageService: MessageService) { }
+    private messageService: MessageService) {
+
+    this.urlProject = configurationService.IM3WS_SERVER + '/muret/project';  // URL to web api
+    this.urlImage = configurationService.IM3WS_SERVER + '/muret/image';  // URL to web api
+  }
 
   public getProjects$(): Observable<Project[]> {
     this.log('ProjectService: fetching projects...');
@@ -47,6 +53,16 @@ export class ProjectService {
         catchError(this.handleError('getProject$ with id=' + id, null))
       );
     this.log('ProjectService: fetched ' + result.valueOf());
+    return result;
+  }
+
+  public getThumbnailsURL$(id: number): Observable<StringReponse> {
+    this.log('ProjectService: fetching thumbnail URL of project with id ' + id);
+    const result: Observable<StringReponse> = this.http.get<StringReponse>(this.urlProject + '/thumbnails/' + id)
+      .pipe(
+        catchError(this.handleError('getProject$ with id=' + id, null))
+      );
+    this.log('ProjectService: fetched URL ' + result.valueOf());
     return result;
   }
 

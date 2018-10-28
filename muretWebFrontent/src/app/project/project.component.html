@@ -19,7 +19,7 @@
     <div *ngIf="project; let project; else loading">
       <div *ngFor="let image of project.images" dragula="DRAGULA_FACTS" class="projectImage">
         <a href="image/{{image.id}}">
-          <p><img class="img-thumbnail " src="{{image.path}}" alt="Image"></p>
+          <p><img class="img-thumbnail" src="{{thumbnailURL}}/{{image.filename}}" alt="Image"></p>
         </a>
       </div>
     </div>

@@ -3,6 +3,7 @@ import {ProjectService} from '../projects/project.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Project} from '../model/project';
 import {MessageService} from '../messages/message.service';
+import {ConfigurationService} from '../configuration.service';
 
 @Component({
   selector: 'app-project',
@@ -11,11 +12,13 @@ import {MessageService} from '../messages/message.service';
 })
 export class ProjectComponent implements OnInit {
   project: Project;
+  thumbnailURL = 'http://localhost:8888/muret/prueba-2/thumbnails';
 
   constructor(
     private projectService: ProjectService,
     private route: ActivatedRoute,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private configurationService: ConfigurationService
   ) {}
 
   ngOnInit() {
@@ -26,7 +29,10 @@ export class ProjectComponent implements OnInit {
           this.log('Project component ' + this.project.name + ' with #' + this.project.images.length + ' images');
       });
 
-    // this.log('ProjectComponent: ' + this.project.id + ', ' + this.project.name + ', #images=' + this.project.images.length);
+      this.projectService.getThumbnailsURL$(routeParams.id)
+        .subscribe(result => this.thumbnailURL = result.response).add(teardown => {
+        this.log('Project thumbnails URL: ' + this.thumbnailURL);
+      });
   }
 
   /** Log a message with the MessageService */
