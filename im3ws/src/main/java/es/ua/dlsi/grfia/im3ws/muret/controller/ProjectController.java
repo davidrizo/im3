@@ -59,7 +59,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
      * @return
      * @throws IM3WSException
      */
-    @GetMapping(path = {"/thumbnails/{id}"})
+    @GetMapping(path = {"/projectURLS/{id}"})
     public ProjectURLs constructThumbnailsURL(@PathVariable("id") Integer id) throws IM3WSException {
         Optional<Project> project = projectService.findById(id);
         if (!project.isPresent()) {
@@ -67,6 +67,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
         }
 
         return new ProjectURLs(
+                muretConfiguration.getUrl() + "/" + project.get().getPath() + "/" + MURETConfiguration.MASTER_IMAGES,
                 muretConfiguration.getUrl() + "/" + project.get().getPath() + "/" + MURETConfiguration.THUMBNAIL_IMAGES,
                 muretConfiguration.getUrl() + "/" + project.get().getPath() + "/" + MURETConfiguration.PREVIEW_IMAGES);
     }
