@@ -12,6 +12,7 @@ import {Point, Size} from '@progress/kendo-drawing/geometry';
 import {MessageService} from '../messages/message.service';
 import {isNullOrUndefined} from 'util';
 import {Stroke} from '../model/stroke';
+import {NGXLogger} from 'ngx-logger';
 
 @Component({
   selector: 'app-image',
@@ -28,17 +29,21 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   private agnosticSurfaceElement: ElementRef;
   private agnosticSurface: Surface;
 
-  svgOfSymbols: Array<String> = [];
+  svgOfSymbols: Array<string> = [];
+  private projectURLs: string;
 
   constructor(
     private projectService: Im3wsService,
     private route: ActivatedRoute,
-    private messageService: MessageService
+    private logger: NGXLogger
   ) {}
 
   ngOnInit() {
     const routeParams = this.route.snapshot.params;
 
+    this.projectURLs = routeParams.projectURLs;
+    this.logger.debug('Image id=' + routeParams.id);
+    this.logger.debug('Project URLs=' + this.projectURLs);
     this.projectService.getImage$(routeParams.id).
     subscribe(serviceImage => this.setImage(serviceImage));
   }
@@ -76,7 +81,7 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createSurface() {
-    this.log('Creating surfaces');
+    this.logger.debug('Creating surfaces');
 
     // Obtain a reference to the native DOM element of the wrapper
     const element = this.imageSurfaceElement.nativeElement;
@@ -99,12 +104,12 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /* It draws the page and region bounding boxes */
   private setImage(serviceImage: Image) {
-    this.log('Setting image ' + serviceImage);
     this.image = serviceImage;
+    this.logger.debug('Setting image ' + serviceImage + ' ' + this.image.filename);
   }
 
   private drawBoundingBox(boundingBox: BoundingBox, color: string) {
-    this.log('Drawing ' + boundingBox.toString() + ' in color ' + color);
+    this.logger.debug('Drawing ' + boundingBox.toString() + ' in color ' + color);
     const geometryRect = new geometry.Rect(new Point(boundingBox.fromX, boundingBox.fromY),
 new Size(boundingBox.toX - boundingBox.fromX, boundingBox.toY - boundingBox.fromY));
     const rect = new Rect(geometryRect, {
@@ -114,18 +119,14 @@ new Size(boundingBox.toX - boundingBox.fromX, boundingBox.toY - boundingBox.from
     this.imageSurface.draw(rect);
   }
 
-  /** Log a message with the MessageService */
-  private log(message: string) {
-    this.messageService.add(`ImageComponent: ${message}`);
-  }
 
   private drawBoundingBoxes() {
-    this.log('Drawing bounding boxes for image ' + this.image);
+    this.logger.debug('Drawing bounding boxes for image ' + this.image);
     this.image.pages.forEach(page => {
-      this.log('Page ' + page);
+      this.logger.debug('Page ' + page);
       this.drawBoundingBox(page.boundingBox, 'red');
       page.regions.forEach(region => {
-        this.log('Region ' + region);
+        this.logger.debug('Region ' + region);
         this.drawBoundingBox(region.boundingBox, 'green');
       });
     });
@@ -143,15 +144,15 @@ new Size(boundingBox.toX - boundingBox.fromX, boundingBox.toY - boundingBox.from
 
   /* TODO Posición */
   private drawSymbolAgnostic(symbol: Symbol) {
-    this.log('Drawing SVG ' + symbol);
+    this.logger.debug('Drawing SVG ' + symbol);
     this.svgOfSymbols.push('https://upload.wikimedia.org/wikipedia/commons/f/fb/C_%28indication_de_mesure%29.svg');
     /*TODO mapa desde symbol.getAgnosticSymbolType - vaciar primero?*/
   }
 
   private drawSymbolStrokes(symbol: Symbol) {
-    this.log('Drawing symbol ' + symbol.id);
+    this.logger.debug('Drawing symbol ' + symbol.id);
     if (!isNullOrUndefined(symbol.strokes)) {
-      this.log('Drawing ' + symbol.strokes.strokeList.length + ' strokes');
+      this.logger.debug('Drawing ' + symbol.strokes.strokeList.length + ' strokes');
       symbol.strokes.strokeList.forEach(stroke => {
         this.drawStroke(stroke);
       });
