@@ -1,8 +1,9 @@
 <div class="row" id="projects">
   <div class="col-7 offset-1">
       <div *ngFor="let project of projects" class="project">
-        <a [routerLink]="['user']" [queryParams]="myObj">My User Object</a>
-        <a href="project/{{project.id}}">
+        <!--<a [routerLink]="['user']" [queryParams]="myObj">My User Object</a>-->
+        <!--<a routerLink="['/project', project.id]">-->
+        <a [routerLink]="['/project', project.id]">
           <p><img src="{{project.thumbnailBase64Encoding}}" alt="Project thumbnail"></p>
           <h3>{{project.name}}</h3>
         </a>

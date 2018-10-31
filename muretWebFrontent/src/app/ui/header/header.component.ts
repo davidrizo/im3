@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {AuthService} from '../../auth/auth.service';
+import {Im3wsService} from '../../im3ws.service';
 
 @Component({
   selector: 'app-header',
@@ -8,10 +7,9 @@ import {AuthService} from '../../auth/auth.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  constructor(private authService: AuthService) {
+  constructor(private im3WSService: Im3wsService) {
   }
-
   authenticated(): boolean {
-    return this.authService.authenticated();
+    return this.im3WSService.authenticated();
   }
 }

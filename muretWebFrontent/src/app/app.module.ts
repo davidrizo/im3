@@ -35,9 +35,10 @@ import {
   OktaCallbackComponent,
 } from '@okta/okta-angular';
 import {RouterModule} from '@angular/router';
-import {AuthModule} from './auth/auth.module';
 import {Im3wsService} from './im3ws.service';
-import {AuthService} from './auth/auth.service';
+import {LoginComponent} from './login/login.component';
+
+import {LoggerModule, NGXLogger, NgxLoggerLevel} from 'ngx-logger';
 
 // TODO Ver Keepass
 /*const config = {
@@ -56,7 +57,8 @@ import {AuthService} from './auth/auth.service';
     ImageComponent,
     NewProjectFormComponent,
     UploadImagesComponent,
-    ImageThumbnailComponent
+    ImageThumbnailComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -70,22 +72,11 @@ import {AuthService} from './auth/auth.service';
     DragulaModule.forRoot(),
     FormsModule,
     RouterModule,
-    AuthModule//    LightboxModule
+    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
+    //    LightboxModule
   ],
-  // providers: [AuthenticationService, { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }],
-  providers: [Im3wsService, AuthService],
+  providers: [Im3wsService, NGXLogger], // singleton
   bootstrap: [AppComponent]
 })
 export class AppModule { }
 
-/* Used for authentication */
-/*@Injectable()
-export class XhrInterceptor implements HttpInterceptor {
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    const xhr = req.clone({
-      headers: req.headers.set('X-Requested-With', 'XMLHttpRequest')
-    });
-    return next.handle(xhr);
-  }
-}
-*/

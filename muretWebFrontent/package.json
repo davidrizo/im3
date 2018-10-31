@@ -36,7 +36,8 @@
     "angular2-image-upload": "latest",
     "angular2-lightbox": "latest",
     "ngx-lightbox": "latest",
-    "@okta/okta-angular": "latest"
+    "@okta/okta-angular": "latest",
+    "ngx-logger": "latest"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.10.0",
