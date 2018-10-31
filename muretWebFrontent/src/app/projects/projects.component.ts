@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Project} from '../model/project';
-import {ProjectService} from './project.service';
+import {Im3wsService} from '../im3ws.service';
 
 @Component({
   selector: 'app-projects',
@@ -11,9 +11,10 @@ import {ProjectService} from './project.service';
 export class ProjectsComponent implements OnInit {
   projects: Project[];
 
-  constructor(private projectService: ProjectService) { }
+  constructor(private projectService: Im3wsService) { }
 
   ngOnInit() {
+    this.projectService.checkAuthorized();
     this.getProjects();
   }
 

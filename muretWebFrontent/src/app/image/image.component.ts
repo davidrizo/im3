@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ProjectService} from '../projects/project.service';
+import {Im3wsService} from '../im3ws.service';
 import {ActivatedRoute} from '@angular/router';
 import {Image} from '../model/image';
 
@@ -31,7 +31,7 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   svgOfSymbols: Array<String> = [];
 
   constructor(
-    private projectService: ProjectService,
+    private projectService: Im3wsService,
     private route: ActivatedRoute,
     private messageService: MessageService
   ) {}

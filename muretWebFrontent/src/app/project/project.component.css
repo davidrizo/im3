@@ -1,12 +1,3 @@
-.projectImage {
-  display: inline-block;
-  margin: 5px;
-}
-#images img {
-  height: 200px;
-}
-
-
 /*----- Dragula ----- */
 /* in-flight clone */
 .gu-mirror {

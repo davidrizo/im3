@@ -6,21 +6,21 @@ import {
   HttpTestingController
 } from '@angular/common/http/testing';
 
-import { ProjectService } from './project.service';
+import { Im3wsService } from '../im3ws.service';
 
 describe('ProjectService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ProjectService]
+      providers: [Im3wsService]
     });
   });
 
   it(
     'should get projects',
     inject(
-      [HttpTestingController, ProjectService],
-      (httpMock: HttpTestingController, projectService: ProjectService) => {
+      [HttpTestingController, Im3wsService],
+      (httpMock: HttpTestingController, projectService: Im3wsService) => {
         const mockProjects = [
           { id: 1, name: 'Prueba Spring'}
         ];

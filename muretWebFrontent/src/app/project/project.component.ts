@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, QueryList, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {ProjectService} from '../projects/project.service';
+import {Im3wsService} from '../im3ws.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Project} from '../model/project';
 import {MessageService} from '../messages/message.service';
@@ -22,7 +22,7 @@ export class ProjectComponent implements OnInit {
   @ViewChild('domImages') domImages: ElementRef;
 
   constructor(
-    private projectService: ProjectService,
+    private projectService: Im3wsService,
     private route: ActivatedRoute,
     private messageService: MessageService,
     private configurationService: ConfigurationService,

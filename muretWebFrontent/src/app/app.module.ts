@@ -1,10 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {Injectable, NgModule} from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ProjectsComponent } from './projects/projects.component';
 
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {AppRoutingModule} from './app-routing.module';
 import {UiModule} from './ui/ui.module';
 
@@ -26,8 +26,25 @@ import { UploadImagesComponent } from './upload-images/upload-images.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { ImageThumbnailComponent } from './image-thumbnail/image-thumbnail.component';
 
-/* import { LightboxModule } from 'ngx-lightbox';*/
+import { FormsModule } from '@angular/forms';
 
+/* import { LightboxModule } from 'ngx-lightbox';*/
+// Auth
+import {
+  OktaAuthModule,
+  OktaCallbackComponent,
+} from '@okta/okta-angular';
+import {RouterModule} from '@angular/router';
+import {AuthModule} from './auth/auth.module';
+import {Im3wsService} from './im3ws.service';
+import {AuthService} from './auth/auth.service';
+
+// TODO Ver Keepass
+/*const config = {
+  issuer: 'https://dev-775794.oktapreview.com/oauth2/default',
+  redirectUri: 'http://localhost:{port}/implicit/callback',
+  clientId: '{clientId}'
+}*/
 
 @NgModule({
   declarations: [
@@ -51,9 +68,24 @@ import { ImageThumbnailComponent } from './image-thumbnail/image-thumbnail.compo
     FileUploadModule,
     NgxImgModule.forRoot(),
     DragulaModule.forRoot(),
-//    LightboxModule
+    FormsModule,
+    RouterModule,
+    AuthModule//    LightboxModule
   ],
-  providers: [],
+  // providers: [AuthenticationService, { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }],
+  providers: [Im3wsService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+/* Used for authentication */
+/*@Injectable()
+export class XhrInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const xhr = req.clone({
+      headers: req.headers.set('X-Requested-With', 'XMLHttpRequest')
+    });
+    return next.handle(xhr);
+  }
+}
+*/

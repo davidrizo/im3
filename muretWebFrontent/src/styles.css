@@ -5,3 +5,8 @@ body {
   font-family: Roboto;
   color: #7DE2DB;
 }
+
+a {
+  cursor: pointer;
+  cursor: hand;
+}
