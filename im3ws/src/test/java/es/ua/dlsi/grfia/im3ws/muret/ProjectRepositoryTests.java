@@ -34,11 +34,11 @@ public class ProjectRepositoryTests {
     @Test
     public void testUser() {
         // given
-        User admin = new User("admin");
+        User admin = new User("admin", "passadmin", "a@a.com");
         entityManager.persist(admin);
         entityManager.flush();
 
-        User david = new User("david");
+        User david = new User("david", "passdrizo", "a@a.com");
         entityManager.persist(david);
         entityManager.flush();
 

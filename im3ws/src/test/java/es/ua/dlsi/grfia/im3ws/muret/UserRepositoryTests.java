@@ -37,7 +37,7 @@ public class UserRepositoryTests {
     @Test
     public void testUser() {
         // given
-        User admin = new User("admin");
+        User admin = new User("admin", "admin", "a@a.com");
         entityManager.persist(admin);
         entityManager.flush();
 

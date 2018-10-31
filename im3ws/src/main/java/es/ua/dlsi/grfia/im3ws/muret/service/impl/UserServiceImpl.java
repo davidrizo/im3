@@ -7,6 +7,8 @@ import es.ua.dlsi.grfia.im3ws.service.impl.CRUDServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * @author drizo
  */
@@ -18,6 +20,11 @@ public class UserServiceImpl extends CRUDServiceImpl<User, Integer, UserReposito
     @Override
     protected UserRepository initRepository() {
         return userRepository;
+    }
+
+    @Override
+    public Optional<User> findByUserNamePassword(String username, String password) {
+        return null; //TODO
     }
 }
 
