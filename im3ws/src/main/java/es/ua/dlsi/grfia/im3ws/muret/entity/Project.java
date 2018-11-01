@@ -3,6 +3,7 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
+import es.ua.dlsi.im3.core.score.NotationType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -26,7 +27,14 @@ public class Project {
     @Column
     private Date lastChange;
     @Column
+    private String composer;
+    @Column
     private String comments;
+
+    @Column (name="notation_type")
+    @Enumerated(EnumType.STRING)
+    private NotationType notationType;
+
     /**
      * Comma separated list of image ids - when an image is not present here is sorted at the end of the list
      */
@@ -54,8 +62,10 @@ public class Project {
     public Project() {
     }
 
-    public Project(String name, String path, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, String imagesOrdering, List<Image> images) {
+    public Project(String name, String path, String composer, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, String imagesOrdering, NotationType notationType, List<Image> images) {
         this.name = name;
+        this.composer = composer;
+        this.notationType = notationType;
         this.path = path;
         this.thumbnailBase64Encoding = thumbnailBase64Encoding;
         this.created = created;
@@ -151,6 +161,24 @@ public class Project {
 
     public void setThumbnailBase64Encoding(String thumbnailBase64Encoding) {
         this.thumbnailBase64Encoding = thumbnailBase64Encoding;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public NotationType getNotationType() {
+        return notationType;
+    }
+
+    public void setNotationType(NotationType notationType) {
+        this.notationType = notationType;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public String getComposer() {
+        return composer;
+    }
+
+    public void setComposer(String composer) {
+        this.composer = composer;
     }
 
     public String getImagesOrdering() {

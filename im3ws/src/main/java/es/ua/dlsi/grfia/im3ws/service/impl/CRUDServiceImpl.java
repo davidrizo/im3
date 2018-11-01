@@ -18,6 +18,9 @@ public abstract class CRUDServiceImpl<EntityType, PrimaryKeyType, BaseJPAReposit
         synchronized (CRUDServiceImpl.class) {
             if (repository == null) {
                 repository = initRepository();
+                if (repository == null) {
+                    throw new RuntimeException("Repository is null");
+                }
             }
         }
         return repository;

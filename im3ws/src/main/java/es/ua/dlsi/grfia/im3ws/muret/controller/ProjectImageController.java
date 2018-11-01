@@ -12,9 +12,7 @@ import es.ua.dlsi.im3.core.utils.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -67,7 +65,7 @@ public class ProjectImageController {
 
         //TODO Atómico
         //TODO Ordenación
-        Image image = new Image(fileName, 0, project.get());
+        Image image = new Image(fileName, null, project.get());
         imageService.create(image);
 
         return new UploadFileResponse(fileName, file.getContentType(), file.getSize());

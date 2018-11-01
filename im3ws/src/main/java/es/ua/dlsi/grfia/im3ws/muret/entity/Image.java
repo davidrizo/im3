@@ -18,6 +18,9 @@ public class Image {
     private Long id;
     @Column
     private String filename;
+    @Column
+    private String comments;
+
     @JsonBackReference
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="project_id", referencedColumnName="id")
@@ -32,9 +35,10 @@ public class Image {
     public Image() {
     }
 
-    public Image(String path, int ordering, Project project) {
+    public Image(String path, String comments, Project project) {
         this.filename = path;
         this.project = project;
+        this.comments = comments;
     }
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Long getId() {
@@ -77,5 +81,13 @@ public class Image {
                 ", filename='" + filename + '\'' +
                 ", project=" + project +
                 '}';
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public String getComments() {
+        return comments;
     }
 }

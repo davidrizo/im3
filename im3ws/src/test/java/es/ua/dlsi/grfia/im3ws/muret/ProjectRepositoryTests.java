@@ -5,6 +5,7 @@ import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.entity.User;
 import es.ua.dlsi.grfia.im3ws.muret.repository.ProjectRepository;
 import es.ua.dlsi.grfia.im3ws.muret.repository.UserRepository;
+import es.ua.dlsi.im3.core.score.NotationType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class ProjectRepositoryTests {
         entityManager.flush();
 
         Date now = new Date();
-        Project project = new Project("Proyecto prueba", "prueba", now, now, admin, david, null, null, null, null);
+        Project project = new Project("Proyecto prueba", "prueba", "Compositor", now, now, admin, david, null, null, null, NotationType.eModern, null);
         entityManager.persist(project);
         entityManager.flush();
 
