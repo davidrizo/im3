@@ -1,13 +1,9 @@
 package es.ua.dlsi.grfia.im3ws.scripts;
 
-import es.ua.dlsi.grfia.im3ws.IM3WSException;
 import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
-import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
+import es.ua.dlsi.grfia.im3ws.muret.entity.*;
 import es.ua.dlsi.grfia.im3ws.muret.model.ProjectModel;
-import es.ua.dlsi.grfia.im3ws.muret.service.ImageService;
-import es.ua.dlsi.grfia.im3ws.muret.service.ProjectService;
-import es.ua.dlsi.grfia.im3ws.muret.service.impl.ImageServiceImpl;
-import es.ua.dlsi.grfia.im3ws.muret.service.impl.ProjectServiceImpl;
+import es.ua.dlsi.grfia.im3ws.muret.service.*;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.core.utils.ImageUtils;
@@ -17,16 +13,10 @@ import es.ua.dlsi.im3.omr.model.io.XMLReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +24,6 @@ import java.io.IOException;
 /**
  * It migrates MuRET XML files to the online version
  */
-//Uncomment to run command line @SpringBootApplication
-//@SpringBootApplication
 @ComponentScan("es.ua.dlsi.grfia.im3ws")
 @EnableJpaRepositories("es.ua.dlsi.grfia.im3ws.muret.repository")
 @EntityScan("es.ua.dlsi.grfia.im3ws.muret.entity")
@@ -44,6 +32,14 @@ public class MigrateMuretXML implements CommandLineRunner {
     ProjectService projectService;
     @Autowired
     ImageService imageService;
+    @Autowired
+    PageService pageService;
+    @Autowired
+    RegionService regionService;
+    @Autowired
+    SymbolService symbolService;
+
+
 
     MURETConfiguration muretConfiguration;
 
@@ -54,7 +50,11 @@ public class MigrateMuretXML implements CommandLineRunner {
     public void run(String... args) throws Exception {
         muretConfiguration = new MURETConfiguration("/Applications/MAMP/htdocs/muret", "http://localhost:8888/muret", 200, 720);
 
-        importMuRETXML("/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/B-3.28/B-3.28.mrt");
+        String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
+        importMuRETXML(path + "B-3.28/B-3.28.mrt");
+        importMuRETXML(path + "B-50.747/B-50.747.mrt");
+        importMuRETXML(path + "B-53.781/B-53.781.mrt");
+        importMuRETXML(path + "B-59.850-completo/B-59.850-completo.mrt");
 
         System.out.println("Finished");
         ConfigurableApplicationContext ctx = SpringApplication.run(MigrateMuretXML.class, args);
@@ -88,13 +88,75 @@ public class MigrateMuretXML implements CommandLineRunner {
             for (es.ua.dlsi.im3.omr.model.entities.Image xmlImage : xmlProject.getImages()) {
                 es.ua.dlsi.grfia.im3ws.muret.entity.Image image = importImage(xmlImage, xmlImagesPath, project, projectPath);
 
-                // not work with pages...
+                for (es.ua.dlsi.im3.omr.model.entities.Page xmlPage : xmlImage.getPages()) {
+                    es.ua.dlsi.grfia.im3ws.muret.entity.Page page = importPage(xmlPage, image);
+                    
+                    for (es.ua.dlsi.im3.omr.model.entities.Region xmlRegion: xmlPage.getRegions()) {
+                        es.ua.dlsi.grfia.im3ws.muret.entity.Region region = importRegion(xmlRegion, page);
 
+                        for (es.ua.dlsi.im3.omr.model.entities.Symbol xmlSymbol: xmlRegion.getSymbols()) {
+                            es.ua.dlsi.grfia.im3ws.muret.entity.Symbol symbol = importSymbol(xmlSymbol, region);
+
+
+                        }
+                    }
+                }
             }
         } catch (Throwable t) {
             t.printStackTrace();
-            throw new Exception(t);
         }
+    }
+
+    private Symbol importSymbol(es.ua.dlsi.im3.omr.model.entities.Symbol xmlSymbol, Region region) {
+        System.out.println("\t\t\t\tImporting symbol");
+        es.ua.dlsi.grfia.im3ws.muret.entity.Symbol symbol = new Symbol();
+        symbol.setAgnosticSymbol(xmlSymbol.getAgnosticSymbol());
+        symbol.setBoundingBox(convert(xmlSymbol.getBoundingBox()));
+        symbol.setRegion(region);
+        symbol.setComments(xmlSymbol.getComments());
+        if (xmlSymbol.getStrokes() != null) {
+            symbol.setStrokes(convert(xmlSymbol.getStrokes()));
+        }
+        return symbolService.create(symbol);
+    }
+
+    private Strokes convert(es.ua.dlsi.im3.omr.model.entities.Strokes xmlStrokes) {
+        Strokes strokes = new CalcoStrokes();
+        if (xmlStrokes.getStrokeList() != null) {
+            for (es.ua.dlsi.im3.omr.model.entities.Stroke xmlStroke : xmlStrokes.getStrokeList()) {
+                CalcoStroke stroke = new CalcoStroke();
+                for (es.ua.dlsi.im3.omr.model.entities.Point xmlPoint : xmlStroke.pointsProperty()) {
+                    stroke.addPoint(new Point(xmlPoint.getRelativeTime(), (int) xmlPoint.getX(), (int) xmlPoint.getY()));
+                }
+                ((CalcoStrokes) strokes).addStroke(stroke);
+            }
+        }
+
+        return strokes;
+    }
+
+    private Region importRegion(es.ua.dlsi.im3.omr.model.entities.Region xmlRegion, Page page) {
+        System.out.println("\t\t\tImporting region");
+        es.ua.dlsi.grfia.im3ws.muret.entity.Region region = new Region();
+        region.setBoundingBox(convert(xmlRegion.getBoundingBox()));
+        region.setPage(page);
+        region.setComments(xmlRegion.getComments());
+
+        return regionService.create(region);
+    }
+
+    private Page importPage(es.ua.dlsi.im3.omr.model.entities.Page xmlPage, es.ua.dlsi.grfia.im3ws.muret.entity.Image image) {
+        System.out.println("\t\tImporting page");
+
+        es.ua.dlsi.grfia.im3ws.muret.entity.Page page = new Page();
+        page.setComments(xmlPage.getComments());
+        page.setBoundingBox(convert(xmlPage.getBoundingBox()));
+        page.setImage(image);
+        return pageService.create(page);
+    }
+
+    BoundingBox convert(es.ua.dlsi.im3.core.adt.graphics.BoundingBox bb) {
+        return new BoundingBox((int)bb.getFromX(), (int)bb.getFromY(), (int)bb.getToX(), (int)bb.getToY());
     }
 
     private es.ua.dlsi.grfia.im3ws.muret.entity.Image importImage(Image xmlImage, File xmlImagesPath, Project project, File projectPath) throws IOException, IM3Exception {

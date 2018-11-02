@@ -24,6 +24,10 @@ public class Page {
     @Convert(converter = BoundingBoxConverter.class)
     private BoundingBox boundingBox;
 
+    @Column
+    private String comments;
+
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="image_id", referencedColumnName="id")
@@ -37,10 +41,11 @@ public class Page {
     public Page() {
     }
 
-    public Page(BoundingBox boundingBox, Image image, List<Region> regions) throws IM3WSException {
+    public Page(BoundingBox boundingBox, String comments, Image image, List<Region> regions) throws IM3WSException {
         this.boundingBox = boundingBox;
         this.image = image;
         this.regions = regions;
+        this.comments = comments;
     }
 
     public Long getId() {
@@ -53,7 +58,7 @@ public class Page {
     public BoundingBox getBoundingBox() {
         return boundingBox;
     }
-    public void setBoundingBox(BoundingBox boundingBox) throws IM3WSException {
+    public void setBoundingBox(BoundingBox boundingBox)  {
         this.boundingBox = boundingBox;
     }
     @JsonIgnore
@@ -71,5 +76,13 @@ public class Page {
 
     public void setRegions(List<Region> regions) {
         this.regions = regions;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }

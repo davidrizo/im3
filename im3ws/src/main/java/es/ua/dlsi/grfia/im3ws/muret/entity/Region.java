@@ -16,6 +16,8 @@ public class Region {
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
+    String comments;
 
     /**
      * Format: fromX,fromY,toX,toY - absolute values
@@ -38,10 +40,11 @@ public class Region {
     public Region() {
     }
 
-    public Region(BoundingBox boundingBox, Page page, List<Symbol> symbols) {
+    public Region(BoundingBox boundingBox, String comments, Page page, List<Symbol> symbols) {
         this.boundingBox = boundingBox;
         this.page = page;
         this.symbols = symbols;
+        this.comments = comments;
     }
 
     public Long getId() {
@@ -58,6 +61,14 @@ public class Region {
 
     public void setBoundingBox(BoundingBox boundingBox) {
         this.boundingBox = boundingBox;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     @JsonIgnore

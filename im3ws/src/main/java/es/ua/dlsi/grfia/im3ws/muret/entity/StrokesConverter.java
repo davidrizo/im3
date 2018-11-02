@@ -12,11 +12,22 @@ public class StrokesConverter implements AttributeConverter<Strokes, String> {
 
     @Override
     public String convertToDatabaseColumn(Strokes strokes) {
-        return strokes.toDatabaseString();
+        if (strokes != null) {
+            String result = strokes.toDatabaseString();
+            if (result.length() > 8192) {
+                throw new RuntimeException("Strokes too long, max is 8K: " + result.length());
+            }
+            return result;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Strokes convertToEntityAttribute(String s) {
+        if (s == null) {
+            return null;
+        }
         if (s.startsWith(CalcoStrokes.PREFIX)) {
             try {
                 return CalcoStrokes.parse(s);

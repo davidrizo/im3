@@ -16,6 +16,9 @@ public class Symbol {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    String comments;
+
     @JsonBackReference
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="region_id", referencedColumnName="id")
@@ -39,11 +42,12 @@ public class Symbol {
     public Symbol() {
     }
 
-    public Symbol(Region region, AgnosticSymbol agnosticSymbol, BoundingBox boundingBox, Strokes strokes) {
+    public Symbol(Region region, AgnosticSymbol agnosticSymbol, BoundingBox boundingBox, String comments, Strokes strokes) {
         this.region = region;
         this.agnosticSymbol = agnosticSymbol;
         this.boundingBox = boundingBox;
         this.strokes = strokes;
+        this.comments = comments;
     }
 
     public Long getId() {
@@ -52,6 +56,14 @@ public class Symbol {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     @JsonIgnore // use getAgnosticSymbolType + getPositionInStaff instead
