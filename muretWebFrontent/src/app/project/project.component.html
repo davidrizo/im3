@@ -5,7 +5,7 @@
   </div>
 
   <div class="col-1">
-    <a routerLinkActive="active" routerLink="uploadimages/{{project?.id}}">
+    <a (click)="uploadImages()">
       Upload images
     </a>
   </div>
@@ -27,6 +27,5 @@
       </div>-->
     </div>
     <ng-template #loading>Loading project...</ng-template>
-
   </div>
 </div>

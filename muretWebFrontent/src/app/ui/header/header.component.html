@@ -1,24 +1,19 @@
-<nav class="navbar navbar-dark bg-dark mb-5">
-  <a class="navbar-brand" href="startup">MuRET</a>
-  <div class="navbar-expand mr-auto">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" routerLinkActive="active" routerLink="startup">Home</a>
-      <a class="nav-item nav-link" routerLinkActive="active" routerLink="about">About</a>
-
-      <!--<a [hidden]="!authenticated()" (click)="logout()">Logout</a>
-      <a [hidden]="authenticated()"> (click)="login()">Login</a>-->
-    </div>
-  </div>
-  <div class="navbar-expand ml-auto navbar-nav">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" [hidden]="authenticated()" routerLinkActive="active" routerLink="login">Login</a>
-      <a class="nav-item nav-link" [hidden]="!authenticated()" routerLinkActive="active" routerLink="login">Logout</a>
-      <!--<a class="nav-item nav-link" [hidden]="!authenticated()" (click)="logout()">User {{username}} logout</a>
-      <a class="nav-item nav-link" [hidden]="authenticated()" href="/muret/login">Login</a>-->
-
-      <a class="nav-item nav-link" href="https://github.com/davidrizo/im3" target="_blank">
+<nav class="navbar navbar-light offset-1">
+  <div ngbDropdown class="d-inline-block">
+    <button class="navbar-toggler hidden-sm-up" id="dropdownBasic1" ngbDropdownToggle>
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+      <a class="dropdown-item nav-link" routerLinkActive="active" routerLink="startup">Home</a>
+      <a class="dropdown-item nav-link" [hidden]="authenticated()" routerLink="login">Login</a>
+      <a class="dropdown-item nav-link" [hidden]="!authenticated()" routerLink="login">Logout</a>
+      <a class="dropdown-item nav-link" routerLinkActive="active" routerLink="about">About</a>
+      <a class="dropdown-item nav-link" href="https://github.com/davidrizo/im3" target="_blank">
         <i class="fa fa-github"></i>
       </a>
     </div>
+    <a [hidden]="hideLogo()" class="navbar-brand" routerLink="startup">
+      <img src="assets/images/muret.png" alt="Logo MuRET">
+    </a>
   </div>
 </nav>

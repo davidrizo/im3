@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard]},
   { path: 'newproject', component: NewProjectFormComponent, canActivate: [AuthGuard]},
   { path: 'project/:id', component: ProjectComponent, canActivate: [AuthGuard]},
-  { path: 'image/:id', component: ImageComponent, canActivate: [AuthGuard]},
+  { path: 'image/:id/:projectURLs', component: ImageComponent, canActivate: [AuthGuard]},
   { path: 'uploadimages/:id', component: UploadImagesComponent, canActivate: [AuthGuard]},
   { path: '', pathMatch: 'full', redirectTo: 'startup'}
   /*{ path: '**', redirectTo: '' },*/
@@ -27,7 +27,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [ RouterModule.forRoot(routes,
-    { enableTracing: true } // <-- debugging purposes only
+    { enableTracing: false } // <-- debugging purposes only
     ) ],
   exports: [ RouterModule ]
 })

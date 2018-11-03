@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {Injectable, NgModule} from '@angular/core';
+import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ProjectsComponent } from './projects/projects.component';
@@ -28,6 +28,8 @@ import { ImageThumbnailComponent } from './image-thumbnail/image-thumbnail.compo
 
 import { FormsModule } from '@angular/forms';
 
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 /* import { LightboxModule } from 'ngx-lightbox';*/
 // Auth
 import {
@@ -39,6 +41,7 @@ import {Im3wsService} from './im3ws.service';
 import {LoginComponent} from './login/login.component';
 
 import {LoggerModule, NGXLogger, NgxLoggerLevel} from 'ngx-logger';
+import {GlobalErrorHandlerService} from './global-error-handler.service';
 
 // TODO Ver Keepass
 /*const config = {
@@ -72,10 +75,14 @@ import {LoggerModule, NGXLogger, NgxLoggerLevel} from 'ngx-logger';
     DragulaModule.forRoot(),
     FormsModule,
     RouterModule,
-    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
+    NgbModule,
+    // LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
+    LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
     //    LightboxModule
   ],
-  providers: [Im3wsService, NGXLogger], // singleton
+  providers: [Im3wsService, NGXLogger, GlobalErrorHandlerService,
+    { provide: ErrorHandler, useClass: GlobalErrorHandlerService },
+  ], // singleton
   bootstrap: [AppComponent]
 })
 export class AppModule { }
