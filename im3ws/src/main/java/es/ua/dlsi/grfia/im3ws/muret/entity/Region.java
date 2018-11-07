@@ -3,6 +3,7 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.List;
@@ -46,7 +47,7 @@ public class Region {
         this.symbols = symbols;
         this.comments = comments;
     }
-
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Long getId() {
         return id;
     }
@@ -55,6 +56,7 @@ public class Region {
         this.id = id;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public BoundingBox getBoundingBox() {
         return boundingBox;
     }
