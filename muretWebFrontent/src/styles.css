@@ -4,9 +4,18 @@
 body {
   font-family: Roboto;
   color: #7DE2DB;
+  background-color: #103339;
 }
 
 a {
   cursor: pointer;
   cursor: hand;
+}
+
+.screenTitle {
+  text-align: right;
+}
+
+.titles {
+  margin-bottom: 25px;
 }

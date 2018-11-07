@@ -1,15 +1,34 @@
-<div class="row" id="image">
-  <div class="offset-1 col-10">
-    <img class="img-fluid" src="{{projectURLs}}/{{image?.filename}}" alt="Image">
-    <div id="canvas" #imageSurface></div>
+<div class="row" (resized)="onResized($event)">
+  <div class="col-1" id="toolbar">
+    TO-DO
   </div>
-  <div class="row" id="agnostic">
-    <div class="offset-1 col-10">
-      <div id="staff" #agnosticSurface></div>
-      <!--<svg-icon src="https://upload.wikimedia.org/wikipedia/commons/f/fb/C_%28indication_de_mesure%29.svg"></svg-icon>-->
-      <!--<p *ngFor="let svgpath of svgOfSymbols">HOLA: {{svgpath}}</p>-->
-      <svg-icon *ngFor="let svgpath of svgOfSymbols" src="{{svgpath}}"></svg-icon>
+
+  <div class="col-10">
+    <div class="row" id="agnostic" [style.height.px]="agnosticStaffHeight">
+      <div class="col-12" id="staff" #agnosticSurface></div>
+        <svg-icon *ngFor="let svgpath of svgOfSymbols" src="{{svgpath}}"></svg-icon>
+    </div>
+
+
+    <div class="row" id="selectedStaff" [hidden]="!staffSelected" id="selectedStaffClippedImage">
+      <div class="col-12" #selectedStaffSurface
+           [style.height.px]="selectedStaffHeight"
+           [style.width.px]="selectedStaffWidth"
+           [ngStyle]="{'background-image':' url(' + imageURL + ')'}"
+           [style.background-position-x.px]="selectedStaffImageBackgroundPositionX"
+           [style.background-position-y.px]="selectedStaffImageBackgroundPositionY"
+           [style.background-size.%]="selectedStaffImageBackgroundPertentage"
+      >
+      </div>
+    </div>
+
+    <div class="row" id="manuscriptImage">
+      <div class="col">
+        <img #domImage class="img-fluid" (load)="onImageLoad()" src="{{imageURL}}" alt="Image">
+        <div id="canvas" #imageSurface [style.left]="domImagePaddingLeft" [style.height.px]="domImageHeight" [style.width.px]="domImageWidth"></div>
+      </div>
     </div>
   </div>
 </div>
+
 

@@ -43,6 +43,8 @@ import {LoginComponent} from './login/login.component';
 import {LoggerModule, NGXLogger, NgxLoggerLevel} from 'ngx-logger';
 import {GlobalErrorHandlerService} from './global-error-handler.service';
 
+import { AngularResizedEventModule } from 'angular-resize-event';
+
 // TODO Ver Keepass
 /*const config = {
   issuer: 'https://dev-775794.oktapreview.com/oauth2/default',
@@ -76,6 +78,7 @@ import {GlobalErrorHandlerService} from './global-error-handler.service';
     FormsModule,
     RouterModule,
     NgbModule,
+    AngularResizedEventModule,
     // LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
     LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
     //    LightboxModule

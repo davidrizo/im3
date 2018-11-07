@@ -1,26 +1,43 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Im3wsService} from '../im3ws.service';
 import {ActivatedRoute} from '@angular/router';
+import {geometry, Surface, Path, Text, Group, Rect, ShapeOptions, Image as KendoImage} from '@progress/kendo-drawing';
 import {Image} from '../model/image';
-
-import {geometry, Surface, Path, Text, Group, Rect, ShapeOptions} from '@progress/kendo-drawing';
-import {forEach} from '@angular/router/src/utils/collection';
 import {Page} from '../model/page';
 import {Symbol} from '../model/symbol';
 import {BoundingBox} from '../model/bounding-box';
 import {Point, Size} from '@progress/kendo-drawing/geometry';
-import {MessageService} from '../messages/message.service';
 import {isNullOrUndefined} from 'util';
 import {Stroke} from '../model/stroke';
 import {NGXLogger} from 'ngx-logger';
+import { ResizedEvent } from 'angular-resize-event/resized-event';
+import {Region} from '../model/region';
 
 @Component({
   selector: 'app-image',
   templateUrl: './image.component.html',
   styleUrls: ['./image.component.css']
 })
+
 export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   image: Image;
+  imageURL: string;
+
+  staffMargin = 30;
+  staffSpaceHeight = 10;
+  private agnosticStaffHeight: number;
+
+  selectedStaffWidth: number;
+  selectedStaffHeight: number;
+  selectedStaffImageBackgroundPositionX: number;
+  selectedStaffImageBackgroundPositionY: number;
+  selectedStaffImageBackgroundPertentage: number;
+  staffSelected: boolean;
+
+  @ViewChild('selectedStaffSurface')
+  private selectedStaffSurfaceElement: ElementRef;
+  private selectedStaffSurface: Surface;
+
   @ViewChild('imageSurface')
   private imageSurfaceElement: ElementRef;
   private imageSurface: Surface;
@@ -29,11 +46,20 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   private agnosticSurfaceElement: ElementRef;
   private agnosticSurface: Surface;
 
+  @ViewChild('domImage')
+  private domImage: ElementRef;
+
   svgOfSymbols: Array<string> = [];
   private projectURLs: string;
+  private scale: number;
+  domImageHeight: number;
+  domImageWidth: number;
+  domImagePaddingLeft: number;
+  private boundingBoxesGroup: Group;
+  private selectedElementGroup: Group;
 
   constructor(
-    private projectService: Im3wsService,
+    private im3wsService: Im3wsService,
     private route: ActivatedRoute,
     private logger: NGXLogger
   ) {}
@@ -44,40 +70,37 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.projectURLs = routeParams.projectURLs;
     this.logger.debug('Image id=' + routeParams.id);
     this.logger.debug('Project URLs=' + this.projectURLs);
-    this.projectService.getImage$(routeParams.id).
-    subscribe(serviceImage => this.setImage(serviceImage));
+    this.im3wsService.getImage$(routeParams.id).
+      subscribe(serviceImage => this.setImage(serviceImage)
+    );
   }
-
-  /*private drawScene(surface: Surface) {
-    const path = new Path({
-      stroke: {
-        color: '#9999b6',
-        width: 2
-      }
-    });
-    path.moveTo(0, 0)
-      .lineTo(150, 0).lineTo(150, 65).lineTo(0, 65)
-      .close();
-    const text = new Text(
-      'Prueba',
-      new Point(60, 25),
-      {font: 'bold 15px Arial'}
-    );
-    const group = new Group();
-    group.append(path);
-    group.append(text);
-
-    // Translate the group.
-    group.transform(
-      transform().translate(50, 50)
-    );
-
-    // Render the group on the surface.
-    surface.draw(group);
-  }*/
 
   public ngOnDestroy() {
     this.imageSurface.destroy();
+  }
+
+  /* It draws the page and region bounding boxes */
+  private setImage(serviceImage: Image) {
+    this.image = serviceImage;
+    this.logger.debug('Setting image ' + serviceImage + ' ' + this.image.filename);
+    this.imageURL = this.projectURLs + '/' + this.image.filename;
+  }
+
+  onImageLoad() {
+    this.logger.debug('OnImageLoad');
+    this.scale = this.domImage.nativeElement.width / this.domImage.nativeElement.naturalWidth;
+    this.logger.debug('Using scale ' + this.scale);
+    this.domImageHeight = this.domImage.nativeElement.height;
+    this.domImageWidth = this.domImage.nativeElement.width;
+    this.domImagePaddingLeft = this.domImage.nativeElement.paddingLeft;
+    this.drawBoundingBoxes();
+    this.drawAgnosticTranscription();
+  }
+
+  onResized(event: ResizedEvent): void {
+    this.logger.debug('Resized');
+    this.scale = this.domImage.nativeElement.width / this.domImage.nativeElement.naturalWidth;
+    this.drawBoundingBoxes();
   }
 
   private createSurface() {
@@ -93,42 +116,99 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     const elementAgnostic = this.agnosticSurfaceElement.nativeElement;
 
     // Create a drawing surface
-    this.agnosticSurface = Surface.create(elementAgnostic);
+    this.agnosticSurface = Surface.create(elementAgnostic, {
+    });
+
+    // Obtain a reference to the native DOM element of the wrapper
+    const elementSelectedStaff = this.selectedStaffSurfaceElement.nativeElement;
+
+    // Create a drawing surface
+    this.selectedStaffSurface = Surface.create(elementSelectedStaff, {
+    });
   }
 
   public ngAfterViewInit(): void {
     this.createSurface();
-    this.drawBoundingBoxes();
-    this.drawAgnosticTranscription();
   }
 
-  /* It draws the page and region bounding boxes */
-  private setImage(serviceImage: Image) {
-    this.image = serviceImage;
-    this.logger.debug('Setting image ' + serviceImage + ' ' + this.image.filename);
+  private boundingBoxToGeometryRect(boundingBox: BoundingBox) {
+    return new geometry.Rect(new Point(boundingBox.fromX * this.scale, boundingBox.fromY * this.scale),
+      new Size(this.scale * (boundingBox.toX - boundingBox.fromX),
+        this.scale * (boundingBox.toY - boundingBox.fromY)));
   }
-
-  private drawBoundingBox(boundingBox: BoundingBox, color: string) {
-    this.logger.debug('Drawing ' + boundingBox.toString() + ' in color ' + color);
-    const geometryRect = new geometry.Rect(new Point(boundingBox.fromX, boundingBox.fromY),
-new Size(boundingBox.toX - boundingBox.fromX, boundingBox.toY - boundingBox.fromY));
-    const rect = new Rect(geometryRect, {
-      stroke: { color: color, width: 2 }
+  private drawBoundingBox(object: any, boundingBox: BoundingBox, color: string, width: number) {
+    /* this.logger.debug('Drawing bounding box ' + boundingBox + ' in color ' + color);
+    this.logger.debug('from x=' + boundingBox.fromX + ' - fromY = ' + boundingBox.fromY
+      + 'to x=' + boundingBox.toX + ' - toY = ' + boundingBox.toY); */
+    const geometryRect = this.boundingBoxToGeometryRect(boundingBox);
+    const rect: any = new Rect(geometryRect, { // use any in order to be able to add object property dynamically
+      stroke: { color: color, width: width},
+      fill: {color: color, opacity: 0.0}
     });
+    rect.object = object;
 
-    this.imageSurface.draw(rect);
+    this.boundingBoxesGroup.append(rect);
   }
 
 
   private drawBoundingBoxes() {
+    this.imageSurface.clear();
+    this.selectedElementGroup = new Group();
+    this.imageSurface.draw(this.selectedElementGroup);
+    this.boundingBoxesGroup = new Group();
     this.logger.debug('Drawing bounding boxes for image ' + this.image);
     this.image.pages.forEach(page => {
       this.logger.debug('Page ' + page);
-      this.drawBoundingBox(page.boundingBox, 'red');
+      this.drawBoundingBox(page, page.boundingBox, 'red', 12);
       page.regions.forEach(region => {
         this.logger.debug('Region ' + region);
-        this.drawBoundingBox(region.boundingBox, 'green');
+        this.drawBoundingBox(region, region.boundingBox, 'green', 3);
       });
+    });
+
+    this.imageSurface.draw(this.boundingBoxesGroup);
+
+    // Bind to the mouseenter event
+    this.imageSurface.bind('click', (args: any) => {
+      const element = args.element;
+      if (element) {
+        this.logger.debug('Clicked on ' + element.object.constructor.name + ' ' + element.object.id);
+        const bbox = element.bbox();
+
+        const rect = new Rect(bbox, {
+          fill: {color: 'red', opacity: 0.3}
+        });
+
+        this.selectedElementGroup.clear();
+        this.selectedElementGroup.append(rect);
+
+        if (element.object.symbols) { // if it is a region
+            this.doSelect(element.object);
+        }
+
+        /*
+        // Obtain the element offset in order to calculat the absolute position on the page
+        const offset = this.surfaceElement.nativeElement.getBoundingClientRect();
+
+        // Update the content and show the popup
+        this.content = element.options.tooltipContent;
+        this.show = true;
+
+        // Set the Popup offset based on the position of the shape and the element offset
+        this.offset = {
+          left: bbox.center().x + offset.left,
+          top: bbox.origin.y + offset.top
+        };*/
+      }
+    });
+  }
+
+  private doSelect(region: Region) {
+    this.staffSelected = true;
+    this.drawSelectedRegion(region);
+    this.logger.debug('Fetching symbols of region id=' + region.id);
+    this.im3wsService.getSymbolsOfRegion$(region.id).subscribe(next => {
+
     });
   }
 
@@ -185,25 +265,42 @@ new Size(boundingBox.toX - boundingBox.fromX, boundingBox.toY - boundingBox.from
     const pathOptions: ShapeOptions = {
       stroke: {
         color: '#000000',
-        width: 2
+        width: 1
       }
     };
 
     let i = 0;
     for (i = 0 ; i < 5; i++) {
       const line = new Path(pathOptions);
-      line.moveTo(0, i * 10)
-        .lineTo(400, i * 10)
+      line.moveTo(0, i * this.staffSpaceHeight + this.staffMargin)
+        .lineTo(this.domImageWidth, i * this.staffSpaceHeight + this.staffMargin)
         .close();
       this.agnosticSurface.draw(line);
     }
+    this.agnosticStaffHeight = this.staffMargin * 2 + this.staffSpaceHeight * 5;
   }
 
   private drawAgnosticSymbols() {
     /*TODO Seleccionar un pentagrama!!! */
+    this.logger.warn('TO-DO: draw agnostic symbols');
     // now draw symbols
-    this.image.pages[0].regions[0].symbols.forEach(symbol => {
+    /*this.image.pages[0].regions[0].symbols.forEach(symbol => {
       this.drawSymbol(symbol);
-    });
+    });*/
+  }
+
+  private drawSelectedRegion(region: Region) {
+    this.selectedStaffSurface.clear();
+    // this.selectedStaffWidth = region.boundingBox.toX - region.boundingBox.fromX;
+    const regionWidth = region.boundingBox.toX - region.boundingBox.fromX;
+    const regionHeight = region.boundingBox.toY - region.boundingBox.fromY;
+    this.selectedStaffWidth = this.domImageWidth;
+    // const selectedStaffScale = this.selectedStaffSurfaceElement.nativeElement.width / this.imageSurfaceElement.nativeElement.naturalWidth;
+    // const selectedStaffScale = 1; // this.selectedStaffWidth / regionWidth;
+    const selectedStaffScale = regionWidth / this.domImageWidth;
+    this.selectedStaffImageBackgroundPertentage = selectedStaffScale * 100.0;
+    this.selectedStaffImageBackgroundPositionX = -region.boundingBox.fromX * selectedStaffScale;
+    this.selectedStaffImageBackgroundPositionY = -region.boundingBox.fromY * selectedStaffScale;
+    this.selectedStaffHeight = regionHeight * selectedStaffScale;
   }
 }

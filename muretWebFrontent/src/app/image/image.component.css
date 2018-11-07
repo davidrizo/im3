@@ -1,23 +1,29 @@
-#image {
-  max-height: 80%;
+#toolbar {
+  background-color: #7DE2DB;
+  height: 100vh; /* TODO */
 }
 
 #agnostic {
-  height: 20%;
-}
-
-#agnostic div {
+  height: 10vh; /* TODO */
   background-color: white;
-}
-
-#canvas {
-  position: absolute;
-  left: 0;
-  top: 0;
 }
 
 #staff {
   /*position: absolute;*/
   left: 0;
   top: 0;
+}
+
+#manuscriptImage {
+  max-height: 80vh;
+  overflow: auto;
+}
+
+#manuscriptImage img {
+}
+
+#canvas {
+  position: absolute;
+  top: 0px;
+  width: 100%;
 }

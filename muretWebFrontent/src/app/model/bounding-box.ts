@@ -44,4 +44,8 @@ export class BoundingBox {
   set toY(value: number) {
     this._toY = value;
   }
+
+  public printString(): string {
+    return 'From (' + this.fromX + ', ' + this.fromY + '), to (' + this.toX + ', ' + this.toY + ')';
+  }
 }
