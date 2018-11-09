@@ -4,22 +4,21 @@
   </div>
 
   <div class="col-10">
-    <div class="row" id="agnostic" [style.height.px]="agnosticStaffHeight">
-      <div class="col-12" id="staff" #agnosticSurface></div>
-        <svg-icon *ngFor="let svgpath of svgOfSymbols" src="{{svgpath}}"></svg-icon>
-    </div>
-
-
-    <div class="row" id="selectedStaff" [hidden]="!staffSelected" id="selectedStaffClippedImage">
-      <div class="col-12" #selectedStaffSurface
+    <div class="row" id="selectedStaff">
+      <div class="col" #selectedStaffSurface
            [style.height.px]="selectedStaffHeight"
-           [style.width.px]="selectedStaffWidth"
-           [ngStyle]="{'background-image':' url(' + imageURL + ')'}"
+           [ngStyle]="{'background-image':' url(' + selectedStaffImageURL + ')'}"
            [style.background-position-x.px]="selectedStaffImageBackgroundPositionX"
            [style.background-position-y.px]="selectedStaffImageBackgroundPositionY"
            [style.background-size.%]="selectedStaffImageBackgroundPertentage"
-      >
+        >
       </div>
+      <p id="noStaffSelectedMessage" [hidden]="staffSelected">Select a staff...</p>
+    </div>
+
+    <div class="row" id="agnostic" [style.height.px]="agnosticStaffHeight">
+      <div class="col" id="staff" #agnosticSurface></div>
+      <svg-icon *ngFor="let svgpath of svgOfSymbols" src="{{svgpath}}"></svg-icon>
     </div>
 
     <div class="row" id="manuscriptImage">

@@ -22,6 +22,7 @@ import {Region} from '../model/region';
 export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   image: Image;
   imageURL: string;
+  selectedStaffImageURL: string;
 
   staffMargin = 30;
   staffSpaceHeight = 10;
@@ -75,6 +76,12 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  public ngAfterViewInit(): void {
+    this.logger.debug('ngAfterViewInit');
+    this.createSurfaces();
+  }
+
+
   public ngOnDestroy() {
     this.imageSurface.destroy();
   }
@@ -99,18 +106,22 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onResized(event: ResizedEvent): void {
     this.logger.debug('Resized');
-    this.scale = this.domImage.nativeElement.width / this.domImage.nativeElement.naturalWidth;
-    this.drawBoundingBoxes();
+    if (this.imageSurface) {
+      this.scale = this.domImage.nativeElement.width / this.domImage.nativeElement.naturalWidth;
+      this.drawBoundingBoxes();
+    } // else it is invoked before ngAfterViewInit
   }
 
-  private createSurface() {
+  private createSurfaces() {
     this.logger.debug('Creating surfaces');
 
     // Obtain a reference to the native DOM element of the wrapper
     const element = this.imageSurfaceElement.nativeElement;
 
     // Create a drawing surface
-    this.imageSurface = Surface.create(element);
+    this.imageSurface = Surface.create(element,  {
+
+    });
 
     // Obtain a reference to the native DOM element of the wrapper
     const elementAgnostic = this.agnosticSurfaceElement.nativeElement;
@@ -125,10 +136,6 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     // Create a drawing surface
     this.selectedStaffSurface = Surface.create(elementSelectedStaff, {
     });
-  }
-
-  public ngAfterViewInit(): void {
-    this.createSurface();
   }
 
   private boundingBoxToGeometryRect(boundingBox: BoundingBox) {
@@ -152,7 +159,9 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   private drawBoundingBoxes() {
-    this.imageSurface.clear();
+    if (this.imageSurface) {
+      this.imageSurface.clear();
+    }
     this.selectedElementGroup = new Group();
     this.imageSurface.draw(this.selectedElementGroup);
     this.boundingBoxesGroup = new Group();
@@ -183,7 +192,7 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedElementGroup.append(rect);
 
         if (element.object.symbols) { // if it is a region
-            this.doSelect(element.object);
+          this.doSelect(element.object);
         }
 
         /*
@@ -290,17 +299,17 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private drawSelectedRegion(region: Region) {
-    this.selectedStaffSurface.clear();
-    // this.selectedStaffWidth = region.boundingBox.toX - region.boundingBox.fromX;
+    this.selectedStaffImageURL = this.imageURL;
     const regionWidth = region.boundingBox.toX - region.boundingBox.fromX;
     const regionHeight = region.boundingBox.toY - region.boundingBox.fromY;
-    this.selectedStaffWidth = this.domImageWidth;
-    // const selectedStaffScale = this.selectedStaffSurfaceElement.nativeElement.width / this.imageSurfaceElement.nativeElement.naturalWidth;
-    // const selectedStaffScale = 1; // this.selectedStaffWidth / regionWidth;
-    const selectedStaffScale = regionWidth / this.domImageWidth;
+    this.selectedStaffWidth = this.selectedStaffSurfaceElement.nativeElement.offsetWidth;
+    const selectedStaffScale = this.domImage.nativeElement.naturalWidth / regionWidth;
+    const expectedStaffWidth = regionWidth / selectedStaffScale;
+    const expectedStaffWidthPercentage = this.selectedStaffWidth / expectedStaffWidth;
     this.selectedStaffImageBackgroundPertentage = selectedStaffScale * 100.0;
-    this.selectedStaffImageBackgroundPositionX = -region.boundingBox.fromX * selectedStaffScale;
-    this.selectedStaffImageBackgroundPositionY = -region.boundingBox.fromY * selectedStaffScale;
-    this.selectedStaffHeight = regionHeight * selectedStaffScale;
+    this.selectedStaffImageBackgroundPositionX = expectedStaffWidthPercentage * (-region.boundingBox.fromX / selectedStaffScale);
+    this.selectedStaffImageBackgroundPositionY = expectedStaffWidthPercentage * (-region.boundingBox.fromY / selectedStaffScale);
+    this.selectedStaffHeight = (regionHeight / selectedStaffScale) * expectedStaffWidthPercentage;
+    this.logger.debug('Selected staff scale: ' + selectedStaffScale);
   }
 }
