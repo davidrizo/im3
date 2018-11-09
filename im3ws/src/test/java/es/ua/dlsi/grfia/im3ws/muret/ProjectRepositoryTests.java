@@ -1,6 +1,7 @@
 package es.ua.dlsi.grfia.im3ws.muret;
 
 import es.ua.dlsi.grfia.im3ws.IM3WebApplication;
+import es.ua.dlsi.grfia.im3ws.muret.entity.ManuscriptType;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.entity.User;
 import es.ua.dlsi.grfia.im3ws.muret.repository.ProjectRepository;
@@ -44,7 +45,7 @@ public class ProjectRepositoryTests {
         entityManager.flush();
 
         Date now = new Date();
-        Project project = new Project("Proyecto prueba", "prueba", "Compositor", now, now, admin, david, null, null, null, NotationType.eModern, null);
+        Project project = new Project("Proyecto prueba", "prueba", "Compositor", now, now, admin, david, null, null, null, NotationType.eModern, ManuscriptType.ePrinted, null);
         entityManager.persist(project);
         entityManager.flush();
 

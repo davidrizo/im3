@@ -65,6 +65,7 @@ public class ProjectModel {
                 project.getComments(),
                 null,
                 project.getNotationType(),
+                null,
                 null
         );
 

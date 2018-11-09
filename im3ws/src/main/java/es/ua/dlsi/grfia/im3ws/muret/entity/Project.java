@@ -35,6 +35,10 @@ public class Project {
     @Enumerated(EnumType.STRING)
     private NotationType notationType;
 
+    @Column (name="manuscript_type")
+    @Enumerated(EnumType.STRING)
+    private ManuscriptType manuscriptType;
+
     /**
      * Comma separated list of image ids - when an image is not present here is sorted at the end of the list
      */
@@ -62,7 +66,7 @@ public class Project {
     public Project() {
     }
 
-    public Project(String name, String path, String composer, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, String imagesOrdering, NotationType notationType, List<Image> images) {
+    public Project(String name, String path, String composer, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, String imagesOrdering, NotationType notationType, ManuscriptType manuscriptType, List<Image> images) {
         this.name = name;
         this.composer = composer;
         this.notationType = notationType;
@@ -75,6 +79,7 @@ public class Project {
         this.images = images;
         this.comments = comments;
         this.imagesOrdering = imagesOrdering;
+        this.manuscriptType = manuscriptType;
     }
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Integer getId() {
@@ -170,6 +175,15 @@ public class Project {
 
     public void setNotationType(NotationType notationType) {
         this.notationType = notationType;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public ManuscriptType getManuscriptType() {
+        return manuscriptType;
+    }
+
+    public void setManuscriptType(ManuscriptType manuscriptType) {
+        this.manuscriptType = manuscriptType;
     }
 
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)

@@ -76,7 +76,7 @@ public class MigrateMuretXML implements CommandLineRunner {
             project.setComposer(xmlProject.getComposer());
             project.setComments(xmlProject.getComments());
             project.setNotationType(xmlProject.getNotationType());
-
+            project.setManuscriptType(ManuscriptType.eHandwritten); // not all of them are handwritten
             // use new obtained project object
             project = projectModel.newProject(project);
 
