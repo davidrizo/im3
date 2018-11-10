@@ -27,3 +27,13 @@
   top: 0px;
   width: 100%;
 }
+
+#selectedStaff {
+  position: relative;
+}
+#noStaffSelectedMessage {
+  position: absolute;
+  z-index: 100;
+  top: 50px; /* TODO */
+  left: 50%;
+}

@@ -1,0 +1,10 @@
+<div class="thumbnail">
+  <p>
+    <img src="{{projectURLs?.thumbnails}}/{{image?.filename}}" alt="Image">
+  </p>
+  <p class="links">
+    <a class="previewLink" href="{{projectURLs?.previews}}/{{image?.filename}}" target="_blank">Preview</a>
+    &nbsp;
+    <a class="openLink" (click)="openImage(image)">Open</a>
+  </p>
+</div>

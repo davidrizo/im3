@@ -1,0 +1,12 @@
+.thumbnail {
+  display: inline-block;
+  margin: 5px;
+}
+
+.thumbnail img {
+  height: 200px;
+}
+
+.links {
+  text-align: center;
+}

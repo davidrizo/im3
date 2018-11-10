@@ -5,13 +5,16 @@
 
   <div class="col-10">
     <div class="row" id="selectedStaff">
-      <div class="col" #selectedStaffSurface
+      <div class="col">
+           <!-- This inner div is used to avoid problems with padding -->
+           <div #selectedStaffSurface
            [style.height.px]="selectedStaffHeight"
            [ngStyle]="{'background-image':' url(' + selectedStaffImageURL + ')'}"
            [style.background-position-x.px]="selectedStaffImageBackgroundPositionX"
            [style.background-position-y.px]="selectedStaffImageBackgroundPositionY"
            [style.background-size.%]="selectedStaffImageBackgroundPertentage"
-        >
+          >
+         </div>
       </div>
       <p id="noStaffSelectedMessage" [hidden]="staffSelected">Select a staff...</p>
     </div>

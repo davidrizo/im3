@@ -58,6 +58,10 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   domImagePaddingLeft: number;
   private boundingBoxesGroup: Group;
   private selectedElementGroup: Group;
+  private selectedStaffBoundingBoxesGroup: Group;
+  private selectedStaffFinalScale: number;
+  private expectedStaffWidthPercentage: number;
+  private selectedStaffScale: number;
 
   constructor(
     private im3wsService: Im3wsService,
@@ -101,7 +105,7 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.domImageWidth = this.domImage.nativeElement.width;
     this.domImagePaddingLeft = this.domImage.nativeElement.paddingLeft;
     this.drawBoundingBoxes();
-    this.drawAgnosticTranscription();
+    this.drawStaff();
   }
 
   onResized(event: ResizedEvent): void {
@@ -136,25 +140,29 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     // Create a drawing surface
     this.selectedStaffSurface = Surface.create(elementSelectedStaff, {
     });
+
+    this.selectedStaffBoundingBoxesGroup = new Group();
+    this.selectedStaffSurface.draw(this.selectedStaffBoundingBoxesGroup);
   }
 
-  private boundingBoxToGeometryRect(boundingBox: BoundingBox) {
-    return new geometry.Rect(new Point(boundingBox.fromX * this.scale, boundingBox.fromY * this.scale),
-      new Size(this.scale * (boundingBox.toX - boundingBox.fromX),
-        this.scale * (boundingBox.toY - boundingBox.fromY)));
+  private boundingBoxToGeometryRect(boundingBox: BoundingBox, targetScale: number) {
+    return new geometry.Rect(new Point(boundingBox.fromX * targetScale, boundingBox.fromY * targetScale),
+      new Size(targetScale * (boundingBox.toX - boundingBox.fromX),
+        targetScale * (boundingBox.toY - boundingBox.fromY)));
   }
-  private drawBoundingBox(object: any, boundingBox: BoundingBox, color: string, width: number) {
+  private drawBoundingBox(targetBoundingBoxesGroup: Group, object: any, boundingBox: BoundingBox, targetScale: number,
+                          color: string, width: number) {
     /* this.logger.debug('Drawing bounding box ' + boundingBox + ' in color ' + color);
     this.logger.debug('from x=' + boundingBox.fromX + ' - fromY = ' + boundingBox.fromY
       + 'to x=' + boundingBox.toX + ' - toY = ' + boundingBox.toY); */
-    const geometryRect = this.boundingBoxToGeometryRect(boundingBox);
+    const geometryRect = this.boundingBoxToGeometryRect(boundingBox, targetScale);
     const rect: any = new Rect(geometryRect, { // use any in order to be able to add object property dynamically
       stroke: { color: color, width: width},
       fill: {color: color, opacity: 0.0}
     });
     rect.object = object;
 
-    this.boundingBoxesGroup.append(rect);
+    targetBoundingBoxesGroup.append(rect);
   }
 
 
@@ -168,10 +176,10 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.logger.debug('Drawing bounding boxes for image ' + this.image);
     this.image.pages.forEach(page => {
       this.logger.debug('Page ' + page);
-      this.drawBoundingBox(page, page.boundingBox, 'red', 12);
+      this.drawBoundingBox(this.boundingBoxesGroup, page, page.boundingBox, this.scale, 'red', 12);
       page.regions.forEach(region => {
         this.logger.debug('Region ' + region);
-        this.drawBoundingBox(region, region.boundingBox, 'green', 3);
+        this.drawBoundingBox(this.boundingBoxesGroup, region, region.boundingBox, this.scale, 'green', 3);
       });
     });
 
@@ -215,27 +223,21 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   private doSelect(region: Region) {
     this.staffSelected = true;
     this.drawSelectedRegion(region);
+    this.drawSelectedRegionSymbolBoxes(region);
+    this.drawAgnosticTranscription(region);
     this.logger.debug('Fetching symbols of region id=' + region.id);
     this.im3wsService.getSymbolsOfRegion$(region.id).subscribe(next => {
 
     });
   }
 
-  private drawAgnosticTranscription() {
-    this.drawStaff();
+  private drawAgnosticTranscription(region: Region) {
     this.drawAgnosticSymbols();
   }
 
   private drawSymbol(symbol: Symbol) {
     this.drawSymbolStrokes(symbol);
     this.drawSymbolAgnostic(symbol);
-  }
-
-  /* TODO Posición */
-  private drawSymbolAgnostic(symbol: Symbol) {
-    this.logger.debug('Drawing SVG ' + symbol);
-    this.svgOfSymbols.push('https://upload.wikimedia.org/wikipedia/commons/f/fb/C_%28indication_de_mesure%29.svg');
-    /*TODO mapa desde symbol.getAgnosticSymbolType - vaciar primero?*/
   }
 
   private drawSymbolStrokes(symbol: Symbol) {
@@ -289,6 +291,30 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.agnosticStaffHeight = this.staffMargin * 2 + this.staffSpaceHeight * 5;
   }
 
+  private drawSelectedRegion(region: Region) {
+    this.selectedStaffImageURL = this.imageURL;
+    const regionWidth = region.boundingBox.toX - region.boundingBox.fromX;
+    const regionHeight = region.boundingBox.toY - region.boundingBox.fromY;
+    this.selectedStaffWidth = this.selectedStaffSurfaceElement.nativeElement.offsetWidth;
+    this.selectedStaffScale = this.domImage.nativeElement.naturalWidth / regionWidth;
+    const expectedStaffWidth = regionWidth / this.selectedStaffScale;
+    this.expectedStaffWidthPercentage = this.selectedStaffWidth / expectedStaffWidth;
+    this.selectedStaffImageBackgroundPertentage = this.selectedStaffScale * 100.0;
+    this.selectedStaffImageBackgroundPositionX = this.expectedStaffWidthPercentage * (-region.boundingBox.fromX / this.selectedStaffScale);
+    this.selectedStaffImageBackgroundPositionY = this.expectedStaffWidthPercentage * (-region.boundingBox.fromY / this.selectedStaffScale);
+    this.selectedStaffHeight = (regionHeight / this.selectedStaffScale) * this.expectedStaffWidthPercentage;
+    this.selectedStaffFinalScale = this.selectedStaffScale;
+    this.logger.debug('Selected staff scale: ' + this.selectedStaffScale);
+  }
+
+  /* TODO Posición */
+  private drawSymbolAgnostic(symbol: Symbol) {
+    this.logger.debug('Drawing SVG ' + symbol);
+    this.svgOfSymbols.push('https://upload.wikimedia.org/wikipedia/commons/f/fb/C_%28indication_de_mesure%29.svg');
+    /*TODO mapa desde symbol.getAgnosticSymbolType - vaciar primero?*/
+  }
+
+
   private drawAgnosticSymbols() {
     /*TODO Seleccionar un pentagrama!!! */
     this.logger.warn('TO-DO: draw agnostic symbols');
@@ -298,18 +324,30 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     });*/
   }
 
-  private drawSelectedRegion(region: Region) {
-    this.selectedStaffImageURL = this.imageURL;
-    const regionWidth = region.boundingBox.toX - region.boundingBox.fromX;
-    const regionHeight = region.boundingBox.toY - region.boundingBox.fromY;
-    this.selectedStaffWidth = this.selectedStaffSurfaceElement.nativeElement.offsetWidth;
-    const selectedStaffScale = this.domImage.nativeElement.naturalWidth / regionWidth;
-    const expectedStaffWidth = regionWidth / selectedStaffScale;
-    const expectedStaffWidthPercentage = this.selectedStaffWidth / expectedStaffWidth;
-    this.selectedStaffImageBackgroundPertentage = selectedStaffScale * 100.0;
-    this.selectedStaffImageBackgroundPositionX = expectedStaffWidthPercentage * (-region.boundingBox.fromX / selectedStaffScale);
-    this.selectedStaffImageBackgroundPositionY = expectedStaffWidthPercentage * (-region.boundingBox.fromY / selectedStaffScale);
-    this.selectedStaffHeight = (regionHeight / selectedStaffScale) * expectedStaffWidthPercentage;
-    this.logger.debug('Selected staff scale: ' + selectedStaffScale);
+  private drawSelectedRegionSymbolBoxes(region: Region) {
+    this.logger.debug('Drawing region symbol boxes');
+    this.selectedStaffBoundingBoxesGroup.clear();
+    if (region.symbols) {
+      region.symbols.forEach(symbol => {
+        this.logger.debug('Drawing symbol ' + symbol);
+
+        const fromX = ((symbol.boundingBox.fromX - region.boundingBox.fromX) / this.selectedStaffScale) * this.expectedStaffWidthPercentage;
+        const fromY = ((symbol.boundingBox.fromY - region.boundingBox.fromY) / this.selectedStaffScale) * this.expectedStaffWidthPercentage;
+        const toX = ((symbol.boundingBox.toX - region.boundingBox.fromX) / this.selectedStaffScale) * this.expectedStaffWidthPercentage;
+        const toY = ((symbol.boundingBox.toY - region.boundingBox.fromY) / this.selectedStaffScale) * this.expectedStaffWidthPercentage;
+        /*const fromX = 0;
+        const fromY = 0;
+        const toX = this.selectedStaffWidth;
+        const toY = this.selectedStaffHeight;*/
+
+        const translatedAndScaledBoundingBox = new BoundingBox(
+          fromX, fromY, toX, toY
+        );
+
+        this.drawBoundingBox(this.selectedStaffBoundingBoxesGroup, symbol, translatedAndScaledBoundingBox,
+          1,
+          'blue', 1);
+      });
+    }
   }
 }
