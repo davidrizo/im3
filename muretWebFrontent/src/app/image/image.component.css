@@ -3,16 +3,10 @@
   height: 100vh; /* TODO */
 }
 
-#agnostic {
-  height: 10vh; /* TODO */
+#staff > div {
   background-color: white;
 }
 
-#staff {
-  /*position: absolute;*/
-  left: 0;
-  top: 0;
-}
 
 #manuscriptImage {
   max-height: 80vh;

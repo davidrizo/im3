@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.layout.fonts;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 
 //TODO Actualizar a 1.204
@@ -14,12 +15,17 @@ public class PatriarcaFont extends LayoutFont {
     private static final String SVGFONT = "/fonts/patriarca/Patriarca-Regular.svg";
     private static final String METADATA = "/fonts/patriarca/Patriarca-Regular.json";
 
-    public PatriarcaFont() throws ImportException, IM3Exception {
+    public PatriarcaFont() throws IM3Exception {
         super("Patriarca", LayoutFonts.patriarca, PatriarcaFont.class.getResourceAsStream(SVGFONT),
                 PatriarcaFont.class.getResourceAsStream(OTFMUSICFONT),
                 OTFMUSICFONT,
                 PatriarcaFont.class.getResourceAsStream(OTFTEXTCFONT),
                 PatriarcaFont.class.getResourceAsStream(METADATA),
                 new PatriarcaMap());
+    }
+
+    @Override
+    public boolean isValidForNotationType(NotationType notationType) {
+        return notationType == NotationType.eMensural;
     }
 }

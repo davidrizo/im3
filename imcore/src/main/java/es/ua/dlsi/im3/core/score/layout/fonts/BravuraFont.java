@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.layout.fonts;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 
 import java.io.InputStream;
@@ -24,5 +25,10 @@ public class BravuraFont extends LayoutFont {
                 BravuraFont.class.getResourceAsStream(OTFTEXTCFONT),
                 BravuraFont.class.getResourceAsStream(METADATA),
                 new SMuFLMap());
+    }
+
+    @Override
+    public boolean isValidForNotationType(NotationType notationType) {
+        return true;
     }
 }

@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.layout.fonts;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 
 //TODO Actualizar a 1.204
@@ -21,5 +22,10 @@ public class CapitanFont extends LayoutFont {
                 CapitanFont.class.getResourceAsStream(OTFTEXTCFONT),
                 CapitanFont.class.getResourceAsStream(METADATA),
                 new CapitanMap());
+    }
+
+    @Override
+    public boolean isValidForNotationType(NotationType notationType) {
+        return notationType == NotationType.eMensural;
     }
 }

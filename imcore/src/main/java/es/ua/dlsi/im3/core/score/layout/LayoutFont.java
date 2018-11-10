@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.core.score.layout;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.io.JSONGlyphNamesReader;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.layout.fonts.IFontMap;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
@@ -18,7 +19,7 @@ import org.apache.fontbox.ttf.OpenTypeFont;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class LayoutFont {
+public abstract class LayoutFont {
     /**
      * As field to be reused
      */
@@ -155,4 +156,6 @@ public class LayoutFont {
     public Font getJavaFXMusicFont(int size) {
         return Font.loadFont(this.getClass().getResourceAsStream(otfMusicFontResourcePath), size);
     }
+
+    public abstract boolean isValidForNotationType(NotationType notationType);
 }

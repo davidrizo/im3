@@ -64,7 +64,7 @@ public class Pictogram extends GraphicsElement {
         glyph = layoutFont.getGlyph(getCodePoint());
         path.setContent(glyph.getPath());
         width = path.getLayoutBounds().getWidth() * layoutFont.getScaleX();
-        height = path.getLayoutBounds().getHeight() * layoutFont.getScaleX();
+        height = path.getLayoutBounds().getHeight() * layoutFont.getScaleY(); // 20181110
     }
 
     public String getCodePoint() {

@@ -7,6 +7,8 @@ import {Image} from './model/image';
 import {ConfigurationService} from './configuration.service';
 import {ProjectURLS} from './model/project-urls';
 import {NGXLogger} from 'ngx-logger';
+import {StringReponse} from './string-reponse';
+import {Scale, Scales} from './model/scales';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +25,7 @@ export class Im3wsService {
   private urlSymbol: string;
   private urlLogin: string;
   private urlAuthenticatedUser: string;
+  private urlAgnostic: string;
 
   username: string;
   isLoggedIn: boolean;
@@ -38,6 +41,7 @@ export class Im3wsService {
     this.urlProject = configurationService.IM3WS_SERVER + '/muret/project';  // URL to web api
     this.urlImage = configurationService.IM3WS_SERVER + '/muret/image';  // URL to web api
     this.urlSymbol = configurationService.IM3WS_SERVER + '/muret/symbol';  // URL to web api
+    this.urlAgnostic = configurationService.IM3WS_SERVER + '/muret/agnostic';  // URL to web api
     this.urlAuthenticatedUser = configurationService.IM3WS_SERVER + '/muret/auth/user';  // URL to web api
   }
 
@@ -174,6 +178,7 @@ export class Im3wsService {
         catchError(this.handleError('getImage$ with id=' + id, null))
       );
   }
+  // TODO ¿Se está usando? - Si no, quitarlo
   public getSymbolsOfRegion$(regionID: number): Observable<Symbol> {
     this.logger.debug('IM3WSService: fetching symbols with region_id ' + regionID);
     return this.http.get<Symbol>(this.urlSymbol + '/region/' + regionID, this.getHttpAuthOptions())
@@ -181,6 +186,37 @@ export class Im3wsService {
         catchError(this.handleError('getSymbols$ with region_id=' + regionID, null))
       );
   }
+  public getSVGFromAgnosticSymbolType$(notationType: string, manuscriptType: string, agnosticSymbolType: string)
+    : Observable<StringReponse> {
+    this.logger.debug('IM3WSService: fetching svg path for notationType=' + notationType
+      + 'manuscriptType=' + manuscriptType
+      + ' and agnosticSymbolType=' + agnosticSymbolType);
+    return this.http.get<StringReponse>(this.urlAgnostic + '/svg'
+      + '?notationType=' + notationType
+      + '&manuscriptType=' + manuscriptType
+      + '&symbolType=' + agnosticSymbolType
+      ,
+      this.getHttpAuthOptions(),
+      )
+      .pipe(
+        catchError(this.handleError('getSVGFromAgnosticSymbolType ' + agnosticSymbolType, null))
+      );
+  }
+
+  public getSVGScales$(notationType: string, manuscriptType: string): Observable<Scales> {
+    this.logger.debug('IM3WSService: fetching svg scale for notationType=' + notationType
+      + 'manuscriptType=' + manuscriptType);
+    return this.http.get<StringReponse>(this.urlAgnostic + '/svgscales'
+      + '?notationType=' + notationType
+      + '&manuscriptType=' + manuscriptType
+      ,
+      this.getHttpAuthOptions(),
+    )
+      .pipe(
+        catchError(this.handleError('getSVGScale', null))
+      );
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.

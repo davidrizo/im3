@@ -161,17 +161,26 @@ public class ImageUtils {
         return subimage;
     }
     
-    public void scaleToFitHeight(File inputImage, File outputImage, int height) throws IOException {
-        BufferedImage fullImage = ImageIO.read(inputImage);
-        Image scaledImage = fullImage.getScaledInstance(-1, height, Image.SCALE_SMOOTH);
+    public void scaleToFitHeight(File inputImage, File outputImage, int height) throws IM3Exception {
+        Image scaledImage = null;
         String extension = FileUtils.getExtension(outputImage);
+        try {
+            BufferedImage fullImage = ImageIO.read(inputImage);
+            scaledImage = fullImage.getScaledInstance(-1, height, Image.SCALE_SMOOTH);
+        } catch (IOException e) {
+            throw new IM3Exception("Cannot process input image '" + inputImage.getAbsolutePath() + "'");
+        }
 
-        BufferedImage resized = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = resized.createGraphics();
-        g2d.drawImage(scaledImage, 0, 0, null);
-        g2d.dispose();
+        try {
+            BufferedImage resized = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = resized.createGraphics();
+            g2d.drawImage(scaledImage, 0, 0, null);
+            g2d.dispose();
 
-        ImageIO.write(resized, extension, outputImage);
+            ImageIO.write(resized, extension, outputImage);
+        } catch (IOException e) {
+            throw new IM3Exception("Cannot process output image '" + outputImage.getAbsolutePath() + "'");
+        }
     }
 
 

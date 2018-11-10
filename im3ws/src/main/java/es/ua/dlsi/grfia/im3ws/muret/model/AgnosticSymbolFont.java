@@ -47,4 +47,8 @@ public abstract class AgnosticSymbolFont {
         }
         return glyph.getPath();
     }
+
+    public LayoutFont getLayoutFont() {
+        return layoutFont;
+    }
 }
