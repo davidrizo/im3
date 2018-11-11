@@ -16,7 +16,8 @@ import {AgnosticSymbolSVGPath} from './agnostic-symbol-svgpath';
 import {Scales} from '../model/scales';
 import {max} from 'rxjs/operators';
 import {Project} from '../model/project';
-import {SessionDataServiceService} from '../session-data-service.service';
+import {SessionDataService} from '../session-data.service';
+import {ComponentCanDeactivate} from '../component-can-deactivate';
 
 @Component({
   selector: 'app-image',
@@ -24,7 +25,7 @@ import {SessionDataServiceService} from '../session-data-service.service';
   styleUrls: ['./image.component.css']
 })
 
-export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ImageComponent extends ComponentCanDeactivate implements OnInit, AfterViewInit, OnDestroy {
   image: Image;
   imageURL: string;
   selectedStaffImageURL: string;
@@ -80,10 +81,11 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private im3wsService: Im3wsService,
-    private sessionDataService: SessionDataServiceService,
+    private sessionDataService: SessionDataService,
     private route: ActivatedRoute,
     private logger: NGXLogger
   ) {
+    super();
     this.agnosticSymbolSVGMap = new Map();
     this.project = sessionDataService.currentProject;
   }
@@ -402,5 +404,9 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       throw new Error('Invalid positionInStaff, it should start with L or S: ' + positionInStaff);
     }
+  }
+
+  canDeactivate(): boolean {
+    return false; // TODO
   }
 }

@@ -18,8 +18,8 @@ const routes: Routes = [
   { path: 'startup', component: StartupComponent, canActivate: [AuthGuard]},
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard]},
   { path: 'newproject', component: NewProjectFormComponent, canActivate: [AuthGuard]},
-  { path: 'project/:id', component: ProjectComponent, canActivate: [AuthGuard]},
-  { path: 'image/:id/:projectURLs', component: ImageComponent, canActivate: [AuthGuard]},
+  { path: 'project/:id', component: ProjectComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
+  { path: 'image/:id/:projectURLs', component: ImageComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
   { path: 'uploadimages/:id', component: UploadImagesComponent, canActivate: [AuthGuard]},
   { path: '', pathMatch: 'full', redirectTo: 'startup'}
   /*{ path: '**', redirectTo: '' },*/

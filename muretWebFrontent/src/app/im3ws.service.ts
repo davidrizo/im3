@@ -8,12 +8,11 @@ import {ConfigurationService} from './configuration.service';
 import {ProjectURLS} from './model/project-urls';
 import {NGXLogger} from 'ngx-logger';
 import {StringReponse} from './string-reponse';
-import {Scale, Scales} from './model/scales';
+import {Scales} from './model/scales';
 
 @Injectable({
   providedIn: 'root'
 })
-
 
 /**
  * This class has access to the IM3WS server, it includes the auth service
@@ -140,10 +139,14 @@ export class Im3wsService {
       );
   }
 
-  public newProject$(name: string, comments: string, base64Thumbnail: string): Observable<Project> {
+  public newProject$(name: string, composer: string, notationType: string, manuscriptType: string, comments: string,
+                     base64Thumbnail: string): Observable<Project> {
     this.logger.debug('IM3WSService: creating project with name ' + name);
     return this.http.post<Project>(this.urlProject + '/new', {
       'name': name,
+      'composer': composer,
+      'notationType': notationType,
+      'manuscriptType': manuscriptType,
       'comments': comments,
       'thumbnailBase64Encoding': base64Thumbnail
     }, this.getHttpAuthOptions()).pipe(

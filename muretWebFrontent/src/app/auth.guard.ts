@@ -5,16 +5,20 @@ import {
   RouterStateSnapshot,
   CanActivateChild,
   NavigationExtras,
-  CanLoad, Route
+  CanLoad, Route, CanDeactivate
 } from '@angular/router';
 import {Im3wsService} from './im3ws.service';
 import {NGXLogger} from 'ngx-logger';
+import {SessionDataService} from './session-data.service';
+import {Observable} from 'rxjs';
+import {ComponentCanDeactivate} from './component-can-deactivate';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
-  constructor(private im3WSService: Im3wsService, private router: Router, private logger: NGXLogger) {}
+export class AuthGuard implements CanActivate, CanActivateChild, CanLoad, CanDeactivate<ComponentCanDeactivate> {
+  constructor(private im3WSService: Im3wsService, private sessionDataService: SessionDataService, private router: Router,
+              private logger: NGXLogger) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const url: string = state.url;
@@ -57,6 +61,18 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
     // Navigate to the login page with extras
     this.router.navigate(['login'], navigationExtras);
     return false;
+  }
+
+  canDeactivate(component: ComponentCanDeactivate, currentRoute: ActivatedRouteSnapshot,
+                currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    if (component.canDeactivate()) {
+      if (confirm('You have unsaved changes! If you leave, your changes will be lost.')) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return true;
   }
 }
 
