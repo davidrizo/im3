@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.utils.FileUtils;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,31 +45,42 @@ public class ProjectModel {
 
         String projectBaseName = FileUtils.leaveValidCaracters(project.getName()).toLowerCase();
 
-        File muretFolder = new File(muretConfiguration.getFolder());
-        if (!muretFolder.exists()) {
-            muretFolder = createProjectFileStructure(null, muretConfiguration.getFolder());
+        Stack<File> createdFolders = new Stack<>();
+        try {
+
+            File muretFolder = new File(muretConfiguration.getFolder());
+            if (!muretFolder.exists()) {
+                muretFolder = createProjectFileStructure(null, muretConfiguration.getFolder());
+            }
+            File projectFolder = createProjectFileStructure(muretFolder, projectBaseName);
+            createdFolders.push(projectFolder);
+            createdFolders.push(createProjectFileStructure(projectFolder, MURETConfiguration.MASTER_IMAGES));
+            createdFolders.push(createProjectFileStructure(projectFolder, MURETConfiguration.THUMBNAIL_IMAGES));
+            createdFolders.push(createProjectFileStructure(projectFolder, MURETConfiguration.PREVIEW_IMAGES));
+
+            Project newProject = new Project(project.getName(),
+                    projectBaseName,
+                    project.getComposer(),
+                    now,
+                    now,
+                    null,
+                    null,
+                    project.getThumbnailBase64Encoding(),
+                    project.getComments(),
+                    null,
+                    project.getNotationType(),
+                    project.getManuscriptType(),
+                    null
+            );
+
+            return projectService.create(newProject);
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot create project", e);
+            while (!createdFolders.empty()) {
+                File folder = createdFolders.pop();
+                folder.delete();
+            }
+            throw e;
         }
-
-        File projectFolder = createProjectFileStructure(muretFolder, projectBaseName);
-        createProjectFileStructure(projectFolder, MURETConfiguration.MASTER_IMAGES);
-        createProjectFileStructure(projectFolder, MURETConfiguration.THUMBNAIL_IMAGES);
-        createProjectFileStructure(projectFolder, MURETConfiguration.PREVIEW_IMAGES);
-
-        Project newProject = new Project(project.getName(),
-                projectBaseName,
-                project.getComposer(),
-                now,
-                now,
-                null,
-                null,
-                project.getThumbnailBase64Encoding(),
-                project.getComments(),
-                null,
-                project.getNotationType(),
-                null,
-                null
-        );
-
-        return projectService.create(newProject);
     }
 }

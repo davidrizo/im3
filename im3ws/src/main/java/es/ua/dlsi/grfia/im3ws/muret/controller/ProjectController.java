@@ -11,12 +11,7 @@ import es.ua.dlsi.grfia.im3ws.muret.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author drizo
@@ -37,9 +32,18 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
 
     @Override
     protected ProjectService initService() {
-        projectModel = new ProjectModel(projectService, muretConfiguration);
         return projectService;
     }
+
+    private ProjectModel getProjectModel() {
+        synchronized (ProjectController.class) {
+            if (projectModel == null) {
+                projectModel = new ProjectModel(projectService, muretConfiguration);
+            }
+        }
+        return projectModel;
+    }
+
 
 
     /**
@@ -64,7 +68,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
 
     @PostMapping(path = {"/new"})
     public Project newProject(@RequestBody Project project) throws IM3WSException {
-        return projectModel.newProject(project);
+        return getProjectModel().newProject(project);
     }
 
     /* Getters and setters used in command line */

@@ -3,6 +3,7 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
+import es.ua.dlsi.im3.core.score.NotationType;
 
 import javax.persistence.*;
 import java.util.List;
@@ -30,7 +31,6 @@ public class Image {
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="image_id", referencedColumnName="id")
     private List<Page> pages;
-
 
     public Image() {
     }
