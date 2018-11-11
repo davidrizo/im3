@@ -15,6 +15,8 @@ import {Region} from '../model/region';
 import {AgnosticSymbolSVGPath} from './agnostic-symbol-svgpath';
 import {Scales} from '../model/scales';
 import {max} from 'rxjs/operators';
+import {Project} from '../model/project';
+import {SessionDataServiceService} from '../session-data-service.service';
 
 @Component({
   selector: 'app-image',
@@ -26,7 +28,8 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
   image: Image;
   imageURL: string;
   selectedStaffImageURL: string;
-
+  project: Project;
+  
   private agnosticStaffHeight: number;
   private agnosticStaffWidth: number;
 
@@ -77,10 +80,12 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private im3wsService: Im3wsService,
+    private sessionDataService: SessionDataServiceService,
     private route: ActivatedRoute,
     private logger: NGXLogger
   ) {
     this.agnosticSymbolSVGMap = new Map();
+    this.project = sessionDataService.currentProject;
   }
 
   ngOnInit() {
@@ -94,7 +99,7 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     // TODO notationType y manuscriptType
-    this.im3wsService.getSVGScales$('eMensural', 'eHandwritten').
+    this.im3wsService.getSVGScales$(this.project.notationType, this.project.manuscriptType).
     subscribe(next => {
       this.agnosticSVGScaleX = next.x;
       this.agnosticSVGScaleY = next.y;
@@ -365,8 +370,8 @@ export class ImageComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!svg) {
         // TODO Tipo de notación y manuscrito
         this.im3wsService.getSVGFromAgnosticSymbolType$(
-          'eMensural',
-          'eHandwritten',
+          this.project.notationType,
+          this.project.manuscriptType,
           symbol.agnosticSymbolType).subscribe(next => {
             const svgD = next.response;
           this.agnosticSymbolSVGMap.set(symbol.agnosticSymbolType, svgD);

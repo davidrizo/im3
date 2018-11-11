@@ -8,6 +8,8 @@ export class Project {
   images: Array<Image>;
   comments: string;
   imagesOrdering: string;
+  notationType: string;
+  manuscriptType: string;
 
   /*constructor(id: number, name: string, path: string, comments: string, thumbnailBase64Encoding: string, imagesOrdering: string,
               images: Array<Image>) {
