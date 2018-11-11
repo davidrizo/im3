@@ -18,6 +18,9 @@ export class NewProjectFormComponent implements OnInit {
 
   newProjectForm = this.fb.group({
     name: ['', Validators.required],
+    composer: [''],
+    notationType: ['eMensural', Validators.required],
+    manuscriptType: ['eHandwritten', Validators.required],
     comments: ['']
   });
 
@@ -36,7 +39,11 @@ export class NewProjectFormComponent implements OnInit {
 
   onSubmit() {
     this.logger.debug('Submitting new project');
-    this.projectService.newProject$(this.newProjectForm.controls['name'].value, this.newProjectForm.controls['comments'].value, this.imgSrc)
+    this.projectService.newProject$(this.newProjectForm.controls['name'].value,
+      this.newProjectForm.controls['composer'].value,
+      this.newProjectForm.controls['notationType'].value,
+      this.newProjectForm.controls['manuscriptType'].value,
+      this.newProjectForm.controls['comments'].value, this.imgSrc)
       .subscribe(serviceNewProject =>
         this.router.navigate(['/project/get', { id: serviceNewProject.id }])
       );

@@ -2,7 +2,18 @@
   <div class="row">
     <div class="col-6">
       <p>
-        <label>Project name <input type="text" formControlName="name"> (required)</label>
+        <label>Project name <input type="text" formControlName="name" size="128"> (required)</label>
+      </p>
+      <p>
+        <label>Composer <input type="text" formControlName="composer" size="128"></label>
+      </p>
+      <p>
+        <input type="radio" name="notationType" formControlName="notationType" value="eMensural" checked>Mensural &nbsp;
+        <input type="radio" name="notationType" formControlName="notationType" value="eModern">Modern &nbsp; (required)
+      </p>
+      <p>
+        <input type="radio" name="manuscriptType" formControlName="manuscriptType" value="eHandwritten" checked>Handwritten &nbsp;
+        <input type="radio" name="manuscriptType" formControlName="manuscriptType" value="ePrinted">Printed&nbsp; (required)
       </p>
       <p>
         <label>Comments <input type="text" formControlName="comments"></label>
