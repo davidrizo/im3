@@ -6,6 +6,8 @@ import {ProjectURLS} from '../model/project-urls';
 import {DragulaService} from 'ng2-dragula';
 import {ImageThumbnailComponent} from '../image-thumbnail/image-thumbnail.component';
 import {NGXLogger} from 'ngx-logger';
+import {SessionDataService} from '../session-data.service';
+import {ComponentCanDeactivate} from '../component-can-deactivate';
 // import { Lightbox } from 'ngx-lightbox';
 
 @Component({
@@ -13,7 +15,7 @@ import {NGXLogger} from 'ngx-logger';
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.css']
 })
-export class ProjectComponent implements OnInit {
+export class ProjectComponent extends ComponentCanDeactivate implements OnInit {
   project: Project;
   projectURLs: ProjectURLS;
   BAG = 'DRAGULA_FACTS';
@@ -22,11 +24,13 @@ export class ProjectComponent implements OnInit {
 
   constructor(
     private projectService: Im3wsService,
+    private sessionDataService: SessionDataService,
     private route: ActivatedRoute,
     private router: Router,
     private dragulaService: DragulaService,
     private logger: NGXLogger
   ) {
+    super();
     this.logger.debug('Loading project component');
     dragulaService.drop(this.BAG)
       .subscribe(({ el }) => {
@@ -71,6 +75,7 @@ export class ProjectComponent implements OnInit {
         .add(teardown2 => {
           this.logger.debug('Project component ' + this.project.name + ' with #' + this.project.images.length + ' images');
           this.project.orderImageArray();
+          this.sessionDataService.currentProject = this.project;
         });
 
     });
@@ -80,5 +85,9 @@ export class ProjectComponent implements OnInit {
     const url = 'uploadimages';
     // Redirect the user
     this.router.navigate([url, this.project.id]);
+  }
+
+  canDeactivate(): boolean {
+    return false; // TODO
   }
 }
