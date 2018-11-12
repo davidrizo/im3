@@ -21,7 +21,8 @@ public class Symbol {
 
     @JsonBackReference
     @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="region_id", referencedColumnName="id")
+    //@JoinColumn(name="region_id", referencedColumnName="id")
+    @JoinColumn(name="region_id", nullable = false)
     private Region region;
 
     /**

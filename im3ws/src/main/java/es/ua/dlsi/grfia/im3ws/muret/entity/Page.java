@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -30,19 +31,26 @@ public class Page {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="image_id", referencedColumnName="id")
+    @JoinColumn(name="image_id", nullable = false) // use this construct to let orphanRemoval to work well
     Image image;
 
     @JsonManagedReference
-    @OneToMany(fetch=FetchType.EAGER)
-    @JoinColumn(name="page_id", referencedColumnName="id")
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "page", cascade = CascadeType.ALL, orphanRemoval = true) // orphanRemoval = remove dependent rather than set the FK to null)
+    //@JoinColumn(name="page_id", referencedColumnName="id")
     private List<Region> regions;
 
     public Page() {
     }
 
-    public Page(BoundingBox boundingBox, String comments, Image image, List<Region> regions) throws IM3WSException {
+    public Page(BoundingBox boundingBox, String comments, Image image, List<Region> regions) {
         this.boundingBox = boundingBox;
+        this.image = image;
+        this.regions = regions;
+        this.comments = comments;
+    }
+
+    public Page(Image image, int fromX, int fromY, int toX, int toY, String comments, List<Region> regions) {
+        this.boundingBox = new BoundingBox(fromX, fromY, toX, toY);
         this.image = image;
         this.regions = regions;
         this.comments = comments;
@@ -84,5 +92,12 @@ public class Page {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public void addRegion(Region newRegion) {
+        if (regions == null) {
+            regions = new LinkedList<>();
+        }
+        regions.add(newRegion);
     }
 }

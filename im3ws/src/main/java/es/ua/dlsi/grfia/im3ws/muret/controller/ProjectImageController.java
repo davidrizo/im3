@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -57,6 +60,13 @@ public class ProjectImageController {
                 .toUriString();*/
 
         Path imagePath = mastersPath.resolve(fileName);
+        BufferedImage fullImage = null;
+        try {
+            fullImage = ImageIO.read(imagePath.toFile());
+        } catch (IOException e) {
+            throw new IM3Exception(e);
+        }
+
         Path thumbnailsPath = Paths.get(muretConfiguration.getFolder(), project.get().getPath(), MURETConfiguration.THUMBNAIL_IMAGES, fileName);
         createSecondaryImage(imagePath, thumbnailsPath, muretConfiguration.getThumbnailHeight());
 
@@ -65,7 +75,7 @@ public class ProjectImageController {
 
         //TODO Atómico
         //TODO Ordenación
-        Image image = new Image(fileName, null, project.get());
+        Image image = new Image(fileName, null, fullImage.getWidth(), fullImage.getHeight(), project.get());
         imageService.create(image);
 
         return new UploadFileResponse(fileName, file.getContentType(), file.getSize());

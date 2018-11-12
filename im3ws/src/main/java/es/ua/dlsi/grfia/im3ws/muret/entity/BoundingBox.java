@@ -66,4 +66,22 @@ public class BoundingBox {
     public int hashCode() {
         return Objects.hash(fromX, fromY, toX, toY);
     }
+
+    public int getWidth() {
+        return this.toX - this.fromX;
+    }
+
+    public void setWidth(int width) {
+        this.toX = this.fromX + width;
+    }
+
+    public boolean contains(int x, int y) {
+        return x >= this.fromX && x <= this.toX
+                && y >= this.fromY && y <= this.toY;
+
+    }
+
+    public void setHeight(int height) {
+        this.toY = this.fromY + height;
+    }
 }

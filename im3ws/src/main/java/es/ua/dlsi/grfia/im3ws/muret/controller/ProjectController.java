@@ -25,6 +25,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
     @Autowired
     MURETConfiguration muretConfiguration;
 
+    @Autowired
     ProjectModel projectModel;
 
     public ProjectController() {
@@ -34,16 +35,6 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
     protected ProjectService initService() {
         return projectService;
     }
-
-    private ProjectModel getProjectModel() {
-        synchronized (ProjectController.class) {
-            if (projectModel == null) {
-                projectModel = new ProjectModel(projectService, muretConfiguration);
-            }
-        }
-        return projectModel;
-    }
-
 
 
     /**
@@ -68,7 +59,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
 
     @PostMapping(path = {"/new"})
     public Project newProject(@RequestBody Project project) throws IM3WSException {
-        return getProjectModel().newProject(project);
+        return projectModel.newProject(project);
     }
 
     /* Getters and setters used in command line */

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -28,25 +29,33 @@ public class Region {
     private BoundingBox boundingBox;
 
     @JsonBackReference
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="page_id", referencedColumnName="id")
+    @ManyToOne
+    //@JoinColumn(name="page_id", referencedColumnName="id")
+    @JoinColumn(name="page_id", nullable = false)
     private Page page;
 
     @JsonManagedReference
-    @OneToMany(fetch=FetchType.EAGER)
-    @JoinColumn(name="region_id", referencedColumnName="id")
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "region", cascade = CascadeType.ALL, orphanRemoval = true) // orphanRemoval = remove dependent rather than set the FK to null)
+    //@JoinColumn(name="region_id", referencedColumnName="id")
+    //@JoinColumn(name="region_id")
     private List<Symbol> symbols;
 
 
     public Region() {
     }
 
-    public Region(BoundingBox boundingBox, String comments, Page page, List<Symbol> symbols) {
+    public Region(Page page, BoundingBox boundingBox, String comments, List<Symbol> symbols) {
         this.boundingBox = boundingBox;
         this.page = page;
         this.symbols = symbols;
         this.comments = comments;
     }
+
+    public Region(Page page, int fromX, int fromY, int toX, int toY) {
+        this.page = page;
+        this.boundingBox = new BoundingBox(fromX, fromY, toX, toY);
+    }
+
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Long getId() {
         return id;

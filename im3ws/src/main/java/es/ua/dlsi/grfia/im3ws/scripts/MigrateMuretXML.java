@@ -18,6 +18,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -38,6 +40,8 @@ public class MigrateMuretXML implements CommandLineRunner {
     RegionService regionService;
     @Autowired
     SymbolService symbolService;
+    @Autowired
+    ProjectModel projectModel;
 
 
 
@@ -63,7 +67,6 @@ public class MigrateMuretXML implements CommandLineRunner {
 
     private void importMuRETXML(String xmlFileName) throws Exception {
         try {
-            ProjectModel projectModel = new ProjectModel(projectService, muretConfiguration);
             System.out.println("Loading " + xmlFileName);
             XMLReader muretXMLReader = new XMLReader(AgnosticVersion.v2);
 
@@ -166,9 +169,14 @@ public class MigrateMuretXML implements CommandLineRunner {
         image.setFilename(xmlImage.getImageRelativeFileName());
         image.setComments(xmlImage.getComments());
 
+
         // copy original file
         File inputImage = new File(xmlImagesPath, xmlImage.getImageRelativeFileName());
         FileUtils.copy(inputImage, new File(new File(projectPath, MURETConfiguration.MASTER_IMAGES), xmlImage.getImageRelativeFileName()));
+
+        BufferedImage fullImage = ImageIO.read(inputImage);
+        image.setHeight(fullImage.getHeight());
+        image.setWidth(fullImage.getWidth());
 
         // copy thumbnail file
         File thumbnail = new File(new File(projectPath, MURETConfiguration.THUMBNAIL_IMAGES), xmlImage.getImageRelativeFileName());

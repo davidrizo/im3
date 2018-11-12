@@ -5,6 +5,8 @@ import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.service.ProjectService;
 import es.ua.dlsi.im3.core.utils.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.Date;
@@ -15,14 +17,13 @@ import java.util.logging.Logger;
 /**
  * Used to be able to work also with command line
  */
+@Component
 public class ProjectModel {
+    @Autowired
     ProjectService projectService;
-    MURETConfiguration muretConfiguration;
 
-    public ProjectModel(ProjectService projectService, MURETConfiguration muretConfiguration) {
-        this.projectService = projectService;
-        this.muretConfiguration = muretConfiguration;
-    }
+    @Autowired
+    MURETConfiguration muretConfiguration;
 
     private File createProjectFileStructure(File parentFolder, String projectBaseName) throws IM3WSException {
 
