@@ -6,7 +6,7 @@ import {Image} from '../model/image';
 import {Page} from '../model/page';
 import {Symbol} from '../model/symbol';
 import {BoundingBox} from '../model/bounding-box';
-import {Point, Size} from '@progress/kendo-drawing/geometry';
+import {Point, Size, transform} from '@progress/kendo-drawing/geometry';
 import {isNullOrUndefined} from 'util';
 import {Stroke} from '../model/stroke';
 import {NGXLogger} from 'ngx-logger';
@@ -18,6 +18,8 @@ import {max} from 'rxjs/operators';
 import {Project} from '../model/project';
 import {SessionDataService} from '../session-data.service';
 import {ComponentCanDeactivate} from '../component-can-deactivate';
+import {Line} from 'tslint/lib/verify/lines';
+import * as path from 'path';
 
 @Component({
   selector: 'app-image',
@@ -26,13 +28,17 @@ import {ComponentCanDeactivate} from '../component-can-deactivate';
 })
 
 export class ImageComponent extends ComponentCanDeactivate implements OnInit, AfterViewInit, OnDestroy {
+  selectedTool = '101';
+  inSymbolsToolMode = false;
+  canvasCursor = 'default';
+
   image: Image;
   imageURL: string;
   selectedStaffImageURL: string;
   project: Project;
-  
-  private agnosticStaffHeight: number;
-  private agnosticStaffWidth: number;
+
+  private agnosticStaffHeight = 0;
+  private agnosticStaffWidth = 0;
 
   selectedStaffWidth: number;
   selectedStaffHeight: number;
@@ -48,6 +54,7 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   @ViewChild('imageSurface')
   private imageSurfaceElement: ElementRef;
   private imageSurface: Surface;
+  private imageSurfaceInteractive: Group;
 
   /* @ViewChild('agnosticSurface')
   private agnosticSurfaceElement: ElementRef;
@@ -78,6 +85,7 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   staffSpaceHeight: number;
   staffMargin: number;
   private staffBottomLineY: number;
+  private splitLine: Path; // used in split page or split region mode
 
   constructor(
     private im3wsService: Im3wsService,
@@ -122,6 +130,7 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
 
   public ngOnDestroy() {
     this.imageSurface.destroy();
+    this.selectedStaffSurface.destroy();
   }
 
   /* It draws the page and region bounding boxes */
@@ -139,7 +148,8 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     this.domImageWidth = this.domImage.nativeElement.width;
     this.domImagePaddingLeft = this.domImage.nativeElement.paddingLeft;
     this.drawBoundingBoxes();
-    this.drawStaff();
+
+    /// TO-DO Al cambiar de modo this.drawStaff();
   }
 
   onResized(event: ResizedEvent): void {
@@ -160,6 +170,8 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     this.imageSurface = Surface.create(element,  {
 
     });
+    this.imageSurfaceInteractive = new Group();
+    this.imageSurface.draw(this.imageSurfaceInteractive);
 
     // Obtain a reference to the native DOM element of the wrapper
     // const elementAgnostic = this.agnosticSurfaceElement.nativeElement;
@@ -207,17 +219,8 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     this.selectedElementGroup = new Group();
     this.imageSurface.draw(this.selectedElementGroup);
     this.boundingBoxesGroup = new Group();
-    this.logger.debug('Drawing bounding boxes for image ' + this.image);
-    this.image.pages.forEach(page => {
-      this.logger.debug('Page ' + page);
-      this.drawBoundingBox(this.boundingBoxesGroup, page, page.boundingBox, this.scale, 'red', 12);
-      page.regions.forEach(region => {
-        this.logger.debug('Region ' + region);
-        this.drawBoundingBox(this.boundingBoxesGroup, region, region.boundingBox, this.scale, 'green', 3);
-      });
-    });
-
     this.imageSurface.draw(this.boundingBoxesGroup);
+    this.drawImagePages();
 
     // Bind to the mouseenter event
     this.imageSurface.bind('click', (args: any) => {
@@ -408,5 +411,95 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
 
   canDeactivate(): boolean {
     return false; // TODO
+  }
+  onToolChange(newValue) {
+    this.logger.debug('Tool changed: ' + newValue);
+    // TODO Ver cómo implementar esto sin enteros
+    // Using 1xx numbers for document analysis
+    this.inSymbolsToolMode = this.selectedTool >= 200 && this.selectedTool < 300;
+    switch (newValue) {
+      case '101': // select
+        this.canvasCursor = 'default';
+        break;
+      case '102': // split pages
+        this.drawInteractiveVerticalLine();
+        this.canvasCursor = 'col-resize';
+        break;
+      case '103':  // split regions
+        this.canvasCursor = 'row-resize';
+        break;
+    }
+  }
+  onImageMouseDown(event) {
+    this.logger.debug('Image clicked: ' + event);
+    switch (this.selectedTool) {
+      case '102':
+        this.splitPage(event.layerX / this.scale); // clientX is the value without scaling - the actual value
+        break;
+    }
+  }
+
+  onImageMouseMove(event) {
+    switch (this.selectedTool) {
+      case '102':
+        this.splitLine.transform(transform().translate(event.layerX, 0));
+        break;
+    }
+  }
+
+  private splitPage(imageX: number) {
+    this.logger.debug('Splitting page at X: ' + imageX);
+    const prevCursor = this.canvasCursor;
+    this.canvasCursor = 'wait';
+    try {
+      this.im3wsService.splitPage(this.image.id, imageX).subscribe(next => {
+        this.image.pages = next;
+        this.drawImagePages();
+        this.canvasCursor = prevCursor;
+        this.imageSurfaceInteractive.clear();
+      });
+    } catch (e) {
+      this.canvasCursor = prevCursor;
+      this.imageSurfaceInteractive.clear();
+    }
+  }
+
+
+  clearDocumentAnalysis() {
+    if (confirm('Do you really want to clear the document analysis?')) {
+      this.im3wsService.clearDocumentAnalysis(this.image.id).subscribe(next => {
+        this.image.pages = next;
+        this.drawImagePages();
+        this.imageSurfaceInteractive.clear();
+      });
+    }
+  }
+
+  private drawInteractiveVerticalLine() {
+    this.splitLine = new Path({
+      stroke: {
+        color: 'red',
+        width: 2
+      }
+    });
+    this.splitLine.moveTo(0, 0)
+      .lineTo(0, this.domImageHeight)
+      .close();
+
+    this.imageSurface.draw(this.splitLine);
+
+  }
+
+  private drawImagePages() {
+    this.boundingBoxesGroup.clear();
+    this.logger.debug('Drawing bounding boxes for image ' + this.image);
+    this.image.pages.forEach(page => {
+      this.logger.debug('Page ' + page);
+      this.drawBoundingBox(this.boundingBoxesGroup, page, page.boundingBox, this.scale, 'red', 12);
+      page.regions.forEach(region => {
+        this.logger.debug('Region ' + region);
+        this.drawBoundingBox(this.boundingBoxesGroup, region, region.boundingBox, this.scale, 'green', 3);
+      });
+    });
   }
 }

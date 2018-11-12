@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import {Project} from './model/project';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
+import {catchError, delay, map, tap} from 'rxjs/operators';
 import {Image} from './model/image';
 import {ConfigurationService} from './configuration.service';
 import {ProjectURLS} from './model/project-urls';
 import {NGXLogger} from 'ngx-logger';
 import {StringReponse} from './string-reponse';
 import {Scales} from './model/scales';
+import {Page} from './model/page';
 
 @Injectable({
   providedIn: 'root'
@@ -181,6 +182,26 @@ export class Im3wsService {
         catchError(this.handleError('getImage$ with id=' + id, null))
       );
   }
+
+
+  splitPage(imageId: number, imageX: number): Observable<Array<Page>> {
+    this.logger.debug('IM3WSService: splitting page image with id ' + imageId);
+    return this.http.get<Array<Page>>(this.urlImage + '/pageSplit/' + imageId + '/' + imageX, this.getHttpAuthOptions())
+      .pipe(
+        catchError(this.handleError('splitPage with id=' + imageId, null))
+      );
+  }
+
+  clearDocumentAnalysis(imageId: number) {
+    this.logger.debug('IM3WSService: clearing document analysis of image with id ' + imageId);
+    return this.http.get<void>(this.urlImage + '/documentAnalysisClear/' + imageId, this.getHttpAuthOptions())
+      .pipe(
+        catchError(this.handleError('clearDocumentAnalysis with id=' + imageId, null))
+      );
+  }
+
+
+
   // TODO ¿Se está usando? - Si no, quitarlo
   public getSymbolsOfRegion$(regionID: number): Observable<Symbol> {
     this.logger.debug('IM3WSService: fetching symbols with region_id ' + regionID);
@@ -220,25 +241,6 @@ export class Im3wsService {
       );
   }
 
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T> (operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      this.logger.error(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
 
   public saveProject(project: Project): Observable<any> {
     const result = this.http.put(this.urlProject, project, this.getHttpAuthOptions());
@@ -248,4 +250,20 @@ export class Im3wsService {
     return result;
   }
 
+  /**
+   * Handle Http operation that failed.
+   * Let the app continue.
+   * @param operation - name of the operation that failed
+   * @param result - optional value to return as the observable result
+   */
+  private handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+
+      this.logger.error(`${operation} failed: ${error.message}`);
+
+      alert('Warning: ' + error.message);
+      // Let the app keep running by returning an empty result.
+      throw new Error(error.message);
+    };
+  }
 }
