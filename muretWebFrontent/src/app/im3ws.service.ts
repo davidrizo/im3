@@ -192,6 +192,14 @@ export class Im3wsService {
       );
   }
 
+  splitRegion(imageId: number, imageX: number, imageY: number): Observable<Array<Page>> {
+    this.logger.debug('IM3WSService: splitting region image with id ' + imageId);
+    return this.http.get<Array<Page>>(this.urlImage + '/regionSplit/' + imageId + '/' + imageX + '/' + imageY, this.getHttpAuthOptions())
+      .pipe(
+        catchError(this.handleError('splitRegion with id=' + imageId, null))
+      );
+  }
+
   clearDocumentAnalysis(imageId: number) {
     this.logger.debug('IM3WSService: clearing document analysis of image with id ' + imageId);
     return this.http.get<void>(this.urlImage + '/documentAnalysisClear/' + imageId, this.getHttpAuthOptions())

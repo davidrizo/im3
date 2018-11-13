@@ -412,11 +412,13 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   canDeactivate(): boolean {
     return false; // TODO
   }
+
   onToolChange(newValue) {
     this.logger.debug('Tool changed: ' + newValue);
     // TODO Ver cómo implementar esto sin enteros
     // Using 1xx numbers for document analysis
-    this.inSymbolsToolMode = this.selectedTool >= 200 && this.selectedTool < 300;
+    const nSelectedTool = Number(this.selectedTool);
+    this.inSymbolsToolMode = nSelectedTool >= 200 && nSelectedTool < 300;
     switch (newValue) {
       case '101': // select
         this.canvasCursor = 'default';
@@ -426,6 +428,7 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
         this.canvasCursor = 'col-resize';
         break;
       case '103':  // split regions
+        this.drawInteractiveHorizontalLine();
         this.canvasCursor = 'row-resize';
         break;
     }
@@ -434,7 +437,10 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     this.logger.debug('Image clicked: ' + event);
     switch (this.selectedTool) {
       case '102':
-        this.splitPage(event.layerX / this.scale); // clientX is the value without scaling - the actual value
+        this.splitPage(event.layerX / this.scale);
+        break;
+      case '103':
+        this.splitRegion(event.layerX / this.scale, event.layerY / this.scale);
         break;
     }
   }
@@ -443,6 +449,9 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     switch (this.selectedTool) {
       case '102':
         this.splitLine.transform(transform().translate(event.layerX, 0));
+        break;
+      case '103':
+        this.splitLine.transform(transform().translate(0, event.layerY));
         break;
     }
   }
@@ -464,6 +473,22 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     }
   }
 
+  private splitRegion(imageX: number, imageY: number) {
+    this.logger.debug('Splitting region at X: ' + imageX + ', Y: ' + imageY);
+    const prevCursor = this.canvasCursor;
+    this.canvasCursor = 'wait';
+    try {
+      this.im3wsService.splitRegion(this.image.id, imageX, imageY).subscribe(next => {
+        this.image.pages = next;
+        this.drawImagePages();
+        this.canvasCursor = prevCursor;
+        this.imageSurfaceInteractive.clear();
+      });
+    } catch (e) {
+      this.canvasCursor = prevCursor;
+      this.imageSurfaceInteractive.clear();
+    }
+  }
 
   clearDocumentAnalysis() {
     if (confirm('Do you really want to clear the document analysis?')) {
@@ -487,7 +512,20 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
       .close();
 
     this.imageSurface.draw(this.splitLine);
+  }
 
+  private drawInteractiveHorizontalLine() {
+    this.splitLine = new Path({
+      stroke: {
+        color: 'red',
+        width: 2
+      }
+    });
+    this.splitLine.moveTo(0, 0)
+      .lineTo(this.domImageWidth, 0)
+      .close();
+
+    this.imageSurface.draw(this.splitLine);
   }
 
   private drawImagePages() {
