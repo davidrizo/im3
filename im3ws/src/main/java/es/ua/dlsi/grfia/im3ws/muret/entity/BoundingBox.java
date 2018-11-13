@@ -84,4 +84,14 @@ public class BoundingBox {
     public void setHeight(int height) {
         this.toY = this.fromY + height;
     }
+
+    @Override
+    public String toString() {
+        return "BoundingBox{" +
+                "fromX=" + fromX +
+                ", fromY=" + fromY +
+                ", toX=" + toX +
+                ", toY=" + toY +
+                '}';
+    }
 }

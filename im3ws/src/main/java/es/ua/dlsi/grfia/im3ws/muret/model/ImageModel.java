@@ -201,7 +201,7 @@ public class ImageModel {
                     regionService.update(region);
 
                     Region newRegion = regionService.create(new Region(page, region.getBoundingBox().getFromX(), splitYTakingIntoAccountTopSymbol,
-                            region.getBoundingBox().getWidth(), toY - splitYTakingIntoAccountTopSymbol));
+                            region.getBoundingBox().getToX(), toY));
                     page.addRegion(newRegion);
 
                     for (Symbol symbol: symbolsToMoveToNewRegion) {
