@@ -4,7 +4,7 @@ import { Validators } from '@angular/forms';
 import {Im3wsService} from '../im3ws.service';
 import {Router} from '@angular/router';
 
-import { ImageCropperModule } from 'ngx-image-cropper';
+// import { ImageCropperModule } from 'ngx-image-cropper';
 import {NGXLogger} from 'ngx-logger';
 
 @Component({

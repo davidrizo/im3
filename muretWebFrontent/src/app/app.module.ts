@@ -44,6 +44,8 @@ import {LoggerModule, NGXLogger, NgxLoggerLevel} from 'ngx-logger';
 import {GlobalErrorHandlerService} from './global-error-handler.service';
 
 import { AngularResizedEventModule } from 'angular-resize-event';
+import { ImageToolBarComponent } from './image-tool-bar/image-tool-bar.component';
+import { SymbolsComponent } from './symbols/symbols.component';
 
 // TODO Ver Keepass
 /*const config = {
@@ -63,7 +65,9 @@ import { AngularResizedEventModule } from 'angular-resize-event';
     NewProjectFormComponent,
     UploadImagesComponent,
     ImageThumbnailComponent,
-    LoginComponent
+    LoginComponent,
+    ImageToolBarComponent,
+    SymbolsComponent
   ],
   imports: [
     BrowserModule,

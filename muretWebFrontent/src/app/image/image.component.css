@@ -1,32 +1,7 @@
-#toolbar {
-  background-color: #7DE2DB;
-  height: 100vh; /* TODO */
-  padding-top: 20px;
-}
-
-/** use ::ng-deep to change component css */
-::ng-deep .card-header {
-  background-color: #D91E63;
-}
-
-::ng-deep .card-header button {
-  color: black;
-}
-
-/* it removes radio box because after adding accordions to the button groups it has appeared */
-::ng-deep #toolbar input[type="radio"] {
-  appearance: none;
-}
-
-#staff > div {
-  background-color: white;
-}
-
-
-#manuscriptImage {
-  max-height: 90vh; /* TODO */
+/* #manuscriptImage {
+  max-height: 90vh;
   overflow: auto;
-}
+} */
 
 #manuscriptImage img {
 }
@@ -35,14 +10,4 @@
   position: absolute;
   top: 0px;
   width: 100%;
-}
-
-#selectedStaff {
-  position: relative;
-}
-#noStaffSelectedMessage {
-  position: absolute;
-  z-index: 100;
-  top: 50px; /* TODO */
-  left: 50%;
 }
