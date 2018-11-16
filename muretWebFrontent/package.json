@@ -41,7 +41,8 @@
     "ngx-logger": "latest",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.26",
-    "angular-resize-event": "latest"
+    "angular-resize-event": "latest",
+    "ngx-color-picker": "latest"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.10.0",

@@ -71,6 +71,10 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   }
 
   private initToolBarInteraction() {
+    // this way, when a new image is opened, despite the previous selected mode, the documentAnalysis is selected
+    this.toolbarService.currentActivePanel = 'documentAnalysisMode';
+
+
     this.toolbarService.selectedTool$.subscribe(next => {
       this.imageSurfaceInteractive.clear();
       switch (next) {

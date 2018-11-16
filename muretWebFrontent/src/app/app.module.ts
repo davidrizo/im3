@@ -46,6 +46,8 @@ import {GlobalErrorHandlerService} from './global-error-handler.service';
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { ImageToolBarComponent } from './image-tool-bar/image-tool-bar.component';
 import { SymbolsComponent } from './symbols/symbols.component';
+import {SVGDrawingToolModule} from './svgdrawing-tool/svgdrawing-tool.module';
+import {DynamicSvgDirective} from './svgdrawing-tool/directives/dynamic-svg.directive';
 
 // TODO Ver Keepass
 /*const config = {
@@ -83,6 +85,7 @@ import { SymbolsComponent } from './symbols/symbols.component';
     RouterModule,
     NgbModule,
     AngularResizedEventModule,
+    SVGDrawingToolModule,
     // LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
     LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
     //    LightboxModule

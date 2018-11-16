@@ -3,6 +3,8 @@ import {Image} from '../model/image';
 import {ProjectURLS} from '../model/project-urls';
 import {NGXLogger} from 'ngx-logger';
 import {Router} from '@angular/router';
+import {SessionDataService} from '../session-data.service';
+import {Im3wsService} from '../im3ws.service';
 
 @Component({
   selector: 'app-image-thumbnail',
@@ -12,7 +14,8 @@ import {Router} from '@angular/router';
 export class ImageThumbnailComponent implements OnInit {
   @Input() projectURLs: ProjectURLS;
   @Input() image: Image;
-  constructor(private logger: NGXLogger, private router: Router) {
+  constructor(private logger: NGXLogger, private router: Router, private sessionDataService: SessionDataService,
+              private im3wsService: Im3wsService) {
   }
 
   ngOnInit() {
@@ -21,6 +24,13 @@ export class ImageThumbnailComponent implements OnInit {
 
   openImage(image: Image) {
     this.logger.debug('Opening image ' + image.id + ' in URL ' + this.projectURLs);
-    this.router.navigate(['/image', image.id, this.projectURLs.masters]);
-  }
+
+    // this call retrieves the whole image data (the current image does not contain all lazy relations)
+    this.im3wsService.getImage$(image.id).
+      subscribe(serviceImage => {
+      this.sessionDataService.currentImageMastersURL = this.projectURLs.masters;
+      this.sessionDataService.currentImage = serviceImage;
+      this.router.navigate(['/image']);
+      });
+ }
 }
