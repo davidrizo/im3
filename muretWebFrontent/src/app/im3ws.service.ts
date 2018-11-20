@@ -10,6 +10,7 @@ import {NGXLogger} from 'ngx-logger';
 import {StringReponse} from './string-reponse';
 import {Scales} from './model/scales';
 import {Page} from './model/page';
+import {BoundingBox} from './model/bounding-box';
 
 @Injectable({
   providedIn: 'root'
@@ -38,11 +39,11 @@ export class Im3wsService {
 
     this.logger.debug('Creating Im3wsService');
     this.urlLogin = configurationService.IM3WS_SERVER + '/muret/auth/login';  // URL to web api
-    this.urlProject = configurationService.IM3WS_SERVER + '/muret/project';  // URL to web api
-    this.urlImage = configurationService.IM3WS_SERVER + '/muret/image';  // URL to web api
-    this.urlSymbol = configurationService.IM3WS_SERVER + '/muret/symbol';  // URL to web api
-    this.urlAgnostic = configurationService.IM3WS_SERVER + '/muret/agnostic';  // URL to web api
-    this.urlAuthenticatedUser = configurationService.IM3WS_SERVER + '/muret/auth/user';  // URL to web api
+    this.urlProject = configurationService.IM3WS_SERVER + '/muret/project';
+    this.urlImage = configurationService.IM3WS_SERVER + '/muret/image';
+    this.urlSymbol = configurationService.IM3WS_SERVER + '/muret/symbol';
+    this.urlAgnostic = configurationService.IM3WS_SERVER + '/muret/agnostic';
+    this.urlAuthenticatedUser = configurationService.IM3WS_SERVER + '/muret/auth/user';
   }
 
   logout(): void {
@@ -251,9 +252,37 @@ export class Im3wsService {
 
 
   public saveProject(project: Project): Observable<any> {
+    this.logger.debug('IM3WSService: saving project with id: ' + project.id);
     const result = this.http.put(this.urlProject, project, this.getHttpAuthOptions());
     result.subscribe(res => {
       console.log('Save project result: ' + res);
+    });
+    return result;
+  }
+
+  updateRegionBoundingBox(id: number, fromX: number, fromY: number, toX: number, toY: number): Observable<any> {
+    this.logger.debug('IM3WSService: updating region bounding box of id: ' + id);
+
+    const result = this.http.get(this.urlImage + '/regionUpdate/' + id + '/'
+      + fromX + '/' + fromY + '/'
+      + toX  + '/' + toY
+      , this.getHttpAuthOptions());
+    result.subscribe(res => {
+      console.log('Update region bounding box result: ' + res);
+    });
+    return result;
+
+  }
+
+  updatePageBoundingBox(id: number, fromX: number, fromY: number, toX: number, toY: number): Observable<any> {
+    this.logger.debug('IM3WSService: updating page bounding box of id: ' + id);
+
+    const result = this.http.get(this.urlImage + '/pageUpdate/' + id + '/'
+      + fromX + '/' + fromY + '/'
+      + toX  + '/' + toY
+      , this.getHttpAuthOptions());
+    result.subscribe(res => {
+      console.log('Update region bounding box result: ' + res);
     });
     return result;
   }

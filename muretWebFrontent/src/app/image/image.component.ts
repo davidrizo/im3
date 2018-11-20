@@ -14,6 +14,8 @@ import {ImageToolBarService} from '../image-tool-bar/image-tool-bar.service';
 import {SVGCanvasComponent, SVGCanvasState, SVGMousePositionEvent} from '../svgcanvas/components/svgcanvas/svgcanvas.component';
 import {ShapeComponent} from '../svgcanvas/components/shape/shape.component';
 import {LineComponent} from '../svgcanvas/components/line/line.component';
+import {RectangleComponent} from '../svgcanvas/components/rectangle/rectangle.component';
+import {Rectangle} from '../svgcanvas/model/shape';
 
 @Component({
   selector: 'app-image',
@@ -122,7 +124,7 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     } // else it is invoked before ngAfterViewInit*/
   }
 
-  private drawBoundingBox(object: any, boundingBox: BoundingBox, targetScale: number,
+  private drawBoundingBox(objectType: string, objectID: number, boundingBox: BoundingBox, targetScale: number,
                           strokeColor: string, strokeWidth: number) {
 
     const rx = boundingBox.fromX * targetScale;
@@ -131,6 +133,8 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     const rheight = targetScale * (boundingBox.toY - boundingBox.fromY);
 
     const rectangle = this.svgCanvas.drawRectangle(rx, ry, rwidth, rheight);
+    rectangle.modelObjectType = objectType;
+    rectangle.modelObjectID = objectID;
     rectangle.shape.shapeProperties.fillColor = 'transparent';
     rectangle.shape.shapeProperties.stroke = true;
     rectangle.shape.shapeProperties.strokeColor = strokeColor;
@@ -210,10 +214,10 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     this.logger.debug('Drawing bounding boxes for image ' + this.image);
     this.image.pages.forEach(page => {
       this.logger.debug('Page ' + page);
-      this.drawBoundingBox(page, page.boundingBox, this.scale, 'red', 12);
+      this.drawBoundingBox('Page', page.id, page.boundingBox, this.scale, 'red', 12);
       page.regions.forEach(region => {
         this.logger.debug('Region ' + region);
-        this.drawBoundingBox(region, region.boundingBox, this.scale, 'green', 3);
+        this.drawBoundingBox('Region', region.id, region.boundingBox, this.scale, 'green', 3);
       });
     });
   }
@@ -221,19 +225,6 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   private clearInteractiveLines() {
     this.svgCanvas.remove(this.interactionLine);
   }
-
-  onImageMouseDown(event) {
-    this.logger.debug('Image clicked: ' + event);
-    switch (this.toolbarService.selectedTool) {
-      case '102':
-        this.splitPage(event.layerX / this.scale);
-        break;
-      case '103':
-        this.splitRegion(event.layerX / this.scale, event.layerY / this.scale);
-        break;
-    }
-  }
-
 
   onMouseEvent($event: SVGMousePositionEvent) {
     if ($event.mouseEvent.type === 'mousemove') {
@@ -264,6 +255,24 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   }
 
   onShapeChanged($event: ShapeComponent) {
-    // TODO localizar el ID del objeto para redimensionarlo
+    this.logger.debug('Image: detected a shape change on a ' + $event.modelObjectType
+      + ' with ID=' + $event.modelObjectID);
+
+    if ($event.shape instanceof Rectangle) {
+      // TODO Si da error la actualización que se repinte
+      if ($event.modelObjectType === 'Region') {
+        this.im3wsService.updateRegionBoundingBox($event.modelObjectID,
+          $event.shape.originX / this.scale, $event.shape.originY / this.scale,
+          ($event.shape.originX + $event.shape.width)  / this.scale,
+          ($event.shape.originX + $event.shape.height) / this.scale);
+      } else if ($event.modelObjectType === 'Page') {
+        this.im3wsService.updatePageBoundingBox($event.modelObjectID,
+          $event.shape.originX / this.scale, $event.shape.originY / this.scale,
+          ($event.shape.originX + $event.shape.width)  / this.scale,
+          ($event.shape.originX + $event.shape.height) / this.scale);
+      }
+    } else {
+      this.logger.debug('Image: shape change not on a rectangle');
+    }
   }
 }

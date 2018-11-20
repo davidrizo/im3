@@ -20,6 +20,8 @@ export class ShapeComponent implements OnInit {
     handleSelected: string; // drizo
     handlesColor = 'green';
     handlesRadius = 4;
+    modelObjectID: number;
+    modelObjectType: string;
 
     constructor() {
         console.log('ShapeComponent constructor');
