@@ -9,14 +9,22 @@ import { Shape } from '../../model/shape';
 })
 export class GroupComponent extends ShapeComponent implements OnInit {
 
-    private groupObjects: Shape[] = [];
+    private groupObjects: Array<ShapeComponent>;
 
     constructor() {
         super();
         console.log('GroupComponent constructor');
+      this.groupObjects = new Array<ShapeComponent>();
     }
 
     ngOnInit() {
     }
 
+    clear() {
+      this.groupObjects = new Array();
+    }
+
+  add(shape: ShapeComponent) {
+      this.groupObjects.push(shape);
+  }
 }

@@ -1,19 +1,19 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Im3wsService} from '../im3ws.service';
 import {ActivatedRoute} from '@angular/router';
-import {geometry, Surface, Path, Text, Group, Rect, ShapeOptions, Image as KendoImage} from '@progress/kendo-drawing';
 import {Image} from '../model/image';
 import {Page} from '../model/page';
 import {BoundingBox} from '../model/bounding-box';
-import {Point, Size, transform} from '@progress/kendo-drawing/geometry';
 import {NGXLogger} from 'ngx-logger';
-import { ResizedEvent } from 'angular-resize-event/resized-event';
+import {ResizedEvent} from 'angular-resize-event/resized-event';
 import {Region} from '../model/region';
 import {Project} from '../model/project';
 import {SessionDataService} from '../session-data.service';
 import {ComponentCanDeactivate} from '../component-can-deactivate';
 import {ImageToolBarService} from '../image-tool-bar/image-tool-bar.service';
-import {ImageToolBarComponent} from '../image-tool-bar/image-tool-bar.component';
+import {SVGCanvasComponent, SVGCanvasState, SVGMousePositionEvent} from '../svgcanvas/components/svgcanvas/svgcanvas.component';
+import {ShapeComponent} from '../svgcanvas/components/shape/shape.component';
+import {LineComponent} from '../svgcanvas/components/line/line.component';
 
 @Component({
   selector: 'app-image',
@@ -21,17 +21,12 @@ import {ImageToolBarComponent} from '../image-tool-bar/image-tool-bar.component'
   styleUrls: ['./image.component.css']
 })
 
-export class ImageComponent extends ComponentCanDeactivate implements OnInit, AfterViewInit, OnDestroy {
+export class ImageComponent extends ComponentCanDeactivate implements OnInit, AfterViewInit {
   canvasCursor = 'default';
 
   image: Image;
   imageURL: string;
   project: Project;
-
-  @ViewChild('imageSurface')
-  private imageSurfaceElement: ElementRef;
-  private imageSurface: Surface;
-  private imageSurfaceInteractive: Group;
 
   @ViewChild('domImage')
   private domImage: ElementRef;
@@ -41,9 +36,9 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   domImageHeight: number;
   domImageWidth: number;
   domImagePaddingLeft: number;
-  private boundingBoxesGroup: Group;
 
-  private splitLine: Path; // used in split page or split region mode
+  @ViewChild('svgCanvas') svgCanvas: SVGCanvasComponent;
+  private interactionLine: LineComponent;
 
   constructor(
     private im3wsService: Im3wsService,
@@ -60,26 +55,18 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   }
 
   ngOnInit() {
-    /* const routeParams = this.route.snapshot.params;
-
-    this.projectURLs = routeParams.projectURLs;
-    this.logger.debug('Image id=' + routeParams.id);
-    this.logger.debug('Project URLs=' + this.projectURLs);
-    this.im3wsService.getImage$(routeParams.id).
-      subscribe(serviceImage => this.setImage(serviceImage)
-    ); */
+    this.logger.debug('fullImageSVGCanvas= ' + this.svgCanvas);
   }
 
   private initToolBarInteraction() {
     // this way, when a new image is opened, despite the previous selected mode, the documentAnalysis is selected
     this.toolbarService.currentActivePanel = 'documentAnalysisMode';
-
+    this.activateSelectMode();
 
     this.toolbarService.selectedTool$.subscribe(next => {
-      this.imageSurfaceInteractive.clear();
       switch (next) {
         case '101': // select
-          this.canvasCursor = 'default';
+          this.activateSelectMode();
           break;
         case '102': // split pages
           this.drawInteractiveVerticalLine();
@@ -93,19 +80,19 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     });
   }
 
+  private activateSelectMode() {
+    this.canvasCursor = 'default';
+    this.toolbarService.selectedTool = '101';
+    this.svgCanvas.changeState(SVGCanvasState.eEditing);
+  }
+
 
   public ngAfterViewInit(): void {
     this.logger.debug('ngAfterViewInit');
-    this.createSurfaces();
     this.initToolBarInteraction();
     this.toolbarService.clearDocumentAnalysisEvent.subscribe(next => {
       this.clearDocumentAnalysis();
     });
-  }
-
-
-  public ngOnDestroy() {
-    this.imageSurface.destroy();
   }
 
   /* It draws the page and region bounding boxes */
@@ -135,47 +122,23 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     } // else it is invoked before ngAfterViewInit*/
   }
 
-  private createSurfaces() {
-    this.logger.debug('Creating surfaces');
+  private drawBoundingBox(object: any, boundingBox: BoundingBox, targetScale: number,
+                          strokeColor: string, strokeWidth: number) {
 
-    // Obtain a reference to the native DOM element of the wrapper
-    const element = this.imageSurfaceElement.nativeElement;
+    const rx = boundingBox.fromX * targetScale;
+    const ry = boundingBox.fromY * targetScale;
+    const rwidth = targetScale * (boundingBox.toX - boundingBox.fromX);
+    const rheight = targetScale * (boundingBox.toY - boundingBox.fromY);
 
-    // Create a drawing surface
-    this.imageSurface = Surface.create(element,  {
-
-    });
-    this.imageSurfaceInteractive = new Group();
-    this.imageSurface.draw(this.imageSurfaceInteractive);
-  }
-
-  private boundingBoxToGeometryRect(boundingBox: BoundingBox, targetScale: number) {
-    return new geometry.Rect(new Point(boundingBox.fromX * targetScale, boundingBox.fromY * targetScale),
-      new Size(targetScale * (boundingBox.toX - boundingBox.fromX),
-        targetScale * (boundingBox.toY - boundingBox.fromY)));
-  }
-  private drawBoundingBox(targetBoundingBoxesGroup: Group, object: any, boundingBox: BoundingBox, targetScale: number,
-                          color: string, width: number) {
-    /* this.logger.debug('Drawing bounding box ' + boundingBox + ' in color ' + color);
-    this.logger.debug('from x=' + boundingBox.fromX + ' - fromY = ' + boundingBox.fromY
-      + 'to x=' + boundingBox.toX + ' - toY = ' + boundingBox.toY); */
-    const geometryRect = this.boundingBoxToGeometryRect(boundingBox, targetScale);
-    const rect: any = new Rect(geometryRect, { // use any in order to be able to add object property dynamically
-      stroke: { color: color, width: width},
-      fill: {color: color, opacity: 0.0}
-    });
-    rect.object = object;
-
-    targetBoundingBoxesGroup.append(rect);
+    const rectangle = this.svgCanvas.drawRectangle(rx, ry, rwidth, rheight);
+    rectangle.shape.shapeProperties.fillColor = 'transparent';
+    rectangle.shape.shapeProperties.stroke = true;
+    rectangle.shape.shapeProperties.strokeColor = strokeColor;
+    rectangle.shape.shapeProperties.strokeWidth = strokeWidth;
   }
 
 
   private drawBoundingBoxes() {
-    if (this.imageSurface) {
-      //// this.imageSurface.clear();
-    }
-    this.boundingBoxesGroup = new Group();
-    this.imageSurface.draw(this.boundingBoxesGroup);
     this.drawImagePages();
   }
 
@@ -184,6 +147,80 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     return false; // TODO
   }
 
+  private splitPage(imageX: number) {
+    this.logger.debug('Splitting page at X: ' + imageX);
+    const prevCursor = this.canvasCursor;
+    this.canvasCursor = 'wait';
+    try {
+      this.im3wsService.splitPage(this.image.id, imageX).subscribe(next => {
+        this.image.pages = next;
+        this.drawImagePages();
+        this.canvasCursor = prevCursor;
+        this.clearInteractiveLines();
+      });
+    } catch (e) {
+      this.canvasCursor = prevCursor;
+      this.clearInteractiveLines();
+    }
+  }
+
+  private splitRegion(imageX: number, imageY: number) {
+    this.logger.debug('Splitting region at X: ' + imageX + ', Y: ' + imageY);
+    const prevCursor = this.canvasCursor;
+    this.canvasCursor = 'wait';
+    try {
+      this.im3wsService.splitRegion(this.image.id, imageX, imageY).subscribe(next => {
+        this.image.pages = next;
+        this.drawImagePages();
+        this.canvasCursor = prevCursor;
+        this.clearInteractiveLines();
+      });
+    } catch (e) {
+      this.canvasCursor = prevCursor;
+      this.clearInteractiveLines();
+    }
+  }
+
+  clearDocumentAnalysis() {
+    if (confirm('Do you really want to clear the document analysis?')) {
+      this.im3wsService.clearDocumentAnalysis(this.image.id).subscribe(next => {
+        this.image.pages = next;
+        this.drawImagePages();
+        this.clearInteractiveLines();
+      });
+    }
+  }
+
+  private drawInteractiveVerticalLine() {
+    this.interactionLine = <LineComponent>this.svgCanvas.drawLine(0, 0, 0, this.domImageWidth);
+    this.interactionLine.shape.shapeProperties.strokeColor = 'red';
+    this.interactionLine.shape.shapeProperties.strokeWidth = 2;
+    this.svgCanvas.changeState(SVGCanvasState.eIdle);
+  }
+
+  private drawInteractiveHorizontalLine() {
+    this.interactionLine = <LineComponent>this.svgCanvas.drawLine(0, 0, this.domImageWidth, 0);
+    this.interactionLine.shape.shapeProperties.strokeColor = 'red';
+    this.interactionLine.shape.shapeProperties.strokeWidth = 2;
+    this.svgCanvas.changeState(SVGCanvasState.eIdle);
+  }
+
+  private drawImagePages() {
+    this.svgCanvas.clear();
+    this.logger.debug('Drawing bounding boxes for image ' + this.image);
+    this.image.pages.forEach(page => {
+      this.logger.debug('Page ' + page);
+      this.drawBoundingBox(page, page.boundingBox, this.scale, 'red', 12);
+      page.regions.forEach(region => {
+        this.logger.debug('Region ' + region);
+        this.drawBoundingBox(region, region.boundingBox, this.scale, 'green', 3);
+      });
+    });
+  }
+
+  private clearInteractiveLines() {
+    this.svgCanvas.remove(this.interactionLine);
+  }
 
   onImageMouseDown(event) {
     this.logger.debug('Image clicked: ' + event);
@@ -197,100 +234,36 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     }
   }
 
-  onImageMouseMove(event) {
-    switch (this.toolbarService.selectedTool) {
-      case '102':
-        this.splitLine.transform(transform().translate(event.layerX, 0));
-        break;
-      case '103':
-        this.splitLine.transform(transform().translate(0, event.layerY));
-        break;
-    }
-  }
 
-  private splitPage(imageX: number) {
-    this.logger.debug('Splitting page at X: ' + imageX);
-    const prevCursor = this.canvasCursor;
-    this.canvasCursor = 'wait';
-    try {
-      this.im3wsService.splitPage(this.image.id, imageX).subscribe(next => {
-        this.image.pages = next;
-        this.drawImagePages();
-        this.canvasCursor = prevCursor;
-        this.imageSurfaceInteractive.clear();
-      });
-    } catch (e) {
-      this.canvasCursor = prevCursor;
-      this.imageSurfaceInteractive.clear();
-    }
-  }
-
-  private splitRegion(imageX: number, imageY: number) {
-    this.logger.debug('Splitting region at X: ' + imageX + ', Y: ' + imageY);
-    const prevCursor = this.canvasCursor;
-    this.canvasCursor = 'wait';
-    try {
-      this.im3wsService.splitRegion(this.image.id, imageX, imageY).subscribe(next => {
-        this.image.pages = next;
-        this.drawImagePages();
-        this.canvasCursor = prevCursor;
-        this.imageSurfaceInteractive.clear();
-      });
-    } catch (e) {
-      this.canvasCursor = prevCursor;
-      this.imageSurfaceInteractive.clear();
-    }
-  }
-
-  clearDocumentAnalysis() {
-    if (confirm('Do you really want to clear the document analysis?')) {
-      this.im3wsService.clearDocumentAnalysis(this.image.id).subscribe(next => {
-        this.image.pages = next;
-        this.drawImagePages();
-        this.imageSurfaceInteractive.clear();
-      });
-    }
-  }
-
-  private drawInteractiveVerticalLine() {
-    this.splitLine = new Path({
-      stroke: {
-        color: 'red',
-        width: 2
+  onMouseEvent($event: SVGMousePositionEvent) {
+    if ($event.mouseEvent.type === 'mousemove') {
+      switch (this.toolbarService.selectedTool) {
+        case '102':
+          // this.splitLine.transform(transform().translate(event.layerX, 0));
+          this.interactionLine.moveHorizontallyTo($event.svgPosition.x);
+          break;
+        case '103':
+          this.interactionLine.moveVerticallyTo($event.svgPosition.y);
+          // this.splitLine.transform(transform().translate(0, event.layerY));
+          break;
       }
-    });
-    this.splitLine.moveTo(0, 0)
-      .lineTo(0, this.domImageHeight)
-      .close();
-
-    this.imageSurfaceInteractive.append(this.splitLine);
-  }
-
-  private drawInteractiveHorizontalLine() {
-    this.splitLine = new Path({
-      stroke: {
-        color: 'red',
-        width: 2
+    } else if ($event.mouseEvent.type === 'mousedown') {
+      switch (this.toolbarService.selectedTool) {
+        case '102':
+          this.splitPage($event.svgPosition.x / this.scale);
+          break;
+        case '103':
+          this.splitRegion($event.svgPosition.x / this.scale, $event.svgPosition.y / this.scale);
+          break;
       }
-    });
-    this.splitLine.moveTo(0, 0)
-      .lineTo(this.domImageWidth, 0)
-      .close();
-
-    this.imageSurfaceInteractive.append(this.splitLine);
+    }
   }
 
-  private drawImagePages() {
-    this.boundingBoxesGroup.clear();
-    this.logger.debug('Drawing bounding boxes for image ' + this.image);
-    this.image.pages.forEach(page => {
-      this.logger.debug('Page ' + page);
-      this.drawBoundingBox(this.boundingBoxesGroup, page, page.boundingBox, this.scale, 'red', 12);
-      page.regions.forEach(region => {
-        this.logger.debug('Region ' + region);
-        this.drawBoundingBox(this.boundingBoxesGroup, region, region.boundingBox, this.scale, 'green', 3);
-      });
-    });
+  onShapeCreated($event: ShapeComponent) {
+    // TODO para crear objetos dibujando
   }
 
+  onShapeChanged($event: ShapeComponent) {
+    // TODO localizar el ID del objeto para redimensionarlo
+  }
 }

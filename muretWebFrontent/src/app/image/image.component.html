@@ -8,11 +8,15 @@
     <div class="row" id="manuscriptImage">
       <div class="col">
         <img #domImage class="img-fluid" (load)="onImageLoad()" src="{{imageURL}}" alt="Image">
-        <div id="canvas" #imageSurface
-             [style.left]="domImagePaddingLeft" [style.height.px]="domImageHeight" [style.width.px]="domImageWidth"
+        <div id="canvas"
+             [style.left]="domImagePaddingLeft" [style.width.px]="domImageWidth" [style.height.px]="domImageHeight"
              [style.cursor]="canvasCursor"
-             (mousedown)="onImageMouseDown($event)" (mousemove)="onImageMouseMove($event)"
         >
+          <app-svgcanvas #svgCanvas [width]="domImageWidth" [height]="domImageHeight"
+                         (svgMouseEvent)="onMouseEvent($event)"
+                         (svgShapeCreated)="onShapeCreated($event)"
+                         (svgShapeChanged)="onShapeChanged($event)"
+          ></app-svgcanvas>
         </div>
       </div>
     </div>

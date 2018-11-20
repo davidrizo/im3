@@ -45,6 +45,13 @@ export class RectangleComponent extends ShapeComponent implements OnInit {
         }
     }
 
+    setDimensions(width: number, height: number) {
+      if (this.shape instanceof Rectangle) {
+        this.shape.width = width;
+        this.shape.height = height;
+      }
+    }
+
   // drizo don't use mouseUp or move because it usually looses focus no movement
   // - it is handled
 

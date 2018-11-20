@@ -9,14 +9,18 @@ import {isDefined} from '@ng-bootstrap/ng-bootstrap/util/util';
     styleUrls: ['./shape.component.css']
 })
 export class ShapeComponent implements OnInit {
-  protected handleSelected: string = null; // drizo
-  @ViewChild('shapeTemplate') shapeTemplate: TemplateRef<any>;
+    @ViewChild('shapeTemplate') shapeTemplate: TemplateRef<any>;
 
     shape: Shape;
     shapeType: ShapeType;
     offset: MousePosition;
     isSelected = false;
     selectionPoints: MousePosition[] = [];
+
+    handleSelected: string; // drizo
+    handlesColor = 'green';
+    handlesRadius = 4;
+
     constructor() {
         console.log('ShapeComponent constructor');
     }
@@ -78,5 +82,10 @@ export class ShapeComponent implements OnInit {
 
   isHandleSelected() {
     return this.handleSelected != null;
+  }
+
+  setPosition(x: number, y: number) {
+    this.shape.originX = x;
+    this.shape.originY = y;
   }
 }

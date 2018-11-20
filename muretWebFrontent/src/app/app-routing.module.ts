@@ -10,7 +10,7 @@ import {UploadImagesComponent} from './upload-images/upload-images.component';
 import {AuthGuard} from './auth.guard';
 import {LoginComponent} from './login/login.component';
 import {SymbolsComponent} from './symbols/symbols.component';
-import {SVGDrawingComponent} from './svgdrawing-tool/components/svgdrawing/svgdrawing.component';
+import {SVGDrawingComponent} from './svgdrawing/svgdrawing.component';
 
 const routes: Routes = [
 
@@ -26,6 +26,8 @@ const routes: Routes = [
   { path: 'image', component: ImageComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
   { path: 'symbols', component: SymbolsComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
   { path: 'uploadimages/:id', component: UploadImagesComponent, canActivate: [AuthGuard]},
+  // usado para desarrollo //TODO Quitar
+  { path: 'dev', component: SymbolsComponent, canDeactivate: [AuthGuard]},
   { path: '', pathMatch: 'full', redirectTo: 'startup'}
   /*{ path: '**', redirectTo: '' },*/
 ];

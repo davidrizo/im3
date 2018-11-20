@@ -23,7 +23,7 @@ export class LineComponent extends ShapeComponent implements OnInit {
     }
 
     setStyles() {
-        let styles = {
+        const styles = {
             'stroke': this.shape.shapeProperties.strokeColor,
             'stroke-width': this.shape.shapeProperties.strokeWidth
         };
@@ -53,4 +53,23 @@ export class LineComponent extends ShapeComponent implements OnInit {
         console.log('line dragging');
     }
 
+  setEndPosition(toX: number, toY: number) {
+    if (this.shape instanceof Line) {
+      this.shape.x2 = toX;
+      this.shape.y2 = toY;
+    }
+  }
+
+  moveHorizontallyTo(x: number) {
+    if (this.shape instanceof Line) {
+      this.shape.originX = x;
+      this.shape.x2 = x;
+    }
+  }
+  moveVerticallyTo(y: number) {
+    if (this.shape instanceof Line) {
+      this.shape.originY = y;
+      this.shape.y2 = y;
+    }
+  }
 }

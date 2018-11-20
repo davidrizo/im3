@@ -51,7 +51,7 @@ export class Shape implements BaseShape {
     public originX: number;
     public originY: number;
 
-    constructor(name: string) {
+  constructor(name: string) {
         this.shapeProperties = new ShapeProperties();
         this.originX = this.originY = 0;
         this.shapeProperties.name = name;

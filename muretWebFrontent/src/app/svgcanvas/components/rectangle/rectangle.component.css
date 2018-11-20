@@ -1,10 +1,6 @@
 /* drizo */
 .svgHandle {
-  stroke: green;
   stroke-width: 1;
-  fill:green;
-  width: 4px;
-  height: 4px;
 }
 
 .svgTopLeftHandle {
