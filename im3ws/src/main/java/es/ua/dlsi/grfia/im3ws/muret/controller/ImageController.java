@@ -86,5 +86,37 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
         return imageModel.leaveJustOnePageAndRegion(image.get());
     }
 
+    @GetMapping(path = {"pageUpdate/{id}/{fromX}/{fromY}/{toX}/{toY}"})
+    public Page pageUpdate(@PathVariable("id") Long id,
+                             @PathVariable("fromX") Double fromX,
+                             @PathVariable("fromY") Double fromY,
+                             @PathVariable("toX") Double toX,
+                             @PathVariable("toY") Double toY) throws IM3WSException {
+        Optional<Page> page = pageService.findById(id);
+        if (!page.isPresent()) {
+            throw new IM3WSException("Cannot find a page with id " + id);
+        }
+        page.get().getBoundingBox().setFromX(fromX.intValue());
+        page.get().getBoundingBox().setFromY(fromY.intValue());
+        page.get().getBoundingBox().setToX(toX.intValue());
+        page.get().getBoundingBox().setToY(toY.intValue());
+        return pageService.update(page.get());
+    }
 
+    @GetMapping(path = {"regionUpdate/{id}/{fromX}/{fromY}/{toX}/{toY}"})
+    public Region regionUpdate(@PathVariable("id") Long id,
+                             @PathVariable("fromX") Double fromX,
+                             @PathVariable("fromY") Double fromY,
+                             @PathVariable("toX") Double toX,
+                             @PathVariable("toY") Double toY) throws IM3WSException {
+        Optional<Region> region = regionService.findById(id);
+        if (!region.isPresent()) {
+            throw new IM3WSException("Cannot find a page with id " + id);
+        }
+        region.get().getBoundingBox().setFromX(fromX.intValue());
+        region.get().getBoundingBox().setFromY(fromY.intValue());
+        region.get().getBoundingBox().setToX(toX.intValue());
+        region.get().getBoundingBox().setToY(toY.intValue());
+        return regionService.update(region.get());
+    }
 }

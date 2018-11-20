@@ -168,7 +168,7 @@ public class ImageModel {
 
     @Transactional
     public void splitRegionAt(Page page, int y) throws IM3WSException {
-        if (page.getRegions().isEmpty()) {
+        if (page.getRegions() == null || page.getRegions().isEmpty()) {
             Region omrRegion1 = regionService.create(new Region(page, page.getBoundingBox().getFromX(), 0, page.getBoundingBox().getToX(), y-1));
             Region omrRegion2 = regionService.create(new Region(page, page.getBoundingBox().getFromX(), y, page.getBoundingBox().getToX(), page.getBoundingBox().getToY()));
             page.addRegion(omrRegion1);
