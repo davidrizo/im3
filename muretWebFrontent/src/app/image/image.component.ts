@@ -14,7 +14,6 @@ import {ImageToolBarService} from '../image-tool-bar/image-tool-bar.service';
 import {SVGCanvasComponent, SVGCanvasState, SVGMousePositionEvent} from '../svgcanvas/components/svgcanvas/svgcanvas.component';
 import {ShapeComponent} from '../svgcanvas/components/shape/shape.component';
 import {LineComponent} from '../svgcanvas/components/line/line.component';
-import {RectangleComponent} from '../svgcanvas/components/rectangle/rectangle.component';
 import {Rectangle} from '../svgcanvas/model/shape';
 
 @Component({

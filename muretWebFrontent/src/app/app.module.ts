@@ -47,7 +47,6 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { ImageToolBarComponent } from './image-tool-bar/image-tool-bar.component';
 import { SymbolsComponent } from './symbols/symbols.component';
 import {SVGDrawingToolModule} from './svgcanvas/svgdrawing-tool.module';
-import {DynamicSvgDirective} from './svgcanvas/directives/dynamic-svg.directive';
 
 // TODO Ver Keepass
 /*const config = {

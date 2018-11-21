@@ -8,7 +8,7 @@ import {ConfigurationService} from './configuration.service';
 import {ProjectURLS} from './model/project-urls';
 import {NGXLogger} from 'ngx-logger';
 import {StringReponse} from './string-reponse';
-import {Scales} from './model/scales';
+import {SVGSet} from './model/SVGSet';
 import {Page} from './model/page';
 import {BoundingBox} from './model/bounding-box';
 
@@ -236,10 +236,10 @@ export class Im3wsService {
       );
   }
 
-  public getSVGScales$(notationType: string, manuscriptType: string): Observable<Scales> {
-    this.logger.debug('IM3WSService: fetching svg scale for notationType=' + notationType
+  public setSVGSet$(notationType: string, manuscriptType: string): Observable<SVGSet> {
+    this.logger.debug('IM3WSService: fetching svgset for notationType=' + notationType
       + 'manuscriptType=' + manuscriptType);
-    return this.http.get<StringReponse>(this.urlAgnostic + '/svgscales'
+    return this.http.get<StringReponse>(this.urlAgnostic + '/svgset'
       + '?notationType=' + notationType
       + '&manuscriptType=' + manuscriptType
       ,

@@ -24,6 +24,8 @@
     "@okta/okta-angular": "latest",
     "@progress/kendo-angular-sortable": "^1.1.1",
     "@progress/kendo-drawing": "latest",
+    "angular-fontawesome": "^1.0.0",
+    "angular-resize-event": "latest",
     "angular-svg-icon": "^6.0.1",
     "angular2-image-upload": "latest",
     "angular2-lightbox": "latest",
@@ -35,14 +37,14 @@
     "font-awesome": "^4.7.0",
     "ng2-dragula": "^2.1.0",
     "ng2-file-upload": "latest",
+    "ngx-color-picker": "latest",
     "ngx-image-cropper": "latest",
     "ngx-img": "latest",
     "ngx-lightbox": "latest",
     "ngx-logger": "latest",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.26",
-    "angular-resize-event": "latest",
-    "ngx-color-picker": "latest"
+    "@fortawesome/free-solid-svg-icons": "latest"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.10.0",
