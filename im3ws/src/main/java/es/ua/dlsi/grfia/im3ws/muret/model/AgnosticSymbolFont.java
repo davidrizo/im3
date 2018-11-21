@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * It returns the font symbol associated to an agnostic symbol depending on the notation type
@@ -51,4 +52,18 @@ public abstract class AgnosticSymbolFont {
     public LayoutFont getLayoutFont() {
         return layoutFont;
     }
+
+    /**
+     * @return Map<AgnosticTypeString, SVG d param of SVG path element>
+     */
+    public Map<String, String> getFullSVGSetPathd()  {
+        HashMap<String, String> result = new HashMap<>();
+        for (Map.Entry<String, Glyph> entry: glyphs.entrySet()) {
+            String agnosticSymbolType = entry.getKey();
+            Glyph glyph = entry.getValue();
+            result.put(agnosticSymbolType, glyph.getPath());
+        }
+        return result;
+    }
+
 }
