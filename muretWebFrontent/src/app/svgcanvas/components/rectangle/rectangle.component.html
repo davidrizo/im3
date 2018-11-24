@@ -3,7 +3,7 @@
         attr.width="{{ shape.width }}" attr.height="{{ shape.height }}" [ngStyle]="setStyles()">
         <title>{{ shape.shapeProperties.name }}</title>
     </svg:rect>
-    <svg:g *ngIf="isSelected">
+    <svg:g *ngIf="isEditing">
         <svg:rect attr.x="{{ shape.originX - handlesRadius }}" attr.y="{{ shape.originY - handlesRadius }}"
                   class="svgHandle svgTopLeftHandle"
                   attr.width="{{handlesRadius*2}}" attr.height="{{handlesRadius*2}}" attr.fill="{{handlesColor}}" attr.stroke="{{handlesColor}}"

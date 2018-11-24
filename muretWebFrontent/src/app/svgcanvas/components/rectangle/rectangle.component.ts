@@ -24,7 +24,7 @@ export class RectangleComponent extends ShapeComponent implements OnInit {
         const styles = {
             'stroke': this.shape.shapeProperties.strokeColor,
             'fill': this.shape.shapeProperties.fillColor,
-            'stroke-width': this.shape.shapeProperties.strokeWidth
+            'stroke-width': this.isSelected ? 5 : this.shape.shapeProperties.strokeWidth
         };
         return styles;
     }

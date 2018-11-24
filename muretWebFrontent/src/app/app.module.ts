@@ -47,6 +47,8 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { ImageToolBarComponent } from './image-tool-bar/image-tool-bar.component';
 import { SymbolsComponent } from './symbols/symbols.component';
 import {SVGDrawingToolModule} from './svgcanvas/svgdrawing-tool.module';
+import { DocumentAnalysisViewComponent } from './document-analysis-view/document-analysis-view.component';
+import { PreferencesComponent } from './preferences/preferences.component';
 
 // TODO Ver Keepass
 /*const config = {
@@ -68,7 +70,9 @@ import {SVGDrawingToolModule} from './svgcanvas/svgdrawing-tool.module';
     ImageThumbnailComponent,
     LoginComponent,
     ImageToolBarComponent,
-    SymbolsComponent
+    SymbolsComponent,
+    DocumentAnalysisViewComponent,
+    PreferencesComponent
   ],
   imports: [
     BrowserModule,

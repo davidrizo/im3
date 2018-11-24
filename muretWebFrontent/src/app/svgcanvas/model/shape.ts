@@ -28,7 +28,7 @@ export class ShapeProperties {
 
     constructor() {
         this.fill = true;
-        this.fillColor = '#e7e7e7';
+        this.fillColor = 'transparent';
         this.stroke = true;
         this.strokeColor = 'black';
         this.strokeWidth = 1;

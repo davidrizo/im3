@@ -7,17 +7,7 @@
   <div class="col-10">
     <div class="row" id="manuscriptImage">
       <div class="col">
-        <img #domImage class="img-fluid" (load)="onImageLoad()" src="{{imageURL}}" alt="Image">
-        <div id="canvas"
-             [style.left]="domImagePaddingLeft" [style.width.px]="domImageWidth" [style.height.px]="domImageHeight"
-             [style.cursor]="canvasCursor"
-        >
-          <app-svgcanvas #svgCanvas [width]="domImageWidth" [height]="domImageHeight"
-                         (svgMouseEvent)="onMouseEvent($event)"
-                         (svgShapeCreated)="onShapeCreated($event)"
-                         (svgShapeChanged)="onShapeChanged($event)"
-          ></app-svgcanvas>
-        </div>
+        <app-document-analysis-view #appDocumentAnalysisView (mouseEvent)="onMouseEvent($event)"></app-document-analysis-view>
       </div>
     </div>
   </div>

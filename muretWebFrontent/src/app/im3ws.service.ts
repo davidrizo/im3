@@ -10,7 +10,6 @@ import {NGXLogger} from 'ngx-logger';
 import {StringReponse} from './string-reponse';
 import {SVGSet} from './model/SVGSet';
 import {Page} from './model/page';
-import {BoundingBox} from './model/bounding-box';
 
 @Injectable({
   providedIn: 'root'
@@ -239,7 +238,7 @@ export class Im3wsService {
   public setSVGSet$(notationType: string, manuscriptType: string): Observable<SVGSet> {
     this.logger.debug('IM3WSService: fetching svgset for notationType=' + notationType
       + 'manuscriptType=' + manuscriptType);
-    return this.http.get<StringReponse>(this.urlAgnostic + '/svgset'
+    return this.http.get<SVGSet>(this.urlAgnostic + '/svgset'
       + '?notationType=' + notationType
       + '&manuscriptType=' + manuscriptType
       ,

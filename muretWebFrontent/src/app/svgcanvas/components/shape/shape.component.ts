@@ -15,6 +15,7 @@ export class ShapeComponent implements OnInit {
     shapeType: ShapeType;
     offset: MousePosition;
     isSelected = false;
+    isEditing = false;
     selectionPoints: MousePosition[] = [];
 
     handleSelected: string; // drizo
