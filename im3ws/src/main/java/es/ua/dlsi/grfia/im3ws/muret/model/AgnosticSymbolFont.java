@@ -1,13 +1,12 @@
 package es.ua.dlsi.grfia.im3ws.muret.model;
 
+import es.ua.dlsi.grfia.im3ws.muret.entity.AgnosticTypeSVGPath;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * It returns the font symbol associated to an agnostic symbol depending on the notation type
@@ -56,12 +55,12 @@ public abstract class AgnosticSymbolFont {
     /**
      * @return Map<AgnosticTypeString, SVG d param of SVG path element>
      */
-    public Map<String, String> getFullSVGSetPathd()  {
-        HashMap<String, String> result = new HashMap<>();
+    public List<AgnosticTypeSVGPath> getFullSVGSetPathd()  {
+        List<AgnosticTypeSVGPath> result = new LinkedList<>();
         for (Map.Entry<String, Glyph> entry: glyphs.entrySet()) {
             String agnosticSymbolType = entry.getKey();
             Glyph glyph = entry.getValue();
-            result.put(agnosticSymbolType, glyph.getPath());
+            result.add(new AgnosticTypeSVGPath(agnosticSymbolType, glyph.getPath()));
         }
         return result;
     }

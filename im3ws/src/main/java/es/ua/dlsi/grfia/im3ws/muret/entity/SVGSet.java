@@ -1,5 +1,6 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
+import java.util.List;
 import java.util.Map;
 
 public class SVGSet {
@@ -11,9 +12,9 @@ public class SVGSet {
      * key = AgnosticTypeString
      * value = SVG d param of SVG path element
      */
-    Map<String, String> paths;
+    List<AgnosticTypeSVGPath> paths;
 
-    public SVGSet(double x, double y, double em, Map<String, String> paths) {
+    public SVGSet(double x, double y, double em, List<AgnosticTypeSVGPath> paths) {
         this.x = x;
         this.y = y;
         this.em = em;
@@ -32,7 +33,7 @@ public class SVGSet {
         return em;
     }
 
-    public Map<String, String> getPaths() {
+    public List<AgnosticTypeSVGPath> getPaths() {
         return paths;
     }
 }

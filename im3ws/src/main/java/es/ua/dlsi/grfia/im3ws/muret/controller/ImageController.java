@@ -3,14 +3,14 @@ package es.ua.dlsi.grfia.im3ws.muret.controller;
 
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
-import es.ua.dlsi.grfia.im3ws.muret.entity.Image;
-import es.ua.dlsi.grfia.im3ws.muret.entity.Page;
-import es.ua.dlsi.grfia.im3ws.muret.entity.Region;
+import es.ua.dlsi.grfia.im3ws.muret.entity.*;
 import es.ua.dlsi.grfia.im3ws.muret.model.ImageModel;
 import es.ua.dlsi.grfia.im3ws.muret.service.ImageService;
 import es.ua.dlsi.grfia.im3ws.muret.service.PageService;
 import es.ua.dlsi.grfia.im3ws.muret.service.RegionService;
 import es.ua.dlsi.grfia.im3ws.muret.service.SymbolService;
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -118,5 +118,26 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
         region.get().getBoundingBox().setToX(toX.intValue());
         region.get().getBoundingBox().setToY(toY.intValue());
         return regionService.update(region.get());
+    }
+
+    @GetMapping(path = {"createSymbol/{regionID}/{fromX}/{fromY}/{toX}/{toY}"})
+    public Symbol createSymbol(@PathVariable("regionID") Long regionID,
+                               @PathVariable("fromX") Double fromX,
+                               @PathVariable("fromY") Double fromY,
+                               @PathVariable("toX") Double toX,
+                               @PathVariable("toY") Double toY) throws IM3WSException, IM3Exception {
+        Optional<Region> region = regionService.findById(regionID);
+        if (!region.isPresent()) {
+            throw new IM3WSException("Cannot find a page with id " + regionID);
+        }
+
+        AgnosticSymbol agnosticSymbol = imageModel.classifySymbolFromImageBoundingBox(region.get().getPage().getImage(),
+                fromX.intValue(), fromY.intValue(), toX.intValue(), toY.intValue(), "TO-DO"); //TODO
+
+        Symbol symbol = new Symbol(region.get(), agnosticSymbol,
+                new BoundingBox(fromX.intValue(), fromY.intValue(), toX.intValue(), toY.intValue()),
+                null, null);
+
+        return symbolService.create(symbol);
     }
 }

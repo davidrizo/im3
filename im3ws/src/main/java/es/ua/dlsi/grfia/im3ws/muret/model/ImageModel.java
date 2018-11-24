@@ -9,6 +9,9 @@ import es.ua.dlsi.grfia.im3ws.muret.service.ImageService;
 import es.ua.dlsi.grfia.im3ws.muret.service.PageService;
 import es.ua.dlsi.grfia.im3ws.muret.service.RegionService;
 import es.ua.dlsi.grfia.im3ws.muret.service.SymbolService;
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
+import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -212,5 +215,10 @@ public class ImageModel {
                 }
             }
         }
+    }
+
+    public AgnosticSymbol classifySymbolFromImageBoundingBox(Image image, int fromX, int fromY, int toX, int toY, String classifier) throws IM3Exception {
+        Logger.getLogger(this.getClass().getName()).severe("TO-DO Classify symbol estático");
+        return AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, "accidental.flat"); // TODO
     }
 }
