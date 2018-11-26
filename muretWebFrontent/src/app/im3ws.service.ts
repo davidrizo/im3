@@ -10,6 +10,7 @@ import {NGXLogger} from 'ngx-logger';
 import {StringReponse} from './string-reponse';
 import {SVGSet} from './model/SVGSet';
 import {Page} from './model/page';
+import {ClassifierType} from './model/classifier-type';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,7 @@ export class Im3wsService {
   private urlLogin: string;
   private urlAuthenticatedUser: string;
   private urlAgnostic: string;
+  private urlClassifierTypes: string;
 
   username: string;
   isLoggedIn: boolean;
@@ -38,6 +40,7 @@ export class Im3wsService {
 
     this.logger.debug('Creating Im3wsService');
     this.urlLogin = configurationService.IM3WS_SERVER + '/muret/auth/login';  // URL to web api
+    this.urlClassifierTypes = configurationService.IM3WS_SERVER + '/muret/classifiers';
     this.urlProject = configurationService.IM3WS_SERVER + '/muret/project';
     this.urlImage = configurationService.IM3WS_SERVER + '/muret/image';
     this.urlSymbol = configurationService.IM3WS_SERVER + '/muret/symbol';
@@ -130,6 +133,15 @@ export class Im3wsService {
       }
     });*/
 
+  getClassifierTypes$(): Observable<ClassifierType[]> {
+    this.logger.debug('IM3WSService: fetching classifier types...');
+    // TODO Pasarle usuario actual
+    return this.http.get<ClassifierType[]>(this.urlClassifierTypes, this.getHttpAuthOptions())
+      .pipe(
+        catchError(this.handleError('getClassifierTypes$', []))
+      );
+
+  }
 
   public getProjects$(): Observable<Project[]> {
     this.logger.debug('IM3WSService: fetching projects...');
@@ -302,4 +314,5 @@ export class Im3wsService {
       throw new Error(error.message);
     };
   }
+
 }

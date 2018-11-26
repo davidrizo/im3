@@ -11,11 +11,13 @@ import {AuthGuard} from './auth.guard';
 import {LoginComponent} from './login/login.component';
 import {SymbolsComponent} from './symbols/symbols.component';
 import {SVGDrawingComponent} from './svgdrawing/svgdrawing.component';
+import {PreferencesComponent} from './preferences/preferences.component';
 
 const routes: Routes = [
 
   { path: 'svg', component: SVGDrawingComponent }, // PRUEBAS
   { path: 'about', component: AboutComponent },
+  { path: 'preferences', component: PreferencesComponent, canActivate: [AuthGuard]},
   { path: 'login', component: LoginComponent},
   { path: 'startup', component: StartupComponent, canActivate: [AuthGuard]},
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard]},
