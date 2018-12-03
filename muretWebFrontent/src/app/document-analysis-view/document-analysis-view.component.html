@@ -1,0 +1,13 @@
+<div id="documentAnalysis">
+<img #domImage class="img-fluid" (load)="onImageLoad()" src="{{imageURL}}" alt="Image">
+<div id="documentAnalysisCanvas"
+     [style.left]="domImagePaddingLeft" [style.width.px]="domImageWidth" [style.height.px]="domImageHeight"
+     [style.cursor]="canvasCursor"
+>
+  <app-svgcanvas #svgCanvas [width]="domImageWidth" [height]="domImageHeight"
+                 (svgMouseEvent)="onMouseEvent($event)"
+                 (svgShapeCreated)="onShapeCreated($event)"
+                 (svgShapeChanged)="onShapeChanged($event)"
+                 (svgShapeSelected)="onShapeSelected($event)"
+  ></app-svgcanvas>
+</div>

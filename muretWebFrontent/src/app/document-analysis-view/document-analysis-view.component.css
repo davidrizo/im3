@@ -1,0 +1,8 @@
+#documentAnalysis {
+  position: relative;
+}
+#documentAnalysisCanvas {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+}

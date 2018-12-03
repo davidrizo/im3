@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Project} from './model/project';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {catchError, delay, map, tap} from 'rxjs/operators';
+import {catchError, delay, map, share, tap} from 'rxjs/operators';
 import {Image} from './model/image';
 import {ConfigurationService} from './configuration.service';
 import {ProjectURLS} from './model/project-urls';
@@ -11,6 +11,8 @@ import {StringReponse} from './string-reponse';
 import {SVGSet} from './model/SVGSet';
 import {Page} from './model/page';
 import {ClassifierType} from './model/classifier-type';
+import {Region} from './model/region';
+import {Symbol} from './model/symbol';
 
 @Injectable({
   providedIn: 'root'
@@ -294,6 +296,24 @@ export class Im3wsService {
       , this.getHttpAuthOptions());
     result.subscribe(res => {
       console.log('Update region bounding box result: ' + res);
+    });
+    return result;
+  }
+
+
+  createSymbolFromBoundingBox(region: Region, fromX: number, fromY: number, toX: number, toY: number): Observable<Symbol> {
+    this.logger.debug('IM3WSService: create symbol from bounding box in region ' + region.id);
+
+    const result = this.http.get<Symbol>(this.urlImage + '/createSymbol/' + region.id + '/'
+      + fromX + '/' + fromY + '/'
+      + toX  + '/' + toY
+      , this.getHttpAuthOptions())
+      .pipe(share()); // if not, two calls are made for the same request due to CORS checking
+
+    result.subscribe(res => {
+      region.symbols.push(res); // the im3ws spring service just returns the new symbol, not the complete region on each symbol insert
+      console.log('Symbol from bounding box in region ' + region.id);
+
     });
     return result;
   }

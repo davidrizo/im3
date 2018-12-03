@@ -1,0 +1,22 @@
+#staff > div {
+  background-color: white;
+}
+
+#staff {
+  min-height: 100px;
+}
+
+#selectedStaff {
+  position: relative;
+}
+#noStaffSelectedMessage {
+  position: absolute;
+  z-index: 100;
+  top: 50px; /* TODO */
+  left: 50%;
+}
+
+
+#agnosticToolbar button {
+  font-size: 9px;
+}
