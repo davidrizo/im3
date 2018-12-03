@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * @author drizo
@@ -133,6 +134,8 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
 
         AgnosticSymbol agnosticSymbol = imageModel.classifySymbolFromImageBoundingBox(region.get().getPage().getImage(),
                 fromX.intValue(), fromY.intValue(), toX.intValue(), toY.intValue(), "TO-DO"); //TODO
+
+        Logger.getLogger(this.getClass().getName()).severe("TO-DO CLASSIFIER"); //TODO Urgent
 
         Symbol symbol = new Symbol(region.get(), agnosticSymbol,
                 new BoundingBox(fromX.intValue(), fromY.intValue(), toX.intValue(), toY.intValue()),

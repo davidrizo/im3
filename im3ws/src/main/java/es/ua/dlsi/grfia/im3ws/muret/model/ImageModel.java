@@ -219,6 +219,6 @@ public class ImageModel {
 
     public AgnosticSymbol classifySymbolFromImageBoundingBox(Image image, int fromX, int fromY, int toX, int toY, String classifier) throws IM3Exception {
         Logger.getLogger(this.getClass().getName()).severe("TO-DO Classify symbol estático");
-        return AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, "accidental.flat"); // TODO
+        return AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, "clef.C:L2"); // TODO
     }
 }
