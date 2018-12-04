@@ -111,17 +111,17 @@ public class XML2AgnosticSymbolImagesTextFile {
 
     public static final void main(String [] args)  {
         // generate all corpus given an absolute path
-        String basePath = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
+        String basePath = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
         String [] projects = new String[]
                 {
                 "B-3.28", // generated 2018, june 11th
-                //"B-50.747",
-                //"B-53.781",
+                "B-50.747",
+                "B-53.781",
                 "B-59.850" // generated 2018, june 27th
                 };
 
-        String outputPath30x30 = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images_30x30";
-        String outputPath = "/Users/drizo/Documents/GCLOUDUA/HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images";
+        String outputPath30x30 = "/Users/drizo/GCLOUDUA/HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images_30x30";
+        String outputPath = "/Users/drizo/GCLOUDUA/HISPAMUS/trainingsets/catedral_zaragoza/staves_symbols_images";
 
         for (String project: projects) {
             try {

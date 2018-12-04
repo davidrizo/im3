@@ -15,10 +15,7 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticEncoding;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Fermata;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Multirest;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Rest;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Slur;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
@@ -235,8 +232,8 @@ public class Encoder {
                 }
 
 
-                //String figureString = generateFigureString(note);
-                INoteDurationSpecification figureString = generateFigureString(chord);
+                //String figureString = generateNoteDurationSpecification(note);
+                INoteDurationSpecification figureString = generateNoteDurationSpecification(chord);
 
                 //  GraphicalSymbol graphicalSymbol;
             /*if (note.isGrace()) {
@@ -361,8 +358,8 @@ public class Encoder {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, accidentalToDraw.name().toLowerCase(), positionInStaff));
             }
 
-            //String figureString = generateFigureString(note);
-            INoteDurationSpecification figureString = generateFigureString(note);
+            //String figureString = generateNoteDurationSpecification(note);
+            INoteDurationSpecification noteDurationSpecification = generateNoteDurationSpecification(note);
 
           //  GraphicalSymbol graphicalSymbol;
             /*if (note.isGrace()) {
@@ -386,10 +383,27 @@ public class Encoder {
                 }
             }
 
+            Directions directions = null;
+            if (note.getDuration().getComputedTime() <= Figures.HALF.getDuration().getComputedTime()) {
+                if (note.getExplicitStemDirection() != null && note.getExplicitStemDirection() != StemDirection.computed && note.getExplicitStemDirection() != StemDirection.none) {
+                    if (note.getExplicitStemDirection() == StemDirection.down) {
+                        directions = Directions.down;
+                    } else {
+                        directions = Directions.up;
+                    }
+                } else {
+                    if (positionInStaff.compareTo(PositionsInStaff.LINE_3) < 0) {
+                        directions = Directions.up;
+                    } else {
+                        directions = Directions.down;
+                    }
+                }
+            }
+
             if (note.isGrace()) {
-                agnosticEncoding.add(new AgnosticSymbol(version, new GraceNote(figureString), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new GraceNote(noteDurationSpecification, directions), positionInStaff));
             } else {
-                agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(noteDurationSpecification, directions), positionInStaff));
             }
             //graphicalTokens.add(new GraphicalToken(graphicalSymbol, figureString, positionInStaff));
 
@@ -745,7 +759,7 @@ public class Encoder {
         }
     }*/
 
-    /*private String generateFigureString(SimpleNote note) {
+    /*private String generateNoteDurationSpecification(SimpleNote note) {
         BeamGroup beam = note.getBelongsToBeam();
         if (beam != null) {
             int flags = note.getAtomFigure().getFigure().getNumFlags();
@@ -760,7 +774,7 @@ public class Encoder {
             return note.getAtomFigure().getFigure().toString().toLowerCase();
         }*
     }*/
-    private INoteDurationSpecification generateFigureString(SingleFigureAtom singleFigureAtom) throws IM3Exception {
+    private INoteDurationSpecification generateNoteDurationSpecification(SingleFigureAtom singleFigureAtom) throws IM3Exception {
         BeamGroup beam = singleFigureAtom.getBelongsToBeam();
         if (beam != null) {
             int flags = singleFigureAtom.getAtomFigure().getFigure().getNumFlags();

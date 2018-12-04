@@ -8,8 +8,18 @@ public class GraceNote extends AgnosticSymbolType {
 
     INoteDurationSpecification durationSpecification;
 
+    /**
+     * v2
+     */
+    Directions stemDirection;
+
     public GraceNote(INoteDurationSpecification durationSpecification) {
         this.durationSpecification = durationSpecification;
+    }
+
+    public GraceNote(INoteDurationSpecification durationSpecification, Directions stemDirection) {
+        this.durationSpecification = durationSpecification;
+        this.stemDirection = stemDirection;
     }
 
     public GraceNote() {
@@ -31,6 +41,10 @@ public class GraceNote extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        return GRACENOTE + durationSpecification.toAgnosticString();
+        if (stemDirection == null) {
+            return GRACENOTE + durationSpecification.toAgnosticString();
+        } else {
+            return GRACENOTE + durationSpecification.toAgnosticString() + SEPPROPERTIES + stemDirection;
+        }
     }
 }

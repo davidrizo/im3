@@ -38,7 +38,7 @@
                                     </beam>
                                     <beam xml:id="beam-0000001423393549">
                                         <note xml:id="note-0000000666805085" dur="8" oct="4" pname="d" />
-                                        <note xml:id="note-0000000007550463" dur="8" oct="5" pname="d" tie="i" />
+                                        <note xml:id="note-0000000007550463" dur="8" oct="5" stem.dir="up" pname="d" tie="i" />
                                     </beam>
                                 </layer>
                             </staff>
@@ -64,7 +64,7 @@
                                 <layer xml:id="layer-0000001372890594" n="1">
                                     <beam xml:id="beam-0000000208988082">
                                         <note xml:id="note-0000001607909990" dur="16" oct="5" pname="e" tie="t" />
-                                        <note xml:id="note-0000001326931329" dur="16" oct="4" pname="a" />
+                                        <note xml:id="note-0000001326931329" dur="16" oct="4" stem.dir="down" pname="a" />
                                         <note xml:id="note-0000000117172408" dur="16" oct="4" pname="b" />
                                         <note xml:id="note-0000000074156957" dur="16" oct="5" pname="c" />
                                     </beam>

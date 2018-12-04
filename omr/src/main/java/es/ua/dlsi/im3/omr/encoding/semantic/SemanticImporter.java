@@ -92,7 +92,7 @@ public class SemanticImporter implements IScoreSongImporter {
                 TimeSignature timeSignature;
                 if (ctx.children.size() == 3) {
                     switch (ctx.children.get(2).getText()) {
-                        case "C":
+                        case "Ct":
                             timeSignature = new TimeSignatureCommonTime(notationType);
                             break;
                         case "Ccut":

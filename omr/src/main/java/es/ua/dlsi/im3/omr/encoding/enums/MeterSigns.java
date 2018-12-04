@@ -4,7 +4,9 @@ import es.ua.dlsi.im3.core.IM3Exception;
 
 public enum MeterSigns {
     // Primus v1. C ("C"), Ccut ("C/"), CZ ("CZ"), CcutZ ("C/Z"), O ("O"), Odot ("O."), Cdot ("C.");
-    C ("C"), Ccut ("Ccut"), CZ ("CZ"), CcutZ ("CcutZ"), O ("O"), Odot ("Odot"), Cdot ("Cdot");
+    // v2a C ("C"), Ccut ("Ccut"), CZ ("CZ"), CcutZ ("CcutZ"), O ("O"), Odot ("Odot"), Cdot ("Cdot");
+    // v2b
+    C ("Ct"), Ccut ("Ccut"), CZ ("CZ"), CcutZ ("CcutZ"), O ("O"), Odot ("Odot"), Cdot ("Cdot");
 
     private String agnosticString;
 
@@ -13,6 +15,11 @@ public enum MeterSigns {
     }
 
     public static MeterSigns parseAgnosticString(String string) throws IM3Exception {
+        // migration V2a to V2b
+        if (string.equals("C")) {
+            return C;
+        }
+
         for (MeterSigns meterSigns: MeterSigns.values()) {
             if (meterSigns.agnosticString.equals(string)) {
                 return meterSigns;
