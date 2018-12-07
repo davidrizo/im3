@@ -166,6 +166,7 @@ export class SVGCanvasComponent implements OnInit {
             this.selectedComponent.isEditing = true;
           }
         } else {
+          this.svgShapeSelected.emit(null); // unselect
           // TODO - create selection rectangle
         }
         break;

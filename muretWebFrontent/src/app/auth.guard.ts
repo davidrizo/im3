@@ -38,9 +38,6 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad, CanDea
   }
 
   checkLogin(url: string): boolean {
-    this.logger.warn('REMEMBER: AUTH.GUARD!!!');
-    return true;
-
     if (this.im3WSService.authenticated()) {
       this.logger.debug('Can activate ' + url);
       return true;
@@ -49,7 +46,7 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad, CanDea
     this.logger.debug('Cannot activate ' + url);
 
     // Create a dummy session id
-    const sessionId = 123456789;
+    const sessionId = this.getRandomInt(1, 1000000);
 
     // Set our navigation extras object
     // that contains our global query params and fragment
@@ -61,6 +58,10 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad, CanDea
     // Navigate to the login page with extras
     this.router.navigate(['login'], navigationExtras);
     return false;
+  }
+
+  getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   canDeactivate(component: ComponentCanDeactivate, currentRoute: ActivatedRouteSnapshot,
@@ -75,10 +76,3 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad, CanDea
     return true;
   }
 }
-
-
-/*
-Copyright 2017-2018 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

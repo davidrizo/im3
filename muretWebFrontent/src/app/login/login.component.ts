@@ -11,23 +11,33 @@ import {NGXLogger} from 'ngx-logger';
 })
 export class LoginComponent {
   message: string;
-  model: any = {};
+  model: any = {
+    'username': '',
+    'password': ''
+  };
 
   constructor(private im3WSService: Im3wsService, private router: Router, private logger: NGXLogger) {
     this.setMessage();
   }
 
   setMessage() {
-    this.message = 'Logged ' + (this.im3WSService.isLoggedIn ? 'in' : 'out') + ' as ' + this.im3WSService.username;
+   /* if (this.im3WSService.authenticated()) {
+      this.message = 'Logged in as ' + this.im3WSService.getUser().username;
+    } else {
+      this.message = 'Logged out';
+    } */
+
   }
 
   login() {
     this.logger.debug('Loging in');
     this.message = 'Trying to log in ...';
 
-    this.im3WSService.login(this.model.username, this.model.password).subscribe(() => {
+    this.im3WSService.login(this.model.username, this.model.password).subscribe(next => {
+      this.im3WSService.setUser(next);
+
       this.setMessage();
-      if (this.im3WSService.isLoggedIn) {
+      if (this.im3WSService.authenticated()) {
         const redirect = 'startup';
         // Redirect the user
         this.router.navigate([redirect]);
@@ -36,13 +46,13 @@ export class LoginComponent {
   }
 
   logout() {
-    this.logger.debug('Loging out');
+    this.logger.debug('Logging out');
     this.im3WSService.logout();
     this.setMessage();
   }
 
   isLoggedIn(): boolean {
-    return this.im3WSService.isLoggedIn;
+    return this.im3WSService.authenticated();
   }
 }
 

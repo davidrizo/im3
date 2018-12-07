@@ -17,6 +17,9 @@
       <img src="assets/images/muret.png" alt="Logo MuRET">
     </a>
     <a routerLink="dev">DEV</a>&nbsp;
-    <a href="http://localhost:4200/muret/project/37">DEV2</a>
+
+  </div>
+  <div ng-if="authenticated()" class="navbar-right">
+    {{getUserName()}}
   </div>
 </nav>

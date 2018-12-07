@@ -16,7 +16,7 @@
              [style.background-size.%]="selectedStaffImageBackgroundPertentage"
         >
           <app-svgcanvas #svgCanvas [width]="selectedStaffImageWidth" [height]="selectedStaffHeight"
-            (svgShapeCreated)="onShapeCreated($event)"
+            (svgShapeCreated)="onShapeCreated($event)" (svgShapeSelected)="onShapeSelected($event)"
           >
 
           </app-svgcanvas>
@@ -39,10 +39,14 @@
           </g>
           <g>
             <!--<app-image-thumbnail *ngFor="let image of project.images" [image]="image" [projectURLs]="projectURLs" [attr.data-id]="image.id"></app-image-thumbnail>-->
-            <path *ngFor="let agnosticSymbolSVG of agnosticSymbolSVGs" [attr.d]="agnosticSymbolSVG.d"
-                  stroke="black" fill="black"
-                  [attr.transform]="'translate(' + agnosticSymbolSVG.x + ',' + agnosticSymbolSVG.y
+            <path *ngFor="let agnosticSymbolSVGKeyValue of agnosticSymbolSVGs | keyvalue"
+                  [attr.d]="agnosticSymbolSVGKeyValue.value.d"
+                  [attr.stroke]="getAgnosticStaffSymbolColor(agnosticSymbolSVGKeyValue.key)"
+                  [attr.fill]="getAgnosticStaffSymbolColor(agnosticSymbolSVGKeyValue.key)"
+                  [attr.transform]="'translate(' + agnosticSymbolSVGKeyValue.value.x
+                  + ',' + agnosticSymbolSVGKeyValue.value.y
                   + ') scale(' + agnosticSVGScaleX + ', ' + agnosticSVGScaleY + ')'"
+                  (click)="onAgnosticStaffSymbolSelected(agnosticSymbolSVGKeyValue.key)"
             />
           </g>
         </svg>
@@ -53,19 +57,23 @@
     <!--          {{item.key}}:{{item.value}} -->
     <div class="row" id="agnosticToolbar">
       <div class="col">
-        <div class="btn-toolbar" role="toolbar" aria-label="Agnostic toolbar">
+        <div class="btn-toolbar" role="toolbar" aria-label="Agnostic toolbar" id="agnosticToolbarEditButtons">
           <div class="btn-group mr-2" role="group" aria-label="Symbol edition">
-            <button type="button" class="btn btn-primary" title="Move pitch down">
+            <button type="button" class="btn btn-primary" title="Move pitch down"  (click)="movePitchDownSelectedSymbol()">
               <i class="fa fa-angle-down"></i>
             </button>
-            <button type="button" class="btn btn-primary" title="Move pitch up">
+            <button type="button" class="btn btn-primary" title="Move pitch up" (click)="movePitchUpSelectedSymbol()">
               <i class="fa fa-angle-up"></i>
+            </button>
+            &nbsp;
+            <button type="button" class="btn btn-primary" title="Delete" (click)="deleteSelectedSymbol()">
+              <i class="fa fa-trash"></i>
             </button>
           </div>
 
-          <div class="btn-group-justified" role="group" aria-label="Agnostic symbols">
+          <div class="btn-group-justified" role="group" aria-label="Agnostic symbols" id="agnosticToolbarSymbols">
             <button *ngFor="let item of agnosticSymbolSVGMap | keyvalue" type="button" class="btn btn-secondary">
-              <svg width="30" height="30" viewBox="0 -2048 2048 4096"> <!-- TODO Valores de la escala, 2048 es el valor unitsPerEM de la fuente SVG -->
+              <svg width="60" height="60" viewBox="0 -2048 2048 4096"> <!-- TODO Valores de la escala, 2048 es el valor unitsPerEM de la fuente SVG -->
                 <path stroke="black" fill="black" [attr.d]="item.value" [attr.transform]="'scale(1, -1)'"/>
               </svg><br>
               {{item.key}}
@@ -78,7 +86,7 @@
     <!-- image with regions drawn to be selected -->
     <div class="row" id="manuscriptImage">
       <div class="col">
-        <app-document-analysis-view #appDocumentAnalysisView (mouseEvent)="onMouseEvent($event)" (svgShapeSelected)="onShapeSelected($event)"></app-document-analysis-view>
+        <app-document-analysis-view #appDocumentAnalysisView (mouseEvent)="onMouseEvent($event)" (svgShapeSelected)="onRegionSelected($event)"></app-document-analysis-view>
       </div>
     </div>
   </div>

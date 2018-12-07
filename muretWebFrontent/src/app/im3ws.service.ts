@@ -13,6 +13,8 @@ import {Page} from './model/page';
 import {ClassifierType} from './model/classifier-type';
 import {Region} from './model/region';
 import {Symbol} from './model/symbol';
+import {User} from './model/user';
+import {Permission} from './model/permission';
 
 @Injectable({
   providedIn: 'root'
@@ -30,10 +32,10 @@ export class Im3wsService {
   private urlAuthenticatedUser: string;
   private urlAgnostic: string;
   private urlClassifierTypes: string;
+  private urlUser: string;
 
-  username: string;
-  isLoggedIn: boolean;
-
+  private user: User;
+  // isLoggedIn: boolean;
 
   constructor(
     private configurationService: ConfigurationService,
@@ -48,42 +50,47 @@ export class Im3wsService {
     this.urlSymbol = configurationService.IM3WS_SERVER + '/muret/symbol';
     this.urlAgnostic = configurationService.IM3WS_SERVER + '/muret/agnostic';
     this.urlAuthenticatedUser = configurationService.IM3WS_SERVER + '/muret/auth/user';
+    this.urlUser = configurationService.IM3WS_SERVER + '/muret/user';
   }
 
   logout(): void {
     // return this.im3wsService.logout();
-    this.isLoggedIn = false;
-    this.username = null;
+   //  this.isLoggedIn = false;
+    this.user = null;
     sessionStorage.removeItem(this.SESSION_USER_STORAGE);
   }
 
   authenticated(): boolean {
-    return this.isLoggedIn;
+    // return this.isLoggedIn;
+    return this.user != null;
   }
 
-  login(username: string, password: string): Observable<boolean> {
-    return this.http.post<boolean>(this.urlLogin, {
+  getUser(): User {
+    return this.user;
+  }
+
+
+  login(username: string, password: string): Observable<User> {
+    return this.http.post<User>(this.urlLogin, {
       username: username,
       password: password
-    }).pipe(
-      tap(isValid => {
-        if (isValid) {
+    }); /*.pipe(
+      tap<User>(next => {
+        if (next != null) {
           sessionStorage.setItem(
             this.SESSION_USER_STORAGE,
             btoa(username + ':' + password)
           );
-
-          this.isLoggedIn = true;
-          this.username = username;
+          this.logger.error('Found user with id=' + next.id);
+          Object.assign(this.user, next);
         }
       })
-    );
+    );*/
   }
 
   getHttpAuthOptions() {
     const token = sessionStorage.getItem(this.SESSION_USER_STORAGE);
     if (!token) {
-      console.log('User is not authorized yet');
       throw new Error('User is not authorized yet');
     }
 
@@ -151,6 +158,15 @@ export class Im3wsService {
     return this.http.get<Project[]>(this.urlProject, this.getHttpAuthOptions())
       .pipe(
         catchError(this.handleError('getProjects$', []))
+      );
+  }
+
+  public getUser$(id: number): Observable<User> {
+    this.logger.debug('IM3WSService: fetching user ' + id + '...');
+
+    return this.http.get<User>(this.urlProject + '/getlazy/' + id, this.getHttpAuthOptions())
+      .pipe(
+        catchError(this.handleError('getUser$$', null))
       );
   }
 
@@ -333,6 +349,45 @@ export class Im3wsService {
       // Let the app keep running by returning an empty result.
       throw new Error(error.message);
     };
+  }
+
+  setUser(u: User) {
+    this.user = Object.assign(new User(), u);
+    sessionStorage.setItem(
+      this.SESSION_USER_STORAGE,
+      btoa(this.user.username)
+    );
+    console.log('ID: ' + this.user.id);
+  }
+
+  deleteSymbol(regionID: number, symbolID: number): Observable<any> {
+    this.logger.debug('IM3WSService: deleting symbol from region with id ' + regionID + ' with symbol id: ' + symbolID);
+
+    return this.http.get<boolean>(this.urlImage + '/removeSymbol/' + regionID + '/' + symbolID
+      , this.getHttpAuthOptions());
+  }
+  changeAgnosticSymbolType(symbolID: number, agnosticSymbolTypeString: string): Observable<Symbol> {
+    this.logger.debug('IM3WSService: changeAgnosticSymbolType with symbol id: ' + symbolID + ' to ' + agnosticSymbolTypeString);
+
+    return this.http.get<Symbol>(this.urlSymbol + '/changeAgnosticSymbolType/' + symbolID + '/' + agnosticSymbolTypeString
+      , this.getHttpAuthOptions());
+  }
+
+  changeAgnosticPositionInStaff(symbolID: number, agnosticSymbolPositionInStaff: string): Observable<Symbol> {
+    this.logger.debug('IM3WSService: changeAgnosticSymbolType with symbol id: ' + symbolID + ' to ' + agnosticSymbolPositionInStaff);
+
+    return this.http.get<Symbol>(this.urlSymbol + '/changeAgnosticPositionInStaff/' + symbolID + '/' + agnosticSymbolPositionInStaff
+      , this.getHttpAuthOptions());
+  }
+
+  /**
+   * @param upOrDown up | down
+   */
+  changeAgnosticPositionInStaffUpOrDown(symbolID: number, upOrDown: string): Observable<Symbol> {
+    this.logger.debug('IM3WSService: changeAgnosticSymbolType with symbol id: ' + symbolID + ' ' + upOrDown);
+
+    return this.http.get<Symbol>(this.urlSymbol + '/changeAgnosticPositionInStaffUpOrDown/' + symbolID + '/' + upOrDown
+      , this.getHttpAuthOptions());
   }
 
 }

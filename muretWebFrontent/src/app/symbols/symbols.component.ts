@@ -36,7 +36,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   @ViewChild('selectedStaffInnerDIV') selectedStaffInnerDIV: ElementRef;
 
   selectedStaffImageURL: string;
-  private selectedStaffImageWidth: number; // the width of the domImage
+  selectedStaffImageWidth: number; // the width of the domImage
   selectedStaffWidth: number;
   selectedStaffHeight: number;
   selectedStaffImageBackgroundPositionX: number;
@@ -54,8 +54,9 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   private agnosticStaffHeight = 0;
   private agnosticStaffWidth = 0;
   staffLineYCoordinates: number[];
+  agnosticSymbols: Map<number, Symbol>; // number is the symbol ID
   agnosticSymbolSVGMap: Map<string, string>;
-  agnosticSymbolSVGs: Array<AgnosticSymbolSVGPath>;
+  agnosticSymbolSVGs: Map<number, AgnosticSymbolSVGPath>; // number is the symbol ID
   agnosticSVGScaleX: number;
   agnosticSVGScaleY: number;
   agnosticSVGem: number;
@@ -65,6 +66,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
 
   @ViewChild('svgCanvas') svgCanvas: SVGCanvasComponent;
   private selectedRegion: Region;
+  private selectedSymbol: Symbol;
 
 
   constructor(
@@ -170,7 +172,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
     } // else it is invoked before ngAfterViewInit */
   }
 
-  private doSelect(region: Region) {
+  private doSelectRegion(region: Region) {
     this.staffSelected = true;
     this.selectedRegion = region;
     this.drawSelectedRegion(region);
@@ -207,7 +209,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
       }
     }
     this.agnosticStaffHeight = this.staffMargin * 2 + this.staffSpaceHeight * 5;
-    this.agnosticSymbolSVGs = new Array();
+    this.agnosticSymbolSVGs = new Map<number, AgnosticSymbolSVGPath>();
   }
 
   private drawSelectedRegion(region: Region) {
@@ -255,17 +257,22 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
     }
   }*/
 
+  computeAgnosticStaffSymbolY(region: Region, symbol: Symbol): number {
+    const lineSpace = this.positionInStaffToLineSpace(symbol.positionInStaff);
+    const heightDifference = -(this.staffSpaceHeight * (lineSpace / 2.0));
+    const y = this.staffBottomLineY  + heightDifference;
+    return y;
+  }
+
   /* TODO Posición */
   private drawSymbolAgnostic(region: Region, symbol: Symbol) {
     this.logger.debug('Drawing SVG ' + symbol);
     if (symbol.agnosticSymbolType) {
       const x = ((symbol.boundingBox.fromX - region.boundingBox.fromX) / this.selectedStaffScale) * this.expectedStaffWidthPercentage;
-      const lineSpace = this.positionInStaffToLineSpace(symbol.positionInStaff);
-      const heightDifference = -(this.staffSpaceHeight * (lineSpace / 2.0));
-      const y = this.staffBottomLineY  + heightDifference;
       const svg = this.agnosticSymbolSVGMap.get(symbol.agnosticSymbolType);
+      const y = this.computeAgnosticStaffSymbolY(region, symbol);
       const asvg = new AgnosticSymbolSVGPath(svg, x, y);
-      this.agnosticSymbolSVGs.push(asvg);
+      this.agnosticSymbolSVGs.set(symbol.id, asvg);
       /*if (!svg) {
         this.im3wsService.getSVGFromAgnosticSymbolType$(
           this.project.notationType,
@@ -284,7 +291,8 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   }
 
   private drawSelectedRegionSymbols(region: Region) {
-    this.agnosticSymbolSVGs = new Array(); // empty it
+    this.agnosticSymbolSVGs = new Map<number, AgnosticSymbolSVGPath>(); // empty it
+    this.agnosticSymbols = new Map<number, Symbol>(); // empty it
     region.symbols.forEach(symbol => {
       this.drawSymbol(symbol);
     });
@@ -308,7 +316,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   onMouseEvent($event: SVGMousePositionEvent) {
   }
 
-  onShapeSelected($event: ShapeComponent) {
+  onRegionSelected($event: ShapeComponent) {
     if ($event.modelObjectType === 'Region') {
       // look for the region ID
       const region = this.documentAnalysisView.findRegionID($event.modelObjectID);
@@ -316,10 +324,25 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
         this.logger.warn('Cannot find region with id ' + $event.modelObjectID);
       } else {
         this.logger.debug('Region with id ' + $event.modelObjectID + ' selected');
-        this.doSelect(region);
+        this.doSelectRegion(region);
       }
     }
   }
+
+  onShapeSelected($event: ShapeComponent) {
+    if ($event == null) {
+      this.selectedSymbol = null;
+    } else if ($event.modelObjectType === 'Symbol') {
+      const symbol = this.agnosticSymbols.get($event.modelObjectID);
+      if (isUndefined(symbol)) {
+        this.logger.warn('Cannot find symbol with id ' + $event.modelObjectID);
+      } else {
+        this.logger.debug('Symmbol with id ' + $event.modelObjectID + ' selected');
+        this.doSelectSymbol(symbol);
+      }
+    }
+  }
+
 
   onShapeCreated($event: ShapeComponent) {
     this.logger.debug('New bounding box: ' + $event);
@@ -351,7 +374,62 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
       shapeComponent.shape.shapeProperties.fillColor = 'transparent';
       shapeComponent.shape.shapeProperties.strokeWidth = 1;
       shapeComponent.shape.shapeProperties.strokeColor = 'lightgreen'; // TODO
+      shapeComponent.modelObjectType = 'Symbol';
+      shapeComponent.modelObjectID = symbol.id;
 
+      this.agnosticSymbols.set(symbol.id, symbol);
     }
+  }
+
+  private doSelectSymbol(symbol: Symbol) {
+    this.selectedSymbol = symbol;
+    // it is automatically selected in agnostic staff (see getAgnosticStaffSymbolColor)
+  }
+
+  onAgnosticStaffSymbolSelected(symbolID: number) {
+    // select symbol
+    // TODO
+  }
+
+  getAgnosticStaffSymbolColor(symbolID: number): string {
+    if (this.selectedSymbol != null && this.selectedSymbol.id === symbolID) {
+      return 'red';
+    } else {
+      return 'black'; // TODO Constantes
+    }
+  }
+
+  deleteSelectedSymbol() {
+    if (this.selectedSymbol != null) {
+      this.im3wsService.deleteSymbol(this.selectedRegion.id, this.selectedSymbol.id).subscribe(() => {
+        this.agnosticSymbols.delete(this.selectedSymbol.id);
+        this.agnosticSymbolSVGs.delete(this.selectedSymbol.id);
+        this.svgCanvas.remove(this.svgCanvas.selectedComponent);
+        this.selectedSymbol = null;
+      });
+    }
+  }
+
+  movePitchSelectedSymbol(upOrDown: string) {
+    if (this.selectedSymbol != null) {
+      this.im3wsService.changeAgnosticPositionInStaffUpOrDown(this.selectedSymbol.id, upOrDown).subscribe( next => {
+        this.selectedSymbol.positionInStaff = next.positionInStaff;
+        const newY = this.computeAgnosticStaffSymbolY(this.selectedRegion, this.selectedSymbol);
+        const svgPath = this.agnosticSymbolSVGs.get(this.selectedSymbol.id);
+        if (!svgPath) {
+          throw new Error('Cannot find an agnostic staff symbol for id ' + this.selectedSymbol.id);
+        }
+
+        svgPath.y = newY;
+      });
+    }
+  }
+
+  movePitchUpSelectedSymbol() {
+    this.movePitchSelectedSymbol('up');
+  }
+
+  movePitchDownSelectedSymbol() {
+    this.movePitchSelectedSymbol('down');
   }
 }

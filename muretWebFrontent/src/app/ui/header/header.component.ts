@@ -22,4 +22,13 @@ export class HeaderComponent {
   hideLogo(): boolean {
     return this.hideLogoIn.has(this.router.url);
   }
+
+  getUserName(): string {
+    if (this.im3WSService.authenticated()) {
+      return this.im3WSService.getUser().username;
+    } else {
+      return '';
+    }
+
+  }
 }

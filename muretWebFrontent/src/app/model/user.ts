@@ -1,9 +1,9 @@
+import {Project} from './project';
+import {Permission} from './permission';
+
 export class User {
   id: number;
   username: string;
-
-  constructor(id: number, username: string) {
-    this.id = id;
-    this.username = username;
-  }
+  projectsCreated: Array<Project>;
+  permissions: Array<Permission>;
 }

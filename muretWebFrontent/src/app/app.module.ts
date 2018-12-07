@@ -49,6 +49,7 @@ import { SymbolsComponent } from './symbols/symbols.component';
 import {SVGDrawingToolModule} from './svgcanvas/svgdrawing-tool.module';
 import { DocumentAnalysisViewComponent } from './document-analysis-view/document-analysis-view.component';
 import { PreferencesComponent } from './preferences/preferences.component';
+import { DevComponent } from './dev/dev.component';
 
 // TODO Ver Keepass
 /*const config = {
@@ -72,7 +73,8 @@ import { PreferencesComponent } from './preferences/preferences.component';
     ImageToolBarComponent,
     SymbolsComponent,
     DocumentAnalysisViewComponent,
-    PreferencesComponent
+    PreferencesComponent,
+    DevComponent
   ],
   imports: [
     BrowserModule,

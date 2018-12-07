@@ -17,6 +17,11 @@
 }
 
 
-#agnosticToolbar button {
-  font-size: 9px;
+#agnosticToolbarEditButtons {
+  font-size: 18px;
 }
+
+#agnosticToolbarSymbols button {
+  font-size: 10px;
+}
+
