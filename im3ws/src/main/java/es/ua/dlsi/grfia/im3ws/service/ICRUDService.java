@@ -10,6 +10,6 @@ public interface ICRUDService<EntityType, PrimaryKeyType> {
     EntityType create(EntityType entity);
     Optional<EntityType> findById(PrimaryKeyType id);
     EntityType update(EntityType user);
-    EntityType delete(PrimaryKeyType id);
+    boolean delete(PrimaryKeyType id);
     List<EntityType> findAll();
 }

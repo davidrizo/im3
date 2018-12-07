@@ -35,8 +35,25 @@ public abstract class CRUDController<EntityType, PrimaryKeyType, CRUDServiceType
         return getService().create(entity);
     }
 
+    /**
+     * It returns all contents using an eager strategy
+     * @param id
+     * @return
+     */
     @GetMapping(path = {"/get/{id}"})
     public Optional<EntityType> findOne(@PathVariable("id") PrimaryKeyType id){
+        Optional<EntityType> result = getService().findById(id);
+        return result;
+    }
+
+    /**
+     * It returns all contents using a lazy strategy
+     * @param id
+     * @return
+     */
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    @GetMapping(path = {"/getlazy/{id}"})
+    public Optional<EntityType> findOneLazy(@PathVariable("id") PrimaryKeyType id){
         Optional<EntityType> result = getService().findById(id);
         return result;
     }
@@ -50,8 +67,9 @@ public abstract class CRUDController<EntityType, PrimaryKeyType, CRUDServiceType
     }
 
     @DeleteMapping(path ={"/{id}"})
-    public EntityType delete(@PathVariable("id") PrimaryKeyType id) {
-        return getService().delete(id);
+    public void delete(@PathVariable("id") PrimaryKeyType id) {
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Deleting {0}", id);
+        getService().delete(id);
     }
 
     /**

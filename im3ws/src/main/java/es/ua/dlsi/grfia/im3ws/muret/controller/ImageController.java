@@ -129,7 +129,7 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
                                @PathVariable("toY") Double toY) throws IM3WSException, IM3Exception {
         Optional<Region> region = regionService.findById(regionID);
         if (!region.isPresent()) {
-            throw new IM3WSException("Cannot find a page with id " + regionID);
+            throw new IM3WSException("Cannot find a region with id " + regionID);
         }
 
         AgnosticSymbol agnosticSymbol = imageModel.classifySymbolFromImageBoundingBox(region.get().getPage().getImage(),
@@ -142,5 +142,26 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
                 null, null);
 
         return symbolService.create(symbol);
+    }
+
+    // with SymbolController --> repository --> delete it does not work
+    @GetMapping(path = {"removeSymbol/{regionID}/{symbolID}"})
+    public boolean removeSymbol(@PathVariable("regionID") Long regionID,
+                               @PathVariable("symbolID") Long symbolID) throws IM3WSException, IM3Exception {
+        Optional<Region> region = regionService.findById(regionID);
+        if (!region.isPresent()) {
+            throw new IM3WSException("Cannot find a region with id " + regionID);
+        }
+
+        // the number of symbols is tiny
+        for (Symbol symbol: region.get().getSymbols()) {
+            if (symbol.getId().equals(symbolID)) {
+                region.get().getSymbols().remove(symbol);
+                regionService.update(region.get()); // it removes the symbol
+                return true;
+            }
+        }
+
+        throw new IM3WSException("Cannot find a symbol in region " + regionID + " with id " + symbolID);
     }
 }

@@ -34,12 +34,14 @@ public abstract class CRUDServiceImpl<EntityType, PrimaryKeyType, BaseJPAReposit
     }
 
     @Override
-    public EntityType delete(PrimaryKeyType id) {
+    public boolean delete(PrimaryKeyType id) {
         Optional<EntityType> user = findById(id);
         if(user.isPresent()){
             getRepository().delete(user.get());
+            return true;
+        } else {
+            return false;
         }
-        return user.get();
     }
 
     @Override

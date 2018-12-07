@@ -1,7 +1,11 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,6 +25,11 @@ public class User {
     @Column
     private String email;
 
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "createdBy")
+    private List<Project> projectsCreated;
+
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "user")
+    private List<Permissions> permissions;
 
     public User() {
     }
@@ -30,7 +39,7 @@ public class User {
         this.password = password;
         this.email = email;
     }
-
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Integer getId() {
         return id;
     }
@@ -39,8 +48,27 @@ public class User {
         this.id = id;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public String getUsername() {
         return username;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public List<Project> getProjectsCreated() {
+        return projectsCreated;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public List<Permissions> getPermissions() {
+        return permissions;
+    }
+
+    public void setProjectsCreated(List<Project> projectsCreated) {
+        this.projectsCreated = projectsCreated;
+    }
+
+    public void setPermissions(List<Permissions> permissions) {
+        this.permissions = permissions;
     }
 
     public void setUsername(String username) {

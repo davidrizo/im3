@@ -1,6 +1,7 @@
 package es.ua.dlsi.grfia.im3ws.muret.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -16,12 +17,11 @@ public class Permissions {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JsonBackReference(value="user") // it avoids circular relationships
+    @JsonBackReference (value="user") // it avoids circular relationships
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName="id")
     private User user;
 
-    @JsonBackReference(value="project") // it avoids circular relationships
     @ManyToOne
     @JoinColumn(name="project_id", referencedColumnName="id")
     private Project project;
@@ -38,6 +38,7 @@ public class Permissions {
         this.permissions = permissions;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Integer getId() {
         return id;
     }
@@ -46,6 +47,7 @@ public class Permissions {
         this.id = id;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public User getUser() {
         return user;
     }
@@ -54,6 +56,7 @@ public class Permissions {
         this.user = user;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Project getProject() {
         return project;
     }
@@ -62,6 +65,7 @@ public class Permissions {
         this.project = project;
     }
 
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public char getPermission() {
         return permissions;
     }

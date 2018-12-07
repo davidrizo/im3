@@ -1,7 +1,13 @@
 package es.ua.dlsi.grfia.im3ws.muret.controller;
 
+import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
 import es.ua.dlsi.grfia.im3ws.muret.entity.User;
-import org.springframework.web.bind.annotation.*;
+import es.ua.dlsi.grfia.im3ws.muret.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -9,29 +15,16 @@ import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@RequestMapping("/muret/auth")
+@RequestMapping("/muret/user")
 @CrossOrigin("${angular.url}")
 @RestController
-public class UserController {
+public class UserController extends CRUDController<User, Integer, UserService> {
+    @Autowired
+    UserService userService;
 
-    @RequestMapping("login")
-    public boolean login(@RequestBody User user) {
-        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Login with user '" + user.getUsername() + "'");
-        return user.getUsername().equals("username") && user.getPassword().equals("password"); //TODO - see BasicAuthConfiguration
-        //return user.getUsername().equals("user") && user.getPassword().equals("password"); //TODO - see BasicAuthConfiguration
-    }
-
-    @RequestMapping("user")
-    public Principal user(HttpServletRequest request) {
-        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "User request" + request);
-
-        String authToken = request.getHeader("Authorization")
-                .substring("Basic".length()).trim();
-
-        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "... authToken = " + authToken);
-
-        return () ->  new String(Base64.getDecoder()
-                .decode(authToken)).split(":")[0];
+    @Override
+    protected UserService initService() {
+        return userService;
     }
 }
 
