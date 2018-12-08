@@ -432,4 +432,16 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   movePitchDownSelectedSymbol() {
     this.movePitchSelectedSymbol('down');
   }
+
+  changeAgnosticType(type: string) {
+    this.im3wsService.changeAgnosticSymbolType(this.selectedSymbol.id, type).subscribe( next => {
+      this.selectedSymbol.positionInStaff = next.positionInStaff;
+      const svgPath = this.agnosticSymbolSVGs.get(this.selectedSymbol.id);
+      if (!svgPath) {
+        throw new Error('Cannot find an agnostic staff symbol for id ' + this.selectedSymbol.id);
+      }
+      const newSVG = this.agnosticSymbolSVGMap.get(type);
+      svgPath.d = newSVG;
+    });
+  }
 }

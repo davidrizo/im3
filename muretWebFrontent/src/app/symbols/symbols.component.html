@@ -72,7 +72,8 @@
           </div>
 
           <div class="btn-group-justified" role="group" aria-label="Agnostic symbols" id="agnosticToolbarSymbols">
-            <button *ngFor="let item of agnosticSymbolSVGMap | keyvalue" type="button" class="btn btn-secondary">
+            <button *ngFor="let item of agnosticSymbolSVGMap | keyvalue" type="button" class="btn btn-secondary"
+                    (click)="changeAgnosticType(item.key)">
               <svg width="60" height="60" viewBox="0 -2048 2048 4096"> <!-- TODO Valores de la escala, 2048 es el valor unitsPerEM de la fuente SVG -->
                 <path stroke="black" fill="black" [attr.d]="item.value" [attr.transform]="'scale(1, -1)'"/>
               </svg><br>
