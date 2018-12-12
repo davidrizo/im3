@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class AgnosticSequenceRecognizer {
     public List<HorizontallyPositionedSymbol> recognize(File inputImage) throws IOException, IM3Exception {
         //TODO En un paquete
-        File commandFolder = new File("/Users/drizo/Documents/GCLOUDUA/HISPAMUS/software/python");
+        File commandFolder = new File("/Users/drizo/GCLOUDUA/HISPAMUS/software/python");
         String output = CommandLine.execShellCommand(commandFolder, "staff2agnostic.sh " + inputImage.getAbsolutePath());
 
         LinkedList<HorizontallyPositionedSymbol> result = new LinkedList<>();
