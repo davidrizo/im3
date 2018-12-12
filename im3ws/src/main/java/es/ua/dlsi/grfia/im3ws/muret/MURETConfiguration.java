@@ -15,14 +15,17 @@ public class MURETConfiguration {
     private int thumbnailHeight;
     private int previewHeight;
 
+    String pythonclassifiers;
+
     public MURETConfiguration() {
     }
 
-    public MURETConfiguration(String folder, String url, int thumbnailHeight, int previewHeight) {
+    public MURETConfiguration(String folder, String url, String pythonclassifiers, int thumbnailHeight, int previewHeight) {
         this.folder = folder;
         this.url = url;
         this.thumbnailHeight = thumbnailHeight;
         this.previewHeight = previewHeight;
+        this.pythonclassifiers = pythonclassifiers;
     }
 
     public String getFolder() {
@@ -55,5 +58,13 @@ public class MURETConfiguration {
 
     public void setPreviewHeight(int previewHeight) {
         this.previewHeight = previewHeight;
+    }
+
+    public String getPythonclassifiers() {
+        return pythonclassifiers;
+    }
+
+    public void setPythonclassifiers(String pythonclassifiers) {
+        this.pythonclassifiers = pythonclassifiers;
     }
 }

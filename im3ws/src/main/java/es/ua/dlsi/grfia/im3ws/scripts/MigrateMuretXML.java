@@ -52,7 +52,7 @@ public class MigrateMuretXML implements CommandLineRunner {
     }
     @Override
     public void run(String... args) throws Exception {
-        muretConfiguration = new MURETConfiguration("/Applications/MAMP/htdocs/muret", "http://localhost:8888/muret", 200, 720);
+        muretConfiguration = new MURETConfiguration("/Applications/MAMP/htdocs/muret", "http://localhost:8888/muret", null, 200, 720);
 
         String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
         importMuRETXML(path + "B-3.28/B-3.28.mrt");
@@ -65,7 +65,7 @@ public class MigrateMuretXML implements CommandLineRunner {
         SpringApplication.exit(ctx);
     }
 
-    private void importMuRETXML(String xmlFileName) throws Exception {
+    private void importMuRETXML(String xmlFileName) {
         try {
             System.out.println("Loading " + xmlFileName);
             XMLReader muretXMLReader = new XMLReader(AgnosticVersion.v2);

@@ -1,6 +1,7 @@
 package es.ua.dlsi.grfia.im3ws.muret.model;
 
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
+import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Image;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Page;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Region;
@@ -10,19 +11,28 @@ import es.ua.dlsi.grfia.im3ws.muret.service.PageService;
 import es.ua.dlsi.grfia.im3ws.muret.service.RegionService;
 import es.ua.dlsi.grfia.im3ws.muret.service.SymbolService;
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
+import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.DLSymbolAndPositionClassifier;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.junit.Assert.assertEquals;
+
 @Component
 public class ImageModel {
+    @Autowired
+    MURETConfiguration muretConfiguration;
+
     @Autowired
     ImageService imageService;
 
@@ -217,8 +227,27 @@ public class ImageModel {
         }
     }
 
-    public AgnosticSymbol classifySymbolFromImageBoundingBox(Image image, int fromX, int fromY, int toX, int toY, String classifier) throws IM3Exception {
-        Logger.getLogger(this.getClass().getName()).severe("TO-DO Classify symbol estático");
-        return AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, "clef.C:L2"); // TODO
+    public AgnosticSymbol classifySymbolFromImageBoundingBox(Image image, int fromX, int fromY, int toX, int toY, String classifierName) throws IM3Exception {
+        //TODO generalizar - coger el clasificador cargado - ¿si está el python en memoria tb.?
+        File localClassifierPath = new File(muretConfiguration.getPythonclassifiers(), "symbol-classification");
+
+        // just execute test in drizo's computer :(
+        if (!localClassifierPath.exists()) {
+            throw new IM3Exception("Python classifier path not found: '" + localClassifierPath.getAbsolutePath() + "'");
+        } else {
+            DLSymbolAndPositionClassifier classifier = new DLSymbolAndPositionClassifier(localClassifierPath);
+            BoundingBox boundingBox = new BoundingBoxXY(91,245,150,375);
+
+            File muretProjectsFolder = new File(muretConfiguration.getFolder(), image.getProject().getPath()); // TODO estático
+            File imagesFolder = new File(muretProjectsFolder, MURETConfiguration.MASTER_IMAGES);
+            File imageFile = new File(imagesFolder, image.getFilename());
+            if (!imageFile.exists()) {
+                throw new IM3Exception("Image to classify '" + imageFile + "' does not exist");
+            }
+            AgnosticSymbol agnosticSymbol = classifier.recognize(imageFile, boundingBox);
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "DL classifier returned {0}", agnosticSymbol);
+            return agnosticSymbol;
+        }
+        // return AgnosticSymbol.parseAgnosticString(AgnosticVersion.v2, "clef.C:L2"); // TODO
     }
 }
