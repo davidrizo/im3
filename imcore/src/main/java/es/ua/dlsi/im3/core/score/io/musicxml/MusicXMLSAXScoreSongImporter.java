@@ -130,6 +130,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private Integer clefOctaveChange;
 	private TreeMap<StaffAndVoice, ArrayList<ITimedElementInStaff>> measureElementsToInsert;
 	private SingleFigureAtom lastAtom;
+	int lastAtomIndexInContainer; // if we need to remove, it uses hashCode that can coincide because we are not inserting times until end
 	private String currentMeasureNumber;
 	//private Time currentMeasureTime;
 	private Figures lastFigure;
@@ -1044,6 +1045,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         } else {
                             mrest = new SimpleMeasureRest(Figures.WHOLE, lastDuration);
                         }
+						lastAtomIndexInContainer = lastContainer.size();
                         lastContainer.add(mrest);
                         lastAtom = mrest;
                     }
@@ -1053,7 +1055,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					rest = new SimpleRest(lastFigure, dots);
 				} else {
 					rest = new SimpleRest(Figures.NO_DURATION, 0);
-				} 
+				}
+				lastAtomIndexInContainer = lastContainer.size();
 				lastContainer.add(rest);
                 lastAtom = rest;
 			}
@@ -1064,6 +1067,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 			lastAtom = simpleNote;
 			lastAtomPitch = simpleNote.getAtomPitch();
+			lastAtomIndexInContainer = lastContainer.size();
 			lastContainer.add(lastAtom);
 
             if (lastLyrics != null) {
@@ -1089,7 +1093,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					lastTuplet = (SimpleTuplet) lastContainer.get(lastContainer.size()-1);
 					lastTuplet.removeSubatom(lastAtom);
 				} else {
-					lastContainer.remove(lastAtom);
+					//lastContainer.remove(lastAtom);
+					lastContainer.remove(lastAtomIndexInContainer);
 				}
 				
 				SimpleNote oldNote = ((SimpleNote)lastAtom);
