@@ -7,6 +7,10 @@
   height: 200px;
 }
 
+h5 {
+  color: white;
+  text-align: center;
+}
 .links {
   text-align: center;
 }

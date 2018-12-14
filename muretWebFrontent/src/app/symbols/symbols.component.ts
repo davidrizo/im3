@@ -5,7 +5,6 @@ import {Image} from '../model/image';
 import {Page} from '../model/page';
 import {Symbol} from '../model/symbol';
 import {BoundingBox} from '../model/bounding-box';
-import {isNullOrUndefined, isUndefined} from 'util';
 import {Stroke} from '../model/stroke';
 import {NGXLogger} from 'ngx-logger';
 import {ResizedEvent} from 'angular-resize-event/resized-event';
@@ -67,6 +66,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   @ViewChild('svgCanvas') svgCanvas: SVGCanvasComponent;
   private selectedRegion: Region;
   private selectedSymbol: Symbol;
+  private selectedStaffCursor = 'default';
 
 
   constructor(
@@ -81,7 +81,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   }
 
   ngOnInit() {
-    if (true) {
+    /*if (true) {
       /// ------- DEVELOPMENT FIXED VALUES ----
       this.im3wsService.getProject$(37).subscribe(next => {
         this.sessionDataService.currentProject = next;
@@ -100,13 +100,13 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
         this.toolbarService.currentActivePanel = 'symbolsMode';
         this.logger.debug('Working with image ' + this.imageURL);
       });
-    } else {
+    } else {*/
       this.project = this.sessionDataService.currentProject;
       this.image = this.sessionDataService.currentImage;
       this.imageURL = this.sessionDataService.currentImageMastersURL + '/' + this.image.filename;
       this.logger.debug('Working with image ' + this.imageURL);
       this.loadSVGSet();
-    }
+    // }
     this.initToolBarInteraction();
     this.documentAnalysisView.activateSelectMode();
   }
@@ -140,6 +140,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   private initToolBarInteraction() {
     this.toolbarService.selectedTool$.subscribe(next => {
       this.logger.debug('Using interaction: ' + next);
+      this.selectedStaffCursor = 'default';
       switch (next) {
         case '200': // symbols select
           this.svgCanvas.changeState(SVGCanvasState.eEditing);
@@ -148,12 +149,14 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
           this.svgCanvas.selectShapeProperties('transparent', 2, 'lightgreen'); // TODO values
           this.svgCanvas.selectShape('Rectangle');
           this.svgCanvas.changeState(SVGCanvasState.eDrawing);
+          this.selectedStaffCursor = 'crosshair';
           break;
-        case '200': // symbols strokes
+        case '202': // symbols strokes
           break;
 
       }
     });
+    this.toolbarService.selectedTool = '200';
   }
 
 
@@ -189,7 +192,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
 
   private drawSymbolStrokes(symbol: Symbol) {
     this.logger.debug('Drawing symbol ' + symbol.id);
-    if (!isNullOrUndefined(symbol.strokes)) {
+    if (symbol.strokes != null) {
       this.logger.debug('Drawing ' + symbol.strokes.strokeList.length + ' strokes');
       symbol.strokes.strokeList.forEach(stroke => {
        /// this.drawStroke(stroke);
@@ -291,6 +294,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   }
 
   private drawSelectedRegionSymbols(region: Region) {
+    this.svgCanvas.clear();
     this.agnosticSymbolSVGs = new Map<number, AgnosticSymbolSVGPath>(); // empty it
     this.agnosticSymbols = new Map<number, Symbol>(); // empty it
     region.symbols.forEach(symbol => {
@@ -320,7 +324,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
     if ($event.modelObjectType === 'Region') {
       // look for the region ID
       const region = this.documentAnalysisView.findRegionID($event.modelObjectID);
-      if (isUndefined(region)) {
+      if (!region) {
         this.logger.warn('Cannot find region with id ' + $event.modelObjectID);
       } else {
         this.logger.debug('Region with id ' + $event.modelObjectID + ' selected');
@@ -334,7 +338,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
       this.selectedSymbol = null;
     } else if ($event.modelObjectType === 'Symbol') {
       const symbol = this.agnosticSymbols.get($event.modelObjectID);
-      if (isUndefined(symbol)) {
+      if (!symbol) {
         this.logger.warn('Cannot find symbol with id ' + $event.modelObjectID);
       } else {
         this.logger.debug('Symmbol with id ' + $event.modelObjectID + ' selected');
@@ -347,28 +351,51 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   onShapeCreated($event: ShapeComponent) {
     this.logger.debug('New bounding box: ' + $event);
     if ($event.shape instanceof Rectangle) {
-      this.im3wsService.createSymbolFromBoundingBox(this.selectedRegion, $event.shape.originX, $event.shape.originY,
-        $event.shape.originX + $event.shape.width, $event.shape.originY + $event.shape.height).subscribe(next => {
+      const shape = $event.shape;
+
+      const fromX = this.selectedRegion.boundingBox.fromX + ((shape.originX) * this.selectedStaffScale)
+        / this.expectedStaffWidthPercentage;
+      const fromY = this.selectedRegion.boundingBox.fromY + (( shape.originY) * this.selectedStaffScale)
+        / this.expectedStaffWidthPercentage;
+      const toX = this.selectedRegion.boundingBox.fromX  + (( shape.originX + shape.width) * this.selectedStaffScale)
+        / this.expectedStaffWidthPercentage;
+      const toY = this.selectedRegion.boundingBox.fromY + ((shape.originY + shape.height) * this.selectedStaffScale)
+        / this.expectedStaffWidthPercentage;
+
+      /*const fromX = this.selectedRegion.boundingBox.fromX + shape.originX * this.expectedStaffWidthPercentage;
+      const fromY = this.selectedRegion.boundingBox.fromY + shape.originY * this.expectedStaffWidthPercentage;
+      const toX = this.selectedRegion.boundingBox.fromX +
+        (shape.originX + shape.width) * this.expectedStaffWidthPercentage;
+      const toY = this.selectedRegion.boundingBox.fromY +
+        (shape.originY + shape.width) * this.expectedStaffWidthPercentage;*/
+
+      const prevCursor = this.selectedStaffCursor;
+      this.selectedStaffCursor = 'wait';
+      this.im3wsService.createSymbolFromBoundingBox(this.selectedRegion, fromX, fromY,
+        toX, toY).subscribe(next => {
+          this.selectedStaffCursor = prevCursor;
           this.logger.debug('New symbol created ' + next.id);
+          this.svgCanvas.remove($event);
           this.drawSymbol(next);
       });
     }
   }
 
+
   private drawSymbolBoundingBox(symbol: Symbol) {
     if (symbol.boundingBox) {
-      /*const fromX = ((symbol.boundingBox.fromX - this.selectedRegion.boundingBox.fromX) / this.selectedStaffScale)
+      const fromX = ((symbol.boundingBox.fromX - this.selectedRegion.boundingBox.fromX) / this.selectedStaffScale)
         * this.expectedStaffWidthPercentage;
       const fromY = ((symbol.boundingBox.fromY - this.selectedRegion.boundingBox.fromY) / this.selectedStaffScale)
         * this.expectedStaffWidthPercentage;
       const toX = ((symbol.boundingBox.toX - this.selectedRegion.boundingBox.fromX) / this.selectedStaffScale)
         * this.expectedStaffWidthPercentage;
       const toY = ((symbol.boundingBox.toY - this.selectedRegion.boundingBox.fromY) / this.selectedStaffScale)
-        * this.expectedStaffWidthPercentage;*/
-      const fromX = symbol.boundingBox.fromX;
+        * this.expectedStaffWidthPercentage;
+      /*const fromX = symbol.boundingBox.fromX;
       const fromY = symbol.boundingBox.fromY;
       const toX = symbol.boundingBox.toX;
-      const toY = symbol.boundingBox.toY;
+      const toY = symbol.boundingBox.toY;*/
 
       const shapeComponent = this.svgCanvas.drawRectangle(fromX, fromY, toX - fromX, toY - fromY);
       shapeComponent.shape.shapeProperties.fillColor = 'transparent';

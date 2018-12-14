@@ -12,6 +12,14 @@ import {SessionDataService} from '../session-data.service';
 // Used to speed up development
 export class DevComponent implements OnInit {
 
+  // projectID = 37;
+  // imageID = 198;
+  // path = 'villancico-al-smo--sto--al-molino-del-amor';
+
+  projectID = 41;
+  imageID = 255;
+  path = 'b-59-850-completo';
+
   constructor(private im3wsService: Im3wsService, private router: Router,
               private sessionDataService: SessionDataService) {
     console.warn('¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ DEV!!!!!!!!!!!!!!!!!!!!!!');
@@ -19,12 +27,12 @@ export class DevComponent implements OnInit {
       next => {
         if (next) {
           this.im3wsService.setUser(next);
-          this.router.navigate(['/project/37'])
+          this.router.navigate(['/project/' + this.projectID])
             .then(value => {
-              this.im3wsService.getImage$(198).
+              this.im3wsService.getImage$(this.imageID).
               subscribe(serviceImage => {
                 this.sessionDataService.currentImageMastersURL
-                  = 'http://localhost:8888/muret/villancico-al-smo--sto--al-molino-del-amor/masters/';
+                  = 'http://localhost:8888/muret/' + this.path + '/masters/';
                 this.sessionDataService.currentImage = serviceImage;
                 this.router.navigate(['/image']);
               });

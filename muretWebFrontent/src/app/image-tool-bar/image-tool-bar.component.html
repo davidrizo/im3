@@ -1,4 +1,7 @@
 <div  id="toolbar" class="btn-group-vertical btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="selectedTool">
+  <p id="linkBackProject">
+    <a (click)="onBrowseCurrentProject()">Back to {{getCurrentProjectName()}}</a>
+  </p>
   <ngb-accordion [closeOthers]="true" [activeIds]="currentActivePanel" (panelChange)="onPanelChange($event)">
     <ngb-panel id="documentAnalysisMode" title="1. Document analysis">
       <ng-template ngbPanelContent>

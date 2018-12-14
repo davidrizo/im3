@@ -28,8 +28,10 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   }
 
   private initToolBarInteraction() {
+    this.logger.info('Initiating image tool bar interaction');
     // this way, when a new image is opened, despite the previous selected mode, the documentAnalysis is selected
     this.toolbarService.currentActivePanel = 'documentAnalysisMode';
+
     this.activateEditMode();
 
     this.toolbarService.selectedTool$.subscribe(next => {
@@ -48,8 +50,10 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
   }
 
   private activateEditMode() {
-    this.toolbarService.selectedTool = '101';
-    this.documentAnalysisView.activateEditMode();
+    if (this.toolbarService.selectedTool !== '101') {
+      this.toolbarService.selectedTool = '101';
+      this.documentAnalysisView.activateEditMode();
+    }
   }
 
 

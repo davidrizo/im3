@@ -2,6 +2,15 @@
   background-color: #7DE2DB;
 }
 
+#linkBackProject {
+  text-align: center;
+}
+
+#linkBackProject a {
+  color: white;
+  font-weight: bold;
+}
+
 /** use ::ng-deep to change component css */
 ::ng-deep #toolbar .card-body {
   background-color: #7DE2DB;

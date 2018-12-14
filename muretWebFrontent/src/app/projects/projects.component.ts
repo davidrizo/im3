@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Project} from '../model/project';
 import {Im3wsService} from '../im3ws.service';
 import {NGXLogger} from 'ngx-logger';
-import {Permission} from '../model/permission';
+import {Permissions} from '../model/permissions';
 
 @Component({
   selector: 'app-projects',
@@ -12,7 +12,7 @@ import {Permission} from '../model/permission';
 
 export class ProjectsComponent implements OnInit {
   myProjects: Array<Project>;
-  permissions: Array<Permission>;
+  permissions: Permissions;
 
   constructor(private im3wsService: Im3wsService, private logger: NGXLogger) { }
 

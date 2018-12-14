@@ -14,7 +14,6 @@ import {ClassifierType} from './model/classifier-type';
 import {Region} from './model/region';
 import {Symbol} from './model/symbol';
 import {User} from './model/user';
-import {Permission} from './model/permission';
 
 @Injectable({
   providedIn: 'root'

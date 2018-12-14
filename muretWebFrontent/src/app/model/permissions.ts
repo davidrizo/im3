@@ -1,7 +1,7 @@
 import {Project} from './project';
 
-export class Permission {
+export class Permissions {
   id: number;
   permission: string;
-  projects: Array<Project>;
+  project: Project;
 }

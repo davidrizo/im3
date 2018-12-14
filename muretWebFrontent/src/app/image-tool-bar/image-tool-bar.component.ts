@@ -3,6 +3,7 @@ import {ImageToolBarService} from './image-tool-bar.service';
 import {NgbPanelChangeEvent} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {NGXLogger} from 'ngx-logger';
+import {SessionDataService} from '../session-data.service';
 
 @Component({
   selector: 'app-image-tool-bar',
@@ -10,9 +11,17 @@ import {NGXLogger} from 'ngx-logger';
   styleUrls: ['./image-tool-bar.component.css']
 })
 export class ImageToolBarComponent implements OnInit {
-  constructor(private toolbarService: ImageToolBarService, private router: Router, private logger: NGXLogger) { }
+  constructor(private currentSession: SessionDataService, private toolbarService: ImageToolBarService, private router: Router, private logger: NGXLogger) { }
 
   ngOnInit() {
+  }
+
+  getCurrentProjectName(): string {
+    return this.currentSession.currentProject.name;
+  }
+
+  onBrowseCurrentProject() {
+    this.router.navigate(['/project/' + this.currentSession.currentProject.id]);
   }
 
   get selectedTool(): string {
@@ -50,4 +59,5 @@ export class ImageToolBarComponent implements OnInit {
       }
     }
   }
+
 }
