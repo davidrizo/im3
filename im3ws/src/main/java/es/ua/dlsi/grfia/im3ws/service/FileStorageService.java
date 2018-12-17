@@ -27,10 +27,19 @@ public class FileStorageService {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
 
-        try {
-            Files.createDirectories(this.fileStorageLocation);
-        } catch (Exception ex) {
-            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
+        if (Files.exists(this.fileStorageLocation)) {
+            if (!Files.isDirectory(this.fileStorageLocation)) {
+                throw new FileStorageException("The folder to upload files is not a directory :'" + this.fileStorageLocation.getFileName() + "'");
+            }
+            if (!Files.isWritable(this.fileStorageLocation)) {
+                throw new FileStorageException("Cannot write in upload files directory :'" + this.fileStorageLocation.getFileName() + "'");
+            }
+        } else {
+            try {
+                Files.createDirectories(this.fileStorageLocation);
+            } catch (Exception ex) {
+                throw new FileStorageException("Could not create the directory where the uploaded files will be stored: '" + this.fileStorageLocation.getFileName() + "'", ex);
+            }
         }
     }
 

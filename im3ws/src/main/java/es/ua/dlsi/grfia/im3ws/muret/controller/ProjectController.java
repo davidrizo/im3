@@ -43,6 +43,7 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
      * @param id
      * @return
      * @throws IM3WSException
+     * @deprecated Replace it eturning directly the images from ImageController
      */
     @GetMapping(path = {"/projectURLS/{id}"})
     public ProjectURLs constructThumbnailsURL(@PathVariable("id") Integer id) throws IM3WSException {

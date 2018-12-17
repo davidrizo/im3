@@ -3,6 +3,7 @@ package es.ua.dlsi.grfia.im3ws.muret.controller;
 
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
+import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
 import es.ua.dlsi.grfia.im3ws.muret.entity.*;
 import es.ua.dlsi.grfia.im3ws.muret.model.ImageModel;
 import es.ua.dlsi.grfia.im3ws.muret.service.ImageService;
@@ -12,8 +13,14 @@ import es.ua.dlsi.grfia.im3ws.muret.service.SymbolService;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -24,6 +31,9 @@ import java.util.logging.Logger;
 @RequestMapping("/muret/image")
 @RestController
 public class ImageController extends CRUDController<Image, Long, ImageService> {
+    @Autowired
+    MURETConfiguration muretConfiguration;
+
     @Autowired
     ImageService imageService;
 
@@ -164,4 +174,39 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
 
         throw new IM3WSException("Cannot find a symbol in region " + regionID + " with id " + symbolID);
     }
+
+    private ResponseEntity<InputStreamResource> getImage(Long imageID, String imagesRelativePath) throws IM3WSException, FileNotFoundException {
+        Optional<Image> image = imageService.findById(imageID);
+        if (!image.isPresent()) {
+            throw new IM3WSException("Cannot find an image with id " + imageID);
+        }
+
+        File projectFolder = new File(muretConfiguration.getFolder(), image.get().getProject().getPath());
+        File masterImagesFolder = new File(projectFolder, imagesRelativePath);
+        File imageFile = new File(masterImagesFolder, image.get().getFilename());
+        if (!imageFile.exists()) {
+            throw new IM3WSException("Image '" + imageFile.getAbsolutePath() + "' for image with ID=" + imageID + " does not exist");
+        }
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.IMAGE_JPEG) //TODO Siempre devolver JPEG, si no los tenemos cambiarlos
+                .body(new InputStreamResource(new FileInputStream(imageFile)));
+
+    }
+
+    @GetMapping(value = "master/{imageID}")
+    public ResponseEntity<InputStreamResource> getMasterImage(@PathVariable("imageID") Long imageID) throws IM3WSException, FileNotFoundException {
+        return getImage(imageID,  MURETConfiguration.MASTER_IMAGES);
+    }
+
+    @GetMapping(value = "thumbnail/{imageID}")
+    public ResponseEntity<InputStreamResource> getThumbnailImage(@PathVariable("imageID") Long imageID) throws IM3WSException, FileNotFoundException {
+        return getImage(imageID,  MURETConfiguration.THUMBNAIL_IMAGES);
+    }
+    @GetMapping(value = "preview/{imageID}")
+    public ResponseEntity<InputStreamResource> getPreviewImage(@PathVariable("imageID") Long imageID) throws IM3WSException, FileNotFoundException {
+        return getImage(imageID,  MURETConfiguration.PREVIEW_IMAGES);
+    }
+
 }

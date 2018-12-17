@@ -236,7 +236,7 @@ public class ImageModel {
             throw new IM3Exception("Python classifier path not found: '" + localClassifierPath.getAbsolutePath() + "'");
         } else {
             DLSymbolAndPositionClassifier classifier = new DLSymbolAndPositionClassifier(localClassifierPath);
-            BoundingBox boundingBox = new BoundingBoxXY(91,245,150,375);
+            BoundingBox boundingBox = new BoundingBoxXY(fromX, fromY, toX, toY);
 
             File muretProjectsFolder = new File(muretConfiguration.getFolder(), image.getProject().getPath()); // TODO estático
             File imagesFolder = new File(muretProjectsFolder, MURETConfiguration.MASTER_IMAGES);

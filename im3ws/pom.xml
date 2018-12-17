@@ -6,7 +6,8 @@
     <groupId>es.ua.dlsi.grfia</groupId>
     <artifactId>muretweb</artifactId>
     <version>3.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <!--standalone deployment <packaging>jar</packaging>-->
+    <packaging>war</packaging>
 
     <name>im3ws</name>
     <description>IM3 Web Services</description>
@@ -23,6 +24,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-statemachine.version>2.0.1.RELEASE</spring-statemachine.version>
+        <tomcat.version>8.5.30</tomcat.version>
         <!--<maven.test.skip>true</maven.test.skip>-->
     </properties>
 
@@ -38,6 +40,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- remove for standalone -->
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>-->
 
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>
@@ -116,6 +125,15 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!-- for standalone deployment -->
+            <!--<plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
+            </plugin>-->
         </plugins>
     </build>
 

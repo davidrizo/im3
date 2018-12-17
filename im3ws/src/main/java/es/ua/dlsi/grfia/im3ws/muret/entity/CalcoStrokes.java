@@ -84,7 +84,7 @@ public class CalcoStrokes extends Strokes {
                 stringBuilder.append(COMMA);
                 stringBuilder.append(point.getX());
                 stringBuilder.append(COMMA);
-                stringBuilder.append(point.getX());
+                stringBuilder.append(point.getY());
             }
         }
 

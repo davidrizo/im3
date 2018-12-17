@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+// IMPORTANT: IN order to execute it, remove spring-boot-starter-tomcat
 /**
  * It migrates MuRET XML files to the online version
  */
