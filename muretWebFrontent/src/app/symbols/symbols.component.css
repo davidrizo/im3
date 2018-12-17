@@ -25,3 +25,8 @@
   font-size: 10px;
 }
 
+#agnosticToolbar input[type=checkbox] {
+  width: 25px;
+  height: 25px;
+  -moz-appearance: none;
+}

@@ -6,10 +6,12 @@ import { ShapeType, State } from './shape-types';
 export class MousePosition {
     x: number;
     y: number;
+    timestamp: number; // time when mouse position is created
 
     constructor() {
         this.x = 0;
         this.y = 0;
+        this.timestamp = 0;
     }
 }
 
@@ -30,8 +32,8 @@ export class ShapeProperties {
         this.fill = true;
         this.fillColor = 'transparent';
         this.stroke = true;
-        this.strokeColor = 'black';
-        this.strokeWidth = 1;
+        this.strokeColor = 'red';
+        this.strokeWidth = 3;
         this.name = 'unknown';
         this.visible = true;
     }

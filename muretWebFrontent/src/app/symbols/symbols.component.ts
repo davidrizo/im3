@@ -17,7 +17,10 @@ import {ImageToolBarService} from '../image-tool-bar/image-tool-bar.service';
 import {SVGCanvasComponent, SVGCanvasState, SVGMousePositionEvent} from '../svgcanvas/components/svgcanvas/svgcanvas.component';
 import {DocumentAnalysisViewComponent} from '../document-analysis-view/document-analysis-view.component';
 import {ShapeComponent} from '../svgcanvas/components/shape/shape.component';
-import {Rectangle} from '../svgcanvas/model/shape';
+import {MousePosition, PolyLine, Rectangle} from '../svgcanvas/model/shape';
+import {FreehandComponent} from '../svgcanvas/components/freehand/freehand.component';
+import {AgnosticSymbolStrokes} from './agnostic-symbol-strokes';
+import {timer} from 'rxjs';
 
 @Component({
   selector: 'app-symbols',
@@ -50,12 +53,13 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   private expectedStaffWidthPercentage: number;
   private selectedStaffScale: number;
 
-  private agnosticStaffHeight = 0;
-  private agnosticStaffWidth = 0;
+  agnosticStaffHeight = 0;
+  agnosticStaffWidth = 0;
   staffLineYCoordinates: number[];
   agnosticSymbols: Map<number, Symbol>; // number is the symbol ID
   agnosticSymbolSVGMap: Map<string, string>;
   agnosticSymbolSVGs: Map<number, AgnosticSymbolSVGPath>; // number is the symbol ID
+  agnosticSymbolStrokes: Map<number, AgnosticSymbolStrokes>; // number is the symbol ID
   agnosticSVGScaleX: number;
   agnosticSVGScaleY: number;
   agnosticSVGem: number;
@@ -66,7 +70,9 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   @ViewChild('svgCanvas') svgCanvas: SVGCanvasComponent;
   private selectedRegion: Region;
   private selectedSymbol: Symbol;
-  private selectedStaffCursor = 'default';
+  selectedStaffCursor = 'default';
+  showSymbolStrokes: boolean;
+  private alreadyDrawingStrokes: false;
 
 
   constructor(
@@ -149,9 +155,13 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
           this.svgCanvas.selectShapeProperties('transparent', 2, 'lightgreen'); // TODO values
           this.svgCanvas.selectShape('Rectangle');
           this.svgCanvas.changeState(SVGCanvasState.eDrawing);
-          this.selectedStaffCursor = 'crosshair';
+          this.selectedStaffCursor = 'cell';
           break;
         case '202': // symbols strokes
+          this.svgCanvas.selectShapeProperties('transparent', 2, 'lightgreen'); // TODO values
+          this.svgCanvas.selectShape('Freehand');
+          this.svgCanvas.changeState(SVGCanvasState.eDrawing);
+          this.selectedStaffCursor = 'crosshair';
           break;
 
       }
@@ -185,6 +195,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
 
 
   private drawSymbol(symbol: Symbol) {
+    this.agnosticSymbols.set(symbol.id, symbol);
     this.drawSymbolStrokes(symbol);
     this.drawSymbolBoundingBox(symbol);
     this.drawSymbolAgnostic(this.selectedRegion, symbol);
@@ -194,9 +205,12 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
     this.logger.debug('Drawing symbol ' + symbol.id);
     if (symbol.strokes != null) {
       this.logger.debug('Drawing ' + symbol.strokes.strokeList.length + ' strokes');
+      const agnosticStrokes = new AgnosticSymbolStrokes();
       symbol.strokes.strokeList.forEach(stroke => {
-       /// this.drawStroke(stroke);
+        const component = this.drawStroke(symbol, stroke);
+        agnosticStrokes.freehandComponents.push(component);
       });
+      this.agnosticSymbolStrokes.set(symbol.id, agnosticStrokes);
     }
   }
 
@@ -213,6 +227,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
     }
     this.agnosticStaffHeight = this.staffMargin * 2 + this.staffSpaceHeight * 5;
     this.agnosticSymbolSVGs = new Map<number, AgnosticSymbolSVGPath>();
+    this.agnosticSymbolStrokes = new Map<number, AgnosticSymbolStrokes>();
   }
 
   private drawSelectedRegion(region: Region) {
@@ -378,20 +393,33 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
           this.svgCanvas.remove($event);
           this.drawSymbol(next);
       });
+    } else if ($event.shape instanceof PolyLine) {
+        const shape = $event.shape;
+
+        if (!this.alreadyDrawingStrokes) {
+          const source = timer(300);
+          const subscribe = source.subscribe(val =>
+            console.log(val));
+        }
     }
   }
 
+  private scaleAndTranslateX(x: number): number {
+    return ((x - this.selectedRegion.boundingBox.fromX) / this.selectedStaffScale)
+      * this.expectedStaffWidthPercentage;
+  }
+
+  private scaleAndTranslateY(y: number): number {
+    return ((y - this.selectedRegion.boundingBox.fromY) / this.selectedStaffScale)
+      * this.expectedStaffWidthPercentage;
+  }
 
   private drawSymbolBoundingBox(symbol: Symbol) {
     if (symbol.boundingBox) {
-      const fromX = ((symbol.boundingBox.fromX - this.selectedRegion.boundingBox.fromX) / this.selectedStaffScale)
-        * this.expectedStaffWidthPercentage;
-      const fromY = ((symbol.boundingBox.fromY - this.selectedRegion.boundingBox.fromY) / this.selectedStaffScale)
-        * this.expectedStaffWidthPercentage;
-      const toX = ((symbol.boundingBox.toX - this.selectedRegion.boundingBox.fromX) / this.selectedStaffScale)
-        * this.expectedStaffWidthPercentage;
-      const toY = ((symbol.boundingBox.toY - this.selectedRegion.boundingBox.fromY) / this.selectedStaffScale)
-        * this.expectedStaffWidthPercentage;
+      const fromX = this.scaleAndTranslateX(symbol.boundingBox.fromX);
+      const fromY = this.scaleAndTranslateY(symbol.boundingBox.fromY);
+      const toX = this.scaleAndTranslateX(symbol.boundingBox.toX);
+      const toY = this.scaleAndTranslateY(symbol.boundingBox.toY);
       /*const fromX = symbol.boundingBox.fromX;
       const fromY = symbol.boundingBox.fromY;
       const toX = symbol.boundingBox.toX;
@@ -403,10 +431,34 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
       shapeComponent.shape.shapeProperties.strokeColor = 'lightgreen'; // TODO
       shapeComponent.modelObjectType = 'Symbol';
       shapeComponent.modelObjectID = symbol.id;
-
-      this.agnosticSymbols.set(symbol.id, symbol);
     }
   }
+
+  private drawStroke(symbol: Symbol, stroke: Stroke): FreehandComponent {
+    if (stroke) {
+      const mousePositions = new Array<MousePosition>();
+      stroke.points.forEach(point => {
+        const mousePosition = new MousePosition();
+
+        mousePosition.x = this.scaleAndTranslateX(point.x);
+        mousePosition.y = this.scaleAndTranslateY(point.y);
+        mousePositions.push(mousePosition);
+      });
+
+      const shapeComponent = this.svgCanvas.drawFreeHand(mousePositions);
+
+      shapeComponent.shape.shapeProperties.fillColor = 'transparent';
+      shapeComponent.shape.shapeProperties.strokeWidth = 2;
+      shapeComponent.shape.shapeProperties.strokeColor = 'blue'; // TODO
+      shapeComponent.modelObjectType = 'Symbol';
+      shapeComponent.modelObjectID = symbol.id;
+
+      return shapeComponent;
+    } else {
+      return null;
+    }
+  }
+
 
   private doSelectSymbol(symbol: Symbol) {
     this.selectedSymbol = symbol;
@@ -471,4 +523,5 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
       svgPath.d = newSVG;
     });
   }
+
 }

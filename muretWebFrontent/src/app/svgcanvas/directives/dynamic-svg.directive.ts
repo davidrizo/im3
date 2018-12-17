@@ -13,9 +13,9 @@ export class DynamicSvgDirective implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log('DynamicSvgDirective ngOnInit() - component : ',
+        /* console.log('DynamicSvgDirective ngOnInit() - component : ',
           this.appDynamicSVG + ' and viewContainerRef=' + this.viewContainerRef
-        + ' and shapeComponent=' + this.appDynamicSVG);
+        + ' and shapeComponent=' + this.appDynamicSVG); */
 
         // const shapeComponent: ShapeComponent = this.shapeService.getShapeComponent();
         // this.viewContainerRef.createEmbeddedView(shapeComponent.shapeTemplate);

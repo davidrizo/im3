@@ -4,25 +4,29 @@ import {ActivatedRoute} from '@angular/router';
 import {Project} from '../model/project';
 import {Im3wsService} from '../im3ws.service';
 import {NGXLogger} from 'ngx-logger';
+import {ConfigurationService} from '../configuration.service';
 
-const URL = 'http://localhost:8080/muret/upload/projectImage';
-
-@Component({
+// const URL = 'http://localhost:8080/muret/upload/projectImage';
+  @Component({
   selector: 'app-upload-images',
   templateUrl: './upload-images.component.html',
   styleUrls: ['./upload-images.component.css']
 })
 export class UploadImagesComponent implements OnInit {
   public project: Project;
-  public uploader: FileUploader = new FileUploader({url: URL});
+  public uploader: FileUploader;
   public hasBaseDropZoneOver = true;
   public hasAnotherDropZoneOver = false;
 
-  constructor(private projectService: Im3wsService, private route: ActivatedRoute, private logger: NGXLogger) {
+  constructor(private projectService: Im3wsService, private route: ActivatedRoute, private logger: NGXLogger,
+              private configurationService: ConfigurationService) {
   }
 
   /* TODO Intentar pasar el objeto project directamente con redux? */
   ngOnInit() {
+    const URL = this.configurationService + '/muret/upload/projectImage';
+    this.uploader = new FileUploader({url: URL})
+
     const routeParams = this.route.snapshot.params;
 
     this.projectService.getProject$(routeParams.id)

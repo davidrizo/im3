@@ -1,17 +1,6 @@
-import {Component, ComponentFactoryResolver, Injector, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {ShapeProperties} from '../svgcanvas/model/shape';
-import {ShapeType, ToolType} from '../svgcanvas/model/shape-types';
-import {LineComponent} from '../svgcanvas/components/line/line.component';
-import {CircleComponent} from '../svgcanvas/components/circle/circle.component';
-import {RectangleComponent} from '../svgcanvas/components/rectangle/rectangle.component';
-import {SquareComponent} from '../svgcanvas/components/square/square.component';
-import {EllipseComponent} from '../svgcanvas/components/ellipse/ellipse.component';
-import {TextComponent} from '../svgcanvas/components/text/text.component';
-import {ImageComponent} from '../svgcanvas/components/image/image.component';
-import {PolyLineComponent} from '../svgcanvas/components/polyline/polyline.component';
-import {PathComponent} from '../svgcanvas/components/path/path.component';
 import {SVGCanvasComponent, SVGCanvasState} from '../svgcanvas/components/svgcanvas/svgcanvas.component';
-import {ShapeComponent} from '../svgcanvas/components/shape/shape.component';
 
 
 @Component({

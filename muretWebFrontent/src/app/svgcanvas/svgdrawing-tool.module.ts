@@ -24,6 +24,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { SVGCanvasComponent } from './components/svgcanvas/svgcanvas.component';
+import { FreehandComponent } from './components/freehand/freehand.component';
 
 /**
  * Adapted from: https://github.com/johandb/svg-drawing-tool
@@ -60,7 +61,8 @@ import { SVGCanvasComponent } from './components/svgcanvas/svgcanvas.component';
     RadiobuttonComponent,
     SelectComponent,
     ColorPickerComponent,
-    SVGCanvasComponent
+    SVGCanvasComponent,
+    FreehandComponent
   ],
   entryComponents: [
     ShapeComponent,
@@ -77,7 +79,8 @@ import { SVGCanvasComponent } from './components/svgcanvas/svgcanvas.component';
     InputComponent,
     SelectComponent,
     CheckboxComponent,
-    RadiobuttonComponent
+    RadiobuttonComponent,
+    FreehandComponent
   ],
   providers: [
   ],

@@ -14,7 +14,7 @@ import {NGXLogger} from 'ngx-logger';
 })
 
 export class NewProjectFormComponent implements OnInit {
-  private imgSrc: string;
+  imgSrc: string;
 
   newProjectForm = this.fb.group({
     name: ['', Validators.required],

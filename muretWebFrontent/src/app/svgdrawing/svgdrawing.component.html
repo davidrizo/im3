@@ -21,7 +21,7 @@
                                         src="assets/svgdrawing/circle.png" width="24" height="24"></button>
                                 <button (click)="selectShape('Ellipse')" type="button" class="btn btn-outline-primary col-md-3 shape"><img
                                         src="assets/svgdrawing/ellipse.png" width="24" height="24"></button>
-                                <button (click)="selectShape('Path')" type="button" class="btn btn-outline-primary col-md-3 shape"><img
+                                <button (click)="selectShape('Freehand')" type="button" class="btn btn-outline-primary col-md-3 shape"><img
                                         src="assets/svgdrawing/path.png" width="24" height="24"></button>
                                 <button (click)="selectShape('Square')" type="button" class="btn btn-outline-primary col-md-3 shape"><img
                                         src="assets/svgdrawing/square.png" width="24" height="24"></button>
@@ -56,7 +56,7 @@
                     <button (click)="clearShapes()" type="button" class="btn btn-light">Clear</button>
                 </div>
             </div>
-          <app-svgcanvas #svgCanvas (shapeSelected)="onShapeSelected($shapeComponent)" [width]="800" [height]="600"></app-svgcanvas>
+          <app-svgcanvas #svgCanvas [width]="800" [height]="600"></app-svgcanvas>
         </div>
     </div>
 </div>

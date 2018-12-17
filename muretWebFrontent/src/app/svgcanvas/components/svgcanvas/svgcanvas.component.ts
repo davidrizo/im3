@@ -19,6 +19,7 @@ import {ImageComponent} from '../image/image.component';
 import {PolyLineComponent} from '../polyline/polyline.component';
 import {PathComponent} from '../path/path.component';
 import {NGXLogger} from 'ngx-logger';
+import {FreehandComponent} from '../freehand/freehand.component';
 
 export enum SVGCanvasState {
   eIdle,   eSelecting, eDrawing, eEditing, eMoving
@@ -100,6 +101,7 @@ export class SVGCanvasComponent implements OnInit {
     const CTM = this.svg.getScreenCTM();
     this.currentPosition.x = (event.clientX - CTM.e) / CTM.a;
     this.currentPosition.y = (event.clientY - CTM.f) / CTM.d;
+    this.currentPosition.timestamp = event.timeStamp;
   }
 
 
@@ -120,6 +122,8 @@ export class SVGCanvasComponent implements OnInit {
         return TextComponent;
       case 'Image':
         return ImageComponent;
+      case 'Freehand':
+        return FreehandComponent;
       case 'PolyLine':
         return PolyLineComponent;
       case 'Path':
@@ -136,7 +140,7 @@ export class SVGCanvasComponent implements OnInit {
   }
 
 
-  private onMouseDown(event): void {
+  onMouseDown(event): void {
     this.logger.debug('SVGCanvas mouse down');
     this.changeMousePosition(event);
 
@@ -196,7 +200,7 @@ export class SVGCanvasComponent implements OnInit {
     }
   }
 
-  private onMouseMove(event): void {
+  onMouseMove(event): void {
     this.changeMousePosition(event);
 
     switch (this.state) {
@@ -223,7 +227,7 @@ export class SVGCanvasComponent implements OnInit {
     }
   }
 
-  private onMouseUp($event): void {
+  onMouseUp($event): void {
     this.logger.debug('SVGCanvas mouse up');
     this.changeMousePosition($event);
     switch (this.state) {
@@ -277,11 +281,26 @@ export class SVGCanvasComponent implements OnInit {
     return rect;
   }
 
-  private assignDefaultProperties(component: ShapeComponent) {
-    component.shape.shapeProperties.fillColor = this.defaultFillColor;
-    component.shape.shapeProperties.strokeColor = this.defaultStrokeColor;
-    component.shape.shapeProperties.strokeWidth = this.defaultStrokeWidth;
+  drawFreeHand(positions: Array<MousePosition>): FreehandComponent {
+    const fh = this.createComponent('Freehand');
+    if (fh instanceof FreehandComponent) {
+      let first = true;
+      positions.forEach(position => {
+        if (first) {
+          fh.startDrawing(position);
+          first = false;
+        } else {
+          fh.draw(position);
+        }
+      });
+      this.assignDefaultProperties(fh);
+      this.shapesComponents.push(fh);
+      return fh;
+    } else {
+      throw new Error('Should be a freehand component');
+    }
   }
+
 
   drawLine(fromX: number, fromY: number, toX: number, toY: number): ShapeComponent {
     const line = this.createComponent('Line');
@@ -292,6 +311,12 @@ export class SVGCanvasComponent implements OnInit {
     this.assignDefaultProperties(line);
     this.shapesComponents.push(line);
     return line;
+  }
+
+  private assignDefaultProperties(component: ShapeComponent) {
+    component.shape.shapeProperties.fillColor = this.defaultFillColor;
+    component.shape.shapeProperties.strokeColor = this.defaultStrokeColor;
+    component.shape.shapeProperties.strokeWidth = this.defaultStrokeWidth;
   }
 
   remove(shapeComponent: ShapeComponent) {

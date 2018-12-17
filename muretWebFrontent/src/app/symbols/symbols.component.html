@@ -14,6 +14,7 @@
              [style.background-position-x.px]="selectedStaffImageBackgroundPositionX"
              [style.background-position-y.px]="selectedStaffImageBackgroundPositionY"
              [style.background-size.%]="selectedStaffImageBackgroundPertentage"
+             [style.cursor]="selectedStaffCursor"
         >
           <app-svgcanvas #svgCanvas [width]="selectedStaffImageWidth" [height]="selectedStaffHeight"
             (svgShapeCreated)="onShapeCreated($event)" (svgShapeSelected)="onShapeSelected($event)"
@@ -69,6 +70,9 @@
             <button type="button" class="btn btn-primary" title="Delete" (click)="deleteSelectedSymbol()">
               <i class="fa fa-trash"></i>
             </button>
+            &nbsp;
+            <input id="showSymbolStrokesCheckBox"
+                       type="checkbox" [checked]="showSymbolStrokes"/> Show strokes
           </div>
 
           <div class="btn-group-justified" role="group" aria-label="Agnostic symbols" id="agnosticToolbarSymbols">
