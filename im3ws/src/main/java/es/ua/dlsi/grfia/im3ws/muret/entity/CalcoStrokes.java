@@ -68,23 +68,25 @@ public class CalcoStrokes extends Strokes {
         stringBuilder.append(PREFIX); // To denote type
         boolean first = true;
         for (CalcoStroke stroke: strokeList) {
-            if (first) {
-                first = false;
-            } else {
-                stringBuilder.append(STROKESEP);
-            }
-            boolean firstPoint = true;
-            for (Point point: stroke.getPoints()) {
-                if (firstPoint) {
-                    firstPoint = false;
+            if (!stroke.getPoints().isEmpty()) {
+                if (first) {
+                    first = false;
                 } else {
-                    stringBuilder.append(SEMICOLON);
+                    stringBuilder.append(STROKESEP);
                 }
-                stringBuilder.append(point.getTime());
-                stringBuilder.append(COMMA);
-                stringBuilder.append(point.getX());
-                stringBuilder.append(COMMA);
-                stringBuilder.append(point.getY());
+                boolean firstPoint = true;
+                for (Point point : stroke.getPoints()) {
+                    if (firstPoint) {
+                        firstPoint = false;
+                    } else {
+                        stringBuilder.append(SEMICOLON);
+                    }
+                    stringBuilder.append(point.getTime());
+                    stringBuilder.append(COMMA);
+                    stringBuilder.append(point.getX());
+                    stringBuilder.append(COMMA);
+                    stringBuilder.append(point.getY());
+                }
             }
         }
 

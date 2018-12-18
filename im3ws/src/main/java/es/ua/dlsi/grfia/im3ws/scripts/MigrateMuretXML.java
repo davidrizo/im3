@@ -52,7 +52,7 @@ public class MigrateMuretXML implements CommandLineRunner {
         SpringApplication.run(MigrateMuretXML.class, args);
     }
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args)  {
         muretConfiguration = new MURETConfiguration("/Applications/MAMP/htdocs/muret", "http://localhost:8888/muret", null, 200, 720);
 
         String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
@@ -129,8 +129,19 @@ public class MigrateMuretXML implements CommandLineRunner {
         if (xmlStrokes.getStrokeList() != null) {
             for (es.ua.dlsi.im3.omr.model.entities.Stroke xmlStroke : xmlStrokes.getStrokeList()) {
                 CalcoStroke stroke = new CalcoStroke();
+                // remove strokes with a resolution lower than the pixel
+                int prevX = 0;
+                int prevY = 0;
                 for (es.ua.dlsi.im3.omr.model.entities.Point xmlPoint : xmlStroke.pointsProperty()) {
-                    stroke.addPoint(new Point(xmlPoint.getRelativeTime(), (int) xmlPoint.getX(), (int) xmlPoint.getY()));
+                    int x = (int) Math.round(xmlPoint.getX());
+                    int y = (int) Math.round(xmlPoint.getY());
+
+                    if (prevX != x || prevY != y) {
+                        stroke.addPoint(new Point(xmlPoint.getRelativeTime(), x, y));
+                    }
+
+                    prevX = x;
+                    prevY = y;
                 }
                 ((CalcoStrokes) strokes).addStroke(stroke);
             }

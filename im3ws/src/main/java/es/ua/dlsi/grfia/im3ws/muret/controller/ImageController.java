@@ -4,6 +4,8 @@ package es.ua.dlsi.grfia.im3ws.muret.controller;
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
 import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
+import es.ua.dlsi.grfia.im3ws.muret.controller.payload.Point;
+import es.ua.dlsi.grfia.im3ws.muret.controller.payload.PostStrokes;
 import es.ua.dlsi.grfia.im3ws.muret.entity.*;
 import es.ua.dlsi.grfia.im3ws.muret.model.ImageModel;
 import es.ua.dlsi.grfia.im3ws.muret.service.ImageService;
@@ -23,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -131,8 +134,8 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
         return regionService.update(region.get());
     }
 
-    @GetMapping(path = {"createSymbol/{regionID}/{fromX}/{fromY}/{toX}/{toY}"})
-    public Symbol createSymbol(@PathVariable("regionID") Long regionID,
+    @GetMapping(path = {"createSymbolFromBoundingBox/{regionID}/{fromX}/{fromY}/{toX}/{toY}"})
+    public Symbol createSymbolFromBoundingBox(@PathVariable("regionID") Long regionID,
                                @PathVariable("fromX") Double fromX,
                                @PathVariable("fromY") Double fromY,
                                @PathVariable("toX") Double toX,
@@ -154,10 +157,60 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
         return symbolService.create(symbol);
     }
 
+    //TODO Generalizar a cualquier tipo de strokes
+    @RequestMapping(value="/createSymbolFromStrokes", method=RequestMethod.POST)
+    @ResponseBody
+    public Symbol createSymbol(@RequestBody PostStrokes requestObject) throws IM3WSException, IM3Exception {
+        Optional<Region> region = regionService.findById(requestObject.getRegionID());
+        if (!region.isPresent()) {
+            throw new IM3WSException("Cannot find a region with id " + requestObject.getRegionID());
+        }
+
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        int npoints=0;
+        CalcoStrokes calcoStrokes = new CalcoStrokes();
+        for (Point [] strokePoints: requestObject.getPoints()) {
+            CalcoStroke calcoStroke = new CalcoStroke();
+            calcoStrokes.addStroke(calcoStroke);
+            for (Point point: strokePoints) {
+                calcoStroke.addPoint(new es.ua.dlsi.grfia.im3ws.muret.entity.Point(point.getTimestamp(), point.getX(), point.getY()));
+
+                minX = Math.min(minX, point.getX());
+                minY = Math.min(minY, point.getY());
+                maxX = Math.max(maxX, point.getX());
+                maxY = Math.max(maxY, point.getY());
+
+                npoints++;
+            }
+        }
+
+        if (npoints < 2) {
+            throw new IM3WSException("Cannot classify with just one point");
+        }
+
+        BoundingBox boundingBox = new BoundingBox(minX, minY, maxX, maxY);
+
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Bounding box from strokes {0}", boundingBox);
+        //TODO Que busque (si está seleccionado) también en el clasificador por strokes
+
+        AgnosticSymbol agnosticSymbol = imageModel.classifySymbolFromImageBoundingBox(region.get().getPage().getImage(),
+                minX, minY, maxX, maxY, "TO-DO"); //TODO
+
+        Logger.getLogger(this.getClass().getName()).severe("TO-DO CLASSIFIER"); //TODO Urgent
+
+        Symbol symbol = new Symbol(region.get(), agnosticSymbol,
+                boundingBox,null, calcoStrokes);
+
+        return symbolService.create(symbol);
+    }
+
     // with SymbolController --> repository --> delete it does not work
     @GetMapping(path = {"removeSymbol/{regionID}/{symbolID}"})
     public boolean removeSymbol(@PathVariable("regionID") Long regionID,
-                               @PathVariable("symbolID") Long symbolID) throws IM3WSException, IM3Exception {
+                               @PathVariable("symbolID") Long symbolID) throws IM3WSException {
         Optional<Region> region = regionService.findById(regionID);
         if (!region.isPresent()) {
             throw new IM3WSException("Cannot find a region with id " + regionID);
