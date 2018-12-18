@@ -20,7 +20,9 @@ import {ShapeComponent} from '../svgcanvas/components/shape/shape.component';
 import {MousePosition, PolyLine, Rectangle} from '../svgcanvas/model/shape';
 import {FreehandComponent} from '../svgcanvas/components/freehand/freehand.component';
 import {AgnosticSymbolStrokes} from './agnostic-symbol-strokes';
-import {timer} from 'rxjs';
+import {Observable, timer} from 'rxjs';
+import {Strokes} from '../model/strokes';
+import {Point} from '../model/point';
 
 @Component({
   selector: 'app-symbols',
@@ -47,7 +49,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   staffSelected = false;
 
   // svgOfSymbols: Array<string> = [];
-  private scale: number;
+  // private scale: number;
   /// private selectedElementGroup: Group;
   private selectedStaffFinalScale: number;
   private expectedStaffWidthPercentage: number;
@@ -72,8 +74,9 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   private selectedSymbol: Symbol;
   selectedStaffCursor = 'default';
   showSymbolStrokes: boolean;
-  private alreadyDrawingStrokes: false;
-
+  private currentTimerID = 0;
+  private currentStrokes: Strokes = null;
+  private currentStrokesFreeHandComponents: Array<ShapeComponent>;
 
   constructor(
     private im3wsService: Im3wsService,
@@ -368,21 +371,20 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
     if ($event.shape instanceof Rectangle) {
       const shape = $event.shape;
 
-      const fromX = this.selectedRegion.boundingBox.fromX + ((shape.originX) * this.selectedStaffScale)
+     /* const fromX = this.selectedRegion.boundingBox.fromX + ((shape.originX) * this.selectedStaffScale)
         / this.expectedStaffWidthPercentage;
       const fromY = this.selectedRegion.boundingBox.fromY + (( shape.originY) * this.selectedStaffScale)
         / this.expectedStaffWidthPercentage;
       const toX = this.selectedRegion.boundingBox.fromX  + (( shape.originX + shape.width) * this.selectedStaffScale)
         / this.expectedStaffWidthPercentage;
       const toY = this.selectedRegion.boundingBox.fromY + ((shape.originY + shape.height) * this.selectedStaffScale)
-        / this.expectedStaffWidthPercentage;
+        / this.expectedStaffWidthPercentage;*/
+      const fromX = this.fromScreenX(shape.originX);
+      const fromY = this.fromScreenY(shape.originY);
 
-      /*const fromX = this.selectedRegion.boundingBox.fromX + shape.originX * this.expectedStaffWidthPercentage;
-      const fromY = this.selectedRegion.boundingBox.fromY + shape.originY * this.expectedStaffWidthPercentage;
-      const toX = this.selectedRegion.boundingBox.fromX +
-        (shape.originX + shape.width) * this.expectedStaffWidthPercentage;
-      const toY = this.selectedRegion.boundingBox.fromY +
-        (shape.originY + shape.width) * this.expectedStaffWidthPercentage;*/
+      const toX = this.fromScreenX(shape.originX + shape.width);
+      const toY = this.fromScreenY(shape.originY + shape.height);
+
 
       const prevCursor = this.selectedStaffCursor;
       this.selectedStaffCursor = 'wait';
@@ -396,30 +398,85 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
     } else if ($event.shape instanceof PolyLine) {
         const shape = $event.shape;
 
-        if (!this.alreadyDrawingStrokes) {
-          const source = timer(300);
-          const subscribe = source.subscribe(val =>
-            console.log(val));
+        const source = timer(300); // TODO timer duration, now 300ms
+        this.currentTimerID ++;
+        const subscribe = source.subscribe(val =>
+          this.onStrokesTimer(this.currentTimerID)
+        );
+
+        if (this.currentStrokes == null) {
+          this.currentStrokes = new Strokes(new Array<Stroke>());
         }
+
+        const points = new Array<Point>();
+        let prevTimeStamp = 0;
+        shape.points.forEach(p => {
+          let t: number;
+          if (prevTimeStamp === 0) {
+            t = 0;
+          } else {
+            t = p.timestamp - prevTimeStamp;
+          }
+          prevTimeStamp = p.timestamp;
+          const point = new Point(t, this.fromScreenX(p.x), this.fromScreenY(p.y));
+          points.push(point);
+        });
+      const stroke = new Stroke(points);
+      this.currentStrokes.strokeList.push(stroke);
+
+      if (this.currentStrokesFreeHandComponents == null) {
+        this.currentStrokesFreeHandComponents = new Array<ShapeComponent>();
+      }
+      this.currentStrokesFreeHandComponents.push($event);
     }
   }
 
-  private scaleAndTranslateX(x: number): number {
+  private onStrokesTimer(timerID: number) {
+    if (timerID === this.currentTimerID) {
+      // generate strokes
+      const prevCursor = this.selectedStaffCursor;
+      this.selectedStaffCursor = 'wait';
+      this.im3wsService.createSymbolFromStrokes(this.selectedRegion, this.currentStrokes).subscribe(next => {
+        this.selectedStaffCursor = prevCursor;
+        this.logger.debug('New symbol created ' + next.id);
+
+        this.currentStrokesFreeHandComponents.forEach(shape => {
+          this.svgCanvas.remove(shape);
+        });
+
+        this.currentStrokes = null;
+        this.currentStrokesFreeHandComponents = null;
+        this.drawSymbol(next);
+      });
+    } // else discard it because it has been overwritten by the new one
+  }
+
+  private toScreenX(x: number): number {
     return ((x - this.selectedRegion.boundingBox.fromX) / this.selectedStaffScale)
       * this.expectedStaffWidthPercentage;
   }
 
-  private scaleAndTranslateY(y: number): number {
+  private toScreenY(y: number): number {
     return ((y - this.selectedRegion.boundingBox.fromY) / this.selectedStaffScale)
       * this.expectedStaffWidthPercentage;
   }
 
+  private fromScreenX(x: number): number {
+    return this.selectedRegion.boundingBox.fromX + (x * this.selectedStaffScale)
+      / this.expectedStaffWidthPercentage;
+  }
+
+  private fromScreenY(y: number): number {
+    return this.selectedRegion.boundingBox.fromY + (y * this.selectedStaffScale)
+      / this.expectedStaffWidthPercentage;
+  }
+
   private drawSymbolBoundingBox(symbol: Symbol) {
     if (symbol.boundingBox) {
-      const fromX = this.scaleAndTranslateX(symbol.boundingBox.fromX);
-      const fromY = this.scaleAndTranslateY(symbol.boundingBox.fromY);
-      const toX = this.scaleAndTranslateX(symbol.boundingBox.toX);
-      const toY = this.scaleAndTranslateY(symbol.boundingBox.toY);
+      const fromX = this.toScreenX(symbol.boundingBox.fromX);
+      const fromY = this.toScreenY(symbol.boundingBox.fromY);
+      const toX = this.toScreenX(symbol.boundingBox.toX);
+      const toY = this.toScreenY(symbol.boundingBox.toY);
       /*const fromX = symbol.boundingBox.fromX;
       const fromY = symbol.boundingBox.fromY;
       const toX = symbol.boundingBox.toX;
@@ -440,8 +497,8 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
       stroke.points.forEach(point => {
         const mousePosition = new MousePosition();
 
-        mousePosition.x = this.scaleAndTranslateX(point.x);
-        mousePosition.y = this.scaleAndTranslateY(point.y);
+        mousePosition.x = this.toScreenX(point.x);
+        mousePosition.y = this.toScreenY(point.y);
         mousePositions.push(mousePosition);
       });
 
@@ -484,6 +541,14 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
         this.agnosticSymbols.delete(this.selectedSymbol.id);
         this.agnosticSymbolSVGs.delete(this.selectedSymbol.id);
         this.svgCanvas.remove(this.svgCanvas.selectedComponent);
+
+        const strokes = this.agnosticSymbolStrokes.get(this.selectedSymbol.id);
+        if (strokes) {
+          strokes.freehandComponents.forEach(component => {
+            this.svgCanvas.remove(component);
+          });
+          this.agnosticSymbolStrokes.delete(this.selectedSymbol.id);
+        }
         this.selectedSymbol = null;
       });
     }

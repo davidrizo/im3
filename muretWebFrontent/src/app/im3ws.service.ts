@@ -14,6 +14,9 @@ import {ClassifierType} from './model/classifier-type';
 import {Region} from './model/region';
 import {Symbol} from './model/symbol';
 import {User} from './model/user';
+import {Strokes} from './model/strokes';
+import {Point} from './model/point';
+import {PostStrokes} from './payloads/post-strokes';
 
 @Injectable({
   providedIn: 'root'
@@ -319,7 +322,7 @@ export class Im3wsService {
   createSymbolFromBoundingBox(region: Region, fromX: number, fromY: number, toX: number, toY: number): Observable<Symbol> {
     this.logger.debug('IM3WSService: create symbol from bounding box in region ' + region.id);
 
-    const result = this.http.get<Symbol>(this.urlImage + '/createSymbol/' + region.id + '/'
+    const result = this.http.get<Symbol>(this.urlImage + '/createSymbolFromBoundingBox/' + region.id + '/'
       + fromX + '/' + fromY + '/'
       + toX  + '/' + toY
       , this.getHttpAuthOptions())
@@ -332,6 +335,28 @@ export class Im3wsService {
     });
     return result;
   }
+
+  createSymbolFromStrokes(region: Region, currentStrokes: Strokes): Observable<Symbol> {
+    this.logger.debug('IM3WSService: create symbol from strokes in region ' + region.id);
+
+    const points: Point[][] = [[]];
+    currentStrokes.strokeList.forEach(stroke => {
+      points.push(stroke.points);
+    });
+
+    const postStrokes = new PostStrokes(region.id, points);
+
+    const result = this.http.post<Symbol>(this.urlImage + '/createSymbolFromStrokes', postStrokes
+      , this.getHttpAuthOptions())
+      .pipe(share()); // if not, two calls are made for the same request due to CORS checking
+
+    result.subscribe(res => {
+      region.symbols.push(res); // the im3ws spring service just returns the new symbol, not the complete region on each symbol insert
+      console.log('Symbol from strokes in region ' + region.id);
+    });
+    return result;
+  }
+
 
   /**
    * Handle Http operation that failed.

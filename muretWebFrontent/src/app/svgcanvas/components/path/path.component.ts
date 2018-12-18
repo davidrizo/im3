@@ -90,7 +90,8 @@ export class PathComponent extends ShapeComponent implements OnInit {
 
         this.controlPoint = {
             x: c1x,
-            y: c1y
+            y: c1y,
+            timestamp: 0
         }
     }
 }
