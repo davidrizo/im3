@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@RequestMapping("/muret/auth")
+@RequestMapping("/muretapi/auth")
 @CrossOrigin("${angular.url}")
 @RestController
 public class AuthController {

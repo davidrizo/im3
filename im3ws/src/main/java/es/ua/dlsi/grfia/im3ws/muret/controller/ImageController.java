@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 /**
  * @author drizo
  */
-@RequestMapping("/muret/image")
+@RequestMapping("/muretapi/image")
 @RestController
 public class ImageController extends CRUDController<Image, Long, ImageService> {
     @Autowired

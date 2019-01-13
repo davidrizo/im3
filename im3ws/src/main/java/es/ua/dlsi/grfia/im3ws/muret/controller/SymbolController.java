@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 /**
  * @author drizo
  */
-@RequestMapping("/muret/symbol")
+@RequestMapping("/muretapi/symbol")
 @RestController
 public class SymbolController extends CRUDController<Symbol, Long, SymbolService> {
     @Autowired

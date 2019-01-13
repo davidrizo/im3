@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@RequestMapping("/muret/classifiers")
+@RequestMapping("/muretapi/classifiers")
 @CrossOrigin("${angular.url}")
 @RestController
 public class ClassifierTypeController extends CRUDController<ClassifierType, Integer, ClassifierTypeService> {

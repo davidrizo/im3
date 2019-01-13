@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@RequestMapping("/muret/agnostic")
+@RequestMapping("/muretapi/agnostic")
 @CrossOrigin("${angular.url}")
 @RestController
 public class AgnosticSymbolSVGController {

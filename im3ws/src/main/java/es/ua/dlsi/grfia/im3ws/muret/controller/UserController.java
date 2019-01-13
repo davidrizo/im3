@@ -15,7 +15,7 @@ import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@RequestMapping("/muret/user")
+@RequestMapping("/muretapi/user")
 @CrossOrigin("${angular.url}")
 @RestController
 public class UserController extends CRUDController<User, Integer, UserService> {

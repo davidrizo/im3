@@ -33,7 +33,7 @@ public class BasicAuthConfiguration
         http.csrf().disable()
                 .authorizeRequests()
                 //TODO Revisar esto, creo que me estoy saltando la autenticación
-                .antMatchers("/muret/auth/login", "/muret/**").permitAll()
+                .antMatchers("/muretapi/auth/login", "/muretapi/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

@@ -4,6 +4,7 @@ package es.ua.dlsi.grfia.im3ws.muret.controller;
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
 import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
+import es.ua.dlsi.grfia.im3ws.muret.controller.payload.ProjectStatistics;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.entity.ProjectURLs;
 import es.ua.dlsi.grfia.im3ws.muret.model.ProjectModel;
@@ -16,7 +17,7 @@ import java.util.Optional;
 /**
  * @author drizo
  */
-@RequestMapping("/muret/project")
+@RequestMapping("/muretapi/project")
 @RestController
 public class ProjectController extends CRUDController<Project, Integer, ProjectService> {
     @Autowired
@@ -70,5 +71,10 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
 
     public void setMuretConfiguration(MURETConfiguration muretConfiguration) {
         this.muretConfiguration = muretConfiguration;
+    }
+
+    @GetMapping(path = {"/statistics/{id}"})
+    public ProjectStatistics getProjectStatistics(@PathVariable("id") Integer id) throws IM3WSException {
+        return projectService.getProjectStatistics(id);
     }
 }

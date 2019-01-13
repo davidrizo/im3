@@ -22,6 +22,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 // IMPORTANT: IN order to execute it, remove spring-boot-starter-tomcat
 /**
@@ -52,14 +53,21 @@ public class MigrateMuretXML implements CommandLineRunner {
         SpringApplication.run(MigrateMuretXML.class, args);
     }
     @Override
-    public void run(String... args)  {
+    public void run(String... args) throws IOException {
         muretConfiguration = new MURETConfiguration("/Applications/MAMP/htdocs/muret", "http://localhost:8888/muret", null, 200, 720);
 
-        String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
+        /*String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
         importMuRETXML(path + "B-3.28/B-3.28.mrt");
         importMuRETXML(path + "B-50.747/B-50.747.mrt");
         importMuRETXML(path + "B-53.781/B-53.781.mrt");
-        importMuRETXML(path + "B-59.850-completo/B-59.850-completo.mrt");
+        importMuRETXML(path + "B-59.850-completo/B-59.850-completo.mrt");*/
+
+        String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_barcelona";
+        ArrayList<File> mrts = new ArrayList<>();
+        FileUtils.readFiles(new File(path), mrts, "mrt");
+        for (File file: mrts) {
+            importMuRETXML(file.getAbsolutePath()); //TODO Importar tipo de region
+        }
 
         System.out.println("Finished");
         ConfigurableApplicationContext ctx = SpringApplication.run(MigrateMuretXML.class, args);

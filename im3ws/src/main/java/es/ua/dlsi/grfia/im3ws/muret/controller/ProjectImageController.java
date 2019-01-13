@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 
 @CrossOrigin("${angular.url}")
-@RequestMapping("/muret/upload")
+@RequestMapping("/muretapi/upload")
 @RestController
 public class ProjectImageController {
     @Autowired
