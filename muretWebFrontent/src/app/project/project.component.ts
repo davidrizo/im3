@@ -8,6 +8,7 @@ import {ImageThumbnailComponent} from '../image-thumbnail/image-thumbnail.compon
 import {NGXLogger} from 'ngx-logger';
 import {SessionDataService} from '../session-data.service';
 import {ComponentCanDeactivate} from '../component-can-deactivate';
+import {ProjectStatistics} from '../model/project-statistics';
 // import { Lightbox } from 'ngx-lightbox';
 
 @Component({
@@ -18,6 +19,8 @@ import {ComponentCanDeactivate} from '../component-can-deactivate';
 export class ProjectComponent extends ComponentCanDeactivate implements OnInit {
   project: Project;
   projectURLs: ProjectURLS;
+  projectStatistics: ProjectStatistics;
+
   BAG = 'DRAGULA_FACTS';
   @ViewChildren(ImageThumbnailComponent) imageThumbnailComponents: QueryList<ImageThumbnailComponent>;
   @ViewChild('domImages') domImages: ElementRef;
@@ -77,8 +80,10 @@ export class ProjectComponent extends ComponentCanDeactivate implements OnInit {
           this.project.orderImageArray();
           this.sessionDataService.currentProject = this.project;
         });
-
     });
+
+    this.projectService.getProjectStatistics$(routeParams.id)
+      .subscribe(result => this.projectStatistics = result);
   }
 
   uploadImages() {

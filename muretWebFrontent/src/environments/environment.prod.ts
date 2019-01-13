@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiEndpoint: 'https://deep:8080/muret'
+  // important not to finish the URL with slash
+  apiEndpoint: 'https://muret.dlsi.ua.es/rest'
 };

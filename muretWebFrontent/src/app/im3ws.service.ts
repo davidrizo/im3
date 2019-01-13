@@ -17,6 +17,7 @@ import {User} from './model/user';
 import {Strokes} from './model/strokes';
 import {Point} from './model/point';
 import {PostStrokes} from './payloads/post-strokes';
+import {ProjectStatistics} from './model/project-statistics';
 
 @Injectable({
   providedIn: 'root'
@@ -45,14 +46,14 @@ export class Im3wsService {
     private logger: NGXLogger) {
 
     this.logger.debug('Creating Im3wsService');
-    this.urlLogin = configurationService.IM3WS_SERVER + '/muret/auth/login';  // URL to web api
-    this.urlClassifierTypes = configurationService.IM3WS_SERVER + '/muret/classifiers';
-    this.urlProject = configurationService.IM3WS_SERVER + '/muret/project';
-    this.urlImage = configurationService.IM3WS_SERVER + '/muret/image';
-    this.urlSymbol = configurationService.IM3WS_SERVER + '/muret/symbol';
-    this.urlAgnostic = configurationService.IM3WS_SERVER + '/muret/agnostic';
-    this.urlAuthenticatedUser = configurationService.IM3WS_SERVER + '/muret/auth/user';
-    this.urlUser = configurationService.IM3WS_SERVER + '/muret/user';
+    this.urlLogin = configurationService.IM3WS_SERVER + '/muretapi/auth/login';  // URL to web api
+    this.urlClassifierTypes = configurationService.IM3WS_SERVER + '/muretapi/classifiers';
+    this.urlProject = configurationService.IM3WS_SERVER + '/muretapi/project';
+    this.urlImage = configurationService.IM3WS_SERVER + '/muretapi/image';
+    this.urlSymbol = configurationService.IM3WS_SERVER + '/muretapi/symbol';
+    this.urlAgnostic = configurationService.IM3WS_SERVER + '/muretapi/agnostic';
+    this.urlAuthenticatedUser = configurationService.IM3WS_SERVER + '/muretapi/auth/user';
+    this.urlUser = configurationService.IM3WS_SERVER + '/muretapi/user';
   }
 
   logout(): void {
@@ -289,6 +290,18 @@ export class Im3wsService {
       console.log('Save project result: ' + res);
     });
     return result;
+  }
+
+  public getProjectStatistics$(id: number)
+    : Observable<ProjectStatistics> {
+    this.logger.debug('IM3WSService: fetching project statistics for id ' + id);
+      return this.http.get<StringReponse>(this.urlProject + '/statistics/' + id
+      ,
+      this.getHttpAuthOptions(),
+    )
+      .pipe(
+        catchError(this.handleError('getProjectStatistics$ ' + id, null))
+      );
   }
 
   updateRegionBoundingBox(id: number, fromX: number, fromY: number, toX: number, toY: number): Observable<any> {

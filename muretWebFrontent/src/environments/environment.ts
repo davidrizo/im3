@@ -2,9 +2,22 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+
+/* TO-DO We are using the development environment also for production for an error in deployment */
 export const environment = {
   production: false,
-  apiEndpoint: 'http://localhost:8080'
+
+  // PRODUCTION
+  // important not to finish the URL with slash
+  // apiEndpoint: 'https://muret.dlsi.ua.es/rest' // production
+  // RECALL CHANGE the baseHRef in index.html
+
+  // PRODUCTION
+  // important not to finish the URL with slash
+  // apiEndpoint: 'https://muret.dlsi.ua.es/rest' // production
+  apiEndpoint: 'http://localhost:8080',
+  // RECALL CHANGE the baseHRef in index.html
+
 };
 
 /*
