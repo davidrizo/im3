@@ -1,7 +1,7 @@
 <div class="row">
-  <div class="col-7 offset-1">
+  <div *ngIf="projectIsLoaded()" class="col-7 offset-1">
     <h2>{{project?.name}}</h2>
-    <p>TO-DO Autor/compositor</p>
+    <app-inline-edit [(ngModel)]="project.composer" type="text" [label]="'Enter value for composer'" (changed)="composerChanged($event)"> </app-inline-edit>
     <p>{{projectStatistics?.images}} images, {{projectStatistics?.pages}} pages, {{projectStatistics?.regions}} regions, {{projectStatistics?.agnosticSymbols}} symbols </p>
   </div>
 

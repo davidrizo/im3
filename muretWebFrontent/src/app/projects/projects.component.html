@@ -13,6 +13,7 @@
         <div class="card">
           <img class="card-img-top img-thumbnail" *ngIf="project.thumbnailBase64Encoding" src="{{project.thumbnailBase64Encoding}}" alt="Project thumbnail">
           <img class="card-img-top img-thumbnail" *ngIf="!project.thumbnailBase64Encoding" src="assets/images/empty_thumbnail.png" alt="Project thumbnail">
+          <app-state [state]="project.state"></app-state>
           <div class="card-body">
             <p>
               <a [routerLink]="['/project', project.id]">{{project.name}}</a>
@@ -37,6 +38,7 @@
         <div class="card">
           <img class="card-img-top img-thumbnail" *ngIf="permission.project.thumbnailBase64Encoding" src="{{permission.project.thumbnailBase64Encoding}}" alt="Project thumbnail">
           <img class="card-img-top img-thumbnail" *ngIf="!permission.project.thumbnailBase64Encoding" src="assets/images/empty_thumbnail.png" alt="Project thumbnail">
+          <app-state [state]="project.state"></app-state>
           <div class="card-body">
               <a [routerLink]="['/project', permission.project.id]">{{permission.project.name}}</a>
           </div>

@@ -30,6 +30,7 @@ import { FormsModule } from '@angular/forms';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
+
 /* import { LightboxModule } from 'ngx-lightbox';*/
 // Auth
 import {
@@ -50,6 +51,8 @@ import {SVGDrawingToolModule} from './svgcanvas/svgdrawing-tool.module';
 import { DocumentAnalysisViewComponent } from './document-analysis-view/document-analysis-view.component';
 import { PreferencesComponent } from './preferences/preferences.component';
 import { DevComponent } from './dev/dev.component';
+import { StateComponent } from './state/state.component';
+import { InlineEditComponent } from './inline-edit/inline-edit.component';
 
 // TODO Ver Keepass
 /*const config = {
@@ -74,7 +77,9 @@ import { DevComponent } from './dev/dev.component';
     SymbolsComponent,
     DocumentAnalysisViewComponent,
     PreferencesComponent,
-    DevComponent
+    DevComponent,
+    StateComponent,
+    InlineEditComponent
   ],
   imports: [
     BrowserModule,

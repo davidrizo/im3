@@ -1,4 +1,5 @@
 import {Image} from './image';
+import {State} from './state';
 
 export class Project {
   id: number;
@@ -10,6 +11,8 @@ export class Project {
   imagesOrdering: string;
   notationType: string;
   manuscriptType: string;
+  state: State;
+  composer: string;
 
   /*constructor(id: number, name: string, path: string, comments: string, thumbnailBase64Encoding: string, imagesOrdering: string,
               images: Array<Image>) {

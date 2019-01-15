@@ -18,6 +18,7 @@ import {Strokes} from './model/strokes';
 import {Point} from './model/point';
 import {PostStrokes} from './payloads/post-strokes';
 import {ProjectStatistics} from './model/project-statistics';
+import {StringBody} from './payloads/string-body';
 
 @Injectable({
   providedIn: 'root'
@@ -292,6 +293,17 @@ export class Im3wsService {
     return result;
   }
 
+  public saveProjectComposer(project: Project): Observable<any> {
+    this.logger.debug('IM3WSService: saving project composer with id: ' + project.id);
+    const stringBody = new StringBody(project.composer);
+    const result = this.http.put(this.urlProject + '/composer/' + project.id, stringBody, this.getHttpAuthOptions());
+    result.subscribe(res => {
+      console.log('Save project composer result: ' + res);
+    });
+    return result;
+  }
+
+
   public getProjectStatistics$(id: number)
     : Observable<ProjectStatistics> {
     this.logger.debug('IM3WSService: fetching project statistics for id ' + id);
@@ -390,6 +402,7 @@ export class Im3wsService {
 
   setUser(u: User) {
     this.user = Object.assign(new User(), u);
+
     sessionStorage.setItem(
       this.SESSION_USER_STORAGE,
       btoa(this.user.username)

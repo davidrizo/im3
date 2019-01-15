@@ -95,4 +95,14 @@ export class ProjectComponent extends ComponentCanDeactivate implements OnInit {
   canDeactivate(): boolean {
     return false; // TODO
   }
+
+  projectIsLoaded() {
+    return this.project != null;
+  }
+
+  composerChanged($event) {
+    this.logger.info('Saving project after composer change ' + $event);
+    this.project.composer = $event;
+    this.projectService.saveProjectComposer(this.project);
+  }
 }

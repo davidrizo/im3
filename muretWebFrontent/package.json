@@ -20,6 +20,7 @@
     "@angular/platform-browser": "~7.0.0",
     "@angular/platform-browser-dynamic": "~7.0.0",
     "@angular/router": "~7.0.0",
+    "@fortawesome/free-solid-svg-icons": "latest",
     "@ng-bootstrap/ng-bootstrap": "latest",
     "@okta/okta-angular": "latest",
     "@progress/kendo-angular-sortable": "^1.1.1",
@@ -43,8 +44,7 @@
     "ngx-lightbox": "latest",
     "ngx-logger": "latest",
     "rxjs": "~6.3.3",
-    "zone.js": "~0.8.26",
-    "@fortawesome/free-solid-svg-icons": "latest"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.10.0",
