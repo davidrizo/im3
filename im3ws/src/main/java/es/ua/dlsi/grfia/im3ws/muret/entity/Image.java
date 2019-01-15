@@ -3,7 +3,6 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
-import es.ua.dlsi.im3.core.score.NotationType;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -38,15 +37,21 @@ public class Image {
     //@JoinColumn(name="image_id", referencedColumnName="id") // don't use this construct to let orphanRemoval to work right
     private List<Page> pages;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="state_id")
+    State state;
+
+
     public Image() {
     }
 
-    public Image(String path, String comments, Integer width, Integer height, Project project) {
+    public Image(String path, String comments, Integer width, Integer height, Project project, State state) {
         this.filename = path;
         this.project = project;
         this.width = width;
         this.height = height;
         this.comments = comments;
+        this.state = state;
     }
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Long getId() {
@@ -55,6 +60,15 @@ public class Image {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)

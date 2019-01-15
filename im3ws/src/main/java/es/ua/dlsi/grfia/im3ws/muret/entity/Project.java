@@ -63,10 +63,14 @@ public class Project {
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "project")
     private List<Image> images;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="state_id")
+    State state;
+
     public Project() {
     }
 
-    public Project(String name, String path, String composer, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, String imagesOrdering, NotationType notationType, ManuscriptType manuscriptType, List<Image> images) {
+    public Project(String name, String path, String composer, Date created, Date lastChange, User createdBy, User changedBy, String thumbnailBase64Encoding, String comments, String imagesOrdering, NotationType notationType, ManuscriptType manuscriptType, State state, List<Image> images) {
         this.name = name;
         this.composer = composer;
         this.notationType = notationType;
@@ -80,6 +84,7 @@ public class Project {
         this.comments = comments;
         this.imagesOrdering = imagesOrdering;
         this.manuscriptType = manuscriptType;
+        this.state = state;
     }
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public Integer getId() {
@@ -96,6 +101,15 @@ public class Project {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)

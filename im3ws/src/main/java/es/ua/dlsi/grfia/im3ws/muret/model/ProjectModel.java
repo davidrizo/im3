@@ -71,6 +71,7 @@ public class ProjectModel {
                     null,
                     project.getNotationType(),
                     project.getManuscriptType(),
+                    null,
                     null
             );
 

@@ -5,6 +5,7 @@ import es.ua.dlsi.grfia.im3ws.IM3WSException;
 import es.ua.dlsi.grfia.im3ws.controller.CRUDController;
 import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
 import es.ua.dlsi.grfia.im3ws.muret.controller.payload.ProjectStatistics;
+import es.ua.dlsi.grfia.im3ws.muret.controller.payload.StringBody;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.entity.ProjectURLs;
 import es.ua.dlsi.grfia.im3ws.muret.model.ProjectModel;
@@ -77,4 +78,17 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
     public ProjectStatistics getProjectStatistics(@PathVariable("id") Integer id) throws IM3WSException {
         return projectService.getProjectStatistics(id);
     }
+
+    @PutMapping("/composer/{projectID}")
+    public void putComposer(@PathVariable int projectID, @RequestBody StringBody composer) throws IM3WSException {
+        Optional<Project> project = projectService.findById(projectID);
+        if (!project.isPresent()) {
+            throw new IM3WSException("Cannot find a project with id " + projectID);
+        }
+
+        project.get().setComposer(composer.getValue());
+        projectService.update(project.get());
+    }
+
+
 }

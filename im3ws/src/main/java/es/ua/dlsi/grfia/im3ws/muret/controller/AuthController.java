@@ -2,6 +2,7 @@ package es.ua.dlsi.grfia.im3ws.muret.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import es.ua.dlsi.grfia.im3ws.muret.entity.JSONFilteredDataViews;
+import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.entity.User;
 import es.ua.dlsi.grfia.im3ws.muret.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,13 @@ public class AuthController {
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Login with user '" + user.getUsername() + "'");
 
         Optional<User> response = userService.findByUserNamePassword(user.getUsername(), user.getPassword());
+       /* if (response.isPresent()) {
+            for (Project project: response.get().getProjectsCreated()) {
+                if (project.getState() != null) {
+                    System.out.println(project.getState().toString());
+                }
+            }
+        }*/
         return response;
 
         //return user.getUsername().equals("username") && user.getPassword().equals("password"); //TODO - see BasicAuthConfiguration
