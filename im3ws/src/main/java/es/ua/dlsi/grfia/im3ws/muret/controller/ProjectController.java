@@ -8,8 +8,10 @@ import es.ua.dlsi.grfia.im3ws.muret.controller.payload.ProjectStatistics;
 import es.ua.dlsi.grfia.im3ws.muret.controller.payload.StringBody;
 import es.ua.dlsi.grfia.im3ws.muret.entity.Project;
 import es.ua.dlsi.grfia.im3ws.muret.entity.ProjectURLs;
+import es.ua.dlsi.grfia.im3ws.muret.entity.State;
 import es.ua.dlsi.grfia.im3ws.muret.model.ProjectModel;
 import es.ua.dlsi.grfia.im3ws.muret.service.ProjectService;
+import es.ua.dlsi.grfia.im3ws.muret.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,9 @@ import java.util.Optional;
 public class ProjectController extends CRUDController<Project, Integer, ProjectService> {
     @Autowired
     ProjectService projectService;
+
+    @Autowired
+    StateService stateService;
 
     @Autowired
     MURETConfiguration muretConfiguration;
@@ -90,5 +95,43 @@ public class ProjectController extends CRUDController<Project, Integer, ProjectS
         projectService.update(project.get());
     }
 
+    @PutMapping("/comments/{projectID}")
+    public void putComments(@PathVariable int projectID, @RequestBody StringBody comments) throws IM3WSException {
+        Optional<Project> project = projectService.findById(projectID);
+        if (!project.isPresent()) {
+            throw new IM3WSException("Cannot find a project with id " + projectID);
+        }
 
+        project.get().setComments(comments.getValue());
+        projectService.update(project.get());
+    }
+
+    @PutMapping("/state/{projectID}")
+    public void putState(@PathVariable int projectID, @RequestBody State state) throws IM3WSException {
+        Optional<Project> project = projectService.findById(projectID);
+        if (!project.isPresent()) {
+            throw new IM3WSException("Cannot find a project with id " + projectID);
+        }
+
+        State persistedState;
+        if (project.get().getState() == null) {
+            persistedState = stateService.create(state);
+        } else {
+            if (state == null) {
+                // delete state
+                stateService.delete(project.get().getState().getId());
+                persistedState = null;
+            } else {
+                // update state
+                persistedState = project.get().getState();
+                persistedState.setState(state.getState());
+                persistedState.setChangedBy(state.getChangedBy());
+                persistedState.setComments(state.getComments());
+                stateService.update(persistedState);
+            }
+        }
+
+        project.get().setState(persistedState);
+        projectService.update(project.get());
+    }
 }

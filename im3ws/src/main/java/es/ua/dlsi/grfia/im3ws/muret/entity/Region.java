@@ -40,19 +40,24 @@ public class Region {
     //@JoinColumn(name="region_id")
     private List<Symbol> symbols;
 
+    @ManyToOne
+    @JoinColumn(name="regiontype_id", nullable = false)
+    RegionType regionType;
 
     public Region() {
     }
 
-    public Region(Page page, BoundingBox boundingBox, String comments, List<Symbol> symbols) {
+    public Region(Page page, BoundingBox boundingBox, String comments, RegionType regionType, List<Symbol> symbols) {
         this.boundingBox = boundingBox;
         this.page = page;
+        this.regionType = regionType;
         this.symbols = symbols;
         this.comments = comments;
     }
 
-    public Region(Page page, int fromX, int fromY, int toX, int toY) {
+    public Region(Page page, RegionType regionType, int fromX, int fromY, int toX, int toY) {
         this.page = page;
+        this.regionType = regionType;
         this.boundingBox = new BoundingBox(fromX, fromY, toX, toY);
     }
 
@@ -80,6 +85,15 @@ public class Region {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public RegionType getRegionType() {
+        return regionType;
+    }
+
+    public void setRegionType(RegionType regionType) {
+        this.regionType = regionType;
     }
 
     @JsonIgnore

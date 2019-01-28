@@ -2,14 +2,8 @@ package es.ua.dlsi.grfia.im3ws.muret.model;
 
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 import es.ua.dlsi.grfia.im3ws.muret.MURETConfiguration;
-import es.ua.dlsi.grfia.im3ws.muret.entity.Image;
-import es.ua.dlsi.grfia.im3ws.muret.entity.Page;
-import es.ua.dlsi.grfia.im3ws.muret.entity.Region;
-import es.ua.dlsi.grfia.im3ws.muret.entity.Symbol;
-import es.ua.dlsi.grfia.im3ws.muret.service.ImageService;
-import es.ua.dlsi.grfia.im3ws.muret.service.PageService;
-import es.ua.dlsi.grfia.im3ws.muret.service.RegionService;
-import es.ua.dlsi.grfia.im3ws.muret.service.SymbolService;
+import es.ua.dlsi.grfia.im3ws.muret.entity.*;
+import es.ua.dlsi.grfia.im3ws.muret.service.*;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
@@ -23,6 +17,7 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,6 +39,11 @@ public class ImageModel {
 
     @Autowired
     SymbolService symbolService;
+
+    @Autowired
+    RegionTypeService regionTypeService;
+
+    RegionType unknownRegionType;
 
     /*public ImageModel(ImageService imageService, PageService pageService, RegionService regionService, SymbolService symbolService) {
         this.imageService = imageService;
@@ -89,7 +89,7 @@ public class ImageModel {
                     image.addPage(newPage);
 
                     // create a region for new page
-                    Region newRegion = new Region(newPage,
+                    Region newRegion = new Region(newPage, null,
                             newPage.getBoundingBox().getFromX(), newPage.getBoundingBox().getFromY(),
                             newPage.getBoundingBox().getToX(), newPage.getBoundingBox().getToY());
                     newRegion = regionService.create(newRegion);
@@ -155,7 +155,7 @@ public class ImageModel {
     public List<Page> leaveJustOnePageAndRegion(Image image) {
         Page onePage = new Page(image, 0, 0, image.getWidth(), image.getHeight(), null, null);
         //Region oneRegion = regionService.create(new Region(onePage, 0, 0, image.getWidth(), image.getHeight()));
-        Region oneRegion = new Region(onePage, 0, 0, image.getWidth(), image.getHeight());
+        Region oneRegion = new Region(onePage, null, 0, 0, image.getWidth(), image.getHeight());
         onePage.addRegion(oneRegion);
 
         LinkedList<Symbol> symbols = new LinkedList<>();
@@ -182,8 +182,8 @@ public class ImageModel {
     @Transactional
     public void splitRegionAt(Page page, int y) throws IM3WSException {
         if (page.getRegions() == null || page.getRegions().isEmpty()) {
-            Region omrRegion1 = regionService.create(new Region(page, page.getBoundingBox().getFromX(), 0, page.getBoundingBox().getToX(), y-1));
-            Region omrRegion2 = regionService.create(new Region(page, page.getBoundingBox().getFromX(), y, page.getBoundingBox().getToX(), page.getBoundingBox().getToY()));
+            Region omrRegion1 = regionService.create(new Region(page, null, page.getBoundingBox().getFromX(), 0, page.getBoundingBox().getToX(), y-1));
+            Region omrRegion2 = regionService.create(new Region(page, null, page.getBoundingBox().getFromX(), y, page.getBoundingBox().getToX(), page.getBoundingBox().getToY()));
             page.addRegion(omrRegion1);
             page.addRegion(omrRegion2);
         } else {
@@ -213,7 +213,7 @@ public class ImageModel {
                     region.getBoundingBox().setHeight(y - 1 - fromY);
                     regionService.update(region);
 
-                    Region newRegion = regionService.create(new Region(page, region.getBoundingBox().getFromX(), splitYTakingIntoAccountTopSymbol,
+                    Region newRegion = regionService.create(new Region(page, null, region.getBoundingBox().getFromX(), splitYTakingIntoAccountTopSymbol,
                             region.getBoundingBox().getToX(), toY));
                     page.addRegion(newRegion);
 
