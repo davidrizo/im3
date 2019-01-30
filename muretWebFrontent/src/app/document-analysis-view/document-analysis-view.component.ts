@@ -13,6 +13,8 @@ import {SVGCanvasComponent, SVGCanvasState, SVGMousePositionEvent} from '../svgc
 import {ShapeComponent} from '../svgcanvas/components/shape/shape.component';
 import {LineComponent} from '../svgcanvas/components/line/line.component';
 import {Rectangle} from '../svgcanvas/model/shape';
+import {RegionType} from '../model/region-type';
+import {RectangleComponent} from '../svgcanvas/components/rectangle/rectangle.component';
 
 export enum DocumentAnalysisMode {
   eSelecting, eEditing, eSplittingPages, eSplittingRegions
@@ -32,6 +34,7 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
   project: Project;
 
   regionIDs: Map<number, Region> = new Map<number, Region>();
+  regionTypes: RegionType[];
 
   @ViewChild('domImage')
   private domImage: ElementRef;
@@ -42,13 +45,14 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
   domImageWidth: number;
   domImagePaddingLeft: number;
 
-
   @ViewChild('svgCanvas') svgCanvas: SVGCanvasComponent;
   private interactionLine: LineComponent;
 
   @Output() mouseEvent = new EventEmitter<SVGMousePositionEvent>();
   @Output() svgShapeCreated = new EventEmitter<ShapeComponent>();
-  @Output() svgShapeSelected = new EventEmitter<ShapeComponent>();
+  @Output() svgShapeSelected = new EventEmitter<ShapeComponent>(); // in order to observe it from other components such as symbol editing
+  showLabels = true;
+  private selectedRegion: ShapeComponent = null;
 
   constructor(
     private im3wsService: Im3wsService,
@@ -60,6 +64,16 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     this.image = sessionDataService.currentImage;
     this.imageURL = sessionDataService.currentImageMastersURL + '/' + this.image.filename;
     this.logger.debug('Working with image ' + this.imageURL);
+
+    if (!sessionDataService.regionTypes) {
+      im3wsService.getRegionTypes().subscribe(value => {
+        sessionDataService.regionTypes = value;
+        this.logger.debug('Fetched #' + sessionDataService.regionTypes.length + ' region types');
+        this.regionTypes = value;
+      });
+    } else {
+      this.regionTypes = sessionDataService.regionTypes;
+    }
   }
 
   ngOnInit() {
@@ -97,14 +111,14 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
   }
 
   private drawBoundingBox(objectType: string, objectID: number, boundingBox: BoundingBox, targetScale: number,
-                          strokeColor: string, strokeWidth: number) {
+                          strokeColor: string, strokeWidth: number, label: string) {
 
     const rx = boundingBox.fromX * targetScale;
     const ry = boundingBox.fromY * targetScale;
     const rwidth = targetScale * (boundingBox.toX - boundingBox.fromX);
     const rheight = targetScale * (boundingBox.toY - boundingBox.fromY);
 
-    const rectangle = this.svgCanvas.drawRectangle(rx, ry, rwidth, rheight);
+    const rectangle = this.svgCanvas.drawRectangle(rx, ry, rwidth, rheight, label);
     rectangle.modelObjectType = objectType;
     rectangle.modelObjectID = objectID;
     rectangle.shape.shapeProperties.fillColor = 'transparent';
@@ -179,10 +193,18 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     this.logger.debug('Drawing bounding boxes for image ' + this.image);
     this.image.pages.forEach(page => {
       this.logger.debug('Page ' + page);
-      this.drawBoundingBox('Page', page.id, page.boundingBox, this.scale, 'red', 12);
+      this.drawBoundingBox('Page', page.id, page.boundingBox, this.scale, 'red', 12, '');
       page.regions.forEach(region => {
         this.logger.debug('Region ' + region);
-        this.drawBoundingBox('Region', region.id, region.boundingBox, this.scale, 'green', 3);
+
+        let color: string;
+        if (region.regionType) {
+          color = '#' + region.regionType.hexargb;
+        } else {
+          this.logger.debug('Region without region type');
+          color = 'black';
+        }
+        this.drawBoundingBox('Region', region.id, region.boundingBox, this.scale, color, 3, region.regionType.name);
         this.regionIDs.set(region.id, region);
       });
     });
@@ -233,7 +255,12 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
   onShapeSelected($event: ShapeComponent) {
     this.logger.debug('Shape selected ' + $event);
     this.svgShapeSelected.emit($event);
+    this.selectedRegion = $event;
   }
+  onShapeDeselected($event: ShapeComponent) {
+    this.selectedRegion = null;
+  }
+
   onShapeChanged($event: ShapeComponent) {
     this.logger.debug('Image: detected a shape change on a ' + $event.modelObjectType
       + ' with ID=' + $event.modelObjectID);
@@ -286,4 +313,17 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     return this.domImage.nativeElement.naturalWidth;
   }
 
+  changeRegionType(regionType: RegionType) {
+    if (this.selectedRegion != null) {
+      const region = this.findRegionID(this.selectedRegion.modelObjectID);
+      if (region) {
+        this.im3wsService.updateRegionType(region.id, regionType).subscribe(next => {
+          if (this.selectedRegion instanceof RectangleComponent) {
+            region.regionType = regionType;
+            this.selectedRegion.label = regionType.name;
+          }
+        });
+      }
+    }
+  }
 }

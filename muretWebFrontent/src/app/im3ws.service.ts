@@ -19,6 +19,7 @@ import {Point} from './model/point';
 import {PostStrokes} from './payloads/post-strokes';
 import {ProjectStatistics} from './model/project-statistics';
 import {StringBody} from './payloads/string-body';
+import {RegionType} from './model/region-type';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,7 @@ export class Im3wsService {
   private urlAuthenticatedUser: string;
   private urlAgnostic: string;
   private urlClassifierTypes: string;
+  private urlRegionTypes: string;
   private urlUser: string;
 
   private user: User;
@@ -49,11 +51,13 @@ export class Im3wsService {
     this.logger.debug('Creating Im3wsService');
     this.urlLogin = configurationService.IM3WS_SERVER + '/muretapi/auth/login';  // URL to web api
     this.urlClassifierTypes = configurationService.IM3WS_SERVER + '/muretapi/classifiers';
+    this.urlRegionTypes = configurationService.IM3WS_SERVER + '/muretapi/regiontypes';
     this.urlProject = configurationService.IM3WS_SERVER + '/muretapi/project';
     this.urlImage = configurationService.IM3WS_SERVER + '/muretapi/image';
     this.urlSymbol = configurationService.IM3WS_SERVER + '/muretapi/symbol';
     this.urlAgnostic = configurationService.IM3WS_SERVER + '/muretapi/agnostic';
     this.urlAuthenticatedUser = configurationService.IM3WS_SERVER + '/muretapi/auth/user';
+    this.urlUser = configurationService.IM3WS_SERVER + '/muretapi/user';
     this.urlUser = configurationService.IM3WS_SERVER + '/muretapi/user';
   }
 
@@ -156,6 +160,14 @@ export class Im3wsService {
 
   }
 
+  getRegionTypes(): Observable<RegionType[]> {
+    this.logger.debug('IM3WSService: fetching region types...');
+    return this.http.get<RegionType[]>(this.urlRegionTypes, this.getHttpAuthOptions())
+      .pipe(
+        catchError(this.handleError('getRegionTypes', []))
+      );
+
+  }
   public getProjects$(): Observable<Project[]> {
     this.logger.debug('IM3WSService: fetching projects...');
 
@@ -303,6 +315,24 @@ export class Im3wsService {
     return result;
   }
 
+  public saveProjectComments(project: Project): Observable<any> {
+    this.logger.debug('IM3WSService: saving project comments with id: ' + project.id);
+    const stringBody = new StringBody(project.comments);
+    const result = this.http.put(this.urlProject + '/comments/' + project.id, stringBody, this.getHttpAuthOptions());
+    result.subscribe(res => {
+      console.log('Save project comments result: ' + res);
+    });
+    return result;
+  }
+
+  public saveProjectState(project: Project): Observable<any> {
+    this.logger.debug('IM3WSService: saving project state with id: ' + project.id);
+    const result = this.http.put(this.urlProject + '/state/' + project.id, project.state, this.getHttpAuthOptions());
+    result.subscribe(res => {
+      console.log('Save project state result: ' + res);
+    });
+    return result;
+  }
 
   public getProjectStatistics$(id: number)
     : Observable<ProjectStatistics> {
@@ -330,6 +360,20 @@ export class Im3wsService {
 
   }
 
+  updateRegionType(id: number, regionType: RegionType): Observable<any> {
+    this.logger.debug('IM3WSService: updating region type of id: ' + id + ' to ' + regionType.name);
+
+    const result = this.http.get(this.urlImage + '/regionUpdateType/' + id + '/' + regionType.id
+      , this.getHttpAuthOptions());
+    result.subscribe(res => {
+      console.log('Update region type update result: ' + res);
+    });
+    return result;
+
+  }
+
+
+
   updatePageBoundingBox(id: number, fromX: number, fromY: number, toX: number, toY: number): Observable<any> {
     this.logger.debug('IM3WSService: updating page bounding box of id: ' + id);
 
@@ -338,11 +382,10 @@ export class Im3wsService {
       + toX  + '/' + toY
       , this.getHttpAuthOptions());
     result.subscribe(res => {
-      console.log('Update region bounding box result: ' + res);
+      console.log('Update page bounding box result: ' + res);
     });
     return result;
   }
-
 
   createSymbolFromBoundingBox(region: Region, fromX: number, fromY: number, toX: number, toY: number): Observable<Symbol> {
     this.logger.debug('IM3WSService: create symbol from bounding box in region ' + region.id);
@@ -439,5 +482,6 @@ export class Im3wsService {
     return this.http.get<Symbol>(this.urlSymbol + '/changeAgnosticPositionInStaffUpOrDown/' + symbolID + '/' + upOrDown
       , this.getHttpAuthOptions());
   }
+
 
 }

@@ -24,6 +24,7 @@ export class ProjectComponent extends ComponentCanDeactivate implements OnInit {
   BAG = 'DRAGULA_FACTS';
   @ViewChildren(ImageThumbnailComponent) imageThumbnailComponents: QueryList<ImageThumbnailComponent>;
   @ViewChild('domImages') domImages: ElementRef;
+  private _projectState: string;
 
   constructor(
     private projectService: Im3wsService,
@@ -78,6 +79,7 @@ export class ProjectComponent extends ComponentCanDeactivate implements OnInit {
         .add(teardown2 => {
           this.logger.debug('Project component ' + this.project.name + ' with #' + this.project.images.length + ' images');
           this.project.orderImageArray();
+          this.changeProjectState();
           this.sessionDataService.currentProject = this.project;
         });
     });
@@ -104,5 +106,38 @@ export class ProjectComponent extends ComponentCanDeactivate implements OnInit {
     this.logger.info('Saving project after composer change ' + $event);
     this.project.composer = $event;
     this.projectService.saveProjectComposer(this.project);
+  }
+
+  commentsChanged($event) {
+    this.logger.info('Saving project after comments change ' + $event);
+    this.project.comments = $event;
+    this.projectService.saveProjectComments(this.project);
+  }
+
+
+  get projectState(): string {
+    return this._projectState;
+  }
+
+  set projectState(value: string) {
+    this.logger.debug('Changing project state to ' + value);
+
+    if (value === 'none') {
+      this.project.state = null;
+    } else {
+      this.project.state.state = value;
+    }
+    this.projectService.saveProjectState(this.project);
+
+    this._projectState = value;
+
+  }
+
+  private changeProjectState() {
+    if (this.project.state == null) {
+      this._projectState = 'none';
+    } else {
+      this._projectState = this.project.state.state;
+    }
   }
 }

@@ -28,9 +28,9 @@ export class ImageThumbnailComponent implements OnInit {
     // this call retrieves the whole image data (the current image does not contain all lazy relations)
     this.im3wsService.getImage$(image.id).
       subscribe(serviceImage => {
-      this.sessionDataService.currentImageMastersURL = this.projectURLs.masters;
-      this.sessionDataService.currentImage = serviceImage;
-      this.router.navigate(['/image']);
+        this.sessionDataService.currentImageMastersURL = this.projectURLs.masters;
+        this.sessionDataService.currentImage = serviceImage;
+        this.router.navigate(['/image']);
       });
  }
 }
