@@ -3,6 +3,7 @@ package es.ua.dlsi.grfia.im3ws.muret.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import es.ua.dlsi.grfia.im3ws.IM3WSException;
 
 import javax.persistence.*;
@@ -63,6 +64,8 @@ public class Page {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
     public BoundingBox getBoundingBox() {
         return boundingBox;
     }

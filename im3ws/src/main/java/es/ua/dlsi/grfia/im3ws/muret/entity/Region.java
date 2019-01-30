@@ -41,7 +41,7 @@ public class Region {
     private List<Symbol> symbols;
 
     @ManyToOne
-    @JoinColumn(name="regiontype_id", nullable = false)
+    @JoinColumn(name="regiontype_id")
     RegionType regionType;
 
     public Region() {

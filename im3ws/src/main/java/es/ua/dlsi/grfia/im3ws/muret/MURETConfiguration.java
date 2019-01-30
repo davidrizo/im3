@@ -18,18 +18,20 @@ public class MURETConfiguration {
     private String url;
     private int thumbnailHeight;
     private int previewHeight;
+    private boolean disableSecurity;
 
     String pythonclassifiers;
 
     public MURETConfiguration() {
     }
 
-    public MURETConfiguration(String folder, String url, String pythonclassifiers, int thumbnailHeight, int previewHeight) {
+    public MURETConfiguration(String folder, String url, String pythonclassifiers, int thumbnailHeight, int previewHeight, boolean disableSecurity) {
         this.folder = folder;
         this.url = url;
         this.thumbnailHeight = thumbnailHeight;
         this.previewHeight = previewHeight;
         this.pythonclassifiers = pythonclassifiers;
+        this.disableSecurity = disableSecurity;
     }
 
     public String getFolder() {
@@ -70,5 +72,13 @@ public class MURETConfiguration {
 
     public void setPythonclassifiers(String pythonclassifiers) {
         this.pythonclassifiers = pythonclassifiers;
+    }
+
+    public boolean isDisableSecurity() {
+        return disableSecurity;
+    }
+
+    public void setDisableSecurity(boolean disableSecurity) {
+        this.disableSecurity = disableSecurity;
     }
 }

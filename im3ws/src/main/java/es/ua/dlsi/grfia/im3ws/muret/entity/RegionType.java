@@ -14,6 +14,9 @@ public class RegionType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column
+    String name;
+
     /**
      * RGB Color without #, e.g. FF0000
      */
@@ -23,8 +26,13 @@ public class RegionType {
     public RegionType() {
     }
 
-    public RegionType(String hexargb) {
-        this.hexargb = hexargb;
+    @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class)

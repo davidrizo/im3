@@ -8,10 +8,7 @@ import es.ua.dlsi.grfia.im3ws.muret.controller.payload.Point;
 import es.ua.dlsi.grfia.im3ws.muret.controller.payload.PostStrokes;
 import es.ua.dlsi.grfia.im3ws.muret.entity.*;
 import es.ua.dlsi.grfia.im3ws.muret.model.ImageModel;
-import es.ua.dlsi.grfia.im3ws.muret.service.ImageService;
-import es.ua.dlsi.grfia.im3ws.muret.service.PageService;
-import es.ua.dlsi.grfia.im3ws.muret.service.RegionService;
-import es.ua.dlsi.grfia.im3ws.muret.service.SymbolService;
+import es.ua.dlsi.grfia.im3ws.muret.service.*;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +46,8 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
     @Autowired
     SymbolService symbolService;
 
+    @Autowired
+    RegionTypeService regionTypeService;
 
     @Override
     protected ImageService initService() {
@@ -125,12 +124,28 @@ public class ImageController extends CRUDController<Image, Long, ImageService> {
                              @PathVariable("toY") Double toY) throws IM3WSException {
         Optional<Region> region = regionService.findById(id);
         if (!region.isPresent()) {
-            throw new IM3WSException("Cannot find a page with id " + id);
+            throw new IM3WSException("Cannot find a region with id " + id);
         }
         region.get().getBoundingBox().setFromX(fromX.intValue());
         region.get().getBoundingBox().setFromY(fromY.intValue());
         region.get().getBoundingBox().setToX(toX.intValue());
         region.get().getBoundingBox().setToY(toY.intValue());
+        return regionService.update(region.get());
+    }
+
+    @GetMapping(path = {"regionUpdateType/{id}/{regionTypeId}"})
+    public Region regionUpdate(@PathVariable("id") Long id,
+                               @PathVariable("regionTypeId") Integer regionTypeId) throws IM3WSException {
+        Optional<Region> region = regionService.findById(id);
+        if (!region.isPresent()) {
+            throw new IM3WSException("Cannot find a region with id " + id);
+        }
+        Optional<RegionType> regionType = regionTypeService.findById(regionTypeId);
+        if (!regionType.isPresent()) {
+            throw new IM3WSException("Cannot find a region type with id " + regionTypeId);
+        }
+
+        region.get().setRegionType(regionType.get());
         return regionService.update(region.get());
     }
 

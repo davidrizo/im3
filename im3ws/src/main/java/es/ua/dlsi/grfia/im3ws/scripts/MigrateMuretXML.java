@@ -54,7 +54,7 @@ public class MigrateMuretXML implements CommandLineRunner {
     }
     @Override
     public void run(String... args) throws IOException {
-        muretConfiguration = new MURETConfiguration("/Applications/MAMP/htdocs/muret", "http://localhost:8888/muret", null, 200, 720);
+        muretConfiguration = new MURETConfiguration("/Applications/MAMP/htdocs/muret", "http://localhost:8888/muret", null, 200, 720, true);
 
         /*String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
         importMuRETXML(path + "B-3.28/B-3.28.mrt");
