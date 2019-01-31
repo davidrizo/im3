@@ -330,6 +330,5 @@ public class FileUtils {
             };
         }
         return fileNameComparator;
-
     }
 }
