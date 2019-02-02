@@ -16,9 +16,9 @@ export class DevComponent implements OnInit {
   // imageID = 198;
   // path = 'villancico-al-smo--sto--al-molino-del-amor';
 
-  projectID = 50;
-  imageID = 336;
-  path = 'b-59-850-completo';
+  projectID = 167;
+  imageID = 2103;
+  path = 'b-59-850';
 
   constructor(private im3wsService: Im3wsService, private router: Router,
               private sessionDataService: SessionDataService) {

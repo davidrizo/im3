@@ -9,7 +9,9 @@ import { MousePosition, Rectangle } from '../../model/shape';
     styleUrls: ['./rectangle.component.css']
 })
 export class RectangleComponent extends ShapeComponent implements OnInit {
-    constructor() {
+  label = '';
+
+  constructor() {
         super();
         console.log('RectangleComponent constructor');
         this.shape = new Rectangle();

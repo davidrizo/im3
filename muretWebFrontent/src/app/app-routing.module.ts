@@ -13,6 +13,7 @@ import {SymbolsComponent} from './symbols/symbols.component';
 import {SVGDrawingComponent} from './svgdrawing/svgdrawing.component';
 import {PreferencesComponent} from './preferences/preferences.component';
 import {DevComponent} from './dev/dev.component';
+import {TrainingSetsComponent} from './training-sets/training-sets.component';
 
 const routes: Routes = [
 
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: 'image', component: ImageComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
   { path: 'symbols', component: SymbolsComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
   { path: 'uploadimages/:id', component: UploadImagesComponent, canActivate: [AuthGuard]},
+  { path: 'export', component: TrainingSetsComponent, canActivate: [AuthGuard]},
   // usado para desarrollo //TODO Quitar
   { path: 'dev', component: DevComponent},
   { path: '', pathMatch: 'full', redirectTo: 'startup'}

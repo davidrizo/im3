@@ -53,6 +53,7 @@ import { PreferencesComponent } from './preferences/preferences.component';
 import { DevComponent } from './dev/dev.component';
 import { StateComponent } from './state/state.component';
 import { InlineEditComponent } from './inline-edit/inline-edit.component';
+import { TrainingSetsComponent } from './training-sets/training-sets.component';
 
 // TODO Ver Keepass
 /*const config = {
@@ -79,7 +80,8 @@ import { InlineEditComponent } from './inline-edit/inline-edit.component';
     PreferencesComponent,
     DevComponent,
     StateComponent,
-    InlineEditComponent
+    InlineEditComponent,
+    TrainingSetsComponent
   ],
   imports: [
     BrowserModule,

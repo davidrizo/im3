@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" id="login">
   <div class="offset-4 col">
     <h2>LOGIN</h2>
     <p>{{message}}</p>
@@ -21,15 +21,15 @@
           <div *ngIf="f.submitted
               && !password.valid">Password is required</div>
         </div>
-        <div>
-          <button [disabled]="loading">Login</button>
+        <div class="offset-1">
+          <button class="btn btn-primary" [disabled]="loading">Login</button>
         </div>
       </form>
     </div>
 
     <div *ngIf="isLoggedIn()">
       Logged in ...
-      <button (click)="logout()" >Logout</button>
+      <button class="btn btn-primary" (click)="logout()" >Logout</button>
     </div>
   </div>
 </div>

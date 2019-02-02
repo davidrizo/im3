@@ -482,7 +482,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
       const toX = symbol.boundingBox.toX;
       const toY = symbol.boundingBox.toY;*/
 
-      const shapeComponent = this.svgCanvas.drawRectangle(fromX, fromY, toX - fromX, toY - fromY);
+      const shapeComponent = this.svgCanvas.drawRectangle(fromX, fromY, toX - fromX, toY - fromY, '');
       shapeComponent.shape.shapeProperties.fillColor = 'transparent';
       shapeComponent.shape.shapeProperties.strokeWidth = 1;
       shapeComponent.shape.shapeProperties.strokeColor = 'lightgreen'; // TODO

@@ -20,6 +20,7 @@ import {PostStrokes} from './payloads/post-strokes';
 import {ProjectStatistics} from './model/project-statistics';
 import {StringBody} from './payloads/string-body';
 import {RegionType} from './model/region-type';
+import {ITrainingSetExporter} from './model/itraining-set-exporter';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,7 @@ export class Im3wsService {
   private urlClassifierTypes: string;
   private urlRegionTypes: string;
   private urlUser: string;
+  private urlTrainingSets: string;
 
   private user: User;
   // isLoggedIn: boolean;
@@ -58,7 +60,7 @@ export class Im3wsService {
     this.urlAgnostic = configurationService.IM3WS_SERVER + '/muretapi/agnostic';
     this.urlAuthenticatedUser = configurationService.IM3WS_SERVER + '/muretapi/auth/user';
     this.urlUser = configurationService.IM3WS_SERVER + '/muretapi/user';
-    this.urlUser = configurationService.IM3WS_SERVER + '/muretapi/user';
+    this.urlTrainingSets = configurationService.IM3WS_SERVER + '/muretapi/trainingsets';
   }
 
   logout(): void {
@@ -483,5 +485,38 @@ export class Im3wsService {
       , this.getHttpAuthOptions());
   }
 
+  getTrainingSetExporters(): Observable<Array<ITrainingSetExporter>> {
+    this.logger.debug('IM3WSService: fetching training set exporters');
+    return this.http.get<Array<ITrainingSetExporter>>(this.urlTrainingSets + '/exporters', this.getHttpAuthOptions())
+      .pipe(
+        catchError(this.handleError('Fetch training set exporters', null))
+      );
+  }
+
+  downloadTrainingSet(exporterIndex: number, projectIDS: Array<number>): Observable<any> {
+    this.logger.debug('IM3WSService: fetching training set file for exporter ' + exporterIndex + ' and project ids: ' + projectIDS);
+    let projectIdsString: string = null;
+    projectIDS.forEach(id => {
+      if (projectIdsString != null) {
+        projectIdsString = projectIdsString + ',' + id;
+      } else {
+        projectIdsString = '' + id;
+      }
+    });
+    const headers = new HttpHeaders();
+    Object.assign(headers, this.getHttpAuthOptions());
+    headers.append('Content-Type', 'application/x-gzip');
+
+    /*return this.http.post<any>(this.urlTrainingSets + '/download/' + exporterIndex + '/' + projectIdsString,
+      {headers, responseType: 'blob'})
+      .pipe(
+        catchError(this.handleError('Download training set', null))
+      );*/
+
+    return this.http.get(this.urlTrainingSets + '/download/' + exporterIndex + '/' + projectIdsString,
+      { responseType: 'blob' }).pipe(
+        catchError(this.handleError('Download training set', null))
+      );
+  }
 
 }

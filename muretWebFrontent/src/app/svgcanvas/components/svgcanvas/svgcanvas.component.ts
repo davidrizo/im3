@@ -70,6 +70,8 @@ export class SVGCanvasComponent implements OnInit {
 
   @Output() svgShapeSelected = new EventEmitter<ShapeComponent>();
 
+  @Output() svgShapeDeselected = new EventEmitter<ShapeComponent>();
+
   @Output() svgShapeCreated = new EventEmitter<ShapeComponent>();
 
   private shapeTypeToCreate: string;
@@ -196,6 +198,7 @@ export class SVGCanvasComponent implements OnInit {
   private deselect() {
     if (this.selectedComponent) {
       this.selectedComponent.isSelected = false;
+      this.svgShapeDeselected.emit(this.selectedComponent);
       this.selectedComponent = null;
     }
   }
@@ -270,11 +273,12 @@ export class SVGCanvasComponent implements OnInit {
     return this.shapesComponents.find(x => x.shape.shapeProperties.name === name);
   }
 
-  drawRectangle(x: number, y: number, width: number, height: number): ShapeComponent {
+  drawRectangle(x: number, y: number, width: number, height: number, label: string): ShapeComponent {
     const rect = this.createComponent('Rectangle');
     if (rect instanceof RectangleComponent) {
       rect.setPosition(x, y);
       rect.setDimensions(width, height);
+      rect.label = label;
     }
     this.assignDefaultProperties(rect);
     this.shapesComponents.push(rect);
