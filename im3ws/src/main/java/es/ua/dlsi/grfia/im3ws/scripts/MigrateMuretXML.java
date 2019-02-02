@@ -23,8 +23,18 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 // IMPORTANT: IN order to execute it, remove spring-boot-starter-tomcat
+// In order to remove from database:
+/*
+delete from symbol;
+delete from region;
+delete from page;
+delete from image;
+delete from permissions;
+delete from project;
+*/
 /**
  * It migrates MuRET XML files to the online version
  */
@@ -43,8 +53,11 @@ public class MigrateMuretXML implements CommandLineRunner {
     @Autowired
     SymbolService symbolService;
     @Autowired
+    RegionTypeService regionTypeService;
+    @Autowired
     ProjectModel projectModel;
 
+    HashMap<String, es.ua.dlsi.grfia.im3ws.muret.entity.RegionType> regionTypeHashMap;
 
 
     MURETConfiguration muretConfiguration;
@@ -52,8 +65,9 @@ public class MigrateMuretXML implements CommandLineRunner {
     public static void main(String[] args)  {
         SpringApplication.run(MigrateMuretXML.class, args);
     }
+
     @Override
-    public void run(String... args) throws IOException {
+    public void run(String... args) throws IOException, IM3Exception {
         muretConfiguration = new MURETConfiguration("/Applications/MAMP/htdocs/muret", "http://localhost:8888/muret", null, 200, 720, true);
 
         /*String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza/";
@@ -62,9 +76,13 @@ public class MigrateMuretXML implements CommandLineRunner {
         importMuRETXML(path + "B-53.781/B-53.781.mrt");
         importMuRETXML(path + "B-59.850-completo/B-59.850-completo.mrt");*/
 
-        String path = "/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_barcelona";
+        regionTypeHashMap = new HashMap<>();
+        regionTypeService.findAll().forEach(regionType -> regionTypeHashMap.put(regionType.getName(), regionType));
         ArrayList<File> mrts = new ArrayList<>();
-        FileUtils.readFiles(new File(path), mrts, "mrt");
+        //FileUtils.readFiles(new File(path), mrts, "mrt");
+        FileUtils.readFiles(new File("/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_barcelona"), mrts, "mrt2", true); // documents with regions tagged with es.ua.dlsi.im3.omr.conversions.VicenteGilabertBoundingBoxes2MURET
+        FileUtils.readFiles(new File("/Users/drizo/GCLOUDUA/HISPAMUS/muret/catedral_zaragoza"), mrts, "mrt2", true); // documents with regions tagged with es.ua.dlsi.im3.omr.conversions.VicenteGilabertBoundingBoxes2MURET
+
         for (File file: mrts) {
             importMuRETXML(file.getAbsolutePath()); //TODO Importar tipo de region
         }
@@ -74,7 +92,7 @@ public class MigrateMuretXML implements CommandLineRunner {
         SpringApplication.exit(ctx);
     }
 
-    private void importMuRETXML(String xmlFileName) {
+    private void importMuRETXML(String xmlFileName) throws IM3Exception {
         try {
             System.out.println("Loading " + xmlFileName);
             XMLReader muretXMLReader = new XMLReader(AgnosticVersion.v2);
@@ -102,20 +120,19 @@ public class MigrateMuretXML implements CommandLineRunner {
 
                 for (es.ua.dlsi.im3.omr.model.entities.Page xmlPage : xmlImage.getPages()) {
                     es.ua.dlsi.grfia.im3ws.muret.entity.Page page = importPage(xmlPage, image);
-                    
+
                     for (es.ua.dlsi.im3.omr.model.entities.Region xmlRegion: xmlPage.getRegions()) {
                         es.ua.dlsi.grfia.im3ws.muret.entity.Region region = importRegion(xmlRegion, page);
 
                         for (es.ua.dlsi.im3.omr.model.entities.Symbol xmlSymbol: xmlRegion.getSymbols()) {
                             es.ua.dlsi.grfia.im3ws.muret.entity.Symbol symbol = importSymbol(xmlSymbol, region);
-
-
                         }
                     }
                 }
             }
         } catch (Throwable t) {
             t.printStackTrace();
+            throw new IM3Exception("Cannot import "+ xmlFileName);
         }
     }
 
@@ -158,13 +175,17 @@ public class MigrateMuretXML implements CommandLineRunner {
         return strokes;
     }
 
-    private Region importRegion(es.ua.dlsi.im3.omr.model.entities.Region xmlRegion, Page page) {
+    private Region importRegion(es.ua.dlsi.im3.omr.model.entities.Region xmlRegion, Page page) throws IM3Exception {
         System.out.println("\t\t\tImporting region");
         es.ua.dlsi.grfia.im3ws.muret.entity.Region region = new Region();
         region.setBoundingBox(convert(xmlRegion.getBoundingBox()));
         region.setPage(page);
         region.setComments(xmlRegion.getComments());
-
+        es.ua.dlsi.grfia.im3ws.muret.entity.RegionType regionType = regionTypeHashMap.get(xmlRegion.getRegionType().name());
+        if (regionType == null) {
+            throw new IM3Exception("Cannot find region type: '" + xmlRegion.getRegionType().name() + "'");
+        }
+        region.setRegionType(regionType);
         return regionService.create(region);
     }
 
@@ -192,6 +213,9 @@ public class MigrateMuretXML implements CommandLineRunner {
 
         // copy original file
         File inputImage = new File(xmlImagesPath, xmlImage.getImageRelativeFileName());
+        if (!inputImage.exists()) {
+            throw new IOException("Cannot find " + inputImage.getAbsolutePath());
+        }
         FileUtils.copy(inputImage, new File(new File(projectPath, MURETConfiguration.MASTER_IMAGES), xmlImage.getImageRelativeFileName()));
 
         BufferedImage fullImage = ImageIO.read(inputImage);

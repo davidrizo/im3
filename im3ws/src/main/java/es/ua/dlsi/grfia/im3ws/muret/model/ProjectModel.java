@@ -85,4 +85,13 @@ public class ProjectModel {
             throw e;
         }
     }
+
+    /**
+     * It generates a zip file containing the whole project file, mrt plus the image set
+     * @param project
+     * @return
+     */
+    public File exportFullProject(Project project) {
+        throw new UnsupportedOperationException("TO-DO");
+    }
 }
