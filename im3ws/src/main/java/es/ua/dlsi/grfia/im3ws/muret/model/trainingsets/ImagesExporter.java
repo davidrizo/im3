@@ -31,13 +31,15 @@ public class ImagesExporter extends AbstractTrainingSetExporter {
             FileCompressors fileCompressors = new FileCompressors();
 
             ArrayList<Path> projectPaths = new ArrayList<>();
+            ArrayList<String> projectPrefixes = new ArrayList<>();
             projectCollection.forEach(project -> {
                 File muretProjectFolder = new File(muretFolder.toFile(), project.getPath());
                 File imagesProjectFolder = new File(muretProjectFolder, MURETConfiguration.MASTER_IMAGES);
                 projectPaths.add(imagesProjectFolder.toPath());
+                projectPrefixes.add(project.getPath());
             });
 
-            fileCompressors.tgzFolders(tgz, projectPaths);
+            fileCompressors.tgzFolders(tgz, projectPaths, projectPrefixes);
             return tgz;
         } catch (Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot generate tgz with all image files in selected projects", e);
