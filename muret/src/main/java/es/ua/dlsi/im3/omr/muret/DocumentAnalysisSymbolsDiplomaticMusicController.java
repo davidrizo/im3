@@ -94,6 +94,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     static final Color REGION_COLOR = Color.RED;
     static final Color SYMBOL_COLOR = Color.GREEN; //TODO
     static final Color STROKES_COLOR = Color.LIGHTGREEN;
+    private static final double PADDING = 5; //TODO
 
     //// --- Common -----
     @FXML
@@ -200,7 +201,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
     private Timer strokesTimer;
 
-
+    boolean useStrokesClassifier = false; // TODO
 
     /**
      * Used to draw new symbol bounding box
@@ -400,11 +401,11 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
             Callable<Void> task = new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    GrayscaleImageData grayscaleImageData = getGrayScaleImage(x, y, width, height);
+                    GrayscaleImageData grayscaleImageData = getGrayScaleImage(x-PADDING, y-PADDING, width+PADDING, height+PADDING);
                     Strokes strokesPOJO = null;
 
                     AgnosticSymbol bestMatch = null;
-                    if (strokes != null) {
+                    if (useStrokesClassifier && strokes != null) {
                         strokesPOJO = strokes.createPOJO();
                         NearestNeighbourClassesRanking<AgnosticSymbol, SymbolImageAndPointsPrototype> orderedRecognizedSymbols= MuRET.getInstance().getModel().getClassifiers().getBimodalSymbolFromImageDataAndStrokesRecognizer().recognize(grayscaleImageData, strokesPOJO);
 
@@ -529,10 +530,12 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
     }
 
     private void doStrokesComplete() {
-        if (newStrokesView.hasMoreThan1Point()) {
-            addNewSymbol(newStrokesView);
+        if (newStrokesView != null) {
+            if (newStrokesView.hasMoreThan1Point()) {
+                addNewSymbol(newStrokesView);
+            }
+            newStrokesView = null;
         }
-        newStrokesView = null;
         cancelStrolesTimer();
     }
 
@@ -834,7 +837,8 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
                         toggleGroup.selectToggle(selectButton);
                     }
                 } else if (newValue == strokesButton) {
-                    if (loadSymbolFromImageAndStrokesClassifier()) {
+                    if (useStrokesClassifier && loadSymbolFromImageAndStrokesClassifier()
+                    || !useStrokesClassifier && loadSymbolFromImageClassifier() ) {
                         changeCursor(Cursor.CROSSHAIR);
                         interactionMode = InteractionMode.eSymbolsStrokes;
                     } else {

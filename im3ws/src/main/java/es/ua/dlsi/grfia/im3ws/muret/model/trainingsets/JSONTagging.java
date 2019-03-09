@@ -51,9 +51,12 @@ public class JSONTagging extends AbstractTrainingSetExporter {
             for (Project project: projectCollection) {
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Exporting project " + project.getName());
 
+                File projectFolder = new File(directory.toFile(), project.getPath());
+                projectFolder.mkdirs();
+
                 for (Image image: project.getImages()) {
                     Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Exporting JSON for image " + image.getFilename());
-                    File outputJSonFile = new File(directory.toFile(), project.getName() + ".json");
+                    File outputJSonFile = new File(projectFolder, image.getFilename() + ".json");
                     generate(image, outputJSonFile);
                 }
             }

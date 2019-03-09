@@ -14,7 +14,7 @@ public class DLSymbolAndPositionClassifierTest {
 
     @Test
     public void recognize() throws IM3Exception {
-        File localClassifierPath = new File("/Users/drizo/cmg/investigacion/software/github/repositorioHispamus/symbol-classification");
+        File localClassifierPath = new File("/Users/drizo/cmg/investigacion/software/github/repositorioHispamus/python-classifiers/symbol-classification");
 
         // just execute test in drizo's computer :(
         if (localClassifierPath.exists()) {
@@ -23,6 +23,14 @@ public class DLSymbolAndPositionClassifierTest {
             BoundingBox boundingBox = new BoundingBoxXY(91,245,150,375);
             AgnosticSymbol agnosticSymbol = classifier.recognize(testImage, boundingBox);
             assertEquals("Agnostic symbol", "clef.C:L1", agnosticSymbol.getAgnosticString());
+
+
+            File testImage2 = new File(localClassifierPath, "test/test2.jpg");
+            boundingBox = new BoundingBoxXY(2508, 1671, 2537, 1846);
+            agnosticSymbol = classifier.recognize(testImage2, boundingBox);
+            assertEquals("Agnostic symbol", "verticalLine:L1", agnosticSymbol.getAgnosticString());
+
+
         }
     }
 }

@@ -140,7 +140,7 @@ public class Calco2MuretXML {
         if (leaveAllInOnePageRegion) {
             Page onePage = new Page(0, 0, width, height);
             image.addPage(onePage);
-            Region oneRegion = new Region(RegionType.all, 0, 0, width, height);
+            Region oneRegion = new Region(RegionType.unknwon, 0, 0, width, height);
             onePage.add(oneRegion);
             for (Symbol symbol : symbolList) {
                 oneRegion.addSymbol(symbol);

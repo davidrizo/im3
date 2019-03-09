@@ -1,7 +1,7 @@
 {
-.appVersion = "1141";
+.appVersion = "1192";
 DisplayStrings = (
-"/uniE4C1"
+"/uniEA00"
 );
 customParameters = (
 {
@@ -5082,7 +5082,7 @@ unicode = E9F8;
 },
 {
 glyphname = uniEA00;
-lastChange = "2018-05-24 12:09:57 +0000";
+lastChange = "2019-03-08 17:02:29 +0000";
 layers = (
 {
 layerId = "02376AAC-77FF-49DA-9399-294AF7A35492";
@@ -5180,7 +5180,7 @@ nodes = (
 );
 }
 );
-width = 600;
+width = 697;
 }
 );
 unicode = EA00;

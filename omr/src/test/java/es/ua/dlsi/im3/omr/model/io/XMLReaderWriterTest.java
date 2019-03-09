@@ -41,7 +41,7 @@ public class XMLReaderWriterTest {
         image2.addPage(page2_2);
         page2_2.setInstrument(instrument1);
 
-        Region region1 = new Region(RegionType.all, 20, 30, 40, 50);
+        Region region1 = new Region(RegionType.unknwon, 20, 30, 40, 50);
         page2_2.add(region1);
 
         Symbol symbol1 = new Symbol(new AgnosticSymbol(agnosticVersion, new Note(NoteFigures.eighth, Directions.up), PositionsInStaff.LINE_1), 2, 4, 24, 37);

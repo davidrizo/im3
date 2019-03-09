@@ -159,7 +159,6 @@ public class Time implements Comparable<Time> {
 		return this.compareTo(fromTime) >= 0 && this.compareTo(toTime) < 0;
 	}
 
-	//TODO Test unitario - importante excluir toTime
 	/**
 	 * 
 	 * @param fromTimeA

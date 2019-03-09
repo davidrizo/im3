@@ -95,5 +95,8 @@ public class AnalysisStaff extends Staff {
 	public boolean hasAnalysisHooks() {
 		return !analysisHooks.isEmpty();
 	}
-		
+
+	public TreeMap<Time, ScoreAnalysisHook> getAnalysisHooks() {
+		return analysisHooks;
+	}
 }

@@ -154,4 +154,14 @@ public abstract class BoundingBox  {
 
 
     }
+
+    /**
+     *
+     * @param boundingBox
+     * @return True if the center of the boundingBox is contained inside this bounding box
+     */
+    public boolean containsCenterOf(BoundingBox boundingBox) {
+        double [] center = boundingBox.getCenter();
+        return this.contains(center[0], center[1]);
+    }
 }
