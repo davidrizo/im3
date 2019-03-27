@@ -18,6 +18,7 @@ import org.apache.fontbox.ttf.OpenTypeFont;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 public abstract class LayoutFont {
     /**
@@ -45,7 +46,7 @@ public abstract class LayoutFont {
      * @param svgFontResource Typically a file with the font
      * @param mappingResource Typically a file with the mapping (usually SMuFL)
      */
-    public LayoutFont(String name, LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, String otfMusicFontResourcePath, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws ImportException, IM3Exception {
+    public LayoutFont(String name, LayoutFonts font, InputStream svgFontResource, InputStream otfMusicFontResource, String otfMusicFontResourcePath, InputStream otfTextFontResource, InputStream mappingResource, IFontMap fontMap) throws IM3Exception {
         this.name = name;
         this.font = font;
         this.fontMap = fontMap;
@@ -85,6 +86,15 @@ public abstract class LayoutFont {
     public Glyph getGlyph(String codepoint) throws IM3Exception {
         String unicode = mapping.getCodepoint(codepoint);
         return svgFont.getGlyph(unicode);
+    }
+
+    /**
+     * It returns a table with all values from json file: key=codepoint ("U+E050"), value=glyphname ("gClef")
+     * @return
+     * @throws IM3Exception
+     */
+    public HashMap<String, String> getCodepointGlyphMap() {
+        return mapping.readCodepointToGlyphMap();
     }
 
     public SVGFont getSVGFont() {

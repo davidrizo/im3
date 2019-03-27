@@ -1,0 +1,183 @@
+{
+    "clef.G": {
+        "codepoint": "U+E050"
+    },
+    "clef.F": {
+        "codepoint": "U+E062"
+    },
+    "clef.C": {
+        "codepoint": "U+E05C"
+    },
+	"metersign.C": {
+        "codepoint": "U+E08A"
+    },      
+    "metersign.Ccut": {
+        "codepoint": "U+E08B"
+    },
+  	"note.whole": {
+        "codepoint": "U+E1D2"
+    },
+   "note.half_down" : {
+		"codepoint": "U+E1D4"
+    },
+    "note.half_up" : {
+		"codepoint": "U+E1D3"
+    },
+	"note.quarter_down" : {
+		"codepoint": "U+E1D6"
+    },
+    "note.quarter_up" : {
+		"codepoint": "U+E1D5"
+    },
+	"note.eighth_down" : {
+		"codepoint": "U+E1D8"
+    },
+    "note.eighth_up" : {
+		"codepoint": "U+E1D7"
+    },
+	"note.eighthCut_down" : {
+		"codepoint": "U+E561"
+    },
+    "note.eighthCut_up" : {
+		"codepoint": "U+E560"
+    },
+	"note.sixteenth_down" : {
+		"codepoint": "U+E1DA"
+    },
+    "note.sixteenth_up" : {
+		"codepoint": "U+E1D9"
+    },
+	"note.thirty_second_down" : {
+		"codepoint": "U+E1DC"
+    },
+    "note.thirty_second_up" : {
+		"codepoint": "U+E1DB"
+    },
+   "rest.whole" : {
+		"codepoint": "U+E4E3"
+    },
+    "rest.half" : {
+		"codepoint": "U+E4E4"
+    },
+    "rest.quarter" : {
+		"codepoint": "U+E4E5"
+    },
+    "rest.eighth" : {
+		"codepoint": "U+E4E6"
+    },
+    "rest.sixteenth" : {
+		"codepoint": "U+E4E7"
+    },
+    "rest.thirtySecond" : {
+		"codepoint": "U+E4E8"
+    },
+    "accidental.flat" : {
+		"codepoint": "U+E260"
+    },
+    "accidental.natural" : {
+		"codepoint": "U+E261"
+    },
+    "accidental.sharp" : {
+		"codepoint": "U+E262"
+    },
+    "accidental.doublesharp" : {
+		"codepoint": "U+E263"
+    },
+    "barlineSingle" : {
+      "codepoint": "U+E030"
+    }
+    "colon" : {
+      "codepoint": "U+E043"
+    },
+    "dot" : {
+		"codepoint": "U+E1FC"
+    },    
+    "fermata.above": {
+        "codepoint": "U+E4C0"
+    },        
+    "fermata.below": {
+        "codepoint": "U+E4C1"
+    },                
+    "slur.start" : {
+      "codepoint": "U+E8E4"
+    },
+    "slur.end" : {
+      "codepoint": "U+E8E5"
+    },
+    "smudge" : {
+      "codepoint": "U+F0A0"
+    },
+    "inkBlot" : {
+      "codepoint": "U+F0A6"
+    },
+    "paperHole" : {
+      "codepoint": "U+F0A7"
+    },
+    "note.beamedRight1_up" : {
+      "codepoint": "U+F0A2"
+    },
+    "note.beamedRight1_down" : {
+      "codepoint": "U+F0A8"
+    },
+    "note.beamedLeft1_up" : {
+      "codepoint": "U+E1F3"
+    },
+    "note.beamedLeft1_down" : {
+      "codepoint": "U+F0A9"
+    },
+    "note.beamedBoth1_up" : {
+      "codepoint": "U+F0B0"
+    },
+    "note.beamedBoth1_down" : {
+      "codepoint": "U+F0B1"
+    },
+    "note.beamedRight2_up" : {
+      "codepoint": "U+F0A4"
+    },
+    "note.beamedRight2_down" : {
+      "codepoint": "U+F0B3"
+    },
+    "note.beamedLeft2_up" : {
+      "codepoint": "U+E1F5"
+    },
+    "note.beamedLeft2_down" : {
+      "codepoint": "U+F0B4"
+    },
+    "note.beamedBoth2_up" : {
+      "codepoint": "U+F0B2"
+    },
+    "note.beamedBoth2_down" : {
+      "codepoint": "U+F0B5"
+    },
+    "digit.0" : {
+      "codepoint": "U+E080"
+    },
+    "digit.1" : {
+      "codepoint": "U+E081"
+    },
+    "digit.2" : {
+      "codepoint": "U+E082"
+    },
+    "digit.3" : {
+      "codepoint": "U+E083"
+    },
+    "digit.4" : {
+      "codepoint": "U+E084"
+    },
+    "digit.5" : {
+      "codepoint": "U+E085"
+    },
+    "digit.6" : {
+      "codepoint": "U+E086"
+    },
+    "digit.7" : {
+      "codepoint": "U+E087"
+    },
+    "digit.8" : {
+      "codepoint": "U+E088"
+    },
+    "digit.9" : {
+      "codepoint": "U+E089"
+    }
+}
+
