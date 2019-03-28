@@ -3883,7 +3883,7 @@ unicode = EA02;
 },
 {
 glyphname = uniE1FC;
-lastChange = "2019-03-27 09:48:43 +0000";
+lastChange = "2019-03-28 08:51:48 +0000";
 layers = (
 {
 hints = (
@@ -3921,7 +3921,7 @@ width = 100;
 }
 );
 note = uniE1E7;
-unicode = E1E7;
+unicode = E1FC;
 },
 {
 glyphname = uniE4C0;

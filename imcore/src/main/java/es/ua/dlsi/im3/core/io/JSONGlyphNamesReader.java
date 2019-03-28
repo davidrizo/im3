@@ -107,16 +107,27 @@ public class JSONGlyphNamesReader {
 	 * @return Java Unicode string
 	 */
 	public String getCodepoint(String glyphName) throws IM3Exception {
+		Object result = this.getPropertyValue(glyphName, "codepoint");
+		return getJavaUnicodeString((String) result);
+	}
+
+	/**
+	 *
+	 * @param glyphName
+	 * @param propertyName
+	 * @return Java Unicode string
+	 */
+	public Object getPropertyValue(String glyphName, String propertyName) throws IM3Exception {
 		Object o = jsonObject.get(glyphName);
 		if (o == null) {
 			throw new IM3Exception("Cannot find glyph " + glyphName);
 		}
 		JSONObject jsono = (JSONObject) o;
-		Object result = jsono.get("codepoint");
+		Object result = jsono.get(propertyName);
 		if (result == null) {
-			throw new IM3Exception("codepoint element not found inside " + o);
+			throw new IM3Exception(propertyName + " element not found inside " + o);
 		}
-		return getJavaUnicodeString((String) result);
+		return result;
 	}
 	
 	/**

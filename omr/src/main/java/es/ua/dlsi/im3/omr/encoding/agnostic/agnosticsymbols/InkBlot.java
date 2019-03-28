@@ -8,7 +8,7 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
  * @autor drizo
  */
 public class InkBlot extends AgnosticSymbolType {
-    private static final String CODE = "inkBlot";
+    private static final String CODE = "defect.inkBlot";
 
     public InkBlot() {
     }

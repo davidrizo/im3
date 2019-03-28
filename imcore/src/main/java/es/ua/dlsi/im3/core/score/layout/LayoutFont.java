@@ -88,6 +88,11 @@ public abstract class LayoutFont {
         return svgFont.getGlyph(unicode);
     }
 
+    public int getDefaultLineSpace(String codepoint) throws IM3Exception {
+        Long res = (Long)mapping.getPropertyValue(codepoint, "defaultLineSpace"); // it is Long by default
+        return res.intValue();
+    }
+
     /**
      * It returns a table with all values from json file: key=codepoint ("U+E050"), value=glyphname ("gClef")
      * @return

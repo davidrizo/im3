@@ -8,7 +8,7 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
  * @autor drizo
  */
 public class Smudge extends AgnosticSymbolType {
-    private static final String SMUDGE = "smudge";
+    private static final String SMUDGE = "defect.smudge";
 
     public Smudge() {
     }

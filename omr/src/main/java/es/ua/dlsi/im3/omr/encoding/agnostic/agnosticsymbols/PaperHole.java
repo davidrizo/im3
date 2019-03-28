@@ -8,7 +8,7 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
  * @autor drizo
  */
 public class PaperHole extends AgnosticSymbolType {
-    private static final String CODE = "paperHole";
+    private static final String CODE = "defect.paperHole";
 
     public PaperHole() {
     }
