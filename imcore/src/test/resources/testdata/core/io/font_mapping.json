@@ -1,0 +1,31 @@
+{
+    "clef.G": {
+        "defaultPositionInStaff": "L2",
+        "codepoint": "U+E901"
+    },
+    "clef.F": {
+        "defaultPositionInStaff": "L4",
+        "codepoint": "U+E903"
+    },
+    "clef.Fpetrucci": {
+      "defaultPositionInStaff": "L3",
+        "codepoint": "U+E904"
+    },
+    "clef.C": {
+        "defaultPositionInStaff": "L3",
+        "codepoint": "U+E905"
+    },
+    "metersign.Ct": {
+        "defaultPositionInStaff": "L3",
+        "codepoint": "U+E915"
+    },    
+    "metersign.Ccut": {
+        "defaultPositionInStaff": "L3",
+        "codepoint": "U+E918"
+    },
+    "metersign.CZ": {
+      "defaultPositionInStaff": "L3",
+        "codepoint": "U+F08A"
+    }
+}
+

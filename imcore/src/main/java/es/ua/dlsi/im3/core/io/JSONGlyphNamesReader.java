@@ -22,14 +22,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import org.json.simple.JSONObject;
+import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -40,10 +38,22 @@ import org.json.simple.parser.ParseException;
  */
 public class JSONGlyphNamesReader {
     private static final Object CODEPOINT = "codepoint";
-    JSONParser parser;
-	JSONObject jsonObject;
+	private LinkedHashMap<String, Object> mappings;
+	JSONParser parser;
 	private static final String UNICODE_PREFIX = "\\u";
 
+	// used to create LinkedHashMap rather than JSONObjects to maintain the order of the original file
+	ContainerFactory orderedKeyFactory = new ContainerFactory()
+	{
+		public List creatArrayContainer() {
+			return new LinkedList();
+		}
+
+		public Map createObjectContainer() {
+			return new LinkedHashMap();
+		}
+
+	};
 	public JSONGlyphNamesReader(String internalFileName) throws ImportException {
 		try {
 			InputStream stream = this.getClass().getResourceAsStream(internalFileName);
@@ -51,7 +61,7 @@ public class JSONGlyphNamesReader {
 				throw new IOException("Cannot locate '" + internalFileName + "'");
 			}
             init(stream);
-			jsonObject = (JSONObject) parser.parse(new InputStreamReader(stream));
+			mappings = (LinkedHashMap) parser.parse(new InputStreamReader(stream), orderedKeyFactory);
 		} catch (IOException | ParseException ex) {
 			Logger.getLogger(JSONGlyphNamesReader.class.getName()).log(Level.SEVERE, null, ex);
 			throw new ImportException(ex);
@@ -65,7 +75,8 @@ public class JSONGlyphNamesReader {
     private void init(InputStream inputStream) throws ImportException {
         try {
             parser = new JSONParser();
-            jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream));
+			mappings = (LinkedHashMap) parser.parse(new InputStreamReader(inputStream), orderedKeyFactory);
+			// jsonObject = (JSONObject) parser.parse(new InputStreamReader(inputStream), orderedKeyFactory);
         } catch (IOException | ParseException ex) {
             Logger.getLogger(JSONGlyphNamesReader.class.getName()).log(Level.SEVERE, null, ex);
             throw new ImportException(ex);
@@ -118,11 +129,11 @@ public class JSONGlyphNamesReader {
 	 * @return Java Unicode string
 	 */
 	public Object getPropertyValue(String glyphName, String propertyName) throws IM3Exception {
-		Object o = jsonObject.get(glyphName);
+		Object o = mappings.get(glyphName);
 		if (o == null) {
 			throw new IM3Exception("Cannot find glyph " + glyphName);
 		}
-		JSONObject jsono = (JSONObject) o;
+		LinkedHashMap jsono = (LinkedHashMap) o;
 		Object result = jsono.get(propertyName);
 		if (result == null) {
 			throw new IM3Exception(propertyName + " element not found inside " + o);
@@ -132,25 +143,29 @@ public class JSONGlyphNamesReader {
 	
 	/**
 	 * It returns a table with all values from json file: key=codepoint ("U+E050"), value=glyphname ("gClef")
-	 * @return
+	 * @return Linked hash map to maintain order
 	 * @throws IM3Exception
 	 */
-	public HashMap<String, String> readCodepointToGlyphMap() {
-		HashMap<String, String> result = new HashMap<>();
-		Set<Map.Entry<?,?>> entrySet = jsonObject.entrySet();
+	public LinkedHashMap<String, String> readCodepointToOrderedGlyphMap() {
+		LinkedHashMap<String, String> result = new LinkedHashMap<>();
+		Set<Map.Entry<String, Object>> entrySet = mappings.entrySet();
 		for (Map.Entry<?,?> entry: entrySet) {
-		    if (entry.getValue() instanceof JSONObject) {
-                JSONObject jsono = (JSONObject) entry.getValue();
+		    if (entry.getValue() instanceof LinkedHashMap) {
+				LinkedHashMap jsono = (LinkedHashMap) entry.getValue();
                 Object cp = jsono.get(CODEPOINT);
                 if (cp != null) {
                     //TODO '{"octaveLineThickness":0.16,"dashedBarlineGapLength":0.25,"beamSpacing":0.25,"thickBarlineThickness":0.5,"beamThickness":0.5,"bracketThickness":0.5,"repeatBarlineDotSeparation":0.16,"repeatEndingLineThickness":0.16,"thinBarlineThickness":0.16,"stemThickness":0.12,"staffLineThickness":0.13,"tieMidpointThickness":0.22,"textEnclosureThickness":0.16,"tupletBracketThickness":0.16,"legerLineThickness":0.16,"dashedBarlineDashLength":0.5,"subBracketThickness":0.16,"arrowShaftThickness":0.16,"barlineSeparation":0.4,"slurEndpointThickness":0.1,"pedalLineThickness":0.16,"slurMidpointThickness":0.22,"hairpinThickness":0.16,"dashedBarlineThickness":0.16,"lyricLineThickness":0.16,"legerLineExtension":0.4,"tieEndpointThickness":0.1}'
                     String unicode = (String) cp;
                     result.put(unicode, entry.getKey().toString());
                 } else {
-                    Logger.getLogger(JSONGlyphNamesReader.class.getName()).warning("Cannot find an unicode for JSON object " + jsono.toJSONString());
+                    Logger.getLogger(JSONGlyphNamesReader.class.getName()).warning("Cannot find an unicode for JSON object " + jsono.toString());
                 }
             }
 		}
 		return result;
+	}
+
+	public LinkedHashMap<String, Object> getMappings() {
+		return this.mappings;
 	}
 }

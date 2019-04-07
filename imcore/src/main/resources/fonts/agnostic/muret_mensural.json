@@ -1,306 +1,306 @@
 {
     "clef.G": {
-        "defaultLineSpace": 2,
+        "defaultPositionInStaff": "L2",
         "codepoint": "U+E901"
     },
     "clef.F": {
-        "defaultLineSpace": 6,
+        "defaultPositionInStaff": "L4",
         "codepoint": "U+E903"
     },
     "clef.Fpetrucci": {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E904"
     },
     "clef.C": {
-        "defaultLineSpace": 4,
+        "defaultPositionInStaff": "L3",
         "codepoint": "U+E905"
     },
-    "metersign.C": {
-        "defaultLineSpace": 4,
+    "metersign.Ct": {
+        "defaultPositionInStaff": "L3",
         "codepoint": "U+E915"
     },    
     "metersign.Ccut": {
-        "defaultLineSpace": 4,
+        "defaultPositionInStaff": "L3",
         "codepoint": "U+E918"
     },
     "metersign.CZ": {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F08A"
     },
+    "metersign.CcutZ": {
+      "defaultPositionInStaff": "L3",
+        "codepoint": "U+F08B"
+    },    
     "metersign.Odot": {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E910"
     },
     "metersign.O": {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E911"
     },
     "metersign.Cdot": {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E914"
     },
-    "timeSigProporcionMayor": {
-      "defaultLineSpace": 4,
-        "codepoint": "U+F08B"
-    },
     "note.quadrupleWholeStem_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F090"
     },
     "note.quadrupleWholeStem_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F091"
     },
     "note.tripleWholeStem_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F092"
     },
     "note.tripleWholeStem_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F093"
     },
     "note.doubleWholeStem_down" : {
-	"defaultLineSpace": 4,
+	"defaultPositionInStaff": "L3",
         "codepoint": "U+E95C"
     },
     "note.doubleWholeStem_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F094"
     },
     "note.doubleWhole" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E933"
     },
     "note.longa_down" : {
-	"defaultLineSpace": 4,
+	"defaultPositionInStaff": "L3",
         "codepoint": "U+E95D"
     },
     "note.longa_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F096"
     },
     "note.longa_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F572"
     },
     "note.longa_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F570"
     },
     "note.breve" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E937"
     },
     "note.breveBlack" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E934"
     },
     "note.whole" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E939"
     },
     "note.wholeBlack" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E938"
     },
     "note.half_down" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F59B"
     },
     "note.half_up" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F5A1"
     },
 	"note.quarter_down" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E959"
     },
     "note.quarter_up" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E954"
     },
 	"note.eighth_down" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F5A5"
     },
     "note.eighth_up" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F5A6"
     },
 	"note.eighthCut_down" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F963"
     },
     "note.eighthCut_up" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F962"
     },
 	"note.eighthVoid_down" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F5A9"
     },
     "note.eighthVoid_up" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F5AA"
     },
 	"note.sixteenth_down" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F569"
     },
     "note.sixteenth_up" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F56A"
     },
 	"note.sixteenthVoid_down" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F56D"
     },
     "note.sixteenthVoid_up" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+F56E"
     },
     "rest.longa2" : {
-		"defaultLineSpace": 2,
+		"defaultPositionInStaff": "L2",
         "codepoint": "U+E9F2"
     },
     "rest.longa3" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L2",
         "codepoint": "U+E9F1"
     },
     "rest.breve" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E9F3"
     },
     "rest.whole" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E9F4"
     },
     "rest.half" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E9F5"
     },
     "rest.seminima" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E9F6"
     },
     "rest.fusa" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E9F7"
     },    
     "rest.semifusa" : {
-      	"defaultLineSpace": 4,
+      	"defaultPositionInStaff": "L3",
         "codepoint": "U+E9F8"
     },
     "ligature" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0A1"
     },
     "accidental.flat" : {
-		"defaultLineSpace": 4,
-        "codepoint": "U+E9E0"
+		"defaultPositionInStaff": "L3",
+        "codepoint": "U+E9E1"
     },
     "accidental.natural" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E9E5"
     },
     "accidental.sharp" : {
-		"defaultLineSpace": 4,
+		"defaultPositionInStaff": "L3",
         "codepoint": "U+E262"
     },
-    "barlineSingle" : {
-      "defaultLineSpace": 0,
+    "verticalLine" : {
+      "defaultPositionInStaff": "L1",
         "codepoint": "U+E030"
     }    
     "colon" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E043"
     },
     "custos" : {
-		"defaultLineSpace": 5,
+		"defaultPositionInStaff": "S4",
         "codepoint": "U+EA02"
     },
     "dot" : {
-		"defaultLineSpace": 5,
+		"defaultPositionInStaff": "S3",
         "codepoint": "U+E1FC"
     },    
     "fermata.above": {
-        "defaultLineSpace": 9,
+        "defaultPositionInStaff": "S5",
         "codepoint": "U+E4C0"
     },        
     "fermata.below": {
-        "defaultLineSpace": -1,
+        "defaultPositionInStaff": "S0",
         "codepoint": "U+E4C1"
     },               
     "signumCongruentiae" : {
-      "defaultLineSpace": 9,
+      "defaultPositionInStaff": "S5",
         "codepoint": "U+EA00"
     },
     "slur.start" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E8E4"
     },
     "slur.end" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E8E5"
     },
     "defect.smudge" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0A0"
     },
     "defect.inkBlot" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0A6"
     },
     "defect.paperHole" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0A7"
     },
     "note.beamedRight1_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0A2"
     },
     "note.beamedRight1_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0A8"
     },
     "note.beamedLeft1_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E1F3"
     },
     "note.beamedLeft1_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0A9"
     },
     "note.beamedBoth1_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0B0"
     },
     "note.beamedBoth1_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0B1"
     },
     "note.beamedRight2_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0A4"
     },
     "note.beamedRight2_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0B3"
     },
     "note.beamedLeft2_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+E1F5"
     },
     "note.beamedLeft2_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0B4"
     },
     "note.beamedBoth2_up" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0B2"
     },
     "note.beamedBoth2_down" : {
-      "defaultLineSpace": 4,
+      "defaultPositionInStaff": "L3",
         "codepoint": "U+F0B5"
     }    
 }

@@ -6,7 +6,6 @@ import es.ua.dlsi.im3.core.io.JSONGlyphNamesReader;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.layout.fonts.IFontMap;
 import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
-import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
 import es.ua.dlsi.im3.core.score.layout.svg.Glyph;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGFont;
 import es.ua.dlsi.im3.core.score.layout.svg.SVGFontImporter;
@@ -88,9 +87,8 @@ public abstract class LayoutFont {
         return svgFont.getGlyph(unicode);
     }
 
-    public int getDefaultLineSpace(String codepoint) throws IM3Exception {
-        Long res = (Long)mapping.getPropertyValue(codepoint, "defaultLineSpace"); // it is Long by default
-        return res.intValue();
+    public String getDefaultPositionInStaff(String codepoint) throws IM3Exception {
+        return (String) mapping.getPropertyValue(codepoint, "defaultPositionInStaff");
     }
 
     /**
@@ -99,7 +97,7 @@ public abstract class LayoutFont {
      * @throws IM3Exception
      */
     public HashMap<String, String> getCodepointGlyphMap() {
-        return mapping.readCodepointToGlyphMap();
+        return mapping.readCodepointToOrderedGlyphMap();
     }
 
     public SVGFont getSVGFont() {
