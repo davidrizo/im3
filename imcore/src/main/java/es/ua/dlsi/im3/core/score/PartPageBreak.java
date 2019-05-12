@@ -1,12 +1,14 @@
 package es.ua.dlsi.im3.core.score;
 
-import es.ua.dlsi.im3.core.IM3Exception;
 
 /**
- * An explicit page break
+ * An explicit page break. In MEI it is referred as a page beginning
  */
-public class PartPageBreak implements ITimedElementInStaff {
+public class PartPageBreak implements ITimedElementInStaff, IFacsimile {
     private Time time;
+    String ID;
+    String facsimileElementID;
+
     /**
      * If it is explicit
      */
@@ -39,5 +41,21 @@ public class PartPageBreak implements ITimedElementInStaff {
     @Override
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getFacsimileElementID() {
+        return facsimileElementID;
+    }
+
+    public void setFacsimileElementID(String facsimileElementID) {
+        this.facsimileElementID = facsimileElementID;
     }
 }

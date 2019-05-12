@@ -80,6 +80,8 @@ public class ScoreSong {
 
     private final DurationEvaluator durationEvaluator;
 
+    Facsimile facsimile;
+
     //FRACTIONS private final String PART_ID_PREFIX = "P";
 
     public ScoreSong(DurationEvaluator durationEvaluator) {
@@ -1889,7 +1891,13 @@ public class ScoreSong {
     }
 
 
+	public Facsimile getFacsimile() {
+		return facsimile;
+	}
 
+	public void setFacsimile(Facsimile facsimile) {
+		this.facsimile = facsimile;
+	}
 }
 /*else { //TODO ¿Cómo se coordina esto con lo de arriba de la imperfección? - con este else?
         TimeSignature meter = currentSpine.staff.getRunningTimeSignatureAt(lastTime);

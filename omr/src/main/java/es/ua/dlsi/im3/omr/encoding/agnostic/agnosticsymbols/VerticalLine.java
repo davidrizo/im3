@@ -28,11 +28,8 @@ public class VerticalLine extends AgnosticSymbolType {
             case v1:
                 agnosticValue = BARLINE_V1;
                 break;
-            case v2:
-                agnosticValue = BARLINE_V2;
-                break;
             default:
-                throw new IM3RuntimeException("Unsupported version: " + version);
+                agnosticValue = BARLINE_V2;
         }
 
     }

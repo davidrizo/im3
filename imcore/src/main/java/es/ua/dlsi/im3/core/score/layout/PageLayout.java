@@ -18,4 +18,8 @@ public abstract class PageLayout extends ScoreLayout {
     public PageLayout(ScoreSong song, Collection<Staff> staves) throws IM3Exception {
         super(song, staves);
     }
+
+    public ArrayList<Page> getPages() {
+        return pages;
+    }
 }

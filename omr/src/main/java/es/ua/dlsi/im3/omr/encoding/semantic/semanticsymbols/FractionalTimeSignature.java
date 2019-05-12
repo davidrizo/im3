@@ -1,6 +1,9 @@
 package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
-import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.ScoreLayer;
+import es.ua.dlsi.im3.core.score.io.ImportFactories;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
 
 /**
  * @autor drizo
@@ -21,5 +24,24 @@ public class FractionalTimeSignature extends TimeSignature {
         sb.append('/');
         sb.append(den);
         return sb.toString();
+    }
+
+    @Override
+    public String toKernSemanticString() throws IM3Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append("*M");
+        sb.append(num);
+        sb.append('/');
+        sb.append(den);
+        return sb.toString();
+    }
+
+    @Override
+    public SemanticSymbolType semantic2ScoreSong(ScoreLayer scoreLayer, SemanticSymbolType propagatedSymbolType) throws IM3Exception {
+        es.ua.dlsi.im3.core.score.TimeSignature meter =
+                ImportFactories.processMeter(null, new Integer(num).toString(), new Integer(den).toString());
+        meter.setTime(scoreLayer.getDuration());
+        scoreLayer.getStaff().addTimeSignature(meter);
+        return propagatedSymbolType;
     }
 }

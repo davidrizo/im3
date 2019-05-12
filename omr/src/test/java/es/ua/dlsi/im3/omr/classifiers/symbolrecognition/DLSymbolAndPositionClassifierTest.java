@@ -12,9 +12,10 @@ import static org.junit.Assert.*;
 
 public class DLSymbolAndPositionClassifierTest {
 
+    @Deprecated
     @Test
     public void recognize() throws IM3Exception {
-        File localClassifierPath = new File("/Users/drizo/cmg/investigacion/software/github/repositorioHispamus/python-classifiers/symbol-classification");
+       /* File localClassifierPath = new File("/Users/drizo/cmg/investigacion/software/github/repositorioHispamus/python-classifiers/symbol-classification");
 
         // just execute test in drizo's computer :(
         if (localClassifierPath.exists()) {
@@ -31,6 +32,6 @@ public class DLSymbolAndPositionClassifierTest {
             assertEquals("Agnostic symbol", "verticalLine:L1", agnosticSymbol.getAgnosticString());
 
 
-        }
+        }*/
     }
 }

@@ -7,6 +7,7 @@ import org.im4java.core.*;
 import org.im4java.process.ProcessStarter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class CameraSimulator {
     public static final String SEP = "/";
     public static final String SYMBOLS = "symbols";
     private final String magicGraphicsBinPath;
-    private final String imageMagicBinPath;
+    /////private final String imageMagicBinPath;
 
     /**
      *
@@ -35,11 +36,11 @@ public class CameraSimulator {
      * @param imageMagicBinPath Just if ImageMagic is used
      */
     public CameraSimulator(String magicGraphicsBinPath, String imageMagicBinPath) {
-        this.imageMagicBinPath=imageMagicBinPath;
+        /////this.imageMagicBinPath=imageMagicBinPath;
         ///Users/drizo/apps/GraphicsMagick-1.3.28/bin/
-        if (imageMagicBinPath != null) {
+        /*if (imageMagicBinPath != null) {
             ProcessStarter.setGlobalSearchPath(imageMagicBinPath);
-        }
+        }*/
 
         this.magicGraphicsBinPath = magicGraphicsBinPath;
     }
@@ -447,7 +448,8 @@ public class CameraSimulator {
         CompositeCmd cc = new CompositeCmd(true);
         //cmd.setCommand("composite -dissolve");
         //MontageCmd cmd = new MontageCmd(true);
-        cc.setSearchPath("/Users/drizo/apps/GraphicsMagick-1.3.28/bin/");
+        /////cc.setSearchPath("/Users/drizo/apps/GraphicsMagick-1.3.28/bin/");
+        cc.setSearchPath(magicGraphicsBinPath);
         DissolveOp opd = new DissolveOp();
         opd.dissolve("/tmp/distortions/flop.jpg", 3.0);
         opd.addImage(image);
@@ -472,7 +474,8 @@ public class CameraSimulator {
 
     private ConvertCmd createCommand() {
         ConvertCmd cmd = new ConvertCmd(true);
-        cmd.setSearchPath("/Users/drizo/apps/GraphicsMagick-1.3.28/bin/");
+        /////cmd.setSearchPath("/Users/drizo/apps/GraphicsMagick-1.3.28/bin/");
+        cmd.setSearchPath(this.magicGraphicsBinPath);
         return cmd;
     }
 
@@ -774,6 +777,9 @@ public class CameraSimulator {
                     try {
                         randomEffects(inputFile.getAbsolutePath(), output.getAbsolutePath(), outputDescription);
                         notGenerated = false;
+                    } catch (FileNotFoundException e) {
+                        System.err.println("Cannot generate because of " + e.getMessage());
+                        System.exit(1);
                     } catch (Exception e) {
                         System.err.println("Regenerating because of " + e.getMessage());
                     }
@@ -792,11 +798,12 @@ public class CameraSimulator {
 
         }*/
 
-        if (args.length != 1) {
-            System.err.println("Set input folder");
+        if (args.length != 2) {
+            System.err.println("Usage: <GraphicsMagick bin path> <images folder>");
             return;
         }
 
-        new CameraSimulator("/Users/drizo/apps/GraphicsMagick-1.3.28/bin/",null ).run(args[0]);
+        /////new CameraSimulator("/Users/drizo/apps/GraphicsMagick-1.3.28/bin/",null ).run(args[0]);
+        new CameraSimulator(args[0],null ).run(args[1]);
     }
 }

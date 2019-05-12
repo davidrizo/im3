@@ -35,6 +35,10 @@ public class Clef extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        return CLEF + clefNote.name();
+        if (clefNote != null) {
+            return CLEF + clefNote.name();
+        } else {
+            return CLEF;
+        }
     }
 }

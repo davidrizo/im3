@@ -35,7 +35,7 @@ public class AccNoteState extends OMRState {
             case sharp:
                 accidental = Accidentals.SHARP;
                 break;
-            case double_sharp:
+            case doublesharp:
                 accidental = Accidentals.DOUBLE_SHARP;
                 break;
             case natural:

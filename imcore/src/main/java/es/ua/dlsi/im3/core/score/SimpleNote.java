@@ -79,9 +79,17 @@ public class SimpleNote extends SingleFigureAtom {
 	 * @throws IM3Exception 
 	 */
 	public void tieToNext(AtomPitch to) throws IM3Exception {
+		if (to == this.atomPitch) {
+			throw new IM3Exception("Tying a note to itself");
+		}
+
 		this.atomPitch.setTiedToNext(to); 
 	}
 	public void tieToNext(SimpleNote to) throws IM3Exception {
+		if (to == this) {
+			throw new IM3Exception("Tying a note to itself");
+		}
+
 		this.atomPitch.setTiedToNext(to.getAtomPitch());
 	}
 	/**
@@ -89,9 +97,15 @@ public class SimpleNote extends SingleFigureAtom {
 	 * @throws IM3Exception 
 	 */
 	public void tieFromPrevious(AtomPitch from) throws IM3Exception {
+		if (from == this.atomPitch) {
+			throw new IM3Exception("Tying a note to itself");
+		}
 		this.atomPitch.setTiedFromPrevious(from);
 	}
 	public void tieFromPrevious(SimpleNote from) throws IM3Exception {
+		if (from == this) {
+			throw new IM3Exception("Tying a note to itself");
+		}
 		this.atomPitch.setTiedFromPrevious(from.getAtomPitch());
 	}
 	@Override

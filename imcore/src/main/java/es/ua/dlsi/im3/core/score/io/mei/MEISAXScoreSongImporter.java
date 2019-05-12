@@ -23,7 +23,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.facsimile.Graphic;
+import es.ua.dlsi.im3.core.score.facsimile.Surface;
+import es.ua.dlsi.im3.core.score.facsimile.Zone;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.XMLSAXScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernImporter;
@@ -266,22 +271,31 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     // we use identity hash code because it has not been constructed yet the complete AtomPitch
     private HashMap<Integer, AtomPitch> pendingTieTo; // key = toPitch.identityHashCode, value = fromPitch
 
+	private boolean inPart; // using <part>
+	private String lastPartLabel;
+
+	private Surface lastSurface;
+
     @Override
 	protected void init() {
 		song = new ScoreSong(); //TODO ¿Y si es una colección?
+		xmlIDs = new HashMap<>();
+		pendingConnectorOrMarks = new HashSet<>();
+		hierarchicalIdGenerator = new HierarchicalIDGenerator();
+		initPart();
+	}
+
+	private void initPart() {
 		staffNumbers = new HashMap<>();
 		currentTies = new HashMap<>();
 		currentTime = new HashMap<>();
-        previousAccidentals = new HashMap<>();
-		xmlIDs = new HashMap<>();
-		pendingConnectorOrMarks = new HashSet<>();
+		previousAccidentals = new HashMap<>();
 		placeHolders = new HashMap<>();
-		hierarchicalIdGenerator = new HierarchicalIDGenerator();
 		layers = new HashMap<>();
 		maximumVoicesTime = Time.TIME_ZERO;
 		lastMeasureEndTime = Time.TIME_ZERO;
-        beamedGroupElements = null;
-        pendingTieTo = new HashMap<>();
+		beamedGroupElements = null;
+		pendingTieTo = new HashMap<>();
 	}
 	
 	/*private String getLayerCode() throws ImportException {
@@ -366,6 +380,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
             updateCurrentTime();
         }
 	}
+
+	private void parseFacsimileReference(IFacsimile target, HashMap<String, String> attributesMap) {
+    	target.setFacsimileElementID(getOptionalAttribute(attributesMap, "facs"));
+	}
 	
 	@Override
 	public void doHandleOpenElement(String element, HashMap<String, String> attributesMap) throws ImportException {
@@ -392,32 +410,37 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				importingMusic = true; //TODO gestionar esto de otra forma - ¿estados? - ¿consume() como en eventos JavaFX?
 			} else if (importingMusic) { // avoid parse other MEI extensions such as the hierarchical analysis here
 				switch (element) {
-				case "work":
-					//TODO song.setWo 
-					break;
-				case "title":
-					titleType = getOptionalAttribute(attributesMap, "type");
-					break;
-				case "persName":
-					personRole = getOptionalAttribute(attributesMap, "role");
-					break;
-				case "ossia":
-					inOssia = true;
-					break;
-				case "scoreDef":
-					lastKeySig = getOptionalAttribute(attributesMap, "key.sig");
-					lastKeyMode = getOptionalAttribute(attributesMap, "key.mode");
-					lastTransDiat = getOptionalAttribute(attributesMap, "trans.diat");
-					lastTransSemi = getOptionalAttribute(attributesMap, "trans.semi");					
-					lastMeterCount = getOptionalAttribute(attributesMap, "meter.count");
-					lastMeterUnit = getOptionalAttribute(attributesMap, "meter.unit");
-					lastMeterSym = getOptionalAttribute(attributesMap, "meter.sym");
-					lastModusmaiorStr = getOptionalAttribute(attributesMap, "modusmaior");
-					lastModusminorStr = getOptionalAttribute(attributesMap, "modusminor");
-					lastTempusStr = getOptionalAttribute(attributesMap, "tempus");
-					lastProlatioStr = getOptionalAttribute(attributesMap, "prolatio");
-					
-					break;
+					case "work":
+						//TODO song.setWo
+						break;
+					case "title":
+						titleType = getOptionalAttribute(attributesMap, "type");
+						break;
+					case "persName":
+						personRole = getOptionalAttribute(attributesMap, "role");
+						break;
+					case "ossia":
+						inOssia = true;
+						break;
+					case "part":
+						inPart = true;
+						lastPartLabel = getOptionalAttribute(attributesMap, "label");
+						processPossibleNewScorePart(lastPartLabel);
+						break;
+					case "scoreDef":
+						lastKeySig = getOptionalAttribute(attributesMap, "key.sig");
+						lastKeyMode = getOptionalAttribute(attributesMap, "key.mode");
+						lastTransDiat = getOptionalAttribute(attributesMap, "trans.diat");
+						lastTransSemi = getOptionalAttribute(attributesMap, "trans.semi");
+						lastMeterCount = getOptionalAttribute(attributesMap, "meter.count");
+						lastMeterUnit = getOptionalAttribute(attributesMap, "meter.unit");
+						lastMeterSym = getOptionalAttribute(attributesMap, "meter.sym");
+						lastModusmaiorStr = getOptionalAttribute(attributesMap, "modusmaior");
+						lastModusminorStr = getOptionalAttribute(attributesMap, "modusminor");
+						lastTempusStr = getOptionalAttribute(attributesMap, "tempus");
+						lastProlatioStr = getOptionalAttribute(attributesMap, "prolatio");
+
+						break;
 					//TODO staff groups (ej. garison.mei)
 				/*case "staffGrp":
 					label = getOptionalAttribute(attributesMap, "label");
@@ -426,7 +449,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					currentScorePart.setName(label);
 					song.addPart(currentScorePart);					
 					break;*/
-				case "instrDef":
+					case "instrDef":
                     /*20180306 label = getOptionalAttribute(attributesMap, "label");
                     String instrNumber = getOptionalAttribute(attributesMap, "n");
 
@@ -443,76 +466,88 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         currentScorePart.setName(label);
                         song.addPart(currentScorePart);
                     }*/
-                    break;
-				case "staffDef": 
-					lastStaff = processStaff(attributesMap);
-					label = getOptionalAttribute(attributesMap, "label");
-					lastStaff.setName(label);
+						break;
+					case "staffDef":
+						lastStaff = processStaff(attributesMap);
+						label = getOptionalAttribute(attributesMap, "label");
+						lastStaff.setName(label);
 
-					processPossibleNewScorePart(label); // 20180302
-					
-					clefLine = getOptionalAttribute(attributesMap, "clef.line");
-					clefShape = getOptionalAttribute(attributesMap, "clef.shape");
-					if (clefLine != null || clefShape != null) {
-						processClef(clefLine, clefShape, getCurrentTime(), 
-								getOptionalAttribute(attributesMap, "clef.dis"),
-								getOptionalAttribute(attributesMap, "clef.dis.place")
-								);
-					}
-
-					String notationType = getOptionalAttribute(attributesMap, "notationtype");
-                    if (notationType != null) {
-						if (notationType.equals("mensural")) {
-							lastStaff.setNotationType(NotationType.eMensural);
-                        } else {
-							throw new ImportException("Unsupported notation type import: " + notationType);
-						}
-					}
-					String meterCount = getOptionalAttribute(attributesMap, "meter.count");
-					String meterUnit = getOptionalAttribute(attributesMap, "meter.unit");
-					String meterSym  = getOptionalAttribute(attributesMap, "meter.sym");	
-					String modusmaiorStr = getOptionalAttribute(attributesMap, "modusmaior");
-					String modusminorStr = getOptionalAttribute(attributesMap, "modusminor");
-					String tempusStr = getOptionalAttribute(attributesMap, "tempus");
-					String prolatioStr = getOptionalAttribute(attributesMap, "prolatio");
-					
-					if (meterCount == null && meterUnit == null && meterSym == null) {
-						meterCount = lastMeterCount;
-						meterUnit = lastMeterUnit;
-						meterSym	 = lastMeterSym;	
-					} 
-					
-					if (prolatioStr == null && tempusStr == null && modusmaiorStr == null && modusminorStr == null) {
-						modusmaiorStr = lastModusmaiorStr;
-						modusminorStr = lastModusminorStr;
-						tempusStr = lastTempusStr;
-						prolatioStr	 = lastProlatioStr;					
-					}
-
-					if (meterCount != null || meterUnit != null || meterSym != null || modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null) {
-                        processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
-                    }
-					String staffKeySig = getOptionalAttribute(attributesMap, "key.sig");
-					String staffKeyMode = getOptionalAttribute(attributesMap, "key.mode");
-					String staffTransDiat = getOptionalAttribute(attributesMap, "trans.diat");
-					String staffTransSemi = getOptionalAttribute(attributesMap, "trans.semi");
-					if (staffKeySig == null) {
-						if (lastKeySig == null) {
-							Logger.getLogger(MEISAXScoreSongImporter.class.getName()).log(Level.WARNING, "key.sig is null both in scoreDef and staffDeff");
+						if (label != null) {
+							if (lastPartLabel != null) {
+								if (!label.equals(lastPartLabel)) {
+									throw new ImportException("Using different labels for <part> ('" + lastPartLabel + "') and <staffDeff> ('" + label + "')");
+								}
+							} else {
+								if (inPart) {
+									currentScorePart.setName(label); // set name to current part
+								} else {
+									processPossibleNewScorePart(label); // 20180302
+								}
+							}
 						}
 
-						staffKeySig = lastKeySig; // defined in scoreDef
-						staffKeyMode = lastKeyMode; // defined in scoreDef
-						staffTransDiat = lastTransDiat;
-						staffTransSemi = lastTransSemi;
-					}
+						clefLine = getOptionalAttribute(attributesMap, "clef.line");
+						clefShape = getOptionalAttribute(attributesMap, "clef.shape");
+						if (clefLine != null || clefShape != null) {
+							processClef(clefLine, clefShape, getCurrentTime(),
+									getOptionalAttribute(attributesMap, "clef.dis"),
+									getOptionalAttribute(attributesMap, "clef.dis.place")
+							);
+						}
 
-					if (staffKeySig != null) {
-                        processKey(null, lastStaff, staffKeySig, staffKeyMode, staffTransDiat, staffTransSemi);
-                    }
-					 
-					//TODO Instrumentos transpositores
-					// commented because they have 
+						String notationType = getOptionalAttribute(attributesMap, "notationtype");
+						if (notationType != null) {
+							if (notationType.equals("mensural")) {
+								lastStaff.setNotationType(NotationType.eMensural);
+							} else {
+								throw new ImportException("Unsupported notation type import: " + notationType);
+							}
+						}
+						String meterCount = getOptionalAttribute(attributesMap, "meter.count");
+						String meterUnit = getOptionalAttribute(attributesMap, "meter.unit");
+						String meterSym = getOptionalAttribute(attributesMap, "meter.sym");
+						String modusmaiorStr = getOptionalAttribute(attributesMap, "modusmaior");
+						String modusminorStr = getOptionalAttribute(attributesMap, "modusminor");
+						String tempusStr = getOptionalAttribute(attributesMap, "tempus");
+						String prolatioStr = getOptionalAttribute(attributesMap, "prolatio");
+
+						if (meterCount == null && meterUnit == null && meterSym == null) {
+							meterCount = lastMeterCount;
+							meterUnit = lastMeterUnit;
+							meterSym = lastMeterSym;
+						}
+
+						if (prolatioStr == null && tempusStr == null && modusmaiorStr == null && modusminorStr == null) {
+							modusmaiorStr = lastModusmaiorStr;
+							modusminorStr = lastModusminorStr;
+							tempusStr = lastTempusStr;
+							prolatioStr = lastProlatioStr;
+						}
+
+						if (meterCount != null || meterUnit != null || meterSym != null || modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null) {
+							processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+						}
+						String staffKeySig = getOptionalAttribute(attributesMap, "key.sig");
+						String staffKeyMode = getOptionalAttribute(attributesMap, "key.mode");
+						String staffTransDiat = getOptionalAttribute(attributesMap, "trans.diat");
+						String staffTransSemi = getOptionalAttribute(attributesMap, "trans.semi");
+						if (staffKeySig == null) {
+							if (lastKeySig == null) {
+								Logger.getLogger(MEISAXScoreSongImporter.class.getName()).log(Level.WARNING, "key.sig is null both in scoreDef and staffDeff");
+							}
+
+							staffKeySig = lastKeySig; // defined in scoreDef
+							staffKeyMode = lastKeyMode; // defined in scoreDef
+							staffTransDiat = lastTransDiat;
+							staffTransSemi = lastTransSemi;
+						}
+
+						if (staffKeySig != null) {
+							processKey(null, lastStaff, staffKeySig, staffKeyMode, staffTransDiat, staffTransSemi);
+						}
+
+						//TODO Instrumentos transpositores
+						// commented because they have
 					/*lastMeterCount = null;
 					lastMeterUnit = null;
 					lastMeterSym = null;
@@ -522,129 +557,134 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					lastModusminorStr = null;
 					lastTempusStr = null;
 					lastProlatioStr = null;*/
-					
-					break;
-				case "mensur":
-					modusmaiorStr = getOptionalAttribute(attributesMap, "modusmaior");
-					modusminorStr = getOptionalAttribute(attributesMap, "modusminor");
-					tempusStr = getOptionalAttribute(attributesMap, "tempus");
-					prolatioStr = getOptionalAttribute(attributesMap, "prolatio");					
-					TimeSignatureMensural ts = processPossibleMensuralMeter(modusmaiorStr, modusminorStr, tempusStr, prolatioStr );
-					if (ts == null) {
-						throw new ImportException("@mensur does not contain any parameter (modusmaior, tempus...)");
-					}
-					lastStaff.addTimeSignature(ts);
-					break;				
-				case "measure":
-					staffCount=0;
-                    previousAccidentals.clear();
-					number = getOptionalAttribute(attributesMap, "n");
-					xmlid = getOptionalAttribute(attributesMap, "xml:id");
-					//updateMeasure = true;
-					//lastMeasureXMLID = xmlid;
-					//lastMeasureNumber = number;
-					pendingMeasureRestsToSetDuration = null;
-					pendingMultiMeasureRestsToSetDuration = null;
-					currentMeasure = ImportFactories.processMeasure(song, lastMeasureEndTime, number);
-                    xmlIDs.put(xmlid, currentMeasure);
-					if (lastMeasureEndTime.isZero()) {
-						maximumVoicesTime = Time.TIME_ZERO; // for mixed mensural and modern
-					}
-					break;
-                case "sb":
-                    horizontalOrderInStaff = 0;
-                    Time sbtime = getCurrentTime();
-                    // TODO: 17/11/17 A system en lugar de staff
-                    if (!lastStaff.hasSystemBreak(sbtime )) {
-                        lastStaff.addSystemBreak(new PartSystemBreak(sbtime, true));
-                    }
-                    break;
-                case "pb":
-                    // TODO: 17/11/17 A system en lugar de staff
-                    horizontalOrderInStaff = 0;
-                    Time pbtime = getCurrentTime();
-                    // TODO: 17/11/17 A system en lugar de staff
-                    if (!lastStaff.hasPageBreak(pbtime )) {
-                        lastStaff.addPageBreak(new PartPageBreak(pbtime, true));
-                    }
-                    break;
-				case "barLine":
-                    previousAccidentals.clear();
-                    horizontalOrderInStaff++;
-                    //updateTimesGivenMeasure();
-					Time markTime = getCurrentTime();
-					MarkBarline barline = new MarkBarline(markTime);
-					lastStaff.addMarkBarline(barline);
-					break;
-				case "staff":
+
+						break;
+					case "mensur":
+						modusmaiorStr = getOptionalAttribute(attributesMap, "modusmaior");
+						modusminorStr = getOptionalAttribute(attributesMap, "modusminor");
+						tempusStr = getOptionalAttribute(attributesMap, "tempus");
+						prolatioStr = getOptionalAttribute(attributesMap, "prolatio");
+						TimeSignatureMensural ts = processPossibleMensuralMeter(modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+						if (ts == null) {
+							throw new ImportException("@mensur does not contain any parameter (modusmaior, tempus...)");
+						}
+						lastStaff.addTimeSignature(ts);
+						break;
+					case "measure":
+						staffCount = 0;
+						previousAccidentals.clear();
+						number = getOptionalAttribute(attributesMap, "n");
+						xmlid = getOptionalAttribute(attributesMap, "xml:id");
+						//updateMeasure = true;
+						//lastMeasureXMLID = xmlid;
+						//lastMeasureNumber = number;
+						pendingMeasureRestsToSetDuration = null;
+						pendingMultiMeasureRestsToSetDuration = null;
+						currentMeasure = ImportFactories.processMeasure(song, lastMeasureEndTime, number);
+						xmlIDs.put(xmlid, currentMeasure);
+						if (lastMeasureEndTime.isZero()) {
+							maximumVoicesTime = Time.TIME_ZERO; // for mixed mensural and modern
+						}
+						break;
+					case "sb":
+						horizontalOrderInStaff = 0;
+						Time sbtime = getCurrentTime();
+						// TODO: 17/11/17 A system en lugar de staff
+						if (!lastStaff.hasSystemBreak(sbtime)) {
+							PartSystemBreak sb = new PartSystemBreak(sbtime, true);
+							parseFacsimileReference(sb, attributesMap);
+							lastStaff.addSystemBreak(sb);
+						}
+
+						break;
+					case "pb":
+						// TODO: 17/11/17 A system en lugar de staff
+						horizontalOrderInStaff = 0;
+						Time pbtime = getCurrentTime();
+						// TODO: 17/11/17 A system en lugar de staff
+						if (!lastStaff.hasPageBreak(pbtime)) {
+							PartPageBreak pb = new PartPageBreak(pbtime, true);
+							parseFacsimileReference(pb, attributesMap);
+							lastStaff.addPageBreak(pb);
+						}
+						break;
+					case "barLine":
+						previousAccidentals.clear();
+						horizontalOrderInStaff++;
+						//updateTimesGivenMeasure();
+						Time markTime = getCurrentTime();
+						MarkBarline barline = new MarkBarline(markTime);
+						lastStaff.addMarkBarline(barline);
+						break;
+					case "staff":
 					/*if (updateMeasure) {
 						updateMeasure = false;
 						updateTimesGivenMeasure();
 						currentMeasure = ImportFactories.processMeasure(song, getCurrentTime(), lastMeasureNumber);
 						xmlIDs.put(lastMeasureXMLID, currentMeasure);
 					}*/
-					
-					staffCount++;	
-					layerCount=0;
-                    previousAccidentals.clear();
-					number = getOptionalAttribute(attributesMap, "n");
-					lastStaff = findStaff(number);
-					break;
-				case "layer":
-					layerCount++;
-					number = getOptionalAttribute(attributesMap, "n");
-					lastVoice = processLayer(number);
-                    horizontalOrderInStaff = 0;
-					break;
-				case "tuplet":
-					tupletXMLID = getOptionalAttribute(attributesMap, "xml:id");
-					tupletNum = Integer.parseInt(getAttribute(attributesMap, "num"));
-					tupletNumBase = Integer.parseInt(getAttribute(attributesMap, "numbase"));
-					tupletElements = new ArrayList<>();
-					break;
-				case "beam":
-                    beamedGroupXMLID = getOptionalAttribute(attributesMap, "xml:id");
-				    beamedGroupElements = new ArrayList<>();
-					break;
-				case "chord":
-					//TODO stem dir
-					xmlid = getOptionalAttribute(attributesMap, "xml:id");
-					xmlIDs.put(xmlid, lastChord);
-					dotsStr = getOptionalAttribute(attributesMap, "dots");
-					dots = dotsStr==null?0:Integer.parseInt(dotsStr);
-					dur = getAttribute(attributesMap, "dur");
-					figure = getFigure(dur, attributesMap);
-					
-					//if (currentBeam != null) {
-					//	currentBeam.addNoteOrChord(currentNote);
-					//}
-					
-					lastChord = new SimpleChord(figure, dots);
-					addElementToVoiceStaffOrTupletOrLigature(lastChord, xmlid, attributesMap, lastStaff);
-					break;
-				case "note":
-					xmlid = getOptionalAttribute(attributesMap, "xml:id");
-					String staffChange = getOptionalAttribute(attributesMap, "staff");
-					
-					if (staffChange != null) {
-						elementStaff = findStaff(staffChange);
-					} else {
-						elementStaff = lastStaff;
-					}
-					lastNoteStaff = elementStaff;
 
-					dotsStr = getOptionalAttribute(attributesMap, "dots");
-					dots = dotsStr==null?0:Integer.parseInt(dotsStr);
-					dur = getOptionalAttribute(attributesMap, "dur");
-					
-					// scientific pitch
-					lastAccidGes = getOptionalAttribute(attributesMap, "accid.ges");
-                    lastAccid = getOptionalAttribute(attributesMap, "accid"); //TODO accid.vis
-					String oct = getOptionalAttribute(attributesMap, "oct");
-					int octave = Integer.parseInt(oct);
-					String pname = getOptionalAttribute(attributesMap, "pname");
-					
-					PitchClass pc = new PitchClass(DiatonicPitch.valueOf(pname.toUpperCase()));
+						staffCount++;
+						layerCount = 0;
+						previousAccidentals.clear();
+						number = getOptionalAttribute(attributesMap, "n");
+						lastStaff = findStaff(number);
+						break;
+					case "layer":
+						layerCount++;
+						number = getOptionalAttribute(attributesMap, "n");
+						lastVoice = processLayer(number);
+						horizontalOrderInStaff = 0;
+						break;
+					case "tuplet":
+						tupletXMLID = getOptionalAttribute(attributesMap, "xml:id");
+						tupletNum = Integer.parseInt(getAttribute(attributesMap, "num"));
+						tupletNumBase = Integer.parseInt(getAttribute(attributesMap, "numbase"));
+						tupletElements = new ArrayList<>();
+						break;
+					case "beam":
+						beamedGroupXMLID = getOptionalAttribute(attributesMap, "xml:id");
+						beamedGroupElements = new ArrayList<>();
+						break;
+					case "chord":
+						//TODO stem dir
+						xmlid = getOptionalAttribute(attributesMap, "xml:id");
+						xmlIDs.put(xmlid, lastChord);
+						dotsStr = getOptionalAttribute(attributesMap, "dots");
+						dots = dotsStr == null ? 0 : Integer.parseInt(dotsStr);
+						dur = getAttribute(attributesMap, "dur");
+						figure = getFigure(dur, attributesMap);
+
+						//if (currentBeam != null) {
+						//	currentBeam.addNoteOrChord(currentNote);
+						//}
+
+						lastChord = new SimpleChord(figure, dots);
+						addElementToVoiceStaffOrTupletOrLigature(lastChord, xmlid, attributesMap, lastStaff);
+						break;
+					case "note":
+						xmlid = getOptionalAttribute(attributesMap, "xml:id");
+						String staffChange = getOptionalAttribute(attributesMap, "staff");
+
+						if (staffChange != null) {
+							elementStaff = findStaff(staffChange);
+						} else {
+							elementStaff = lastStaff;
+						}
+						lastNoteStaff = elementStaff;
+
+						dotsStr = getOptionalAttribute(attributesMap, "dots");
+						dots = dotsStr == null ? 0 : Integer.parseInt(dotsStr);
+						dur = getOptionalAttribute(attributesMap, "dur");
+
+						// scientific pitch
+						lastAccidGes = getOptionalAttribute(attributesMap, "accid.ges");
+						lastAccid = getOptionalAttribute(attributesMap, "accid"); //TODO accid.vis
+						String oct = getOptionalAttribute(attributesMap, "oct");
+						int octave = Integer.parseInt(oct);
+						String pname = getOptionalAttribute(attributesMap, "pname");
+
+						PitchClass pc = new PitchClass(DiatonicPitch.valueOf(pname.toUpperCase()));
 					/*20180208 Time time = getCurrentTime(); //TODO ¿También cuando hay cambio de pentagrama?
 
 					int previousAccidentalMapKey = generatePreviousAccidentalMapKey(pc.getNoteName(), octave);
@@ -679,49 +719,49 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                             previousAccidentals.put(previousAccidentalMapKey, acc);
                         }
                     }*/
-                    ScientificPitch sp = new ScientificPitch(pc, octave);
+						ScientificPitch sp = new ScientificPitch(pc, octave);
 
 
-					//TODO
-					//currentNote.setStemDirection(parseStemDir(getOptionalAttribute(attributesMap, "stem.dir")));
-					//figure = getFigure(dur, attributesMap);
+						//TODO
+						//currentNote.setStemDirection(parseStemDir(getOptionalAttribute(attributesMap, "stem.dir")));
+						//figure = getFigure(dur, attributesMap);
 
-					if (dur != null) {
-						figure = getFigure(dur, attributesMap);
-					} else {
-						figure = null;
-					}
-
-                    //System.out.println("SP=" + sp);
-                    AtomFigure currentAtomFigure;
-					SingleFigureAtom lastSingleFigureAtom;
-					if (lastChord != null) {
-						currentAtomFigure = lastChord.getAtomFigure();
-                        lastSingleFigureAtom = lastChord;
-						if (figure != null && (!currentAtomFigure.getFigure().equals(figure) || currentAtomFigure.getDots() != dots)) {
-							throw new ImportException("Cannot import a chord with different figure durations");
-						}
-						lastAtomPitch = lastChord.addPitch(sp);
-						setXMLID(xmlid, lastAtomPitch);
-						if (elementStaff != lastStaff) {
-							lastAtomPitch.setStaffChange(elementStaff);
-							elementStaff.addCoreSymbol(lastAtomPitch);
-						}
-                        // TODO: 18/10/17 Comprobar grace notes acorde
-                        //lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
-					} else {
-						if (figure == null) {
-							throw new ImportException("Cannot import note not in chord without dur");
+						if (dur != null) {
+							figure = getFigure(dur, attributesMap);
+						} else {
+							figure = null;
 						}
 
-						currentNote = new SimpleNote(figure, dots, sp);
-						lastSingleFigureAtom = currentNote;
-						currentAtomFigure = currentNote.getAtomFigure();
-						lastAtomPitch = currentNote.getAtomPitch();
-                        horizontalOrderInStaff++;
-                        String grace = getOptionalAttribute(attributesMap, "grace");
-                        // TODO: 18/10/17 acc, unacc, unknown - de quién quita la nota el valor
-                        currentNote.setGrace(grace != null);
+						//System.out.println("SP=" + sp);
+						AtomFigure currentAtomFigure;
+						SingleFigureAtom lastSingleFigureAtom;
+						if (lastChord != null) {
+							currentAtomFigure = lastChord.getAtomFigure();
+							lastSingleFigureAtom = lastChord;
+							if (figure != null && (!currentAtomFigure.getFigure().equals(figure) || currentAtomFigure.getDots() != dots)) {
+								throw new ImportException("Cannot import a chord with different figure durations");
+							}
+							lastAtomPitch = lastChord.addPitch(sp);
+							setXMLID(xmlid, lastAtomPitch);
+							if (elementStaff != lastStaff) {
+								lastAtomPitch.setStaffChange(elementStaff);
+								elementStaff.addCoreSymbol(lastAtomPitch);
+							}
+							// TODO: 18/10/17 Comprobar grace notes acorde
+							//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
+						} else {
+							if (figure == null) {
+								throw new ImportException("Cannot import note not in chord without dur");
+							}
+
+							currentNote = new SimpleNote(figure, dots, sp);
+							lastSingleFigureAtom = currentNote;
+							currentAtomFigure = currentNote.getAtomFigure();
+							lastAtomPitch = currentNote.getAtomPitch();
+							horizontalOrderInStaff++;
+							String grace = getOptionalAttribute(attributesMap, "grace");
+							// TODO: 18/10/17 acc, unacc, unknown - de quién quita la nota el valor
+							currentNote.setGrace(grace != null);
 
 						/*if (elementStaff != lastStaff) {
 							lastAtomPitch.setStaffChange(elementStaff);							
@@ -729,66 +769,66 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						} else {
 							lastStaff.addCoreSymbol(currentNote);
 						}*/
-						//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
-						addElementToVoiceStaffOrTupletOrLigature(currentNote, xmlid, attributesMap, elementStaff);
-						//currentNote.setTime(getCurrentTime());
-						//if (currentBeam != null) {
-						//	currentBeam.addNoteOrChord(currentNote);
-						//}
+							//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
+							addElementToVoiceStaffOrTupletOrLigature(currentNote, xmlid, attributesMap, elementStaff);
+							//currentNote.setTime(getCurrentTime());
+							//if (currentBeam != null) {
+							//	currentBeam.addNoteOrChord(currentNote);
+							//}
 
-					}
+						}
 
-					if (lastCustosWithoutPitch != null) {
-                        lastCustosWithoutPitch.setDiatonicPitch(lastAtomPitch.getScientificPitch().getPitchClass().getNoteName());
-                        lastCustosWithoutPitch.setOctave(lastAtomPitch.getScientificPitch().getOctave());
-                        lastCustosWithoutPitch = null;
-                    }
-                    // TODO: 18/10/17 Comprobar Fermata con chords
-					processPossibleMensuralImperfection(attributesMap, currentAtomFigure);
-					String tie = getOptionalAttribute(attributesMap, "tie");
-					if (tie != null) { 						
-						handleTie(tie, figure, dots, sp, xmlid, attributesMap);
-					}
+						if (lastCustosWithoutPitch != null) {
+							lastCustosWithoutPitch.setDiatonicPitch(lastAtomPitch.getScientificPitch().getPitchClass().getNoteName());
+							lastCustosWithoutPitch.setOctave(lastAtomPitch.getScientificPitch().getOctave());
+							lastCustosWithoutPitch = null;
+						}
+						// TODO: 18/10/17 Comprobar Fermata con chords
+						processPossibleMensuralImperfection(attributesMap, currentAtomFigure);
+						String tie = getOptionalAttribute(attributesMap, "tie");
+						if (tie != null) {
+							handleTie(tie, figure, dots, sp, xmlid, attributesMap);
+						}
 
-					String mfunc = getOptionalAttribute(attributesMap, "mfunc");
-					if (mfunc != null) {
-						mfunc = "mf" + mfunc.toUpperCase(); // from sus to mfSUS
-						MelodicFunction mf = MelodicFunction.valueOf(mfunc);
-						lastAtomPitch.setMelodicFunction(mf);
-					}
+						String mfunc = getOptionalAttribute(attributesMap, "mfunc");
+						if (mfunc != null) {
+							mfunc = "mf" + mfunc.toUpperCase(); // from sus to mfSUS
+							MelodicFunction mf = MelodicFunction.valueOf(mfunc);
+							lastAtomPitch.setMelodicFunction(mf);
+						}
 
-                    String stemDir = getOptionalAttribute(attributesMap, "stem.dir");
-					if (stemDir != null) {
-                        lastSingleFigureAtom.setExplicitStemDirection(parseStemDir(stemDir));
-                    }
+						String stemDir = getOptionalAttribute(attributesMap, "stem.dir");
+						if (stemDir != null) {
+							lastSingleFigureAtom.setExplicitStemDirection(parseStemDir(stemDir));
+						}
 
-					updateCurrentTime();
+						updateCurrentTime();
 
-					// after the note has time
-                    processFermata(currentAtomFigure, attributesMap); // fermata as an attribute - it can be also added as an element
+						// after the note has time
+						processFermata(currentAtomFigure, attributesMap); // fermata as an attribute - it can be also added as an element
 
 
-                    break;
-				case "accid":
-				    //TODO Posibilidad de poner horizontalPositionInStaff
-                    String accid = getOptionalAttribute(attributesMap, "accid");
-                    String accidGes = getOptionalAttribute(attributesMap, "accid.ges");
+						break;
+					case "accid":
+						//TODO Posibilidad de poner horizontalPositionInStaff
+						String accid = getOptionalAttribute(attributesMap, "accid");
+						String accidGes = getOptionalAttribute(attributesMap, "accid.ges");
 
-                    if (accid != null && lastAccid != null && !accid.equals(lastAccid)) {
-                        throw new ImportException("accid element (" + accid  + ") different from attribute (" + lastAccid + ")");
-                    }
+						if (accid != null && lastAccid != null && !accid.equals(lastAccid)) {
+							throw new ImportException("accid element (" + accid + ") different from attribute (" + lastAccid + ")");
+						}
 
-                    if (accidGes != null && lastAccidGes != null && !accidGes.equals(lastAccidGes)) {
-                        throw new ImportException("accidGes element (" + accidGes + ") different from attribute (" + lastAccidGes + ")");
-                    }
+						if (accidGes != null && lastAccidGes != null && !accidGes.equals(lastAccidGes)) {
+							throw new ImportException("accidGes element (" + accidGes + ") different from attribute (" + lastAccidGes + ")");
+						}
 
-                    if (accid != null) {
-                        lastAccid = accid;
-                    }
+						if (accid != null) {
+							lastAccid = accid;
+						}
 
-                    if (accidGes != null) {
-                        lastAccidGes = accidGes;
-                    }
+						if (accidGes != null) {
+							lastAccidGes = accidGes;
+						}
 
 					/*20180208 writtenAccidental = null;
 					
@@ -804,68 +844,68 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						}
 						currentNote.setWrittenExplicitAccidental(acc);
 					}*/
-					break;
-					
-				case "rest":
-					xmlid = getOptionalAttribute(attributesMap, "xml:id");
-					dotsStr = getOptionalAttribute(attributesMap, "dots");
-					dots = dotsStr==null?0:Integer.parseInt(dotsStr);
-					dur = getOptionalAttribute(attributesMap, "dur");
-					figure = getFigure(dur, attributesMap);					
-					SimpleRest rest = new SimpleRest(figure, dots);
-                    horizontalOrderInStaff++;
-					//rest.setTime(getCurrentTime());
-					String restStaffChange = getOptionalAttribute(attributesMap, "staff");
-					
-					if (restStaffChange != null) {
-						elementStaff = findStaff(restStaffChange);
-					} else {
-						elementStaff = lastStaff;
-					}
+						break;
 
-					addElementToVoiceStaffOrTupletOrLigature(rest, xmlid, attributesMap, elementStaff);
-
-                    // after the note has time
-                    processFermata(rest.getAtomFigure(), attributesMap);
-
-                    break;
-				case "mRest":
-					//TODO
-					xmlid = getOptionalAttribute(attributesMap, "xml:id");
-					
-					dur = getOptionalAttribute(attributesMap, "dur");
-					if (dur != null) {
+					case "rest":
+						xmlid = getOptionalAttribute(attributesMap, "xml:id");
+						dotsStr = getOptionalAttribute(attributesMap, "dots");
+						dots = dotsStr == null ? 0 : Integer.parseInt(dotsStr);
+						dur = getOptionalAttribute(attributesMap, "dur");
 						figure = getFigure(dur, attributesMap);
-					} else {
-						figure = null;
-					}
-					
-					//TODO mrests vacíos
-					String mRestStaffChange = getOptionalAttribute(attributesMap, "staff");
-					
-					if (mRestStaffChange != null) {
-						elementStaff = findStaff(mRestStaffChange);
-					} else {
-						elementStaff = lastStaff;
-					}
-					
-					//SimpleMeasureRest mrest = new SimpleMeasureRest(currentMeasure.getDuration(elementStaff).getExactTime());
-					SimpleMeasureRest mrest = null;
-					if (figure != null) {
-						mrest = new SimpleMeasureRest(figure, figure.getDuration());
-					} else {
-						mrest = new SimpleMeasureRest(Figures.WHOLE, Figures.NO_DURATION.getDuration());
-						if (pendingMeasureRestsToSetDuration == null) {
-							pendingMeasureRestsToSetDuration = new ArrayList<>();
-						}
-						pendingMeasureRestsToSetDuration.add(mrest);
-					}
+						SimpleRest rest = new SimpleRest(figure, dots);
+						horizontalOrderInStaff++;
+						//rest.setTime(getCurrentTime());
+						String restStaffChange = getOptionalAttribute(attributesMap, "staff");
 
-                    horizontalOrderInStaff++;
-                    //rest.setTime(getCurrentTime());
-					addElementToVoiceStaffOrTupletOrLigature(mrest, xmlid, attributesMap, elementStaff);
-					break;
-                case "multiRest":
+						if (restStaffChange != null) {
+							elementStaff = findStaff(restStaffChange);
+						} else {
+							elementStaff = lastStaff;
+						}
+
+						addElementToVoiceStaffOrTupletOrLigature(rest, xmlid, attributesMap, elementStaff);
+
+						// after the note has time
+						processFermata(rest.getAtomFigure(), attributesMap);
+
+						break;
+					case "mRest":
+						//TODO
+						xmlid = getOptionalAttribute(attributesMap, "xml:id");
+
+						dur = getOptionalAttribute(attributesMap, "dur");
+						if (dur != null) {
+							figure = getFigure(dur, attributesMap);
+						} else {
+							figure = null;
+						}
+
+						//TODO mrests vacíos
+						String mRestStaffChange = getOptionalAttribute(attributesMap, "staff");
+
+						if (mRestStaffChange != null) {
+							elementStaff = findStaff(mRestStaffChange);
+						} else {
+							elementStaff = lastStaff;
+						}
+
+						//SimpleMeasureRest mrest = new SimpleMeasureRest(currentMeasure.getDuration(elementStaff).getExactTime());
+						SimpleMeasureRest mrest = null;
+						if (figure != null) {
+							mrest = new SimpleMeasureRest(figure, figure.getDuration());
+						} else {
+							mrest = new SimpleMeasureRest(Figures.WHOLE, Figures.NO_DURATION.getDuration());
+							if (pendingMeasureRestsToSetDuration == null) {
+								pendingMeasureRestsToSetDuration = new ArrayList<>();
+							}
+							pendingMeasureRestsToSetDuration.add(mrest);
+						}
+
+						horizontalOrderInStaff++;
+						//rest.setTime(getCurrentTime());
+						addElementToVoiceStaffOrTupletOrLigature(mrest, xmlid, attributesMap, elementStaff);
+						break;
+					case "multiRest":
 						//TODO
 						xmlid = getOptionalAttribute(attributesMap, "xml:id");
 
@@ -873,135 +913,184 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 						SimpleMultiMeasureRest multiMeasureRest = new SimpleMultiMeasureRest(Figures.WHOLE, Figures.NO_DURATION.getDuration(), num);
 						if (pendingMultiMeasureRestsToSetDuration == null) {
-                            pendingMultiMeasureRestsToSetDuration = new ArrayList<>();
-                        }
-                        pendingMultiMeasureRestsToSetDuration.add(multiMeasureRest);
+							pendingMultiMeasureRestsToSetDuration = new ArrayList<>();
+						}
+						pendingMultiMeasureRestsToSetDuration.add(multiMeasureRest);
 
-                        horizontalOrderInStaff++;
+						horizontalOrderInStaff++;
 
-                    //rest.setTime(getCurrentTime());
+						//rest.setTime(getCurrentTime());
 						addElementToVoiceStaffOrTupletOrLigature(multiMeasureRest, xmlid, attributesMap, lastStaff);
 						break;
-                case "clef":
-					//TODO No sé para qué vale el parámetro staff aquí, cuando está dentro de uno ya...
-					clefLine = getOptionalAttribute(attributesMap, "line");
-					clefShape = getOptionalAttribute(attributesMap, "shape");				
-					tstamp = getOptionalAttribute(attributesMap, "tstamp");
-					Time clefTime;
-					if (tstamp != null) {
-						clefTime = decodeTStamp(currentMeasure, attributesMap);
-					} else {
-						clefTime = getCurrentTime();
-					}
+					case "clef":
+						//TODO No sé para qué vale el parámetro staff aquí, cuando está dentro de uno ya...
+						clefLine = getOptionalAttribute(attributesMap, "line");
+						clefShape = getOptionalAttribute(attributesMap, "shape");
+						tstamp = getOptionalAttribute(attributesMap, "tstamp");
+						Time clefTime;
+						if (tstamp != null) {
+							clefTime = decodeTStamp(currentMeasure, attributesMap);
+						} else {
+							clefTime = getCurrentTime();
+						}
 
-                    //tstamp = getOptionalAttribute(attributesMap, "tstamp");
-					//double clefTime = getCurrentTime();
-					//if (tstamp != null) {
-					//	clefTime += Double.parseDouble(tstamp);
-					//}
-                    Clef clef = processClef(clefLine, clefShape, clefTime, getOptionalAttribute(attributesMap, "dis"),
-                            getOptionalAttribute(attributesMap, "dis.place"));
-                    horizontalOrderInStaff++;
-                    break;
-                case "custos":
-                    oct = getOptionalAttribute(attributesMap, "oct");
-                    pname = getOptionalAttribute(attributesMap, "pname");
-                    Custos custos;
-                    if (oct != null && pname != null) {
-                        octave = Integer.parseInt(oct);
-                        DiatonicPitch dp = DiatonicPitch.valueOf(pname.toUpperCase());
-                        custos = new Custos(lastStaff, getCurrentTime(), dp, octave);
-                        lastCustosWithoutPitch = null;
-                    } else {
-                        custos = new Custos(lastStaff, getCurrentTime());
-                        lastCustosWithoutPitch = custos;
-                    }
+						//tstamp = getOptionalAttribute(attributesMap, "tstamp");
+						//double clefTime = getCurrentTime();
+						//if (tstamp != null) {
+						//	clefTime += Double.parseDouble(tstamp);
+						//}
+						Clef clef = processClef(clefLine, clefShape, clefTime, getOptionalAttribute(attributesMap, "dis"),
+								getOptionalAttribute(attributesMap, "dis.place"));
+						horizontalOrderInStaff++;
+						break;
+					case "custos":
+						oct = getOptionalAttribute(attributesMap, "oct");
+						pname = getOptionalAttribute(attributesMap, "pname");
+						Custos custos;
+						if (oct != null && pname != null) {
+							octave = Integer.parseInt(oct);
+							DiatonicPitch dp = DiatonicPitch.valueOf(pname.toUpperCase());
+							custos = new Custos(lastStaff, getCurrentTime(), dp, octave);
+							lastCustosWithoutPitch = null;
+						} else {
+							custos = new Custos(lastStaff, getCurrentTime());
+							lastCustosWithoutPitch = custos;
+						}
 
-                    lastStaff.addCustos(custos);
-                    break;
-				case "tie":
-					staffNumber = getOptionalAttribute(attributesMap, "staff");
-					pendingConnectorOrMark = new PendingConnectorOrMark();
-					pendingConnectorOrMark.tag = element;
-					pendingConnectorOrMark.measure = currentMeasure;
-					pendingConnectorOrMark.startid = getAttribute(attributesMap, "startid");
-					pendingConnectorOrMark.endid = getAttribute(attributesMap, "endid");
-					if (pendingConnectorOrMarks.contains(pendingConnectorOrMark)) {
-						throw new ImportException("Duplicating pending connector: " + pendingConnectorOrMark);
-					}
-					pendingConnectorOrMarks.add(pendingConnectorOrMark);
-					break;
-                case "fermata":
-                case "trill":
-				case "phrase": 
-				case "slur":
-				case "hairpin":
-					staffNumber = getOptionalAttribute(attributesMap, "staff");
-					layerNumber = getOptionalAttribute(attributesMap, "layer");
-					pendingConnectorOrMark = new PendingConnectorOrMark();
-					pendingConnectorOrMark.tag = element;
-					pendingConnectorOrMark.measure = currentMeasure;
-					if (layerNumber != null) {
-                        pendingConnectorOrMark.layer = processLayer(layerNumber);
-                    } else {
-					    if (lastVoice == null) {
-					        throw new ImportException("Last voice is null while importing a " + element);
-                        }
-                        pendingConnectorOrMark.layer = lastVoice;
-                    }
-					pendingConnectorOrMark.tstamp = getOptionalAttribute(attributesMap, "tstamp");
-					pendingConnectorOrMark.tstamp2 = getOptionalAttribute(attributesMap, "tstamp2");
-					pendingConnectorOrMark.startid = getOptionalAttribute(attributesMap, "startid");
-					pendingConnectorOrMark.endid = getOptionalAttribute(attributesMap, "endid");
-                    pendingConnectorOrMark.curvedir = getOptionalAttribute(attributesMap, "curvedir");
-					if (staffNumber != null) {
-						pendingConnectorOrMark.staff = findStaff(staffNumber);
-					}
-					if (element.equals("hairpin")) {
-						pendingConnectorOrMark.content = getAttribute(attributesMap, "form");
-					} else if (element.equals("fermata")) {
-                        pendingConnectorOrMark.content = getAttribute(attributesMap, "place");
-                    }
-					if (pendingConnectorOrMarks.contains(pendingConnectorOrMark)) {
-						throw new ImportException("Duplicating pending connector: " + pendingConnectorOrMark);
-					}
-                    pendingConnectorOrMarks.add(pendingConnectorOrMark);
-					break;
-				case "dynam":
-					dynamTime = decodeTStamp(currentMeasure, attributesMap);
-					staffNumber = getAttribute(attributesMap, "staff");
-					lastStaff = findStaff(staffNumber);
-					break;
-                case "harm":
-                    harmTime = decodeTStamp(currentMeasure, attributesMap);
-                    harmType = getOptionalAttribute(attributesMap, "type");
-                    break;
-                case "verse":
-                    String verseNumberStr = getOptionalAttribute(attributesMap, "n");
-                    lastVerse = new ScoreLyric(verseNumberStr == null ? null : Integer.parseInt(verseNumberStr), lastAtomPitch, null, null);
-                    lastAtomPitch.addLyric(lastVerse);
-                    break;
-                case "syl":
-                    String sylType = getOptionalAttribute(attributesMap, "wordpos");
-                    if (sylType != null) {
-                        lastVerse.setSyllabic(wordpos2Syllabic(sylType));
-                    }
-                    break;
-                case "dot":
-                    Time addedDuration = lastAtomPitch.getAtomFigure().addDot(); // TODO: 27/10/17 Ver casos como mensural patriarca.mei donde aparece nota - barra - dot
-                    horizontalOrderInStaff++;
-                    lastAtomPitch.addDisplacedDot(new DisplacedDot(getCurrentTime(), lastAtomPitch));
-                    setCurrentTime(getCurrentTime().add(addedDuration));
-                    break;
-                case "ligature":
-                    ligatureElements = new ArrayList<>();
-                    ligatureForm = getAttribute(attributesMap, "form");
-                    ligatureXMLID = getOptionalAttribute(attributesMap, "xml:id");
-                    break;
+						lastStaff.addCustos(custos);
+						break;
+					case "tie":
+						staffNumber = getOptionalAttribute(attributesMap, "staff");
+						pendingConnectorOrMark = new PendingConnectorOrMark();
+						pendingConnectorOrMark.tag = element;
+						pendingConnectorOrMark.measure = currentMeasure;
+						pendingConnectorOrMark.startid = getAttribute(attributesMap, "startid");
+						pendingConnectorOrMark.endid = getAttribute(attributesMap, "endid");
+						if (pendingConnectorOrMarks.contains(pendingConnectorOrMark)) {
+							throw new ImportException("Duplicating pending connector: " + pendingConnectorOrMark);
+						}
+						pendingConnectorOrMarks.add(pendingConnectorOrMark);
+						break;
+					case "fermata":
+					case "trill":
+					case "phrase":
+					case "slur":
+					case "hairpin":
+						staffNumber = getOptionalAttribute(attributesMap, "staff");
+						layerNumber = getOptionalAttribute(attributesMap, "layer");
+						pendingConnectorOrMark = new PendingConnectorOrMark();
+						pendingConnectorOrMark.tag = element;
+						pendingConnectorOrMark.measure = currentMeasure;
+						if (layerNumber != null) {
+							pendingConnectorOrMark.layer = processLayer(layerNumber);
+						} else {
+							if (lastVoice == null) {
+								throw new ImportException("Last voice is null while importing a " + element);
+							}
+							pendingConnectorOrMark.layer = lastVoice;
+						}
+						pendingConnectorOrMark.tstamp = getOptionalAttribute(attributesMap, "tstamp");
+						pendingConnectorOrMark.tstamp2 = getOptionalAttribute(attributesMap, "tstamp2");
+						pendingConnectorOrMark.startid = getOptionalAttribute(attributesMap, "startid");
+						pendingConnectorOrMark.endid = getOptionalAttribute(attributesMap, "endid");
+						pendingConnectorOrMark.curvedir = getOptionalAttribute(attributesMap, "curvedir");
+						if (staffNumber != null) {
+							pendingConnectorOrMark.staff = findStaff(staffNumber);
+						}
+						if (element.equals("hairpin")) {
+							pendingConnectorOrMark.content = getAttribute(attributesMap, "form");
+						} else if (element.equals("fermata")) {
+							pendingConnectorOrMark.content = getAttribute(attributesMap, "place");
+						}
+						if (pendingConnectorOrMarks.contains(pendingConnectorOrMark)) {
+							throw new ImportException("Duplicating pending connector: " + pendingConnectorOrMark);
+						}
+						pendingConnectorOrMarks.add(pendingConnectorOrMark);
+						break;
+					case "dynam":
+						dynamTime = decodeTStamp(currentMeasure, attributesMap);
+						staffNumber = getAttribute(attributesMap, "staff");
+						lastStaff = findStaff(staffNumber);
+						break;
+					case "harm":
+						harmTime = decodeTStamp(currentMeasure, attributesMap);
+						harmType = getOptionalAttribute(attributesMap, "type");
+						break;
+					case "verse":
+						String verseNumberStr = getOptionalAttribute(attributesMap, "n");
+						lastVerse = new ScoreLyric(verseNumberStr == null ? null : Integer.parseInt(verseNumberStr), lastAtomPitch, null, null);
+						lastAtomPitch.addLyric(lastVerse);
+						break;
+					case "syl":
+						String sylType = getOptionalAttribute(attributesMap, "wordpos");
+						if (sylType != null) {
+							lastVerse.setSyllabic(wordpos2Syllabic(sylType));
+						}
+						break;
+					case "dot":
+						Time addedDuration = lastAtomPitch.getAtomFigure().addDot(); // TODO: 27/10/17 Ver casos como mensural patriarca.mei donde aparece nota - barra - dot
+						horizontalOrderInStaff++;
+						lastAtomPitch.addDisplacedDot(new DisplacedDot(getCurrentTime(), lastAtomPitch));
+						setCurrentTime(getCurrentTime().add(addedDuration));
+						break;
+					case "ligature":
+						ligatureElements = new ArrayList<>();
+						ligatureForm = getAttribute(attributesMap, "form");
+						ligatureXMLID = getOptionalAttribute(attributesMap, "xml:id");
+						break;
+					case "surface":
+						lastSurface = new Surface();
+						Facsimile facsimile = song.getFacsimile();
+						if (facsimile == null) {
+							facsimile = new Facsimile();
+							song.setFacsimile(facsimile);
+						}
+						facsimile.addSurface(lastSurface);
+						xmlid = getOptionalAttribute(attributesMap, "xml:id");
+						if (xmlid != null) {
+							xmlIDs.put(xmlid, lastSurface);
+							lastSurface.setID(xmlid);
+						}
+						lastSurface.setBoundingBox(parseBoundingBox(attributesMap));
+						break;
+					case "graphic":
+						Graphic graphic = new Graphic();
+						lastSurface.addGraphic(graphic);
+						graphic.setTarget(getAttribute(attributesMap, "target"));
+						break;
+					case "zone":
+						Zone zone = new Zone();
+						lastSurface.addZone(zone);
+						xmlid = getOptionalAttribute(attributesMap, "xml:id");
+						if (xmlid != null) {
+							xmlIDs.put(xmlid, zone);
+							zone.setID(xmlid);
+						}
+						zone.setBoundingBox(parseBoundingBox(attributesMap));
+						zone.setType(getOptionalAttribute(attributesMap, "type"));
+						break;
 				}
 			}
 		} catch (Exception e) {
 			throw new ImportException(e);
+		}
+	}
+
+	private BoundingBox parseBoundingBox(HashMap<String, String> attributesMap) throws IM3Exception {
+    	String ulxStr = getOptionalAttribute(attributesMap, "ulx");
+    	if (ulxStr != null) {
+			String ulyStr = getOptionalAttribute(attributesMap, "uly");
+			String lrxStr = getOptionalAttribute(attributesMap, "lrx");
+			String lryStr = getOptionalAttribute(attributesMap, "lry");
+			if (ulyStr == null || lrxStr == null || lryStr == null) {
+				throw new ImportException("Bounding boxes should be completely specified with all parameters: ulx, uly, lrx, lry");
+			}
+			return new BoundingBoxXY(Double.parseDouble(ulxStr),
+					Double.parseDouble(ulyStr),
+					Double.parseDouble(lrxStr),
+					Double.parseDouble(lryStr));
+		} else {
+    		return null;
 		}
 	}
 
@@ -1584,6 +1673,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	protected void handleElementClose(String closingElement) throws ImportException, IM3Exception {
 		if (importingMusic) {
 			switch (closingElement) {
+			case "part":
+				inPart = false;
+				lastPartLabel = null;
+				initPart();
+				break;
 			case "chord":
 				lastChord = null;
 				break;
@@ -1909,7 +2003,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 }
 
 			} else {
-				throw new ImportException("Missing either startid or endif for connector " + pendingConnectorOrMark.tag);
+				throw new ImportException("Missing either startid or endid for connector " + pendingConnectorOrMark.tag);
 			}
             Object toElement = null;
 			if (!pendingConnectorOrMark.tag.equals("trill") && !pendingConnectorOrMark.tag.equals("fermata")) {

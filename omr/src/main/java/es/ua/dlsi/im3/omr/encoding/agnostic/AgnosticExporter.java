@@ -21,7 +21,7 @@ public class AgnosticExporter extends Exporter<AgnosticToken> {
 
     @Override
     protected boolean requiresSeparator(AgnosticToken symbol) {
-        return agnosticVersion != AgnosticVersion.v1 &&
+        return agnosticVersion != AgnosticVersion.v1 && agnosticVersion != AgnosticVersion.v3_advance &&
         (symbol instanceof HorizontalSeparator);
     }
 

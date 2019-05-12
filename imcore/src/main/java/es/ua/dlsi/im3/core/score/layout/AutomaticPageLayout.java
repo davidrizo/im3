@@ -77,6 +77,7 @@ public class AutomaticPageLayout extends PageLayout {
         // add the system breaks, with a default duration that will be able to fit the new clef and new key signature
         if (includePageAndSystemBreaks) {
             // TODO: 20/11/17 He quitado los system y page breaks
+            System.err.println("TODO: 20/11/17 He quitado los system y page breaks");
             /*for (PartSystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
                 // use the first layout font, it can be any one
                 LayoutCoreSystemBreak lsb = new LayoutCoreSystemBreak(layoutFonts.values().iterator().next(), sb);

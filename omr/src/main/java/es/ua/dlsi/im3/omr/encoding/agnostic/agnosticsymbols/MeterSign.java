@@ -39,6 +39,10 @@ public class MeterSign extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        return MS + meterSigns.toAgnosticString();
+        if (meterSigns != null) {
+            return MS + meterSigns.toAgnosticString();
+        } else {
+            return MS;
+        }
     }
 }

@@ -431,7 +431,7 @@ public class MEISongExporter implements ISongExporter {
 
 				if (staff.getNotationType() == NotationType.eMensural) {
 				    params.add("notationtype");
-                    params.add("mensural");
+                    params.add("mensural.white");
                 }
 				XMLExporterHelper.startEnd(sb, tabs+1, "staffDef", params);
 			}

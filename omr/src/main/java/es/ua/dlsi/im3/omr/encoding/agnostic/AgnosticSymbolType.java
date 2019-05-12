@@ -38,4 +38,8 @@ public abstract class AgnosticSymbolType implements Comparable<AgnosticSymbolTyp
         return this.getClass().getName();
     }
 
+    @Override
+    public String toString() {
+        return toAgnosticString();
+    }
 }

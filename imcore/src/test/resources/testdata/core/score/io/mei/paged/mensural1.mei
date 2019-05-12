@@ -1,0 +1,27 @@
+<!-- Using Verovio page customization -->
+<?xml version="1.0" encoding="UTF-8"?>
+<mei xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.music-encoding.org/ns/mei" meiversion="4.0.0">
+    <!-- TODO head -->
+    <music xml:id="m-22">
+    <body>
+    <mdiv>
+        <pages>
+            <page page.width="2108" page.height="2970" page.leftmar="20" page.rightmar="20">
+                <system system.leftmar="50" system.rightmar="50">
+                    <scoreDef>
+                        <staffGrp>
+                            <staffDef n="1" clef.line="2" clef.shape="G" />
+                        </staffGrp>
+                    </scoreDef>
+                    <measure n="1">
+                        <staff n="1">
+                            <layer n="1">
+                                <!-- ... -->
+                            </layer>
+                        </staff>
+                    </measure>
+                </system>
+            </page>
+        </pages>
+    </mdiv>
+</body>

@@ -144,7 +144,7 @@ public class Image implements Comparable<Image> {
     }
 
     /**
-     * Get rescaled pixels to RESIZE_W and RESIZE_H
+     * Get rescaled pixels
      * @param fileImagesFolder
      * @param boundingBox
      * @return

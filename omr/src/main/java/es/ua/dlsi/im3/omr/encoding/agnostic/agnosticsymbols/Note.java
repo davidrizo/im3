@@ -57,10 +57,14 @@ public class Note extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        if (stemDirection == null) {
-            return NOTE + durationSpecification.toAgnosticString();
+        if (durationSpecification != null) {
+            if (stemDirection == null) {
+                return NOTE + durationSpecification.toAgnosticString();
+            } else {
+                return NOTE + durationSpecification.toAgnosticString() + SEPPROPERTIES + stemDirection;
+            }
         } else {
-            return NOTE + durationSpecification.toAgnosticString() + SEPPROPERTIES + stemDirection;
+            return NOTE;
         }
     }
 }

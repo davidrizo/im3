@@ -60,10 +60,14 @@ public abstract class MarkUpDownStartEnd extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        if (positions == null) {
-            return getAgnosticTypeString() + SEPSYMBOL + startEnd.toAgnosticString();
+        if (startEnd != null) {
+            if (positions == null) {
+                return getAgnosticTypeString() + SEPSYMBOL + startEnd.toAgnosticString();
+            } else {
+                return getAgnosticTypeString() + SEPSYMBOL + startEnd.toAgnosticString() + SEPPROPERTIES + positions.toAgnosticString();
+            }
         } else {
-            return getAgnosticTypeString() + SEPSYMBOL +startEnd.toAgnosticString() + SEPPROPERTIES + positions.toAgnosticString();
+            return getAgnosticTypeString();
         }
     }
 }

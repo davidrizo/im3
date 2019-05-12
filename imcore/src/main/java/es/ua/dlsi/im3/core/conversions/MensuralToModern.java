@@ -196,6 +196,9 @@ public class MensuralToModern {
             throw new IM3Exception("Unsupported atom type " + atom.getClass());
         }
 
+        if (pendingMensureDuration == null) {
+            throw new IM3Exception("No time signature has found before the atom at time " + atom.getTime());
+        }
         SingleFigureAtom singleFigureAtom = (SingleFigureAtom) atom;
 
         //int dots = singleFigureAtom.getAtomFigure().getDots();

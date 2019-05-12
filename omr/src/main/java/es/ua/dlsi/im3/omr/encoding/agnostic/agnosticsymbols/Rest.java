@@ -34,6 +34,10 @@ public class Rest extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        return REST + restFigures.toAgnosticString();
+        if (restFigures != null) {
+            return REST + restFigures.toAgnosticString();
+        } else {
+            return REST;
+        }
     }
 }

@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.TimeSignature;
 import es.ua.dlsi.im3.core.score.clefs.*;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
@@ -164,13 +165,20 @@ public class ImportFactories {
 		if (meterSym != null) {
 			switch (meterSym) {
 				case "common":
+				case "ct":
+				case "Ct":
 					ts = new TimeSignatureCommonTime(null);
 					break;
 				case "cut":
+				case "Ccut":
 					ts = new TimeSignatureCutTime(null);
 					break;
+				case "CZ":
 				case "cz": //TODO David
 					ts = new TimeSignatureProporcionMenor();
+					break;
+				case "CcutZ": //TODO David
+					ts = new TimeSignatureProporcionMayor();
 					break;
 				default:
 					throw new ImportException("Unknown symbol type for meter: '" + meterSym + "'");

@@ -124,6 +124,7 @@ public enum Intervals {
     private final MotionDirection direction;
     private final int semitones;
     private final int base40Difference;
+    private final String shortName;
 
     Intervals(int name, IntervalMode mode, MotionDirection direction, int semitones, String shortName, int base40Difference) {
 	this.name = name;
@@ -131,6 +132,7 @@ public enum Intervals {
 	this.direction = direction;
 	this.semitones = semitones;
 	this.base40Difference = base40Difference;
+	this.shortName = shortName;
 	//interval.setShortName(shortName);
     }
 
@@ -237,5 +239,9 @@ public enum Intervals {
 
     public int getBase40Difference() {
 	return base40Difference;
+    }
+
+    public String getShortName() {
+        return shortName;
     }
 }

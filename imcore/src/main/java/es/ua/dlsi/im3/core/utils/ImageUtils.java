@@ -147,16 +147,20 @@ public class ImageUtils {
             BufferedImage fullImage = ImageIO.read(imageFile);
             imgWidth = new Integer(fullImage.getWidth()).toString();
             imgHeight = new Integer(fullImage.getHeight()).toString();
+
+            int maxWidth = fullImage.getWidth() - (int)boundingBox.getFromX();
+            int maxHeight = fullImage.getHeight() - (int)boundingBox.getFromY();
+
             subimage = fullImage.getSubimage((int)boundingBox.getFromX(),
                     (int)boundingBox.getFromY(),
-                    (int)boundingBox.getWidth(),
-                    (int)boundingBox.getHeight());
+                    (int)Math.min(maxWidth, boundingBox.getWidth()),
+                    (int)Math.min(maxHeight, boundingBox.getHeight()));
         } catch (Throwable e) {
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot read image {0} of size {1}x{2}, extracting subimage fromX={3}, fromY={4}, width={5}, height={6}",
                     new Object[]{imageFile.getAbsolutePath(),
                             imgWidth, imgHeight,
                         (int)boundingBox.getFromX(), (int)boundingBox.getFromY(), (int)boundingBox.getWidth(), (int)boundingBox.getHeight()});
-            throw new IM3Exception("Cannot read image", e);
+            throw new IM3Exception("Cannot read image '" + imageFile.getAbsolutePath() + "'", e);
         }
         return subimage;
     }

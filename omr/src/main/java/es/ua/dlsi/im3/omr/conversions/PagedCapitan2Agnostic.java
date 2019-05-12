@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.encoding.agnostic.*;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
+import es.ua.dlsi.im3.omr.encoding.enums.Defects;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 
 import java.io.*;
@@ -101,7 +102,7 @@ public class PagedCapitan2Agnostic {
         if (symbol.equals("BARLINE")) {
             return new AgnosticSymbol(AgnosticVersion.v1, new VerticalLine(), PositionsInStaff.LINE_1);
         } else if (symbol.equals("SMUDGE")) {
-            return new AgnosticSymbol(AgnosticVersion.v1, new Smudge(), PositionsInStaff.LINE_1);
+            return new AgnosticSymbol(AgnosticVersion.v1, new Defect(Defects.smudge), PositionsInStaff.LINE_1);
         } else if (symbol.startsWith("GREGORIAN")) {
             return new AgnosticSymbol(AgnosticVersion.v1, new Ligature(), PositionsInStaff.LINE_3);
          /*   return new AgnosticSymbol(new LigatureComponent(NoteFigures.longa), PositionsInStaff.SPACE_3));
@@ -272,7 +273,7 @@ public class PagedCapitan2Agnostic {
             case "SHARP":
                 return new Accidental(Accidentals.sharp);
             case "SMUDGE":
-                return new Smudge();
+                return new Defect(Defects.smudge);
             case "BCOLOUREDSEMINIMA":
             case "BCOLOUREDSEMIMINMA":
             case "BCOLOUREDSEMIMINIMA":

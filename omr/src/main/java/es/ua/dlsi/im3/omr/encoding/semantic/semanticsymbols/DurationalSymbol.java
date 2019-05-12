@@ -23,4 +23,36 @@ public abstract class DurationalSymbol extends SemanticSymbolType {
         this.fermata = fermata;
         this.tupletNumber = tupletNumber;
     }
+
+    public Figures getFigures() {
+        return figures;
+    }
+
+    public void setFigures(Figures figures) {
+        this.figures = figures;
+    }
+
+    public int getDots() {
+        return dots;
+    }
+
+    public void setDots(int dots) {
+        this.dots = dots;
+    }
+
+    public boolean isFermata() {
+        return fermata;
+    }
+
+    public void setFermata(boolean fermata) {
+        this.fermata = fermata;
+    }
+
+    public Integer getTupletNumber() {
+        return tupletNumber;
+    }
+
+    public void setTupletNumber(Integer tupletNumber) {
+        this.tupletNumber = tupletNumber;
+    }
 }

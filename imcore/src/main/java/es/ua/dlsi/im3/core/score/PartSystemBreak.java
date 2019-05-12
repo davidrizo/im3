@@ -1,9 +1,11 @@
 package es.ua.dlsi.im3.core.score;
 
 /**
- * An explicit system break applied just to a part
+ * An explicit system break applied just to a part.
  */
-public class PartSystemBreak implements ITimedElementInStaff {
+public class PartSystemBreak implements ITimedElementInStaff, IFacsimile {
+    String ID;
+    String facsimileElementID;
     Staff staff;
 
     private Time time;
@@ -39,5 +41,21 @@ public class PartSystemBreak implements ITimedElementInStaff {
     @Override
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getFacsimileElementID() {
+        return facsimileElementID;
+    }
+
+    public void setFacsimileElementID(String facsimileElementID) {
+        this.facsimileElementID = facsimileElementID;
     }
 }

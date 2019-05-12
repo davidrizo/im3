@@ -174,7 +174,7 @@ public class KernExporter {
         }
     }
 
-    private String generateKeySignature(KeySignature ks) throws ExportException {
+    public static String generateKeySignature(KeySignature ks) throws ExportException {
         StringBuilder sb = new StringBuilder();
         sb.append('k');
         sb.append('[');
@@ -458,7 +458,7 @@ public class KernExporter {
     }
 
     // See http://www.humdrum.org/humextra/rhythm/#extensions-to-recip-and-kern-rhythms
-    private String generateDuration(Figures figure, int dots, Fraction multipler) throws ExportException {
+    public static String generateDuration(Figures figure, int dots, Fraction multipler) throws ExportException {
         StringBuilder sb = new StringBuilder();
 
         //TODO Test unitario - sobre todo de mensural
@@ -521,33 +521,37 @@ public class KernExporter {
     }
 
     private String generatePitch(AtomPitch pitch) throws ExportException {
+        return generatePitch(pitch.getScientificPitch());
+    }
+
+    public static String generatePitch(ScientificPitch scientificPitch) throws ExportException {
         StringBuilder sb = new StringBuilder();
 
-        String middleOctaveNote = pitch.getScientificPitch().getPitchClass().getNoteName().name().toLowerCase();
+        String middleOctaveNote = scientificPitch.getPitchClass().getNoteName().name().toLowerCase();
 
-        if (pitch.getScientificPitch().getOctave() < 4) {
-            int characters = 4 - pitch.getScientificPitch().getOctave();
+        if (scientificPitch.getOctave() < 4) {
+            int characters = 4 - scientificPitch.getOctave();
             middleOctaveNote = middleOctaveNote.toUpperCase();
             for (int i=0; i<characters; i++) {
                 sb.append(middleOctaveNote);
             }
-        } else if (pitch.getScientificPitch().getOctave() == 4) {
+        } else if (scientificPitch.getOctave() == 4) {
             sb.append(middleOctaveNote);
         } else {
-            int characters = 1 + pitch.getScientificPitch().getOctave() - 4;
+            int characters = 1 + scientificPitch.getOctave() - 4;
             for (int i=0; i<characters; i++) {
                 sb.append(middleOctaveNote);
             }
         }
 
 
-        if (pitch.getScientificPitch().getPitchClass().isAltered()) {
-            sb.append(generateAccidental(pitch.getScientificPitch().getPitchClass().getAccidental()));
+        if (scientificPitch.getPitchClass().isAltered()) {
+            sb.append(generateAccidental(scientificPitch.getPitchClass().getAccidental()));
         }
         return sb.toString();
     }
 
-    private char generateAccidental(Accidentals accidental) throws ExportException {
+    private static char generateAccidental(Accidentals accidental) throws ExportException {
         if (accidental.equals(Accidentals.SHARP)) {
             return '#';
         } else if (accidental.equals(Accidentals.FLAT)) {

@@ -551,9 +551,7 @@ public class Encoder {
 
         } else if (symbol instanceof SimpleTuplet) {
             SimpleTuplet simpleTuplet = (SimpleTuplet) symbol;
-            if (simpleTuplet.getCardinality() != 3) {
-                throw new ExportException("Unsupported tuplets different of tiplets, this is cardinality " + simpleTuplet.getCardinality());
-            }
+            int cardinality = simpleTuplet.getCardinality();
 
             PositionInStaff tupletPositionInStaff = computePositionInStaff(simpleTuplet);
 
@@ -570,22 +568,33 @@ public class Encoder {
                 // if quarter, half,.... or eighth without beam
                 agnosticEncoding.add(new AgnosticSymbol(version, new Bracket(StartEnd.start), tupletPositionInStaff));
                 addVerticalSeparator();
-                convert(simpleTuplet.getAtoms().get(0), drawnAccidentals, tupletNumber);
-                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(3), tupletPositionInStaff));
+                int i;
+                for (i=0; i<cardinality / 2; i++) {
+                    convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
+                }
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(cardinality), tupletPositionInStaff));
                 addVerticalSeparator();
-                convert(simpleTuplet.getAtoms().get(1), drawnAccidentals, tupletNumber);
+
+                for (; i<cardinality-1; i++) {
+                    convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
+                }
+
                 agnosticEncoding.add(new AgnosticSymbol(version, new Bracket(StartEnd.end), tupletPositionInStaff));
                 addVerticalSeparator();
-                convert(simpleTuplet.getAtoms().get(2), drawnAccidentals, tupletNumber);
+                convert(simpleTuplet.getAtoms().get(cardinality-1), drawnAccidentals, tupletNumber);
 
                 //TODO SEMANTIC
             } else {
                 // if 8th, 16th...
-                convert(simpleTuplet.getAtoms().get(0), drawnAccidentals, tupletNumber);
-                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(3), tupletPositionInStaff));
+                int i;
+                for (i=0; i<cardinality / 2; i++) {
+                    convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
+                }
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(cardinality), tupletPositionInStaff));
                 agnosticEncoding.add(horizontalSeparator);
-                convert(simpleTuplet.getAtoms().get(1), drawnAccidentals, tupletNumber);
-                convert(simpleTuplet.getAtoms().get(2), drawnAccidentals, tupletNumber);
+                for (; i<cardinality; i++) {
+                    convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
+                }
             }
         } else if (!(symbol instanceof StaffTimedPlaceHolder)) {
             throw new ExportException("Unsupported symbol conversion of: " + symbol.getClass());
@@ -718,7 +727,7 @@ public class Encoder {
         switch (accidental) {
             case FLAT: return new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals[] {es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals.flat};
             case SHARP: return new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals[] {es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals.sharp};
-            case DOUBLE_SHARP: return new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals[] {es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals.double_sharp};
+            case DOUBLE_SHARP: return new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals[] {es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals.doublesharp};
             case NATURAL: return new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals[] {es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals.natural};
             case DOUBLE_FLAT: return new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals[] {es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals.flat,
                     es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals.flat, };

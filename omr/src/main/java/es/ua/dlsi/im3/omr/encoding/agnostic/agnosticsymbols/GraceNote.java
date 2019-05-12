@@ -41,10 +41,14 @@ public class GraceNote extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        if (stemDirection == null) {
-            return GRACENOTE + durationSpecification.toAgnosticString();
+        if (durationSpecification != null) {
+            if (stemDirection == null) {
+                return GRACENOTE + durationSpecification.toAgnosticString();
+            } else {
+                return GRACENOTE + durationSpecification.toAgnosticString() + SEPPROPERTIES + stemDirection;
+            }
         } else {
-            return GRACENOTE + durationSpecification.toAgnosticString() + SEPPROPERTIES + stemDirection;
+            return GRACENOTE;
         }
     }
 }

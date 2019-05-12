@@ -12,5 +12,9 @@ public enum AgnosticVersion {
     /**
      * Used for HISPAMUS Project. It adds slur position and stem direction
      */
-    v2
+    v2,
+    /**
+     * Used for Polyphonic encoding presented at MEC 2019
+     */
+    v3_advance
 }

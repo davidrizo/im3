@@ -9,7 +9,7 @@ public class AgnosticSymbolTypeFactoryTest {
 
     @Test
     public void parseString() throws IM3Exception {
-        String [] strings = {"clef.G", "metersign.Ct", "metersign.Cdot", "metersign.Odot", "colon", "note.breve", "note.beamedBoth1_down"}; // TODO Comprobar con todos
+        String [] strings = {"clef.G", "metersign.Ct", "metersign.Cdot", "metersign.Odot", "colon", "note.breve", "note.beamedBoth1_down", "defect.paperHole"}; // TODO Comprobar con todos
 
         for (String string: strings) {
             AgnosticSymbolType agnosticSymbolType = AgnosticSymbolTypeFactory.parseString(string);

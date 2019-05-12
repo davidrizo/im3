@@ -35,7 +35,11 @@ public class Accidental extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
-        return ACCIDENTAL + accidentals.toAgnosticString();
+        if (accidentals != null) {
+            return ACCIDENTAL + accidentals.toAgnosticString();
+        } else {
+            return ACCIDENTAL;
+        }
     }
 
     @Override

@@ -26,6 +26,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//TODO Mejor importar a SemanticEncoding y de ahí a ScoreSong para poderlo reutilizar
 /**
  * @autor drizo
  */

@@ -1,7 +1,8 @@
 package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
-import es.ua.dlsi.im3.core.score.Accidentals;
-import es.ua.dlsi.im3.core.score.DiatonicPitch;
+import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
 
 /**
@@ -33,5 +34,33 @@ public class KeySignature extends SemanticSymbolType {
             sb.append(MajorMinor.major.toSemanticString());
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toKernSemanticString() throws IM3Exception {
+        Key key = toKey();
+        es.ua.dlsi.im3.core.score.KeySignature ks = new es.ua.dlsi.im3.core.score.KeySignature(null, key);
+        return "*" + KernExporter.generateKeySignature(ks);
+    }
+
+    @Override
+    public SemanticSymbolType semantic2ScoreSong(ScoreLayer scoreLayer, SemanticSymbolType propagatedSymbolType) throws IM3Exception {
+        Key key = toKey();
+        es.ua.dlsi.im3.core.score.KeySignature ks = new es.ua.dlsi.im3.core.score.KeySignature(
+                scoreLayer.getStaff().getNotationType(), key);
+        ks.setTime(scoreLayer.getDuration());
+        scoreLayer.getStaff().addKeySignature(ks);
+        return propagatedSymbolType;
+    }
+
+    private Key toKey() throws IM3Exception {
+        Mode mode;
+        if (majorMinor != null) {
+            mode = Mode.stringToMode(majorMinor.toSemanticString());
+        } else {
+            mode = Mode.UNKNOWN;
+        }
+        Key key = new Key(new PitchClass(diatonicPitch, accidentals), mode);
+        return key;
     }
 }

@@ -25,6 +25,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.utils.CollectionsUtils;
 
+//TODO This should be changed to LinearStaff (i.e. All staves in different systems belonging to the same instrument are the same staff)
 /**
  * It is just a visual holder for elements. The note, chord and rest sequences are stored in ScoreLayer,
  * the meters in song. The instrumentKey signatures, for being able to represent transposing instruments are stored
@@ -579,7 +580,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      * @return
      * @throws IM3Exception When no possible pitch is found
      */
-    public ScientificPitch computeScientificPitch(Clef clef, PositionInStaff positionInStaff) {
+    public static ScientificPitch computeScientificPitch(Clef clef, PositionInStaff positionInStaff) {
         int bottomClefOctave = clef.getBottomLineOctave();
         DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
         int intervalWithC = bottomClefNoteName.getOrder() - DiatonicPitch.C.getOrder();
