@@ -497,9 +497,10 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 						String notationType = getOptionalAttribute(attributesMap, "notationtype");
 						if (notationType != null) {
-							if (notationType.equals("mensural")) {
+							if (notationType.equals("mensural") || notationType.equals("mensural.white")) {
 								lastStaff.setNotationType(NotationType.eMensural);
 							} else {
+								//TODO mensural black
 								throw new ImportException("Unsupported notation type import: " + notationType);
 							}
 						}
