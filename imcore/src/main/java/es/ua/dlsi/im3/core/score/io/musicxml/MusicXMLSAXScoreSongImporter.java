@@ -18,18 +18,14 @@ package es.ua.dlsi.im3.core.score.io.musicxml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.core.score.*;
 import org.apache.commons.lang3.math.Fraction;
-import org.xml.sax.SAXException;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
@@ -311,7 +307,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			    String newSystem = getOptionalAttribute(attributes, "new-system");
 			    if (newSystem != null && newSystem.equals("yes")) {
 			        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "System break");
-                    getMeasureElementsToInsert().add(new PartSystemBreak(measureStartTime, true)); //TODO Cuando no son de Part
+			        this.currentScorePart.getPageSystemBeginnings().addSystemBeginning(new SystemBeginning(measureStartTime, true));
+                    //getMeasureElementsToInsert().add(new SystemBeginning(measureStartTime, true));
                 } // TODO: 20/11/17 Page break
                 // TODO: 20/11/17 Comprobar
                 break;
@@ -1447,9 +1444,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			}
 			
 			for (ITimedElementInStaff element: entry.getValue()) {
-			    if (element instanceof PartSystemBreak) {
-			        staff.addSystemBreak((PartSystemBreak) element);
-                } else if (element instanceof Atom) {
+			    /*if (element instanceof SystemBeginning) {
+			        staff.addSystemBreak((SystemBeginning) element);
+                } else */if (element instanceof Atom) {
 					Atom atom = (Atom) element;
 					if (atom.getDuration().equals(Figures.NO_DURATION.getDuration())) {
 						if (countAtoms == 1) {

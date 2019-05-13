@@ -7,7 +7,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 /**
  * @author drizo
  */
-public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
+public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject, IStaffContainer {
 
 	protected LinkedHashMap<Integer, ScoreLayer> layers;
 	// TODO Garantizar que es único
@@ -27,6 +27,11 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 	 */
 	List<Staff> staves;
 
+	/**
+	 * Page and system beginnings for just this part
+	 */
+	PageSystemBeginnings pageSystemBeginnings;
+
 	String ID;
 
 	/**
@@ -38,6 +43,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 		this.number = number;
 		this.layers = new LinkedHashMap<>();
 		this.staves = new ArrayList<>();
+		this.pageSystemBeginnings = new PageSystemBeginnings();
 	}
 
 	public ScorePart(ScoreSong scoreSong, int number) {
@@ -45,6 +51,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 		this.number = number;
 		this.layers = new LinkedHashMap<>();
 		this.staves = new ArrayList<>();
+		this.pageSystemBeginnings = new PageSystemBeginnings();
 	}
 
 	// ----------------------------------------------------------------------
@@ -61,7 +68,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 		return "ScorePart [name=" + name + ", number = " + number + "]";
 	}
 
-	public Time computeScoreDuration() throws IM3Exception {
+	public Time computeScoreDuration() {
 		Time max = Time.TIME_ZERO;
 		for (ScoreLayer voice : layers.values()) {
 			Time dur = voice.getDuration();
@@ -88,6 +95,11 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
 
 	public int getNumber() {
 		return number;
+	}
+
+	@Override
+	public PageSystemBeginnings getPageSystemBeginnings() {
+		return pageSystemBeginnings;
 	}
 
 	/**
@@ -378,6 +390,7 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject {
     }
 
 
+    @Override
 	public List<Staff> getStaves() {
 		return staves;
 	}

@@ -78,7 +78,7 @@ public class AutomaticPageLayout extends PageLayout {
         if (includePageAndSystemBreaks) {
             // TODO: 20/11/17 He quitado los system y page breaks
             System.err.println("TODO: 20/11/17 He quitado los system y page breaks");
-            /*for (PartSystemBreak sb: staves.iterator().next().getSystemBreaks().values()) {
+            /*for (SystemBeginning sb: staves.iterator().next().getSystemBreaks().values()) {
                 // use the first layout font, it can be any one
                 LayoutCoreSystemBreak lsb = new LayoutCoreSystemBreak(layoutFonts.values().iterator().next(), sb);
                 simultaneities.add(lsb);

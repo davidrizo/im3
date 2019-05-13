@@ -1,8 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.PartSystemBreak;
-import es.ua.dlsi.im3.core.score.SystemBreak;
+import es.ua.dlsi.im3.core.score.SystemBeginning;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
@@ -14,13 +13,13 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 /**
  * It draws a graphic to show where is the system break. By default it is hidden
  */
-public class LayoutCorePartSystemBreak extends LayoutCoreSymbol<PartSystemBreak> {
+public class LayoutCorePartSystemBreak extends LayoutCoreSymbol<SystemBeginning> {
     private Time DEFAULT_TIME_FOR_SPACE_COMPUTING = new Time(1,1000); //TODO
     private final Coordinate from;
     private final Coordinate to;
     private Line line;
 
-    public LayoutCorePartSystemBreak(LayoutFont layoutFont, PartSystemBreak coreSymbol) {
+    public LayoutCorePartSystemBreak(LayoutFont layoutFont, SystemBeginning coreSymbol) {
         super(layoutFont, coreSymbol);
         this.line = line;
         from = new Coordinate(position.getX(), null);

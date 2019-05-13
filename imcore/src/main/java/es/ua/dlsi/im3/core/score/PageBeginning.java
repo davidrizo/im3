@@ -4,7 +4,7 @@ package es.ua.dlsi.im3.core.score;
 /**
  * An explicit page break. In MEI it is referred as a page beginning
  */
-public class PartPageBreak implements ITimedElementInStaff, IFacsimile {
+public class PageBeginning implements ITimedElement, IFacsimile {
     private Time time;
     String ID;
     String facsimileElementID;
@@ -13,9 +13,8 @@ public class PartPageBreak implements ITimedElementInStaff, IFacsimile {
      * If it is explicit
      */
     private final boolean manual;
-    private Staff staff;
 
-    public PartPageBreak(Time time, boolean manual) {
+    public PageBeginning(Time time, boolean manual) {
         this.time = time;
         this.manual = manual;
     }
@@ -31,16 +30,6 @@ public class PartPageBreak implements ITimedElementInStaff, IFacsimile {
     }
     public boolean isManual() {
         return manual;
-    }
-
-    @Override
-    public Staff getStaff() {
-        return staff;
-    }
-
-    @Override
-    public void setStaff(Staff staff) {
-        this.staff = staff;
     }
 
     public String getID() {

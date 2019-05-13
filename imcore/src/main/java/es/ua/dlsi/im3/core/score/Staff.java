@@ -89,16 +89,14 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
 	protected ConnectorCollection connectorCollection;
 
-    // TODO: 17/11/17 A system
     /**
      * Explicit system breaks
      */
-    HashMap<Time, PartSystemBreak> systemBreaks;
-    // TODO: 17/11/17 A system
+    HashMap<Time, SystemBeginning> systemBreaks;
     /**
      * Explicit page breaks
      */
-    HashMap<Time, PartPageBreak> pageBreaks;
+    HashMap<Time, PageBeginning> pageBreaks;
 
     /**
      * Parts represented in this staff, usually it will be just 1 part
@@ -948,39 +946,6 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      */
     public Fermate getFermateWithOnset(Time time) {
         return fermate.get(time);
-    }
-
-
-    public void addSystemBreak(PartSystemBreak sb) throws IM3Exception {
-        if (sb.getTime() == null) {
-            throw new IM3Exception("System break has not time set");
-        }
-        systemBreaks.put(sb.getTime(), sb);
-        sb.setStaff(this);
-        this.coreSymbols.add(sb);
-    }
-
-    public HashMap<Time, PartSystemBreak> getSystemBreaks() {
-        return systemBreaks;
-    }
-
-    public boolean hasSystemBreak(Time time) {
-        return systemBreaks.containsKey(time);
-    }
-
-    public void addPageBreak(PartPageBreak sb) throws IM3Exception {
-        if (sb.getTime() == null) {
-            throw new IM3Exception("Page break has not time set");
-        }
-        pageBreaks.put(sb.getTime(), sb);
-    }
-
-    public HashMap<Time, PartPageBreak> getPageBreaks() {
-        return pageBreaks;
-    }
-
-    public boolean hasPageBreak(Time time) {
-        return pageBreaks.containsKey(time);
     }
 
     public Atom getAtomWithOnset(Time time) {

@@ -37,7 +37,7 @@ import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
  *
  * @author drizo
  */
-public class ScoreSong {
+public class ScoreSong implements IStaffContainer {
     protected IDManager idManager;
 
 	/**
@@ -82,6 +82,11 @@ public class ScoreSong {
 
     Facsimile facsimile;
 
+	/**
+	 * Page and system beginnings for full score
+	 */
+	PageSystemBeginnings pageSystemBeginnings;
+
     //FRACTIONS private final String PART_ID_PREFIX = "P";
 
     public ScoreSong(DurationEvaluator durationEvaluator) {
@@ -95,6 +100,7 @@ public class ScoreSong {
         parts = new ArrayList<>();
         staves = new ArrayList<>();
         staffGroups = new ArrayList<StaffGroup>();
+		pageSystemBeginnings = new PageSystemBeginnings();
 		/*connectors = new TreeSet<>(new Comparator<Connector<?,?>>() {
 
 			@Override
@@ -114,6 +120,11 @@ public class ScoreSong {
 
 	public ScoreSong() {
         this(new DurationEvaluator());
+	}
+
+	@Override
+	public PageSystemBeginnings getPageSystemBeginnings() {
+		return pageSystemBeginnings;
 	}
 
 	/*private static int compareConnectorClasses(Connector<?,?> a, Connector<?,?> b) {
@@ -199,7 +210,7 @@ public class ScoreSong {
 	
 	
 
-	public Time getSongDuration() throws IM3Exception {
+	public Time getSongDuration() {
 		Time dur = Time.TIME_ZERO;
 		for (ScorePart part : parts) {
 			dur = Time.max(dur, part.computeScoreDuration());
@@ -513,7 +524,7 @@ public class ScoreSong {
 	 * @param part
 	 * @throws IM3Exception
 	 */
-	public void addPart(ScorePart part) throws IM3Exception {
+	public void addPart(ScorePart part) {
 		/*if (parts.get(part.getNumber()) != null) {
 			throw new IM3Exception("Part with number " + part.getNumber() + " already exists");
 		}*/
@@ -760,6 +771,7 @@ public class ScoreSong {
 	// ----------------------- Staff and staff group information
 	// --------------------------------
 	// ----------------------------------------------------------------------
+	@Override
 	public List<Staff> getStaves() {
 		return staves;
 	}
@@ -1224,7 +1236,7 @@ public class ScoreSong {
 	 * @param h
 	 * @para
 	 */
-	public void removeHarmony(Harmony h) throws IM3Exception {
+	public void removeHarmony(Harmony h) {
 		//try {
 			this.harmonies.remove(h);
 			/*FRACTIONS if (h.getAnalysisHook() != null) {
@@ -1280,13 +1292,12 @@ public class ScoreSong {
 	 * @return
 	 */
 	public Time computeHarmonyDuration(Harmony h) {
-		try {
 			return harmonies.computeElementDurationFromIOI(h, getSongDuration());
-		} catch (IM3Exception ex) {
+		/*} catch (IM3Exception ex) {
 			Logger.getLogger(ScoreSong.class.getName()).log(Level.SEVERE, null, ex);
 			throw new IM3RuntimeException(
 					"The element has not time and it has been already set when it was inserted: " + ex.toString());
-		}
+		}*/
 	}
 
 	// TODo Ver cómo trabajamos con alt keys
@@ -1332,7 +1343,7 @@ public class ScoreSong {
 	 * @param time
 	 * @return
 	 */
-	public Degree getHarmonyDegreeActiveAtTimeOrNull(Time time) throws IM3Exception {
+	public Degree getHarmonyDegreeActiveAtTimeOrNull(Time time) {
 		Harmony h = harmonies.getValueAtTimeOrNull(time);
 		if (h == null) {
 			return null;
@@ -1582,7 +1593,7 @@ public class ScoreSong {
 	 * @return null if not found
 	 * @exception IM3Exception If several concert keys are found for the same time in different staves
 	 */
-	public Key getUniqueKeyWithOnset(Time time) throws IM3Exception {
+	/*public Key getUniqueKeyWithOnset(Time time) throws IM3Exception {
 		Key key = null;
 		for (Staff staff: staves) {
 			KeySignature ks = staff.getKeySignatureWithOnset(time);
@@ -1593,7 +1604,7 @@ public class ScoreSong {
 			} // else it is the same
 		}
 		return key;
-	}
+	}*/
 
 	/**
 	 * It returns the common instrumentKey for all staves at that time. For transposing instruments the
@@ -1601,7 +1612,7 @@ public class ScoreSong {
 	 * @param time
 	 * @return
 	 */
-	public Key getUniqueKeyActiveAtTime(Time time) throws IM3Exception {
+	/*public Key getUniqueKeyActiveAtTime(Time time) throws IM3Exception {
 		Key key = null;
 		for (Staff staff: staves) {
 			KeySignature ks = staff.getRunningKeySignatureAt(time);
@@ -1612,7 +1623,7 @@ public class ScoreSong {
 			} // else it is the same
 		}
 		return key;
-	}
+	}*/
 
 	/**
 	 * It returns the common time signature for all staves at that time when possible
@@ -1620,7 +1631,7 @@ public class ScoreSong {
 	 * @return null if not found
 	 * @exception IM3Exception If several time signatures are found for the same time in different staves
 	 */
-	public TimeSignature getUniqueMeterWithOnset(Time time) throws IM3Exception {
+	/*public TimeSignature getUniqueMeterWithOnset(Time time) throws IM3Exception {
 		TimeSignature meter = null;
 		for (Staff staff: staves) {
 			TimeSignature ts = staff.getTimeSignatureWithOnset(time);
@@ -1631,7 +1642,7 @@ public class ScoreSong {
 			} // else it is the same
 		}
 		return meter;
-	}
+	}*/
 
     public TreeSet<AtomFigure> getAtomFiguresSortedByTime() {
 		TreeSet<AtomFigure> result = new TreeSet<>();

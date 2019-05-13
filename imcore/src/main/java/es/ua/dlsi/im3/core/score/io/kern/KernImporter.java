@@ -164,18 +164,13 @@ public class KernImporter implements IScoreSongImporter {
 
 
         Loader(ScoreSong song, DurationEvaluator durationEvaluator) {
-            try {
-                //recordTime = Time.TIME_ZERO;
-                scoreSong = song;
-                this.durationEvaluator = durationEvaluator;
-                //TODO Ahora va todo a la misma part
-                globalPart = new ScorePart(scoreSong, 0);
-                scoreSong.addPart(globalPart);
-                prepareFiguresForTuplet();
-            } catch (IM3Exception ex) {
-                Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
-                throw new IM3RuntimeException(ex);
-            }
+            //recordTime = Time.TIME_ZERO;
+            scoreSong = song;
+            this.durationEvaluator = durationEvaluator;
+            //TODO Ahora va todo a la misma part
+            globalPart = new ScorePart(scoreSong, 0);
+            scoreSong.addPart(globalPart);
+            prepareFiguresForTuplet();
         }
 
         // used for reading just harmonies

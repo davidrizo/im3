@@ -1,7 +1,6 @@
 package es.ua.dlsi.im3.core.score.io.lilypond;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
@@ -280,9 +279,9 @@ public class LilypondExporter implements ISongExporter {
                 generateNote((SimpleNote) timedElementInStaff, lastKey, sb);
             } else if (timedElementInStaff instanceof MarkBarline) {
                 generateMarkBarline((MarkBarline) timedElementInStaff, sb);
-            } else if (timedElementInStaff instanceof PartSystemBreak) {
+            } else if (timedElementInStaff instanceof SystemBeginning) {
                 generatePartSystemBreak(sb);
-            } else if (timedElementInStaff instanceof PartPageBreak) {
+            } else if (timedElementInStaff instanceof PageBeginning) {
                 generatePartPageBreak(sb);
             } else if (timedElementInStaff instanceof Custos){
                 System.err.println("TO-DO CUSTOS"); //TODO Custos

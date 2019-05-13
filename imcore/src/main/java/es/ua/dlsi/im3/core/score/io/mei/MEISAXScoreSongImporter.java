@@ -314,7 +314,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
         return code;
     }
 
-	private Time getCurrentTime() throws ImportException {
+	private Time getCurrentTime() {
 		if (lastVoice == null) { // e.g. staffDef where no time is defined yet
 			return Time.TIME_ZERO; 
 		}
@@ -328,20 +328,20 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}
 	}
 	
-	private void setCurrentTime(Time time) throws ImportException {
+	private void setCurrentTime(Time time) {
         setCurrentTime(lastStaff, lastVoice, time);
 		//String code = getLayerCode();
 		////currentTime.put(code, time);
 		maximumVoicesTime = Time.max(time, maximumVoicesTime);
     }
 
-    private void setCurrentTime(Staff staff, ScoreLayer voice, Time time) throws ImportException {
+    private void setCurrentTime(Staff staff, ScoreLayer voice, Time time) {
         String code = getLayerCode(staff, voice);
         currentTime.put(code, time);
         maximumVoicesTime = Time.max(time, maximumVoicesTime);
     }
 
-	private void updateCurrentTime() throws ImportException, IM3Exception {
+	private void updateCurrentTime() {
         setCurrentTime(lastVoice.getDuration());
 	}
 	
@@ -590,24 +590,27 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					case "sb":
 						horizontalOrderInStaff = 0;
 						Time sbtime = getCurrentTime();
-						// TODO: 17/11/17 A system en lugar de staff
-						if (!lastStaff.hasSystemBreak(sbtime)) {
-							PartSystemBreak sb = new PartSystemBreak(sbtime, true);
+						SystemBeginning sb = new SystemBeginning(sbtime, true);
+						parseFacsimileReference(sb, attributesMap);
+						this.currentScorePart.getPageSystemBeginnings().addSystemBeginning(sb);
+						/*if (!lastStaff.hasSystemBreak(sbtime)) {
+							SystemBeginning sb = new SystemBeginning(sbtime, true);
 							parseFacsimileReference(sb, attributesMap);
 							lastStaff.addSystemBreak(sb);
-						}
+						}*/
 
 						break;
 					case "pb":
-						// TODO: 17/11/17 A system en lugar de staff
 						horizontalOrderInStaff = 0;
 						Time pbtime = getCurrentTime();
-						// TODO: 17/11/17 A system en lugar de staff
-						if (!lastStaff.hasPageBreak(pbtime)) {
-							PartPageBreak pb = new PartPageBreak(pbtime, true);
+						PageBeginning pb = new PageBeginning(pbtime, true);
+						parseFacsimileReference(pb, attributesMap);
+						this.currentScorePart.getPageSystemBeginnings().addPageBeginning(pb);
+						/*if (!lastStaff.hasPageBreak(pbtime)) {
+							PageBeginning pb = new PageBeginning(pbtime, true);
 							parseFacsimileReference(pb, attributesMap);
 							lastStaff.addPageBreak(pb);
-						}
+						}*/
 						break;
 					case "barLine":
 						previousAccidentals.clear();
@@ -2181,7 +2184,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	}
 
 
-	protected ITimedSymbolWithConnectors getOrCreatePlaceHolder(Time ts, Staff staff, ScoreLayer layer) throws IM3Exception {
+	protected ITimedSymbolWithConnectors getOrCreatePlaceHolder(Time ts, Staff staff, ScoreLayer layer) {
 		StaffTimedPlaceHolder placeHolder =  placeHolders.get(ts);
 		if (placeHolder == null) {
 			//placeHolder = new StaffTimedPlaceHolder(currentScorePart.getElements().size(), ts);

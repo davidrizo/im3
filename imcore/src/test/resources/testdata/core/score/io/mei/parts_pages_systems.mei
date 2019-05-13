@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.music-encoding.org/ns/mei" meiversion="4.0.0">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title>Parts - pages - system - test</title>
+                <composer>
+                    <persName role="creator">David Rizo</persName>
+                </composer>   
+                <respStmt>
+                    <persName role="encoder">David Rizo</persName>
+                </respStmt>                
+            </titleStmt>
+            <pubStmt>
+                <publisher>
+                    <corpName role="publisher">Universidad de Alicante</corpName>
+                </publisher>               
+            </pubStmt>
+        </fileDesc>        
+    </meiHead>
+    <music>  
+        <facsimile>
+            <!-- the image304.jpg" contains two pages -->
+            <surface xml:id="page_id_102" ulx="0" uly="0" lrx="500" lry="900">
+                <graphic target="image304.jpg"></graphic> <!-- TODO If there are several graphics, how do we know which graphic is each zone related to? -->
+                <zone xml:id="region_id_3030" ulx="20" uly="30" lrx="203" lry="119" type="region"></zone>
+                <zone xml:id="region_id_4001" ulx="1" uly="4" lrx="1000" lry="150" type="agnostic_symbol"></zone>                                                        
+                <zone xml:id="region_id_3031" ulx="22" uly="121" lrx="201" lry="319" type="region"></zone>
+                <zone xml:id="region_id_3032" ulx="21" uly="339" lrx="200" lry="499"  type="region"></zone>
+                <zone xml:id="symbol_id_5001" ulx="30" uly="33" lrx="60" lry="90"  type="region"></zone>
+                <!-- other regions -->
+                <!-- agnostic symbols could also be defined here as zones -->
+            </surface>            
+            <surface xml:id="page_id_103" ulx="500" uly="0" lrx="1100" lry="900">
+                <graphic target="image304.jpg"></graphic>
+                <zone xml:id="region_id_3033" ulx="23" uly="31" lrx="201" lry="131" type="region"></zone>
+                   <!-- define more regions here -->
+            </surface>
+            <surface xml:id="page_id_110" ulx="0" uly="0" lrx="1100" lry="900">
+                <graphic target="image320.jpg"></graphic>
+                <!-- define more regions here -->
+            </surface>
+            
+            <!-- other more as surface -->
+        </facsimile>        
+        <body>
+            <mdiv>
+                <parts>
+                    <part label="Soprano">
+                        <scoreDef meter.count="2" meter.unit="4" key.sig="0">
+                            <staffGrp>
+                                <label>Soprano</label>
+                                <staffDef n="1" lines="5" clef.line="2" clef.shape="G"/>
+                            </staffGrp>
+                        </scoreDef>    
+                        <section>
+                            <pb facs="#page_id_102"/> <!-- page beginning -->
+                            <sb facs="#region_id_3030"/> <!-- system beginning -->
+                            <measure n="1">
+                                <staff n="1">
+                                    <layer n="1">
+                                        <note pname="c" oct="4" dur="1" facs="#symbol_id_5001"/> <!-- agnostic symbol link -->
+                                    </layer>
+                                </staff>
+                            </measure>
+                            <!-- other measures -->
+                            <sb facs="#region_id_3031"/>
+                            <measure n="5">
+                                <staff n="1">
+                                    <layer n="1">
+                                        <note pname="d" oct="4" dur="1"/>
+                                    </layer>
+                                </staff>
+                            </measure>           
+                            <!-- more measures -->
+                            <pb facs="#page_id_103"/>
+                            <sb facs="#region_id_3033"/>
+                            <measure n="1">
+                                <staff n="1">
+                                    <layer n="1">
+                                        <note pname="e" oct="4" dur="1"/>
+                                    </layer>
+                                </staff>
+                            </measure>                            
+                        </section>
+                    </part>
+                    <part label="Piano">
+                        <scoreDef meter.count="2" meter.unit="4" key.sig="0">
+                            <staffGrp symbol="brace">
+                                <label>Piano</label>
+                                <staffDef n="1" lines="5" clef.line="2" clef.shape="G"/>
+                                <staffDef n="2" lines="5" clef.line="4" clef.shape="F"/>
+                            </staffGrp>
+                        </scoreDef>            
+                        <section>
+                            <pb facs="#page_id_110"/> <!-- page beginning -->
+                            <sb facs="#region_id_4001"/> <!-- system beginning -->
+                            <measure n="1">
+                                <staff n="1">
+                                    <layer n="1">
+                                        <note pname="c" oct="4" dur="1"/>
+                                    </layer>
+                                </staff>
+                                <staff n="2">
+                                    <layer n="1">
+                                        <note pname="e" oct="4" dur="1"/>
+                                    </layer>
+                                </staff>
+                            </measure>
+                            <!-- other measures -->   
+                        </section>
+                    </part>                    
+                </parts>
+            </mdiv>
+        </body>
+    </music>
+</mei>

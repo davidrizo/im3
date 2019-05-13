@@ -2,19 +2,15 @@ package es.ua.dlsi.im3.core.conversions;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.clefs.ClefC4;
 import es.ua.dlsi.im3.core.score.clefs.ClefF4;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
-import es.ua.dlsi.im3.core.score.mensural.BinaryDurationEvaluator;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MensuralToModern {
@@ -129,9 +125,9 @@ public class MensuralToModern {
                 convert(modernStaff, modernLayer, (Atom) symbol, interval);
             } else if (symbol instanceof DisplacedDot) {
                 // no-op It is never displaced, if always accompanies the pitch
-            } else if (symbol instanceof PartSystemBreak) {
-                PartSystemBreak systemBreak = new PartSystemBreak(symbol.getTime(), ((PartSystemBreak) symbol).isManual());
-                modernStaff.addSystemBreak(systemBreak);
+            /*} else if (symbol instanceof SystemBeginning) {
+                SystemBeginning systemBreak = new SystemBeginning(symbol.getTime(), ((SystemBeginning) symbol).isManual());
+                modernStaff.addSystemBreak(systemBreak);*/
             } else if (symbol instanceof Custos) {
                 // no-op
             } else {

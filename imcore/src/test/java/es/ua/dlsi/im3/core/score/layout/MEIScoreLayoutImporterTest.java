@@ -2,15 +2,15 @@ package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
+import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.facsimile.Surface;
 import es.ua.dlsi.im3.core.score.facsimile.Zone;
-import es.ua.dlsi.im3.core.score.io.MEIScoreLayoutImporter;
+import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -27,14 +27,11 @@ public class MEIScoreLayoutImporterTest {
         assertEquals("2 pages", 2, pageLayout.getPages().size());*/
     }
 
-    @Test
-    public void parsePartsPagesSystems() throws IM3Exception {
-        //TODO
-        File file = TestFileUtils.getFile("/testdata/core/score/io/mei/parts_pages_systems.mei");
+    private ScoreSong checkPartsPagesSystems(File file) throws ImportException {
         MEISongImporter meiSongImporter = new MEISongImporter(null);
         ScoreSong song = meiSongImporter.importSong(file);
 
-        assertEquals("# parts", song.getParts().size(), 2);
+        assertEquals("# parts", 2, song.getParts().size());
         ScorePart sopranoPart = song.getPartWithName("Soprano");
         assertNotNull("Soprano", sopranoPart);
         ScorePart pianoPart = song.getPartWithName("Piano");
@@ -99,18 +96,35 @@ public class MEIScoreLayoutImporterTest {
         // 1st part
         assertEquals("1 soprano staff", 1, sopranoPart.getStaves().size());
         Staff sopranoStaff = sopranoPart.getStaves().get(0);
-        assertEquals("Pages", 2, sopranoStaff.getPageBreaks().size());
-        PartPageBreak sopranoPB1 = sopranoStaff.getPageBreaks().get(Time.TIME_ZERO);
+        assertEquals("Pages", 2, sopranoPart.getPageSystemBeginnings().getPageBeginnings().size());
+        PageBeginning sopranoPB1 = sopranoPart.getPageSystemBeginnings().getPageBeginnings().get(Time.TIME_ZERO);
         assertEquals("PB1 soprano id", "#page_id_102", sopranoPB1.getFacsimileElementID());
 
-        PartPageBreak sopranoPB2 = sopranoStaff.getPageBreaks().get(Figures.WHOLE.getDuration().multiply(2));
+        PageBeginning sopranoPB2 = sopranoPart.getPageSystemBeginnings().getPageBeginnings().get(Figures.WHOLE.getDuration().multiply(2));
         assertEquals("PB2 soprano id", "#page_id_103", sopranoPB2.getFacsimileElementID());
 
-        assertEquals("Systems", 3, sopranoStaff.getSystemBreaks().size());
-        assertEquals("SB1 soprano id", "#region_id_3030", sopranoStaff.getSystemBreaks().get(Time.TIME_ZERO).getFacsimileElementID());
-        assertEquals("SB2 soprano id", "#region_id_3031", sopranoStaff.getSystemBreaks().get(Figures.WHOLE.getDuration()).getFacsimileElementID());
-        assertEquals("SB3 soprano id", "#region_id_3033", sopranoStaff.getSystemBreaks().get(Figures.WHOLE.getDuration().multiply(2)).getFacsimileElementID());
+        assertEquals("Systems", 3, sopranoPart.getPageSystemBeginnings().getSystemBeginnings().size());
+        assertEquals("SB1 soprano id", "#region_id_3030", sopranoPart.getPageSystemBeginnings().getSystemBeginnings().get(Time.TIME_ZERO).getFacsimileElementID());
+        assertEquals("SB2 soprano id", "#region_id_3031", sopranoPart.getPageSystemBeginnings().getSystemBeginnings().get(Figures.WHOLE.getDuration()).getFacsimileElementID());
+        assertEquals("SB3 soprano id", "#region_id_3033", sopranoPart.getPageSystemBeginnings().getSystemBeginnings().get(Figures.WHOLE.getDuration().multiply(2)).getFacsimileElementID());
 
         //TODO facs reference from note
+        return song;
+    }
+
+
+    @Test
+    public void parsePartsPagesSystems() throws IM3Exception {
+        System.out.println("Testing original");
+        File file = TestFileUtils.getFile("/testdata/core/score/io/mei/parts_pages_systems.mei");
+        ScoreSong song = checkPartsPagesSystems(file);
+
+        MEISongExporter meiSongExporter = new MEISongExporter();
+        File exportedFile = TestFileUtils.createTempFile("parts_pages_systems_exported.mei");
+        meiSongExporter.exportSongAsParts(exportedFile, song);
+
+        System.out.println("Testing exported");
+        checkPartsPagesSystems(exportedFile);
+
     }
 }

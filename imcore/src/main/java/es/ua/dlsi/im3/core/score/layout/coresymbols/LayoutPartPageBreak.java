@@ -1,8 +1,7 @@
 package es.ua.dlsi.im3.core.score.layout.coresymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.PageBreak;
-import es.ua.dlsi.im3.core.score.PartPageBreak;
+import es.ua.dlsi.im3.core.score.PageBeginning;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.LayoutConstants;
@@ -14,13 +13,13 @@ import es.ua.dlsi.im3.core.score.layout.graphics.Line;
 /**
  * It draws a graphic to show where is the page break. By default it is hidden
  */
-public class LayoutPartPageBreak extends LayoutCoreSymbol<PartPageBreak> {
+public class LayoutPartPageBreak extends LayoutCoreSymbol<PageBeginning> {
     private Time DEFAULT_TIME_FOR_SPACE_COMPUTING = new Time(1,1000); //TODO
     private final Coordinate from;
     private final Coordinate to;
     private Line line;
 
-    public LayoutPartPageBreak(LayoutFont layoutFont, PartPageBreak coreSymbol) {
+    public LayoutPartPageBreak(LayoutFont layoutFont, PageBeginning coreSymbol) {
         super(layoutFont, coreSymbol);
         this.line = line;
         from = new Coordinate(position.getX(), null);
