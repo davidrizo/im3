@@ -63,7 +63,7 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
         Staff prevStaff = staff;
         staff.remove(this);
         this.time = time.add(offset);
-        prevStaff.addTimeSignature(this);
+        prevStaff.addCoreSymbol(this);
     }
 	@Override
 	public String __getID() {

@@ -677,7 +677,7 @@ public class KernImporter implements IScoreSongImporter {
                     }
                 } else {
                     clef.setTime(t);
-                    staff.addClef(clef);
+                    staff.addCoreSymbol(clef);
                 }
             } catch (IM3Exception ex) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
@@ -755,7 +755,7 @@ public class KernImporter implements IScoreSongImporter {
             } else {
                 KeySignature newKs = new KeySignature(currentSpine.notationType, ks);
                 newKs.setTime(currentTime);
-                staff.addKeySignature(newKs);
+                staff.addCoreSymbol(newKs);
 
                 Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
                         "Adding key signature {0} to staff {1}", new Object[]{newKs, staff});
@@ -763,7 +763,7 @@ public class KernImporter implements IScoreSongImporter {
                 if (inHarmSpine() || inRootSpine()) { // parche
                     KeySignature newKsAnalysis = new KeySignature(currentSpine.notationType, ks);
                     newKsAnalysis.setTime(currentTime);
-                    scoreSong.getAnalysisStaff().addKeySignature(newKsAnalysis);
+                    scoreSong.getAnalysisStaff().addCoreSymbol(newKsAnalysis);
 
                     Logger.getLogger(KernImporter.class.getName()).log(Level.INFO,
                             "Adding key signature {0} to staff {1}", new Object[]{newKs, staff});
@@ -811,7 +811,7 @@ public class KernImporter implements IScoreSongImporter {
                     currentMeter = presentMeter;
                 } else {
                     ts.setTime(currentTime);
-                    staff.addTimeSignature(ts);
+                    staff.addCoreSymbol(ts);
                     // TODO No soportamos cambios de compas entre spines, y tampoco lo comprobamos
                     currentMeter = ts;
 
@@ -877,7 +877,7 @@ public class KernImporter implements IScoreSongImporter {
                 }
                 ts.setTime(currentTime);
                 ts.setStaff(staff);
-                staff.addTimeSignature(ts);
+                staff.addCoreSymbol(ts);
 
             } catch (IM3Exception ex) {
                 Logger.getLogger(KernImporter.class.getName()).log(Level.SEVERE, null, ex);
@@ -1645,7 +1645,7 @@ public class KernImporter implements IScoreSongImporter {
             if (staff.getNotationType() == NotationType.eMensural) {
                 MarkBarline markBarline = new MarkBarline(currentTime);
                 try {
-                    staff.addMarkBarline(markBarline);
+                    staff.addCoreSymbol(markBarline);
                 } catch (IM3Exception e) {
                     throw new GrammarParseRuntimeException(e);
                 }

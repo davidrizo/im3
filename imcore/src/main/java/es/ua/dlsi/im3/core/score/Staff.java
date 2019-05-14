@@ -293,12 +293,6 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         return this.custos.values();
     }
 
-    public void addCustos(Custos custos) {
-	    this.custos.put(custos.getTime(), custos);
-        this.coreSymbols.add(custos);
-        custos.setStaff(this);
-    }
-
 	public Collection<TimeSignature> getTimeSignatures() {
 		return this.timeSignatures.values();
 	}
@@ -404,7 +398,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 * @param clef
 	 * @throws IM3Exception
 	 */
-	public void addClef(Clef clef) throws IM3Exception {
+	private void addClef(Clef clef) throws IM3Exception {
 		Clef prev = clefs.get(clef.getTime());
 		if (prev != null) {
 			if (prev.equals(clef)) {
@@ -415,10 +409,9 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		}
 		
 		this.clefs.put(clef.getTime(), clef);
-        this.addCoreSymbol(clef);
 	}
 
-	public void addTimeSignature(TimeSignature ts) throws IM3Exception {		
+	private void addTimeSignature(TimeSignature ts) throws IM3Exception {
 		TimeSignature prev = timeSignatures.get(ts.getTime());
 		if (prev != null) {
 			if (prev.equals(ts)) {
@@ -428,18 +421,11 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			}
 		}
 		this.timeSignatures.put(ts.getTime(), ts);
-		this.addCoreSymbol(ts);
 		//this.coreSymbols.add(ts);
 		//ts.setStaff(this);
 	}
 
-    /*public void removeTimeSignature(TimeSignature meter) {
-	    this.coreSymbols.remove(meter);
-	    this.timeSignatures.remove(meter.getTime());
-    }*/
-
-
-	public void addKeySignature(KeySignature ts) throws IM3Exception {
+	private void addKeySignature(KeySignature ts) throws IM3Exception {
 		KeySignature prev = keySignatures.get(ts.getTime());
 		if (prev != null) {
 			if (prev.equals(ts)) {
@@ -449,10 +435,9 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			}
 		}
 		this.keySignatures.put(ts.getTime(), ts);
-        this.addCoreSymbol(ts);
 	}
 
-    public void addMarkBarline(MarkBarline ts) throws IM3Exception {
+	private void addMarkBarline(MarkBarline ts) throws IM3Exception {
         MarkBarline prev = null;
 
         if (prev != null) {
@@ -463,9 +448,69 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
             }
         }
         this.markBarlines.put(ts.getTime(), ts);
-        this.addCoreSymbol(ts);
 	}
 
+	private void addCustos(Custos custos) {
+		this.custos.put(custos.getTime(), custos);
+		custos.setStaff(this);
+	}
+
+
+	public void addCoreSymbol(ITimedElementInStaff element) throws IM3Exception {
+		//TODO Algo más elegante
+		if (element instanceof Clef) {
+			addClef((Clef) element);
+		}
+
+		if (element instanceof Custos) {
+			addCustos((Custos) element);
+		}
+
+		if (element instanceof KeySignature) {
+			addKeySignature((KeySignature) element);
+		}
+
+		if (element instanceof TimeSignature) {
+			addTimeSignature((TimeSignature) element);
+		}
+
+		if (element instanceof MarkBarline) {
+			addMarkBarline((MarkBarline) element);
+		}
+
+		element.setStaff(this);
+		this.coreSymbols.add(element);
+	}
+
+	public void remove(ITimedElementInStaff element) {
+		if (coreSymbols.remove(element)) { // if not removed yet
+			element.setStaff(null);
+		}
+		//TODO Algo más elegante
+		if (element instanceof Clef) {
+			clefs.remove(element.getTime());
+		}
+
+		if (element instanceof Custos) {
+			custos.remove(element.getTime());
+		}
+
+		if (element instanceof KeySignature) {
+			keySignatures.remove(element.getTime());
+		}
+
+		if (element instanceof TimeSignature) {
+			timeSignatures.remove(element.getTime());
+		}
+
+		if (element instanceof MarkBarline) {
+			markBarlines.remove(element.getTime());
+		}
+
+		if (element instanceof Fermate) {
+			fermate.remove(element);
+		}
+	}
 
 	// ----------------------------------------------------------------------
 	// ----------------------- Notation symbols --------------------------------
@@ -536,15 +581,8 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	public ArrayList<AttachmentInStaff<?>> getAttachments() {
 		return attachments;
 	}
-	
-	public void addCoreSymbol(ITimedElementInStaff e) {
-		e.setStaff(this);
-        this.coreSymbols.add(e);
-        /*System.out.println(name + " ADDED " + e);
-        for (ITimedElementInStaff ee: coreSymbols) {
-            System.out.println("\t" + ee);
-        }*/
-    }
+
+
 
 	/**
 	 *
@@ -710,31 +748,6 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	}
 
 
-    public void remove(ITimedElementInStaff element) {
-        if (coreSymbols.remove(element)) { // if not removed yet
-            element.setStaff(null);
-        }
-        //TODO Algo más elegante
-        if (element instanceof Custos) {
-            custos.remove(element.getTime());
-        }
-
-        if (element instanceof KeySignature) {
-            keySignatures.remove(element.getTime());
-        }
-
-        if (element instanceof TimeSignature) {
-            timeSignatures.remove(element.getTime());
-        }
-
-        if (element instanceof MarkBarline) {
-            markBarlines.remove(element.getTime());
-        }
-
-        if (element instanceof Fermate) {
-            markBarlines.remove(element.getTime());
-        }
-    }
 
 	/**
 	 * It tells the accidental that must be drawn for each note in the given range

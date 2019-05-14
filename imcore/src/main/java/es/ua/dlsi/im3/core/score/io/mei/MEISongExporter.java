@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -94,7 +93,7 @@ public class MEISongExporter implements ISongExporter {
 			ps = new PrintStream(file, "UTF-8");
 			this.song = song;
 			preprocess();
-			ps.print(exportSong(false));
+			ps.print(exportSong());
 		} catch (Exception e) {
 			throw new ExportException(e);
 		}
@@ -103,13 +102,42 @@ public class MEISongExporter implements ISongExporter {
 		}
 	}
 
+	private String exportSong() throws IM3Exception {
+		return exportSong(null, (Segment) null);
+	}
+
 	public void exportSongAsParts(File file, ScoreSong song) throws ExportException {
 		PrintStream ps = null;
 		try {
 			ps = new PrintStream(file, "UTF-8");
 			this.song = song;
 			preprocess();
-			ps.print(exportSong(true));
+			ps.print(exportSong(song.getParts(), null));
+		} catch (Exception e) {
+			throw new ExportException(e);
+		}
+		if (ps != null) {
+			ps.close();
+		}
+	}
+
+	public String exportPart(ScorePart scorePart, Segment segment) throws ExportException {
+		try {
+			this.song = scorePart.getScoreSong();
+			preprocess();
+			ArrayList<ScorePart> scoreParts = new ArrayList<>();
+			scoreParts.add(scorePart);
+			return exportSong(scoreParts, segment);
+		} catch (IM3Exception e) {
+			throw new ExportException(e);
+		}
+	}
+
+	public void exportPart(File file, ScorePart scorePart, Segment segment) throws ExportException {
+		PrintStream ps = null;
+		try {
+			ps = new PrintStream(file, "UTF-8");
+			ps.print(exportPart(scorePart, segment));
 		} catch (Exception e) {
 			throw new ExportException(e);
 		}
@@ -200,36 +228,38 @@ public class MEISongExporter implements ISongExporter {
 
 	/**
 	 * @param song
-	 * @param asParts If true <parts></parts> rather than <score></score>
 	 * @return
 	 * @throws IM3Exception
 	 * @throws ExportException
 	 */
-    public String exportSong(ScoreSong song, boolean asParts) throws IM3Exception, ExportException {
+    public String exportSong(ScoreSong song) throws IM3Exception, ExportException {
     		this.song = song;
-    		return exportSong(asParts);
+    		return exportSong();
     }
 
 	/**
 	 *
-	 * @param asParts @param asParts If true <parts></parts> rather than <score></score>
+	 * @param scoreParts @param asParts If not null <parts></parts> rather than <score></score>
 	 * @return
 	 * @throws IM3Exception
 	 * @throws ExportException
 	 */
-    public String exportSong(boolean asParts) throws IM3Exception, ExportException {
+    public String exportSong(List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
 		sb = new StringBuilder();
 
-
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		sb.append("<?xml-model href=\"http://music-encoding.org/schema/3.0.0/mei-all.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?>\n");
-		sb.append("<?xml-model href=\"http://music-encoding.org/schema/3.0.0/mei-all.rng\" type=\"application/xml\" schematypens=\"http://purl.oclc.org/dsdl/schematron\"?>\n");
-		sb.append("<mei xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.music-encoding.org/ns/mei\" meiversion=\""+VERSION+"\">\n");
+		exportHeader(sb);
 		processHead(1);
 		processBeforeMusic(1);
-		processMusic(1, asParts);
+		processMusic(1, scoreParts, segment);
 		sb.append("</mei>\n");
 		return sb.toString();
+	}
+
+	private void exportHeader(StringBuilder sb) {
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		sb.append("<?xml-model href=\"http://music-encoding.org/schema/4.0.0/mei-all.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?>\n");
+		sb.append("<?xml-model href=\"http://music-encoding.org/schema/4.0.0/mei-all.rng\" type=\"application/xml\" schematypens=\"http://purl.oclc.org/dsdl/schematron\"?>\n");
+		sb.append("<mei xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.music-encoding.org/ns/mei\" meiversion=\""+VERSION+"\">\n");
 	}
 
 	protected void processBeforeMusic(int tabs) throws ExportException {		
@@ -284,7 +314,7 @@ public class MEISongExporter implements ISongExporter {
 		
 	}
 	
-	private void processMusic(int tabs, boolean asParts) throws IM3Exception, ExportException {
+	private void processMusic(int tabs, List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
 		XMLExporterHelper.start(sb, tabs, "music");
 
 		exportFacsimile(sb, tabs+1);
@@ -292,16 +322,16 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.start(sb, tabs+1, "body");
 		XMLExporterHelper.start(sb, tabs+2, "mdiv");
 
-		if (asParts) {
+		if (scoreParts != null && scoreParts.size() > 1) {
 			XMLExporterHelper.start(sb, tabs+3, "parts");
 
-			for (ScorePart scorePart: song.getParts()) {
+			for (ScorePart scorePart: scoreParts) {
 				if (scorePart.getName() != null) {
 					XMLExporterHelper.start(sb, tabs + 4, "part", "label", scorePart.getName());
 				} else {
 					XMLExporterHelper.start(sb, tabs + 4, "part");
 				}
-				processScoreOrPart(tabs+1, scorePart);
+				processScoreOrPart(tabs+1, scorePart, segment);
 				XMLExporterHelper.end(sb, tabs+4, "part");
 			}
 
@@ -309,7 +339,11 @@ public class MEISongExporter implements ISongExporter {
 
 		} else {
 			XMLExporterHelper.start(sb, tabs+3, "score");
-			processScoreOrPart(tabs, null);
+			if (scoreParts != null) {
+				processScoreOrPart(tabs, scoreParts.get(0), segment); // just one score
+			} else {
+				processScoreOrPart(tabs, null, segment);
+			}
 			XMLExporterHelper.end(sb, tabs+3, "score");
 		}
 
@@ -365,11 +399,10 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	/**
-	 *
-	 * @param tabs
+	 *  @param tabs
 	 * @param scorePart If null, the whole score will be processed
 	 */
-	private void processScoreOrPart(int tabs, ScorePart scorePart) throws IM3Exception {
+	private void processScoreOrPart(int tabs, ScorePart scorePart, Segment segment) throws IM3Exception {
 		IStaffContainer staffContainer;
 		if (scorePart == null) {
 			staffContainer = song;
@@ -393,7 +426,7 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.end(sb, tabs+4, "scoreDef");
 		// end nuevo
 
-		processSections(scorePart, tabs+4, staffContainer);
+		processSections(scorePart, tabs+4, staffContainer, segment);
 	}
 
 	/**
@@ -472,10 +505,10 @@ public class MEISongExporter implements ISongExporter {
 			params.add(Integer.toString(transpositionInterval.getSemitones()));
 		}
 	}
-	private void processSections(ScorePart scorePart, int tabs, IStaffContainer staffContainer) throws IM3Exception, ExportException {
+	private void processSections(ScorePart scorePart, int tabs, IStaffContainer staffContainer, Segment segment) throws IM3Exception, ExportException {
 		XMLExporterHelper.start(sb, tabs, "section");
-		processSongWithoutBars(scorePart, tabs+1, staffContainer); // e.g. mensural
-		processMeasures(scorePart, tabs+1, staffContainer); // CWMN
+		processSongWithoutBars(scorePart, tabs+1, staffContainer, segment); // e.g. mensural
+		processMeasures(scorePart, tabs+1, staffContainer, segment); // CWMN
 		XMLExporterHelper.end(sb, tabs, "section");
 	}
 
@@ -629,7 +662,7 @@ public class MEISongExporter implements ISongExporter {
 		return bar.getNumber();
 	}*/
 	
-	private void processMeasures(ScorePart scorePart, int tabs, IStaffContainer staffContainer) throws IM3Exception, ExportException {
+	private void processMeasures(ScorePart scorePart, int tabs, IStaffContainer staffContainer, Segment segment) throws IM3Exception, ExportException {
 		if (song.hasMeasures()) {
 			ArrayList<Measure> bars = song.getMeasuresSortedAsArray();
 			Key lastKey = null;
@@ -645,7 +678,8 @@ public class MEISongExporter implements ISongExporter {
 				maxDuration = scorePart.computeScoreDuration();
 			}
 			for (Measure bar : bars) {
-				if (bar.getTime().compareTo(maxDuration) < 0) { // if not, the score part does not have this measure
+				if (bar.getTime().compareTo(maxDuration) < 0 && // if not, the score part does not have this measure
+						(segment == null || segment.contains(bar.getTime()))) {
 					exportPageSystemBreaks(staffContainer, sb, tabs, bar.getTime());
 					/*for (Staff staff : song.getStaves()) {
 						if (staff.hasSystemBreak(bar.getTime())) { // TODO: 24/9/17 ¿Y si está en medio de un compás?
@@ -901,7 +935,7 @@ public class MEISongExporter implements ISongExporter {
 		return stringBuilder.toString();
 	}
 	
-	private void processSongWithoutBars(ScorePart scorePart, int tabs, IStaffContainer staffContainer) throws ExportException, IM3Exception {
+	private void processSongWithoutBars(ScorePart scorePart, int tabs, IStaffContainer staffContainer, Segment segment) throws ExportException, IM3Exception {
 		// order notes, key changes and meter changes, then process them		
 		for (int il=0; il<staffContainer.getStaves().size(); il++) {
             previousAccidentals = new HashMap<>();
@@ -944,26 +978,27 @@ public class MEISongExporter implements ISongExporter {
 						//Collections.sort(symbols, ITimedElementInStaff.TIMED_ELEMENT_COMPARATOR);
                         SymbolsOrderer.sortList(symbols);
 						for (ITimedElementInStaff slr : symbols) {
+							if (segment == null || segment.contains(slr.getTime())) {
+								exportPageSystemBreaks(staffContainer, sb, tabs, slr.getTime());
 
-							exportPageSystemBreaks(staffContainer, sb, tabs, slr.getTime());
-
-							if (slr instanceof Clef) {
-								ArrayList<String> params = new ArrayList<>();
-								processClefChange((Clef) slr, params);
-								XMLExporterHelper.startEnd(sb, tabs+2, "clef", params);							
-								lastClef.put(staff, (Clef) slr);
-							} else if (slr instanceof TimeSignature) {
-								//TODO ¿habrá que mejor coger el TimeSignature por el @sign...
-								processTimeSignature(tabs+2, (TimeSignature) slr);
-							} else if (slr instanceof KeySignature) {
-								throw new UnsupportedOperationException("TO-DO Key change");
-							} else if (slr instanceof Atom) {
-                                processAtom(scorePart,tabs + 2, (Atom) slr, staff);
-                            } else if (slr instanceof MarkBarline) {
-							    processBarLine(sb, tabs+2, (MarkBarline)slr, staff);
-                                previousAccidentals.clear();
-							} else {
-								throw new ExportException("Unsupported symbol type for export: '" + slr.getClass() + "'");
+								if (slr instanceof Clef) {
+									ArrayList<String> params = new ArrayList<>();
+									processClefChange((Clef) slr, params);
+									XMLExporterHelper.startEnd(sb, tabs + 2, "clef", params);
+									lastClef.put(staff, (Clef) slr);
+								} else if (slr instanceof TimeSignature) {
+									//TODO ¿habrá que mejor coger el TimeSignature por el @sign...
+									processTimeSignature(tabs + 2, (TimeSignature) slr);
+								} else if (slr instanceof KeySignature) {
+									throw new UnsupportedOperationException("TO-DO Key change");
+								} else if (slr instanceof Atom) {
+									processAtom(scorePart, tabs + 2, (Atom) slr, staff);
+								} else if (slr instanceof MarkBarline) {
+									processBarLine(sb, tabs + 2, (MarkBarline) slr, staff);
+									previousAccidentals.clear();
+								} else {
+									throw new ExportException("Unsupported symbol type for export: '" + slr.getClass() + "'");
+								}
 							}
 						}
                         if (lastBeam != null) {

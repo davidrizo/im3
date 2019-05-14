@@ -45,9 +45,9 @@ public class MensuralToModernTest {
         TimeSignatureCommonTime ts = new TimeSignatureCommonTime(NotationType.eMensural);
         KeySignature ks = new KeySignature(NotationType.eMensural, new Key(PitchClasses.F, Mode.MAJOR));
         Clef clef = new ClefG2();
-        staff.addClef(clef);
-        staff.addKeySignature(ks);
-        staff.addTimeSignature(ts);
+        staff.addCoreSymbol(clef);
+        staff.addCoreSymbol(ks);
+        staff.addCoreSymbol(ts);
 
         SimpleRest r1 = new SimpleRest(Figures.MINIM, 0);
         add(staff, layer, r1);

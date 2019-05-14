@@ -1484,15 +1484,15 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					if (element instanceof KeySignature) {
 						KeySignature ks = (KeySignature) element;
 						ks.setTime(sv.getTime());
-						staff.addKeySignature(ks);
+						staff.addCoreSymbol(ks);
 					} else if (element instanceof TimeSignature) {
 						TimeSignature ks = (TimeSignature) element;
 						ks.setTime(sv.getTime());
-						staff.addTimeSignature(ks);
+						staff.addCoreSymbol(ks);
 					} else if (element instanceof Clef) {
 						Clef ks = (Clef) element;
 						ks.setTime(sv.getTime());
-						staff.addClef(ks);
+						staff.addCoreSymbol(ks);
 					}
 				}
 				//measureStartTime = sv.getTime();
@@ -1582,7 +1582,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			if (ts == null) {
 				Logger.getLogger(MusicXMLSAXScoreSongImporter.class.getName()).log(Level.WARNING, "No meter found, inserting 4/4");
 				ts = new FractionalTimeSignature(4, 4);
-				firstStaff.addTimeSignature(ts);
+				firstStaff.addCoreSymbol(ts);
 			}
 			if (ks == null) {
 				Logger.getLogger(MusicXMLSAXScoreSongImporter.class.getName()).log(Level.WARNING, "No key signature found, inserting C Major");
@@ -1596,10 +1596,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			for (int i=1; i<song.getStaves().size(); i++) {
 				Staff staff = song.getStaves().get(i);
 				if (staff.getKeySignatureWithOnset(Time.TIME_ZERO) == null) {
-					staff.addKeySignature(ks);
+					staff.addCoreSymbol(ks);
 				}
 				if (staff.getTimeSignatureWithOnset(Time.TIME_ZERO) == null) {
-					staff.addTimeSignature(ts);
+					staff.addCoreSymbol(ts);
 				}
 			}				
 			// check anacrusis

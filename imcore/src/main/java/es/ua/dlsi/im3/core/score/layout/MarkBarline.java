@@ -44,7 +44,7 @@ public class MarkBarline implements ITimedElementInStaff {
             Staff prevStaff = staff;
             staff.remove(this);
             this.time = time.add(offset);
-            prevStaff.addMarkBarline(this);
+            prevStaff.addCoreSymbol(this);
         }
     }
 

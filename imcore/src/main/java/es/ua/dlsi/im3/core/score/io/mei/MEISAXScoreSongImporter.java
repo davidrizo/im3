@@ -569,7 +569,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						if (ts == null) {
 							throw new ImportException("@mensur does not contain any parameter (modusmaior, tempus...)");
 						}
-						lastStaff.addTimeSignature(ts);
+						lastStaff.addCoreSymbol(ts);
 						break;
 					case "measure":
 						staffCount = 0;
@@ -618,7 +618,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						//updateTimesGivenMeasure();
 						Time markTime = getCurrentTime();
 						MarkBarline barline = new MarkBarline(markTime);
-						lastStaff.addMarkBarline(barline);
+						lastStaff.addCoreSymbol(barline);
 						break;
 					case "staff":
 					/*if (updateMeasure) {
@@ -961,7 +961,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							lastCustosWithoutPitch = custos;
 						}
 
-						lastStaff.addCustos(custos);
+						lastStaff.addCoreSymbol(custos);
 						break;
 					case "tie":
 						staffNumber = getOptionalAttribute(attributesMap, "staff");
@@ -1196,7 +1196,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		if (staff.getTimeSignatureWithOnset(time) == null) {
 			ts.setTime(time);
 			song.getIdManager().assignID(xmlid, ts);
-			staff.addTimeSignature(ts);
+			staff.addCoreSymbol(ts);
 		} 
 	}
 
@@ -1398,7 +1398,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		lastClef = ImportFactories.createClef(lastStaff.getNotationType(), clefShape, 
 				Integer.parseInt(clefLine), octaveChange);
 		lastClef.setTime(time);
-		lastStaff.addClef(lastClef);
+		lastStaff.addCoreSymbol(lastClef);
 		return lastClef;
 	}
 
@@ -1476,7 +1476,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		if (staff.getKeySignatureWithOnset(time) == null) {
 			ts.setTime(time);
 			song.getIdManager().assignID(xmlid, ts);
-			staff.addKeySignature(ts);
+			staff.addCoreSymbol(ts);
 		} 
 	}
 
@@ -2184,7 +2184,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	}
 
 
-	protected ITimedSymbolWithConnectors getOrCreatePlaceHolder(Time ts, Staff staff, ScoreLayer layer) {
+	protected ITimedSymbolWithConnectors getOrCreatePlaceHolder(Time ts, Staff staff, ScoreLayer layer) throws IM3Exception {
 		StaffTimedPlaceHolder placeHolder =  placeHolders.get(ts);
 		if (placeHolder == null) {
 			//placeHolder = new StaffTimedPlaceHolder(currentScorePart.getElements().size(), ts);

@@ -55,23 +55,23 @@ public class HumdrumMatrix2ScoreSong {
                         ScoreLayer layer = getSpineLayer(spine);
                         Clef clef = (Clef) item.getParsedObject();
                         clef.setTime(layer.getDuration());
-                        layer.getStaff().addClef(clef);
+                        layer.getStaff().addCoreSymbol(clef);
                     } else if (item.getParsedObject() instanceof Key) {
                         ScoreLayer layer = getSpineLayer(spine);
                         Key key = (Key) item.getParsedObject();
                         KeySignature keySignature = new KeySignature(layer.getStaff().getNotationType(), key);
                         keySignature.setTime(layer.getDuration());
-                        layer.getStaff().addKeySignature(keySignature);
+                        layer.getStaff().addCoreSymbol(keySignature);
                     } else if (item.getParsedObject() instanceof TimeSignature) {
                         ScoreLayer layer = getSpineLayer(spine);
                         TimeSignature timeSignature = (TimeSignature) item.getParsedObject();
                         timeSignature.setTime(layer.getDuration());
-                        layer.getStaff().addTimeSignature(timeSignature); //TODO MeterSign y Fractional
+                        layer.getStaff().addCoreSymbol(timeSignature); //TODO MeterSign y Fractional
                     } else if (item.getParsedObject() instanceof MarkBarline) {
                         ScoreLayer layer = getSpineLayer(spine);
                         MarkBarline markBarline = (MarkBarline) item.getParsedObject();
                         markBarline.setTime(layer.getDuration());
-                        layer.getStaff().addMarkBarline(markBarline);
+                        layer.getStaff().addCoreSymbol(markBarline);
                     } else if (item.getParsedObject() instanceof Atom) {
                         ScoreLayer layer = getSpineLayer(spine);
                         Atom atom = (Atom) item.getParsedObject();

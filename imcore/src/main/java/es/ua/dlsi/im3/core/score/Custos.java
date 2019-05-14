@@ -40,11 +40,11 @@ public class Custos implements ITimedElementInStaff {
     }
 
     @Override
-    public void move(Time offset) {
+    public void move(Time offset) throws IM3Exception {
         Staff prevStaff = staff;
         staff.remove(this);
         this.time = time.add(offset);
-        prevStaff.addCustos(this);
+        prevStaff.addCoreSymbol(this);
     }
     public DiatonicPitch getDiatonicPitch() {
         return diatonicPitch;

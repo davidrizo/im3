@@ -108,17 +108,17 @@ public class MensuralToModern {
                     modernStaff.addClef(convert((Clef) symbol));
                 }*/
                 if (modernClef == null) {
-                    modernStaff.addClef(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
+                    modernStaff.addCoreSymbol(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
                 } else {
-                    modernStaff.addClef(modernClef);
+                    modernStaff.addCoreSymbol(modernClef);
                 }
             } else if (symbol instanceof TimeSignature) {
                 activeTimeSignature = convert((TimeSignature) symbol);
                 pendingMensureDuration = activeTimeSignature.getDuration();
-                modernStaff.addTimeSignature(activeTimeSignature);
+                modernStaff.addCoreSymbol(activeTimeSignature);
             } else if (symbol instanceof KeySignature) {
                 activeKeySignature = convert((KeySignature) symbol, interval);
-                modernStaff.addKeySignature(activeKeySignature);
+                modernStaff.addCoreSymbol(activeKeySignature);
             } else if (symbol instanceof MarkBarline) {
                 convert(modernStaff, modernLayer, (MarkBarline) symbol);
             } else if (symbol instanceof Atom) {

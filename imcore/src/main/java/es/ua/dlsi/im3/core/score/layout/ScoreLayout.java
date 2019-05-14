@@ -428,6 +428,6 @@ public abstract class ScoreLayout {
         if (this.scoreSong.getStaves().size() == 0) {
             this.scoreSong.addStaff(new Pentagram(this.scoreSong, "1", 1));
         }
-        this.scoreSong.getStaves().get(0).addClef(clef);
+        this.scoreSong.getStaves().get(0).addCoreSymbol(clef);
     }
 }

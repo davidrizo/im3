@@ -162,7 +162,7 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
         Staff prevStaff = staff;
         this.time = time.add(offset);
 	    staff.remove(this);
-	    prevStaff.addClef(this);
+	    prevStaff.addCoreSymbol(this);
     }
 	public final NotationType getNotationType() {
 		return notationType;

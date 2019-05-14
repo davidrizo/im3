@@ -20,7 +20,7 @@ public class ScoreLayerTest {
         song.addMeasure(Time.TIME_ZERO, measure);
         measure.setEndTime(ts.getDuration()); // TODO: 23/9/17 ¿No se debería poner sólo? Hay que verlo y que no choque con los importadores
 
-        staff.addTimeSignature(ts);
+        staff.addCoreSymbol(ts);
         song.addStaff(staff);
         ScoreLayer layer = song.addPart().addScoreLayer();
         staff.addLayer(layer);

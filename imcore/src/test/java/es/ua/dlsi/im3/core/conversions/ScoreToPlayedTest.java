@@ -29,11 +29,11 @@ public class ScoreToPlayedTest {
         ScoreLayer layer = scorePart.addScoreLayer();
         staff.addLayer(layer);
         scoreSong.addStaff(staff);
-        staff.addClef(new ClefG2()); // new ClefF4()
+        staff.addCoreSymbol(new ClefG2()); // new ClefF4()
         KeySignature ks = new KeySignature(NotationType.eModern, KeysEnum.CM.getKey()); //TODO Ahora no se está convirtiendo la tonalidad al PlayedSong
-        staff.addKeySignature(ks);
+        staff.addCoreSymbol(ks);
         TimeSignature ts = new FractionalTimeSignature(4, 4);
-        staff.addTimeSignature(ts);
+        staff.addCoreSymbol(ts);
 
         // all notes are located in 4th octave
         // C, half
