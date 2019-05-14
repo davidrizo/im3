@@ -2,11 +2,15 @@ package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
+import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreLayer;
 import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
+
+import java.util.List;
 
 /**
  * @autor drizo
@@ -35,11 +39,9 @@ public class Clef extends SemanticSymbolType {
     }
 
     @Override
-    public SemanticSymbolType semantic2ScoreSong(ScoreLayer scoreLayer, SemanticSymbolType propagatedSymbolType) throws IM3Exception {
-        es.ua.dlsi.im3.core.score.Clef clef = getIM3Clef(scoreLayer.getStaff().getNotationType());
-        clef.setTime(scoreLayer.getDuration());
-        scoreLayer.getStaff().addClef(clef);
-        return propagatedSymbolType;
+    public void semantic2ScoreSong(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception {
+        es.ua.dlsi.im3.core.score.Clef clef = getIM3Clef(semanticConversionContext.getNotationType());
+        conversionResult.add(clef);
     }
 
     public es.ua.dlsi.im3.core.score.Clef getIM3Clef(NotationType notationType) throws ImportException {

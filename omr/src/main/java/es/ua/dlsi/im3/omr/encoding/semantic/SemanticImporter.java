@@ -79,7 +79,7 @@ public class SemanticImporter implements IScoreSongImporter {
             try {
                 Clef clef = ImportFactories.createClef(notationType, shape, line, 0); //TODO octave change in semantic
                 clef.setTime(getTime());
-                scoreSong.getStaves().get(0).addClef(clef);
+                scoreSong.getStaves().get(0).addCoreSymbol(clef);
             } catch (Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot create clef", e);
                 throw new GrammarParseRuntimeException(e);
@@ -109,7 +109,7 @@ public class SemanticImporter implements IScoreSongImporter {
                     timeSignature = new FractionalTimeSignature(num, den);
                 }
                 timeSignature.setTime(getTime());
-                scoreSong.getStaves().get(0).addTimeSignature(timeSignature);
+                scoreSong.getStaves().get(0).addCoreSymbol(timeSignature);
             } catch (IM3Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot create time signature", e);
                 throw new GrammarParseRuntimeException(e);
@@ -135,7 +135,7 @@ public class SemanticImporter implements IScoreSongImporter {
                 Key key = new Key(pitchClass, mode);
                 KeySignature keySignature = new KeySignature(notationType, key);
                 keySignature.setTime(getTime());
-                scoreSong.getStaves().get(0).addKeySignature(keySignature);
+                scoreSong.getStaves().get(0).addCoreSymbol(keySignature);
             } catch (IM3Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot create key signature", e);
                 throw new GrammarParseRuntimeException(e);

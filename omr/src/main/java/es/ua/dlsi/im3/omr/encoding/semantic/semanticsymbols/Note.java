@@ -1,13 +1,13 @@
 package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.Figures;
-import es.ua.dlsi.im3.core.score.ScientificPitch;
-import es.ua.dlsi.im3.core.score.ScoreLayer;
-import es.ua.dlsi.im3.core.score.SimpleNote;
+import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
 import org.apache.commons.lang3.math.Fraction;
+
+import java.util.List;
 
 /**
  * @autor drizo
@@ -176,21 +176,20 @@ public class Note extends DurationalSymbol {
 
 
     @Override
-    public SemanticSymbolType semantic2ScoreSong(ScoreLayer scoreLayer, SemanticSymbolType propagatedSymbolType) throws IM3Exception {
+    public void semantic2ScoreSong(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception {
         //TODO tuplets, fermata, trill, stems, beams ...
         SimpleNote note = new SimpleNote(figures, dots, scientificPitch);
 
-        if (propagatedSymbolType instanceof Tie) {
-            if (!(scoreLayer.getLastAtom() instanceof SimpleNote)) {
-                throw new IM3Exception("Last atom should be a note, and it is a " + scoreLayer.getLastAtom().getClass());
+        if (semanticConversionContext.hasPendingTie()) {
+            semanticConversionContext.removePendingTie();
+            if (semanticConversionContext.getPendingPitchesToTie().isEmpty()) {
+                throw new IM3Exception("Missing pitches to tie");
             }
-            SimpleNote lastNote = (SimpleNote) scoreLayer.getLastAtom();
-            note.tieFromPrevious(lastNote);
+            //TODO cojo la primera
+            AtomPitch atomPitch = semanticConversionContext.getPendingPitchesToTie().remove(0);
+            note.getAtomPitch().setTiedFromPrevious(atomPitch);
             //lastNote.tieToNext(note);
         }
-        scoreLayer.add(note);
-
-        scoreLayer.getStaff().addCoreSymbol(note);
-        return null;
+        conversionResult.add(note);
     }
 }

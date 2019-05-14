@@ -3,7 +3,10 @@ package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
+
+import java.util.List;
 
 /**
  * @autor drizo
@@ -44,13 +47,11 @@ public class KeySignature extends SemanticSymbolType {
     }
 
     @Override
-    public SemanticSymbolType semantic2ScoreSong(ScoreLayer scoreLayer, SemanticSymbolType propagatedSymbolType) throws IM3Exception {
+    public void semantic2ScoreSong(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception {
         Key key = toKey();
-        es.ua.dlsi.im3.core.score.KeySignature ks = new es.ua.dlsi.im3.core.score.KeySignature(
-                scoreLayer.getStaff().getNotationType(), key);
-        ks.setTime(scoreLayer.getDuration());
-        scoreLayer.getStaff().addKeySignature(ks);
-        return propagatedSymbolType;
+        es.ua.dlsi.im3.core.score.KeySignature ks = new es.ua.dlsi.im3.core.score.KeySignature(semanticConversionContext.getNotationType(), key);
+        conversionResult.add(ks);
+        semanticConversionContext.setCurrentKeySignature(ks);
     }
 
     private Key toKey() throws IM3Exception {

@@ -1,8 +1,12 @@
 package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.ScoreLayer;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
+
+import java.util.List;
 
 /**
  * @autor drizo
@@ -27,7 +31,7 @@ public class Multirest extends SemanticSymbolType {
     }
 
     @Override
-    public SemanticSymbolType semantic2ScoreSong(ScoreLayer scoreLayer, SemanticSymbolType propagatedSymbolType) throws IM3Exception {
+    public void semantic2ScoreSong(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception {
         throw new UnsupportedOperationException("TO-DO");
     }
 }

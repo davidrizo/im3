@@ -19,7 +19,7 @@ public class NotesState extends OMRState {
     }
 
     @Override
-    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) throws IM3Exception {
         Accidentals accidental = null;
         if (previousState instanceof AccNoteState) {
             accidental = ((AccNoteState)previousState).getAccidental(); //Ojo, si en el mismo compas hay otra nota alterada no lo ve
@@ -78,7 +78,7 @@ public class NotesState extends OMRState {
             }
         } else if (token.getSymbol() instanceof Custos) {
             es.ua.dlsi.im3.core.score.Custos custos = new es.ua.dlsi.im3.core.score.Custos(transduction.getStaff(), transduction.getLayer().getDuration(), pitch.getPitchClass().getNoteName(), pitch.getOctave());
-            transduction.getStaff().addCustos(custos);
+            transduction.getStaff().addCoreSymbol(custos);
         } else {
             throw new IM3RuntimeException("Symbol should be note or dot");
         }

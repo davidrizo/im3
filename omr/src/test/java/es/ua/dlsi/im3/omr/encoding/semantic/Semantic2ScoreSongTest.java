@@ -2,7 +2,6 @@ package es.ua.dlsi.im3.omr.encoding.semantic;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.TestScoreUtils;
@@ -18,8 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
-
 public class Semantic2ScoreSongTest {
 
     @Test
@@ -32,8 +29,10 @@ public class Semantic2ScoreSongTest {
         encoder.encode(meiSongImported);
 
         //TODO Hacer esto mismo con agnostic 2 semantic
-        Semantic2ScoreSong semantic2ScoreSong = new Semantic2ScoreSong();
-        ScoreSong decodedFromSemantic = semantic2ScoreSong.convert(encoder.getSemanticEncoding(), NotationType.eModern);
+        Semantic2IMCore semantic2ScoreSong = new Semantic2IMCore();
+        SemanticConversionContext semanticConversionContext = new SemanticConversionContext(NotationType.eModern);
+
+        ScoreSong decodedFromSemantic = semantic2ScoreSong.convertToSingleVoicedSong(NotationType.eModern, encoder.getSemanticEncoding());
 
         TestScoreUtils.Configuration testScoreConfiguration = new TestScoreUtils.Configuration();
         testScoreConfiguration.setAssertStems(false); // in semantic??

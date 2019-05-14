@@ -135,7 +135,7 @@ public class KeySignatureState extends OMRState {
                 }
                 //System.out.println(transduction.getStaff().getLastClef().getNote().name()); //clave de... G B
                 //System.out.println(transduction.getStaff().getLastClef().getLine()); //linea, entero
-                transduction.getStaff().addKeySignature(new KeySignature(transduction.getStaff().getNotationType(), key));
+                transduction.getStaff().addCoreSymbol(new KeySignature(transduction.getStaff().getNotationType(), key));
             } catch (IM3Exception e) {
                 e.printStackTrace();
                 throw new IM3RuntimeException(e);

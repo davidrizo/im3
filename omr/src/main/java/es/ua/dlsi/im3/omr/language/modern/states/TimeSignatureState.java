@@ -39,7 +39,7 @@ public class TimeSignatureState extends OMRState {
                 int numerator = prev.getNumerator();
                 TimeSignature timeSignature = new FractionalTimeSignature(numerator, denominator);
                 try {
-                    transduction.getStaff().addTimeSignature(timeSignature);
+                    transduction.getStaff().addCoreSymbol(timeSignature);
                 } catch (IM3Exception e) {
                     throw new IM3RuntimeException(e);
                 }

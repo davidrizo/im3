@@ -45,7 +45,7 @@ public class TimeSignatureState extends OMRState {
         }
         if (ts != null) {
             try {
-                transduction.getStaff().addTimeSignature(ts);
+                transduction.getStaff().addCoreSymbol(ts);
             } catch (IM3Exception e) {
                 throw new IM3RuntimeException();
             }

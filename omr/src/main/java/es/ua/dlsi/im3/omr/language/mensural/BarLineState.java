@@ -14,7 +14,7 @@ public class BarLineState extends OMRState {
     }
 
     @Override
-    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) throws IM3Exception {
         //try {
             transduction.getStaff().addCoreSymbol(new MarkBarline(transduction.getLayer().getDuration()));
         /*} catch (IM3Exception e) {

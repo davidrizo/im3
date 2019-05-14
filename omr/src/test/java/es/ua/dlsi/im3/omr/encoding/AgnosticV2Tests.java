@@ -38,13 +38,13 @@ public class AgnosticV2Tests {
     @Test
     public void testTupletWithoutBracket() throws IM3Exception {
         String filename = "tuplet_without_bracket.mei";
-        String expected = "clef.G:L2, digit.3:L4/digit.4:L2, note.beamedRight1:L0, digit.3:S6, note.beamedBoth1:S0, note.beamedLeft1:L1, rest.half:L3, verticalLine:L1";
+        String expected = "clef.G:L2, digit.3:L4/digit.4:L2, note.beamedRight1_up:L0, digit.3:S6, note.beamedBoth1_up:S0, note.beamedLeft1_up:L1, rest.half:L3, verticalLine:L1";
         doTest(filename, expected);
     }
     @Test
     public void testTupletWithtBracket() throws IM3Exception {
         String filename = "tuplet_with_bracket.mei";
-        String expected = "clef.G:L2, digit.3:L4/digit.4:L2, bracket.start:S6/note.eighth:L0, digit.3:S6/note.eighth:S0, bracket.end:S6/note.eighth:L1";
+        String expected = "clef.G:L2, digit.3:L4/digit.4:L2, bracket.start:S6/note.eighth_up:L0, digit.3:S6/note.eighth_up:S0, bracket.end:S6/note.eighth_up:L1";
         doTest(filename, expected);
     }
 

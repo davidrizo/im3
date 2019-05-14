@@ -3,11 +3,15 @@ package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.Figures;
+import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.ScoreLayer;
 import es.ua.dlsi.im3.core.score.SimpleRest;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
+import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
 import org.apache.commons.lang3.math.Fraction;
+
+import java.util.List;
 
 /**
  * @autor drizo
@@ -50,10 +54,8 @@ public class Rest extends DurationalSymbol  {
     }
 
     @Override
-    public SemanticSymbolType semantic2ScoreSong(ScoreLayer scoreLayer, SemanticSymbolType propagatedSymbolType) throws IM3Exception {
+    public void semantic2ScoreSong(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception {
         SimpleRest rest = new SimpleRest(figures, dots);
-        scoreLayer.add(rest);
-        scoreLayer.getStaff().addCoreSymbol(rest);
-        return propagatedSymbolType;
+        conversionResult.add(rest);
     }
 }

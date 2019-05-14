@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.language.mensural.states;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.dfa.State;
 import es.ua.dlsi.im3.core.score.Accidentals;
@@ -15,7 +16,7 @@ public class AccNoteState extends OMRState {
     }
 
     @Override
-    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) {
+    public void onEnter(AgnosticSymbol token, State previousState, OMRTransduction transduction) throws IM3Exception {
         super.onEnter(token, previousState, transduction);
 
         if (!(token.getSymbol() instanceof es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidental)) {

@@ -2,7 +2,10 @@ package es.ua.dlsi.im3.omr.encoding.semantic;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.IAlphabetSymbolType;
+import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.ScoreLayer;
+
+import java.util.List;
 
 public abstract class SemanticSymbolType implements Comparable<SemanticSymbolType>, IAlphabetSymbolType {
     protected static String SEPSYMBOL = "-";
@@ -37,12 +40,5 @@ public abstract class SemanticSymbolType implements Comparable<SemanticSymbolTyp
         return this.getClass().getName();
     }
 
-    /**
-     *
-     * @param scoreLayer
-     * @param propagatedSymbolType
-     * @return Symbol to propagate
-     * @throws IM3Exception
-     */
-    public abstract SemanticSymbolType semantic2ScoreSong(ScoreLayer scoreLayer, SemanticSymbolType propagatedSymbolType) throws IM3Exception;
+    public abstract void semantic2ScoreSong(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception;
 }

@@ -39,7 +39,7 @@ public class ClefState extends OMRState {
         // TODO: 3/10/17 Cálculo de la probabilidad - ej. que para G2 esté en la línea 5
 
         try {
-            transduction.getStaff().addClef(clef);
+            transduction.getStaff().addCoreSymbol(clef);
 
         } catch (IM3Exception e) {
             throw new IM3RuntimeException(e);
