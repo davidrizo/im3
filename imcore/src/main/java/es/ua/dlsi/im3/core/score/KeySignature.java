@@ -32,7 +32,7 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
  *
  * @author drizo
  */
-public class KeySignature implements INotationTypeDependant, ITimedElementInStaff, IUniqueIDObject {
+public class KeySignature implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSet, IUniqueIDObject {
 	List<KeySignatureAccidentalElement> accidentals;
 	private Accidentals accidental;
     NotationType notationType;
@@ -234,14 +234,19 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 	public String __getIDPrefix() {
 		return "KS";
 	}
-
+	@Override
 	public void setTime(Time time) {
 		this.time = time;
 	}
     @Override
     public void move(Time offset) throws IM3Exception {
 	    staff.remove(this);
-        this.time = time.add(offset);
+	    if (this.time == null) {
+	    	time = offset;
+		} else {
+			this.time = time.add(offset);
+		}
+
         staff.addCoreSymbol(this);
     }
     public TreeMap<DiatonicPitch, PitchClass> getAlteredDiatonicPitchSet() {

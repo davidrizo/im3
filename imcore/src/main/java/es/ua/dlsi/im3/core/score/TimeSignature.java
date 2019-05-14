@@ -62,7 +62,12 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
     public void move(Time offset) throws IM3Exception {
         Staff prevStaff = staff;
         staff.remove(this);
-        this.time = time.add(offset);
+        if (time == null) {
+			this.time = offset;
+		} else {
+			this.time = time.add(offset);
+		}
+
         prevStaff.addCoreSymbol(this);
     }
 	@Override

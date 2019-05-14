@@ -32,19 +32,26 @@ public class PageBeginning implements ITimedElement, IFacsimile {
         return manual;
     }
 
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
     public String getFacsimileElementID() {
         return facsimileElementID;
     }
 
     public void setFacsimileElementID(String facsimileElementID) {
         this.facsimileElementID = facsimileElementID;
+    }
+
+    @Override
+    public String __getID() {
+        return ID;
+    }
+
+    @Override
+    public void __setID(String id) {
+        this.ID = id;
+    }
+
+    @Override
+    public String __getIDPrefix() {
+        return "PB";
     }
 }

@@ -2,7 +2,7 @@ package es.ua.dlsi.im3.core.score;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
-public class Custos implements ITimedElementInStaff {
+public class Custos implements ITimedElementInStaff, ITimedElementWithSet {
     DiatonicPitch diatonicPitch;
     Staff staff;
     Time time;
@@ -35,6 +35,7 @@ public class Custos implements ITimedElementInStaff {
         return time;
     }
 
+    @Override
     public void setTime(Time time) {
         this.time = time;
     }
@@ -43,7 +44,12 @@ public class Custos implements ITimedElementInStaff {
     public void move(Time offset) throws IM3Exception {
         Staff prevStaff = staff;
         staff.remove(this);
-        this.time = time.add(offset);
+        if (time == null) {
+            this.time = offset;
+        } else {
+            this.time = time.add(offset);
+        }
+
         prevStaff.addCoreSymbol(this);
     }
     public DiatonicPitch getDiatonicPitch() {

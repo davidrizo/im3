@@ -118,7 +118,9 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	}
 
     private void evaluateDurationBeforeAdd(Atom newAtom, int index) throws IM3Exception {
-        durationEvaluator.changeDurationIfRequired(newAtom,this, index);
+		if (durationEvaluator != null) {
+			durationEvaluator.changeDurationIfRequired(newAtom, this, index);
+		}
     }
 
     // TODO Test unitario

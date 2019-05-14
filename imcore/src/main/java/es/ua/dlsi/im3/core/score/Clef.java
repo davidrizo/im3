@@ -25,7 +25,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
  *
  * @author drizo
  */
-public abstract class Clef implements INotationTypeDependant, ITimedElementInStaff {
+public abstract class Clef implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSet {
     private final PositionInStaff[] flatPositions;
     private final PositionInStaff[] sharpPositions;
     DiatonicPitch note;
@@ -152,7 +152,7 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 	public Time getTime() {
 		return time;
 	}
-
+	@Override
 	public void setTime(Time time) {
 		this.time = time;
 	}
@@ -160,7 +160,11 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
     @Override
     public void move(Time offset) throws IM3Exception {
         Staff prevStaff = staff;
-        this.time = time.add(offset);
+        if (time == null) {
+        	this.time = offset;
+		} else {
+			this.time = time.add(offset);
+		}
 	    staff.remove(this);
 	    prevStaff.addCoreSymbol(this);
     }

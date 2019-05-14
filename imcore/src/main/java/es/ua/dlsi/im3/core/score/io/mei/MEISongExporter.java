@@ -4,15 +4,13 @@ import java.io.File;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
+import es.ua.dlsi.im3.core.adt.dfa.Alphabet;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.facsimile.Graphic;
@@ -62,12 +60,13 @@ public class MEISongExporter implements ISongExporter {
      * If true, we add @type attribute to the harm element
      */
     boolean useHarmTypes;
-    public static final String VERSION = "3.0.0";
+    public static final String VERSION = "4.0.0";
     public static final String HARM_TYPE_KEY = "key";
     public static final String HARM_TYPE_DEGREE = "degree";
     public static final String HARM_TYPE_TONAL_FUNCTION = "tonalFunction";
     private int skipMeasures;
     private BeamGroup lastBeam;
+	private HashSet<IFacsimile> exportedSystemOrPageBreaks = new HashSet<>();
 
 	/*FRACCIONES class ConnectorWithLayer {
 		Connector<?,?> connector;
@@ -295,23 +294,21 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void processWorkDesc(int tabs) {
-		XMLExporterHelper.start(sb, tabs, "workDesc");
-		XMLExporterHelper.start(sb, tabs+1, "work");
-		XMLExporterHelper.start(sb, tabs+1, "titleStmt");
-		XMLExporterHelper.text(sb, tabs+2, "title", song.getTitle());
-		XMLExporterHelper.start(sb, tabs+2, "respStmt");
 		List<Person> persons = song.getPersons();
-		if (persons != null) {
+		if (persons != null && !persons.isEmpty()) {
+			XMLExporterHelper.start(sb, tabs, "workDesc");
+			XMLExporterHelper.start(sb, tabs+1, "work");
+			XMLExporterHelper.start(sb, tabs+1, "titleStmt");
+			XMLExporterHelper.text(sb, tabs+2, "title", song.getTitle());
+			XMLExporterHelper.start(sb, tabs+2, "respStmt");
 			for (Person person: persons) {
 				XMLExporterHelper.text(sb, tabs+3, "persName", person.getName(), "role", person.getRole());
 			}
+			XMLExporterHelper.end(sb, tabs+2, "respStmt");
+			XMLExporterHelper.end(sb, tabs+1, "titleStmt");
+			XMLExporterHelper.end(sb, tabs+1, "work");
+			XMLExporterHelper.end(sb, tabs, "workDesc");
 		}
-		
-		XMLExporterHelper.end(sb, tabs+2, "respStmt");
-		XMLExporterHelper.end(sb, tabs+1, "titleStmt");		
-		XMLExporterHelper.end(sb, tabs+1, "work");
-		XMLExporterHelper.end(sb, tabs, "workDesc");
-		
 	}
 	
 	private void processMusic(int tabs, List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
@@ -339,7 +336,7 @@ public class MEISongExporter implements ISongExporter {
 
 		} else {
 			XMLExporterHelper.start(sb, tabs+3, "score");
-			if (scoreParts != null) {
+			if (scoreParts != null && !scoreParts.isEmpty()) {
 				processScoreOrPart(tabs, scoreParts.get(0), segment); // just one score
 			} else {
 				processScoreOrPart(tabs, null, segment);
@@ -680,7 +677,7 @@ public class MEISongExporter implements ISongExporter {
 			for (Measure bar : bars) {
 				if (bar.getTime().compareTo(maxDuration) < 0 && // if not, the score part does not have this measure
 						(segment == null || segment.contains(bar.getTime()))) {
-					exportPageSystemBreaks(staffContainer, sb, tabs, bar.getTime());
+					exportPageSystemBreaks(staffContainer, sb, tabs+1, bar.getTime());
 					/*for (Staff staff : song.getStaves()) {
 						if (staff.hasSystemBreak(bar.getTime())) { // TODO: 24/9/17 ¿Y si está en medio de un compás?
 							XMLExporterHelper.startEnd(sb, tabs, "sb"); //TODO ID
@@ -979,7 +976,7 @@ public class MEISongExporter implements ISongExporter {
                         SymbolsOrderer.sortList(symbols);
 						for (ITimedElementInStaff slr : symbols) {
 							if (segment == null || segment.contains(slr.getTime())) {
-								exportPageSystemBreaks(staffContainer, sb, tabs, slr.getTime());
+								exportPageSystemBreaks(staffContainer, sb, tabs+2, slr.getTime());
 
 								if (slr instanceof Clef) {
 									ArrayList<String> params = new ArrayList<>();
@@ -1023,12 +1020,20 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void exportSystemOrPageBeginning(String tag, StringBuilder sb, int tabs, IFacsimile facsimile) {
-		if (facsimile.getFacsimileElementID() != null) {
-			XMLExporterHelper.startEnd(sb, tabs, tag, "facs", facsimile.getFacsimileElementID()); //TODO ID
-		} else {
-			XMLExporterHelper.startEnd(sb, tabs, tag); //TODO ID
-		}
+		if (!exportedSystemOrPageBreaks.contains(facsimile)) {
+			exportedSystemOrPageBreaks.add(facsimile);
+			ArrayList<String> attrs = new ArrayList<>();
+			if (facsimile.__getID() != null) {
+				attrs.add("xml:id");
+				attrs.add(facsimile.__getID());
+			}
+			if (facsimile.getFacsimileElementID() != null) {
+				attrs.add("facs");
+				attrs.add(facsimile.getFacsimileElementID());
+			}
 
+			XMLExporterHelper.startEnd(sb, tabs, tag, attrs);
+		}
 	}
 
 	private void processBarLine(StringBuilder sb, int tabs, MarkBarline slr, Staff staff) {

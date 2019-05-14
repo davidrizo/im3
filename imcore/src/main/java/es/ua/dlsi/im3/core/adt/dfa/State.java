@@ -56,7 +56,7 @@ public class State<AlphabetSymbolType extends IAlphabetSymbolType, InputTokenTyp
      * No exception can be launched. If a exception happens, the probability must be set to 0.
      * If a implementation exception must be thrown, use IM3RuntimeException
      */
-    public void onEnter(InputTokenType token, State previousState, TransductionType transduction)  {
+    public void onEnter(InputTokenType token, State previousState, TransductionType transduction) throws IM3Exception {
 	    // np-op
     }
 
@@ -65,7 +65,7 @@ public class State<AlphabetSymbolType extends IAlphabetSymbolType, InputTokenTyp
      * No exception can be launched. If a exception happens, the probability must be set to 0
      * If a implementation exception must be thrown, use IM3RuntimeException
      */
-    public void onExit(State nextState, boolean isStateChange, TransductionType transduction)  {
+    public void onExit(State nextState, boolean isStateChange, TransductionType transduction) throws IM3Exception {
         // np-op
     }
 
