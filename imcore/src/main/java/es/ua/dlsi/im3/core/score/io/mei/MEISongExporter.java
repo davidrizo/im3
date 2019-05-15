@@ -677,15 +677,9 @@ public class MEISongExporter implements ISongExporter {
 			for (Measure bar : bars) {
 				if (bar.getTime().compareTo(maxDuration) < 0 && // if not, the score part does not have this measure
 						(segment == null || segment.contains(bar.getTime()))) {
-					exportPageSystemBreaks(staffContainer, sb, tabs+1, bar.getTime());
-					/*for (Staff staff : song.getStaves()) {
-						if (staff.hasSystemBreak(bar.getTime())) { // TODO: 24/9/17 ¿Y si está en medio de un compás?
-							XMLExporterHelper.startEnd(sb, tabs, "sb"); //TODO ID
-						}
-						if (staff.hasPageBreak(bar.getTime())) { // TODO: ¿Y si está en medio de un compás?
-							XMLExporterHelper.startEnd(sb, tabs, "pb"); //TODO ID
-						}
-					}*/
+					if (segment == null) {
+						exportPageSystemBreaks(staffContainer, sb, tabs + 1, bar.getTime());
+					}
 					if (skipMeasures > 0) {
 						skipMeasures--;
 					}
@@ -943,17 +937,17 @@ public class MEISongExporter implements ISongExporter {
 				if (!(staff instanceof AnalysisStaff)) {
 					List<ITimedElementInStaff> staffSymbols = new ArrayList<>();
 					for (Clef clef: staff.getClefs()) {
-						if (!clef.getTime().isZero()) {
+						if (!clef.getTime().isZero() && (segment == null || !clef.getTime().equals(segment.getFrom()))) {
 							staffSymbols.add(clef);
 						}
 					}
 					for (TimeSignature ts: staff.getTimeSignatures()) {
-						if (commonStartTimeSignature != null && !ts.getTime().isZero()) {
+						if (commonStartTimeSignature != null && !ts.getTime().isZero() && (segment == null || !ts.getTime().equals(segment.getFrom()))) {
 							staffSymbols.add(ts); // the first one is exported in staffDef or scoreDef
 						}
 					}
 					for (KeySignature ks: staff.getKeySignatures()) {
-						if (commonStartKeySignature != null && !ks.getTime().isZero()) {
+						if (commonStartKeySignature != null && !ks.getTime().isZero() && (segment == null || !ks.getTime().equals(segment.getFrom()))) {
 							staffSymbols.add(ks); // the first one is exported in staffDef or scoreDef
 						}
 					}
@@ -974,9 +968,15 @@ public class MEISongExporter implements ISongExporter {
 						}					
 						//Collections.sort(symbols, ITimedElementInStaff.TIMED_ELEMENT_COMPARATOR);
                         SymbolsOrderer.sortList(symbols);
+						boolean first = true;
 						for (ITimedElementInStaff slr : symbols) {
+							if (slr.getTime() == null) {
+								throw new ExportException("Element " + slr + " does not have time set");
+							}
 							if (segment == null || segment.contains(slr.getTime())) {
-								exportPageSystemBreaks(staffContainer, sb, tabs+2, slr.getTime());
+								if (segment == null) {
+									exportPageSystemBreaks(staffContainer, sb, tabs + 2, slr.getTime());
+								}
 
 								if (slr instanceof Clef) {
 									ArrayList<String> params = new ArrayList<>();
@@ -996,6 +996,8 @@ public class MEISongExporter implements ISongExporter {
 								} else {
 									throw new ExportException("Unsupported symbol type for export: '" + slr.getClass() + "'");
 								}
+
+								first = false;
 							}
 						}
                         if (lastBeam != null) {
