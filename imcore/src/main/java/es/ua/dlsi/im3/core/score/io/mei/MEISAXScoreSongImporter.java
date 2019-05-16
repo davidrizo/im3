@@ -381,7 +381,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
         }
 	}
 
-	private void parseFacsimileReference(IFacsimile target, HashMap<String, String> attributesMap) {
+	private void parseFacsimileReferenceAndID(IFacsimile target, HashMap<String, String> attributesMap) {
+		String xmlid = getOptionalAttribute(attributesMap, "xml:id");
+		if (xmlid != null) {
+			xmlIDs.put(xmlid, target);
+			target.__setID(xmlid);
+		}
     	target.setFacsimileElementID(getOptionalAttribute(attributesMap, "facs"));
 	}
 	
@@ -591,11 +596,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						horizontalOrderInStaff = 0;
 						Time sbtime = getCurrentTime();
 						SystemBeginning sb = new SystemBeginning(sbtime, true);
-						parseFacsimileReference(sb, attributesMap);
+						parseFacsimileReferenceAndID(sb, attributesMap);
 						this.currentScorePart.getPageSystemBeginnings().addSystemBeginning(sb);
 						/*if (!lastStaff.hasSystemBreak(sbtime)) {
 							SystemBeginning sb = new SystemBeginning(sbtime, true);
-							parseFacsimileReference(sb, attributesMap);
+							parseFacsimileReferenceAndID(sb, attributesMap);
 							lastStaff.addSystemBreak(sb);
 						}*/
 
@@ -604,11 +609,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						horizontalOrderInStaff = 0;
 						Time pbtime = getCurrentTime();
 						PageBeginning pb = new PageBeginning(pbtime, true);
-						parseFacsimileReference(pb, attributesMap);
+						parseFacsimileReferenceAndID(pb, attributesMap);
 						this.currentScorePart.getPageSystemBeginnings().addPageBeginning(pb);
 						/*if (!lastStaff.hasPageBreak(pbtime)) {
 							PageBeginning pb = new PageBeginning(pbtime, true);
-							parseFacsimileReference(pb, attributesMap);
+							parseFacsimileReferenceAndID(pb, attributesMap);
 							lastStaff.addPageBreak(pb);
 						}*/
 						break;

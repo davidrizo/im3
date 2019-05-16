@@ -79,13 +79,13 @@
       "defaultPositionInStaff": "L3",
         "codepoint": "U+F096"
     },
-    "note.longa_down" : {
-      "defaultPositionInStaff": "L3",
-        "codepoint": "U+F572"
-    },
-    "note.longa_up" : {
+    "note.longaBlack_down" : {
       "defaultPositionInStaff": "L3",
         "codepoint": "U+F570"
+    },
+    "note.longaBlack_up" : {
+      "defaultPositionInStaff": "L3",
+        "codepoint": "U+F572"
     },
     "note.breve" : {
 		"defaultPositionInStaff": "L3",
@@ -210,7 +210,7 @@
     "verticalLine" : {
       "defaultPositionInStaff": "L1",
         "codepoint": "U+E030"
-    }    
+    },
     "colon" : {
       "defaultPositionInStaff": "L3",
         "codepoint": "U+E043"
