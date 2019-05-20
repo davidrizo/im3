@@ -35,7 +35,7 @@ public class EndBarState extends OMRState {
                 //System.out.println(transduction.getLayer().getDuration());
                 //TODO: 7/12/17 Problema con los multirest. obtengo IM3Exeption: Cannot set an end time
                 //TODO: 5/10/17 Comprobar que el endtime coincide con la duración esperada del compás
-                TimeSignature lastTimeSignature = transduction.getStaff().getLastTimeSignature();
+                SemanticTimeSignature lastTimeSignature = transduction.getStaff().getLastTimeSignature();
                 if (lastTimeSignature.getDuration().equals(measure.getDuration())) {
                     System.err.println("TO-DO Bajar probabilidad porque la duración del compás: " +
                             measure.getDuration() + " es distinta a la del time signature: " +

@@ -29,7 +29,9 @@ public class HomusReaderTest {
         HomusDataset homusDataset = buildHomus();
         assertEquals("Symbols", 2, homusDataset.getGlyphs().size());
         Symbol symbolCClef = new Symbol("C-Clef");
+        assertNotNull(symbolCClef);
         Symbol symbol12_8_Time = new Symbol("12-8-Time");
+        assertNotNull(symbol12_8_Time);
 
         assertEquals("12-8-Time", 3, homusDataset.getGlyphs().get(symbol12_8_Time).size());
         assertEquals("C-Clef", 2, homusDataset.getGlyphs().get(symbolCClef).size());

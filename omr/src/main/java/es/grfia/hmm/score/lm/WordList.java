@@ -30,7 +30,7 @@ public class WordList {
 		WCCLEF,
 		WFCLEF,
 		
-		// Rest
+		// SemanticRest
 		WLONGAREST,
 		WBREVISREST,
 		WSEMIBREVISREST,

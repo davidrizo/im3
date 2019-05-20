@@ -53,8 +53,8 @@ public class AgnosticSequenceRecognizer {
         for (String t: tokens) {
             String token = t.trim().replaceAll("'", "");
             AgnosticSymbol agnosticSymbol = pagedCapitan2Agnostic.convert(token);
-            if (agnosticSymbol.getSymbol() instanceof Note) { //TODO Los demás
-                Note note = (Note) agnosticSymbol.getSymbol();
+            if (agnosticSymbol.getSymbol() instanceof SemanticNote) { //TODO Los demás
+                SemanticNote note = (SemanticNote) agnosticSymbol.getSymbol();
                 if (note.getDurationSpecification().isUsesStem()) {
                     if (agnosticSymbol.getPositionInStaff().getLineSpace() < PositionsInStaff.LINE_3.getLineSpace()) {
                         note.setStemDirection(Directions.up);

@@ -64,7 +64,7 @@ public class TimeSignatureState extends OMRState {
         /*if (token.getPositionInStaff().getLine() == 2) {
             denominator = Integer.parseInt(token.getValue()); // TODO: 4/10/17 Comprobar que es un valor válido
             numerator = DigitTimeSignatureState.getNumerator();
-            TimeSignature timeSignature = new FractionalTimeSignature(numerator, denominator);
+            SemanticTimeSignature timeSignature = new SemanticFractionalTimeSignature(numerator, denominator);
             try {
                 transduction.getStaff().addTimeSignature(timeSignature);
             } catch (IM3Exception e) {
@@ -73,7 +73,7 @@ public class TimeSignatureState extends OMRState {
         } else if ((token.getPositionInStaff().getLine() == 3) && token.getSymbol().equals(GraphicalSymbol.metersign)){ //Comprobacion de compasillo
             numerator = 4;
             denominator = 4;
-            TimeSignature timeSignature = new FractionalTimeSignature(numerator, denominator);
+            SemanticTimeSignature timeSignature = new SemanticFractionalTimeSignature(numerator, denominator);
             try {
                 transduction.getStaff().addTimeSignature(timeSignature);
             } catch (IM3Exception e) {
@@ -91,7 +91,7 @@ public class TimeSignatureState extends OMRState {
                 throw new IM3RuntimeException("Invalid grammar for Time Signature, numerator or denominator are null"); //TODO C, C/..
             }
 
-            TimeSignature timeSignature = new FractionalTimeSignature(numerator, denominator);
+            SemanticTimeSignature timeSignature = new SemanticFractionalTimeSignature(numerator, denominator);
             try {
                 transduction.getStaff().addTimeSignature(timeSignature);
             } catch (IM3Exception e) {
@@ -100,7 +100,7 @@ public class TimeSignatureState extends OMRState {
 
             denominator = null;
             numerator = null; */
-            //TimeSignature timeSignature = new FractionalTimeSignature(4, 4); //ELIMINAR, NO ES CORRECTO
+            //SemanticTimeSignature timeSignature = new SemanticFractionalTimeSignature(4, 4); //ELIMINAR, NO ES CORRECTO
             //try {
              //   transduction.getStaff().addTimeSignature(timeSignature);
             //} catch (IM3Exception e) {

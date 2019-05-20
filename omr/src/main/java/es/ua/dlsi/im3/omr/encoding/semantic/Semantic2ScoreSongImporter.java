@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 /**
  * @autor drizo
  */
-public class SemanticImporter implements IScoreSongImporter {
+public class Semantic2ScoreSongImporter implements IScoreSongImporter {
     private ErrorListener errorListener;
     private NotationType notationType = NotationType.eModern; //TODO parametrizar
 
@@ -356,12 +356,12 @@ public class SemanticImporter implements IScoreSongImporter {
 
     public static void main(String [] args) throws IM3Exception {
         if (args.length > 2 || args.length == 0) {
-            System.err.println("Use: " + SemanticImporter.class.getName() + " [<input file>] <output file (MEI or mid)>, if no input file is given, standard input is used (line must end with an EOL");
+            System.err.println("Use: " + Semantic2ScoreSongImporter.class.getName() + " [<input file>] <output file (MEI or mid)>, if no input file is given, standard input is used (line must end with an EOL");
             return;
         }
 
         String outputFileName;
-        SemanticImporter semanticImporter = new SemanticImporter();
+        Semantic2ScoreSongImporter semantic2ScoreSongImporter = new Semantic2ScoreSongImporter();
         ScoreSong scoreSong;
 
         if (args.length == 1) {
@@ -370,10 +370,10 @@ public class SemanticImporter implements IScoreSongImporter {
             if (!line.endsWith("\n")) {
                 line = line + "\n";
             }
-            scoreSong = semanticImporter.importSong(line);
+            scoreSong = semantic2ScoreSongImporter.importSong(line);
             outputFileName = args[0];
         } else {
-            scoreSong = semanticImporter.importSong(new File(args[0]));
+            scoreSong = semantic2ScoreSongImporter.importSong(new File(args[0]));
             outputFileName = args[1];
         }
 

@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 
 import java.io.File;
@@ -15,7 +16,7 @@ public abstract class Exporter<SymbolType> {
     private StringBuilder sb;
     private Sequence<SymbolType> encoding;
 
-    public String export(Sequence<SymbolType>  encoding) {
+    public String export(Sequence<SymbolType>  encoding) throws IM3Exception {
         this.encoding = encoding;
         sb = new StringBuilder();
 
@@ -24,14 +25,14 @@ public abstract class Exporter<SymbolType> {
         return sb.toString();
     }
 
-    public void export(Sequence<SymbolType>  encoding, File output) throws FileNotFoundException {
+    public void export(Sequence<SymbolType>  encoding, File output) throws FileNotFoundException, IM3Exception {
         String exported = export(encoding);
         PrintStream ps = new PrintStream(output);
         ps.println(exported);
         ps.close();
     }
 
-    private void doExport() {
+    private void doExport() throws IM3Exception {
         if (encoding == null) {
             throw new IM3RuntimeException("Encoding is null");
         }
@@ -50,5 +51,5 @@ public abstract class Exporter<SymbolType> {
 
     protected abstract boolean requiresSeparator(SymbolType symbol);
 
-    protected abstract String export(SymbolType symbol);
+    protected abstract String export(SymbolType symbol) throws IM3Exception;
 }

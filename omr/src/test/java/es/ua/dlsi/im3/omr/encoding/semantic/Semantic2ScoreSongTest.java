@@ -30,9 +30,12 @@ public class Semantic2ScoreSongTest {
 
         //TODO Hacer esto mismo con agnostic 2 semantic
         Semantic2IMCore semantic2ScoreSong = new Semantic2IMCore();
-        SemanticConversionContext semanticConversionContext = new SemanticConversionContext(NotationType.eModern);
+        //SemanticConversionContext semanticConversionContext = new SemanticConversionContext(NotationType.eModern); //NOT used
 
-        ScoreSong decodedFromSemantic = semantic2ScoreSong.convertToSingleVoicedSong(NotationType.eModern, encoder.getSemanticEncoding());
+        SemanticEncoding semanticEncoding = encoder.getSemanticEncoding();
+        ScoreSong decodedFromSemantic = semantic2ScoreSong.convertToSingleVoicedSong(NotationType.eModern, semanticEncoding);
+
+        System.out.println(meiSongImported.getAtomPitches().size());
 
         TestScoreUtils.Configuration testScoreConfiguration = new TestScoreUtils.Configuration();
         testScoreConfiguration.setAssertStems(false); // in semantic??

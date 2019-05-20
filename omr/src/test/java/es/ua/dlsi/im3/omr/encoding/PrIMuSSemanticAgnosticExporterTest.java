@@ -9,7 +9,7 @@ import es.ua.dlsi.im3.core.utils.FileUtils;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticExporter;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticExporter;
-import es.ua.dlsi.im3.omr.encoding.semantic.SemanticImporter;
+import es.ua.dlsi.im3.omr.encoding.semantic.Semantic2ScoreSongImporter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -53,8 +53,8 @@ public class PrIMuSSemanticAgnosticExporterTest {
             }
         }
 
-        SemanticImporter semanticImporter = new SemanticImporter();
-        ScoreSong importedSong = semanticImporter.importSong(semanticStringFormat + "\n");
+        Semantic2ScoreSongImporter semantic2ScoreSongImporter = new Semantic2ScoreSongImporter();
+        ScoreSong importedSong = semantic2ScoreSongImporter.importSong(semanticStringFormat + "\n");
 
         TestScoreUtils.checkEqual("mei", song, "semantic", importedSong, testScoreConfiguration);
 

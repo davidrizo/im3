@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.encoding.enums;
 
 /**
+ * @deprecated
  * @author drizo
  */
 public enum ClefNote {

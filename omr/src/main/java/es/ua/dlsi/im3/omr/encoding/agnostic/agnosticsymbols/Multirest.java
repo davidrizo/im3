@@ -12,6 +12,8 @@ public class Multirest extends AgnosticSymbolType {
     public Multirest() {
     }
 
+
+
     @Override
     public void setSubtype(String string) {
 

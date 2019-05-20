@@ -4,6 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
+import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.SemanticNote;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,8 +19,19 @@ public class Semantic2IMCore {
         semanticConversionContext.setCurrentKeySignature(lastKeySignature);
         semanticConversionContext.setCurrentTimeSignature(lastTimeSignature);
         List<ITimedElementInStaff> conversion = new LinkedList<>();
+        SimpleNote pendingTiePreviousSymbol = null; //TODO para acordes
         for (SemanticSymbol semanticSymbol: semanticEncoding.getSymbols()) {
-            semanticSymbol.getSymbol().semantic2ScoreSong(semanticConversionContext, conversion);
+            conversion.add(semanticSymbol.getSymbol().getCoreSymbol());
+            if (semanticSymbol.getSymbol() instanceof SemanticNote) {
+                SemanticNote semanticNote = (SemanticNote) semanticSymbol.getSymbol();
+                if (pendingTiePreviousSymbol != null) {
+                    semanticNote.getCoreSymbol().tieFromPrevious(pendingTiePreviousSymbol);
+                    pendingTiePreviousSymbol = null;
+                }
+                if (semanticNote.isTiedToNext()) {
+                    pendingTiePreviousSymbol = semanticNote.getCoreSymbol();
+                }
+            }
         }
         return conversion;
     }

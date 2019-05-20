@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.conversions;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.PositionInStaff;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
@@ -362,7 +363,7 @@ public class PagedCapitan2Agnostic {
         }
     }
 
-    private void convert(File input, File output) throws ImportException, FileNotFoundException {
+    private void convert(File input, File output) throws IM3Exception, FileNotFoundException {
         System.out.println("Converting " + input.getName());
 
         List<AgnosticEncoding> agnosticEncodingList = convert(input);

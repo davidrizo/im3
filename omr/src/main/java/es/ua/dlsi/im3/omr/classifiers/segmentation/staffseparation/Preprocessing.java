@@ -173,7 +173,7 @@ public class Preprocessing {
 			O[i] = 0;
 		}
 		
-		// Rest
+		// SemanticRest
 		for(int i = 0; i < input.cols(); i++) {
 			if(Double.isNaN(O[i])) {
 				O[i] = 0;

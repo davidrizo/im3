@@ -17,7 +17,7 @@ public class AgnosticSymbolTypeFactory {
         if (string.isEmpty()) {
             throw new IM3Exception("Empty string");
         }
-        //Note AgnosticSymbolType.SEPSYMBOL is a .
+        //SemanticNote AgnosticSymbolType.SEPSYMBOL is a .
         String [] tokens = string.split("\\.");
         if (tokens.length == 0) {
             throw new IM3Exception("Empty tokens in string '" + string + "'");

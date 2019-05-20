@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.encoding.agnostic;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.Sequence;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.AgnosticSeparator;
 
@@ -10,6 +11,15 @@ import java.util.List;
  * @author drizo
  */
 public class AgnosticEncoding extends Sequence<AgnosticToken> {
+    public AgnosticEncoding() {
+    }
+
+    public AgnosticEncoding(AgnosticVersion agnosticVersion, String [] agnosticSequence) throws IM3Exception {
+        for (String s: agnosticSequence) {
+            add(AgnosticSymbol.parseAgnosticString(agnosticVersion, s));
+        }
+    }
+
     /**
      * It removes the last symbol if it is a separator
      */
@@ -29,4 +39,6 @@ public class AgnosticEncoding extends Sequence<AgnosticToken> {
         }
         return result;
     }
+
+
 }

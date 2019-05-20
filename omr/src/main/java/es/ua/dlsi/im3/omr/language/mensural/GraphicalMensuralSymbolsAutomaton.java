@@ -16,6 +16,9 @@ import org.apache.commons.math3.fraction.Fraction;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * @deprecated Use the one in MuRET online
+ */
 public class GraphicalMensuralSymbolsAutomaton extends GraphicalSymbolsAutomaton {
    // AgnosticVersion agnosticVersion = AgnosticVersion.v1;
 

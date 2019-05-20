@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @deprecated
  * Information required to convert to IM3 IMCore
  */
 public class SemanticConversionContext {

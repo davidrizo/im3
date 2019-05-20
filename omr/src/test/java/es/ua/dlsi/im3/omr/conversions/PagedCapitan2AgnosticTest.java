@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.omr.conversions;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.PositionsInStaff;
 import es.ua.dlsi.im3.omr.encoding.agnostic.*;
@@ -22,14 +23,14 @@ public class PagedCapitan2AgnosticTest {
         }
     }
 
-    private void test(String input, String expected) throws ImportException {
+    private void test(String input, String expected) throws IM3Exception {
         PagedCapitan2Agnostic capitan2Agnostic = new PagedCapitan2Agnostic();
         AgnosticEncoding agnosticEncoding = capitan2Agnostic.parseLine(input);
         AgnosticExporter exporter = new AgnosticExporter();
         assertEquals(expected, exporter.export(agnosticEncoding));
     }
     @Test
-    public void parseLine() throws ImportException {
+    public void parseLine() throws IM3Exception {
         HorizontalSeparator horizontalSeparator = new HorizontalSeparator(AgnosticVersion.v2);
 
         String input1 = "GCLEF.5 COLOUREDMINIMA.-10 COLOUREDMINIMA.0 MINIMA.01 MINIMA.01 MINIMAREST.1 BREVISREST.01";

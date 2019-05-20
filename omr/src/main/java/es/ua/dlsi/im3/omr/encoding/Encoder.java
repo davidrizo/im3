@@ -69,12 +69,86 @@ public class Encoder {
         agnosticEncoding.add(verticalSeparator);
     }
 
-    public void encode(ScoreSong scoreSong) throws IM3Exception {
+    public void encode(Staff staff, Segment segment) throws IM3Exception {
+        this.scoreSong = staff.getScoreSong();
         agnosticEncoding = new AgnosticEncoding();
         semanticEncoding = new SemanticEncoding();
 
+        HashMap<AtomPitch, Accidentals> drawnAccidentals = staff.createNoteAccidentalsToShow();
+
+        Measure lastMeasure = null;
+        List<ITimedElementInStaff> coreSymbolsOrdered = staff.getCoreSymbolsOrdered();
+        Time lastEndTime = null;
+        boolean newSystem = false;
+        boolean firstSystem = true;
+        for (ITimedElementInStaff symbol : coreSymbolsOrdered) {
+            if (segment.contains(symbol.getTime())) {
+                if (processSystemBreaks && symbol instanceof SystemBreak) {
+                    semanticEncoding.add(new SemanticBarline());
+                    agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
+                    agnosticEncoding.add(agnosticSystemBreak);
+                    semanticEncoding.add(semanticSystemBreak);
+                    newSystem = true;
+                } else {
+                    Measure measure = null;
+                    if (scoreSong.hasMeasures()) {
+                        measure = scoreSong.getMeasureActiveAtTime(symbol.getTime());
+                    }
+
+                    if (newSystem && processSystemBreaks) {
+                        es.ua.dlsi.im3.core.score.Clef lastClef = staff.getRunningClefAt(symbol);
+                        encodeClef(lastClef);
+
+                        KeySignature lastKeySignature = staff.getRunningKeySignatureAt(symbol);
+                        encodeKeySignature(lastKeySignature);
+                        newSystem = false;
+                        //TODO slurs
+                    } else {
+                        if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
+                            agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
+                            agnosticEncoding.add(horizontalSeparator);
+                            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
+                            semanticEncoding.add(new SemanticBarline());
+                            ////semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
+                        }
+                    }
+
+                    convert(symbol, drawnAccidentals, null);
+
+                    if (symbol instanceof Atom) {
+                        lastEndTime = ((Atom) symbol).getOffset();
+                    }
+
+                    lastMeasure = measure;
+                }
+            }
+        }
+
+        if (lastEndTime == null) {
+            throw new IM3Exception("Song without notes");
+        }
+
+        if (lastMeasure != null) { // not used in mensural
+            Time measureEndTime = staff.getRunningTimeSignatureAt(lastMeasure).getDuration().add(lastMeasure.getTime());
+            if (lastEndTime.equals(measureEndTime)) {
+                // add bar line just if the measure is complete
+                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
+                agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
+                agnosticEncoding.add(horizontalSeparator);
+                //semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
+                semanticEncoding.add(new SemanticBarline());
+            }
+        }
+
+        agnosticEncoding.removeLastSymbolIfSeparator();
+        /*sb.append(SEPARATOR);
+        sb.append(THICKBARLINE_0);*/
+    }
+
+    public void encode(ScoreSong scoreSong) throws IM3Exception {
         if (scoreSong.getStaves().size() != 1) {
-            //Note we don't have information in the MEI file about line breaking
+            //TODO We have this information!!!
+            //SemanticNote we don't have information in the MEI file about line breaking
             StringBuilder stringBuilder = new StringBuilder();
 
             for (Staff staff: scoreSong.getStaves()) {
@@ -86,71 +160,7 @@ public class Encoder {
         }
 
         Staff staff = scoreSong.getStaves().get(0);
-        HashMap<AtomPitch, Accidentals> drawnAccidentals = staff.createNoteAccidentalsToShow();
-
-        Measure lastMeasure = null;
-        List<ITimedElementInStaff> coreSymbolsOrdered = staff.getCoreSymbolsOrdered();
-        Time lastEndTime = null;
-        boolean newSystem = false;
-        boolean firstSystem = true;
-        for (ITimedElementInStaff symbol : coreSymbolsOrdered) {
-            if (processSystemBreaks && symbol instanceof SystemBreak) {
-                semanticEncoding.add(new SemanticSymbol(new Barline()));
-                agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
-                agnosticEncoding.add(agnosticSystemBreak);
-                semanticEncoding.add(semanticSystemBreak);
-                newSystem = true;
-            } else {
-                Measure measure = null;
-                if (scoreSong.hasMeasures()) {
-                    measure = scoreSong.getMeasureActiveAtTime(symbol.getTime());
-                }
-
-                if (newSystem && processSystemBreaks) {
-                    es.ua.dlsi.im3.core.score.Clef lastClef = staff.getRunningClefAt(symbol);
-                    encodeClef(lastClef);
-
-                    KeySignature lastKeySignature = staff.getRunningKeySignatureAt(symbol);
-                    encodeKeySignature(lastKeySignature);
-                    newSystem = false;
-                    //TODO slurs
-                } else {
-                    if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
-                        agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
-                        agnosticEncoding.add(horizontalSeparator);
-                        //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
-                        semanticEncoding.add(new SemanticSymbol(new Barline()));
-                        ////semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
-                    }
-                }
-
-                convert(symbol, drawnAccidentals, null);
-
-                if (symbol instanceof Atom) {
-                    lastEndTime = ((Atom) symbol).getOffset();
-                }
-
-                lastMeasure = measure;
-            }
-        }
-
-        if (lastEndTime == null) {
-            throw new IM3Exception("Song without notes");
-        }
-
-        Time measureEndTime = staff.getRunningTimeSignatureAt(lastMeasure).getDuration().add(lastMeasure.getTime());
-        if (lastEndTime.equals(measureEndTime)) {
-            // add bar line just if the measure is complete
-            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
-            agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
-            agnosticEncoding.add(horizontalSeparator);
-            //semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
-            semanticEncoding.add(new SemanticSymbol(new Barline()));
-        }
-
-        agnosticEncoding.removeLastSymbolIfSeparator();
-        /*sb.append(SEPARATOR);
-        sb.append(THICKBARLINE_0);*/
+        encode(staff, new Segment(Time.TIME_ZERO, Time.TIME_MAX));
     }
 
     private void convertDuration(StringBuilder sb, AtomFigure figure) {
@@ -311,21 +321,27 @@ public class Encoder {
                     agnosticEncoding.add(horizontalSeparator);
                 }
 
-                for (AtomPitch atomPitch: chord.getAtomPitches()) {
-                    es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note semanticNote =
-                            new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note(chord.isGrace(), atomPitch.getScientificPitch(), chord.getAtomFigure().getFigure(), chord.getAtomFigure().getDots(),
+
+
+
+                /*for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                    SemanticNote semanticNote =
+                            new SemanticNote(chord.isGrace(), atomPitch.getScientificPitch(), chord.getAtomFigure().getFigure(), chord.getAtomFigure().getDots(),
                                     chord.getAtomFigure().getFermata() != null,
                                     trill, tupletNumber);
-                    semanticEncoding.add(new SemanticSymbol(semanticNote));
+                    semanticEncoding.add(semanticNote);
                 }
 
                 i=0;
                 for (AtomPitch atomPitch: chord.getAtomPitches()) {
                     if (atomPitch.isTiedToNext()) {
-                        semanticEncoding.add(new SemanticSymbol(new Tie())); //TODO Esto no está bien
+                        semanticEncoding.add(new SemanticTie(null))); //TODO Esto no está bien
                         //semanticTokens.add(new SemanticToken(SemanticSymbol.tie));
                     }
-                }
+                }*/
+
+                //TODO ties
+                semanticEncoding.add(new SemanticChord(chord));
             }
         } else if (symbol instanceof SimpleNote) {
             SimpleNote note = (SimpleNote) symbol;
@@ -442,17 +458,19 @@ public class Encoder {
 
             //semanticTokens.add(new SemanticToken(semanticSymbol, sb.toString()));
 
-            es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note semanticNote =
-                    new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Note(note.isGrace(), note.getPitch(), note.getAtomFigure().getFigure(), note.getAtomFigure().getDots(),
+            /*SemanticNote semanticNote =
+                    new SemanticNote(note.isGrace(), note.getPitch(), note.getAtomFigure().getFigure(), note.getAtomFigure().getDots(),
                             note.getAtomFigure().getFermata() != null,
                             trill, tupletNumber);
-            semanticEncoding.add(new SemanticSymbol(semanticNote));
+            semanticEncoding.add(semanticNote));
 
 
             if (note.getAtomPitch().isTiedToNext()) {
-                semanticEncoding.add(new SemanticSymbol(new Tie()));
+                semanticEncoding.add(new SemanticTie(null)));
                 //semanticTokens.add(new SemanticToken(SemanticSymbol.tie));
-            }
+            }*/
+            //TODO ties
+            semanticEncoding.add(new SemanticNote(note));
 
         } else if (symbol instanceof SimpleMultiMeasureRest) {
             SimpleMultiMeasureRest multiMeasureRest = (SimpleMultiMeasureRest) symbol;
@@ -494,7 +512,7 @@ public class Encoder {
             }
 
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.multirest, null, PositionsInStaff.LINE_3));
-            //agnosticEncoding.add(new AgnosticSymbol(new Multirest(), PositionsInStaff.LINE_3));
+            //agnosticEncoding.add(new AgnosticSymbol(new SemanticMultirest(), PositionsInStaff.LINE_3));
 
             if (multiMeasureRest.getAtomFigure().getFermata() != null && (multiMeasureRest.getAtomFigure().getFermata().getPosition() == null || multiMeasureRest.getAtomFigure().getFermata().getPosition() == PositionAboveBelow.BELOW)) {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, multiMeasureRest.getAtomFigure().getFermata().getPositionInStaff().toString().toLowerCase(), FERMATA_POSITION_BELOW));
@@ -505,7 +523,8 @@ public class Encoder {
             }
 
             //semanticTokens.add(new SemanticToken(SemanticSymbol.multirest, Integer.toString(multiMeasureRest.getNumMeasures())));
-            semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Multirest(multiMeasureRest.getNumMeasures())));
+            //semanticEncoding.add(new SemanticMultirest(multiMeasureRest.getNumMeasures())));
+            semanticEncoding.add(new SemanticMultirest(multiMeasureRest));
 
 
         } else if (symbol instanceof SimpleRest) {
@@ -542,12 +561,13 @@ public class Encoder {
             //StringBuilder sb = new StringBuilder();
             //fillSingleFigureAtom(sb, rest);
             //semanticTokens.add(new SemanticToken(SemanticSymbol.rest, sb.toString()));
-            semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Rest(
+            /*semanticEncoding.add(new SemanticRest(
                     rest.getAtomFigure().getFigure(),
                     rest.getAtomFigure().getDots(),
                     rest.getAtomFigure().getFermata() != null,
                     tupletNumber
-            )));
+            )));*/
+            semanticEncoding.add(new SemanticRest(rest));
 
         } else if (symbol instanceof SimpleTuplet) {
             SimpleTuplet simpleTuplet = (SimpleTuplet) symbol;
@@ -625,19 +645,21 @@ public class Encoder {
         agnosticEncoding.add(horizontalSeparator);
         //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.clef, clef.getNote().name(), positionInStaff));
         //semanticTokens.add(new SemanticToken(SemanticSymbol.clef, clef.getNote() + "" + clef.getLine()));
-        semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.Clef(clefNote, clef.getLine())));
+        //semanticEncoding.add(new SemanticClef(clefNote, clef.getLine())));
+        semanticEncoding.add(new SemanticClef(clef));
     }
 
     private void encodeTimeSignature(TimeSignature symbol) throws IM3Exception {
-        es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.TimeSignature timeSignature;
+        SemanticTimeSignature<TimeSignature> timeSignature;
 
         if (symbol instanceof SignTimeSignature) {
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.metersign, ((SignTimeSignature) symbol).getSignString(), PositionsInStaff.LINE_3));
             MeterSigns meterSign = convert((SignTimeSignature) symbol);
             agnosticEncoding.add(new AgnosticSymbol(version, new MeterSign(meterSign), PositionsInStaff.LINE_3));
             agnosticEncoding.add(horizontalSeparator);
-            timeSignature = new MeterSignTimeSignature(meterSign);
+            //timeSignature = new SemanticMeterSignTimeSignature(meterSign);
             //sb.append(((SignTimeSignature) symbol).getSignString());
+            semanticEncoding.add(new SemanticMeterSignTimeSignature((SignTimeSignature) symbol));
         } else if (symbol instanceof FractionalTimeSignature) {
             FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
             agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getNumerator()), PositionsInStaff.LINE_4));
@@ -649,14 +671,15 @@ public class Encoder {
             //sb.append(ts.getNumerator());
             //sb.append('/');
             //sb.append(ts.getDenominator());
-            timeSignature = new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.FractionalTimeSignature(ts.getNumerator(), ts.getDenominator());
+            //timeSignature = new SemanticFractionalTimeSignature(ts.getNumerator(), ts.getDenominator());
+            semanticEncoding.add(new SemanticFractionalTimeSignature((FractionalTimeSignature) symbol));
         } else {
             throw new ExportException("Unsupported time signature" + symbol.getClass());
         }
 
 
         //semanticTokens.add(new SemanticToken(SemanticSymbol.timeSignature, sb.toString()));
-        semanticEncoding.add(new SemanticSymbol(timeSignature));
+        //semanticEncoding.add(timeSignature));
 
     }
 
@@ -679,11 +702,12 @@ public class Encoder {
                 sb.append(ks.getConcertPitchKey().getMode().getName());
             }*/
         //semanticTokens.add(new SemanticToken(SemanticSymbol.keySignature, sb.toString()));
-        semanticEncoding.add(new SemanticSymbol(new es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.KeySignature(
+        /*semanticEncoding.add(new SemanticKeySignature(
                 ks.getConcertPitchKey().getPitchClass().getNoteName(),
                 ks.getConcertPitchKey().getPitchClass().getAccidental(),
-                convert(ks.getConcertPitchKey().getMode()))));
+                convert(ks.getConcertPitchKey().getMode()))));*/
         //semanticTokens.add(new SemanticToken(SemanticSymbol.keySignature, sb.toString()));
+        semanticEncoding.add(new SemanticKeySignature(ks));
     }
 
     private PositionInStaff computePositionInStaff(SimpleTuplet simpleTuplet) throws IM3Exception {
@@ -783,7 +807,7 @@ public class Encoder {
             return note.getAtomFigure().getFigure().toString().toLowerCase();
         }*
     }*/
-    private INoteDurationSpecification generateNoteDurationSpecification(SingleFigureAtom singleFigureAtom) throws IM3Exception {
+    private INoteDurationSpecification generateNoteDurationSpecification(SingleFigureAtom singleFigureAtom) {
         BeamGroup beam = singleFigureAtom.getBelongsToBeam();
         if (beam != null) {
             int flags = singleFigureAtom.getAtomFigure().getFigure().getNumFlags();
@@ -799,6 +823,7 @@ public class Encoder {
             }
         } else {
             switch (singleFigureAtom.getAtomFigure().getFigure()) {
+                // MODERN
                 case DOUBLE_WHOLE: return NoteFigures.doubleWhole;
                 case WHOLE: return NoteFigures.whole;
                 case HALF: return NoteFigures.half;
@@ -808,14 +833,23 @@ public class Encoder {
                 case THIRTY_SECOND: return NoteFigures.thirtySecond;
                 case SIXTY_FOURTH: return NoteFigures.sixtyFourth;
                 case HUNDRED_TWENTY_EIGHTH: return NoteFigures.hundredTwentyEighth;
-                default: throw new IM3Exception("Unsupported note figure: " + singleFigureAtom.getAtomFigure().getFigure());
+
+                // MENSURAL
+                case BREVE: return NoteFigures.whole;
+                default:
+                    //TODO URGENT
+                    System.err.println("TO-DO mensural!!!!!!!!!!!");
+                    return NoteFigures.twoHundredFiftySix;
+                    // throw new IM3Exception("Unsupported note figure: " + singleFigureAtom.getAtomFigure().getFigure());
             }
             //return note.getAtomFigure().getFigure().toString().toLowerCase();
         }
     }
 
-    private RestFigures convert(Figures figure) throws IM3Exception {
+    private RestFigures convert(Figures figure) {
+
         switch (figure) {
+            // MODERN
             case WHOLE: return RestFigures.whole;
             case HALF: return RestFigures.half;
             case QUARTER: return RestFigures.quarter;
@@ -824,7 +858,14 @@ public class Encoder {
             case THIRTY_SECOND: return RestFigures.thirtySecond;
             case SIXTY_FOURTH: return RestFigures.sixtyFourth;
             case HUNDRED_TWENTY_EIGHTH: return RestFigures.hundredTwentyEighth;
-            default: throw new IM3Exception("Unsupported rest figure: " + figure);
+
+            // MENSURAL
+            case BREVE: return RestFigures.whole;
+            default:
+                //TODO URGENT
+                System.err.println("TO-DO mensural!!!!!!!!!!!");
+                return RestFigures.twoHundredFiftySix;
+                //throw new IM3Exception("Unsupported rest figure: " + figure);
         }
     }
 

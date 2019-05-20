@@ -2,20 +2,28 @@ package es.ua.dlsi.im3.omr.encoding.semantic;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.IAlphabetSymbolType;
+import es.ua.dlsi.im3.core.score.ITimedElement;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
-import es.ua.dlsi.im3.core.score.ScoreLayer;
 
-import java.util.List;
-
-public abstract class SemanticSymbolType implements Comparable<SemanticSymbolType>, IAlphabetSymbolType {
+public abstract class SemanticSymbolType<IMCoreSymbolType extends ITimedElementInStaff> implements Comparable<SemanticSymbolType>, IAlphabetSymbolType {
     protected static String SEPSYMBOL = "-";
     protected static String SEPVALUES = "_";
+    protected IMCoreSymbolType coreSymbol;
+
+    public SemanticSymbolType(IMCoreSymbolType coreSymbol) {
+        this.coreSymbol = coreSymbol;
+    }
+
+    public IMCoreSymbolType getCoreSymbol() {
+        return coreSymbol;
+    }
 
     /**
+     * @deprecated Use toKernSemanticString
      * Used in PRIMUS v1
      * @return
      */
-    public abstract String toSemanticString();
+    public abstract String toSemanticString() throws IM3Exception;
     /**
      * Used after MuRET. Semantic encoding based on kern / mens
      */
@@ -39,6 +47,4 @@ public abstract class SemanticSymbolType implements Comparable<SemanticSymbolTyp
     public String getType() {
         return this.getClass().getName();
     }
-
-    public abstract void semantic2ScoreSong(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception;
 }

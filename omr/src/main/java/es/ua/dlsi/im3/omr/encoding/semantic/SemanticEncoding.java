@@ -4,12 +4,6 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.encoding.Sequence;
-import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.KeySignature;
-
-import java.lang.reflect.Array;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
 
 /**
  * @author drizo
@@ -30,5 +24,9 @@ public class SemanticEncoding extends Sequence<SemanticSymbol> {
             stringBuilder.append('\n');
         }
         return stringBuilder.toString();
+    }
+
+    public void add(SemanticSymbolType semanticSymbolType) {
+        add(new SemanticSymbol(semanticSymbolType));
     }
 }
