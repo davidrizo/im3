@@ -15,6 +15,24 @@ public abstract class Exporter<SymbolType> {
     private static final char SEPVERTICALPOS = '-';
     private StringBuilder sb;
     private Sequence<SymbolType> encoding;
+    protected char separator;
+    boolean endWithSeparator = false;
+
+    public Exporter() {
+        separator = SEP;
+    }
+
+    public Exporter(char separator) {
+        this.separator = separator;
+    }
+
+    public boolean isEndWithSeparator() {
+        return endWithSeparator;
+    }
+
+    public void setEndWithSeparator(boolean endWithSeparator) {
+        this.endWithSeparator = endWithSeparator;
+    }
 
     public String export(Sequence<SymbolType>  encoding) throws IM3Exception {
         this.encoding = encoding;
@@ -22,6 +40,9 @@ public abstract class Exporter<SymbolType> {
 
         doExport();
 
+        if (endWithSeparator) {
+            sb.append(separator);
+        }
         return sb.toString();
     }
 
@@ -44,7 +65,7 @@ public abstract class Exporter<SymbolType> {
             SymbolType symbol = encoding.getSymbols().get(i);
             sb.append(export(symbol));
             if (i<size-1 && requiresSeparator(symbol)) {
-                sb.append(SEP);
+                sb.append(separator);
             }
         }
     }

@@ -595,7 +595,7 @@ MensImporter {
         }
     }
 
-    private HumdrumMatrix importMens(CharStream input, String inputDescription) throws ImportException {
+    private HumdrumMatrix importMens(CharStream input, String inputDescription, boolean anyStart) throws ImportException {
         ErrorListener errorListener = new ErrorListener();
         try {
             Logger.getLogger(MensImporter.class.getName()).log(Level.INFO, "Parsing {0}", inputDescription);
@@ -611,7 +611,12 @@ MensImporter {
             mensParser parser = new mensParser(tokens);
             parser.addErrorListener(errorListener);
 
-            ParseTree tree = parser.start();
+            ParseTree tree;
+            if (anyStart) {
+                tree = parser.anystart();
+            } else {
+                tree = parser.start();
+            }
             ParseTreeWalker walker = new ParseTreeWalker();
             Loader loader = new Loader(parser, debug);
             walker.walk(loader, tree);
@@ -635,7 +640,7 @@ MensImporter {
     public HumdrumMatrix importMens(File file) throws ImportException {
         try {
             CharStream input = CharStreams.fromFileName(file.getAbsolutePath());
-            return importMens(input, file.getAbsolutePath());
+            return importMens(input, file.getAbsolutePath(), false);
         } catch (IOException e) {
             throw new ImportException(e);
         }
@@ -643,7 +648,12 @@ MensImporter {
 
     public HumdrumMatrix importMens(String string) throws ImportException {
         CharStream input = CharStreams.fromString(string);
-        return importMens(input, string);
+        return importMens(input, string, false);
+    }
+
+    public HumdrumMatrix importMens(String string, boolean anyStart) throws ImportException {
+        CharStream input = CharStreams.fromString(string);
+        return importMens(input, string, anyStart);
     }
 
     public boolean isDebug() {

@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.Figures;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.SimpleRest;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
+import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
 import org.apache.commons.lang3.math.Fraction;
@@ -36,7 +37,7 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
     }
 
     @Override
-    public String toSemanticString() {
+    public String toSemanticString() throws IM3Exception {
         StringBuilder sb = new StringBuilder(SEMANTIC);
 
         Figures figures = coreSymbol.getAtomFigure().getFigure();
@@ -57,6 +58,24 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
             sb.append(FERMATA);
         }
 
+        /*//TODO código copiado en SemanticNote
+        if (coreSymbol.getAtomFigure().isExplicitMensuralPerfection()) {
+            Perfection perfection = coreSymbol.getAtomFigure().getMensuralPerfection();
+            if (perfection != null) {
+                switch (perfection) {
+                    case perfectum:
+                        sb.append('p');
+                        break;
+                    case imperfectum:
+                        sb.append('i');
+                        break;
+                    default:
+                        throw new IM3Exception("Unsupported perfection type: " + perfection);
+                }
+            } else {
+                throw new IM3Exception("Expected a perfection");
+            }
+        }*/
         return sb.toString();
     }
 }

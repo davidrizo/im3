@@ -3,6 +3,7 @@ package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
+import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
 import org.apache.commons.lang3.math.Fraction;
 
@@ -54,7 +55,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
     }
 
     @Override
-    public String toSemanticString() {
+    public String toSemanticString() throws IM3Exception {
         StringBuilder sb = new StringBuilder();
         if (coreSymbol.isGrace()) {
             sb.append(SEMANTIC_GRACENOTE);
@@ -94,6 +95,29 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
             sb.append(SEPVALUES);
             sb.append(TRILL);
         }
+
+        if (coreSymbol.getAtomFigure().isColored()) {
+            sb.append('~');
+        }
+
+        /*//TODO código copiado en SemanticRest
+        if (coreSymbol.getAtomFigure().isExplicitMensuralPerfection()) {
+            Perfection perfection = coreSymbol.getAtomFigure().getMensuralPerfection();
+            if (perfection != null) {
+                switch (perfection) {
+                    case perfectum:
+                        sb.append('p');
+                        break;
+                    case imperfectum:
+                        sb.append('i');
+                        break;
+                    default:
+                        throw new IM3Exception("Unsupported perfection type: " + perfection);
+                }
+            } else {
+                throw new IM3Exception("Expected a perfection");
+            }
+        }*/
 
         if (tied) {
             sb.append(' '); //TODO it was other symbol - ' ' is a symbol separator

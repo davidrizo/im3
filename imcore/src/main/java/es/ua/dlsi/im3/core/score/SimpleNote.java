@@ -20,12 +20,32 @@ public class SimpleNote extends SingleFigureAtom {
 		atomPitch = new AtomPitch(this.atomFigure, pitch);
 	}
 
-	public SimpleNote(SimpleNote simpleNote) {
+	/**
+	 * Note it does not copy ties, marks and connectors
+	 * @param simpleNote
+	 */
+	public SimpleNote(SimpleNote simpleNote) throws IM3Exception {
 		this(simpleNote.getAtomFigure().getFigure(), simpleNote.getAtomFigure().getDots(), simpleNote.getDuration(), simpleNote.getPitch());
+		this.setGrace(simpleNote.isGrace());
+		this.getAtomFigure().setColored(simpleNote.getAtomFigure().getColored());
+		if (simpleNote.getAtomFigure().isExplicitMensuralPerfection()) {
+			this.getAtomFigure().setExplicitMensuralPerfection(simpleNote.getAtomFigure().getMensuralPerfection());
+		} else {
+			this.getAtomFigure().setComputedMensuralPerfection(simpleNote.getAtomFigure().getMensuralPerfection(), simpleNote.getAtomFigure().getPerfectionRuleApplied());
+		}
+		//TODO otros parámetros?
 	}
 
+	/**
+	 * Note it does not clone ties and connectors
+	 * @return
+	 */
 	public SimpleNote clone() {
-		return new SimpleNote(this);
+		try {
+			return new SimpleNote(this);
+		} catch (IM3Exception e) {
+			throw new IM3RuntimeException("Cannot clone", e);
+		}
 	}
 	/**
 	 * Package visibility, used by tuplets and mensural

@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.conversions.RhythmUtils;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.*;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
+import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
@@ -298,7 +299,7 @@ public class KernExporter {
                                 throw new ExportException("Unsupported durations that have to be decomposed in a set of figures");
                             }
                             FigureAndDots fd = fds.get(0);
-                            String duration = generateDuration(fd.getFigure(), fd.getDots(), Fraction.ONE);
+                            String duration = generateDuration(fd.getFigure(), fd.getDots(), Fraction.ONE, ((SimpleMeasureRest) atom).getAtomFigure());
                             record.add(duration + "rr");
                         } else {
                             encodeAtom(record, atom);
@@ -461,7 +462,7 @@ public class KernExporter {
     }
 
     // See http://www.humdrum.org/humextra/rhythm/#extensions-to-recip-and-kern-rhythms
-    public static String generateDuration(Figures figure, int dots, Fraction multipler) throws ExportException {
+    public static String generateDuration(Figures figure, int dots, Fraction multipler, AtomFigure atomFigure) throws ExportException {
         StringBuilder sb = new StringBuilder();
 
         //TODO Test unitario - sobre todo de mensural
@@ -509,6 +510,24 @@ public class KernExporter {
         for (int i=0; i<dots; i++) {
             sb.append('.');
         }
+
+        if (atomFigure.isExplicitMensuralPerfection()) {
+            Perfection perfection = atomFigure.getMensuralPerfection();
+            if (perfection != null) {
+                switch (perfection) {
+                    case perfectum:
+                        sb.append('p');
+                        break;
+                    case imperfectum:
+                        sb.append('i');
+                        break;
+                    default:
+                        throw new ExportException("Unsupported perfection type: " + perfection);
+                }
+            } else {
+                throw new ExportException("Expected a perfection");
+            }
+        }
         return sb.toString();
     }
 
@@ -520,7 +539,7 @@ public class KernExporter {
      * @throws ExportException
      */
     private static String generateDuration(AtomFigure figure, Fraction multiplier) throws ExportException {
-        return generateDuration(figure.getFigure(), figure.getDots(), multiplier);
+        return generateDuration(figure.getFigure(), figure.getDots(), multiplier, figure);
     }
 
     private static String generatePitch(AtomPitch pitch) throws ExportException {

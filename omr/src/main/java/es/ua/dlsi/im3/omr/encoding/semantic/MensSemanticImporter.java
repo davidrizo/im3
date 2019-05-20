@@ -18,7 +18,7 @@ public class MensSemanticImporter implements ISemanticImporter {
     @Override
     public SemanticEncoding importString(NotationType notationType, String string) throws IM3Exception {
         MensImporter mensImporter = new MensImporter();
-        HumdrumMatrix humdrumMatrix = mensImporter.importMens(string);
+        HumdrumMatrix humdrumMatrix = mensImporter.importMens(string, true);
         return humdrumMatrix2SemanticEncoding(notationType, humdrumMatrix);
     }
 

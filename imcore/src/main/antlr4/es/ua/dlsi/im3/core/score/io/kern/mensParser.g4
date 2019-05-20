@@ -1,6 +1,7 @@
 /*
 @author: David Rizo (drizo@dlsi.ua.es) May, 2018
 20180528: first version from kern.g4 in IM3 library
+20190520: add anystart rule for integrating with OMR
 */
 parser grammar mensParser;
 options { tokenVocab=mensLexer; } // use tokens from mensLexer.g4
@@ -21,6 +22,9 @@ options { tokenVocab=mensLexer; } // use tokens from mensLexer.g4
 // start rule
 //start: (referenceRecord EOL)* header (EOL record)+ EOL? (referenceRecord EOL?)* EOF;
 start: header (eol record)+ eol? EOF;
+
+// used in OMR
+anystart: header? record (eol record)+ eol? EOF;
 
 eol: FREE_TEXT_EOL | EOL;
 

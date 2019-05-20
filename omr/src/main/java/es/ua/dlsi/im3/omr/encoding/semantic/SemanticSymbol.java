@@ -15,4 +15,8 @@ public class SemanticSymbol extends Token<SemanticSymbolType> {
     public String toSemanticString() throws IM3Exception {
         return symbol.toSemanticString();
     }
+
+    public String toKernSemanticString() throws IM3Exception {
+        return symbol.toKernSemanticString();
+    }
 }
