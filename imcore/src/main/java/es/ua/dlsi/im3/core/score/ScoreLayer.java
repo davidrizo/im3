@@ -106,7 +106,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	
 	// TODO Test unitario
 	public void addAfter(Atom referenceAtom, Atom newAtom) throws IM3Exception {
-		int index = atoms.indexOf(referenceAtom);
+		/*int index = atoms.indexOf(referenceAtom);
 		if (index < 0) {
 			throw new IM3Exception("Cannot find referenced atom");
 		}
@@ -114,7 +114,24 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		atoms.add(index + 1, newAtom);
 
 		// correct onset times
-		updateOnsets(index + 1);
+		updateOnsets(index + 1);*/
+		addAfter(referenceAtom, Arrays.asList(newAtom));
+	}
+
+	public void addAfter(Atom referenceAtom, List<Atom> newAtoms) throws IM3Exception {
+		if (!newAtoms.isEmpty()) {
+			int index = atoms.indexOf(referenceAtom);
+			if (index < 0) {
+				throw new IM3Exception("Cannot find referenced atom");
+			}
+			for (Atom newAtom: newAtoms) {
+				evaluateDurationBeforeAdd(newAtom, index + 1);
+				atoms.add(index + 1, newAtom);
+				index = index+1;
+			}
+			// correct onset times
+			updateOnsets(index);
+		}
 	}
 
     private void evaluateDurationBeforeAdd(Atom newAtom, int index) throws IM3Exception {
@@ -125,7 +142,7 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 
     // TODO Test unitario
 	public void addBefore(Atom referenceAtom, Atom newAtom) throws IM3Exception {
-		int index = atoms.indexOf(referenceAtom);
+		/*int index = atoms.indexOf(referenceAtom);
 		if (index < 0) {
 			throw new IM3Exception("Cannot find referenced atom");
 		}
@@ -133,21 +150,57 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		atoms.add(index, newAtom);
 
 		// correct onset times
-		updateOnsets(index);
+		updateOnsets(index);*/
+		addBefore(referenceAtom, Arrays.asList(newAtom));
 	}
-	
+
+	// TODO Test unitario
+	public void addBefore(Atom referenceAtom, List<Atom> newAtoms) throws IM3Exception {
+		if (!newAtoms.isEmpty()) {
+			int index = atoms.indexOf(referenceAtom);
+			if (index < 0) {
+				throw new IM3Exception("Cannot find referenced atom");
+			}
+			for (Atom newAtom: newAtoms) {
+				evaluateDurationBeforeAdd(newAtom, index);
+				atoms.add(index, newAtom);
+				index++;
+			}
+
+			// correct onset times
+			updateOnsets(index);
+		}
+	}
+
 	public void remove(Atom atom) throws IM3Exception {
-		int index = atoms.indexOf(atom);
+		/*int index = atoms.indexOf(atom);
 		if (index < 0) {
 			throw new IM3Exception("Cannot find referenced atom");
 		}
 		atoms.remove(index);
 		if (atoms.size() > index) { // if not last
 			updateOnsets(index);	
-		}
+		}*/
+		remove(Arrays.asList(atom));
 	}
 
-	
+	public void remove(List<Atom> atomsToRemove) throws IM3Exception {
+		int minIndex = Integer.MAX_VALUE;
+
+		if (!atomsToRemove.isEmpty()) {
+			for (Atom atom: atomsToRemove) {
+				int index = atoms.indexOf(atom);
+				if (index < 0) {
+					throw new IM3Exception("Cannot find referenced atom");
+				}
+				atoms.remove(index);
+				minIndex = Math.min(index, minIndex);
+			}
+		}
+		if (atoms.size() > minIndex) { // if not last
+			updateOnsets(minIndex);
+		}
+	}
 	
 
 	/**

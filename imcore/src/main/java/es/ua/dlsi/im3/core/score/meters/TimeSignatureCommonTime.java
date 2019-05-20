@@ -33,6 +33,11 @@ public class TimeSignatureCommonTime extends SignTimeSignature {
     }
 
 	@Override
+	public SignTimeSignature clone() {
+		return new TimeSignatureCommonTime(notationType);
+	}
+
+	@Override
 	public String getSignString() {
 		return "C";
 	}

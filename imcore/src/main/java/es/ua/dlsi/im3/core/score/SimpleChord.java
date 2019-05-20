@@ -34,8 +34,19 @@ public class SimpleChord extends SingleFigureAtom {
 			atomPitches.add(new AtomPitch(this.atomFigure, scientificPitch));			
 		}
 	}
-	
-	public void addPitches(ScientificPitch ... pitches) {
+
+	/**
+	 * It copies the pitches, figures, dots...
+	 * @param chord
+	 */
+    public SimpleChord(SimpleChord chord) {
+        this(chord.getAtomFigure().getFigure(), chord.getAtomFigure().getDots(), chord.getPitches());
+    }
+
+    public SimpleChord clone() {
+    	return new SimpleChord(this);
+	}
+    public void addPitches(ScientificPitch ... pitches) {
 		for (ScientificPitch scientificPitch : pitches) {
 			atomPitches.add(new AtomPitch(this.atomFigure, scientificPitch));			
 		}

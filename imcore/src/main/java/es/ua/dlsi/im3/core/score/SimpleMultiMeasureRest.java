@@ -23,6 +23,16 @@ public class SimpleMultiMeasureRest extends SimpleRest {
 		this.numMeasures = numMeasures;
 	}
 
+	//TODO Test unitario
+	public SimpleMultiMeasureRest(SimpleMultiMeasureRest simpleMultiMeasureRest) {
+		super(simpleMultiMeasureRest.getAtomFigure().getFigure(), 0, simpleMultiMeasureRest.getDuration());
+		this.numMeasures = simpleMultiMeasureRest.getNumMeasures();
+	}
+
+	public SimpleMultiMeasureRest clone() {
+		return new SimpleMultiMeasureRest(this);
+	}
+
 	@Override
 	public String toString() {
 		return super.toString() + " " + numMeasures + " measures rest";

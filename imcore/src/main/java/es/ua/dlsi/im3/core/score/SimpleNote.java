@@ -19,6 +19,14 @@ public class SimpleNote extends SingleFigureAtom {
 		super(figure, dots);
 		atomPitch = new AtomPitch(this.atomFigure, pitch);
 	}
+
+	public SimpleNote(SimpleNote simpleNote) {
+		this(simpleNote.getAtomFigure().getFigure(), simpleNote.getAtomFigure().getDots(), simpleNote.getDuration(), simpleNote.getPitch());
+	}
+
+	public SimpleNote clone() {
+		return new SimpleNote(this);
+	}
 	/**
 	 * Package visibility, used by tuplets and mensural
 	 * @param figure
@@ -43,7 +51,7 @@ public class SimpleNote extends SingleFigureAtom {
 	 * @param writtenExplicitAccidental
 	 * @throws IM3Exception 
 	 */
-	public void setWrittenExplicitAccidental(Accidentals writtenExplicitAccidental) throws IM3Exception {
+	public void setWrittenExplicitAccidental(Accidentals writtenExplicitAccidental)  {
 		atomPitch.setWrittenExplicitAccidental(writtenExplicitAccidental);		
 	}
 

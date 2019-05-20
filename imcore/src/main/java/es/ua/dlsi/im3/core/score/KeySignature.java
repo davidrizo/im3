@@ -68,7 +68,15 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 		init();
 	}
 
-	public List<KeySignatureAccidentalElement> getAccidentals() {
+    public KeySignature(KeySignature ks) {
+		this(ks.notationType, ks.instrumentKey);
+    }
+
+    public KeySignature clone() {
+		return new KeySignature(this);
+	}
+
+    public List<KeySignatureAccidentalElement> getAccidentals() {
 		return accidentals;
 	}
 

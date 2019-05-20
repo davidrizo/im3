@@ -44,6 +44,15 @@ public class DeterministicProbabilisticAutomatonTest {
         automaton.writeDot(TestFileUtils.createTempFile("pa.dot"));
         List<Token<StringSymbolType>> sequence = Arrays.asList(new Token<>(new StringSymbolType("a")), new Token<>(new StringSymbolType("b")));
         assertEquals(1, automaton.probabilityOf(sequence, new SingleTransductionFactory()).getProbability().getNumeratorAsLong());
+
+        List<Token<StringSymbolType>> incorrectSequence = Arrays.asList(new Token<>(new StringSymbolType("a")),
+                new Token<>(new StringSymbolType("c")),
+                new Token<>(new StringSymbolType("b")));
+
+        Transduction incorrectTransduction = automaton.probabilityOf(incorrectSequence, new SingleTransductionFactory());
+        assertEquals("Incorrect transduction p", 0, incorrectTransduction.getProbability().getNumeratorAsLong());
     }
+
+
 
 }

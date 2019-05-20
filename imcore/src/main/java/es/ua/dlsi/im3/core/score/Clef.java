@@ -91,7 +91,6 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
         this.bottomLineOctave = bottomLineNoteOrder / 7;
     }
 
-
 	public DiatonicPitch getNote() {
 		return note;
 	}

@@ -156,4 +156,12 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
     public void setExplicitStemDirection(StemDirection explicitStemDirection) {
         this.explicitStemDirection = explicitStemDirection;
     }
+
+    public boolean hasTrill() {
+	    if (this.marks == null) {
+	        return false;
+        } else {
+            return marks.stream().filter(staffMark -> staffMark instanceof Trill).findAny().isPresent();
+        }
+    }
 }

@@ -33,6 +33,11 @@ public class TimeSignatureCutTime extends SignTimeSignature {
     }
 
 	@Override
+	public SignTimeSignature clone() {
+		return new TimeSignatureCutTime(notationType);
+	}
+
+	@Override
 	public String getSignString() {
 		return "C/";
 	}

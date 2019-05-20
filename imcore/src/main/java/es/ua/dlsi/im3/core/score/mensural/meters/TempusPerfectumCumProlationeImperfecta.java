@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.mensural.meters;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 
 import java.util.List;
 import java.util.TreeSet;
@@ -18,6 +19,11 @@ public class TempusPerfectumCumProlationeImperfecta extends TimeSignatureMensura
     @Override
     public Time getDuration() {
         return getBreveDuration();
+    }
+
+    @Override
+    public SignTimeSignature clone() {
+        return new TempusPerfectumCumProlationeImperfecta();
     }
 
     @Override

@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
 import java.util.HashMap;
 
+//TODO Change to Semantic2ScoreSongImporter in OMR
 /**
  * It converts the humdrum matrix into a song
  */

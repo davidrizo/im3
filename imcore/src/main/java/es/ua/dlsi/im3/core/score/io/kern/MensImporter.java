@@ -31,7 +31,8 @@ import java.util.logging.Logger;
  *
  * @author drizo
  */
-public class MensImporter {
+public class
+MensImporter {
     private boolean debug;
 
     public static class Loader extends mensParserBaseListener {
@@ -545,11 +546,7 @@ public class MensImporter {
             if (ctx.alterationVisualMode() != null) {
                 switch (ctx.alterationVisualMode().getText()) {
                     case "x":
-                        try {
-                            note.setWrittenExplicitAccidental(acc);
-                        } catch (IM3Exception e) {
-                            throw new GrammarParseRuntimeException("Cannot set an written explicit accidental: "+ e);
-                        }
+                        note.setWrittenExplicitAccidental(acc);
                         break;
                     case "xx":
                         throw new UnsupportedOperationException("TO-DO Editorial accidental");

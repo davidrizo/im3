@@ -375,14 +375,7 @@ public class KernExporter {
         }
     }
 
-    /**
-     *
-     * @param record
-     * @param atom
-     * @throws IM3Exception
-     * @throws ExportException
-     */
-    private void encodeAtom(ArrayList<String> record, Atom atom) throws IM3Exception, ExportException {
+    public static String encodeAtom(Atom atom) throws ExportException {
         if (atom instanceof SingleFigureAtom) {
             Fraction multiplier;
             if (atom.getParentAtom() != null && atom.getParentAtom() instanceof SimpleTuplet) {
@@ -399,12 +392,12 @@ public class KernExporter {
                 if (sn.getAtomFigure().getFermata() != null) {
                     noteStr += ";";
                 }
-                record.add(noteStr);
+                return noteStr;
             } else if (atom instanceof SimpleRest) {
                 if (((SimpleRest) atom).getAtomFigure().getFermata() != null) {
-                    record.add(duration + "r;");
+                    return duration + "r;";
                 } else {
-                    record.add(duration + "r");
+                    return duration + "r";
                 }
 
             } else if (atom instanceof SimpleChord) {
@@ -419,7 +412,7 @@ public class KernExporter {
                 if (sc.getAtomFigure().getFermata() != null) {
                     cb.append(';');
                 }
-                record.add(cb.toString());
+                return cb.toString();
             } else {
                 throw new ExportException("Unsupported atom type: " + atom.getClass().getName());
             }
@@ -432,10 +425,20 @@ public class KernExporter {
         } */ else  {
             throw new ExportException("Unsupported exporting of class " + atom.getClass());
         }
-
     }
 
-    private String generateNote(AtomPitch atomPitch, String duration) throws ExportException {
+    /**
+     *
+     * @param record
+     * @param atom
+     * @throws IM3Exception
+     * @throws ExportException
+     */
+    private void encodeAtom(ArrayList<String> record, Atom atom) throws IM3Exception, ExportException {
+        record.add(encodeAtom(atom));
+    }
+
+    private static String generateNote(AtomPitch atomPitch, String duration) throws ExportException {
         //TODO Ver ligadas en acordes
         String prefix;
 
@@ -516,11 +519,11 @@ public class KernExporter {
      * @return
      * @throws ExportException
      */
-    private String generateDuration(AtomFigure figure, Fraction multiplier) throws ExportException {
+    private static String generateDuration(AtomFigure figure, Fraction multiplier) throws ExportException {
         return generateDuration(figure.getFigure(), figure.getDots(), multiplier);
     }
 
-    private String generatePitch(AtomPitch pitch) throws ExportException {
+    private static String generatePitch(AtomPitch pitch) throws ExportException {
         return generatePitch(pitch.getScientificPitch());
     }
 

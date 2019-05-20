@@ -22,6 +22,7 @@ import es.ua.dlsi.im3.core.score.AtomFigure;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
+import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 
 import java.util.List;
 
@@ -56,6 +57,11 @@ public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
 		return getSemibreveDuration();
 	}
 
+
+	@Override
+	public SignTimeSignature clone() {
+		return new TimeSignatureProporcionMenor();
+	}
 
 	@Override
 	public String getSignString() {

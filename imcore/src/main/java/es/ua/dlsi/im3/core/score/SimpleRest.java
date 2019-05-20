@@ -26,6 +26,14 @@ public class SimpleRest extends SingleFigureAtom {
 		super(figure, dots, alteredDuration);
 	}
 
+	public SimpleRest(SimpleRest simpleRest) {
+		this(simpleRest.getAtomFigure().getFigure(), simpleRest.getAtomFigure().getDots(), simpleRest.getDuration());
+	}
+
+	public SimpleRest clone() {
+		return new SimpleRest(this);
+	}
+
 	@Override
 	public List<PlayedScoreNote> computePlayedNotes() {
 		return null;

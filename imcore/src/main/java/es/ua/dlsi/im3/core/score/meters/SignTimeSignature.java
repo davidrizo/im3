@@ -11,9 +11,13 @@ public abstract class SignTimeSignature extends TimeSignature {
         super(notationType);
     }
 
+    public abstract SignTimeSignature clone();
+
     /**
      * A kind of toString just for the sign
      * @return
      */
     public abstract String getSignString();
+
+
 }
