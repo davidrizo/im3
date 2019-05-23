@@ -1,9 +1,7 @@
 package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
-import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.Clef;
-import es.ua.dlsi.im3.core.score.DiatonicPitch;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
@@ -15,9 +13,9 @@ import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbolType;
 public class SemanticClef extends SemanticSymbolType<Clef> {
     private static final String SEMANTIC = "clef" + SEPSYMBOL;
 
-   /*public SemanticClef(NotationType notationType, ClefNote clefNote, int line) throws ImportException {
+    public SemanticClef(NotationType notationType, ClefNote clefNote, int line) throws ImportException {
         super(ImportFactories.createClef(notationType, clefNote.name(), line, 0)); //TODO octave
-    }*/
+    }
 
     public SemanticClef(Clef coreSymbol) {
         super(coreSymbol.clone());

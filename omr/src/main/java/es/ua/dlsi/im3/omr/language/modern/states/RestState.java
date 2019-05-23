@@ -22,7 +22,7 @@ public class RestState extends OMRState{
             Rest symbol = (Rest) token.getSymbol();
             SimpleRest rest = new SimpleRest(parseFigure(symbol.getRestFigures()), 0);
             try {
-                transduction.getStaff().addCoreSymbol(rest);
+                //transduction.getStaff().add(rest);
                 transduction.getLayer().add(rest);
             } catch (IM3Exception e) {
                 throw new IM3RuntimeException(e);

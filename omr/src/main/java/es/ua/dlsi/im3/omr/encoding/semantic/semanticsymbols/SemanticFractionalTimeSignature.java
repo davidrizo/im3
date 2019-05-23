@@ -9,9 +9,9 @@ import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
  */
 public class SemanticFractionalTimeSignature extends SemanticTimeSignature<FractionalTimeSignature> {
 
-   /* public SemanticFractionalTimeSignature(int num, int den) throws IM3Exception {
+    public SemanticFractionalTimeSignature(int num, int den) throws IM3Exception {
         super((FractionalTimeSignature) ImportFactories.processMeter(null, new Integer(num).toString(), new Integer(den).toString()));
-    }*/
+    }
 
     public SemanticFractionalTimeSignature(FractionalTimeSignature coreSymbol) {
         super(coreSymbol.clone());

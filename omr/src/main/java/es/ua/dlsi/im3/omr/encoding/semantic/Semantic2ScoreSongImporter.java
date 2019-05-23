@@ -79,7 +79,7 @@ public class Semantic2ScoreSongImporter implements IScoreSongImporter {
             try {
                 Clef clef = ImportFactories.createClef(notationType, shape, line, 0); //TODO octave change in semantic
                 clef.setTime(getTime());
-                scoreSong.getStaves().get(0).addCoreSymbol(clef);
+                scoreSong.getStaves().get(0).addElementWithoutLayer(clef);
             } catch (Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot create clef", e);
                 throw new GrammarParseRuntimeException(e);
@@ -109,7 +109,7 @@ public class Semantic2ScoreSongImporter implements IScoreSongImporter {
                     timeSignature = new FractionalTimeSignature(num, den);
                 }
                 timeSignature.setTime(getTime());
-                scoreSong.getStaves().get(0).addCoreSymbol(timeSignature);
+                scoreSong.getStaves().get(0).addElementWithoutLayer(timeSignature);
             } catch (IM3Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot create time signature", e);
                 throw new GrammarParseRuntimeException(e);
@@ -135,7 +135,7 @@ public class Semantic2ScoreSongImporter implements IScoreSongImporter {
                 Key key = new Key(pitchClass, mode);
                 KeySignature keySignature = new KeySignature(notationType, key);
                 keySignature.setTime(getTime());
-                scoreSong.getStaves().get(0).addCoreSymbol(keySignature);
+                scoreSong.getStaves().get(0).addElementWithoutLayer(keySignature);
             } catch (IM3Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot create key signature", e);
                 throw new GrammarParseRuntimeException(e);
@@ -164,7 +164,7 @@ public class Semantic2ScoreSongImporter implements IScoreSongImporter {
                     simpleNote.setGrace(true);
                 }
                 scoreSong.getStaves().get(0).getLayers().get(0).add(simpleNote);
-                scoreSong.getStaves().get(0).addCoreSymbol(simpleNote);
+                //scoreSong.getStaves().get(0).addElementWithoutLayer(simpleNote);
 
                 if (ctx.FERMATA() != null) {
                     scoreSong.getStaves().get(0).addFermata(simpleNote.getAtomFigure());
@@ -232,7 +232,7 @@ public class Semantic2ScoreSongImporter implements IScoreSongImporter {
                     throw new IM3Exception("Trying to tie to a rest from note " + tieFromNote);
                 }
                 scoreSong.getStaves().get(0).getLayers().get(0).add(simpleRest);
-                scoreSong.getStaves().get(0).addCoreSymbol(simpleRest);
+                //scoreSong.getStaves().get(0).addElementWithoutLayer(simpleRest);
 
                 if (ctx.FERMATA() != null) {
                     scoreSong.getStaves().get(0).addFermata(simpleRest.getAtomFigure());
@@ -267,7 +267,7 @@ public class Semantic2ScoreSongImporter implements IScoreSongImporter {
 
                 SimpleMultiMeasureRest simpleRest = new SimpleMultiMeasureRest(measureDuration, number);
                 scoreSong.getStaves().get(0).getLayers().get(0).add(simpleRest);
-                scoreSong.getStaves().get(0).addCoreSymbol(simpleRest);
+                //scoreSong.getStaves().get(0).addElementWithoutLayer(simpleRest);
 
             } catch (IM3Exception e) {
                 Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot add multirest", e);

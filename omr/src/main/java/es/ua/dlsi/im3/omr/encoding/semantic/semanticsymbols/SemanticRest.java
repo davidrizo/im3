@@ -24,12 +24,10 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
     boolean fermata;
 
 
-    /*public SemanticRest(Figures figures, int dots, boolean fermata, Integer tupletNumber) {
+    public SemanticRest(Figures figures, int dots, boolean fermata, Integer tupletNumber) {
         super(new SimpleRest(figures, dots));
-        this.fermata = fermata;
-        this.tupletNumber = tupletNumber; //TODO fermata and tuplets
-
-    }*/
+        this.fermata = fermata; //TODO Tuplet y fermata en el CoreSymbol
+    }
 
     public SemanticRest(SimpleRest coreSymbol) {
         super(coreSymbol.clone());

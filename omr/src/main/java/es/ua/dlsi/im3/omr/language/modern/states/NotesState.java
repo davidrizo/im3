@@ -43,7 +43,7 @@ public class NotesState extends OMRState {
             try {
                 Note value = ((Note) token.getSymbol());
                 SimpleNote note = new SimpleNote(parseFigure(value.getDurationSpecification()), 0, pitch);
-                transduction.getStaff().addCoreSymbol(note);
+                //20190522 transduction.getStaff().addElementWithoutLayer(note);
                 transduction.getLayer().add(note);
             } catch (IM3Exception e) {
                 throw new IM3RuntimeException(e);

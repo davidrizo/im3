@@ -46,7 +46,7 @@ public class NotesState extends OMRState {
             try {
                 Note value = ((Note) token.getSymbol());
                 SimpleNote note = new SimpleNote(parseFigure(value.getDurationSpecification()), 0, pitch);
-                transduction.getStaff().addCoreSymbol(note);
+                //transduction.getStaff().addElementWithoutLayer(note);
                 transduction.getLayer().add(note);
             } catch (IM3Exception e) {
                 throw new IM3RuntimeException(e);
@@ -59,7 +59,7 @@ public class NotesState extends OMRState {
                 Rest value = ((Rest) token.getSymbol());
                 Figures figures = convert(value.getRestFigures());
                 SimpleRest rest = new SimpleRest(figures, 0);
-                transduction.getStaff().addCoreSymbol(rest);
+                //transduction.getStaff().addCoreSymbol(rest);
                 transduction.getLayer().add(rest);
             } catch (IM3Exception e) {
                 throw new IM3RuntimeException(e);
@@ -78,7 +78,7 @@ public class NotesState extends OMRState {
             }
         } else if (token.getSymbol() instanceof Custos) {
             es.ua.dlsi.im3.core.score.Custos custos = new es.ua.dlsi.im3.core.score.Custos(transduction.getStaff(), transduction.getLayer().getDuration(), pitch.getPitchClass().getNoteName(), pitch.getOctave());
-            transduction.getStaff().addCoreSymbol(custos);
+            transduction.getStaff().addElementWithoutLayer(custos);
         } else {
             throw new IM3RuntimeException("Symbol should be note or dot");
         }

@@ -14,9 +14,9 @@ import java.util.List;
  * @autor drizo
  */
 public class SemanticMeterSignTimeSignature extends SemanticTimeSignature<SignTimeSignature> {
-    /*public SemanticMeterSignTimeSignature(MeterSigns meterSign) throws IM3Exception {
+    public SemanticMeterSignTimeSignature(MeterSigns meterSign) throws IM3Exception {
         super((SignTimeSignature) ImportFactories.processMeter(meterSign.toSemanticString(), null, null));
-    }*/
+    }
 
     public SemanticMeterSignTimeSignature(SignTimeSignature coreSymbol) {
         super(coreSymbol.clone());
@@ -48,6 +48,12 @@ public class SemanticMeterSignTimeSignature extends SemanticTimeSignature<SignTi
     }
 
     private String generateKernMeterSign() {
-        return coreSymbol.getSignString();
+        String str = coreSymbol.getSignString();
+        switch (str) {
+            case "C/":
+                return "C|";
+            default:
+                return str;
+        }
     }
 }

@@ -65,8 +65,9 @@ public class Semantic2IMCore {
             } else {
                 if (timedElementInStaff instanceof Atom) {
                     singleLayer.add((Atom) timedElementInStaff);
+                } else {
+                    staff.addElementWithoutLayer((IStaffElementWithoutLayer) timedElementInStaff);
                 }
-                staff.addCoreSymbol(timedElementInStaff);
             }
         }
 

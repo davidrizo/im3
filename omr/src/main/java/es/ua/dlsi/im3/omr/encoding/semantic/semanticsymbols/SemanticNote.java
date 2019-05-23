@@ -26,26 +26,17 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
     boolean trill;
     boolean graceNote;
 */
-    /**
-     * @deprecated
-     */
-    //boolean fermata;
-
-    /**
-     * @deprecated
-     */
-    // Integer tupletNumber;
 
     /**
      * tupletNumber If null, it is not a tuplet
      */
-    /*public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber) {
+    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber) {
         super(new SimpleNote(figures, dots, scientificPitch));
         this.fermata = fermata;
-        this.tupletNumber = tupletNumber;
         this.trill = trill;
-        this.graceNote = graceNote;
-    }*/
+        this.coreSymbol.setGrace(graceNote);
+        //TODO Tuplet y fermata en el CoreSymbol
+    }
 
     public SemanticNote(SimpleNote simpleNote) {
         super(simpleNote.clone());

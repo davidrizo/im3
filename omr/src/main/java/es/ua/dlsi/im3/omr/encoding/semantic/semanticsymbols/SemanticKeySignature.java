@@ -13,9 +13,9 @@ import java.util.List;
 public class SemanticKeySignature extends SemanticSymbolType<KeySignature> {
     private static final String SEMANTIC = "keySignature" + SEPSYMBOL;
 
-    /*public SemanticKeySignature(NotationType notationType, DiatonicPitch diatonicPitch, Accidentals accidentals, MajorMinor majorMinor) throws IM3Exception {
+    public SemanticKeySignature(NotationType notationType, DiatonicPitch diatonicPitch, Accidentals accidentals, MajorMinor majorMinor) throws IM3Exception {
         super(new es.ua.dlsi.im3.core.score.KeySignature(notationType, toKey(diatonicPitch, accidentals, majorMinor)));
-    }*/
+    }
 
     public SemanticKeySignature(KeySignature coreSymbol) {
         super(coreSymbol.clone());

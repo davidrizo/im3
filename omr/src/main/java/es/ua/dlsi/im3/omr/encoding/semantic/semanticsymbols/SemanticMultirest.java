@@ -16,9 +16,9 @@ import java.util.List;
 public class SemanticMultirest extends SemanticAtom<SimpleMultiMeasureRest> {
     private static final String SEMANTIC = "multirest" + SEPSYMBOL;
 
-    /*public SemanticMultirest(Time timeMeasureDuration, int restBars) {
+    public SemanticMultirest(Time timeMeasureDuration, int restBars) {
         super(new SimpleMultiMeasureRest(timeMeasureDuration, restBars));
-    }*/
+    }
 
     public SemanticMultirest(SimpleMultiMeasureRest coreSymbol) {
         super(coreSymbol.clone());

@@ -69,7 +69,7 @@ public class KeySignatureState extends OMRState {
                 } else {
                     key = new Key(accidentals.size(), Mode.UNKNOWN);
                 }
-                transduction.getStaff().addCoreSymbol(new KeySignature(transduction.getStaff().getNotationType(), key));
+                transduction.getStaff().addElementWithoutLayer(new KeySignature(transduction.getStaff().getNotationType(), key));
             } catch (IM3Exception e) {
                 throw new IM3RuntimeException(e);
             }
