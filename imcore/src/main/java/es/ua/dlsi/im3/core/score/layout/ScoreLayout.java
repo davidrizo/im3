@@ -7,7 +7,6 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
-import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
@@ -428,6 +427,6 @@ public abstract class ScoreLayout {
         if (this.scoreSong.getStaves().size() == 0) {
             this.scoreSong.addStaff(new Pentagram(this.scoreSong, "1", 1));
         }
-        this.scoreSong.getStaves().get(0).addCoreSymbol(clef);
+        this.scoreSong.getStaves().get(0).addElementWithoutLayer(clef);
     }
 }

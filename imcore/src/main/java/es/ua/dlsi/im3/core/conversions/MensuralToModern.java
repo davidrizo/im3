@@ -108,17 +108,17 @@ public class MensuralToModern {
                     modernStaff.addClef(convert((Clef) symbol));
                 }*/
                 if (modernClef == null) {
-                    modernStaff.addCoreSymbol(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
+                    modernStaff.addElementWithoutLayer(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
                 } else {
-                    modernStaff.addCoreSymbol(modernClef);
+                    modernStaff.addElementWithoutLayer(modernClef);
                 }
             } else if (symbol instanceof TimeSignature) {
                 activeTimeSignature = convert((TimeSignature) symbol);
                 pendingMensureDuration = activeTimeSignature.getDuration();
-                modernStaff.addCoreSymbol(activeTimeSignature);
+                modernStaff.addElementWithoutLayer(activeTimeSignature);
             } else if (symbol instanceof KeySignature) {
                 activeKeySignature = convert((KeySignature) symbol, interval);
-                modernStaff.addCoreSymbol(activeKeySignature);
+                modernStaff.addElementWithoutLayer(activeKeySignature);
             } else if (symbol instanceof MarkBarline) {
                 convert(modernStaff, modernLayer, (MarkBarline) symbol);
             } else if (symbol instanceof Atom) {
@@ -245,7 +245,7 @@ public class MensuralToModern {
                     throw new IM3Exception("Unsupported single figure atom type: " + singleFigureAtom.getClass());
                 }
                 modernLayer.add(outputAtom);
-                modernStaff.addCoreSymbol(outputAtom);
+                //220522 modernStaff.addTimedElement(outputAtom);
             }
             pendingDuration = pendingDuration.substract(outputFigureDuration);
             pendingMensureDuration = pendingMensureDuration.substract(outputFigureDuration);

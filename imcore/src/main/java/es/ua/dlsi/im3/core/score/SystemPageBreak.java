@@ -1,7 +1,5 @@
 package es.ua.dlsi.im3.core.score;
 
-import es.ua.dlsi.im3.core.IM3Exception;
-
 /**
  * An explicit page break
  */

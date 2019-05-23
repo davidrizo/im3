@@ -780,7 +780,16 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		defaultVoice = getOrCreateLayer("-1");
 	}*/
 
-	
+
+	/*private ScoreLayer getLayer(String number) throws IM3Exception {
+		ScoreLayer layer = voiceNumbers.get(number);
+		if (layer == null) {
+			throw new IM3Exception("Cannot find a voice with number '" + number + "'");
+		}
+		return layer;
+	}*/
+
+
 	private ScoreLayer getOrCreateLayer(Staff staff, String number) throws IM3Exception {
 		if (number == null) {
 			if (defaultVoice == null) {
@@ -896,7 +905,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
                     for (Staff staff : currentScorePart.getStaves()) {
                         SimpleMultiMeasureRest multiMeasureRest = new SimpleMultiMeasureRest(lastTimeSignature.getDuration(), multipleRest);
-                        staff.addCoreSymbol(multiMeasureRest);
+						//220522 staff.addTimedElement(multiMeasureRest);
 
                         // add to the first layer
                         ScoreLayer layer;
@@ -1064,6 +1073,13 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 			lastAtom = simpleNote;
 			lastAtomPitch = simpleNote.getAtomPitch();
+
+			Staff _staff = getOrCreateStaff(lastStaffNumber);
+			ScoreLayer _scoreLayer = getOrCreateLayer(_staff, lastVoiceNumber);
+			if (_scoreLayer.getStaff() != _staff) {
+				lastAtomPitch.setStaff(_staff); // staff change
+			}
+
 			lastAtomIndexInContainer = lastContainer.size();
 			lastContainer.add(lastAtom);
 
@@ -1264,7 +1280,16 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		return duration;
 	}*/
 
-	private Staff getOrCreateStaff(String number) throws ImportException, IM3Exception {
+	/*private Staff getStaff(String number) throws IM3Exception {
+		Staff staff = staffNumbers.get(number);
+		if (staff == null) {
+			throw new IM3Exception("Cannot find a staff with number '" + number + "'");
+		}
+		return staff;
+	}*/
+
+
+	private Staff getOrCreateStaff(String number) throws IM3Exception {
 	    if (noNumberStaffNumber != null) {
 	        number = noNumberStaffNumber;
         }
@@ -1472,9 +1497,9 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						}
 					} 
 					
-					layer.add(sv.getTime(), atom);
+					layer.insert(sv.getTime(), atom);
 					sv.addTime(atom.getDuration());
-					staff.addCoreSymbol(atom);
+					//220522 staff.addTimedElement(atom);
 				} else if (element instanceof MusicXMLForward) {
 					sv.addTime(element.getTime()); // actually, time is the duration
 				} else if (element instanceof MusicXMLBackup) {
@@ -1484,15 +1509,15 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					if (element instanceof KeySignature) {
 						KeySignature ks = (KeySignature) element;
 						ks.setTime(sv.getTime());
-						staff.addCoreSymbol(ks);
+						staff.addElementWithoutLayer(ks);
 					} else if (element instanceof TimeSignature) {
 						TimeSignature ks = (TimeSignature) element;
 						ks.setTime(sv.getTime());
-						staff.addCoreSymbol(ks);
+						staff.addElementWithoutLayer(ks);
 					} else if (element instanceof Clef) {
 						Clef ks = (Clef) element;
 						ks.setTime(sv.getTime());
-						staff.addCoreSymbol(ks);
+						staff.addElementWithoutLayer(ks);
 					}
 				}
 				//measureStartTime = sv.getTime();
@@ -1582,7 +1607,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			if (ts == null) {
 				Logger.getLogger(MusicXMLSAXScoreSongImporter.class.getName()).log(Level.WARNING, "No meter found, inserting 4/4");
 				ts = new FractionalTimeSignature(4, 4);
-				firstStaff.addCoreSymbol(ts);
+				firstStaff.addElementWithoutLayer(ts);
 			}
 			if (ks == null) {
 				Logger.getLogger(MusicXMLSAXScoreSongImporter.class.getName()).log(Level.WARNING, "No key signature found, inserting C Major");
@@ -1596,10 +1621,10 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			for (int i=1; i<song.getStaves().size(); i++) {
 				Staff staff = song.getStaves().get(i);
 				if (staff.getKeySignatureWithOnset(Time.TIME_ZERO) == null) {
-					staff.addCoreSymbol(ks);
+					staff.addElementWithoutLayer(ks);
 				}
 				if (staff.getTimeSignatureWithOnset(Time.TIME_ZERO) == null) {
-					staff.addCoreSymbol(ts);
+					staff.addElementWithoutLayer(ts);
 				}
 			}				
 			// check anacrusis

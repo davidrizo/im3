@@ -4,7 +4,7 @@ package es.ua.dlsi.im3.core.score;
  * When dot is a symbol that must be treated independtly of the figure (e.g. when a barline is located between the note
  * and the dot
  */
-public class DisplacedDot extends AttachmentInStaff<AtomPitch> implements ITimedElementInStaff {
+public class DisplacedDot extends AttachmentInStaff<AtomPitch> implements ITimedElementInStaff, IStaffElementWithoutLayer {
     public DisplacedDot(Time time, AtomPitch coreSymbol) {
         super(coreSymbol.getStaff(), time, coreSymbol);
     }

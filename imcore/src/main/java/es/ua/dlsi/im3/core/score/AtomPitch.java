@@ -5,9 +5,10 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import java.util.*;
 
 /**
+ * This class implements IStaffElementWithoutLayer for those pitches of a chord that are placed in a different staff than the Atom (the chord)
  * @author drizo
  */
-public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, IUniqueIDObject, ITimedSymbolWithConnectors {
+public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, IUniqueIDObject, ITimedSymbolWithConnectors, IStaffElementWithoutLayer {
 	/**
 	 * The atom figure is the one this pitch is attached to, that in turn will belong to an Atom
 	 */
@@ -134,8 +135,8 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 		return staffChange;
 	}
 
-	public final void setStaffChange(Staff staff) {
-		this.staffChange = staff;
+	public final void setStaffChange(Staff staff) throws IM3Exception {
+		this.setStaff(staff);
 	}
 
 	public final Accidentals getWrittenExplicitAccidental() {
@@ -164,8 +165,15 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 	}
 
 	@Override
-	public void setStaff(Staff staff) {
-		this.setStaffChange(staff);		
+	public void setStaff(Staff staff) throws IM3Exception {
+		if (staffChange != null && staffChange != staff) {
+			staffChange.remove(this);
+		}
+
+		this.staffChange = staff;
+		if (!staff.contains(this)) {
+			staff.addElementWithoutLayer(this);
+		}
 	}
 
 	@Override

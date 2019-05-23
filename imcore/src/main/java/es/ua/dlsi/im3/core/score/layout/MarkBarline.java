@@ -1,17 +1,14 @@
 package es.ua.dlsi.im3.core.score.layout;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
-import es.ua.dlsi.im3.core.score.ITimedElementWithSet;
-import es.ua.dlsi.im3.core.score.Staff;
-import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.*;
 
 import java.util.Objects;
 
 /**
  * Used (usually in mensural notation) as a mark
  */
-public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSet {
+public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSet, IStaffElementWithoutLayer {
     Staff staff;
     Time time;
 
@@ -45,7 +42,7 @@ public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSet {
             Staff prevStaff = staff;
             staff.remove(this);
             this.time = time.add(offset);
-            prevStaff.addCoreSymbol(this);
+            prevStaff.addElementWithoutLayer(this);
         }
     }
 

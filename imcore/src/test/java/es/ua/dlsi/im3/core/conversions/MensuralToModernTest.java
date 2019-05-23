@@ -45,15 +45,15 @@ public class MensuralToModernTest {
         TimeSignatureCommonTime ts = new TimeSignatureCommonTime(NotationType.eMensural);
         KeySignature ks = new KeySignature(NotationType.eMensural, new Key(PitchClasses.F, Mode.MAJOR));
         Clef clef = new ClefG2();
-        staff.addCoreSymbol(clef);
-        staff.addCoreSymbol(ks);
-        staff.addCoreSymbol(ts);
+        staff.addElementWithoutLayer(clef);
+        staff.addElementWithoutLayer(ks);
+        staff.addElementWithoutLayer(ts);
 
         SimpleRest r1 = new SimpleRest(Figures.MINIM, 0);
         add(staff, layer, r1);
         SimpleNote n0 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(DiatonicPitch.D, null, 5));
         add(staff, layer, n0);
-        staff.addCoreSymbol(new MarkBarline(n0.getOffset()));
+        staff.addElementWithoutLayer(new MarkBarline(n0.getOffset()));
         SimpleNote n1 = new SimpleNote(Figures.SEMIMINIM, 0, new ScientificPitch(DiatonicPitch.E, null, 5));
         add(staff, layer, n1);
         SimpleNote n2 = new SimpleNote(Figures.SEMIMINIM, 0, new ScientificPitch(DiatonicPitch.F, null, 5));
@@ -62,18 +62,18 @@ public class MensuralToModernTest {
         add(staff, layer, n3);
         SimpleNote n4 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(DiatonicPitch.F, Accidentals.SHARP, 5));
         add(staff, layer, n4);
-        staff.addCoreSymbol(new MarkBarline(n4.getOffset()));
+        staff.addElementWithoutLayer(new MarkBarline(n4.getOffset()));
         SimpleNote n5 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(DiatonicPitch.G, null, 5));
         add(staff, layer, n5);
         SimpleNote n6 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(DiatonicPitch.G, null, 5));
         add(staff, layer, n6);
-        staff.addCoreSymbol(new MarkBarline(n6.getOffset()));
+        staff.addElementWithoutLayer(new MarkBarline(n6.getOffset()));
         SimpleNote n7 = new SimpleNote(Figures.SEMIBREVE, 0, new ScientificPitch(DiatonicPitch.A, null, 5));
         add(staff, layer, n7);
-        staff.addCoreSymbol(new MarkBarline(n7.getOffset()));
+        staff.addElementWithoutLayer(new MarkBarline(n7.getOffset()));
         SimpleNote n8 = new SimpleNote(Figures.SEMIBREVE, 0, new ScientificPitch(DiatonicPitch.A, null, 5));
         add(staff, layer, n8);
-        staff.addCoreSymbol(new MarkBarline(n8.getOffset()));
+        staff.addElementWithoutLayer(new MarkBarline(n8.getOffset()));
 
         // convert into a new song
         MensuralToModern mensuralToModern = new MensuralToModern(new Clef[] {new ClefG2()});
@@ -121,7 +121,7 @@ public class MensuralToModernTest {
     }
 
     private void add(Staff staff, ScoreLayer layer, SingleFigureAtom atom) throws IM3Exception {
-        staff.addCoreSymbol(atom);
+        //220522 staff.addElementWithoutLayer(atom);
         layer.add(atom);
     }
 

@@ -274,7 +274,7 @@ public class MusicXMLExporter implements ISongExporter {
                 // TODO im2 : boolean F4Clef = part.needsF4Clef();
                 Iterator<Measure> itm = measures.iterator();
 
-                HashMap<Time, SystemBeginning> system_breaks = part.getPageSystemBeginnings().getSystemBeginnings();
+                TreeMap<Time, SystemBeginning> system_breaks = part.getPageSystemBeginnings().getSystemBeginnings();
 
                 while (itm.hasNext()) {
                     Measure measure = itm.next();
@@ -525,7 +525,7 @@ public class MusicXMLExporter implements ISongExporter {
      * @param systemBreaks
      * @throws IM3Exception
      */
-    private void openBar(boolean useFClef, Measure measure, ScorePart part, Tempo tempo, HashMap<Time, SystemBeginning> systemBreaks) throws IM3Exception {
+    private void openBar(boolean useFClef, Measure measure, ScorePart part, Tempo tempo, TreeMap<Time, SystemBeginning> systemBreaks) throws IM3Exception {
         // reset backup
         backup = 0;
         if (measure.getTime().equals(Time.TIME_ZERO) && measure.getSong().isAnacrusis())

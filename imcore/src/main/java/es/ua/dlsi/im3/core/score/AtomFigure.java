@@ -230,7 +230,7 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
 		return colored != null && colored.booleanValue();
 	}
 
-	public final void setColored(boolean colored) {
+	public final void setColored(Boolean colored) {
 		this.colored = colored;
 	}
 

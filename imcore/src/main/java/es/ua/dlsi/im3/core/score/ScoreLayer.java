@@ -5,7 +5,6 @@ import java.util.*;
 import org.apache.commons.lang3.math.Fraction;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.IM3RuntimeException;
 
 /**
  * This layer may contain atoms that belong to other staff
@@ -71,19 +70,32 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 	}
 
 	/**
-	 * It updates the onsets from the atom fromAtom (not included) to the end of
+	 * It updates the onsets from the atom fromAtom (included) to the end of
 	 * the list of atoms
 	 * 
 	 * @throws IM3Exception
 	 */
 	private void updateOnsets(int fromAtomIndex) {
-		// correct onset times
-		Atom lastAtom = atoms.get(fromAtomIndex);
-		for (int i = fromAtomIndex + 1; i < atoms.size(); i++) {
-			atoms.get(i).setTime(lastAtom.getOffset());
+		if (fromAtomIndex < atoms.size()) {
+			// correct onset times
+			if (fromAtomIndex == 0) {
+				atoms.get(0).setTime(Time.TIME_ZERO);
+			}
+			Atom lastAtom = atoms.get(fromAtomIndex);
+			Time lastTime = lastAtom.getEndTime();
+
+			for (int i = fromAtomIndex + 1; i < atoms.size(); i++) {
+				atoms.get(i).setTime(lastTime);
+				lastTime = atoms.get(i).getEndTime();
+			}
 		}
 	}
 
+	/**
+	 * It also adds it to the staff
+	 * @param atom
+	 * @throws IM3Exception
+	 */
 	public void add(Atom atom) throws IM3Exception {
 		//try {
 			atom.setTime(getDuration());
@@ -93,19 +105,72 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		}*/
         evaluateDurationBeforeAdd(atom, atoms.size());
 		atoms.add(atom);
+		if (staff == null) {
+			throw new IM3Exception("Cannot add atoms to a layer that does not belong to a staff");
+		}
+		staff.addTimedElementInStaff(atom);
 	}
-	
+
 	//TODO añadir con huecos, he quitado el VoiceGap
-	public void add(Time time, Atom atom) throws IM3Exception {
+	/**
+	 * @param time
+	 * @param atom
+	 * @return The ending time of the inserted atom
+	 * @throws IM3Exception
+	 */
+	public Time insert(Time time, Atom atom) throws IM3Exception {
 		atom.setTime(time);
 		atom.setLayer(this); //drizo 20180302
         evaluateDurationBeforeAdd(atom, atoms.size());
 		atoms.add(atom);
+		staff.addTimedElementInStaff(atom);
+		return atom.getEndTime();
 	}
 
+	//TODO test unitario
+	/**
+	 * It inserts here in the layer and in the owner staff
+	 * @param time
+	 * @param timedElementsInStaff
+	 * @return
+	 */
+	public Time insertAt(Time time, List<ITimedElementInStaff> timedElementsInStaff) throws IM3Exception {
+		//TODO esto se podría hacer más eficiente
+		List<Atom> atomsToAdd = new LinkedList<>();
+
+		Time currentTime = time;
+		for (ITimedElementInStaff timedElementInStaff : timedElementsInStaff) {
+			if (timedElementInStaff instanceof Atom) {
+				currentTime = insert(time, (Atom) timedElementInStaff);
+			} else {
+				if (timedElementInStaff instanceof ITimedElementWithSet) {
+					((ITimedElementWithSet) timedElementInStaff).setTime(currentTime);
+				}
+			}
+			staff.addTimedElementInStaff(timedElementInStaff);
+		}
+		return currentTime;
+	}
+
+	// TODO Test unitario
+	/*public void insertAt(Time time, List<Atom> newAtoms) throws IM3Exception {
+		// first find the last atom with time <= time argument
+		Atom last = null;
+		for (Atom atom: atoms) {
+			if (atom.getTime().compareTo(time) <= 0) {
+				last = atom;
+			} else {
+				break;
+			}
+		}
+		if (last != null) {
+			insertAfter(last, newAtoms);
+		} else {
+			insertAt(0, newAtoms);
+		}	*/
 	
 	// TODO Test unitario
-	public void addAfter(Atom referenceAtom, Atom newAtom) throws IM3Exception {
+	public void insertAfter(Atom referenceAtom, Atom newAtom) throws IM3Exception {
 		/*int index = atoms.indexOf(referenceAtom);
 		if (index < 0) {
 			throw new IM3Exception("Cannot find referenced atom");
@@ -115,22 +180,26 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 
 		// correct onset times
 		updateOnsets(index + 1);*/
-		addAfter(referenceAtom, Arrays.asList(newAtom));
+		insertAfter(referenceAtom, Arrays.asList(newAtom));
 	}
 
-	public void addAfter(Atom referenceAtom, List<Atom> newAtoms) throws IM3Exception {
+	private void insertAt(int index, List<Atom> newAtoms) throws IM3Exception {
+		for (Atom newAtom: newAtoms) {
+			evaluateDurationBeforeAdd(newAtom, index + 1);
+			atoms.add(index + 1, newAtom);
+			index = index+1;
+		}
+		// correct onset times
+		updateOnsets(index);
+	}
+
+	public void insertAfter(Atom referenceAtom, List<Atom> newAtoms) throws IM3Exception {
 		if (!newAtoms.isEmpty()) {
 			int index = atoms.indexOf(referenceAtom);
 			if (index < 0) {
 				throw new IM3Exception("Cannot find referenced atom");
 			}
-			for (Atom newAtom: newAtoms) {
-				evaluateDurationBeforeAdd(newAtom, index + 1);
-				atoms.add(index + 1, newAtom);
-				index = index+1;
-			}
-			// correct onset times
-			updateOnsets(index);
+			insertAt(index, newAtoms);
 		}
 	}
 
@@ -194,14 +263,32 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 					throw new IM3Exception("Cannot find referenced atom");
 				}
 				atoms.remove(index);
+				staff.remove(atom);
 				minIndex = Math.min(index, minIndex);
 			}
 		}
-		if (atoms.size() > minIndex) { // if not last
+		if (atoms.size() >= minIndex) { // if not last
 			updateOnsets(minIndex);
 		}
 	}
-	
+
+	//TODO test unitario
+	/**
+	 * It removes all items in the range [fromTime, toTime[
+	 * @param fromTime Included
+	 * @param toTime Not included
+	 */
+	public void remove(Time fromTime, Time toTime) throws IM3Exception {
+		Segment segment = new Segment(fromTime, toTime);
+		// first locate items
+		LinkedList<Atom> atomsToRemove = new LinkedList<>();
+		for (Atom atom: atoms) {
+			if (segment.contains(atom.getTime())) {
+				atomsToRemove.add(atom);
+			}
+		}
+		remove(atomsToRemove);
+	}
 
 	/**
 	 * Sequence of ordered notes (first time, next pitch) that should be played
@@ -390,7 +477,6 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		return getAtomsWithOnsetWithin(bar.getTime(), bar.getEndTime());
 	}
 
-	
 
 	/**
 	 * 

@@ -260,6 +260,10 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject, IStaff
 		return layers.values();
 	}
 
+	public boolean hasLayers() {
+		return layers != null && !layers.isEmpty();
+	}
+
 	/**
 	 * Conveniency method, this part is supposed to have just a voice. If not an
 	 * exception is thrown
@@ -457,4 +461,11 @@ public class ScorePart implements Comparable<ScorePart>, IUniqueIDObject, IStaff
         this.scoreSong = song;
     }
 
+    public void addSystemBeginning(SystemBeginning sb0) throws IM3Exception {
+    	pageSystemBeginnings.addSystemBeginning(sb0);
+    }
+
+    public void addPageBeginning(PageBeginning pb0) throws IM3Exception {
+		pageSystemBeginnings.addPageBeginning(pb0);
+	}
 }

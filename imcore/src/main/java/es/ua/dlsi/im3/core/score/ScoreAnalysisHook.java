@@ -22,7 +22,7 @@ package es.ua.dlsi.im3.core.score;
  * @author drizo
  * @param 
  */
-public class ScoreAnalysisHook extends StaffTimedPlaceHolder {
+public class ScoreAnalysisHook extends StaffTimedPlaceHolder implements IStaffElementWithoutLayer {
 
 	public ScoreAnalysisHook(Staff staff, Time time) {
 		super(staff, time);

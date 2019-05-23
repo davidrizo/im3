@@ -43,7 +43,7 @@ public class KeySignatureTest {
     private void checkPositionsOfAccitentals(Clef clef, Key key, PositionInStaff[] expected) throws IM3Exception {
         Pentagram p = new Pentagram(new ScoreSong(), "1", 1);
         clef.setTime(Time.TIME_ZERO);
-        p.addCoreSymbol(clef);
+        p.addElementWithoutLayer(clef);
         KeySignature ks = new KeySignature(NotationType.eModern, key);
         ks.setStaff(p);
         PositionInStaff[] positions = ks.computePositionsOfAccidentals();

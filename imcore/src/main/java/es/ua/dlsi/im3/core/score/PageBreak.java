@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score;
 
 /**
+ * @deprecated Use PageSystemBeginning
  * An explicit page break
  */
 public class PageBreak implements ITimedElement {

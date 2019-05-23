@@ -371,6 +371,19 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		return c.getValue();
 	}
 
+
+	public TimeSignature getRunningTimeSignatureOrNullAt(Time time) {
+		// The treeset with all clefs ordered by onsets is built after
+		// computeOnsets
+		Map.Entry<Time, TimeSignature> c = this.timeSignatures.floorEntry(time);
+		if (c == null) {
+			return null;
+		} else {
+			return c.getValue();
+		}
+	}
+
+
 	public KeySignature getRunningKeySignatureAt(Time time) throws IM3Exception {
 		// The treeset with all clefs ordered by onsets is built after
 		// computeOnsets
@@ -456,7 +469,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	}
 
 
-	public void addCoreSymbol(ITimedElementInStaff element) throws IM3Exception {
+	public void addElementWithoutLayer(IStaffElementWithoutLayer element) throws IM3Exception {
 		//TODO Algo más elegante
 		if (element instanceof Clef) {
 			addClef((Clef) element);
@@ -478,11 +491,43 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			addMarkBarline((MarkBarline) element);
 		}
 
-		element.setStaff(this);
-		this.coreSymbols.add(element);
+		if (element.getStaff() != this) {
+			element.setStaff(this);
+		}
+		if (!contains(element)) {
+			this.coreSymbols.add(element);
+		}
 	}
 
-	public void remove(ITimedElementInStaff element) {
+	public boolean contains(ITimedElementInStaff element) {
+		return this.coreSymbols.contains(element);
+	}
+
+
+	/**
+	 * This must be used from this class
+	 * @param atom
+	 */
+	private void addElementFromLayer(IStaffElementInLayer atom) {
+		this.coreSymbols.add(atom);
+	}
+
+	/**
+	 * Package visibility because the timed elements with duration must be added to the layer, and the layer will add it here
+	 * @param timedElementInStaff
+	 * @throws IM3Exception
+	 */
+	void addTimedElementInStaff(ITimedElementInStaff timedElementInStaff) throws IM3Exception {
+		if (timedElementInStaff instanceof IStaffElementInLayer) {
+			this.addElementFromLayer((IStaffElementInLayer) timedElementInStaff);
+		} else if (timedElementInStaff instanceof IStaffElementWithoutLayer) {
+			this.addElementWithoutLayer((IStaffElementWithoutLayer) timedElementInStaff);
+		} else {
+			throw new IM3Exception("Cannot add this kind of symbol: " + timedElementInStaff.getClass().getName());
+		}
+	}
+
+	public void remove(ITimedElementInStaff element) throws IM3Exception {
 		if (coreSymbols.remove(element)) { // if not removed yet
 			element.setStaff(null);
 		}
@@ -510,6 +555,31 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		if (element instanceof Fermate) {
 			fermate.remove(element);
 		}
+	}
+
+	//TODO test unitario
+	/**
+	 * It removes all items in the range [fromTime, toTime[
+	 * @param fromTime Included
+	 * @param toTime Not included
+	 */
+	public void remove(Time fromTime, Time toTime)  {
+		Segment segment = new Segment(fromTime, toTime);
+
+		LinkedList<ITimedElementInStaff> symbolsToRemove = new LinkedList<>();
+
+		for (ITimedElementInStaff coreSymbol: coreSymbols) {
+			if (segment.contains(coreSymbol.getTime())) {
+				symbolsToRemove.add(coreSymbol);
+			}
+		}
+
+		clefs.subMap(fromTime, true, toTime, false).forEach((time, clef) -> clefs.remove(time));
+		custos.subMap(fromTime, true, toTime, false).forEach((time, c) -> custos.remove(time));
+		keySignatures.subMap(fromTime, true, toTime, false).forEach((time, c) -> keySignatures.remove(time));
+		timeSignatures.subMap(fromTime, true, toTime, false).forEach((time, c) -> timeSignatures.remove(time));
+		markBarlines.subMap(fromTime, true, toTime, false).forEach((time, c) -> markBarlines.remove(time));
+		fermate.subMap(fromTime, true, toTime, false).forEach((time, c) -> fermate.remove(time));
 	}
 
 	// ----------------------------------------------------------------------
@@ -1027,5 +1097,6 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         }
         this.fermate.put(newTime, oldFermate);
     }
+
 
 }

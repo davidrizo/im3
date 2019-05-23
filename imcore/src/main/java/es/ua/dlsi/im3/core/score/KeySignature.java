@@ -23,16 +23,13 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 import es.ua.dlsi.im3.core.IM3Exception;
-import es.ua.dlsi.im3.core.score.layout.Coordinate;
-import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
-import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Accidental;
 
 
 /**
  *
  * @author drizo
  */
-public class KeySignature implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSet, IUniqueIDObject {
+public class KeySignature implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSet, IUniqueIDObject, IStaffElementWithoutLayer {
 	List<KeySignatureAccidentalElement> accidentals;
 	private Accidentals accidental;
     NotationType notationType;
@@ -255,7 +252,7 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 			this.time = time.add(offset);
 		}
 
-        staff.addCoreSymbol(this);
+        staff.addTimedElementInStaff(this);
     }
     public TreeMap<DiatonicPitch, PitchClass> getAlteredDiatonicPitchSet() {
         return alteredDiatonicPitchSet;

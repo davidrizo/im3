@@ -5,7 +5,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import java.util.Collection;
 
 
-public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbolWithConnectors {
+public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbolWithConnectors, IStaffElementWithoutLayer {
 	Time time;
 	private Staff staff;
 	private String ID;

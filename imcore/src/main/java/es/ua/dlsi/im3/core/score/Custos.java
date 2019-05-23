@@ -2,7 +2,7 @@ package es.ua.dlsi.im3.core.score;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
-public class Custos implements ITimedElementInStaff, ITimedElementWithSet {
+public class Custos implements ITimedElementInStaff, ITimedElementWithSet, IStaffElementWithoutLayer {
     DiatonicPitch diatonicPitch;
     Staff staff;
     Time time;
@@ -50,7 +50,7 @@ public class Custos implements ITimedElementInStaff, ITimedElementWithSet {
             this.time = time.add(offset);
         }
 
-        prevStaff.addCoreSymbol(this);
+        prevStaff.addTimedElementInStaff(this);
     }
     public DiatonicPitch getDiatonicPitch() {
         return diatonicPitch;

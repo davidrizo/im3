@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.core.score;
 
 /**
+ * @deprecated Use SystemBeginning
  * An explicit system break applied to the whole score
  */
 public class SystemBreak implements ITimedElement {

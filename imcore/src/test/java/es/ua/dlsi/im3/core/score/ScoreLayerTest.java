@@ -1,11 +1,9 @@
 package es.ua.dlsi.im3.core.score;
 
+import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.TreeSet;
 
 import static org.junit.Assert.*;
 
@@ -20,18 +18,18 @@ public class ScoreLayerTest {
         song.addMeasure(Time.TIME_ZERO, measure);
         measure.setEndTime(ts.getDuration()); // TODO: 23/9/17 ¿No se debería poner sólo? Hay que verlo y que no choque con los importadores
 
-        staff.addCoreSymbol(ts);
+        staff.addElementWithoutLayer(ts);
         song.addStaff(staff);
         ScoreLayer layer = song.addPart().addScoreLayer();
         staff.addLayer(layer);
         SimpleNote n0 = new SimpleNote(Figures.QUARTER, 0, new ScientificPitch(PitchClasses.A, 4));
-        staff.addCoreSymbol(n0);
+        //20190522 staff.addElementWithoutLayer(n0);
         layer.add(n0);
         SimpleNote n1 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.B, 4));
-        staff.addCoreSymbol(n1);
+        //20190522 staff.addElementWithoutLayer(n1);
         layer.add(n1);
         SimpleNote n2 = new SimpleNote(Figures.EIGHTH, 0, new ScientificPitch(PitchClasses.C, 5));
-        staff.addCoreSymbol(n2);
+        //20190522 staff.addElementWithoutLayer(n2);
         layer.add(n2);
 
         assertEquals(3, layer.size());
@@ -48,5 +46,4 @@ public class ScoreLayerTest {
         assertEquals(3, layer.getAtomFigures().size());
         assertEquals(3, layer.getAtomPitches().size());
     }
-
 }

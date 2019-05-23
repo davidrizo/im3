@@ -7,8 +7,6 @@ package es.ua.dlsi.im3.core.score;
 
 //TODO Unificar esto con Tempo de Played. Hacer algo parecido con Key y Meter
 
-import es.ua.dlsi.im3.core.IM3Exception;
-
 /**
  * @author david
  */

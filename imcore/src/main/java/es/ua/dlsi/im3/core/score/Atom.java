@@ -17,7 +17,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  * structure are protected
  * @author drizo
  */
-public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedElementInStaff {
+public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedElementInStaff, IStaffElementInLayer {
 	private Time onset;
 	/**
 	 * It is usually set from the figure(s) in the atom, but it may be different in the case of the
@@ -76,7 +76,7 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
     }
 
 	@Override
-	public void setStaff(Staff staff) {
+	public void setStaff(Staff staff) throws IM3Exception {
 	    if (this.staff != null && this.staff != staff) {
 	        this.staff.remove(this);
         }
@@ -94,6 +94,7 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 		}
 	}
 
+	@Override
 	public final Time getDuration() {
 		return duration;
 	}
@@ -103,6 +104,7 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 	}
 
 	/**
+	 * @deprecated Use getEndTime()
 	 * Onset + duration
 	 * @return
 	 * @throws IM3Exception 
@@ -277,6 +279,10 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
     // TODO: 16/4/18 Test unitario
     public void move(Time offset) {
 	    setTime(getTime().add(offset));
+    }
+
+    public Time getEndTime() {
+		return getTime().add(getDuration());
     }
 }
 

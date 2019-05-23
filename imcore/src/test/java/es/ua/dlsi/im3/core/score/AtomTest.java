@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import org.apache.commons.lang3.math.Fraction;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,8 +34,11 @@ public class AtomTest {
 
 	@Test
 	public void testSimpleConstructsInVoice() throws IM3Exception {
-		ScorePart part = new ScorePart(new ScoreSong(), 1);
+		ScoreSong song = new ScoreSong();
+		ScorePart part = song.addPart();
+		Staff staff = new Pentagram(song, "1", 1);
 		ScoreLayer voice = new ScoreLayer(part, 1, new DurationEvaluator());
+		staff.addLayer(voice);
 		
 		expectedPitches = new ArrayList<>();
 		expectedOnsets = new ArrayList<>();

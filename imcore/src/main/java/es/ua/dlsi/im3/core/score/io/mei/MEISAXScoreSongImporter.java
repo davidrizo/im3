@@ -372,7 +372,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
         } else {
             lastVoice.add(atom); // sets the time
             //lastChord.setTime(getCurrentTime());
-            elementStaff.addCoreSymbol(atom); // if note it will be inserted as staff change in other place
+			//220522 elementStaff.addCoreSymbol(atom); // if note it will be inserted as staff change in other place
             //lastChord.setStaff(lastStaff); in addCoreSymbol
             if (atom instanceof SingleFigureAtom && !(atom instanceof SimpleMultiMeasureRest)) {
                 processPossibleMensuralImperfection(attributesMap, ((SingleFigureAtom)atom).getAtomFigure());
@@ -574,7 +574,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						if (ts == null) {
 							throw new ImportException("@mensur does not contain any parameter (modusmaior, tempus...)");
 						}
-						lastStaff.addCoreSymbol(ts);
+						System.out.println("Last staff " + lastStaff.getName() + " " + ts + " at time " + ts.getTime());
+						lastStaff.addElementWithoutLayer(ts);
 						break;
 					case "measure":
 						staffCount = 0;
@@ -623,7 +624,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						//updateTimesGivenMeasure();
 						Time markTime = getCurrentTime();
 						MarkBarline barline = new MarkBarline(markTime);
-						lastStaff.addCoreSymbol(barline);
+						lastStaff.addElementWithoutLayer(barline);
 						break;
 					case "staff":
 					/*if (updateMeasure) {
@@ -752,10 +753,6 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							}
 							lastAtomPitch = lastChord.addPitch(sp);
 							setXMLID(xmlid, lastAtomPitch);
-							if (elementStaff != lastStaff) {
-								lastAtomPitch.setStaffChange(elementStaff);
-								elementStaff.addCoreSymbol(lastAtomPitch);
-							}
 							// TODO: 18/10/17 Comprobar grace notes acorde
 							//lastAtomPitch.setWrittenExplicitAccidental(writtenAccidental);
 						} else {
@@ -785,6 +782,11 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							//	currentBeam.addNoteOrChord(currentNote);
 							//}
 
+						}
+
+						if (elementStaff != lastStaff) {
+							elementStaff.addElementWithoutLayer(lastAtomPitch); // it sets the setStaffChange
+							//lastAtomPitch.setStaffChange(elementStaff); // order is important
 						}
 
 						if (lastCustosWithoutPitch != null) {
@@ -966,7 +968,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							lastCustosWithoutPitch = custos;
 						}
 
-						lastStaff.addCoreSymbol(custos);
+						lastStaff.addElementWithoutLayer(custos);
 						break;
 					case "tie":
 						staffNumber = getOptionalAttribute(attributesMap, "staff");
@@ -1201,7 +1203,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		if (staff.getTimeSignatureWithOnset(time) == null) {
 			ts.setTime(time);
 			song.getIdManager().assignID(xmlid, ts);
-			staff.addCoreSymbol(ts);
+			staff.addElementWithoutLayer(ts);
 		} 
 	}
 
@@ -1403,7 +1405,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		lastClef = ImportFactories.createClef(lastStaff.getNotationType(), clefShape, 
 				Integer.parseInt(clefLine), octaveChange);
 		lastClef.setTime(time);
-		lastStaff.addCoreSymbol(lastClef);
+		lastStaff.addElementWithoutLayer(lastClef);
 		return lastClef;
 	}
 
@@ -1481,7 +1483,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		if (staff.getKeySignatureWithOnset(time) == null) {
 			ts.setTime(time);
 			song.getIdManager().assignID(xmlid, ts);
-			staff.addCoreSymbol(ts);
+			staff.addElementWithoutLayer(ts);
 		} 
 	}
 
@@ -2195,7 +2197,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			//placeHolder = new StaffTimedPlaceHolder(currentScorePart.getElements().size(), ts);
 			placeHolder = new StaffTimedPlaceHolder(staff, ts);
 			//FRACCIONES placeHolder.setLayer(layer);
-			staff.addCoreSymbol(placeHolder);
+			staff.addElementWithoutLayer(placeHolder);
 			//placeHolder.setStaff(staff);
 			//currentScorePart.addElement(placeHolder);
 		}

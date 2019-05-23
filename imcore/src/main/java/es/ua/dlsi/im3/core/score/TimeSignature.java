@@ -23,7 +23,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  *
  * @author drizo
  */
-public abstract class TimeSignature implements INotationTypeDependant, ITimedElementInStaff, IUniqueIDObject {
+public abstract class TimeSignature implements INotationTypeDependant, ITimedElementInStaff, IUniqueIDObject, IStaffElementWithoutLayer {
 	protected Time time;
 	private String ID;	
 	protected NotationType notationType;
@@ -68,7 +68,7 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
 			this.time = time.add(offset);
 		}
 
-        prevStaff.addCoreSymbol(this);
+        prevStaff.addTimedElementInStaff(this);
     }
 	@Override
 	public String __getID() {

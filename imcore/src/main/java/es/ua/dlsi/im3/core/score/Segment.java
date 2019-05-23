@@ -173,7 +173,12 @@ public class Segment implements Cloneable {
 		s.setName(name);
 		return s;		
 	}
-	
+
+	/**
+	 *
+	 * @param time
+	 * @return True if time is in the range [from, to[
+	 */
 	public boolean contains(Time time) {
 		return time.compareTo(this.getFrom())>=0  && time.compareTo(this.getTo()) < 0;
 	}
