@@ -324,7 +324,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         SimpleRest rest = new SimpleRest(figure, 0);
         rest.setStaff(staff);
         layer.add(rest);
-        staff.addCoreSymbol(rest);
+        //20190522 staff.addCoreSymbol(rest);
         lastFigureAtom = rest;
     }
 
@@ -386,7 +386,7 @@ public class CMMESongImporter implements IScoreSongImporter {
                 layer.remove(lastFigureAtom);
                 staff.remove(lastFigureAtom);
                 layer.add(chord);
-                staff.addCoreSymbol(chord);
+                //20190522 staff.addCoreSymbol(chord);
                 lastFigureAtom = chord;
             } else {
                 // if no other layer exists put there
@@ -420,7 +420,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         } else {
             layer.add(note);
         }
-        staff.addCoreSymbol(note);
+        //20190522 staff.addCoreSymbol(note);
         return note;
     }
 
@@ -451,7 +451,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         }
 
         ts.setTime(layer.getDuration());
-        staff.addTimeSignature(ts);
+        staff.addElementWithoutLayer(ts);
     }
 
     private void importClef(Staff staff, ScoreLayer layer, ClefEvent event) throws ImportException, IM3Exception {
@@ -511,7 +511,7 @@ public class CMMESongImporter implements IScoreSongImporter {
             throw new ImportException("Unsupported clef: " + event);
         }
         clef.setTime(layer.getDuration());
-        staff.addClef(clef);
+        staff.addElementWithoutLayer(clef);
     }
     /*private Accidentals convertAccDistance(int accDistance) throws ImportException {
         switch (accDistance) {
@@ -529,7 +529,7 @@ public class CMMESongImporter implements IScoreSongImporter {
         try {
             KeySignature ks = new KeySignature(NotationType.eMensural, new Key(mks.getAccDistance(), Mode.UNKNOWN));
             ks.setTime(layer.getDuration());
-            staff.addKeySignature(ks);
+            staff.addElementWithoutLayer(ks);
         } catch (IM3Exception e) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot convert key signature", e);
         }

@@ -52,6 +52,8 @@ public class StaffTest {
         test("ClefC4, C", pentagram, new ClefC4(), PositionsInStaff.LINE_4, DiatonicPitch.C, 4);
         test("ClefC5, C", pentagram, new ClefC5(), PositionsInStaff.LINE_5, DiatonicPitch.C, 4);
 
+        test("ClefG3", pentagram, new ClefG3(), PositionsInStaff.SPACE_0, DiatonicPitch.B, 3);
+
     }
 
     @Test

@@ -14,7 +14,7 @@ public class SemanticClef extends SemanticSymbolType<Clef> {
     private static final String SEMANTIC = "clef" + SEPSYMBOL;
 
     public SemanticClef(NotationType notationType, ClefNote clefNote, int line) throws ImportException {
-        super(ImportFactories.createClef(notationType, clefNote.name(), line, 0)); //TODO octave
+        super(ImportFactories.createClef(notationType, clefNote == ClefNote.Fpetrucci ? ClefNote.F.name(): clefNote.name(), line, 0)); //TODO octave
     }
 
     public SemanticClef(Clef coreSymbol) {
