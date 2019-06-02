@@ -693,7 +693,11 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         int lineSpace = positionInStaff.getLineSpace();
         int octaveDifference = (lineSpace + intervalWithC) / 7;
 
-        int diatonicPitchDifference = lineSpace % 7; // TODO: 5/10/17 ¿Si es negativo?
+        int diatonicPitchDifference = lineSpace % 7;
+		if (diatonicPitchDifference < 0) {
+			diatonicPitchDifference = diatonicPitchDifference + 7;
+			octaveDifference--;
+		}
 
         DiatonicPitch[] noteNames = DiatonicPitch.getJustNoteNames();
         DiatonicPitch diatonicPitch = noteNames[(diatonicPitchDifference + bottomClefNoteName.getOrder())%7];
