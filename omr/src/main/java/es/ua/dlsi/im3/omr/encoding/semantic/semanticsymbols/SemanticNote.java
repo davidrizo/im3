@@ -29,12 +29,18 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
 
     /**
      * tupletNumber If null, it is not a tuplet
+     * @param scientificPitch It contains the actual accidental, the one that must be played
+     * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
      */
-    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber) {
+    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored) {
         super(new SimpleNote(figures, dots, scientificPitch));
         this.fermata = fermata;
         this.trill = trill;
         this.coreSymbol.setGrace(graceNote);
+        if (visualAccidental != null) {
+            this.coreSymbol.setWrittenExplicitAccidental(visualAccidental);
+        }
+        this.coreSymbol.getAtomFigure().setColored(colored);
         //TODO Tuplet y fermata en el CoreSymbol
     }
 
