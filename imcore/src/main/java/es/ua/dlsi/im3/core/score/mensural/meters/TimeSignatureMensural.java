@@ -71,7 +71,6 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
         );
     }
 
-
     public final Perfection getProlatio() {
 		return prolatio;
 	}

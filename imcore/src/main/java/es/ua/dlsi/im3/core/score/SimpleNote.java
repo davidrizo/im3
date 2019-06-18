@@ -33,6 +33,7 @@ public class SimpleNote extends SingleFigureAtom {
 		} else {
 			this.getAtomFigure().setComputedMensuralPerfection(simpleNote.getAtomFigure().getMensuralPerfection(), simpleNote.getAtomFigure().getPerfectionRuleApplied());
 		}
+		this.setWrittenExplicitAccidental(simpleNote.getWrittenExplicitAccidental());
 		//TODO otros parámetros?
 	}
 
@@ -73,6 +74,10 @@ public class SimpleNote extends SingleFigureAtom {
 	 */
 	public void setWrittenExplicitAccidental(Accidentals writtenExplicitAccidental)  {
 		atomPitch.setWrittenExplicitAccidental(writtenExplicitAccidental);		
+	}
+
+	public Accidentals getWrittenExplicitAccidental() {
+		return atomPitch.getWrittenExplicitAccidental();
 	}
 
 	/**

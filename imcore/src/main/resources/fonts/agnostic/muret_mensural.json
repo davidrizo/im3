@@ -302,6 +302,46 @@
     "note.beamedBoth2_down" : {
       "defaultPositionInStaff": "L3",
         "codepoint": "U+F0B5"
-    }    
+    },
+    "digit.0" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E080"
+    },
+    "digit.1" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E081"
+    },
+    "digit.2" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E082"
+    },
+    "digit.3" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E083"
+    },
+    "digit.4" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E084"
+    },
+    "digit.5" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E085"
+    },
+    "digit.6" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E086"
+    },
+    "digit.7" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E087"
+    },
+    "digit.8" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E088"
+    },
+    "digit.9" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E089"
+    }
 }
 
