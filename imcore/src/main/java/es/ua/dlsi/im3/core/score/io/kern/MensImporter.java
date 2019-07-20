@@ -31,8 +31,7 @@ import java.util.logging.Logger;
  *
  * @author drizo
  */
-public class
-MensImporter {
+public class MensImporter {
     private boolean debug;
 
     public static class Loader extends mensParserBaseListener {

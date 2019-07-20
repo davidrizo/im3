@@ -1138,6 +1138,7 @@ public class MEISongExporter implements ISongExporter {
 			throw new ExportException("Durational symbol has not a figure: " + atomFigure);
 		}
 		params.add(getFigureMEIDur(atomFigure.getFigure()));
+
 		if (atomFigure.getDots() > 0) {
 			params.add("dots");
 			params.add(Integer.toString(atomFigure.getDots()));
@@ -1238,6 +1239,7 @@ public class MEISongExporter implements ISongExporter {
 					throw new UnsupportedOperationException("Unsupported yet: " + atom.getClass());
 				}
 			}
+			processMensuralDots(sb, tabs, (SingleFigureAtom) atom);
 		} else if (atom instanceof SimpleTuplet) {
 				SimpleTuplet tuplet = (SimpleTuplet) atom;
 				params.add("num");
@@ -1261,7 +1263,21 @@ public class MEISongExporter implements ISongExporter {
 		
 	}
 
-    private void closeBeam(int tabs) {
+	private void processMensuralDots(StringBuilder sb, int tabs, SingleFigureAtom atom) {
+		AtomFigure atomFigure = atom.getAtomFigure();
+		if (atom.getStaff().getNotationType() == NotationType.eMensural) {
+			if (atomFigure.getDots() > 0) {
+				for (int i=0; i<atomFigure.getDots(); i++) {
+					XMLExporterHelper.startEnd(sb, tabs, "dot"); // it must be added to be printed
+				}
+			}
+		}
+		if (atom.getAtomFigure().isFollowedByMensuralDivisionDot()) {
+			XMLExporterHelper.startEnd(sb, tabs, "dot", "form", "div"); // division dot
+		}
+	}
+
+	private void closeBeam(int tabs) {
         if (!lastBeam.isComputed()) {
             XMLExporterHelper.end(sb, tabs, "beam");
         }

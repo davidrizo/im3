@@ -23,6 +23,7 @@
         <module>muret</module>
         <module>grammardevelopment</module>
         <module>im3ws</module>
+        <module>virema</module>
     </modules>
 
     <properties>

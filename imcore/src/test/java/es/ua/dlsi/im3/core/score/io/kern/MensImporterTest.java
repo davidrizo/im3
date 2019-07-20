@@ -58,7 +58,7 @@ public class MensImporterTest {
         MensImporter importer = new MensImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/kern/mens_grammar_test.krn");
         HumdrumMatrix humdrumMatrix = importer.importMens(file);
-        assertEquals("Size", 24, humdrumMatrix.getMatrix().size());
+        assertEquals("Size", 25, humdrumMatrix.getMatrix().size());
         int row = 0;
         assertEquals("**mens", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         row++;
@@ -147,10 +147,16 @@ public class MensImporterTest {
         row++;
 
         assertEquals("Mi:E", humdrumMatrix.get(row, 0).getHumdrumEncoding());
-        SimpleNote simpleNote2 = new SimpleNote(Figures.MINIM, 0, new ScientificPitch(PitchClasses.E, 3));
-        simpleNote2.getAtomFigure().setFollowedByMensuralDivisionDot(true);
-        simpleNote2.getAtomFigure().setExplicitMensuralPerfection(Perfection.imperfectum);
-        assertEquals("Semibrevis impertect A with division dot", simpleNote2, humdrumMatrix.get(row, 0).getParsedObject());
+        assertTrue("Minima imperfect", humdrumMatrix.get(row, 0).getParsedObject() instanceof SimpleNote);
+        SimpleNote simpleNote2 = (SimpleNote) humdrumMatrix.get(row, 0).getParsedObject();
+        assertTrue("Minima imperfect", simpleNote2.getAtomFigure().isExplicitMensuralPerfection());
+        assertTrue("Minima imperfect with a division dot", simpleNote2.getAtomFigure().isFollowedByMensuralDivisionDot());
+        row++;
+
+        assertEquals("s:ff", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        assertTrue("Semibreve", humdrumMatrix.get(row, 0).getParsedObject() instanceof SimpleNote);
+        SimpleNote simpleNote3 = (SimpleNote) humdrumMatrix.get(row, 0).getParsedObject();
+        assertTrue("Semibreve with a division dot", simpleNote3.getAtomFigure().isFollowedByMensuralDivisionDot());
         row++;
 
         assertEquals("!prueba", humdrumMatrix.get(row, 0).getHumdrumEncoding());

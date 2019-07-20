@@ -508,7 +508,11 @@ public class KernExporter {
             throw new ExportException("Unsupported notation type " + figure.getNotationType());
         }
         for (int i=0; i<dots; i++) {
-            sb.append('.');
+            if (figure.getNotationType() == NotationType.eMensural) {
+                sb.append(':');
+            } else {
+                sb.append('.');
+            }
         }
 
         if (atomFigure.isExplicitMensuralPerfection()) {

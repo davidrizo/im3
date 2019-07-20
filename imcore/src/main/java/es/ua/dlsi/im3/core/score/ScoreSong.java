@@ -16,6 +16,7 @@ import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureCumPropietateEtSinePe
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
+import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
 /**
  * A song is organized as a set of parts (instruments - e.g. piano, violin, soprano...).
@@ -122,7 +123,25 @@ public class ScoreSong implements IStaffContainer {
         this(new DurationEvaluator());
 	}
 
-	@Override
+	/**
+	 * It creates a song with one pentagram, one part, one layer
+	 * @return
+	 */
+    public static ScoreSong createEmptyOneVoiceEmptySong(NotationType notationType) throws IM3Exception {
+		ScoreSong song = new ScoreSong();
+		ScorePart part = song.addPart();
+		part.setName("Part #1");
+		Pentagram staff = new Pentagram(song, "1", 1);
+		staff.setName("Staff #1");
+		staff.setNotationType(notationType);
+		song.addStaff(staff);
+		part.addStaff(staff);
+		ScoreLayer layer = part.addScoreLayer(staff);
+		staff.addLayer(layer);
+		return song;
+    }
+
+    @Override
 	public PageSystemBeginnings getPageSystemBeginnings() {
 		return pageSystemBeginnings;
 	}
