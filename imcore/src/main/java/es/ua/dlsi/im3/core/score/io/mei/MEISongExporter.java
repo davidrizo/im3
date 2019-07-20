@@ -1151,7 +1151,8 @@ public class MEISongExporter implements ISongExporter {
 			params.add("numbase");
 			params.add(atomFigure.getIrregularGroupInSpaceOfFigures().toString());
 		}
-		if (atomFigure.hasColoration()) {
+
+		if (atomFigure.hasColoration() && atomFigure.isColored()) {
 			params.add("colored");
 			params.add(Boolean.toString(atomFigure.isColored()));			
 		}
