@@ -44,6 +44,8 @@ public class MensSemanticImporter implements ISemanticImporter {
                     // continuation, skip
             } else if (item.getParsedObject() instanceof Clef) { // TODO algo más elegante
                 semanticEncoding.add(new SemanticClef((Clef) item.getParsedObject()));
+            } else if (item.getParsedObject() instanceof Custos) { // TODO algo más elegante
+                semanticEncoding.add(new SemanticCustos((Custos) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof Key) {
                 KeySignature keySignature = new KeySignature(notationType, (Key) item.getParsedObject());
                 semanticEncoding.add(new SemanticKeySignature(keySignature));

@@ -21,6 +21,7 @@ LeQ	Ligature continuation, longa E, oblique shape
 Sd>	Ligature end, brevis d
 Mi:E	Minima imperfect with a division dot after it
 s:ff	Semibreve with division dot
+*custosb	Custos on note b4
 !prueba	!Prueba field comment
 !	!Empty field comment
 !sb	!

@@ -30,6 +30,7 @@ public class StaffTest {
         ScoreSong song = new ScoreSong();
         Pentagram pentagram = new Pentagram(song, "1", 1);
         // TODO: 5/10/17 más tests, incluidos ledger lines
+        test("D4 in ClefG2", pentagram, g2, PositionsInStaff.SPACE_0, DiatonicPitch.D, 4);
         test("C5 in ClefG2", pentagram, g2, PositionsInStaff.SPACE_3, DiatonicPitch.C, 5);
         test("E4 in ClefG2", pentagram, g2, PositionsInStaff.LINE_1, DiatonicPitch.E, 4);
         test("F5 in ClefG2", pentagram, g2, PositionsInStaff.LINE_5, DiatonicPitch.F, 5);
@@ -53,6 +54,9 @@ public class StaffTest {
         test("ClefC5, C", pentagram, new ClefC5(), PositionsInStaff.LINE_5, DiatonicPitch.C, 4);
 
         test("ClefG3", pentagram, new ClefG3(), PositionsInStaff.SPACE_0, DiatonicPitch.B, 3);
+
+        test("ClefC2 A", pentagram, new ClefC2(), PositionsInStaff.LINE_1, DiatonicPitch.A, 3);
+        test("ClefC2 G", pentagram, new ClefC2(), PositionsInStaff.SPACE_0, DiatonicPitch.G, 3);
 
     }
 

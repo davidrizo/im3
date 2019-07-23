@@ -790,8 +790,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						}
 
 						if (lastCustosWithoutPitch != null) {
-							lastCustosWithoutPitch.setDiatonicPitch(lastAtomPitch.getScientificPitch().getPitchClass().getNoteName());
-							lastCustosWithoutPitch.setOctave(lastAtomPitch.getScientificPitch().getOctave());
+							lastCustosWithoutPitch.setScientificPitch(lastAtomPitch.getScientificPitch());
 							lastCustosWithoutPitch = null;
 						}
 						// TODO: 18/10/17 Comprobar Fermata con chords
@@ -961,7 +960,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						if (oct != null && pname != null) {
 							octave = Integer.parseInt(oct);
 							DiatonicPitch dp = DiatonicPitch.valueOf(pname.toUpperCase());
-							custos = new Custos(lastStaff, getCurrentTime(), dp, octave);
+							custos = new Custos(lastStaff, getCurrentTime(), new ScientificPitch(dp, null, octave));
 							lastCustosWithoutPitch = null;
 						} else {
 							custos = new Custos(lastStaff, getCurrentTime());

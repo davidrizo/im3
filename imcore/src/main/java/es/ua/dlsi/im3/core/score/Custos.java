@@ -2,17 +2,20 @@ package es.ua.dlsi.im3.core.score;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
+import java.util.Objects;
+
 public class Custos implements ITimedElementInStaff, ITimedElementWithSet, IStaffElementWithoutLayer {
-    DiatonicPitch diatonicPitch;
+    ScientificPitch scientificPitch;
     Staff staff;
     Time time;
-    int octave;
 
-    public Custos(Staff staff, Time time, DiatonicPitch diatonicPitch, int octave) {
+    public Custos(Staff staff, Time time, ScientificPitch scientificPitch) {
         this.staff = staff;
         this.time = time;
-        this.diatonicPitch = diatonicPitch;
-        this.octave = octave;
+    }
+
+    public Custos(ScientificPitch scientificPitch) {
+        this.scientificPitch = scientificPitch;
     }
 
     public Custos(Staff staff, Time time) {
@@ -52,27 +55,27 @@ public class Custos implements ITimedElementInStaff, ITimedElementWithSet, IStaf
 
         prevStaff.addTimedElementInStaff(this);
     }
-    public DiatonicPitch getDiatonicPitch() {
-        return diatonicPitch;
+
+    public ScientificPitch getScientificPitch() {
+        return scientificPitch;
     }
 
-    public int getOctave() {
-        return octave;
-    }
-
-    public void setDiatonicPitch(DiatonicPitch diatonicPitch) {
-        this.diatonicPitch = diatonicPitch;
-    }
-
-    public void setOctave(int octave) {
-        this.octave = octave;
+    public void setScientificPitch(ScientificPitch scientificPitch) {
+        this.scientificPitch = scientificPitch;
     }
 
     @Override
-    public String toString() {
-        return "Custos{" +
-                "diatonicPitch=" + diatonicPitch +
-                ", octave=" + octave +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Custos custos = (Custos) o;
+        return Objects.equals(scientificPitch, custos.scientificPitch) &&
+                Objects.equals(staff, custos.staff) &&
+                Objects.equals(time, custos.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(scientificPitch, staff, time);
     }
 }

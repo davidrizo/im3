@@ -132,6 +132,8 @@ tandemInterpretation:
     metronome
     |
     nullInterpretation
+    |
+    custos
     ;
 
 number: (DIGIT_1 | DIGIT_2 | DIGIT_3 | DIGIT_4 | DIGIT_5 | DIGIT_6 | DIGIT_7 | DIGIT_8 | DIGIT_9)+;
@@ -202,6 +204,7 @@ spineJoin: ASTERISK CHAR_v;
 rest: duration (CHAR_r) pause?;
 
 duration: mensuralDuration (augmentationDot | separationDot)?;
+// dot: separationDot | augmentationDot;
 
 pause: SEMICOLON; // fermata
 
@@ -214,11 +217,12 @@ mensuralFigure: CHAR_X | CHAR_L | CHAR_S | CHAR_s | CHAR_M | CHAR_m | CHAR_U | C
 // p=perfect, i=imperfect, I=imperfect by alteratio
 mensuralPerfection: CHAR_p | CHAR_i | CHAR_I;
 
-dot: separationDot | augmentationDot;
 
 augmentationDot: DOT;
 
 separationDot: COLON;
+
+custos: TANDEM_CUSTOS noteName alteration?;
 
 note:  beforeNote duration noteName (alteration alterationVisualMode?)? afterNote;
 

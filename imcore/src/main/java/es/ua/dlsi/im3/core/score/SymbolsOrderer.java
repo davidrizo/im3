@@ -42,8 +42,10 @@ public class SymbolsOrderer {
 			return 4;
 		} else if (o instanceof StaffTimedPlaceHolder) {
             return 5;
-		} else {
+		} else if (o instanceof Custos) {
 			return 6;
+		} else {
+			return 7;
 		}
 	}
 

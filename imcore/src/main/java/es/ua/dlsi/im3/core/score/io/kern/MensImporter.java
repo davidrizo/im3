@@ -49,6 +49,7 @@ public class MensImporter {
         private boolean lastHasSeparationDot;
         private boolean inLigature;
         private boolean debug;
+        private StemDirection lastStemDirection;
 
         public Loader(Parser parser, boolean debug) {
             this.humdrumMatrix = new HumdrumMatrix();
@@ -398,6 +399,7 @@ public class MensImporter {
             lastPerfection = null;
         }
 
+
         @Override
         public void exitDuration(mensParser.DurationContext ctx) {
             super.exitDuration(ctx);
@@ -508,20 +510,15 @@ public class MensImporter {
             handleNoteName(ctx.getText(), -ctx.getText().length());
         }
 
-        @Override
-        public void exitNote(mensParser.NoteContext ctx) {
-            Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Mensural note {0}", ctx.getText());
-            super.exitNote(ctx);
-
+        private ScientificPitch constructScientificPitch(mensParser.AlterationContext alterationContext) {
             int octave = 4 + octaveModif;
 
             // check all letters are equal
             DiatonicPitch nn = DiatonicPitch.valueOf(noteName);
 
             Accidentals acc = Accidentals.NATURAL;
-            if (ctx.alteration() !=
-                    null) {
-                switch (ctx.alteration().getText()) {
+            if (alterationContext != null) {
+                switch (alterationContext.getText()) {
                     case "n":
                         acc = Accidentals.NATURAL;
                         break;
@@ -533,19 +530,50 @@ public class MensImporter {
                         break;
                     default:
                         throw new
-                                GrammarParseRuntimeException("Unimplemented accidental: " +
-                                ctx.alteration().getText());
+                                GrammarParseRuntimeException("Unimplemented accidental: " + alterationContext.getText());
                 }
             }
 
             ScientificPitch scientificPitch = new ScientificPitch(new PitchClass(nn, acc), octave);
+            return scientificPitch;
+        }
+
+        @Override
+        public void enterNote(mensParser.NoteContext ctx) {
+            this.lastStemDirection = null;
+        }
+
+        @Override
+        public void exitStem(mensParser.StemContext ctx) {
+            switch (ctx.getText()) {
+                case "/":
+                    lastStemDirection = StemDirection.up;
+                    break;
+                case "\\":
+                    lastStemDirection = StemDirection.down;
+                    break;
+                default:
+                    throw new GrammarParseRuntimeException("Unimplemented stem direction: " + ctx.getText());
+            }
+        }
+
+        @Override
+        public void exitNote(mensParser.NoteContext ctx) {
+            Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Mensural note {0}", ctx.getText());
+            super.exitNote(ctx);
+
+            ScientificPitch scientificPitch = constructScientificPitch(ctx.alteration());
             SimpleNote note = new SimpleNote(lastFigure, lastAgumentationDots, scientificPitch);
             note.getAtomFigure().setFollowedByMensuralDivisionDot(lastHasSeparationDot);
+
+            if (lastStemDirection != null) {
+                note.setExplicitStemDirection(lastStemDirection);
+            }
 
             if (ctx.alterationVisualMode() != null) {
                 switch (ctx.alterationVisualMode().getText()) {
                     case "x":
-                        note.setWrittenExplicitAccidental(acc);
+                        note.setWrittenExplicitAccidental(scientificPitch.getPitchClass().getAccidental());
                         break;
                     case "xx":
                         throw new UnsupportedOperationException("TO-DO Editorial accidental");
@@ -588,10 +616,20 @@ public class MensImporter {
         }
 
         @Override
+        public void exitCustos(mensParser.CustosContext ctx) {
+            super.exitCustos(ctx);
+            ScientificPitch scientificPitch = constructScientificPitch(ctx.alteration());
+            Custos custos = new Custos(scientificPitch);
+            humdrumMatrix.addItemToCurrentRow(ctx.getText(), custos);
+        }
+
+
+        @Override
         public void exitLyricsText(mensParser.LyricsTextContext ctx) {
             super.exitLyricsText(ctx);
             humdrumMatrix.addItemToCurrentRow(ctx.getText(), new KernText(ctx.getText()));
         }
+
     }
 
     private HumdrumMatrix importMens(CharStream input, String inputDescription, boolean anyStart) throws ImportException {

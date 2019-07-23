@@ -34,6 +34,6 @@ public class LayoutCoreCustos extends LayoutCoreSymbolInStaff<Custos> {
 
     @Override
     protected void doLayout() throws IM3Exception {
-        position.setReferenceY(layoutStaff.computeYPositionForPitchWithoutClefOctaveChange(coreSymbol.getTime(), coreSymbol.getDiatonicPitch(), coreSymbol.getOctave()));
+        position.setReferenceY(layoutStaff.computeYPositionForPitchWithoutClefOctaveChange(coreSymbol.getTime(), coreSymbol.getScientificPitch().getPitchClass().getNoteName(), coreSymbol.getScientificPitch().getOctave()));
     }
 }

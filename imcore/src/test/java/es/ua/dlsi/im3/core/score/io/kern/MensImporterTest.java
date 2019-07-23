@@ -58,7 +58,7 @@ public class MensImporterTest {
         MensImporter importer = new MensImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/kern/mens_grammar_test.krn");
         HumdrumMatrix humdrumMatrix = importer.importMens(file);
-        assertEquals("Size", 25, humdrumMatrix.getMatrix().size());
+        assertEquals("Size", 26, humdrumMatrix.getMatrix().size());
         int row = 0;
         assertEquals("**mens", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         row++;
@@ -159,10 +159,17 @@ public class MensImporterTest {
         assertTrue("Semibreve with a division dot", simpleNote3.getAtomFigure().isFollowedByMensuralDivisionDot());
         row++;
 
+        assertEquals("*custosb", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        assertTrue("Custos", humdrumMatrix.get(row, 0).getParsedObject() instanceof Custos);
+        assertEquals("Custos note", DiatonicPitch.B, ((Custos)humdrumMatrix.get(row, 0).getParsedObject()).getScientificPitch().getPitchClass().getNoteName());
+        assertEquals("Custos octave", 4, ((Custos)humdrumMatrix.get(row, 0).getParsedObject()).getScientificPitch().getOctave());
+        row++;
+
         assertEquals("!prueba", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         assertEquals("prueba field comment", new KernFieldComment("prueba"), humdrumMatrix.get(row, 0).getParsedObject());
         assertEquals("Second spine in prueba field comment", "!Prueba field comment", humdrumMatrix.get(row, 1).getHumdrumEncoding());
         row++;
+
 
         assertEquals("!", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         assertEquals("Empty field comment", new KernFieldComment(null), humdrumMatrix.get(row, 0).getParsedObject());

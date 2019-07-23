@@ -29,18 +29,13 @@ public class NotesState extends OMRState {
         Staff staff = transduction.getStaff();
 
         ScientificPitch pitch = null;
-        if (token.getSymbol() instanceof Note ||token.getSymbol() instanceof Custos) { //TODO Mejor añadir un interface (IPitched)
+        if (token.getSymbol() instanceof Note || token.getSymbol() instanceof Custos) { //TODO Mejor añadir un interface (IPitched)
             // TODO: 5/10/17 Chords
             Clef clef = transduction.getStaff().getLastClef();
             if (clef == null) {
                 throw new IM3RuntimeException("No clef found to determine pitch");
             }
-            try {
-                pitch = parsePitch(staff, clef, token.getPositionInStaff(), accidental);
-            } catch (IM3Exception e) {
-                transduction.setZeroProbability();
-                return;
-            }
+            pitch = parsePitch(staff, clef, token.getPositionInStaff(), accidental);
         }
         if (token.getSymbol() instanceof Note) {
             try {
@@ -77,8 +72,7 @@ public class NotesState extends OMRState {
                 throw new IM3RuntimeException(e);
             }
         } else if (token.getSymbol() instanceof Custos) {
-            es.ua.dlsi.im3.core.score.Custos custos = new es.ua.dlsi.im3.core.score.Custos(transduction.getStaff(), transduction.getLayer().getDuration(), pitch.getPitchClass().getNoteName(), pitch.getOctave());
-            transduction.getStaff().addElementWithoutLayer(custos);
+            transduction.getStaff().addElementWithoutLayer(new es.ua.dlsi.im3.core.score.Custos(pitch));
         } else {
             throw new IM3RuntimeException("Symbol should be note or dot");
         }
@@ -128,7 +122,7 @@ public class NotesState extends OMRState {
         }
     }
 
-    private ScientificPitch parsePitch(Staff staff, Clef clef, PositionInStaff positionInStaff, Accidentals accidental) throws IM3Exception {
+    private ScientificPitch parsePitch(Staff staff, Clef clef, PositionInStaff positionInStaff, Accidentals accidental) {
         ScientificPitch sp = staff.computeScientificPitch(clef, positionInStaff);
         if (accidental != null) {
             sp.getPitchClass().setAccidental(accidental);

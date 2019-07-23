@@ -35,6 +35,7 @@ public class SimpleNote extends SingleFigureAtom {
 		}
 		this.setWrittenExplicitAccidental(simpleNote.getWrittenExplicitAccidental());
 		this.getAtomFigure().setFollowedByMensuralDivisionDot(simpleNote.getAtomFigure().isFollowedByMensuralDivisionDot());
+		this.setExplicitStemDirection(simpleNote.getExplicitStemDirection());
 		//TODO otros parámetros?
 	}
 

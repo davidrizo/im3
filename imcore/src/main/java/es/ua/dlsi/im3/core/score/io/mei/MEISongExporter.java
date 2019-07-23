@@ -954,6 +954,7 @@ public class MEISongExporter implements ISongExporter {
 					for (MarkBarline markBarline: staff.getMarkBarLines()) {
                         staffSymbols.add(markBarline);
                     }
+					staffSymbols.addAll(staff.getCustos());
 					
 					XMLExporterHelper.start(sb, tabs, "staff", "n", getNumber(staff));
 					for (ScoreLayer layer: staff.getLayers()) {
@@ -983,6 +984,8 @@ public class MEISongExporter implements ISongExporter {
 									processClefChange((Clef) slr, params);
 									XMLExporterHelper.startEnd(sb, tabs + 2, "clef", params);
 									lastClef.put(staff, (Clef) slr);
+								} else if (slr instanceof Custos) {
+									processCustos(tabs + 2, (Custos) slr);
 								} else if (slr instanceof TimeSignature) {
 									//TODO ¿habrá que mejor coger el TimeSignature por el @sign...
 									processTimeSignature(tabs + 2, (TimeSignature) slr);
@@ -1042,8 +1045,19 @@ public class MEISongExporter implements ISongExporter {
         XMLExporterHelper.startEnd(sb, tabs, "barLine");
     }
 
+	private void processCustos(int tabs, Custos custos) {
+		ScientificPitch scorePitch = custos.getScientificPitch();
+		ArrayList<String> params = new ArrayList<>();
+		params.add("pname");
+		params.add(scorePitch.getPitchClass().getNoteName().name().toLowerCase());
+		params.add("oct");
+		params.add(Integer.toString(scorePitch.getOctave()));
 
-    private void processTimeSignature(int tabs, TimeSignature timeSignature) {
+		XMLExporterHelper.startEnd(sb, tabs, "custos", params);
+	}
+
+
+	private void processTimeSignature(int tabs, TimeSignature timeSignature) {
 		if (timeSignature instanceof TimeSignatureMensural) {
 			ArrayList<String> params = new ArrayList<>();
 			processMensuralTimeSignature(timeSignature, params);
@@ -1269,7 +1283,7 @@ public class MEISongExporter implements ISongExporter {
 		if (atom.getStaff().getNotationType() == NotationType.eMensural) {
 			if (atomFigure.getDots() > 0) {
 				for (int i=0; i<atomFigure.getDots(); i++) {
-					XMLExporterHelper.startEnd(sb, tabs, "dot"); // it must be added to be printed
+					XMLExporterHelper.startEnd(sb, tabs, "dot", "form", "aug"); // it must be added to be printed
 				}
 			}
 		}

@@ -470,12 +470,16 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
 
 	public void addElementWithoutLayer(IStaffElementWithoutLayer element) throws IM3Exception {
-		//TODO Algo más elegante
+		//TODO Algo más elegante - AÑADIR TIEMPO
 		if (element instanceof Clef) {
 			addClef((Clef) element);
 		}
 
 		if (element instanceof Custos) {
+			Custos custos = (Custos) element;
+			if (custos.getTime() == null) {
+				custos.setTime(this.getDuration());
+			}
 			addCustos((Custos) element);
 		}
 
@@ -684,19 +688,22 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
      * @param clef
      * @param positionInStaff
      * @return
-     * @throws IM3Exception When no possible pitch is found
      */
     public static ScientificPitch computeScientificPitch(Clef clef, PositionInStaff positionInStaff) {
         int bottomClefOctave = clef.getBottomLineOctave();
         DiatonicPitch bottomClefNoteName = clef.getBottomLineDiatonicPitch();
         int intervalWithC = bottomClefNoteName.getOrder() - DiatonicPitch.C.getOrder();
         int lineSpace = positionInStaff.getLineSpace();
+
         int octaveDifference = (lineSpace + intervalWithC) / 7;
+
 
         int diatonicPitchDifference = lineSpace % 7;
 		if (diatonicPitchDifference < 0) {
 			diatonicPitchDifference = diatonicPitchDifference + 7;
-			octaveDifference--;
+			if (intervalWithC == 0) {
+				octaveDifference--;
+			}
 		}
 
         DiatonicPitch[] noteNames = DiatonicPitch.getJustNoteNames();
@@ -1103,4 +1110,11 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
     }
 
 
+    public Time getDuration() {
+    	Time max = Time.TIME_ZERO;
+    	for (ScoreLayer layer: this.layers) {
+    		max = Time.max(max, layer.getDuration());
+		}
+    	return max;
+	}
 }
