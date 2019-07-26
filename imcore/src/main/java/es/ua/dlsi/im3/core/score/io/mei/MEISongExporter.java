@@ -22,7 +22,9 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.io.kern.HarmExporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
@@ -585,15 +587,60 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.end(sb, tabs, "staffGrp");
 	}
 		
-	private void processMensuralTimeSignature(TimeSignature meter, ArrayList<String> params) {
+	private void processMensuralTimeSignature(TimeSignature meter, ArrayList<String> params) throws ExportException {
 		//lastTimeSignature = meter;
 		TimeSignatureMensural mm = (TimeSignatureMensural) meter;
-		
-		if (mm instanceof TimeSignatureProporcionMenor) {
-			params.add("meter.sym");
-			params.add("cz"); //TODO David
-		} else {
-			if (mm.getModusMaior() != null) {
+
+		switch (mm.getClass().getName()) {
+			case "es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor":
+				params.add("mensur.sign");
+				params.add("C");
+				params.add("proport.num");
+				params.add("3");
+				params.add("proport.numbase");
+				params.add("2");
+				params.add("mensur.slash");
+				params.add("1");
+				break;
+			case "es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor":
+				params.add("mensur.sign");
+				params.add("C");
+				params.add("proport.num");
+				params.add("3");
+				params.add("proport.numbase");
+				params.add("2");
+				break;
+			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta":
+				params.add("mensur.sign");
+				params.add("C");
+				break;
+			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfectaDiminutum":
+				params.add("mensur.slash");
+				params.add("1");
+				params.add("mensur.sign");
+				params.add("C");
+				break;
+			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationePerfecta":
+				params.add("mensur.sign");
+				params.add("C");
+				params.add("mensur.dot");
+				params.add("true");
+				break;
+			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusPerfectumCumProlationeImperfecta":
+				params.add("mensur.sign");
+				params.add("O");
+				break;
+			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusPerfectumCumProlationePerfecta":
+				params.add("mensur.sign");
+				params.add("O");
+				params.add("mensur.dot");
+				params.add("true");
+				break;
+			default:
+				throw new ExportException("Unsupported proportion sign:" + mm.getClass());
+		}
+
+		/*if (mm.getModusMaior() != null) {
 				params.add("modusmaior");
 				params.add(mensuralTimeSignaturePerfectionToNumber(mm.getModusMaior()));
 			}
@@ -609,7 +656,7 @@ public class MEISongExporter implements ISongExporter {
 				params.add("prolatio");
 				params.add(mensuralTimeSignaturePerfectionToNumber(mm.getProlatio()));
 			}
-		}
+		}*/
 	}
 
 	private String mensuralTimeSignaturePerfectionToNumber(Perfection p) {
@@ -1057,7 +1104,7 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 
-	private void processTimeSignature(int tabs, TimeSignature timeSignature) {
+	private void processTimeSignature(int tabs, TimeSignature timeSignature) throws ExportException {
 		if (timeSignature instanceof TimeSignatureMensural) {
 			ArrayList<String> params = new ArrayList<>();
 			processMensuralTimeSignature(timeSignature, params);
@@ -1241,7 +1288,12 @@ public class MEISongExporter implements ISongExporter {
                     params.add(sfatom.getExplicitStemDirection().name().toLowerCase());
                 }
 
-				if (atom instanceof SimpleRest) {			
+				if (atom instanceof SimpleRest) {
+					SimpleRest rest = (SimpleRest) atom;
+					if (rest.getLinePosition() != null) {
+						params.add("loc");
+						params.add(restLinePositionToLoc(rest));
+					}
 					XMLExporterHelper.startEnd(sb, tabs, "rest", params); 
 				} else if (atom instanceof SimpleChord) {
 					XMLExporterHelper.start(sb, tabs, "chord", params);
@@ -1256,19 +1308,36 @@ public class MEISongExporter implements ISongExporter {
 			}
 			processMensuralDots(sb, tabs, (SingleFigureAtom) atom);
 		} else if (atom instanceof SimpleTuplet) {
-				SimpleTuplet tuplet = (SimpleTuplet) atom;
-				params.add("num");
-				params.add(Integer.toString(tuplet.getCardinality()));
-				params.add("numbase");
-				params.add(Integer.toString(tuplet.getInSpaceOfAtoms()));
-				XMLExporterHelper.start(sb, tabs, "tuplet", params);
-				for (Atom tupletAtom: tuplet.getAtoms()) {
-					processAtom(scorePart, tabs+1, tupletAtom, defaultStaff);
-				}
-				if (lastBeam != null) {
-				    closeBeam(tabs);
-                }
-				XMLExporterHelper.end(sb, tabs, "tuplet");				
+			SimpleTuplet tuplet = (SimpleTuplet) atom;
+			params.add("num");
+			params.add(Integer.toString(tuplet.getCardinality()));
+			params.add("numbase");
+			params.add(Integer.toString(tuplet.getInSpaceOfAtoms()));
+			XMLExporterHelper.start(sb, tabs, "tuplet", params);
+			for (Atom tupletAtom : tuplet.getAtoms()) {
+				processAtom(scorePart, tabs + 1, tupletAtom, defaultStaff);
+			}
+			if (lastBeam != null) {
+				closeBeam(tabs);
+			}
+			XMLExporterHelper.end(sb, tabs, "tuplet");
+		} else if (atom instanceof Ligature) {
+			Ligature ligatura = (Ligature) atom;
+			params.add("form");
+			if (ligatura.getLigatureType() == LigatureType.recta) {
+				params.add("recta");
+			} else if (ligatura.getLigatureType() == LigatureType.obliqua) {
+				params.add("obliqua");
+			} else {
+				throw new ExportException("Cannot export ligature type: " + ligatura.getLigatureType());
+			}
+			XMLExporterHelper.start(sb, tabs, "ligature", params);
+
+			for (Atom ligatureAtom: ligatura.getAtoms()) {
+				processAtom(scorePart, tabs+1, ligatureAtom, defaultStaff);
+			}
+
+			XMLExporterHelper.end(sb, tabs, "ligature");
 		} else {
 			throw new UnsupportedOperationException("Unsupported yet: " + atom.getClass());
 		}
@@ -1276,6 +1345,31 @@ public class MEISongExporter implements ISongExporter {
 		//TODO Beams...
 
 		
+	}
+
+	private String restLinePositionToLoc(SimpleRest rest) {
+		int loc;
+		switch (rest.getAtomFigure().getFigure()) {
+			case MINIM:
+			case BREVE:
+				loc = (rest.getLinePosition()-1) * 2;
+				break;
+			case SEMIBREVE:
+				loc = (rest.getLinePosition()-1) * 2 - 4;
+				break;
+			case LONGA:
+				loc = (rest.getLinePosition()-1) * 2 + 2;
+				break;
+			case MAXIMA:
+				loc = (rest.getLinePosition()-1) * 2 + 4;
+				break;
+			//case FUSA:
+			//case SEMIMINIM:
+			default:
+				loc = rest.getLinePosition() * 2;
+				break;
+		}
+		return new Integer(loc).toString();
 	}
 
 	private void processMensuralDots(StringBuilder sb, int tabs, SingleFigureAtom atom) {

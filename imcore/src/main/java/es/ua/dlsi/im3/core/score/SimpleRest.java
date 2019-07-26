@@ -13,6 +13,11 @@ import es.ua.dlsi.im3.core.IM3Exception;
  *
  */
 public class SimpleRest extends SingleFigureAtom {
+	/**
+	 * Used when it has a different position from the default
+	 * 1 = bottom line, 5 = top line
+	 */
+	Integer linePosition;
  	
 	public SimpleRest(Figures figure, int dots) {
 		super(figure, dots);
@@ -35,6 +40,8 @@ public class SimpleRest extends SingleFigureAtom {
 		} else {
 			this.getAtomFigure().setComputedMensuralPerfection(simpleRest.getAtomFigure().getMensuralPerfection(), simpleRest.getAtomFigure().getPerfectionRuleApplied());
 		}
+
+		this.linePosition = simpleRest.getLinePosition();
 	}
 
 	public SimpleRest clone() {
@@ -60,4 +67,11 @@ public class SimpleRest extends SingleFigureAtom {
 		return super.toString() + ", rest";
 	}
 
+	public Integer getLinePosition() {
+		return linePosition;
+	}
+
+	public void setLinePosition(Integer linePosition) {
+		this.linePosition = linePosition;
+	}
 }

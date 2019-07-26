@@ -164,7 +164,7 @@ numerator: number;
 denominator: number;
 
 meterSign: TANDEM_MET LEFT_PARENTHESIS meterSignValue RIGHT_PARENTHESIS;
-meterSignValue: CHAR_C | CHAR_C PIPE | CHAR_C CENTER_DOT | CHAR_O | CHAR_O CENTER_DOT | CHAR_C DIGIT_3 DIGIT_2 | CHAR_C PIPE DIGIT_3 DIGIT_2;
+meterSignValue: CHAR_C | CHAR_C PIPE | CHAR_C DOT | CHAR_O | CHAR_O DOT | CHAR_C DIGIT_3 SLASH DIGIT_2 | CHAR_C PIPE DIGIT_3 SLASH DIGIT_2;
 
 sectionLabel: SECTION_LABEL FIELD_TEXT;
 
@@ -201,7 +201,9 @@ spineTerminator: ASTERISK MINUS;
 spineSplit: ASTERISK CIRCUMFLEX;
 spineJoin: ASTERISK CHAR_v;
 
-rest: duration (CHAR_r) pause?;
+rest: duration (CHAR_r) pause? restLinePosition?;
+
+restLinePosition: UNDERSCORE clefLine;
 
 duration: mensuralDuration (augmentationDot | separationDot)?;
 // dot: separationDot | augmentationDot;
@@ -228,7 +230,6 @@ note:  beforeNote duration noteName (alteration alterationVisualMode?)? afterNot
 
 beforeNote:  //TODO Regla semantica (boolean) para que no se repitan
     (slurStart
-    | tieStart
     | ligatureStart
     | barLineCrossedNoteStart
     )*
@@ -249,15 +250,11 @@ alteration: OCTOTHORPE | (OCTOTHORPE OCTOTHORPE) | MINUS | (MINUS MINUS) | CHAR_
 alterationVisualMode: CHAR_x CHAR_x?;
 
 afterNote:
-	     (slurEnd | stem| tieMiddle | tieEnd | ligatureType | ligatureEnd | beam | pause | barLineCrossedNoteEnd)*;
+	     (slurEnd | stem| ligatureEnd | beam | pause | barLineCrossedNoteEnd)*;
 
-tieStart: LEFT_BRACKET;
-tieMiddle: UNDERSCORE;
-tieEnd: RIGHT_BRACKET;
 slurStart: LEFT_PARENTHESIS;
-ligatureStart: ANGLE_BRACKET_OPEN;
-ligatureEnd: ANGLE_BRACKET_CLOSE;
-ligatureType: CHAR_R | CHAR_Q;
+ligatureStart: ANGLE_BRACKET_OPEN | LEFT_BRACKET;
+ligatureEnd: ANGLE_BRACKET_CLOSE | RIGHT_BRACKET;
 slurEnd: RIGHT_PARENTHESIS;
 barLineCrossedNoteStart: CHAR_T;
 barLineCrossedNoteEnd: CHAR_t;

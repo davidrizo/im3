@@ -94,11 +94,11 @@ public class Semantic2ScoreSongImporter implements IScoreSongImporter {
                 if (ctx.children.size() == 3) {
                     switch (ctx.children.get(2).getText()) {
                         case "Ct":
-                            timeSignature = new TimeSignatureCommonTime(notationType);
+                            timeSignature = new TimeSignatureCommonTime();
                             break;
                         case "Ccut":
                         case "C/":
-                            timeSignature = new TimeSignatureCutTime(notationType);
+                            timeSignature = new TimeSignatureCutTime();
                             break;
                         default:
                             throw new IM3Exception("Unkown meter sign: '" + ctx.children.get(2).getText());

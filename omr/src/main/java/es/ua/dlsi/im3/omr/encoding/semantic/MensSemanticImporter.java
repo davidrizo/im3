@@ -3,9 +3,7 @@ package es.ua.dlsi.im3.omr.encoding.semantic;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.io.kern.HumdrumMatrix;
-import es.ua.dlsi.im3.core.score.io.kern.HumdrumMatrixItem;
-import es.ua.dlsi.im3.core.score.io.kern.MensImporter;
+import es.ua.dlsi.im3.core.score.io.kern.*;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
@@ -33,6 +31,7 @@ public class MensSemanticImporter implements ISemanticImporter {
     private SemanticEncoding humdrumMatrix2SemanticEncoding(NotationType notationType, HumdrumMatrix humdrumMatrix) throws IM3Exception {
         SemanticEncoding semanticEncoding = new SemanticEncoding();
 
+        Ligature lastLigature = null;
         for (int row=0; row<humdrumMatrix.getRowCount(); row++) {
             if (humdrumMatrix.getSpineCount(row) != 1) {
                 throw new ImportException("Currently only monodies are supported");
@@ -61,6 +60,20 @@ public class MensSemanticImporter implements ISemanticImporter {
                 semanticEncoding.add(new SemanticRest((SimpleRest) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof SimpleMultiMeasureRest) {
                 semanticEncoding.add(new SemanticMultirest((SimpleMultiMeasureRest) item.getParsedObject()));
+            } else if (item.getParsedObject() instanceof KernLigatureComponent) {
+                KernLigatureComponent kernLigatureComponent = (KernLigatureComponent) item.getParsedObject(); 
+                if (kernLigatureComponent.getStartEnd() == LigatureStartEnd.start) {
+                    lastLigature = new Ligature(kernLigatureComponent.getType());
+                }
+
+                //TODO ligature con tipos mezclados
+                lastLigature.addSubatom(kernLigatureComponent.getSimpleNote());
+
+                if (kernLigatureComponent.getStartEnd() == LigatureStartEnd.end) {
+                    semanticEncoding.add(new SemanticLigature(lastLigature));
+                    lastLigature = null;
+                }
+
             } else if (!item.getHumdrumEncoding().equals("!")) {
                 //TODO Acabar
                 System.err.println("TO-DO: " + item.getHumdrumEncoding());

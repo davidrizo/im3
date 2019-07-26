@@ -72,7 +72,7 @@ denominator ::= NUMBER
 
 meterSign ::= TANDEM_MET LEFT_PARENTHESIS meterSignValue RIGHT_PARENTHESIS
 
-meterSignValue ::= ('C' | 'c|' | 'C·' | 'O' | 'O·' | 'C32' | 'C|32' )
+meterSignValue ::= ('C' | 'c|' | 'C·' | 'O' | 'O·' | 'C3/2' | 'C|3/2' )
 
 sectionLabel ::= SECTION_LABEL FIELD_TEXT
 

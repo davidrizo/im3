@@ -172,7 +172,7 @@ public class MensuralToModern {
         // TODO: 6/10/17 ¿Cómo convertimos?
         TimeSignature modernTimeSignature;
         if (symbol instanceof TimeSignatureCommonTime) {
-            modernTimeSignature = new TimeSignatureCommonTime(NotationType.eModern);
+            modernTimeSignature = new TimeSignatureCommonTime();
         } else {
             throw new IM3Exception("Unsupported time signature " + symbol);
         }

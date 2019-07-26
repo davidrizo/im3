@@ -58,7 +58,7 @@ public class MensImporterTest {
         MensImporter importer = new MensImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/kern/mens_grammar_test.krn");
         HumdrumMatrix humdrumMatrix = importer.importMens(file);
-        assertEquals("Size", 26, humdrumMatrix.getMatrix().size());
+        assertEquals("Size", 29, humdrumMatrix.getMatrix().size());
         int row = 0;
         assertEquals("**mens", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         row++;
@@ -131,7 +131,7 @@ public class MensImporterTest {
         assertEquals("Semibrevis perect colored A", simpleNote, humdrumMatrix.get(row, 0).getParsedObject());
         row++;
 
-        assertEquals("<ScR", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        /*assertEquals("<ScR", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         KernLigatureComponent ligatureComponent1 = new KernLigatureComponent(LigatureStartEnd.start, LigatureType.recta, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.C, 3)));
         assertEquals("Brevis ligature start", ligatureComponent1, humdrumMatrix.get(row, 0).getParsedObject());
         row++;
@@ -144,7 +144,38 @@ public class MensImporterTest {
         assertEquals("Sd>", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         KernLigatureComponent ligatureComponent3 = new KernLigatureComponent(LigatureStartEnd.end, LigatureType.computed, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.D, 3)));
         assertEquals("Brevis ligature end", ligatureComponent3, humdrumMatrix.get(row, 0).getParsedObject());
+        row++;*/
+
+        assertEquals("<Sc", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        KernLigatureComponent obliqyaLigatureComponent1 = new KernLigatureComponent(LigatureStartEnd.start, LigatureType.obliqua, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.C, 3)));
+        assertEquals("Brevis ligature start", obliqyaLigatureComponent1, humdrumMatrix.get(row, 0).getParsedObject());
         row++;
+
+        assertEquals("Le", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        KernLigatureComponent obliqyaLigatureComponent2 = new KernLigatureComponent(LigatureStartEnd.inside, LigatureType.obliqua, new SimpleNote(Figures.LONGA, 0, new ScientificPitch(PitchClasses.E, 3)));
+        assertEquals("Longa ligature inside", obliqyaLigatureComponent2, humdrumMatrix.get(row, 0).getParsedObject());
+        row++;
+
+        assertEquals("Sd>", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        KernLigatureComponent obliqyaLigatureComponent3 = new KernLigatureComponent(LigatureStartEnd.end, LigatureType.obliqua, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.D, 3)));
+        assertEquals("Brevis ligature end", obliqyaLigatureComponent3, humdrumMatrix.get(row, 0).getParsedObject());
+        row++;
+
+        assertEquals("[Sf", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        KernLigatureComponent rectaLigatureComponent1 = new KernLigatureComponent(LigatureStartEnd.start, LigatureType.recta, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.F, 3)));
+        assertEquals("Brevis ligature start", rectaLigatureComponent1, humdrumMatrix.get(row, 0).getParsedObject());
+        row++;
+
+        assertEquals("Lg", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        KernLigatureComponent rectaLigatureComponent2 = new KernLigatureComponent(LigatureStartEnd.inside, LigatureType.recta, new SimpleNote(Figures.LONGA, 0, new ScientificPitch(PitchClasses.G, 3)));
+        assertEquals("Longa ligature inside", rectaLigatureComponent2, humdrumMatrix.get(row, 0).getParsedObject());
+        row++;
+
+        assertEquals("Sa]", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        KernLigatureComponent rectaLigatureComponent3 = new KernLigatureComponent(LigatureStartEnd.end, LigatureType.recta, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.A, 3)));
+        assertEquals("Brevis ligature end", rectaLigatureComponent3, humdrumMatrix.get(row, 0).getParsedObject());
+        row++;
+
 
         assertEquals("Mi:E", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         assertTrue("Minima imperfect", humdrumMatrix.get(row, 0).getParsedObject() instanceof SimpleNote);

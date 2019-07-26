@@ -48,8 +48,10 @@ public class MensImporter {
         private int lastAgumentationDots;
         private boolean lastHasSeparationDot;
         private boolean inLigature;
+        private LigatureType ligatureType;
         private boolean debug;
         private StemDirection lastStemDirection;
+        private Integer lastRestLinePosition;
 
         public Loader(Parser parser, boolean debug) {
             this.humdrumMatrix = new HumdrumMatrix();
@@ -272,22 +274,22 @@ public class MensImporter {
                     case "C":
                         ts = new TempusImperfectumCumProlationeImperfecta();
                         break;
-                    case "C·":
+                    case "C.":
                         ts = new TempusImperfectumCumProlationePerfecta();
                         break;
                     case "O":
                         ts = new TempusPerfectumCumProlationeImperfecta();
                         break;
-                    case "O·":
+                    case "O.":
                         ts = new TempusPerfectumCumProlationePerfecta();
                         break;
                     case "C|":
-                        ts = new TimeSignatureCutTime(NotationType.eMensural);
+                        ts = new TempusImperfectumCumProlationeImperfectaDiminutum();
                         break;
-                    case "C32":
+                    case "C3/2":
                         ts = new TimeSignatureProporcionMenor();
                         break;
-                    case "C|32":
+                    case "C|3/2":
                         ts = new TimeSignatureProporcionMayor();
                         break;
                     default:
@@ -457,11 +459,23 @@ public class MensImporter {
         }
 
         @Override
+        public void enterRest(mensParser.RestContext ctx) {
+            lastRestLinePosition = null;
+        }
+
+        @Override
+        public void exitRestLinePosition(mensParser.RestLinePositionContext ctx) {
+            this.lastRestLinePosition = Integer.parseInt(ctx.getChild(1).getText());
+        }
+
+
+        @Override
         public void exitRest(mensParser.RestContext ctx) {
             Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "Mensural rest {0}", ctx.getText());
 
             super.exitRest(ctx);
             SimpleRest rest = new SimpleRest(lastFigure, lastAgumentationDots);
+            rest.setLinePosition(lastRestLinePosition); // it can be null
             rest.getAtomFigure().setFollowedByMensuralDivisionDot(lastHasSeparationDot);
             handlePerfectionColoration(rest);
             humdrumMatrix.addItemToCurrentRow(ctx.getText(), rest);
@@ -582,8 +596,7 @@ public class MensImporter {
 
             handlePerfectionColoration(note);
 
-            LigatureType ligatureType = LigatureType.computed;
-            if (ctx.afterNote().ligatureType() != null && ctx.afterNote().ligatureType().size() > 0) {
+            /*if (ctx.afterNote().ligatureType() != null && ctx.afterNote().ligatureType().size() > 0) {
                 String str = ctx.afterNote().ligatureType().get(0).getText();
                 if (str.equals("R")) {
                     ligatureType = LigatureType.recta;
@@ -592,18 +605,51 @@ public class MensImporter {
                 } else {
                     throw new GrammarParseRuntimeException("Invalid ligature type: '" + str + "'");
                 }
-            }
+            }*/
 
             KernLigatureComponent ligatureComponent = null;
             if (ctx.beforeNote().ligatureStart() != null && ctx.beforeNote().ligatureStart().size() > 0) {
                 if (ctx.afterNote().ligatureEnd() != null && ctx.afterNote().ligatureEnd().size() > 0) {
-                    throw new GrammarParseRuntimeException("Cannot create a ligature of an only symbol");
+                    throw new GrammarParseRuntimeException("Cannot create a ligature of just one symbol");
+                }
+                if (ctx.beforeNote().ligatureStart().size() != 1) {
+                    throw new GrammarParseRuntimeException("Expected just 1 ligature start");
+                }
+                switch (ctx.beforeNote().ligatureStart().get(0).getText()) {
+                    case "[":
+                        ligatureType = LigatureType.recta;
+                        break;
+                    case "<":
+                        ligatureType = LigatureType.obliqua;
+                        break;
+                    default:
+                        throw new GrammarParseRuntimeException("Invalid ligature start type, should be [ or <, and it is: " + ctx.beforeNote().ligatureStart().get(0).getText());
                 }
                 ligatureComponent = new KernLigatureComponent(LigatureStartEnd.start, ligatureType, note);
                 inLigature = true;
             } else if (ctx.afterNote().ligatureEnd() != null && ctx.afterNote().ligatureEnd().size() > 0) {
+                if (ctx.afterNote().ligatureEnd().size() != 1) {
+                    throw new GrammarParseRuntimeException("Expected just 1 ligature end");
+                }
+                switch (ctx.afterNote().ligatureEnd().get(0).getText()) {
+                    case "]":
+                        if (ligatureType != LigatureType.recta) {
+                            throw new GrammarParseRuntimeException("Expected > and found ] with previous ligature type " + ligatureType);
+                        }
+                        break;
+                    case ">":
+                        if (ligatureType != LigatureType.obliqua) {
+                            throw new GrammarParseRuntimeException("Expected ] and found > with previous ligature type " + ligatureType);
+                        }
+                        break;
+                    default:
+                        throw new GrammarParseRuntimeException("Invalid ligature end type, should be > or ], and it is: " + ctx.beforeNote().ligatureStart().get(0).getText());
+                }
+
                 ligatureComponent = new KernLigatureComponent(LigatureStartEnd.end, ligatureType, note);
                 inLigature = false;
+                ligatureType = null;
+
             } else if (inLigature) {
                 ligatureComponent = new KernLigatureComponent(LigatureStartEnd.inside, ligatureType, note);
             }

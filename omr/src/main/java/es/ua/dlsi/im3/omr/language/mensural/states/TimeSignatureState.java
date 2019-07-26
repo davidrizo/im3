@@ -37,7 +37,7 @@ public class TimeSignatureState extends OMRState {
         TimeSignature ts = null;
         switch (meterSigns) {
             case C:
-                ts = new TimeSignatureCommonTime(NotationType.eMensural);
+                ts = new TimeSignatureCommonTime();
                 break;
             // TODO: 5/10/17 Los demás compases 
             default:

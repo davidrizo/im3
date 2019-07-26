@@ -50,9 +50,9 @@ public class TimeSignatureState extends OMRState {
             MeterSign symbol = (MeterSign) token.getSymbol();
             TimeSignature timeSignature;
             if (symbol.getMeterSigns() == MeterSigns.C) {
-                timeSignature = new TimeSignatureCommonTime(NotationType.eModern);
+                timeSignature = new TimeSignatureCommonTime();
             } else if (symbol.getMeterSigns() == MeterSigns.Ccut) {
-                timeSignature = new TimeSignatureCutTime(NotationType.eModern);
+                timeSignature = new TimeSignatureCutTime();
             } else {
                 throw new IM3RuntimeException("Unsupported meter: " + symbol.getMeterSigns());
             }

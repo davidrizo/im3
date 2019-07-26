@@ -31,7 +31,7 @@ public class SystemsTest {
         part = song.addPart();
         layer = part.addScoreLayer();
         staff.addLayer(layer);
-        TimeSignatureCommonTime ts = new TimeSignatureCommonTime(NotationType.eModern);
+        TimeSignatureCommonTime ts = new TimeSignatureCommonTime();
 
         // ----------------- initial creation -------
         // system ------------

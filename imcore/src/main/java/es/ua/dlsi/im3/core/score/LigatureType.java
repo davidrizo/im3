@@ -1,4 +1,4 @@
-package es.ua.dlsi.im3.core.score.io.kern;
+package es.ua.dlsi.im3.core.score;
 
 /**
  * @autor drizo

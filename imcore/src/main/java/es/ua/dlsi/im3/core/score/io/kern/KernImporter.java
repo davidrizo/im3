@@ -829,11 +829,11 @@ public class KernImporter implements IScoreSongImporter {
                 switch (ctx.getText()) {
                     case "C":
                     case "c":
-                        ts = new TimeSignatureCommonTime(currentSpine.notationType);
+                        ts = new TimeSignatureCommonTime();
                         break;
                     case "C|":
                     case "c|":
-                        ts = new TimeSignatureCutTime(currentSpine.notationType);
+                        ts = new TimeSignatureCutTime();
                         break;
                     default:
                         throw new GrammarParseRuntimeException("Unsupported meter sign: '" + ctx.getText() + "'");
@@ -841,7 +841,7 @@ public class KernImporter implements IScoreSongImporter {
             } else if (currentSpine.notationType == NotationType.eMensural) {
                 switch (ctx.getText()) {
                     case "c":
-                        ts = new TimeSignatureCommonTime(currentSpine.notationType);
+                        ts = new TimeSignatureCommonTime();
                         break;
                     case "C":
                         ts = new TempusImperfectumCumProlationeImperfecta();
@@ -856,8 +856,10 @@ public class KernImporter implements IScoreSongImporter {
                         ts = new TempusPerfectumCumProlationePerfecta();
                         break;
                     case "C|":
+                        ts = new TempusImperfectumCumProlationeImperfectaDiminutum();
+                        break;
                     case "c|":
-                        ts = new TimeSignatureCutTime(currentSpine.notationType);
+                        ts = new TimeSignatureCutTime();
                         break;
                     default:
                         throw new GrammarParseRuntimeException("Unsupported meter sign: '" + ctx.getText() + "'");
@@ -1265,7 +1267,7 @@ public class KernImporter implements IScoreSongImporter {
 
                             if (currentSpine.ligatureEnded) {
                                 try {
-                                    LigaturaBinaria ligature = LigatureFactory.createLigature(currentSpine.ligatureNotes);
+                                    Ligature ligature = LigatureFactory.createLigature(currentSpine.ligatureNotes, null); //TODO ligature type
 
                                     addAtom(currentSpine.ligatureStartTime, ligature);
 

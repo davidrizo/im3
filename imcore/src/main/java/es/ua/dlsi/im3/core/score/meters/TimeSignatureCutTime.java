@@ -28,13 +28,13 @@ import es.ua.dlsi.im3.core.score.TimeSignature;
  */
 public class TimeSignatureCutTime extends SignTimeSignature {
 
-    public TimeSignatureCutTime(NotationType notationType) {
-    		super(notationType);
+    public TimeSignatureCutTime() {
+    		super(NotationType.eModern);
     }
 
 	@Override
 	public SignTimeSignature clone() {
-		return new TimeSignatureCutTime(notationType);
+		return new TimeSignatureCutTime();
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public class ScoreLayerTest {
         ScoreSong song = new ScoreSong();
         Staff staff = new Pentagram(song, "1", 1);
         staff.setNotationType(NotationType.eModern);
-        TimeSignatureCommonTime ts = new TimeSignatureCommonTime(NotationType.eModern);
+        TimeSignatureCommonTime ts = new TimeSignatureCommonTime();
         Measure measure = new Measure(song);
         song.addMeasure(Time.TIME_ZERO, measure);
         measure.setEndTime(ts.getDuration()); // TODO: 23/9/17 ¿No se debería poner sólo? Hay que verlo y que no choque con los importadores

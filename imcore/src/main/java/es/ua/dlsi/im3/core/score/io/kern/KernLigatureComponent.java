@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.io.kern;
 
+import es.ua.dlsi.im3.core.score.LigatureType;
 import es.ua.dlsi.im3.core.score.SimpleNote;
 
 import java.util.Objects;

@@ -28,13 +28,13 @@ import es.ua.dlsi.im3.core.score.TimeSignature;
  */
 public class TimeSignatureCommonTime extends SignTimeSignature {
 
-    public TimeSignatureCommonTime(NotationType notationType) {
-    		super(notationType);
+    public TimeSignatureCommonTime() {
+    		super(NotationType.eModern);
     }
 
 	@Override
 	public SignTimeSignature clone() {
-		return new TimeSignatureCommonTime(notationType);
+		return new TimeSignatureCommonTime();
 	}
 
 	@Override

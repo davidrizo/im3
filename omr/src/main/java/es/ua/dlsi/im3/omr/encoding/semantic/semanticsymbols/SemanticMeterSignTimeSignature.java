@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
+import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.core.score.TimeSignature;
 import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
@@ -14,8 +15,8 @@ import java.util.List;
  * @autor drizo
  */
 public class SemanticMeterSignTimeSignature extends SemanticTimeSignature<SignTimeSignature> {
-    public SemanticMeterSignTimeSignature(MeterSigns meterSign) throws IM3Exception {
-        super((SignTimeSignature) ImportFactories.processMeter(meterSign.toSemanticString(), null, null));
+    public SemanticMeterSignTimeSignature(NotationType notationType, MeterSigns meterSign) throws IM3Exception {
+        super((SignTimeSignature) ImportFactories.processMeter(meterSign.toSemanticString(), null, null, notationType));
     }
 
     public SemanticMeterSignTimeSignature(SignTimeSignature coreSymbol) {

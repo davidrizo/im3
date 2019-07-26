@@ -27,7 +27,7 @@ public class TempusPerfectumCumProlationePerfecta extends TimeSignatureMensural 
 
     @Override
     public String getSignString() {
-        return "O·";
+        return "O.";
     }
 
     @Override

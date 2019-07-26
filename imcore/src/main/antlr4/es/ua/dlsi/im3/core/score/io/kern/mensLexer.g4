@@ -117,7 +117,6 @@ RIGHT_BRACKET: ']';
 OCTOTHORPE: '#';
 MINUS: '-';
 EQUAL: '=';
-CENTER_DOT: '·';
 DOT: '.';
 PIPE: '|';
 GRAVE_ACCENT: '`';

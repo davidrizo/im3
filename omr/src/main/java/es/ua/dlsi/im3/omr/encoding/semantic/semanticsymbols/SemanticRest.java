@@ -22,6 +22,7 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
     protected static final String TUPLET = "tuplet";
 
     boolean fermata;
+    Integer linePosition;
 
 
     public SemanticRest(Figures figures, int dots, boolean fermata, Integer tupletNumber) {
@@ -32,6 +33,15 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
     public SemanticRest(SimpleRest coreSymbol) {
         super(coreSymbol.clone());
         this.fermata = coreSymbol.getAtomFigure().getFermata() != null;
+    }
+
+    public Integer getLinePosition() {
+        return linePosition;
+    }
+
+    public void setLinePosition(Integer linePosition) {
+        this.linePosition = linePosition;
+        this.coreSymbol.setLinePosition(linePosition);
     }
 
     @Override

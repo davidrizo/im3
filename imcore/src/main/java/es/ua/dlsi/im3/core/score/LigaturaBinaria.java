@@ -10,7 +10,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  * in the notes it contains.
  * The therm LigatureBinaria comes from Willi Apel, page. 91
  * @author drizo
- *
+ * @deprecated Use Ligature
  */
 public abstract class LigaturaBinaria extends Atom {
 	/**

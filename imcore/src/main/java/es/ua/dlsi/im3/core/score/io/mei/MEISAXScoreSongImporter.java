@@ -531,7 +531,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						}
 
 						if (meterCount != null || meterUnit != null || meterSym != null || modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null) {
-							processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+							processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr, lastStaff.getNotationType());
 						}
 						String staffKeySig = getOptionalAttribute(attributesMap, "key.sig");
 						String staffKeyMode = getOptionalAttribute(attributesMap, "key.mode");
@@ -856,6 +856,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					}*/
 						break;
 
+						// TODO vertical rest position using loc
 					case "rest":
 						xmlid = getOptionalAttribute(attributesMap, "xml:id");
 						dotsStr = getOptionalAttribute(attributesMap, "dots");
@@ -1176,17 +1177,18 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	 * @param modusminorStr
 	 * @param tempusStr
 	 * @param prolatioStr
-	 * @throws IM3Exception 
+	 * @param notationType
+	 * @throws IM3Exception
 	 * @throws ImportException 
 	 */
 	private void processMeter(String xmlid, Staff staff, String meterSym, String meterCount, String meterUnit,
-			String modusmaiorStr, String modusminorStr, String tempusStr, String prolatioStr) throws ImportException, IM3Exception {
+							  String modusmaiorStr, String modusminorStr, String tempusStr, String prolatioStr, NotationType notationType) throws ImportException, IM3Exception {
 		TimeSignature timeSignature;
 		TimeSignatureMensural mensuralMeter = processPossibleMensuralMeter(modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
 		if (mensuralMeter != null) {
 			timeSignature = mensuralMeter;
 		} else {
-			timeSignature = ImportFactories.processMeter(meterSym, meterCount, meterUnit);
+			timeSignature = ImportFactories.processMeter(meterSym, meterCount, meterUnit, notationType);
 			timeSignature.setStaff(lastStaff);
 		}
 		if (staff == null) {
@@ -1319,6 +1321,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	 * @throws IM3Exception
 	 */
 	private TimeSignatureMensural processPossibleMensuralMeter(String modusmaiorStr, String modusminorStr, String tempusStr, String prolatioStr) throws ImportException, IM3Exception {
+		//TODO Procesar compases C, C| .... Ver MEISongExporter
 		if (modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null) {
 			// mensural		
 			Perfection modusMaior = convertMeiMensuralPerfectionNumber(modusmaiorStr);
@@ -1726,7 +1729,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				break;
 			case "scoreDef":
 				if (lastMeterCount != null ||  lastProlatioStr != null) {
-					processMeter(null, null, lastMeterSym, lastMeterCount, lastMeterUnit, lastModusmaiorStr, lastModusminorStr, lastTempusStr, lastProlatioStr);					
+					processMeter(null, null, lastMeterSym, lastMeterCount, lastMeterUnit, lastModusmaiorStr, lastModusminorStr, lastTempusStr, lastProlatioStr, lastStaff.getNotationType());
 				}
 				if (lastKeySig != null) {
 					processKey(null, null, lastKeySig, lastKeyMode, null, null);
@@ -1928,7 +1931,15 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
                 break;
             case "ligature":
-                LigaturaBinaria ligature = LigatureFactory.createLigature(ligatureElements);
+            	LigatureType ligatureType;
+            	if (ligatureForm.equals("recta")) {
+            		ligatureType = LigatureType.recta;
+				} else if (ligatureForm.equals("obliqua")) {
+					ligatureType = LigatureType.obliqua;
+				} else {
+            		throw new ImportException("Expected 'recta' or 'obliqua' for ligature form and found '"+ ligatureForm + "'");
+				}
+                Ligature ligature = LigatureFactory.createLigature(ligatureElements, ligatureType);
                 ligatureElements = null;
                 addElementToVoiceStaffOrTupletOrLigature(ligature, ligatureXMLID, null, lastStaff);
                 break;

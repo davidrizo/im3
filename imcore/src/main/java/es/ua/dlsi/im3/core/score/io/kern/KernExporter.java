@@ -395,11 +395,18 @@ public class KernExporter {
                 }
                 return noteStr;
             } else if (atom instanceof SimpleRest) {
-                if (((SimpleRest) atom).getAtomFigure().getFermata() != null) {
-                    return duration + "r;";
+                SimpleRest rest = (SimpleRest) atom;
+                String restResult;
+                if (rest.getAtomFigure().getFermata() != null) {
+                    restResult = duration + "r;";
                 } else {
-                    return duration + "r";
+                    restResult = duration + "r";
                 }
+
+                if (rest.getLinePosition() != null) {
+                    restResult += "_" + rest.getLinePosition();
+                }
+                return restResult;
 
             } else if (atom instanceof SimpleChord) {
                 StringBuilder cb = new StringBuilder();
@@ -438,6 +445,7 @@ public class KernExporter {
     private void encodeAtom(ArrayList<String> record, Atom atom) throws IM3Exception, ExportException {
         record.add(encodeAtom(atom));
     }
+
 
     private static String generateNote(AtomPitch atomPitch, String duration) throws ExportException {
         //TODO Ver ligadas en acordes

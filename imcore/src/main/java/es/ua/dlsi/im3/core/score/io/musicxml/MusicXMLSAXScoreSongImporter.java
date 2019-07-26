@@ -862,7 +862,7 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				processTransposition();
 				break;
 			case "time":
-				createTimeSignature();
+				createTimeSignature(NotationType.eModern);
 				break;
 			case "clef":
 				createClef();
@@ -973,8 +973,8 @@ public class MusicXMLSAXScoreSongImporter extends XMLSAXScoreSongImporter {
 		}		
 	}
 
-	private void createTimeSignature() throws ImportException, IM3Exception {
-		lastTimeSignature = ImportFactories.processMeter(meterSymbol, meterBeats, meterBeatType);
+	private void createTimeSignature(NotationType notationType) throws ImportException, IM3Exception {
+		lastTimeSignature = ImportFactories.processMeter(meterSymbol, meterBeats, meterBeatType, notationType);
 		addElementToMeasure(lastTimeSignature);		
 		meterBeatType = null;
 		meterBeats = null;

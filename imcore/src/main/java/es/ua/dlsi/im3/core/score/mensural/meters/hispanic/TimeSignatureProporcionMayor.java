@@ -66,6 +66,6 @@ public class TimeSignatureProporcionMayor extends TimeSignatureMensural {
 
 	@Override
 	public String getSignString() {
-		return "C/32";
+		return "C|3/2";
 	}
 }

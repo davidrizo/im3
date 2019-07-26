@@ -8,6 +8,7 @@ import es.ua.dlsi.im3.core.score.ScoreSong;
 import es.ua.dlsi.im3.core.score.Time;
 import es.ua.dlsi.im3.core.score.TimeSignature;
 import es.ua.dlsi.im3.core.score.clefs.*;
+import es.ua.dlsi.im3.core.score.mensural.meters.*;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
@@ -159,7 +160,7 @@ public class ImportFactories {
 	}*/
 
 	public static TimeSignature processMeter(String meterSym, String meterCount, 
-			String meterUnit) throws ImportException, IM3Exception {
+			String meterUnit, NotationType notationType) throws ImportException, IM3Exception {
 		TimeSignature ts = null;
 		
 		if (meterSym != null) {
@@ -167,11 +168,23 @@ public class ImportFactories {
 				case "common":
 				case "ct":
 				case "Ct":
-					ts = new TimeSignatureCommonTime(null);
+					if (notationType == NotationType.eModern) {
+						ts = new TimeSignatureCommonTime();
+					} else if (notationType == NotationType.eMensural) {
+						ts = new TempusImperfectumCumProlationeImperfecta();
+					} else {
+						throw new ImportException("Unsupported notation type: " + notationType);
+					}
 					break;
 				case "cut":
 				case "Ccut":
-					ts = new TimeSignatureCutTime(null);
+					if (notationType == NotationType.eModern) {
+						ts = new TimeSignatureCommonTime();
+					} else if (notationType == NotationType.eMensural) {
+						ts = new TempusImperfectumCumProlationeImperfectaDiminutum();
+					} else {
+						throw new ImportException("Unsupported notation type: " + notationType);
+					}
 					break;
 				case "CZ":
 				case "cz": //TODO David
@@ -179,6 +192,17 @@ public class ImportFactories {
 					break;
 				case "CcutZ": //TODO David
 					ts = new TimeSignatureProporcionMayor();
+					break;
+				case "O":
+					ts = new TempusPerfectumCumProlationeImperfecta();
+					break;
+				case "O.":
+				case "Odot":
+					ts = new TempusPerfectumCumProlationePerfecta();
+					break;
+				case "C.":
+				case "Cdot":
+					ts = new TempusImperfectumCumProlationePerfecta();
 					break;
 				default:
 					throw new ImportException("Unknown symbol type for meter: '" + meterSym + "'");

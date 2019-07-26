@@ -6,13 +6,14 @@ import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 
 import java.util.List;
 
+//TODO Duraciones
 /**
- * Visually rendered as C with a dot inside
- * 1 breve = 2 semibreves, 1 semibreve = 3 minim
+ * Visually rendered as cut time (see https://en.wikipedia.org/wiki/Mensural_notation, unicode U+1D1CD)
+ * 1 breve = 2 semibreves, 1 semibreve = 2 minim
  */
-public class TempusImperfectumCumProlationePerfecta extends TimeSignatureMensural {
-    public TempusImperfectumCumProlationePerfecta() {
-        super(Perfection.imperfectum, Perfection.perfectum);
+public class TempusImperfectumCumProlationeImperfectaDiminutum extends TimeSignatureMensural {
+    public TempusImperfectumCumProlationeImperfectaDiminutum() {
+        super(Perfection.imperfectum, Perfection.imperfectum);
     }
 
     @Override
@@ -22,12 +23,12 @@ public class TempusImperfectumCumProlationePerfecta extends TimeSignatureMensura
 
     @Override
     public SignTimeSignature clone() {
-        return new TempusImperfectumCumProlationePerfecta();
+        return new TempusImperfectumCumProlationeImperfectaDiminutum();
     }
 
     @Override
     public String getSignString() {
-        return "C.";
+        return "C|";
     }
 
     @Override

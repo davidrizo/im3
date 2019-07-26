@@ -42,7 +42,7 @@ public class MensuralToModernTest {
         part.setName("Soprano");
         part.addStaff(staff);
         ScoreLayer layer = part.addScoreLayer(staff);
-        TimeSignatureCommonTime ts = new TimeSignatureCommonTime(NotationType.eMensural);
+        TimeSignatureCommonTime ts = new TimeSignatureCommonTime();
         KeySignature ks = new KeySignature(NotationType.eMensural, new Key(PitchClasses.F, Mode.MAJOR));
         Clef clef = new ClefG2();
         staff.addElementWithoutLayer(clef);
