@@ -226,7 +226,8 @@ separationDot: COLON;
 
 custos: TANDEM_CUSTOS noteName alteration?;
 
-note:  beforeNote duration noteName (alteration alterationVisualMode?)? afterNote;
+//note:  beforeNote duration noteName (alteration alterationVisualMode?)? afterNote;
+note:  beforeNote duration noteName (alteration editorialAccidental?)? afterNote;
 
 beforeNote:  //TODO Regla semantica (boolean) para que no se repitan
     (slurStart
@@ -247,7 +248,8 @@ bassNotes: upperCasePitch+;
 alteration: OCTOTHORPE | (OCTOTHORPE OCTOTHORPE) | MINUS | (MINUS MINUS) | CHAR_n;
 
 // x is show, xx is shows editorial
-alterationVisualMode: CHAR_x CHAR_x?;
+//alterationVisualMode: CHAR_x CHAR_x?;
+editorialAccidental: (CHAR_y CHAR_y?) | (CHAR_Y CHAR_Y?);
 
 afterNote:
 	     (slurEnd | stem| ligatureEnd | beam | pause | barLineCrossedNoteEnd)*;

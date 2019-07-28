@@ -127,7 +127,7 @@ public class TestScoreUtils {
                 }
             }
 
-            assertEquals("Staff " + name + atomName+ ", optional accidental, expected = " + songTypeOfExpected, noteA.getAtomPitch().isOptionalAccidental(), noteB.getAtomPitch().isOptionalAccidental());
+            assertEquals("Staff " + name + atomName+ ", optional accidental, expected = " + songTypeOfExpected, noteA.getAtomPitch().isEditorialAccidental(), noteB.getAtomPitch().isEditorialAccidental());
             assertEquals("Staff " + name + atomName+ ", tied from previous, expected = " + songTypeOfExpected, noteA.getAtomPitch().isTiedFromPrevious(), noteB.getAtomPitch().isTiedFromPrevious());
             assertEquals("Staff " + name + atomName+ ", colored, expected = " + songTypeOfExpected, noteA.getAtomFigure().isColored(), noteB.getAtomFigure().isColored());
 
@@ -143,7 +143,7 @@ public class TestScoreUtils {
             assertEquals("Staff " + name + ", atom #" + i + ", number of ligature notes, expected " + songTypeOfExpected, la.getAtoms().size(), lb.getAtoms().size());
             for (int ia=0; ia<la.getAtoms().size(); ia++) {
                 assertEquals("Staff " + name + ", ligature atom #" + i + ", subelement " + ia + ", pitch, expected = " + songTypeOfExpected, la.getAtomPitches().get(ia).getScientificPitch(), lb.getAtomPitches().get(ia).getScientificPitch());
-                assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", optional accidental, expected = " + songTypeOfExpected, la.getAtomPitches().get(ia).isOptionalAccidental(), lb.getAtomPitches().get(ia).isOptionalAccidental());
+                assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", optional accidental, expected = " + songTypeOfExpected, la.getAtomPitches().get(ia).isEditorialAccidental(), lb.getAtomPitches().get(ia).isEditorialAccidental());
                 assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", colored, expected = " + songTypeOfExpected, la.getAtomFigures().get(ia).isColored(), lb.getAtomFigures().get(ia).isColored());
                 assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", duration, expected = " + songTypeOfExpected, la.getAtomFigures().get(ia).getDuration(), lb.getAtomFigures().get(ia).getDuration());
                 assertEquals("Staff " + name + ", ligature atom #" + ", subelement " + ia + + i + ", figure, expected = " + songTypeOfExpected, la.getAtomFigures().get(ia).getFigure(), lb.getAtomFigures().get(ia).getFigure());

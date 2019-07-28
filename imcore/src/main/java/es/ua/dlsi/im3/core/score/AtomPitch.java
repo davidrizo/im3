@@ -18,19 +18,28 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 	private AtomPitch tiedToNext;
     // TODO: 1/5/18 Possibly we should refactor accidental things to other class
 	/**
-	 * Force this accidental to appear, even it is different from that in the pitch. We encode it different from MEI.
-     * In MEI acc means the shown accidental, and acc.ges denote the played one. We prefer encoding the played one in
+	 * Force this accidental to appear, even it is different from that in the pitch (this may happen in mensural notation).
+	 * We encode it different from MEI. In MEI acc means the shown accidental, and acc.ges denote the played one. We prefer encoding the played one in
      * the pitch and optionally encode the written one if it is different
 	 */
 	private Accidentals writtenExplicitAccidental;
+
     /**
-     * The editor may want to show it is optional
+     * Editorial accidental
      */
-	private boolean optionalAccidental;
+	private boolean editorialAccidental;
+	/**
+	 * Implied by the context
+	 */
+	private boolean fictaAccidental;
     /**
      * The editor may want to hide it (played using the accidental but accidental not shown)
      */
     private boolean hideAccidental;
+	/**
+	 * The editor may want to hide it (played using the accidental but accidental not shown)
+	 */
+	private boolean cautionaryAccidental;
 
 	/**
 	 * For pitches that are not contained in the same staff as the atom they belong to
@@ -363,12 +372,12 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
         // TODO: 15/3/18 ¿Y si se cambia el accidental? 
     }
 
-    public boolean isOptionalAccidental() {
-        return optionalAccidental;
+    public boolean isEditorialAccidental() {
+        return editorialAccidental;
     }
 
-    public void setOptionalAccidental(boolean optionalAccidental) {
-        this.optionalAccidental = optionalAccidental;
+    public void setEditorialAccidental(boolean editorialAccidental) {
+        this.editorialAccidental = editorialAccidental;
     }
 
     public boolean isHideAccidental() {
@@ -378,4 +387,20 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
     public void setHideAccidental(boolean hideAccidental) {
         this.hideAccidental = hideAccidental;
     }
+
+	public boolean isFictaAccidental() {
+		return fictaAccidental;
+	}
+
+	public void setFictaAccidental(boolean fictaAccidental) {
+		this.fictaAccidental = fictaAccidental;
+	}
+
+	public boolean isCautionaryAccidental() {
+		return cautionaryAccidental;
+	}
+
+	public void setCautionaryAccidental(boolean cautionaryAccidental) {
+		this.cautionaryAccidental = cautionaryAccidental;
+	}
 }

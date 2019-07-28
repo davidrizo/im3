@@ -1868,6 +1868,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 }*/
 
 
+                //TODO Ficta, editorial, cautionary (as done in MEIExporter)
                 Accidentals accidObj = lastAccidObj;
                 if (previousAccidental != null && lastAccidObj == null) {
                     lastAccidObj = previousAccidental;

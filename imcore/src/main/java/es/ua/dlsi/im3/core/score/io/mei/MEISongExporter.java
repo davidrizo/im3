@@ -1412,7 +1412,7 @@ public class MEISongExporter implements ISongExporter {
 				/*if (!multiplePitches) {
 					fillDurationParams(atomFigure, noteParams);
 				}*/
-				processPitchesParams(atomPitch, noteParams, atomFigure.getLayer());
+				StringBuilder accidElement = processPitchesParams(atomPitch, noteParams, atomFigure.getLayer());
 
                 if (atomPitch.getAtomFigure().getAtom() instanceof SimpleNote) {
                     if (((SimpleNote) atomPitch.getAtomFigure().getAtom()).isGrace()) { //TODO Other types
@@ -1421,7 +1421,7 @@ public class MEISongExporter implements ISongExporter {
                     }
                 }
 
-                if (atomPitch.getLyrics() == null || atomPitch.getLyrics().isEmpty()) {
+                if (accidElement == null && (atomPitch.getLyrics() == null || atomPitch.getLyrics().isEmpty())) {
                     XMLExporterHelper.startEnd(sb, tabs+1, "note", noteParams);
                 } else {
 				    XMLExporterHelper.start(sb, tabs+1, "note", noteParams);
@@ -1439,6 +1439,7 @@ public class MEISongExporter implements ISongExporter {
                             XMLExporterHelper.end(sb, tabs+2, "verse");
                         }
                     }
+					XMLExporterHelper.add(sb, tabs+2, accidElement.toString());
                     XMLExporterHelper.end(sb, tabs+1, "note");
                 }
             }
@@ -1494,9 +1495,19 @@ public class MEISongExporter implements ISongExporter {
 		}*/
 		
 	}
-	private void processPitchesParams(AtomPitch atomPitch, ArrayList<String> params, ScoreLayer layer) throws IM3Exception {
+
+	/**
+	 *
+	 * @param atomPitch
+	 * @param params
+	 * @param layer
+	 * @return optional outputAccidElement
+	 * @throws IM3Exception
+	 */
+	private StringBuilder processPitchesParams(AtomPitch atomPitch, ArrayList<String> params, ScoreLayer layer) throws IM3Exception {
 		//TODO addConnectors(atomPitch.getAtomFigure(), layer);
-		
+		StringBuilder outputAccidElement = null;
+
 		if (atomPitch.getStaffChange() != null) {
 			params.add("staff");
 			params.add(getNumber(atomPitch.getStaffChange()));
@@ -1524,7 +1535,30 @@ public class MEISongExporter implements ISongExporter {
             System.out.println("Aqui");
         }*/
         boolean addToPreviousAccidentals = false;
-        if (atomPitch.getWrittenExplicitAccidental() != null) {
+        // TODO ver con tests unitarios
+		if (atomPitch.isFictaAccidental()) {
+			outputAccidElement = new StringBuilder();
+			ArrayList<String> aparams = new ArrayList<>();
+			aparams.add("accid");
+			aparams.add(generateAccidental(pitchAccidental));
+			aparams.add("func");
+			aparams.add("edit");
+			aparams.add("enclose");
+			aparams.add("brack");
+			XMLExporterHelper.startEnd(outputAccidElement, 0, "accid", aparams);
+			addToPreviousAccidentals = false;
+		} else if (atomPitch.isCautionaryAccidental()) {
+			outputAccidElement = new StringBuilder();
+			ArrayList<String> aparams = new ArrayList<>();
+			aparams.add("accid");
+			aparams.add(generateAccidental(pitchAccidental));
+			aparams.add("func");
+			aparams.add("caution");
+			aparams.add("enclose");
+			aparams.add("paren");
+			XMLExporterHelper.startEnd(outputAccidElement, 0, "accid", aparams);
+			addToPreviousAccidentals = false;
+		} else if (atomPitch.getWrittenExplicitAccidental() != null) {
             params.add("accid");
             params.add(generateAccidental(atomPitch.getWrittenExplicitAccidental()));
 
@@ -1546,6 +1580,7 @@ public class MEISongExporter implements ISongExporter {
             params.add(generateAccidental(pitchAccidental));
             addToPreviousAccidentals = true;
         }
+
 
         if (addToPreviousAccidentals) {
             previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
@@ -1615,6 +1650,7 @@ public class MEISongExporter implements ISongExporter {
 			params.add("mfunc");
 			params.add(atomPitch.getMelodicFunction().name().substring(2).toLowerCase()); // from mfSUS to sus
 		}
+		return outputAccidElement;
 	}
 
 	private String generateAccidental(Accidentals accidental) throws ExportException {

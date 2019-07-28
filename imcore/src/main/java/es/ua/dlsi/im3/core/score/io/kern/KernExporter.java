@@ -555,7 +555,17 @@ public class KernExporter {
     }
 
     private static String generatePitch(AtomPitch pitch) throws ExportException {
-        return generatePitch(pitch.getScientificPitch());
+        String result = generatePitch(pitch.getScientificPitch());
+        if (pitch.isHideAccidental()) {
+            result += "y";
+        } else if (pitch.isCautionaryAccidental()) {
+            result += "yy";
+        } else if (pitch.isFictaAccidental()) {
+            result += "Y";
+        } else if (pitch.isEditorialAccidental()) {
+            result += "YY";
+        }
+        return result;
     }
 
     public static String generatePitch(ScientificPitch scientificPitch) throws ExportException {

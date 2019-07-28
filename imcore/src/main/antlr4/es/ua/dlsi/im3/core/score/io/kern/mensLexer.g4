@@ -85,6 +85,7 @@ CHAR_Q: 'Q';
 CHAR_R: 'R';
 CHAR_S: 'S';
 CHAR_X: 'X';
+CHAR_Y: 'Y';
 CHAR_T: 'T';
 CHAR_U: 'U';
 CHAR_i: 'i';
@@ -97,6 +98,7 @@ CHAR_t: 'r';
 CHAR_u: 'u';
 CHAR_v: 'v';
 CHAR_x: 'x';
+CHAR_y: 'y';
 
 LOWERCASE_PITCH_CHARACTER: 'a' .. 'g';
 

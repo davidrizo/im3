@@ -584,13 +584,32 @@ public class MensImporter {
                 note.setExplicitStemDirection(lastStemDirection);
             }
 
-            if (ctx.alterationVisualMode() != null) {
+            /*if (ctx.alterationVisualMode() != null) {
                 switch (ctx.alterationVisualMode().getText()) {
                     case "x":
                         note.setWrittenExplicitAccidental(scientificPitch.getPitchClass().getAccidental());
                         break;
                     case "xx":
                         throw new UnsupportedOperationException("TO-DO Editorial accidental");
+                }
+            }*/
+            // TODO Ver con **mens de Craig
+            if (ctx.editorialAccidental() != null) {
+                switch (ctx.editorialAccidental().getText()) {
+                    case "y":
+                        note.getAtomPitch().setHideAccidental(true);
+                        break;
+                    case "yy":
+                        note.getAtomPitch().setCautionaryAccidental(true);
+                        break;
+                    case "Y":
+                        note.getAtomPitch().setFictaAccidental(true);
+                        break;
+                    case "YY":
+                        note.getAtomPitch().setEditorialAccidental(true);
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("Unsupported editorial accidental: " + ctx.editorialAccidental().getText());
                 }
             }
 

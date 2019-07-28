@@ -34,6 +34,9 @@ public class SimpleNote extends SingleFigureAtom {
 			this.getAtomFigure().setComputedMensuralPerfection(simpleNote.getAtomFigure().getMensuralPerfection(), simpleNote.getAtomFigure().getPerfectionRuleApplied());
 		}
 		this.setWrittenExplicitAccidental(simpleNote.getWrittenExplicitAccidental());
+		this.getAtomPitch().setFictaAccidental(simpleNote.getAtomPitch().isFictaAccidental());
+		this.getAtomPitch().setCautionaryAccidental(simpleNote.getAtomPitch().isCautionaryAccidental());
+		this.getAtomPitch().setHideAccidental(simpleNote.getAtomPitch().isHideAccidental());
 		this.getAtomFigure().setFollowedByMensuralDivisionDot(simpleNote.getAtomFigure().isFollowedByMensuralDivisionDot());
 		this.setExplicitStemDirection(simpleNote.getExplicitStemDirection());
 		//TODO otros parámetros?

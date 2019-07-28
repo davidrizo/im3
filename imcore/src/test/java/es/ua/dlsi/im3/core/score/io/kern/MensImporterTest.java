@@ -115,6 +115,7 @@ public class MensImporterTest {
         assertEquals("Field comment", new KernFieldComment("Field comment"), humdrumMatrix.get(row, 0).getParsedObject());
         row++;
 
+        //TODO - usamos r_3
         assertEquals("!LO:R:v=L2", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         assertEquals("Rest position", new KernRestPosition(PositionsInStaff.LINE_2), humdrumMatrix.get(row, 0).getParsedObject());
         row++;

@@ -130,7 +130,6 @@ public class XMLExporterHelper {
 		}
 	}
 
-
     public static void add(StringBuilder sb, int tabs, String ...content) {
 		for (int i=0; i<tabs; i++) {
 			sb.append('\t');			
