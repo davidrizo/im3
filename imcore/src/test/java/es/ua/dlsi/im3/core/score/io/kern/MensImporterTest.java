@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
+import es.ua.dlsi.im3.core.score.mensural.meters.ProportioTripla;
 import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.utils.FileUtils;
 import org.antlr.v4.runtime.CharStream;
@@ -58,7 +59,7 @@ public class MensImporterTest {
         MensImporter importer = new MensImporter();
         File file = TestFileUtils.getFile("/testdata/core/score/io/kern/mens_grammar_test.krn");
         HumdrumMatrix humdrumMatrix = importer.importMens(file);
-        assertEquals("Size", 29, humdrumMatrix.getMatrix().size());
+        assertEquals("Size", 30, humdrumMatrix.getMatrix().size());
         int row = 0;
         assertEquals("**mens", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         row++;
@@ -124,11 +125,12 @@ public class MensImporterTest {
         assertEquals("Brevis rest", new SimpleRest(Figures.BREVE, 0), humdrumMatrix.get(row, 0).getParsedObject());
         row++;
 
-        assertEquals("s~pA#x", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        //assertEquals("s~pA#x", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        assertEquals("s~pA#", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         SimpleNote simpleNote = new SimpleNote(Figures.SEMIBREVE, 0, new ScientificPitch(PitchClasses.A_SHARP, 3));
         simpleNote.getAtomFigure().setColored(true);
         simpleNote.getAtomFigure().setExplicitMensuralPerfection(Perfection.perfectum);
-        simpleNote.setWrittenExplicitAccidental(Accidentals.SHARP);
+        // simpleNote.setWrittenExplicitAccidental(Accidentals.SHARP);
         assertEquals("Semibrevis perect colored A", simpleNote, humdrumMatrix.get(row, 0).getParsedObject());
         row++;
 
@@ -175,6 +177,11 @@ public class MensImporterTest {
         assertEquals("Sa]", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         KernLigatureComponent rectaLigatureComponent3 = new KernLigatureComponent(LigatureStartEnd.end, LigatureType.recta, new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.A, 3)));
         assertEquals("Brevis ligature end", rectaLigatureComponent3, humdrumMatrix.get(row, 0).getParsedObject());
+        row++;
+
+
+        assertEquals("*met(3)", humdrumMatrix.get(row, 0).getHumdrumEncoding());
+        assertTrue("*met(3)", humdrumMatrix.get(row, 0).getParsedObject() instanceof ProportioTripla);
         row++;
 
 

@@ -357,13 +357,13 @@ public class MEISongExporter implements ISongExporter {
 		result.add(ID);
 		if (boundingBox != null) {
 			result.add("ulx");
-			result.add(Double.toString(boundingBox.getFromX()));
+			result.add(Long.toString(Math.round(boundingBox.getFromX())));
 			result.add("uly");
-			result.add(Double.toString(boundingBox.getFromY()));
+			result.add(Long.toString(Math.round(boundingBox.getFromY())));
 			result.add("lrx");
-			result.add(Double.toString(boundingBox.getToX()));
+			result.add(Long.toString(Math.round(boundingBox.getToX())));
 			result.add("lry");
-			result.add(Double.toString(boundingBox.getToY()));
+			result.add(Long.toString(Math.round(boundingBox.getToY())));
 		}
 		return result;
 	}
@@ -635,6 +635,10 @@ public class MEISongExporter implements ISongExporter {
 				params.add("O");
 				params.add("mensur.dot");
 				params.add("true");
+				break;
+			case "es.ua.dlsi.im3.core.score.mensural.meters.ProportioTripla":
+				params.add("num");
+				params.add("3");
 				break;
 			default:
 				throw new ExportException("Unsupported proportion sign:" + mm.getClass());

@@ -25,7 +25,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
  *
  * @author drizo
  */
-public abstract class Clef implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSet, IStaffElementWithoutLayer {
+public abstract class Clef implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSetter, IStaffElementWithoutLayer {
     private final PositionInStaff[] flatPositions;
     private final PositionInStaff[] sharpPositions;
     DiatonicPitch note;

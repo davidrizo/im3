@@ -15,13 +15,14 @@
 !Field comment	!Comment
 !LO:R:v=L2	Layout command, rest at second line
 Sr	Semibrevis rest
-s~pA#x	Coloured perfect semibrevis, A sharp explicitly shown
+s~pA#	Coloured perfect semibrevis
 <Sc	Ligature start, semibrevis C, oblique shape
 Le	Ligature continuation, longa E, oblique shape
 Sd>	Ligature end, brevis d
 [Sf	Ligature start, semibrevis F, recta shape
 Lg	Ligature continuation, longa G, recta shape
 Sa]	Ligature end, brevis A
+*met(3)	Mensuration change
 Mi:E	Minima imperfect with a division dot after it
 s:ff	Semibreve with division dot
 *custosb	Custos on note b4

@@ -29,7 +29,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  *
  * @author drizo
  */
-public class KeySignature implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSet, IUniqueIDObject, IStaffElementWithoutLayer {
+public class KeySignature implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSetter, IUniqueIDObject, IStaffElementWithoutLayer {
 	List<KeySignatureAccidentalElement> accidentals;
 	private Accidentals accidental;
     NotationType notationType;

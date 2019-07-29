@@ -292,6 +292,9 @@ public class MensImporter {
                     case "C|3/2":
                         ts = new TimeSignatureProporcionMayor();
                         break;
+                    case "3":
+                        ts = new ProportioTripla();
+                        break;
                     default:
                         throw new IM3Exception("Unsupported meter sign: '" + ctx.getText() + "'");
                 }

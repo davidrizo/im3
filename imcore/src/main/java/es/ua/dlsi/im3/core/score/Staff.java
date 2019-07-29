@@ -471,15 +471,18 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
 	public void addElementWithoutLayer(IStaffElementWithoutLayer element) throws IM3Exception {
 		//TODO Algo más elegante - AÑADIR TIEMPO
+		if (element instanceof ITimedElementWithSetter) {
+			ITimedElementWithSetter elementWithSetter = (ITimedElementWithSetter) element;
+			if (elementWithSetter.getTime() == null) {
+				elementWithSetter.setTime(this.getDuration());
+			}
+		}
+
 		if (element instanceof Clef) {
 			addClef((Clef) element);
 		}
 
 		if (element instanceof Custos) {
-			Custos custos = (Custos) element;
-			if (custos.getTime() == null) {
-				custos.setTime(this.getDuration());
-			}
 			addCustos((Custos) element);
 		}
 

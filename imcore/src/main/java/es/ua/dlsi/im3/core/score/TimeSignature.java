@@ -23,7 +23,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  *
  * @author drizo
  */
-public abstract class TimeSignature implements INotationTypeDependant, ITimedElementInStaff, IUniqueIDObject, IStaffElementWithoutLayer {
+public abstract class TimeSignature implements INotationTypeDependant, ITimedElementInStaff, IUniqueIDObject, IStaffElementWithoutLayer, ITimedElementWithSetter {
 	protected Time time;
 	private String ID;	
 	protected NotationType notationType;
@@ -31,7 +31,7 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
 	
     public TimeSignature(NotationType notationType) {
     		this.notationType = notationType;
-    		this.time = new Time();
+    		this.time = null;
     }
 
     @Override
@@ -54,6 +54,7 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
 		this.staff = staff;		
 	}
 
+	@Override
 	public void setTime(Time time) {
 		this.time = time;
 	}
@@ -104,7 +105,7 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
      * @return Integer value if it starts in a beat, float value with decimals
      * if the onset is located between two beats. It starts from 0
      */
-    public int getIntegerBeat(Time onset) throws IM3Exception {
+    public int getIntegerBeat(Time onset)  {
         //return (int) Math.IEEEremainder(onset, getMeasureDuration(resolution));
         //return (int) (onset  % getMeasureDuration(resolution));
         return (int) getBeat(onset); //TODO Pruebas unitarias

@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Used (usually in mensural notation) as a mark
  */
-public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSet, IStaffElementWithoutLayer {
+public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSetter, IStaffElementWithoutLayer {
     Staff staff;
     Time time;
 

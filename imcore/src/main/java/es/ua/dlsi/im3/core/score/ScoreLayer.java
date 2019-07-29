@@ -143,8 +143,8 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 			if (timedElementInStaff instanceof Atom) {
 				currentTime = insert(time, (Atom) timedElementInStaff);
 			} else {
-				if (timedElementInStaff instanceof ITimedElementWithSet) {
-					((ITimedElementWithSet) timedElementInStaff).setTime(currentTime);
+				if (timedElementInStaff instanceof ITimedElementWithSetter) {
+					((ITimedElementWithSetter) timedElementInStaff).setTime(currentTime);
 				}
 			}
 			staff.addTimedElementInStaff(timedElementInStaff);

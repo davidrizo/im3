@@ -4,7 +4,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
 
 import java.util.Objects;
 
-public class Custos implements ITimedElementInStaff, ITimedElementWithSet, IStaffElementWithoutLayer {
+public class Custos implements ITimedElementInStaff, ITimedElementWithSetter, IStaffElementWithoutLayer {
     ScientificPitch scientificPitch;
     Staff staff;
     Time time;
