@@ -4,6 +4,8 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.dfa.Token;
 import es.ua.dlsi.im3.core.score.ScoreLayer;
 
+import java.util.ArrayList;
+
 /**
  * @autor drizo
  */

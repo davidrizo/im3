@@ -15,7 +15,9 @@ import org.antlr.v4.runtime.CharStreams;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -195,7 +197,9 @@ public class MensImporterTest {
         assertEquals("s:ff", humdrumMatrix.get(row, 0).getHumdrumEncoding());
         assertTrue("Semibreve", humdrumMatrix.get(row, 0).getParsedObject() instanceof SimpleNote);
         SimpleNote simpleNote3 = (SimpleNote) humdrumMatrix.get(row, 0).getParsedObject();
-        assertTrue("Semibreve with a division dot", simpleNote3.getAtomFigure().isFollowedByMensuralDivisionDot());
+        assertTrue("Semibreve with division dot and associated IDS", simpleNote3.getAtomFigure().isFollowedByMensuralDivisionDot());
+        List<Long> expectedIDS = Arrays.asList(23L, 24L);
+        assertEquals("Associated IDS", expectedIDS, humdrumMatrix.get(row, 0).getAssociatedIDS());
         row++;
 
         assertEquals("*custosb", humdrumMatrix.get(row, 0).getHumdrumEncoding());

@@ -22,6 +22,8 @@ public class AgnosticSymbol extends AgnosticToken {
      */
     private PositionInStaff positionInStaff;
 
+    private Long id;
+
 	public AgnosticSymbol(AgnosticVersion agnosticVersion, AgnosticSymbolType symbol, PositionInStaff position) {
 		super(symbol);
 		this.agnosticVersion = agnosticVersion;
@@ -122,5 +124,13 @@ public class AgnosticSymbol extends AgnosticToken {
         AgnosticSymbolType oldValue = this.symbol;
 	    this.symbol = agnosticSymbolType;
         return oldValue;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -67,7 +67,7 @@ TANDEM_MET: ASTERISK_FRAGMENT 'met';
 METRONOME: ASTERISK_FRAGMENT 'MM';
 TANDEM_TIMESIGNATURE: ASTERISK_FRAGMENT 'M';
 
-
+AT: '@';
 CHAR_A: 'A';
 CHAR_B: 'B';
 CHAR_C: 'C';
@@ -102,6 +102,7 @@ CHAR_y: 'y';
 
 LOWERCASE_PITCH_CHARACTER: 'a' .. 'g';
 
+DIGIT_0: '0';
 DIGIT_1: '1';
 DIGIT_2: '2';
 DIGIT_3: '3';
@@ -135,6 +136,7 @@ LEFT_PARENTHESIS: '(';
 RIGHT_PARENTHESIS: ')';
 COLON: ':';
 SEMICOLON: ';';
+COMMA: ','; // david
 
 // with pushMode, the lexer uses the rules below FREE_TEXT
 TAB: '\t' {incSpine();}; // incSpine changes mode depending on the spine type

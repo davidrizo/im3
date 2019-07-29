@@ -24,7 +24,7 @@ Lg	Ligature continuation, longa G, recta shape
 Sa]	Ligature end, brevis A
 *met(3)	Mensuration change
 Mi:E	Minima imperfect with a division dot after it
-s:ff	Semibreve with division dot
+s:ff@23,24	Semibreve with division dot and associated IDS
 *custosb	Custos on note b4
 !prueba	!Prueba field comment
 !	!Empty field comment

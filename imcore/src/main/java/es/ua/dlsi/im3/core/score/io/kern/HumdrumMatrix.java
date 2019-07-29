@@ -1,5 +1,7 @@
 package es.ua.dlsi.im3.core.score.io.kern;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
+
 import java.util.ArrayList;
 
 /**
@@ -24,6 +26,18 @@ public class HumdrumMatrix {
             addRow();
         }
         currentRow.add(item);
+    }
+
+    public void associateIDSToLastItem(ArrayList<Long> associatedIDS) {
+        if (currentRow == null) {
+            throw new IM3RuntimeException("row = null");
+        }
+        if (currentRow.isEmpty()) {
+            throw new IM3RuntimeException("Empty row");
+        }
+
+
+        currentRow.get(currentRow.size()-1).setAssociatedIDS(associatedIDS);
     }
 
     public ArrayList<ArrayList<HumdrumMatrixItem>> getMatrix() {

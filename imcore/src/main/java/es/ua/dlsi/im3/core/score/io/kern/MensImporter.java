@@ -22,6 +22,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,6 +53,7 @@ public class MensImporter {
         private boolean debug;
         private StemDirection lastStemDirection;
         private Integer lastRestLinePosition;
+        private ArrayList<Long> associatedIDS;
 
         public Loader(Parser parser, boolean debug) {
             this.humdrumMatrix = new HumdrumMatrix();
@@ -697,6 +699,28 @@ public class MensImporter {
             super.exitLyricsText(ctx);
             humdrumMatrix.addItemToCurrentRow(ctx.getText(), new KernText(ctx.getText()));
         }
+
+        @Override
+        public void enterGraphicalToken(mensParser.GraphicalTokenContext ctx) {
+            super.enterGraphicalToken(ctx);
+            associatedIDS = null;
+        }
+
+        @Override
+        public void enterAssociatedIDS(mensParser.AssociatedIDSContext ctx) {
+            super.enterAssociatedIDS(ctx);
+            if (this.associatedIDS == null) {
+                this.associatedIDS = new ArrayList<>();
+            }
+            this.associatedIDS.add(Long.parseLong(ctx.number().getText()));
+        }
+
+        @Override
+        public void exitGraphicalToken(mensParser.GraphicalTokenContext ctx) {
+            super.enterGraphicalToken(ctx);
+            humdrumMatrix.associateIDSToLastItem(associatedIDS);
+        }
+
 
     }
 

@@ -87,6 +87,8 @@ field
      |
      placeHolder; // nothing is done, it is just a placeholder
 
+associatedIDS: number (COMMA associatedIDS)*; // used for agnostic IDS in semantic mens
+
 placeHolder: DOT;
 
 fieldComment:
@@ -95,7 +97,7 @@ fieldComment:
     FIELD_TEXT; // for allowing comments in **text spines
 
 graphicalToken:
-    tandemInterpretation
+    (tandemInterpretation
     |
     barLine
     |
@@ -108,6 +110,8 @@ graphicalToken:
     spineOperation
     |
     lyricsText
+    )
+     (AT associatedIDS)?
     ;
 
 tandemInterpretation:
@@ -136,7 +140,7 @@ tandemInterpretation:
     custos
     ;
 
-number: (DIGIT_1 | DIGIT_2 | DIGIT_3 | DIGIT_4 | DIGIT_5 | DIGIT_6 | DIGIT_7 | DIGIT_8 | DIGIT_9)+;
+number: (DIGIT_0 | DIGIT_1 | DIGIT_2 | DIGIT_3 | DIGIT_4 | DIGIT_5 | DIGIT_6 | DIGIT_7 | DIGIT_8 | DIGIT_9)+;
 lowerCasePitch: LOWERCASE_PITCH_CHARACTER;
 upperCasePitch: (CHAR_A | CHAR_B | CHAR_C | CHAR_D | CHAR_E | CHAR_F | CHAR_G);
 

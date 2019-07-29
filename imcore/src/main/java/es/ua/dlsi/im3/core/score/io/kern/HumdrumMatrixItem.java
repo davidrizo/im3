@@ -1,11 +1,14 @@
 package es.ua.dlsi.im3.core.score.io.kern;
 
+import java.util.ArrayList;
+
 /**
  * @autor drizo
  */
 public class HumdrumMatrixItem {
     String humdrumEncoding;
     Object parsedObject;
+    ArrayList<Long> associatedIDS;
 
     public HumdrumMatrixItem(String humdrumEncoding, Object parsedObject) {
         this.humdrumEncoding = humdrumEncoding;
@@ -30,6 +33,14 @@ public class HumdrumMatrixItem {
 
     public void setParsedObject(Object parsedObject) {
         this.parsedObject = parsedObject;
+    }
+
+    public ArrayList<Long> getAssociatedIDS() {
+        return associatedIDS;
+    }
+
+    public void setAssociatedIDS(ArrayList<Long> associatedIDS) {
+        this.associatedIDS = associatedIDS;
     }
 
     @Override
