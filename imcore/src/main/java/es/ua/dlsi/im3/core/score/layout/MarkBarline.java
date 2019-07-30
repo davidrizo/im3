@@ -11,12 +11,22 @@ import java.util.Objects;
 public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSetter, IStaffElementWithoutLayer {
     Staff staff;
     Time time;
+    boolean endBarline;
 
     public MarkBarline(Time time) {
         this.time = time;
     }
 
     public MarkBarline() {
+    }
+
+    public MarkBarline(MarkBarline markBarline) {
+        this.staff = markBarline.staff;
+        this.endBarline = markBarline.endBarline;
+    }
+
+    public MarkBarline clone() {
+        return new MarkBarline(this);
     }
 
     @Override
@@ -66,5 +76,11 @@ public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSette
         this.time = time;
     }
 
+    public boolean isEndBarline() {
+        return endBarline;
+    }
 
+    public void setEndBarline(boolean endBarline) {
+        this.endBarline = endBarline;
+    }
 }

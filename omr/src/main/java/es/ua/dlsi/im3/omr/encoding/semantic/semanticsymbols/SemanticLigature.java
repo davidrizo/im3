@@ -20,16 +20,21 @@ public class SemanticLigature extends SemanticCompoundAtom<Ligature> {
 
     @Override
     public String toKernSemanticString() throws IM3Exception {
+        return toKernSemanticString(null);
+    }
+
+    @Override
+    public String toKernSemanticString(String suffix) throws IM3Exception {
         StringBuilder stringBuilder = new StringBuilder();
-        char suffix;
+        char close;
         switch (coreSymbol.getLigatureType()) {
             case recta:
                 stringBuilder.append('[');
-                suffix = ']';
+                close = ']';
                 break;
             case obliqua:
                 stringBuilder.append('<');
-                suffix = '>';
+                close = '>';
                 break;
             default:
                 throw new ExportException("Unsupported ligature type: " + coreSymbol.getLigatureType());
@@ -39,9 +44,12 @@ public class SemanticLigature extends SemanticCompoundAtom<Ligature> {
         for (int i=0; i<atoms.size(); i++) {
             stringBuilder.append(KernExporter.encodeAtom(atoms.get(i)));
             if (i == atoms.size() - 1) {
+                stringBuilder.append(close);
                 stringBuilder.append(suffix);
+            } else {
+                stringBuilder.append(suffix);
+                stringBuilder.append('\n');
             }
-            stringBuilder.append('\n');
         }
         return stringBuilder.toString();
     }

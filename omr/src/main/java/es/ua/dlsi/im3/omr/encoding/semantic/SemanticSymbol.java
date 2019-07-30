@@ -21,4 +21,9 @@ public class SemanticSymbol extends Token<SemanticSymbolType> {
     public String toKernSemanticString() throws IM3Exception {
         return symbol.toKernSemanticString();
     }
+
+    public String toKernSemanticString(String suffix) throws IM3Exception {
+        return symbol.toKernSemanticString() + suffix;
+    }
+
 }

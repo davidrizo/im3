@@ -14,6 +14,9 @@ import java.util.List;
 public class SemanticBarline extends SemanticSymbolType<MarkBarline> {
     private static final String SEMANTIC = "barline";
 
+    public SemanticBarline(MarkBarline markBarline) {
+        super(markBarline);
+    }
     public SemanticBarline() {
         super(new MarkBarline());
     }
@@ -25,7 +28,10 @@ public class SemanticBarline extends SemanticSymbolType<MarkBarline> {
 
     @Override
     public String toKernSemanticString() {
-        System.err.println("=-");
-        return "=-";
+        if (coreSymbol.isEndBarline()) {
+            return "==";
+        } else {
+            return "=";
+        }
     }
 }

@@ -356,9 +356,12 @@ public class MensImporter {
             Logger.getLogger(MensImporter.class.getName()).log(Level.FINEST, "BarLine {0}", ctx.getText());
             super.exitBarLine(ctx);
             if (ctx.barlineProperties() == null || ctx.barlineProperties().MINUS() == null) {
-                MarkBarline markBarLine = new MarkBarline(); //TODO repetitions, double bar line ....
+                MarkBarline markBarLine = new MarkBarline(); //TODO repetitions .... - ver || vs ==
+                if (ctx.getText().equals("==")) {
+                    markBarLine.setEndBarline(true);
+                }
                 humdrumMatrix.addItemToCurrentRow(ctx.getText(), markBarLine);
-            } // if minus present it is hiddem
+            } // if minus present it is hidden
         }
 
 

@@ -1093,7 +1093,12 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void processBarLine(StringBuilder sb, int tabs, MarkBarline slr, Staff staff) {
-        XMLExporterHelper.startEnd(sb, tabs, "barLine");
+		ArrayList<String> params = new ArrayList<>();
+		if (slr.isEndBarline()) {
+			params.add("form");
+			params.add("end");
+		}
+        XMLExporterHelper.startEnd(sb, tabs, "barLine", params);
     }
 
 	private void processCustos(int tabs, Custos custos) {

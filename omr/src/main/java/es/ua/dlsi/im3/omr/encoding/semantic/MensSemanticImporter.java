@@ -53,7 +53,7 @@ public class MensSemanticImporter implements ISemanticImporter {
             } else if (item.getParsedObject() instanceof SignTimeSignature) {
                 semanticEncoding.add(new SemanticMeterSignTimeSignature((SignTimeSignature) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof MarkBarline) {
-                semanticEncoding.add(new SemanticBarline());
+                semanticEncoding.add(new SemanticBarline((MarkBarline) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof SimpleNote) {
                 semanticEncoding.add(new SemanticNote((SimpleNote) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof SimpleRest) {

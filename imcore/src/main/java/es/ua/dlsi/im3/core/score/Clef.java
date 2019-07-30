@@ -71,7 +71,7 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
 	public Clef(DiatonicPitch note, int line, int noteOctave,
                 int octaveChange, PositionInStaff [] sharpPositions, PositionInStaff [] flatPositions
                 ) {
-		this.time = new Time();
+		this.time = null;
 		this.octaveChange = octaveChange;
 		if (note == null) {
 		    throw new IM3RuntimeException("Cannot build clef without a note");

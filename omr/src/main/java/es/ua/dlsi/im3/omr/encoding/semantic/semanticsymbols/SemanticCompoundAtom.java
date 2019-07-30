@@ -15,4 +15,8 @@ public abstract class SemanticCompoundAtom<CompoundAtomType extends CompoundAtom
     public String toKernSemanticString() throws IM3Exception {
         return KernExporter.encodeAtom(coreSymbol);
     }
+    @Override
+    public String toKernSemanticString(String suffix) throws IM3Exception {
+        return KernExporter.encodeAtom(coreSymbol) + suffix;
+    }
 }

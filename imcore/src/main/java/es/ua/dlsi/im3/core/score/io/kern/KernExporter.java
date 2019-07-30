@@ -390,6 +390,18 @@ public class KernExporter {
             if (atom instanceof SimpleNote) {
                 SimpleNote sn = (SimpleNote) atom;
                 String noteStr = generateNote(sn.getAtomPitch(), duration);
+
+                if (sn.getExplicitStemDirection() != null) {
+                    switch (sn.getExplicitStemDirection()) {
+                        case down:
+                            noteStr += "\\";
+                            break;
+                        case up:
+                            noteStr += "/";
+                            break;
+                    }
+                }
+
                 if (sn.getAtomFigure().getFermata() != null) {
                     noteStr += ";";
                 }
@@ -466,6 +478,7 @@ public class KernExporter {
         } else {
             suffix = "";
         }
+
         return prefix + duration + generatePitch(atomPitch) + suffix;
     }
 
@@ -515,10 +528,10 @@ public class KernExporter {
         } else {
             throw new ExportException("Unsupported notation type " + figure.getNotationType());
         }
-        for (int i=0; i<dots; i++) {
-            if (figure.getNotationType() == NotationType.eMensural) {
-                sb.append(':');
-            } else {
+        if (atomFigure.isFollowedByMensuralDivisionDot()) {
+            sb.append(':');
+        } else {
+            for (int i = 0; i < dots; i++) {
                 sb.append('.');
             }
         }

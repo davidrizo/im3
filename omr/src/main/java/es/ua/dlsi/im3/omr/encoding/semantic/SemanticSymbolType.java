@@ -35,6 +35,10 @@ public abstract class SemanticSymbolType<IMCoreSymbolType extends ITimedElementI
      */
     public abstract String toKernSemanticString() throws IM3Exception;
 
+    public String toKernSemanticString(String suffix) throws IM3Exception {
+        return toKernSemanticString() + suffix;
+    }
+
     /**
      * It orders element, first given their name, then given their hashChode
      * @param other
