@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.encoding.semantic;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.adt.Pair;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
@@ -14,14 +15,14 @@ import java.util.List;
  */
 public class Semantic2IMCore {
 
-    public List<ITimedElementInStaff> convert(NotationType notationType, TimeSignature lastTimeSignature, KeySignature lastKeySignature, SemanticEncoding semanticEncoding) throws IM3Exception {
+    public List<Pair<SemanticSymbol, ITimedElementInStaff>> convert(NotationType notationType, TimeSignature lastTimeSignature, KeySignature lastKeySignature, SemanticEncoding semanticEncoding) throws IM3Exception {
         SemanticConversionContext semanticConversionContext = new SemanticConversionContext(notationType);
         semanticConversionContext.setCurrentKeySignature(lastKeySignature);
         semanticConversionContext.setCurrentTimeSignature(lastTimeSignature);
-        List<ITimedElementInStaff> conversion = new LinkedList<>();
+        List<Pair<SemanticSymbol, ITimedElementInStaff>> conversion = new LinkedList<>();
         SimpleNote pendingTiePreviousSymbol = null; //TODO para acordes
         for (SemanticSymbol semanticSymbol: semanticEncoding.getSymbols()) {
-            conversion.add(semanticSymbol.getSymbol().getCoreSymbol());
+            conversion.add(new Pair<>(semanticSymbol, semanticSymbol.getSymbol().getCoreSymbol()));
             if (semanticSymbol.getSymbol() instanceof SemanticNote) {
                 SemanticNote semanticNote = (SemanticNote) semanticSymbol.getSymbol();
                 if (pendingTiePreviousSymbol != null) {
@@ -37,7 +38,7 @@ public class Semantic2IMCore {
     }
 
     public ScoreSong convertToSingleVoicedSong(NotationType notationType, SemanticEncoding semanticEncoding) throws IM3Exception {
-        List<ITimedElementInStaff> conversion = convert(notationType, null, null, semanticEncoding);
+        List<Pair<SemanticSymbol, ITimedElementInStaff>> conversion = convert(notationType, null, null, semanticEncoding);
 
         ScoreSong song = new ScoreSong();
         Staff staff = new Pentagram(song, "1", 1); //TODO
@@ -54,7 +55,8 @@ public class Semantic2IMCore {
             song.addMeasure(Time.TIME_ZERO, measure); // first measure
         }
 
-        for (ITimedElementInStaff timedElementInStaff: conversion) {
+        for (Pair<SemanticSymbol, ITimedElementInStaff> pair: conversion) {
+            ITimedElementInStaff timedElementInStaff = pair.getY();
             if (notationType == NotationType.eModern && timedElementInStaff instanceof MarkBarline) {
                 Measure lastMeasure = song.getLastMeasure();
                 lastMeasure.setEndTime(singleLayer.getDuration());

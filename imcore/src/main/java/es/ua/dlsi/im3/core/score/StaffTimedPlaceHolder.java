@@ -10,6 +10,7 @@ public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbol
 	private Staff staff;
 	private String ID;
 	ConnectorCollection connectorCollection;
+	String facsimileElementID;
 	
 	public StaffTimedPlaceHolder(Staff staff, Time time) {
 		this.time = time;
@@ -88,4 +89,13 @@ public class StaffTimedPlaceHolder implements ITimedElementInStaff, ITimedSymbol
 		}		
 	}
 
+	@Override
+	public String getFacsimileElementID() {
+		return facsimileElementID;
+	}
+
+	@Override
+	public void setFacsimileElementID(String facsimileElementID) {
+		this.facsimileElementID = facsimileElementID;
+	}
 }

@@ -107,13 +107,21 @@ public class MEISongExporter implements ISongExporter {
 		return exportSong(null, (Segment) null);
 	}
 
+	public String exportSongAsParts(ScoreSong song) throws ExportException {
+		try {
+			this.song = song;
+			preprocess();
+			return exportSong(song.getParts(), null);
+		} catch (Exception e) {
+			throw new ExportException(e);
+		}
+	}
+
 	public void exportSongAsParts(File file, ScoreSong song) throws ExportException {
 		PrintStream ps = null;
 		try {
 			ps = new PrintStream(file, "UTF-8");
-			this.song = song;
-			preprocess();
-			ps.print(exportSong(song.getParts(), null));
+			ps.print(exportSongAsParts(song));
 		} catch (Exception e) {
 			throw new ExportException(e);
 		}
@@ -386,7 +394,7 @@ public class MEISongExporter implements ISongExporter {
 						zoneParameters.add("type");
 						zoneParameters.add(zone.getType());
 					}
-					XMLExporterHelper.startEnd(sb, tabs+1, "zone", zoneParameters);
+					XMLExporterHelper.startEnd(sb, tabs+2, "zone", zoneParameters);
 				}
 
 
@@ -538,6 +546,8 @@ public class MEISongExporter implements ISongExporter {
                     params.add("above");
                 }
             }
+
+			generateFacsimileReference(clef, params);
         }
 	}
 	private void processStaffDef(int tabs, IStaffContainer staffContainer) throws ExportException, IM3Exception {
@@ -573,7 +583,11 @@ public class MEISongExporter implements ISongExporter {
 				}
 				
 				if (staffTS != null || staffKS != null) {
-					processScoreDef(params, staffTS, staffKS.getInstrumentKey(), staffKS.getTranspositionInterval());
+					if (staffKS != null) {
+						processScoreDef(params, staffTS, staffKS.getInstrumentKey(), staffKS.getTranspositionInterval());
+					} else {
+						processScoreDef(params, staffTS, null, null);
+					}
 					//XMLExporterHelper.startEnd(sb, tabs, "scoreDef", scoreDefParams);
 				} 
 
@@ -1075,6 +1089,12 @@ public class MEISongExporter implements ISongExporter {
 		}
 	}
 
+	private void generateFacsimileReference(IFacsimile facsimile, ArrayList<String> attrs) {
+		if (facsimile.getFacsimileElementID() != null) {
+			attrs.add("facs");
+			attrs.add("#"+ facsimile.getFacsimileElementID());
+		}
+	}
 	private void exportSystemOrPageBeginning(String tag, StringBuilder sb, int tabs, IFacsimile facsimile) {
 		if (!exportedSystemOrPageBreaks.contains(facsimile)) {
 			exportedSystemOrPageBreaks.add(facsimile);
@@ -1083,10 +1103,7 @@ public class MEISongExporter implements ISongExporter {
 				attrs.add("xml:id");
 				attrs.add(facsimile.__getID());
 			}
-			if (facsimile.getFacsimileElementID() != null) {
-				attrs.add("facs");
-				attrs.add(facsimile.getFacsimileElementID());
-			}
+			generateFacsimileReference(facsimile, attrs);
 
 			XMLExporterHelper.startEnd(sb, tabs, tag, attrs);
 		}
@@ -1098,6 +1115,7 @@ public class MEISongExporter implements ISongExporter {
 			params.add("form");
 			params.add("end");
 		}
+		generateFacsimileReference(slr, params);
         XMLExporterHelper.startEnd(sb, tabs, "barLine", params);
     }
 
@@ -1108,7 +1126,7 @@ public class MEISongExporter implements ISongExporter {
 		params.add(scorePitch.getPitchClass().getNoteName().name().toLowerCase());
 		params.add("oct");
 		params.add(Integer.toString(scorePitch.getOctave()));
-
+		generateFacsimileReference(custos, params);
 		XMLExporterHelper.startEnd(sb, tabs, "custos", params);
 	}
 
@@ -1117,6 +1135,7 @@ public class MEISongExporter implements ISongExporter {
 		if (timeSignature instanceof TimeSignatureMensural) {
 			ArrayList<String> params = new ArrayList<>();
 			processMensuralTimeSignature(timeSignature, params);
+			generateFacsimileReference(timeSignature, params);
 			XMLExporterHelper.startEnd(sb, tabs, "mensur", params);
 		} else {
             System.err.println("TO-DO MEI Export !!!!!!!!!!!Modern meter change!!!!!!!!!!!!!!!!!!!!");
@@ -1275,7 +1294,7 @@ public class MEISongExporter implements ISongExporter {
                 }
 
             } // else it is the same beam (on no one), no-op
-
+			generateFacsimileReference(atom, params);
 			if (atom instanceof SimpleMeasureRest) {
 				SimpleMeasureRest mrest = (SimpleMeasureRest) atom;
 				if (mrest.getAtomFigure().getFigure() != Figures.WHOLE) { // e.g. for anacrusis

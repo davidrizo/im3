@@ -1,12 +1,14 @@
 package es.ua.dlsi.im3.core.score;
 
-import es.ua.dlsi.im3.core.IM3Exception;
 
 /**
+ * @deprecated Use system beginning
  * An explicit system break
  */
 public class StaffBreak implements ITimedElementInStaff {
     Staff staff;
+    String ID;
+    String facsimileElementID;
 
     private Time time;
     /**
@@ -43,4 +45,31 @@ public class StaffBreak implements ITimedElementInStaff {
         this.staff = staff;
 
     }
+
+    @Override
+    public String getFacsimileElementID() {
+        return facsimileElementID;
+    }
+
+    @Override
+    public void setFacsimileElementID(String facsimileElementID) {
+        this.facsimileElementID = facsimileElementID;
+    }
+
+
+    @Override
+    public String __getID() {
+        return ID;
+    }
+
+    @Override
+    public void __setID(String id) {
+        this.ID = id;
+    }
+
+    @Override
+    public String __getIDPrefix() {
+        return "systembreak";
+    }
+
 }

@@ -57,6 +57,8 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 	 */
 	private Key concertPitchKey;
 
+	String facsimileElementID;
+
 	public KeySignature(NotationType notationType, Key key){
 		this.notationType = notationType;
 		this.concertPitchKey = key;
@@ -368,4 +370,14 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
             return null;
         }
     }
+
+	@Override
+	public String getFacsimileElementID() {
+		return facsimileElementID;
+	}
+
+	@Override
+	public void setFacsimileElementID(String facsimileElementID) {
+		this.facsimileElementID = facsimileElementID;
+	}
 }

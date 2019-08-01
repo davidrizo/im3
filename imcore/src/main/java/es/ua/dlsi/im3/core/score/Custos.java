@@ -8,6 +8,8 @@ public class Custos implements ITimedElementInStaff, ITimedElementWithSetter, IS
     ScientificPitch scientificPitch;
     Staff staff;
     Time time;
+    String facsimileElementID;
+    String ID;
 
     public Custos(Staff staff, Time time, ScientificPitch scientificPitch) {
         this.staff = staff;
@@ -77,5 +79,30 @@ public class Custos implements ITimedElementInStaff, ITimedElementWithSetter, IS
     @Override
     public int hashCode() {
         return Objects.hash(scientificPitch, staff, time);
+    }
+
+    @Override
+    public String getFacsimileElementID() {
+        return facsimileElementID;
+    }
+
+    @Override
+    public void setFacsimileElementID(String facsimileElementID) {
+        this.facsimileElementID = facsimileElementID;
+    }
+
+    @Override
+    public String __getID() {
+        return ID;
+    }
+
+    @Override
+    public void __setID(String id) {
+        this.ID = id;
+    }
+
+    @Override
+    public String __getIDPrefix() {
+        return "custos";
     }
 }

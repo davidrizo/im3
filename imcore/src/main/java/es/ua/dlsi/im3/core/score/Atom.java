@@ -38,7 +38,9 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
 	/**
 	 * When it belongs to a compound atom such as a tuplet
 	 */
-	private CompoundAtom parentAtom;		
+	private CompoundAtom parentAtom;
+
+	String facsimileElementID;
 	
 	public Atom() {
 		duration = new Time(Fraction.ZERO); 
@@ -284,5 +286,15 @@ public abstract class Atom implements Comparable<Atom>, IUniqueIDObject, ITimedE
     public Time getEndTime() {
 		return getTime().add(getDuration());
     }
+
+	@Override
+	public String getFacsimileElementID() {
+		return facsimileElementID;
+	}
+
+	@Override
+	public void setFacsimileElementID(String facsimileElementID) {
+		this.facsimileElementID = facsimileElementID;
+	}
 }
 

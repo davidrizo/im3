@@ -12,6 +12,8 @@ public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSette
     Staff staff;
     Time time;
     boolean endBarline;
+    String facsimileElementID;
+    String ID;
 
     public MarkBarline(Time time) {
         this.time = time;
@@ -82,5 +84,31 @@ public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSette
 
     public void setEndBarline(boolean endBarline) {
         this.endBarline = endBarline;
+    }
+
+    @Override
+    public String getFacsimileElementID() {
+        return facsimileElementID;
+    }
+
+    @Override
+    public void setFacsimileElementID(String facsimileElementID) {
+        this.facsimileElementID = facsimileElementID;
+    }
+
+    @Override
+    public String __getID() {
+        return ID;
+    }
+
+    @Override
+    public void __setID(String id) {
+        this.ID = id;
+
+    }
+
+    @Override
+    public String __getIDPrefix() {
+        return "barline";
     }
 }

@@ -13,6 +13,8 @@ import es.ua.dlsi.im3.core.score.Time;
 public class MusicXMLForward implements ITimedElementInStaff{
 	Time time;
     Integer horizontalOrderInStaff;
+	String ID;
+	String facsimileElementID;
 
 	/**
 	 * The time to forward
@@ -41,5 +43,30 @@ public class MusicXMLForward implements ITimedElementInStaff{
 	public void setStaff(Staff staff) {
 	}
 
+	@Override
+	public String getFacsimileElementID() {
+		return facsimileElementID;
+	}
+
+	@Override
+	public void setFacsimileElementID(String facsimileElementID) {
+		this.facsimileElementID = facsimileElementID;
+	}
+
+
+	@Override
+	public String __getID() {
+		return ID;
+	}
+
+	@Override
+	public void __setID(String id) {
+		this.ID = id;
+	}
+
+	@Override
+	public String __getIDPrefix() {
+		return "musicxmlbackup";
+	}
 
 }

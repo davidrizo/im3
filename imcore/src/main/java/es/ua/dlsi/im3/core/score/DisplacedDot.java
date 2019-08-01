@@ -5,6 +5,7 @@ package es.ua.dlsi.im3.core.score;
  * and the dot
  */
 public class DisplacedDot extends AttachmentInStaff<AtomPitch> implements ITimedElementInStaff, IStaffElementWithoutLayer {
+
     public DisplacedDot(Time time, AtomPitch coreSymbol) {
         super(coreSymbol.getStaff(), time, coreSymbol);
     }

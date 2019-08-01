@@ -28,6 +28,7 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
 	private String ID;	
 	protected NotationType notationType;
 	protected Staff staff;
+	String facsimileElementID;
 	
     public TimeSignature(NotationType notationType) {
     		this.notationType = notationType;
@@ -122,4 +123,14 @@ public abstract class TimeSignature implements INotationTypeDependant, ITimedEle
         double offset = onset.substract(this.getTime()).mod(getDuration());
         return offset;
     }
+
+	@Override
+	public String getFacsimileElementID() {
+		return facsimileElementID;
+	}
+
+	@Override
+	public void setFacsimileElementID(String facsimileElementID) {
+		this.facsimileElementID = facsimileElementID;
+	}
 }

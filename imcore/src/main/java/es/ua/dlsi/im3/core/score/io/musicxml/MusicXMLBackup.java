@@ -13,6 +13,8 @@ import es.ua.dlsi.im3.core.score.Time;
 public class MusicXMLBackup implements ITimedElementInStaff{
 	Time time;
     Integer horizontalOrderInStaff;
+    String ID;
+	String facsimileElementID;
 
 	/**
 	 * The time to backup
@@ -41,4 +43,29 @@ public class MusicXMLBackup implements ITimedElementInStaff{
 	public void setStaff(Staff staff) {
 	}
 
+	@Override
+	public String getFacsimileElementID() {
+		return facsimileElementID;
+	}
+
+	@Override
+	public void setFacsimileElementID(String facsimileElementID) {
+		this.facsimileElementID = facsimileElementID;
+	}
+
+
+	@Override
+	public String __getID() {
+		return ID;
+	}
+
+	@Override
+	public void __setID(String id) {
+		this.ID = id;
+	}
+
+	@Override
+	public String __getIDPrefix() {
+		return "musicxmlbackup";
+	}
 }

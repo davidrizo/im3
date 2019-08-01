@@ -39,27 +39,28 @@ public class MensSemanticImporter implements ISemanticImporter {
             //for (int spine=0; spine < humdrumMatrix.getSpineCount(row); spine++) {
             int spine = 0;
             HumdrumMatrixItem item = humdrumMatrix.get(row, spine);
+            SemanticSymbolType semanticSymbolType = null;
             if (item.getHumdrumEncoding().equals(".")) {
                     // continuation, skip
             } else if (item.getParsedObject() instanceof Clef) { // TODO algo más elegante
-                semanticEncoding.add(new SemanticClef((Clef) item.getParsedObject()));
+                semanticEncoding.add(semanticSymbolType = new SemanticClef((Clef) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof Custos) { // TODO algo más elegante
-                semanticEncoding.add(new SemanticCustos((Custos) item.getParsedObject()));
+                semanticEncoding.add(semanticSymbolType = new SemanticCustos((Custos) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof Key) {
                 KeySignature keySignature = new KeySignature(notationType, (Key) item.getParsedObject());
-                semanticEncoding.add(new SemanticKeySignature(keySignature));
+                semanticEncoding.add(semanticSymbolType = new SemanticKeySignature(keySignature));
             } else if (item.getParsedObject() instanceof FractionalTimeSignature) {
-                semanticEncoding.add(new SemanticFractionalTimeSignature((FractionalTimeSignature) item.getParsedObject()));
+                semanticEncoding.add(semanticSymbolType = new SemanticFractionalTimeSignature((FractionalTimeSignature) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof SignTimeSignature) {
-                semanticEncoding.add(new SemanticMeterSignTimeSignature((SignTimeSignature) item.getParsedObject()));
+                semanticEncoding.add(semanticSymbolType = new SemanticMeterSignTimeSignature((SignTimeSignature) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof MarkBarline) {
-                semanticEncoding.add(new SemanticBarline((MarkBarline) item.getParsedObject()));
+                semanticEncoding.add(semanticSymbolType = new SemanticBarline((MarkBarline) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof SimpleNote) {
-                semanticEncoding.add(new SemanticNote((SimpleNote) item.getParsedObject()));
+                semanticEncoding.add(semanticSymbolType = new SemanticNote((SimpleNote) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof SimpleRest) {
-                semanticEncoding.add(new SemanticRest((SimpleRest) item.getParsedObject()));
+                semanticEncoding.add(semanticSymbolType = new SemanticRest((SimpleRest) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof SimpleMultiMeasureRest) {
-                semanticEncoding.add(new SemanticMultirest((SimpleMultiMeasureRest) item.getParsedObject()));
+                semanticEncoding.add(semanticSymbolType = new SemanticMultirest((SimpleMultiMeasureRest) item.getParsedObject()));
             } else if (item.getParsedObject() instanceof KernLigatureComponent) {
                 KernLigatureComponent kernLigatureComponent = (KernLigatureComponent) item.getParsedObject(); 
                 if (kernLigatureComponent.getStartEnd() == LigatureStartEnd.start) {
@@ -70,13 +71,17 @@ public class MensSemanticImporter implements ISemanticImporter {
                 lastLigature.addSubatom(kernLigatureComponent.getSimpleNote());
 
                 if (kernLigatureComponent.getStartEnd() == LigatureStartEnd.end) {
-                    semanticEncoding.add(new SemanticLigature(lastLigature));
+                    semanticEncoding.add(semanticSymbolType = new SemanticLigature(lastLigature));
                     lastLigature = null;
                 }
 
             } else if (!item.getHumdrumEncoding().equals("!")) {
                 //TODO Acabar
                 System.err.println("TO-DO: " + item.getHumdrumEncoding());
+            }
+
+            if (semanticSymbolType != null) {
+                semanticSymbolType.setAgnosticIDs(item.getAssociatedIDS());
             }
         }
 

@@ -65,6 +65,8 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 
     Integer horizontalOrderInStaff;
 
+	String facsimileElementID;
+
 	public AtomPitch(AtomFigure atomFigure, ScientificPitch spitch) {
 		this.atomFigure = atomFigure;
 		this.scientificPitch = spitch;
@@ -402,5 +404,15 @@ public class AtomPitch implements ITimedElementInStaff, Comparable<AtomPitch>, I
 
 	public void setCautionaryAccidental(boolean cautionaryAccidental) {
 		this.cautionaryAccidental = cautionaryAccidental;
+	}
+
+	@Override
+	public String getFacsimileElementID() {
+		return facsimileElementID;
+	}
+
+	@Override
+	public void setFacsimileElementID(String facsimileElementID) {
+		this.facsimileElementID = facsimileElementID;
 	}
 }

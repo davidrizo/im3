@@ -26,6 +26,7 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
  * @author drizo
  */
 public abstract class Clef implements INotationTypeDependant, ITimedElementInStaff, ITimedElementWithSetter, IStaffElementWithoutLayer {
+	String ID;
     private final PositionInStaff[] flatPositions;
     private final PositionInStaff[] sharpPositions;
     DiatonicPitch note;
@@ -52,6 +53,8 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
      * Staff bottom line (1) pitch octave. We save it for avoiding its recomputing each time it is needed
      */
     private int bottomLineOctave;
+
+	String facsimileElementID;
 
 	public Clef(DiatonicPitch note, int line, int noteOctave, PositionInStaff [] sharpPositions, PositionInStaff [] flatPositions
                 ) {
@@ -201,4 +204,29 @@ public abstract class Clef implements INotationTypeDependant, ITimedElementInSta
     public PositionInStaff[] getSharpPositions() {
         return sharpPositions;
     }
+
+	@Override
+	public String getFacsimileElementID() {
+		return facsimileElementID;
+	}
+
+	@Override
+	public void setFacsimileElementID(String facsimileElementID) {
+		this.facsimileElementID = facsimileElementID;
+	}
+
+	@Override
+	public String __getID() {
+		return ID;
+	}
+
+	@Override
+	public void __setID(String id) {
+		this.ID = id;
+	}
+
+	@Override
+	public String __getIDPrefix() {
+		return "clef";
+	}
 }

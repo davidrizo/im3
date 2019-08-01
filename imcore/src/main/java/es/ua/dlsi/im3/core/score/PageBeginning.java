@@ -32,10 +32,12 @@ public class PageBeginning implements ITimedElement, IFacsimile {
         return manual;
     }
 
+    @Override
     public String getFacsimileElementID() {
         return facsimileElementID;
     }
 
+    @Override
     public void setFacsimileElementID(String facsimileElementID) {
         this.facsimileElementID = facsimileElementID;
     }
