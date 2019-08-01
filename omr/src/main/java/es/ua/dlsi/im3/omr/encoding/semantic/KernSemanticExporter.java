@@ -13,9 +13,11 @@ import java.util.Arrays;
  * @author drizo
  */
 public class KernSemanticExporter extends Exporter<SemanticSymbol> {
+    public static final String IDS_SEPARATOR = "@";
+    public static final char TOKEN_SEPARATOR = '\n';
 
     public KernSemanticExporter() {
-        super('\n');
+        super(TOKEN_SEPARATOR);
         this.setEndWithSeparator(true);
     }
 
@@ -30,7 +32,7 @@ public class KernSemanticExporter extends Exporter<SemanticSymbol> {
             return symbol.toKernSemanticString();
         } else {
             StringBuilder stringBuilderIDS = new StringBuilder();
-            stringBuilderIDS.append('@');
+            stringBuilderIDS.append(IDS_SEPARATOR);
             for (int i = 0; i < symbol.getSymbol().getAgnosticIDs().length; i++) {
                 if (i > 0) {
                     stringBuilderIDS.append(',');
