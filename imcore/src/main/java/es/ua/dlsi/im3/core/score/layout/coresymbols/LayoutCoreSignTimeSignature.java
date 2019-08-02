@@ -5,6 +5,9 @@ import es.ua.dlsi.im3.core.score.TimeSignature;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfectaDiminutum;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
@@ -19,8 +22,11 @@ public class LayoutCoreSignTimeSignature extends LayoutCoreTimeSignature<SignTim
     private static final HashMap<Class<? extends TimeSignature>, String> UNICODES = new HashMap<>();
     {
         UNICODES.put(TimeSignatureCommonTime.class, "timeSigCommon");
+        UNICODES.put(TempusImperfectumCumProlationeImperfecta.class, "timeSigCommon");
         UNICODES.put(TimeSignatureCutTime.class, "timeSigCutCommon");
+        UNICODES.put(TempusImperfectumCumProlationeImperfectaDiminutum.class, "timeSigCutCommon");
         UNICODES.put(TimeSignatureProporcionMenor.class, "timeSigProporcionMenor"); // Note this is not SMuFL compliant
+        UNICODES.put(TimeSignatureProporcionMayor.class, "timeSigProporcionMayor"); // Note this is not SMuFL compliant
     }
 
     public LayoutCoreSignTimeSignature(LayoutFont layoutFont, SignTimeSignature coreSymbol) throws IM3Exception {

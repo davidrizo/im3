@@ -13,6 +13,7 @@ public class LayoutSymbolsHorizontalOrderings {
     public static LayoutSymbolsHorizontalOrderings instance = null;
     HashMap<Class<? extends LayoutCoreSymbol>, Integer> orders = new HashMap<>();
     {
+        orders.put(LayoutCoreLigature.class, 0);
         orders.put(LayoutCoreBarline.class, 0);
         orders.put(LayoutCoreMarkBarline.class, 0);
         orders.put(LayoutCoreStaffTimedPlaceHolder.class, 0);

@@ -16,10 +16,7 @@
  */
 package es.ua.dlsi.im3.core.score.io.mei;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +32,8 @@ import es.ua.dlsi.im3.core.score.io.kern.KernImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureFactory;
 import es.ua.dlsi.im3.core.score.mensural.meters.*;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import org.apache.commons.lang3.math.Fraction;
 
 import es.ua.dlsi.im3.core.IM3Exception;
@@ -63,7 +62,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     DurationEvaluator durationEvaluator;
     private ArrayList<SimpleNote> ligatureElements;
 
-    public MEISAXScoreSongImporter(DurationEvaluator durationEvaluator) {
+	public MEISAXScoreSongImporter(DurationEvaluator durationEvaluator) {
         this.durationEvaluator = durationEvaluator;
     }
 
@@ -249,6 +248,15 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	private String lastModusminorStr;
 	private String lastTempusStr;
 	private String lastProlatioStr;
+	private String lastMensurSignStr;
+
+	private String lastNumStr;
+	private String lastProportNumStr;
+	private String lastProportNumBaseStr;
+	private String lastMensurSlashStr;
+	private String lastMensurDotStr;
+
+
 	//private boolean updateMeasure;
 	//private String lastMeasureXMLID;
 	//private String lastMeasureNumber;
@@ -444,6 +452,12 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						lastModusminorStr = getOptionalAttribute(attributesMap, "modusminor");
 						lastTempusStr = getOptionalAttribute(attributesMap, "tempus");
 						lastProlatioStr = getOptionalAttribute(attributesMap, "prolatio");
+						lastMensurSignStr = getOptionalAttribute(attributesMap, "mensur.sign");
+						lastNumStr = getOptionalAttribute(attributesMap, "num");
+						lastProportNumStr = getOptionalAttribute(attributesMap, "proport.num");
+						lastProportNumBaseStr = getOptionalAttribute(attributesMap, "proport.numbase");
+						lastMensurSlashStr = getOptionalAttribute(attributesMap, "mensur.slash");
+						lastMensurDotStr = getOptionalAttribute(attributesMap, "mensur.dot");
 
 						break;
 					//TODO staff groups (ej. garison.mei)
@@ -517,6 +531,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						String tempusStr = getOptionalAttribute(attributesMap, "tempus");
 						String prolatioStr = getOptionalAttribute(attributesMap, "prolatio");
 
+						String mensurSignStr = getOptionalAttribute(attributesMap, "mensur.sign");
+						String numStr = getOptionalAttribute(attributesMap, "num");
+						String proportNumStr = getOptionalAttribute(attributesMap, "proport.num");
+						String proportNumBaseStr = getOptionalAttribute(attributesMap, "proport.numbase");
+						String mensurSlashStr = getOptionalAttribute(attributesMap, "mensur.slash");
+						String mensurDotStr = getOptionalAttribute(attributesMap, "mensur.dot");
+
 						if (meterCount == null && meterUnit == null && meterSym == null) {
 							meterCount = lastMeterCount;
 							meterUnit = lastMeterUnit;
@@ -530,8 +551,19 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							prolatioStr = lastProlatioStr;
 						}
 
-						if (meterCount != null || meterUnit != null || meterSym != null || modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null) {
-							processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr, lastStaff.getNotationType());
+						if (mensurSignStr == null && numStr == null && proportNumStr == null && proportNumBaseStr == null && mensurSlashStr == null && mensurDotStr == null) {
+							mensurSignStr = lastMensurSignStr;
+							numStr = lastNumStr;
+							proportNumStr = lastProportNumStr;
+							proportNumBaseStr = lastProportNumBaseStr;
+							mensurSlashStr = lastMensurSlashStr;
+							mensurDotStr = lastMensurDotStr;
+						}
+
+						if (meterCount != null || meterUnit != null || meterSym != null || modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null || mensurSignStr != null || numStr != null) {
+							processMeter(null, lastStaff, meterSym, meterCount, meterUnit, modusmaiorStr, modusminorStr, tempusStr, prolatioStr,
+									mensurSignStr, numStr, proportNumStr, proportNumBaseStr, mensurSlashStr, mensurDotStr,
+									lastStaff.getNotationType());
 						}
 						String staffKeySig = getOptionalAttribute(attributesMap, "key.sig");
 						String staffKeyMode = getOptionalAttribute(attributesMap, "key.mode");
@@ -566,11 +598,22 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 
 						break;
 					case "mensur":
+						mensurSignStr = getOptionalAttribute(attributesMap, "mensur.sign");
+						numStr = getOptionalAttribute(attributesMap, "num");
+						proportNumStr = getOptionalAttribute(attributesMap, "proport.num");
+						proportNumBaseStr = getOptionalAttribute(attributesMap, "proport.numbase");
+						mensurSlashStr = getOptionalAttribute(attributesMap, "mensur.slash");
+						mensurDotStr = getOptionalAttribute(attributesMap, "mensur.dot");
+
 						modusmaiorStr = getOptionalAttribute(attributesMap, "modusmaior");
 						modusminorStr = getOptionalAttribute(attributesMap, "modusminor");
 						tempusStr = getOptionalAttribute(attributesMap, "tempus");
 						prolatioStr = getOptionalAttribute(attributesMap, "prolatio");
-						TimeSignatureMensural ts = processPossibleMensuralMeter(modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+
+						TimeSignatureMensural ts = processPossibleMensuraSignMeter(mensurSignStr, numStr, proportNumStr, proportNumBaseStr, mensurSlashStr, mensurDotStr);
+						if (ts == null) {
+							ts = processPossibleMensuralMeter(modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+						}
 						if (ts == null) {
 							throw new ImportException("@mensur does not contain any parameter (modusmaior, tempus...)");
 						}
@@ -1039,10 +1082,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						}
 						break;
 					case "dot":
-						Time addedDuration = lastAtomPitch.getAtomFigure().addDot(); // TODO: 27/10/17 Ver casos como mensural patriarca.mei donde aparece nota - barra - dot
-						horizontalOrderInStaff++;
-						lastAtomPitch.addDisplacedDot(new DisplacedDot(getCurrentTime(), lastAtomPitch));
-						setCurrentTime(getCurrentTime().add(addedDuration));
+						String dotForm = getOptionalAttribute(attributesMap, "form");
+						if (dotForm != null && dotForm.equals("div")) {
+							Time addedDuration = lastAtomPitch.getAtomFigure().addDot(); // TODO: 27/10/17 Ver casos como mensural patriarca.mei donde aparece nota - barra - dot
+							horizontalOrderInStaff++;
+							lastAtomPitch.addDisplacedDot(new DisplacedDot(getCurrentTime(), lastAtomPitch));
+							setCurrentTime(getCurrentTime().add(addedDuration));
+						}
 						break;
 					case "ligature":
 						ligatureElements = new ArrayList<>();
@@ -1177,14 +1223,27 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	 * @param modusminorStr
 	 * @param tempusStr
 	 * @param prolatioStr
+	 * @param numStr
+	 * @param proportNumStr
+	 * @param proportNumBaseStr
+	 * @param mensurSlashStr
+	 * @param mensurDotStr
 	 * @param notationType
 	 * @throws IM3Exception
 	 * @throws ImportException 
 	 */
 	private void processMeter(String xmlid, Staff staff, String meterSym, String meterCount, String meterUnit,
-							  String modusmaiorStr, String modusminorStr, String tempusStr, String prolatioStr, NotationType notationType) throws ImportException, IM3Exception {
+							  String modusmaiorStr, String modusminorStr, String tempusStr, String prolatioStr,
+							  String meterSign, String numStr, String proportNumStr, String proportNumBaseStr, String mensurSlashStr,
+							  String mensurDotStr, NotationType notationType) throws ImportException, IM3Exception {
 		TimeSignature timeSignature;
-		TimeSignatureMensural mensuralMeter = processPossibleMensuralMeter(modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+		TimeSignatureMensural mensuralMeter = null;
+
+		mensuralMeter = processPossibleMensuraSignMeter(meterSign, numStr, proportNumStr, proportNumBaseStr, mensurSlashStr, mensurDotStr);
+		if (mensuralMeter == null) {
+			mensuralMeter = processPossibleMensuralMeter(modusmaiorStr, modusminorStr, tempusStr, prolatioStr);
+		}
+
 		if (mensuralMeter != null) {
 			timeSignature = mensuralMeter;
 		} else {
@@ -1196,8 +1255,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				addTimeSignatureIgnoreIfExists(s, timeSignature, maximumVoicesTime, xmlid);
 			}
 		} else {
-			addTimeSignatureIgnoreIfExists(staff, timeSignature, getCurrentTime(), xmlid);	
-		}		
+			addTimeSignatureIgnoreIfExists(staff, timeSignature, getCurrentTime(), xmlid);
+		}
 	}
 	
 	private void addTimeSignatureIgnoreIfExists(Staff staff, TimeSignature ts, Time time, String xmlid) throws IM3Exception {
@@ -1311,17 +1370,78 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 	}
 
 	/**
+	 *
+	 * @param meterSign
+	 * @param numStr
+	 * @param proportNumStr
+	 * @param proportNumBaseStr
+	 * @param mensurSlashStr
+	 * @param mensurDotStr
+	 * @return null if not found
+	 * @throws ImportException
+	 * @throws IM3Exception
+	 */
+	private TimeSignatureMensural processPossibleMensuraSignMeter(String meterSign, String numStr, String proportNumStr, String proportNumBaseStr, String mensurSlashStr, String mensurDotStr) throws ImportException, IM3Exception {
+		TimeSignatureMensural mensuralMeter = null;
+		if (numStr != null) {
+			switch (numStr) {
+				case "3":
+					mensuralMeter = new ProportioTripla();
+					break;
+				case "2":
+					mensuralMeter = new ProportioDupla();
+					break;
+				default:
+					throw new ImportException("Unnokwn proportion for @num=" + numStr);
+			}
+		} else if (meterSign != null) {
+			switch (meterSign) {
+				case "C":
+					if ("3".equals(proportNumStr) && "2".equals(proportNumBaseStr)) {
+						if ("1".equals(mensurSlashStr)) {
+							mensuralMeter = new TimeSignatureProporcionMayor();
+						} else {
+							mensuralMeter = new TimeSignatureProporcionMenor();
+						}
+					} else {
+						if ("1".equals(mensurSlashStr)) {
+							mensuralMeter = new TempusImperfectumCumProlationeImperfectaDiminutum();
+						} else if ("true".equals(mensurDotStr)) {
+							mensuralMeter = new TempusImperfectumCumProlationePerfecta();
+						} else {
+							mensuralMeter = new TempusImperfectumCumProlationeImperfecta();
+						}
+					}
+					break;
+				case "O":
+					if ("true".equals(mensurDotStr)) {
+						mensuralMeter = new TempusPerfectumCumProlationePerfecta();
+					} else {
+						mensuralMeter = new TempusPerfectumCumProlationeImperfecta();
+					}
+					break;
+			}
+		}
+		if (mensuralMeter != null) {
+			mensuralMeter.setStaff(lastStaff);
+			Time time = getCurrentTime();
+			mensuralMeter.setTime(time); // if not set here, the equals does not work
+			return mensuralMeter;
+		} else {
+			return null;
+		}
+	}
+	/**
 	 * 
-	 * @param prolatioStr 
-	 * @param tempusStr 
-	 * @param modusminorStr 
-	 * @param modusmaiorStr 
+	 * @param modusmaiorStr
+	 * @param modusminorStr
+	 * @param tempusStr
+	 * @param prolatioStr
 	 * @return null if not found
 	 * @throws ImportException
 	 * @throws IM3Exception
 	 */
 	private TimeSignatureMensural processPossibleMensuralMeter(String modusmaiorStr, String modusminorStr, String tempusStr, String prolatioStr) throws ImportException, IM3Exception {
-		//TODO Procesar compases C, C| .... Ver MEISongExporter
 		if (modusmaiorStr != null || modusminorStr != null || tempusStr != null || prolatioStr != null) {
 			// mensural		
 			Perfection modusMaior = convertMeiMensuralPerfectionNumber(modusmaiorStr);
@@ -1332,7 +1452,6 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			meter.setStaff(lastStaff);
 			Time time = getCurrentTime();
 			meter.setTime(time); // if not set here, the equals does not work
-			//TODO @sign, @orient, @slash, @dot (pag 144 de mei guidelines) - ver tb. mails foros
 			return meter;
 		} else {
 			return null;
@@ -1729,7 +1848,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 				break;
 			case "scoreDef":
 				if (lastMeterCount != null ||  lastProlatioStr != null) {
-					processMeter(null, null, lastMeterSym, lastMeterCount, lastMeterUnit, lastModusmaiorStr, lastModusminorStr, lastTempusStr, lastProlatioStr, lastStaff.getNotationType());
+					processMeter(null, null, lastMeterSym, lastMeterCount, lastMeterUnit, lastModusmaiorStr, lastModusminorStr, lastTempusStr, lastProlatioStr, lastMensurSignStr,
+							lastNumStr, lastProportNumStr, lastProportNumBaseStr, lastMensurSlashStr, lastMensurDotStr,
+							lastStaff.getNotationType());
 				}
 				if (lastKeySig != null) {
 					processKey(null, null, lastKeySig, lastKeyMode, null, null);

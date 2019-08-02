@@ -49,6 +49,7 @@ public class LigatureFactory {
         } else {
             Ligature ligature = new Ligature(ligatureType);
             noteList.forEach(simpleNote -> ligature.addSubatom(simpleNote));
+            result = ligature;
         }
         return result;
     }

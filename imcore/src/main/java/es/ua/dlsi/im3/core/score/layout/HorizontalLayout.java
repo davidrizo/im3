@@ -4,9 +4,11 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -24,6 +26,16 @@ public class HorizontalLayout extends ScoreLayout {
     Canvas canvas;
     public HorizontalLayout(ScoreSong song, CoordinateComponent width, CoordinateComponent height) throws IM3Exception {
         super(song, song.getStaves());
+        canvas = new Canvas(width, height);
+    }
+
+    public HorizontalLayout(ScoreSong song, CoordinateComponent width, CoordinateComponent height, HashMap<Staff, LayoutFont> layoutFonts) throws IM3Exception {
+        super(song, song.getStaves(), layoutFonts);
+        canvas = new Canvas(width, height);
+    }
+
+    public HorizontalLayout(ScoreSong song, CoordinateComponent width, CoordinateComponent height, LayoutFonts layoutFontForAllStaves) throws IM3Exception {
+        super(song, song.getStaves(), layoutFontForAllStaves);
         canvas = new Canvas(width, height);
     }
 

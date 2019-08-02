@@ -209,7 +209,7 @@ public class ImportFactories {
 			}
 		} else {
 			if (meterCount == null || meterUnit == null) {
-				throw new ImportException("Missing beats or beat type in meter");
+				throw new ImportException("Missing beats or beat type in non sign or mensural num meter");
 			}
 			ts = new FractionalTimeSignature(Integer.parseInt(meterCount), Integer.parseInt(meterUnit)); 
 		}

@@ -42,7 +42,7 @@ public class CapitanMap implements IFontMap {
     }
 
     @Override
-    public String getUnicode(Figures figure, boolean stemUp) throws IM3Exception {
+    public String getUnicode(Figures figure, boolean stemUp, boolean colored) throws IM3Exception {
         String result = UNICODES.get(figure);
         if (result == null) {
             throw new IM3Exception("Cannot find an unicode for " + figure);
@@ -52,7 +52,7 @@ public class CapitanMap implements IFontMap {
     }
 
     @Override
-    public String getUnicodeWihoutFlag(Figures figure, boolean stemUp) throws IM3Exception {
+    public String getUnicodeWihoutFlag(Figures figure, boolean stemUp, boolean colored) throws IM3Exception {
         String result = UNICODES_WITHOUT_FLAG.get(figure);
         if (result == null) {
             throw new IM3Exception("Cannot find an unicode (without flag) for " + figure);
@@ -81,5 +81,15 @@ public class CapitanMap implements IFontMap {
     @Override
     public String getCustosCodePoint() {
         return "custos";
+    }
+
+    @Override
+    public String getUnicodeFlag(Figures figures, boolean stemUp) throws IM3Exception {
+        return null;
+    }
+
+    @Override
+    public String getUnicodeStemAndFlag(Figures figures, boolean stemUp) throws IM3Exception {
+        return null;
     }
 }

@@ -105,7 +105,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
         }
     }
 
-    public void setLayoutStaff(LayoutStaff layoutStaff) throws IM3Exception {
+    public void setLayoutStaff(LayoutStaff layoutStaff)  {
         this.layoutStaff = layoutStaff;
         doLayout();
     }
@@ -113,7 +113,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     private String getUnicode() throws IM3Exception {
         boolean stemUp = parent.isStemUp();
 
-        String unicode = layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp);
+        String unicode = layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp, this.getAtomPitch().getAtomFigure().isColored());
         if (unicode == null) {
             throw new IM3Exception("Cannot find a font unicode for " + parent.getCoreSymbol().getAtomFigure().getFigure());
         }
@@ -122,17 +122,19 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
 
     public boolean headIncludesFlag() throws IM3Exception {
         boolean stemUp = parent.isStemUp();
+        boolean colored = this.getAtomPitch().getAtomFigure().isColored();
 
-        return !layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), false).equals(
-                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp)
+        return !layoutFont.getFontMap().getUnicode(parent.getCoreSymbol().getAtomFigure().getFigure(), false, colored).equals(
+                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp, colored)
         );
     }
 
     public void useHeadWithoutFlag() throws IM3Exception {
         boolean stemUp = parent.isStemUp();
+        boolean colored = this.getAtomPitch().getAtomFigure().isColored();
 
         Pictogram newNoteHeadPictogram = new Pictogram(this, noteHeadPictogram.getInteractionElementType(), layoutFont, //TODO ID
-                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp),
+                layoutFont.getFontMap().getUnicodeWihoutFlag(parent.getCoreSymbol().getAtomFigure().getFigure(), stemUp, colored),
                 noteHeadPictogram.getPosition());
 
         root.remove(noteHeadPictogram);
@@ -225,7 +227,7 @@ public class NotePitch extends Component<LayoutCoreSingleFigureAtom> implements 
     }
 
     @Override
-    protected void doLayout() throws IM3Exception {
+    protected void doLayout()  {
         noteHeadPictogram.getPosition().setReferenceY(layoutStaff.computeYPosition(positionInStaff));
 
         if (dotsYCoordinate != null) {

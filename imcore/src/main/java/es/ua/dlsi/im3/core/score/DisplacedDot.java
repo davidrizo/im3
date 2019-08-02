@@ -2,7 +2,7 @@ package es.ua.dlsi.im3.core.score;
 
 /**
  * When dot is a symbol that must be treated independtly of the figure (e.g. when a barline is located between the note
- * and the dot
+ * and the dot. Usually, a division dot in mensural notation
  */
 public class DisplacedDot extends AttachmentInStaff<AtomPitch> implements ITimedElementInStaff, IStaffElementWithoutLayer {
 

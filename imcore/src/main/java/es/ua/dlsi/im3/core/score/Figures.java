@@ -7,22 +7,25 @@ import es.ua.dlsi.im3.core.IM3Exception;
 
 import java.util.ArrayList;
 
+enum Decoration {
+	none, stem, stemAndFlag
+}
 /**
  * The figures must be mantained in descending length
  */
 public enum Figures implements Comparable<Figures> {
-	MAX_FIGURE (Integer.MAX_VALUE, 1, Integer.MAX_VALUE, NotationType.eModern, false, 0), // used the same way Integer.MAX_VALUE
-	QUADRUPLE_WHOLE (16,1,-1, NotationType.eModern, false, 0),
-	DOUBLE_WHOLE (8,1,0, NotationType.eModern, false, 0),
-	WHOLE (4,1,1, NotationType.eModern, false, 0),
-	HALF (2,1,2, NotationType.eModern, true, 0),
-	QUARTER (1,1,4,NotationType.eModern, true, 0),
-	EIGHTH (1,2,8, NotationType.eModern, true, 1),
-	SIXTEENTH (1, 4, 16, NotationType.eModern, true, 2),
-	THIRTY_SECOND (1, 8, 32, NotationType.eModern, true, 3),
-	SIXTY_FOURTH (1, 16, 64,NotationType.eModern, true, 4),
-	HUNDRED_TWENTY_EIGHTH (1, 32, 128, NotationType.eModern, true, 5),
-	TWO_HUNDRED_FIFTY_SIX (1, 64, 256, NotationType.eModern, true, 6),
+	MAX_FIGURE (Integer.MAX_VALUE, 1, Integer.MAX_VALUE, NotationType.eModern, Decoration.none, 0), // used the same way Integer.MAX_VALUE
+	QUADRUPLE_WHOLE (16,1,-1, NotationType.eModern, Decoration.none, 0),
+	DOUBLE_WHOLE (8,1,0, NotationType.eModern, Decoration.none, 0),
+	WHOLE (4,1,1, NotationType.eModern, Decoration.none, 0),
+	HALF (2,1,2, NotationType.eModern, Decoration.stem, 0),
+	QUARTER (1,1,4,NotationType.eModern, Decoration.stem, 0),
+	EIGHTH (1,2,8, NotationType.eModern, Decoration.stem, 1),
+	SIXTEENTH (1, 4, 16, NotationType.eModern, Decoration.stem, 2),
+	THIRTY_SECOND (1, 8, 32, NotationType.eModern, Decoration.stem, 3),
+	SIXTY_FOURTH (1, 16, 64,NotationType.eModern, Decoration.stem, 4),
+	HUNDRED_TWENTY_EIGHTH (1, 32, 128, NotationType.eModern, Decoration.stem, 5),
+	TWO_HUNDRED_FIFTY_SIX (1, 64, 256, NotationType.eModern, Decoration.stem, 6),
 	/*MAXIMA (16, 1, -2, NotationType.eMensural, false, 0), //TODO Dejar con MAXIMA 32, etc...
 	LONGA (8, 1, -1, NotationType.eMensural, false, 0),
 	BREVE (4, 1, 0, NotationType.eMensural, false, 0),
@@ -31,15 +34,15 @@ public enum Figures implements Comparable<Figures> {
 	SEMIMINIM(1, 2, 4, NotationType.eMensural, false, 0),
 	FUSA (1, 4, 8, NotationType.eMensural, false, 1),
 	SEMIFUSA (1, 8, 16, NotationType.eMensural, false, 2),*/
-    MAXIMA (32, 1, -2, NotationType.eMensural, false, 0),
-    LONGA (16, 1, -1, NotationType.eMensural, false, 0),
-    BREVE (8, 1, 0, NotationType.eMensural, false, 0),
-    SEMIBREVE (4, 1, 1, NotationType.eMensural, false, 0),
-    MINIM(2, 1, 2, NotationType.eMensural, false, 0),
-    SEMIMINIM(1, 1, 4, NotationType.eMensural, false, 0),
-    FUSA (1, 2, 8, NotationType.eMensural, false, 1),
-    SEMIFUSA (1, 4, 16, NotationType.eMensural, false, 2),
-	NO_DURATION (0,1,0, NotationType.eModern, false, 0); // TODO: 22/9/17 Que tenga plica o no depende de la tipografía?
+    MAXIMA (32, 1, -2, NotationType.eMensural, Decoration.stem, 0),
+    LONGA (16, 1, -1, NotationType.eMensural, Decoration.stem, 0),
+    BREVE (8, 1, 0, NotationType.eMensural, Decoration.none, 0),
+    SEMIBREVE (4, 1, 1, NotationType.eMensural, Decoration.none, 0),
+    MINIM(2, 1, 2, NotationType.eMensural, Decoration.stemAndFlag, 0),
+    SEMIMINIM(1, 1, 4, NotationType.eMensural, Decoration.stemAndFlag, 0),
+    FUSA (1, 2, 8, NotationType.eMensural, Decoration.stemAndFlag, 1),
+    SEMIFUSA (1, 4, 16, NotationType.eMensural, Decoration.stemAndFlag, 2),
+	NO_DURATION (0,1,0, NotationType.eModern, Decoration.none, 0); // TODO: 22/9/17 Que tenga plica o no depende de la tipografía?
 
     static Figures [] SORTED_DESC_MENSURAL = new Figures[] {
             MAXIMA, LONGA, BREVE, SEMIBREVE, MINIM, SEMIMINIM, FUSA, SEMIFUSA
@@ -56,15 +59,15 @@ public enum Figures implements Comparable<Figures> {
     final int meterUnit;
     final NotationType notationType;
 
-    final boolean usesStem;
+    final Decoration decoration;
     final int numFlags;
     private final Time ratio;
 
-    Figures(int quarters, int quarterSubdivisions, int meterUnit, NotationType notationType, boolean usesStem, int flags) {
+    Figures(int quarters, int quarterSubdivisions, int meterUnit, NotationType notationType, Decoration decoration, int flags) {
 		duration = new Time(Fraction.getFraction(quarters, quarterSubdivisions));
 		this.meterUnit = meterUnit;
 		this.notationType = notationType;
-		this.usesStem = usesStem;
+		this.decoration = decoration;
 		this.numFlags = flags;
 		this.ratio = new Time(Fraction.getFraction(quarters, quarterSubdivisions));
 	}
@@ -82,11 +85,14 @@ public enum Figures implements Comparable<Figures> {
 	}
 
 	public boolean usesFlag() {
-		return numFlags > 0;
-
+		return (decoration == Decoration.stemAndFlag || decoration == Decoration.stem) && numFlags > 0;
 	}
 	public boolean usesStem() {
-		return usesStem;
+		return decoration == Decoration.stem || decoration == Decoration.stemAndFlag;
+	}
+
+	public boolean usesCombinedStemAndFlag() {
+		return decoration == Decoration.stemAndFlag;
 	}
 
 

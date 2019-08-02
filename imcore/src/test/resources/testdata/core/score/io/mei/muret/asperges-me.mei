@@ -1,0 +1,1268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.music-encoding.org/ns/mei" meiversion="4.0.0">
+	<meiHead>
+		<fileDesc>
+			<titleStmt>
+				<title>1 Asperges me</title>
+			</titleStmt>
+			<pubStmt/>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application>
+					<name>IM3 Java Library © David Rizo</name>
+				</application>
+			</appInfo>
+		</encodingDesc>
+	</meiHead>
+	<music>
+		<body>
+			<mdiv>
+				<score>
+					<scoreDef mensur.sign="C">
+						<staffGrp>
+							<staffDef n="1" clef.line="2" clef.shape="G" facs="#symbol_116997" lines="5" label="Tiple" notationtype="mensural.white"/>
+							<staffDef n="2" clef.line="3" clef.shape="C" facs="#symbol_117638" lines="5" label="Alto" notationtype="mensural.white"/>
+							<staffDef n="3" clef.line="2" clef.shape="C" facs="#symbol_117728" lines="5" label="Tenor" notationtype="mensural.white"/>
+							<staffDef n="4" clef.line="4" clef.shape="C" facs="#symbol_117912" lines="5" label="Bajo" notationtype="mensural.white"/>
+						</staffGrp>
+					</scoreDef>
+					<section>
+						<staff n="1">
+							<layer n="1">
+								<ligature xml:id="A12" form="recta">
+									<note xml:id="A13" dur="semibrevis" pname="d" oct="5"/>
+									<note xml:id="A14" dur="semibrevis" pname="e" oct="5"/>
+								</ligature>
+								<note xml:id="A15" facs="#symbol_117001" dur="semibrevis" pname="f" oct="5" accid="s">
+									<verse n="1">
+										<syl>1v.jpg, p1, s1</syl>
+									</verse>
+								</note>
+								<note xml:id="A16" facs="#symbol_117005" dur="semibrevis" pname="g" oct="5"/>
+								<note xml:id="A17" facs="#symbol_117083" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="A18" facs="#symbol_117084" dur="semibrevis" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A19" facs="#symbol_117087" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A20" facs="#symbol_117088" dur="semibrevis" pname="b" oct="4"/>
+								<note xml:id="A21" facs="#symbol_117089" dur="semibrevis" pname="c" oct="5"/>
+								<ligature xml:id="A22" form="recta">
+									<note xml:id="A23" dur="semibrevis" pname="d" oct="5"/>
+									<note xml:id="A24" dur="semibrevis" pname="g" oct="4"/>
+								</ligature>
+								<ligature xml:id="A25" form="recta">
+									<note xml:id="A26" dur="semibrevis" pname="a" oct="4"/>
+									<note xml:id="A27" dur="semibrevis" pname="b" oct="4"/>
+								</ligature>
+								<rest xml:id="A28" facs="#symbol_117096" dur="semibrevis" loc="2"/>
+								<note xml:id="A29" facs="#symbol_117097" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="A30" facs="#symbol_117099" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A31" facs="#symbol_117100" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="A32" facs="#symbol_117131" dur="minima" dots="1" stem.dir="down" pname="b" oct="4">
+									<verse n="1">
+										<syl>1v.jpg, p1, s2</syl>
+									</verse>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A33" facs="#symbol_117130" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="A34" facs="#symbol_117117" dur="minima" pname="d" oct="5"/>
+								<note xml:id="A35" facs="#symbol_117119" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A36" facs="#symbol_117121" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A37" facs="#symbol_117125" dur="brevis" pname="g" oct="4"/>
+								<rest xml:id="A38" facs="#symbol_117126" dur="minima" loc="4"/>
+								<note xml:id="A39" facs="#symbol_117128" dur="semibrevis" pname="g" oct="5"/>
+								<note xml:id="A40" facs="#symbol_117138" dur="semibrevis" pname="f" oct="5" accid="n"/>
+								<note xml:id="A41" facs="#symbol_117140" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A42" facs="#symbol_117142" dur="minima" pname="f" oct="5"/>
+								<note xml:id="A43" facs="#symbol_117148" dur="minima" pname="g" oct="5"/>
+								<note xml:id="A44" facs="#symbol_117153" dur="semiminima" pname="f" oct="5"/>
+								<note xml:id="A45" facs="#symbol_117155" dur="semiminima" pname="e" oct="5"/>
+								<note xml:id="A46" facs="#symbol_117536" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="A47" facs="#symbol_117537" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="A48" facs="#symbol_117538" dur="minima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="A49" facs="#symbol_117539" dur="minima" dots="1" pname="a" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A50" facs="#symbol_117540" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A51" facs="#symbol_117542" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A52" facs="#symbol_117543" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A53" facs="#symbol_117544" dur="semibrevis" pname="g" oct="4"/>
+								<rest xml:id="A54" facs="#symbol_117548" dur="brevis" loc="4"/>
+								<ligature xml:id="A55" form="recta">
+									<note xml:id="A56" dur="semibrevis" pname="g" oct="4"/>
+									<note xml:id="A57" dur="semibrevis" pname="a" oct="4"/>
+								</ligature>
+								<ligature xml:id="A58" form="recta">
+									<note xml:id="A59" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="A60" dur="semibrevis" pname="b" oct="4"/>
+								</ligature>
+								<note xml:id="A61" facs="#symbol_117551" dur="brevis" pname="c" oct="5">
+									<verse n="1">
+										<syl>1v.jpg, p1, s3</syl>
+									</verse>
+								</note>
+								<note xml:id="A62" facs="#symbol_117552" dur="semibrevis" pname="d" oct="5"/>
+								<ligature xml:id="A63" form="recta">
+									<note xml:id="A64" dur="brevis" pname="d" oct="5"/>
+									<note xml:id="A65" dur="brevis" pname="e" oct="5"/>
+								</ligature>
+								<note xml:id="A66" facs="#symbol_117554" dur="semibrevis" dots="1" pname="f" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A67" facs="#symbol_117556" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A68" facs="#symbol_117557" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A69" facs="#symbol_117558" dur="semibrevis" pname="c" oct="5"/>
+								<rest xml:id="A70" facs="#symbol_117559" dur="brevis" loc="4"/>
+								<rest xml:id="A71" facs="#symbol_117560" dur="minima" loc="6"/>
+								<note xml:id="A72" facs="#symbol_117561" dur="minima" pname="g" oct="5"/>
+								<note xml:id="A73" facs="#symbol_117562" dur="minima" pname="g" oct="5"/>
+								<note xml:id="A74" facs="#symbol_117563" dur="minima" pname="g" oct="5"/>
+								<note xml:id="A75" facs="#symbol_117564" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A76" facs="#symbol_117565" dur="minima" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A77" facs="#symbol_117567" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="A78" facs="#symbol_117568" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A79" facs="#symbol_117571" dur="semibrevis" dots="1" pname="f" oct="5">
+									<verse n="1">
+										<syl>1v.jpg, p1, s4</syl>
+									</verse>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A80" facs="#symbol_117573" dur="semiminima" pname="e" oct="5"/>
+								<note xml:id="A81" facs="#symbol_117574" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="A82" facs="#symbol_117575" dur="minima" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A83" facs="#symbol_117577" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="A84" facs="#symbol_117578" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A85" facs="#symbol_117579" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A86" facs="#symbol_117580" dur="minima" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="A87" facs="#symbol_117581" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A88" facs="#symbol_117582" dur="minima" dots="1" pname="a" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A89" facs="#symbol_117584" dur="semiminima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="A90" facs="#symbol_117585" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A91" facs="#symbol_117586" dur="semibrevis" pname="d" oct="5"/>
+								<rest xml:id="A92" facs="#symbol_117587" dur="minima" loc="6"/>
+								<note xml:id="A93" facs="#symbol_117588" dur="minima" pname="g" oct="5"/>
+								<note xml:id="A94" facs="#symbol_117589" dur="minima" pname="g" oct="5"/>
+								<note xml:id="A95" facs="#symbol_117590" dur="minima" pname="g" oct="5"/>
+								<note xml:id="A96" facs="#symbol_117591" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A97" facs="#symbol_117592" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="A98" facs="#symbol_117593" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="A99" facs="#symbol_117594" dur="semiminima" pname="e" oct="5"/>
+								<note xml:id="A100" facs="#symbol_117595" dur="semiminima" pname="f" oct="5"/>
+								<note xml:id="A101" facs="#symbol_117598" dur="minima" dots="1" pname="g" oct="5">
+									<verse n="1">
+										<syl>1v.jpg, p1, s5</syl>
+									</verse>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A102" facs="#symbol_117600" dur="fusa" pname="f" oct="5"/>
+								<note xml:id="A103" facs="#symbol_117601" dur="fusa" pname="e" oct="5"/>
+								<note xml:id="A104" facs="#symbol_117602" dur="minima" pname="f" oct="5"/>
+								<note xml:id="A105" facs="#symbol_117603" dur="minima" dots="1" pname="g" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A106" facs="#symbol_117605" dur="semiminima" pname="f" oct="5"/>
+								<note xml:id="A107" facs="#symbol_117606" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="A108" facs="#symbol_117607" dur="brevis" pname="d" oct="5"/>
+								<rest xml:id="A109" facs="#symbol_117608" dur="minima" loc="6"/>
+								<note xml:id="A110" facs="#symbol_117612" dur="minima" pname="f" oct="5"/>
+								<note xml:id="A111" facs="#symbol_117613" dur="minima" pname="f" oct="5"/>
+								<note xml:id="A112" facs="#symbol_117615" dur="minima" pname="f" oct="5"/>
+								<note xml:id="A113" facs="#symbol_117619" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A114" facs="#symbol_117620" dur="minima" dots="1" pname="e" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A115" facs="#symbol_117622" dur="fusa" pname="d" oct="5"/>
+								<note xml:id="A116" facs="#symbol_117623" dur="fusa" pname="c" oct="5"/>
+								<note xml:id="A117" facs="#symbol_117624" dur="semiminima" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="A118" facs="#symbol_117625" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="A119" facs="#symbol_117627" dur="minima" pname="d" oct="5"/>
+								<note xml:id="A120" facs="#symbol_117628" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A121" facs="#symbol_117629" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A122" facs="#symbol_117630" dur="brevis" pname="b" oct="4"/>
+								<barLine form="end" facs="#symbol_117631"/>
+								<mensur mensur.sign="C" facs="#symbol_127241"/>
+								<rest xml:id="A123" facs="#symbol_127242" dur="semibrevis" loc="2"/>
+								<ligature xml:id="A124" form="recta">
+									<note xml:id="A125" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="A126" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="A127" facs="#symbol_127247" dur="semibrevis" pname="b" oct="4">
+									<verse n="1">
+										<syl>2v.jpg, p1, s1</syl>
+									</verse>
+								</note>
+								<note xml:id="A128" facs="#symbol_127249" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="A129" facs="#symbol_127251" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A130" facs="#symbol_127253" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A131" facs="#symbol_127254" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A132" facs="#symbol_127255" dur="semibrevis" pname="f" oct="5"/>
+								<note xml:id="A133" facs="#symbol_127256" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A134" facs="#symbol_127257" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A135" facs="#symbol_127258" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="A136" facs="#symbol_127259" dur="minima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="A137" facs="#symbol_127260" dur="minima" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A138" facs="#symbol_127262" dur="semiminima" pname="e" oct="5"/>
+								<note xml:id="A139" facs="#symbol_118195" dur="minima" pname="f" oct="5">
+									<verse n="1">
+										<syl>2v.jpg, p1, s2</syl>
+									</verse>
+								</note>
+								<note xml:id="A140" facs="#symbol_118196" dur="minima" pname="f" oct="5"/>
+								<note xml:id="A141" facs="#symbol_118197" dur="minima" pname="f" oct="5"/>
+								<note xml:id="A142" facs="#symbol_118198" dur="minima" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A143" facs="#symbol_118201" dur="fusa" pname="c" oct="5"/>
+								<note xml:id="A144" facs="#symbol_118202" dur="fusa" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="A145" facs="#symbol_118204" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A146" facs="#symbol_118205" dur="minima" pname="d" oct="5"/>
+								<note xml:id="A147" facs="#symbol_127264" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="A148" facs="#symbol_127265" dur="semiminima" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="A149" facs="#symbol_127266" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A150" facs="#symbol_127267" dur="minima" pname="d" oct="5"/>
+								<note xml:id="A151" facs="#symbol_127268" dur="semibrevis" pname="g" oct="4"/>
+								<rest xml:id="A152" facs="#symbol_127269" dur="minima" loc="4"/>
+								<note xml:id="A153" facs="#symbol_127270" dur="minima" pname="d" oct="5"/>
+								<note xml:id="A154" facs="#symbol_127271" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A155" facs="#symbol_127272" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="A156" facs="#symbol_127273" dur="semibrevis" dots="1" pname="f" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A157" facs="#symbol_127275" dur="minima" pname="e" oct="5"/>
+								<ligature xml:id="A158" form="obliqua">
+									<note xml:id="A159" dur="brevis" pname="d" oct="5"/>
+									<note xml:id="A160" dur="brevis" pname="c" oct="5"/>
+								</ligature>
+								<note xml:id="A161" facs="#symbol_126790" dur="semibrevis" dots="1" pname="c" oct="5">
+									<verse n="1">
+										<syl>2v.jpg, p1, s3</syl>
+									</verse>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A162" facs="#symbol_126792" dur="minima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="A163" facs="#symbol_126793" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A164" facs="#symbol_126794" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A165" facs="#symbol_126796" dur="minima" pname="f" oct="4" accid="s"/>
+								<note xml:id="A166" facs="#symbol_126797" dur="brevis" pname="g" oct="4"/>
+								<barLine form="end" facs="#symbol_126798"/>
+								<mensur mensur.sign="C" facs="#symbol_127426"/>
+								<ligature xml:id="A167" form="recta">
+									<note xml:id="A168" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="A169" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="A170" facs="#symbol_127428" dur="semibrevis" pname="b" oct="4">
+									<verse n="1">
+										<syl>3v.jpg, p1, s1</syl>
+									</verse>
+								</note>
+								<ligature xml:id="A171" form="recta">
+									<note xml:id="A172" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="A173" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="A174" facs="#symbol_127431" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A175" facs="#symbol_127432" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A176" facs="#symbol_127433" dur="semibrevis" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A177" facs="#symbol_127435" dur="minima" pname="d" oct="5"/>
+								<note xml:id="A178" facs="#symbol_127436" dur="minima" pname="d" oct="5"/>
+								<note xml:id="A179" facs="#symbol_127437" dur="minima" pname="d" oct="5"/>
+								<note xml:id="A180" facs="#symbol_127438" dur="semibrevis" pname="d" oct="5"/>
+								<rest xml:id="A181" facs="#symbol_127439" dur="semibrevis" loc="2"/>
+								<note xml:id="A182" facs="#symbol_127440" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A183" facs="#symbol_127442" dur="semibrevis" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A184" facs="#symbol_127444" dur="minima" pname="e" oct="5"/>
+								<note xml:id="A185" facs="#symbol_127445" dur="semibrevis" dots="1" pname="f" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A186" facs="#symbol_127452" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="A187" facs="#symbol_127455" dur="semiminima" pname="d" oct="5">
+									<verse n="1">
+										<syl>3v.jpg, p1, s2</syl>
+									</verse>
+								</note>
+								<note xml:id="A188" facs="#symbol_127456" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="A189" facs="#symbol_127457" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="A190" facs="#symbol_127458" dur="brevis" pname="e" oct="5"/>
+								<ligature xml:id="A191" form="recta">
+									<note xml:id="A192" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="A193" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="A194" facs="#symbol_127460" dur="semibrevis" pname="b" oct="4"/>
+								<ligature xml:id="A195" form="recta">
+									<note xml:id="A196" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="A197" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="A198" facs="#symbol_127462" dur="semibrevis" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A199" facs="#symbol_127464" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="A200" facs="#symbol_127465" dur="semiminima" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="A201" facs="#symbol_127466" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A202" facs="#symbol_127467" dur="minima" pname="c" oct="5" accid="s"/>
+								<note xml:id="A203" facs="#symbol_127470" dur="brevis" pname="d" oct="5"/>
+								<rest xml:id="A204" facs="#symbol_127471" dur="semibrevis" loc="4"/>
+								<ligature xml:id="A205" form="recta">
+									<note xml:id="A206" dur="semibrevis" pname="d" oct="5"/>
+									<note xml:id="A207" dur="semibrevis" pname="e" oct="5"/>
+									<note xml:id="A208" dur="brevis" pname="f" oct="5"/>
+								</ligature>
+								<note xml:id="A209" facs="#symbol_127473" dur="brevis" pname="e" oct="5"/>
+								<note xml:id="A210" facs="#symbol_127476" dur="semibrevis" pname="d" oct="5">
+									<verse n="1">
+										<syl>3v.jpg, p1, s3</syl>
+									</verse>
+								</note>
+								<note xml:id="A211" facs="#symbol_127477" dur="brevis" pname="c" oct="5" accid="n"/>
+								<note xml:id="A212" facs="#symbol_127478" dur="semibrevis" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A213" facs="#symbol_127483" dur="semiminima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="A214" facs="#symbol_127484" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A215" facs="#symbol_127485" dur="semibrevis" pname="b" oct="4"/>
+								<note xml:id="A216" facs="#symbol_127486" dur="brevis" pname="a" oct="4"/>
+								<note xml:id="A217" facs="#symbol_127489" dur="semibrevis" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A218" facs="#symbol_127491" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A219" facs="#symbol_127492" dur="semiminima" pname="e" oct="4"/>
+								<note xml:id="A220" facs="#symbol_127493" dur="semibrevis" pname="f" oct="4" accid="s"/>
+								<note xml:id="A221" facs="#symbol_127495" dur="brevis" pname="g" oct="4"/>
+								<barLine form="end" facs="#symbol_127496"/>
+							</layer>
+						</staff>
+						<staff n="2">
+							<layer n="1">
+								<note xml:id="A222" facs="#symbol_117640" dur="semibrevis" pname="b" oct="3">
+									<verse n="1">
+										<syl>1v.jpg, p1, s6</syl>
+									</verse>
+								</note>
+								<note xml:id="A223" facs="#symbol_117641" dur="semibrevis" pname="b" oct="3"/>
+								<note xml:id="A224" facs="#symbol_117642" dur="semibrevis" pname="d" oct="4"/>
+								<ligature xml:id="A225" form="recta">
+									<note xml:id="A226" dur="semibrevis" pname="d" oct="4"/>
+									<note xml:id="A227" dur="semibrevis" pname="e" oct="4"/>
+								</ligature>
+								<note xml:id="A228" facs="#symbol_117645" dur="semibrevis" pname="f" oct="4" accid="s"/>
+								<note xml:id="A229" facs="#symbol_117648" dur="minima" pname="g" oct="4">
+									<verse n="1">
+										<syl>1v.jpg, p1, s7</syl>
+									</verse>
+								</note>
+								<note xml:id="A230" facs="#symbol_117649" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A231" facs="#symbol_117650" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A232" facs="#symbol_117651" dur="semibrevis" pname="c" oct="4"/>
+								<note xml:id="A233" facs="#symbol_117652" dur="minima" dots="1" pname="b" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A234" facs="#symbol_117654" dur="semiminima" stem.dir="up" pname="c" oct="4"/>
+								<note xml:id="A235" facs="#symbol_117655" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A236" facs="#symbol_117656" dur="minima" pname="b" oct="3"/>
+								<note xml:id="A237" facs="#symbol_117657" dur="minima" stem.dir="down" pname="c" oct="4"/>
+								<note xml:id="A238" facs="#symbol_117658" dur="minima" pname="a" oct="3"/>
+								<note xml:id="A239" facs="#symbol_117659" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A240" facs="#symbol_117660" dur="minima" pname="a" oct="3"/>
+								<note xml:id="A241" facs="#symbol_117661" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A242" facs="#symbol_117662" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A243" facs="#symbol_117663" dur="minima" pname="f" oct="4" accid="n"/>
+								<note xml:id="A244" facs="#symbol_117664" dur="minima" dots="1" pname="e" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A245" facs="#symbol_117666" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A246" facs="#symbol_117667" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A247" facs="#symbol_117668" dur="semibrevis" pname="g" oct="4"/>
+								<rest xml:id="A248" facs="#symbol_117670" dur="semibrevis" loc="2"/>
+								<note xml:id="A249" facs="#symbol_117671" dur="semibrevis" pname="e" oct="4">
+									<verse n="1">
+										<syl>1v.jpg, p1, s8</syl>
+									</verse>
+								</note>
+								<note xml:id="A250" facs="#symbol_117672" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A251" facs="#symbol_117673" dur="semibrevis" pname="c" oct="4"/>
+								<ligature xml:id="A252" form="recta">
+									<note xml:id="A253" dur="semibrevis" pname="b" oct="3"/>
+									<note xml:id="A254" dur="semibrevis" pname="c" oct="4"/>
+									<note xml:id="A255" dur="brevis" dots="1" pname="d" oct="4"/>
+									<dot form="aug"/>
+								</ligature>
+								<note xml:id="A256" facs="#symbol_117676" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A257" facs="#symbol_117677" dur="semibrevis" pname="a" oct="3"/>
+								<note xml:id="A258" facs="#symbol_117678" dur="brevis" pname="g" oct="3"/>
+								<rest xml:id="A259" facs="#symbol_117679" dur="brevis" loc="4"/>
+								<rest xml:id="A260" facs="#symbol_117680" dur="semibrevis" loc="2"/>
+								<rest xml:id="A261" facs="#symbol_117681" dur="minima" loc="6"/>
+								<note xml:id="A262" facs="#symbol_117683" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A263" facs="#symbol_117684" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A264" facs="#symbol_117685" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A265" facs="#symbol_117686" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A266" facs="#symbol_117687" dur="semiminima" stem.dir="down" pname="c" oct="4"/>
+								<note xml:id="A267" facs="#symbol_117688" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A268" facs="#symbol_117689" dur="semiminima" pname="e" oct="4"/>
+								<note xml:id="A269" facs="#symbol_117690" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A270" facs="#symbol_117693" dur="minima" dots="1" pname="g" oct="4">
+									<verse n="1">
+										<syl>1v.jpg, p1, s9</syl>
+									</verse>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A271" facs="#symbol_117695" dur="fusa" pname="f" oct="4"/>
+								<note xml:id="A272" facs="#symbol_117696" dur="fusa" pname="e" oct="4"/>
+								<note xml:id="A273" facs="#symbol_117697" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A274" facs="#symbol_117698" dur="brevis" pname="g" oct="4"/>
+								<rest xml:id="A275" facs="#symbol_117699" dur="semibrevis" loc="2"/>
+								<ligature xml:id="A276" form="recta">
+									<note xml:id="A277" dur="semibrevis" pname="g" oct="3"/>
+									<note xml:id="A278" dur="semibrevis" pname="a" oct="3"/>
+								</ligature>
+								<ligature xml:id="A279" form="recta">
+									<note xml:id="A280" dur="semibrevis" pname="c" oct="4"/>
+									<note xml:id="A281" dur="semibrevis" pname="b" oct="3"/>
+								</ligature>
+								<note xml:id="A282" facs="#symbol_117702" dur="brevis" pname="c" oct="4"/>
+								<note xml:id="A283" facs="#symbol_117703" dur="semibrevis" pname="d" oct="4"/>
+								<ligature xml:id="A284" form="recta">
+									<note xml:id="A285" dur="semibrevis" pname="d" oct="4"/>
+									<note xml:id="A286" dur="semibrevis" dots="1" pname="e" oct="4"/>
+									<dot form="aug"/>
+								</ligature>
+								<note xml:id="A287" facs="#symbol_117706" dur="semibrevis" pname="f" oct="4"/>
+								<note xml:id="A288" facs="#symbol_117709" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A289" facs="#symbol_117710" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A290" facs="#symbol_117711" dur="semibrevis" pname="c" oct="4"/>
+								<rest xml:id="A291" facs="#symbol_117714" dur="minima" loc="4"/>
+								<note xml:id="A292" facs="#symbol_117715" dur="minima" stem.dir="up" pname="c" oct="4">
+									<verse n="1">
+										<syl>1v.jpg, p1, s10</syl>
+									</verse>
+								</note>
+								<ligature xml:id="A293" form="recta">
+									<note xml:id="A294" dur="semibrevis" pname="c" oct="4"/>
+									<note xml:id="A295" dur="semibrevis" pname="b" oct="3"/>
+								</ligature>
+								<note xml:id="A296" facs="#symbol_117718" dur="brevis" pname="a" oct="3"/>
+								<ligature xml:id="A297" form="recta">
+									<note xml:id="A298" dur="brevis" dots="1" pname="b" oct="3"/>
+									<dot form="aug"/>
+									<note xml:id="A299" dur="brevis" pname="c" oct="4"/>
+									<note xml:id="A300" dur="brevis" pname="d" oct="4"/>
+								</ligature>
+								<note xml:id="A301" facs="#symbol_117721" dur="semibrevis" pname="c" oct="4"/>
+								<note xml:id="A302" facs="#symbol_117722" dur="brevis" pname="d" oct="4"/>
+								<note xml:id="A303" facs="#symbol_117723" dur="brevis" pname="a" oct="3"/>
+								<ligature xml:id="A304" form="recta">
+									<note xml:id="A305" dur="brevis" pname="g" oct="3"/>
+									<note xml:id="A306" dur="brevis" pname="a" oct="3"/>
+								</ligature>
+								<note xml:id="A307" facs="#symbol_117725" dur="brevis" pname="g" oct="3"/>
+								<barLine form="end" facs="#symbol_117727"/>
+								<mensur mensur.sign="C" facs="#symbol_127293"/>
+								<rest xml:id="A308" facs="#symbol_127294" dur="longa" loc="4"/>
+								<rest xml:id="A309" facs="#symbol_127297" dur="brevis" loc="4"/>
+								<ligature xml:id="A310" form="recta">
+									<note xml:id="A311" dur="semibrevis" pname="c" oct="4"/>
+									<note xml:id="A312" dur="semibrevis" pname="d" oct="4"/>
+								</ligature>
+								<note xml:id="A313" facs="#symbol_127299" dur="semibrevis" pname="b" oct="3">
+									<verse n="1">
+										<syl>2v.jpg, p1, s5</syl>
+									</verse>
+								</note>
+								<note xml:id="A314" facs="#symbol_127300" dur="semibrevis" pname="c" oct="4"/>
+								<note xml:id="A315" facs="#symbol_127301" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A316" facs="#symbol_127304" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A317" facs="#symbol_127306" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A318" facs="#symbol_127307" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A319" facs="#symbol_127308" dur="minima" pname="d" oct="4"/>
+								<ligature xml:id="A320" form="recta">
+									<note xml:id="A321" dur="semibrevis" pname="d" oct="4"/>
+									<note xml:id="A322" dur="semibrevis" pname="e" oct="4"/>
+									<note xml:id="A323" dur="brevis" pname="f" oct="4"/>
+								</ligature>
+								<note xml:id="A324" facs="#symbol_127310" dur="semibrevis" pname="e" oct="4"/>
+								<ligature xml:id="A325" form="obliqua">
+									<note xml:id="A326" dur="brevis" pname="d" oct="4"/>
+									<note xml:id="A327" dur="brevis" pname="b" oct="3"/>
+								</ligature>
+								<ligature xml:id="A328" form="recta">
+									<note xml:id="A329" dur="semibrevis" pname="c" oct="4"/>
+									<note xml:id="A330" dur="semibrevis" pname="b" oct="3"/>
+									<note xml:id="A331" dur="longa" pname="a" oct="3"/>
+								</ligature>
+								<note xml:id="A332" facs="#symbol_127316" dur="minima" pname="g" oct="3">
+									<verse n="1">
+										<syl>2v.jpg, p1, s6</syl>
+									</verse>
+								</note>
+								<note xml:id="A333" facs="#symbol_127317" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A334" facs="#symbol_127318" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A335" facs="#symbol_127319" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A336" facs="#symbol_127320" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A337" facs="#symbol_127321" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A338" facs="#symbol_127322" dur="semibrevis" pname="c" oct="4"/>
+								<note xml:id="A339" facs="#symbol_127323" dur="semibrevis" pname="a" oct="3"/>
+								<note xml:id="A340" facs="#symbol_127324" dur="brevis" pname="g" oct="3"/>
+								<barLine form="end" facs="#symbol_127325"/>
+								<mensur mensur.sign="C" facs="#symbol_127520"/>
+								<note xml:id="A341" facs="#symbol_127521" dur="semibrevis" pname="e" oct="4">
+									<verse n="1">
+										<syl>3v.jpg, p1, s5</syl>
+									</verse>
+								</note>
+								<note xml:id="A342" facs="#symbol_127522" dur="semibrevis" pname="f" oct="4"/>
+								<note xml:id="A343" facs="#symbol_127523" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A344" facs="#symbol_127524" dur="minima" stem.dir="down" pname="c" oct="4"/>
+								<note xml:id="A345" facs="#symbol_127525" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A346" facs="#symbol_127526" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A347" facs="#symbol_127527" dur="semibrevis" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A348" facs="#symbol_127529" dur="minima" pname="f" oct="4" accid="s"/>
+								<note xml:id="A349" facs="#symbol_127532" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A350" facs="#symbol_127533" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A351" facs="#symbol_127534" dur="minima" dots="1" pname="f" oct="4">
+									<accid accid="n" func="caution" enclose="paren"/>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A352" facs="#symbol_127536" dur="semiminima" pname="e" oct="4"/>
+								<note xml:id="A353" facs="#symbol_127537" dur="semiminima" pname="f" oct="4">
+									<accid accid="n" func="caution" enclose="paren"/>
+								</note>
+								<note xml:id="A354" facs="#symbol_127538" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A355" facs="#symbol_127539" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A356" facs="#symbol_127540" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A357" facs="#symbol_127541" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A358" facs="#symbol_127544" dur="minima" pname="g" oct="4">
+									<verse n="1">
+										<syl>3v.jpg, p1, s6</syl>
+									</verse>
+								</note>
+								<note xml:id="A359" facs="#symbol_127545" dur="minima" pname="f" oct="4" accid.ges="s"/>
+								<note xml:id="A360" facs="#symbol_127548" dur="minima" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A361" facs="#symbol_127550" dur="fusa" pname="f" oct="4" accid.ges="n"/>
+								<note xml:id="A362" facs="#symbol_127551" dur="fusa" pname="e" oct="4"/>
+								<note xml:id="A363" facs="#symbol_127552" dur="minima" pname="f" oct="4" accid="s"/>
+								<note xml:id="A364" facs="#symbol_127555" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A365" facs="#symbol_127556" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A366" facs="#symbol_127557" dur="minima" dots="1" stem.dir="up" pname="c" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A367" facs="#symbol_127559" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A368" facs="#symbol_127560" dur="semiminima" pname="a" oct="3"/>
+								<note xml:id="A369" facs="#symbol_127561" dur="semiminima" pname="g" oct="3"/>
+								<note xml:id="A370" facs="#symbol_127562" dur="minima" dots="1" pname="a" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A371" facs="#symbol_127565" dur="semiminima" pname="a" oct="3"/>
+								<note xml:id="A372" facs="#symbol_127567" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A373" facs="#symbol_127568" dur="semiminima" stem.dir="up" pname="c" oct="4"/>
+								<note xml:id="A374" facs="#symbol_127569" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A375" facs="#symbol_127570" dur="minima" stem.dir="down" pname="c" oct="4" accid="s"/>
+								<note xml:id="A376" facs="#symbol_127572" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A377" facs="#symbol_127573" dur="minima" pname="f" oct="4" accid.ges="n"/>
+								<note xml:id="A378" facs="#symbol_127576" dur="semibrevis" pname="d" oct="4">
+									<verse n="1">
+										<syl>3v.jpg, p1, s7</syl>
+									</verse>
+								</note>
+								<note xml:id="A379" facs="#symbol_127577" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A380" facs="#symbol_127578" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A381" facs="#symbol_127579" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A382" facs="#symbol_127580" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A383" facs="#symbol_127581" dur="minima" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A384" facs="#symbol_127583" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A385" facs="#symbol_127584" dur="semibrevis" dots="1" pname="e" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A386" facs="#symbol_127587" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A387" facs="#symbol_127588" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A388" facs="#symbol_127589" dur="minima" dots="1" pname="f" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A389" facs="#symbol_127591" dur="semiminima" pname="e" oct="4"/>
+								<note xml:id="A390" facs="#symbol_127592" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A391" facs="#symbol_127593" dur="semiminima" stem.dir="down" pname="c" oct="4" accid="n"/>
+								<note xml:id="A392" facs="#symbol_127594" dur="minima" pname="b" oct="3"/>
+								<note xml:id="A393" facs="#symbol_127597" dur="minima" pname="a" oct="3"/>
+								<note xml:id="A394" facs="#symbol_127598" dur="minima" pname="b" oct="3"/>
+								<note xml:id="A395" facs="#symbol_127599" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A396" facs="#symbol_127600" dur="minima" stem.dir="down" pname="c" oct="4"/>
+								<note xml:id="A397" facs="#symbol_127601" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A398" facs="#symbol_127605" dur="semibrevis" pname="f" oct="4">
+									<verse n="1">
+										<syl>3v.jpg, p1, s8</syl>
+									</verse>
+								</note>
+								<note xml:id="A399" facs="#symbol_127606" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A400" facs="#symbol_127607" dur="minima" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A401" facs="#symbol_127609" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A402" facs="#symbol_127610" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A403" facs="#symbol_127611" dur="minima" stem.dir="down" pname="c" oct="4"/>
+								<note xml:id="A404" facs="#symbol_127612" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A405" facs="#symbol_127613" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A406" facs="#symbol_127614" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A407" facs="#symbol_127615" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A408" facs="#symbol_127616" dur="minima" pname="a" oct="3"/>
+								<note xml:id="A409" facs="#symbol_127617" dur="minima" stem.dir="up" pname="c" oct="4"/>
+								<note xml:id="A410" facs="#symbol_127618" dur="semiminima" pname="g" oct="3"/>
+								<note xml:id="A411" facs="#symbol_127619" dur="semiminima" pname="a" oct="3"/>
+								<note xml:id="A412" facs="#symbol_127620" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A413" facs="#symbol_127621" dur="semiminima" stem.dir="up" pname="c" oct="4"/>
+								<note xml:id="A414" facs="#symbol_127622" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A415" facs="#symbol_127623" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A416" facs="#symbol_127624" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A417" facs="#symbol_127625" dur="minima" dots="1" pname="f" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A418" facs="#symbol_127627" dur="semiminima" pname="e" oct="4"/>
+								<note xml:id="A419" facs="#symbol_127631" dur="semibrevis" pname="d" oct="4">
+									<verse n="1">
+										<syl>3v.jpg, p1, s9</syl>
+									</verse>
+								</note>
+								<note xml:id="A420" facs="#symbol_127632" dur="minima" stem.dir="up" pname="c" oct="4"/>
+								<note xml:id="A421" facs="#symbol_127633" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A422" facs="#symbol_127634" dur="minima" pname="a" oct="3"/>
+								<note xml:id="A423" facs="#symbol_127635" dur="minima" pname="a" oct="3"/>
+								<note xml:id="A424" facs="#symbol_127636" dur="semibrevis" pname="b" oct="3"/>
+								<note xml:id="A425" facs="#symbol_127637" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A426" facs="#symbol_127638" dur="semibrevis" dots="1" pname="c" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A427" facs="#symbol_127640" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A428" facs="#symbol_127641" dur="semiminima" pname="a" oct="3"/>
+								<note xml:id="A429" facs="#symbol_127642" dur="semibrevis" pname="b" oct="3"/>
+								<barLine form="end" facs="#symbol_127644"/>
+							</layer>
+						</staff>
+						<staff n="3">
+							<layer n="1">
+								<note xml:id="A430" facs="#symbol_117730" dur="brevis" pname="g" oct="4">
+									<verse n="1">
+										<syl>2r.jpg, p1, s1</syl>
+									</verse>
+								</note>
+								<ligature xml:id="A431" form="recta">
+									<note xml:id="A432" dur="semibrevis" pname="a" oct="4"/>
+									<note xml:id="A433" dur="semibrevis" pname="b" oct="4"/>
+								</ligature>
+								<note xml:id="A434" facs="#symbol_117732" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="A435" facs="#symbol_117733" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A436" facs="#symbol_117737" dur="semibrevis" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A437" facs="#symbol_117738" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A438" facs="#symbol_117739" dur="minima" stem.dir="up" pname="e" oct="4"/>
+								<note xml:id="A439" facs="#symbol_117740" dur="semibrevis" pname="f" oct="4" accid="s"/>
+								<note xml:id="A440" facs="#symbol_117742" dur="minima" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A441" facs="#symbol_117744" dur="fusa" pname="f" oct="4">
+									<accid accid="s" func="caution" enclose="paren"/>
+								</note>
+								<note xml:id="A442" facs="#symbol_117745" dur="fusa" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A443" facs="#symbol_117746" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A444" facs="#symbol_117747" dur="semiminima" stem.dir="up" pname="e" oct="4"/>
+								<note xml:id="A445" facs="#symbol_117748" dur="minima" pname="f" oct="4" accid.ges="n"/>
+								<note xml:id="A446" facs="#symbol_117749" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A447" facs="#symbol_117750" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A448" facs="#symbol_117751" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A449" facs="#symbol_117752" dur="semiminima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A450" facs="#symbol_117753" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A451" facs="#symbol_117754" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A452" facs="#symbol_117755" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A453" facs="#symbol_117756" dur="minima" pname="b" oct="4"/>
+								<note xml:id="A454" facs="#symbol_117757" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A455" facs="#symbol_117758" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A456" facs="#symbol_117762" dur="minima" pname="a" oct="4">
+									<verse n="1">
+										<syl>2r.jpg, p1, s2</syl>
+									</verse>
+								</note>
+								<note xml:id="A457" facs="#symbol_117763" dur="minima" pname="a" oct="4"/>
+								<ligature xml:id="A458" form="recta">
+									<note xml:id="A459" dur="semibrevis" pname="d" oct="4"/>
+									<note xml:id="A460" dur="semibrevis" pname="e" oct="4"/>
+								</ligature>
+								<note xml:id="A461" facs="#symbol_117765" dur="fusa" pname="d" oct="4"/>
+								<note xml:id="A462" facs="#symbol_117766" dur="fusa" pname="c" oct="4"/>
+								<note xml:id="A463" facs="#symbol_117767" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A464" facs="#symbol_117768" dur="minima" stem.dir="up" pname="e" oct="4"/>
+								<note xml:id="A465" facs="#symbol_117769" dur="semibrevis" pname="c" oct="4"/>
+								<note xml:id="A466" facs="#symbol_117770" dur="minima" pname="b" oct="3"/>
+								<note xml:id="A467" facs="#symbol_117771" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A468" facs="#symbol_117772" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A469" facs="#symbol_117773" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A470" facs="#symbol_117774" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A471" facs="#symbol_117775" dur="minima" pname="b" oct="4" accid="f"/>
+								<note xml:id="A472" facs="#symbol_117777" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A473" facs="#symbol_117778" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A474" facs="#symbol_117779" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A475" facs="#symbol_117780" dur="semiminima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A476" facs="#symbol_117781" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A477" facs="#symbol_117784" dur="semiminima" pname="g" oct="3"/>
+								<note xml:id="A478" facs="#symbol_117785" dur="minima" dots="1" pname="d" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A479" facs="#symbol_117787" dur="fusa" pname="c" oct="4"/>
+								<note xml:id="A480" facs="#symbol_117788" dur="fusa" pname="b" oct="3"/>
+								<note xml:id="A481" facs="#symbol_117789" dur="minima" pname="c" oct="4"/>
+								<note xml:id="A482" facs="#symbol_117790" dur="semibrevis" pname="d" oct="4"/>
+								<rest xml:id="A483" facs="#symbol_117797" dur="minima" loc="4"/>
+								<note xml:id="A484" facs="#symbol_117799" dur="minima" pname="g" oct="4">
+									<verse n="1">
+										<syl>2r.jpg, p1, s3</syl>
+									</verse>
+								</note>
+								<note xml:id="A485" facs="#symbol_117800" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A486" facs="#symbol_117801" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A487" facs="#symbol_117802" dur="minima" stem.dir="up" pname="e" oct="4"/>
+								<note xml:id="A488" facs="#symbol_117803" dur="semiminima" pname="c" oct="4"/>
+								<note xml:id="A489" facs="#symbol_117805" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A490" facs="#symbol_117806" dur="semiminima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A491" facs="#symbol_117807" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A492" facs="#symbol_117808" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A493" facs="#symbol_117809" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A494" facs="#symbol_117810" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A495" facs="#symbol_117811" dur="semibrevis" pname="d" oct="4"/>
+								<rest xml:id="A496" facs="#symbol_117812" dur="semibrevis" loc="2"/>
+								<note xml:id="A497" facs="#symbol_117813" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A498" facs="#symbol_117814" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A499" facs="#symbol_117815" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A500" facs="#symbol_117816" dur="minima" pname="b" oct="4" accid="n"/>
+								<note xml:id="A501" facs="#symbol_117817" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A502" facs="#symbol_117818" dur="semibrevis" pname="b" oct="4"/>
+								<note xml:id="A503" facs="#symbol_117819" dur="minima" pname="b" oct="4"/>
+								<note xml:id="A504" facs="#symbol_117820" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="A505" facs="#symbol_117821" dur="minima" pname="c" oct="4"/>
+								<note xml:id="A506" facs="#symbol_117822" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A507" facs="#symbol_117824" dur="semiminima" stem.dir="up" pname="e" oct="4"/>
+								<note xml:id="A508" facs="#symbol_117825" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A509" facs="#symbol_117826" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A510" facs="#symbol_117827" dur="semibrevis" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A511" facs="#symbol_117831" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A512" facs="#symbol_117838" dur="minima" dots="1" stem.dir="up" pname="e" oct="4">
+									<verse n="1">
+										<syl>2r.jpg, p1, s4</syl>
+									</verse>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A513" facs="#symbol_117840" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A514" facs="#symbol_117841" dur="semiminima" pname="c" oct="4"/>
+								<note xml:id="A515" facs="#symbol_117842" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A516" facs="#symbol_117846" dur="minima" pname="a" oct="3"/>
+								<note xml:id="A517" facs="#symbol_117845" dur="brevis" pname="g" oct="3"/>
+								<rest xml:id="A518" facs="#symbol_117847" dur="semibrevis" loc="2"/>
+								<note xml:id="A519" facs="#symbol_117848" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="A520" facs="#symbol_117849" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A521" facs="#symbol_117851" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A522" facs="#symbol_117852" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A523" facs="#symbol_117853" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A524" facs="#symbol_117854" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A525" facs="#symbol_117855" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A526" facs="#symbol_117856" dur="semiminima" pname="b" oct="4"/>
+								<note xml:id="A527" facs="#symbol_117857" dur="minima" pname="c" oct="5"/>
+								<dot form="div"/>
+								<note xml:id="A528" facs="#symbol_117860" dur="semiminima" pname="b" oct="4"/>
+								<note xml:id="A529" facs="#symbol_117861" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A530" facs="#symbol_117862" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A531" facs="#symbol_117863" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A532" facs="#symbol_117864" dur="semiminima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A533" facs="#symbol_117868" dur="minima" pname="d" oct="4"/>
+								<dot form="div"/>
+								<note xml:id="A534" facs="#symbol_117870" dur="semiminima" stem.dir="up" pname="e" oct="4"/>
+								<note xml:id="A535" facs="#symbol_117871" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A536" facs="#symbol_117872" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A537" facs="#symbol_117873" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A538" facs="#symbol_117874" dur="brevis" pname="d" oct="4"/>
+								<rest xml:id="A539" facs="#symbol_117879" dur="minima" loc="4"/>
+								<note xml:id="A540" facs="#symbol_117881" dur="minima" pname="g" oct="4">
+									<verse n="1">
+										<syl>2r.jpg, p1, s5</syl>
+									</verse>
+								</note>
+								<note xml:id="A541" facs="#symbol_117882" dur="semibrevis" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A542" facs="#symbol_117885" dur="minima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A543" facs="#symbol_117886" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A544" facs="#symbol_117887" dur="semibrevis" pname="b" oct="4"/>
+								<note xml:id="A545" facs="#symbol_117888" dur="semibrevis" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A546" facs="#symbol_117890" dur="semiminima" pname="b" oct="4"/>
+								<note xml:id="A547" facs="#symbol_117891" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A548" facs="#symbol_117892" dur="minima" pname="b" oct="4"/>
+								<note xml:id="A549" facs="#symbol_117893" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A550" facs="#symbol_117896" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A551" facs="#symbol_117897" dur="minima" dots="1" pname="f" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A552" facs="#symbol_117899" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A553" facs="#symbol_117900" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A554" facs="#symbol_117901" dur="semiminima" pname="b" oct="4"/>
+								<note xml:id="A555" facs="#symbol_117902" dur="semibrevis" pname="c" oct="5"/>
+								<rest xml:id="A556" facs="#symbol_117908" dur="minima" loc="6"/>
+								<note xml:id="A557" facs="#symbol_117904" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A558" facs="#symbol_117905" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A559" facs="#symbol_117906" dur="semiminima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A560" facs="#symbol_117909" dur="semibrevis" pname="f" oct="4"/>
+								<note xml:id="A561" facs="#symbol_117910" dur="brevis" pname="g" oct="4"/>
+								<barLine form="end" facs="#symbol_117911"/>
+								<mensur mensur.sign="C" facs="#symbol_127330"/>
+								<ligature xml:id="A562" form="recta">
+									<note xml:id="A563" dur="semibrevis" pname="g" oct="4"/>
+									<note xml:id="A564" dur="semibrevis" pname="a" oct="4"/>
+								</ligature>
+								<ligature xml:id="A565" form="recta">
+									<note xml:id="A566" dur="semibrevis" pname="f" oct="4"/>
+									<note xml:id="A567" dur="semibrevis" pname="g" oct="4"/>
+								</ligature>
+								<note xml:id="A568" facs="#symbol_127333" dur="minima" pname="c" oct="4">
+									<verse n="1">
+										<syl>3r.jpg, p1, s1</syl>
+									</verse>
+								</note>
+								<note xml:id="A569" facs="#symbol_127334" dur="minima" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A570" facs="#symbol_127336" dur="fusa" pname="b" oct="4"/>
+								<note xml:id="A571" facs="#symbol_127337" dur="fusa" pname="a" oct="4"/>
+								<note xml:id="A572" facs="#symbol_127338" dur="minima" pname="b" oct="4"/>
+								<note xml:id="A573" facs="#symbol_127339" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A574" facs="#symbol_127341" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A575" facs="#symbol_127342" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A576" facs="#symbol_127343" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A577" facs="#symbol_127344" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A578" facs="#symbol_127345" dur="semibrevis" pname="g" oct="4"/>
+								<rest xml:id="A579" facs="#symbol_127349" dur="minima" loc="6"/>
+								<ligature xml:id="A580" form="recta">
+									<note xml:id="A581" dur="semibrevis" pname="g" oct="4"/>
+									<note xml:id="A582" dur="semibrevis" pname="a" oct="4"/>
+								</ligature>
+								<note xml:id="A583" facs="#symbol_127350" dur="semibrevis" pname="f" oct="4">
+									<verse n="1">
+										<syl>3r.jpg, p1, s2</syl>
+									</verse>
+								</note>
+								<note xml:id="A584" facs="#symbol_127352" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A585" facs="#symbol_127353" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A586" facs="#symbol_127354" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A587" facs="#symbol_127355" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A588" facs="#symbol_127356" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A589" facs="#symbol_127357" dur="minima" pname="b" oct="4"/>
+								<note xml:id="A590" facs="#symbol_127358" dur="semibrevis" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="A591" facs="#symbol_127361" dur="minima" pname="b" oct="4"/>
+								<ligature xml:id="A592" form="obliqua">
+									<note xml:id="A593" dur="brevis" pname="a" oct="4"/>
+									<note xml:id="A594" dur="brevis" pname="g" oct="4"/>
+								</ligature>
+								<ligature xml:id="A595" form="obliqua">
+									<note xml:id="A596" dur="brevis" pname="f" oct="4"/>
+									<note xml:id="A597" dur="brevis" pname="e" oct="4"/>
+								</ligature>
+								<ligature xml:id="A598" form="recta">
+									<note xml:id="A599" dur="semibrevis" pname="d" oct="4"/>
+									<note xml:id="A600" dur="semibrevis" pname="e" oct="4"/>
+								</ligature>
+								<note xml:id="A601" facs="#symbol_127365" dur="brevis" pname="d" oct="4"/>
+								<barLine form="end" facs="#symbol_127366"/>
+								<mensur mensur.sign="C" facs="#symbol_127647"/>
+								<note xml:id="A602" facs="#symbol_127648" dur="semibrevis" pname="a" oct="4">
+									<verse n="1">
+										<syl>4r.jpg, p1, s1</syl>
+									</verse>
+								</note>
+								<note xml:id="A603" facs="#symbol_127649" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A604" facs="#symbol_127650" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A605" facs="#symbol_127651" dur="minima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A606" facs="#symbol_127652" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="A607" facs="#symbol_127653" dur="minima" pname="b" oct="4"/>
+								<note xml:id="A608" facs="#symbol_127654" dur="minima" pname="b" oct="4"/>
+								<note xml:id="A609" facs="#symbol_127655" dur="minima" pname="b" oct="4"/>
+								<ligature xml:id="A610" form="recta">
+									<note xml:id="A611" dur="semibrevis" pname="a" oct="4"/>
+									<note xml:id="A612" dur="semibrevis" pname="b" oct="4"/>
+									<note xml:id="A613" dur="longa" pname="a" oct="4"/>
+								</ligature>
+								<note xml:id="A614" facs="#symbol_127657" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A615" facs="#symbol_127658" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A616" facs="#symbol_127659" dur="semibrevis" pname="b" oct="4"/>
+								<note xml:id="A617" facs="#symbol_127660" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A618" facs="#symbol_127661" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A619" facs="#symbol_127664" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A620" facs="#symbol_127666" dur="semibrevis" pname="b" oct="4">
+									<verse n="1">
+										<syl>4r.jpg, p1, s2</syl>
+									</verse>
+								</note>
+								<rest xml:id="A621" facs="#symbol_127667" dur="minima" loc="6"/>
+								<note xml:id="A622" facs="#symbol_127668" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A623" facs="#symbol_127669" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A624" facs="#symbol_127670" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A625" facs="#symbol_127671" dur="minima" dots="1" pname="f" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A626" facs="#symbol_127673" dur="semiminima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A627" facs="#symbol_127677" dur="semibrevis" pname="f" oct="4"/>
+								<note xml:id="A628" facs="#symbol_127678" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A629" facs="#symbol_127679" dur="semibrevis" dots="1" pname="a" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A630" facs="#symbol_127681" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A631" facs="#symbol_127682" dur="minima" pname="b" oct="4" accid="s"/>
+								<note xml:id="A632" facs="#symbol_127683" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A633" facs="#symbol_127685" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A634" facs="#symbol_127686" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A635" facs="#symbol_127687" dur="minima" stem.dir="down" pname="e" oct="4"/>
+								<note xml:id="A636" facs="#symbol_127688" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A637" facs="#symbol_127689" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A638" facs="#symbol_127690" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A639" facs="#symbol_127692" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A640" facs="#symbol_127693" dur="semibrevis" pname="b" oct="4" accid="n"/>
+								<note xml:id="A641" facs="#symbol_127694" dur="brevis" pname="a" oct="4"/>
+								<note xml:id="A642" facs="#symbol_127697" dur="semibrevis" pname="a" oct="4">
+									<verse n="1">
+										<syl>4r.jpg, p1, s3</syl>
+									</verse>
+								</note>
+								<note xml:id="A643" facs="#symbol_127698" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A644" facs="#symbol_127700" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A645" facs="#symbol_127701" dur="minima" pname="a" oct="4"/>
+								<note xml:id="A646" facs="#symbol_127702" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A647" facs="#symbol_127703" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="A648" facs="#symbol_127704" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A649" facs="#symbol_127705" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="A650" facs="#symbol_127706" dur="semiminima" pname="b" oct="4"/>
+								<note xml:id="A651" facs="#symbol_127707" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="A652" facs="#symbol_127708" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A653" facs="#symbol_127712" dur="minima" dots="1" pname="a" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A654" facs="#symbol_127714" dur="semiminima" pname="b" oct="4"/>
+								<note xml:id="A655" facs="#symbol_127716" dur="minima" pname="c" oct="5"/>
+								<note xml:id="A656" facs="#symbol_127717" dur="minima" pname="b" oct="4"/>
+								<rest xml:id="A657" facs="#symbol_127718" dur="minima" loc="6"/>
+								<note xml:id="A658" facs="#symbol_127719" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="A659" facs="#symbol_127720" dur="minima" pname="g" oct="4"/>
+								<note xml:id="A660" facs="#symbol_127721" dur="minima" dots="1" pname="a" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A661" facs="#symbol_127723" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="A662" facs="#symbol_127724" dur="minima" pname="f" oct="4"/>
+								<note xml:id="A663" facs="#symbol_127728" dur="minima" pname="f" oct="4">
+									<verse n="1">
+										<syl>4r.jpg, p1, s4</syl>
+									</verse>
+								</note>
+								<note xml:id="A664" facs="#symbol_127729" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A665" facs="#symbol_127730" dur="brevis" pname="d" oct="4"/>
+								<rest xml:id="A666" facs="#symbol_127731" dur="minima" loc="2"/>
+								<note xml:id="A667" facs="#symbol_127732" dur="semibrevis" pname="c" oct="4"/>
+								<note xml:id="A668" facs="#symbol_127733" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A669" facs="#symbol_127734" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A670" facs="#symbol_127735" dur="minima" pname="a" oct="3"/>
+								<note xml:id="A671" facs="#symbol_127736" dur="minima" dots="1" pname="d" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A672" facs="#symbol_127738" dur="semiminima" pname="c" oct="4"/>
+								<note xml:id="A673" facs="#symbol_127739" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A674" facs="#symbol_127740" dur="semibrevis" pname="b" oct="3"/>
+								<note xml:id="A675" facs="#symbol_127741" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A676" facs="#symbol_127742" dur="brevis" pname="d" oct="4"/>
+								<barLine form="end" facs="#symbol_127743"/>
+							</layer>
+						</staff>
+						<staff n="4">
+							<layer n="1">
+								<note xml:id="A677" facs="#symbol_117914" dur="minima" dots="1" pname="g" oct="3">
+									<verse n="1">
+										<syl>2r.jpg, p1, s6</syl>
+									</verse>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A678" facs="#symbol_117916" dur="semiminima" pname="f" oct="3"/>
+								<note xml:id="A679" facs="#symbol_117917" dur="semibrevis" pname="e" oct="3"/>
+								<ligature xml:id="A680" form="recta">
+									<note xml:id="A681" dur="semibrevis" pname="d" oct="3"/>
+									<note xml:id="A682" dur="semibrevis" pname="g" oct="3"/>
+								</ligature>
+								<note xml:id="A683" facs="#symbol_117919" dur="minima" pname="c" oct="3"/>
+								<note xml:id="A684" facs="#symbol_117921" dur="minima" pname="c" oct="4"/>
+								<note xml:id="A685" facs="#symbol_117922" dur="minima" dots="1" pname="d" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A686" facs="#symbol_117924" dur="semiminima" pname="c" oct="4"/>
+								<note xml:id="A687" facs="#symbol_117925" dur="minima" pname="b" oct="3"/>
+								<note xml:id="A688" facs="#symbol_117926" dur="minima" pname="c" oct="4"/>
+								<note xml:id="A689" facs="#symbol_117927" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A690" facs="#symbol_117928" dur="semibrevis" pname="a" oct="3"/>
+								<rest xml:id="A691" facs="#symbol_117932" dur="semibrevis" loc="2"/>
+								<note xml:id="A692" facs="#symbol_117933" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A693" facs="#symbol_117935" dur="semibrevis" pname="f" oct="3"/>
+								<note xml:id="A694" facs="#symbol_117936" dur="semibrevis" pname="e" oct="3"/>
+								<note xml:id="A695" facs="#symbol_117937" dur="semibrevis" pname="d" oct="3"/>
+								<note xml:id="A696" facs="#symbol_117938" dur="minima" dots="1" pname="e" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A697" facs="#symbol_117940" dur="semiminima" pname="f" oct="3"/>
+								<note xml:id="A698" facs="#symbol_117941" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A699" facs="#symbol_117944" dur="minima" pname="d" oct="3">
+									<verse n="1">
+										<syl>2r.jpg, p1, s7</syl>
+									</verse>
+								</note>
+								<note xml:id="A700" facs="#symbol_117945" dur="semibrevis" pname="a" oct="3"/>
+								<note xml:id="A701" facs="#symbol_117946" dur="brevis" pname="g" oct="3"/>
+								<note xml:id="A702" facs="#symbol_117947" dur="semibrevis" pname="f" oct="3"/>
+								<note xml:id="A703" facs="#symbol_117948" dur="minima" dots="1" pname="e" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A704" facs="#symbol_117951" dur="semiminima" pname="f" oct="3"/>
+								<note xml:id="A705" facs="#symbol_117952" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A706" facs="#symbol_117953" dur="semibrevis" pname="c" oct="3"/>
+								<note xml:id="A707" facs="#symbol_117954" dur="semibrevis" pname="d" oct="3"/>
+								<note xml:id="A708" facs="#symbol_117956" dur="semibrevis" pname="c" oct="3"/>
+								<rest xml:id="A709" facs="#symbol_117957" dur="minima" loc="2"/>
+								<note xml:id="A710" facs="#symbol_117958" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A711" facs="#symbol_117960" dur="minima" pname="d" oct="3"/>
+								<note xml:id="A712" facs="#symbol_117962" dur="minima" pname="d" oct="3"/>
+								<note xml:id="A713" facs="#symbol_117964" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A714" facs="#symbol_117965" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A715" facs="#symbol_117966" dur="semibrevis" pname="e" oct="3"/>
+								<note xml:id="A716" facs="#symbol_117967" dur="semibrevis" pname="d" oct="3"/>
+								<rest xml:id="A717" facs="#symbol_117968" dur="semibrevis" loc="0"/>
+								<ligature xml:id="A718" form="recta">
+									<note xml:id="A719" dur="semibrevis" pname="g" oct="3"/>
+									<note xml:id="A720" dur="semibrevis" pname="a" oct="3"/>
+								</ligature>
+								<note xml:id="A721" facs="#symbol_117971" dur="semibrevis" dots="1" pname="c" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A722" facs="#symbol_117973" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A723" facs="#symbol_117974" dur="minima" dots="1" stem.dir="down" pname="a" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A724" facs="#symbol_117976" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A725" facs="#symbol_117980" dur="minima" pname="c" oct="4">
+									<verse n="1">
+										<syl>2r.jpg, p1, s8</syl>
+									</verse>
+								</note>
+								<note xml:id="A726" facs="#symbol_117981" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A727" facs="#symbol_117982" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A728" facs="#symbol_117983" dur="minima" dots="1" stem.dir="down" pname="a" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A729" facs="#symbol_117986" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A730" facs="#symbol_117988" dur="minima" pname="c" oct="4"/>
+								<note xml:id="A731" facs="#symbol_117990" dur="minima" pname="e" oct="4"/>
+								<note xml:id="A732" facs="#symbol_117991" dur="semibrevis" pname="d" oct="4"/>
+								<rest xml:id="A733" facs="#symbol_117992" dur="minima" loc="4"/>
+								<note xml:id="A734" facs="#symbol_117993" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A735" facs="#symbol_117995" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A736" facs="#symbol_117996" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A737" facs="#symbol_117997" dur="minima" pname="e" oct="3"/>
+								<note xml:id="A738" facs="#symbol_117998" dur="minima" dots="1" pname="c" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A739" facs="#symbol_118000" dur="semiminima" pname="d" oct="3"/>
+								<note xml:id="A740" facs="#symbol_118001" dur="minima" pname="e" oct="3"/>
+								<note xml:id="A741" facs="#symbol_118002" dur="semibrevis" pname="d" oct="3"/>
+								<note xml:id="A742" facs="#symbol_118003" dur="semibrevis" pname="c" oct="3"/>
+								<ligature xml:id="A743" form="recta">
+									<note xml:id="A744" dur="semibrevis" pname="g" oct="3"/>
+									<note xml:id="A745" dur="semibrevis" dots="1" pname="a" oct="3"/>
+									<dot form="aug"/>
+								</ligature>
+								<note xml:id="A746" facs="#symbol_118006" dur="semibrevis" pname="c" oct="4"/>
+								<note xml:id="A747" facs="#symbol_118007" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A748" facs="#symbol_118008" dur="semiminima" stem.dir="down" pname="a" oct="3"/>
+								<note xml:id="A749" facs="#symbol_118010" dur="minima" pname="b" oct="3"/>
+								<note xml:id="A750" facs="#symbol_118014" dur="minima" pname="b" oct="3">
+									<verse n="1">
+										<syl>2r.jpg, p1, s9</syl>
+									</verse>
+								</note>
+								<note xml:id="A751" facs="#symbol_118015" dur="semibrevis" pname="c" oct="4"/>
+								<rest xml:id="A752" facs="#symbol_118016" dur="minima" loc="4"/>
+								<note xml:id="A753" facs="#symbol_118017" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A754" facs="#symbol_118019" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A755" facs="#symbol_118020" dur="minima" pname="c" oct="3"/>
+								<note xml:id="A756" facs="#symbol_118022" dur="minima" dots="1" pname="d" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A757" facs="#symbol_118029" dur="semiminima" pname="e" oct="3"/>
+								<note xml:id="A758" facs="#symbol_118030" dur="semiminima" pname="f" oct="3"/>
+								<note xml:id="A759" facs="#symbol_118031" dur="semiminima" pname="g" oct="3"/>
+								<note xml:id="A760" facs="#symbol_118032" dur="minima" dots="1" stem.dir="up" pname="a" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A761" facs="#symbol_118034" dur="semiminima" pname="g" oct="3"/>
+								<note xml:id="A762" facs="#symbol_118035" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A763" facs="#symbol_118037" dur="minima" pname="e" oct="3"/>
+								<note xml:id="A764" facs="#symbol_118038" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A765" facs="#symbol_118039" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A766" facs="#symbol_118040" dur="semibrevis" pname="d" oct="3"/>
+								<rest xml:id="A767" facs="#symbol_118041" dur="semibrevis" loc="0"/>
+								<rest xml:id="A768" facs="#symbol_118043" dur="minima" loc="2"/>
+								<note xml:id="A769" facs="#symbol_118044" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A770" facs="#symbol_118046" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A771" facs="#symbol_118047" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A772" facs="#symbol_118048" dur="semibrevis" pname="e" oct="3"/>
+								<note xml:id="A773" facs="#symbol_118051" dur="semibrevis" pname="c" oct="3">
+									<verse n="1">
+										<syl>2r.jpg, p1, s10</syl>
+									</verse>
+								</note>
+								<note xml:id="A774" facs="#symbol_118052" dur="minima" pname="c" oct="3"/>
+								<note xml:id="A775" facs="#symbol_118053" dur="minima" pname="e" oct="3"/>
+								<note xml:id="A776" facs="#symbol_118054" dur="semibrevis" pname="d" oct="3"/>
+								<note xml:id="A777" facs="#symbol_118055" dur="semibrevis" pname="g" oct="3"/>
+								<rest xml:id="A778" facs="#symbol_118056" dur="semibrevis" loc="0"/>
+								<note xml:id="A779" facs="#symbol_118057" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A780" facs="#symbol_118059" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A781" facs="#symbol_118060" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A782" facs="#symbol_118062" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A783" facs="#symbol_118063" dur="minima" pname="d" oct="3"/>
+								<ligature xml:id="A784" form="recta">
+									<note xml:id="A785" dur="semibrevis" pname="f" oct="3"/>
+									<note xml:id="A786" dur="semibrevis" pname="c" oct="3"/>
+								</ligature>
+								<note xml:id="A787" facs="#symbol_118065" dur="semiminima" pname="d" oct="3"/>
+								<note xml:id="A788" facs="#symbol_118066" dur="minima" pname="e" oct="3"/>
+								<note xml:id="A789" facs="#symbol_118067" dur="minima" pname="e" oct="3"/>
+								<note xml:id="A790" facs="#symbol_118069" dur="brevis" pname="d" oct="3"/>
+								<note xml:id="A791" facs="#symbol_118070" dur="brevis" pname="g" oct="3"/>
+								<barLine form="end" facs="#symbol_118071"/>
+								<mensur mensur.sign="C" facs="#symbol_127369"/>
+								<rest xml:id="A792" facs="#symbol_127370" dur="longa" loc="4"/>
+								<rest xml:id="A793" facs="#symbol_127371" dur="semibrevis" loc="2"/>
+								<ligature xml:id="A794" form="recta">
+									<note xml:id="A795" dur="semibrevis" pname="g" oct="3"/>
+									<note xml:id="A796" dur="semibrevis" pname="a" oct="3"/>
+								</ligature>
+								<ligature xml:id="A797" form="recta">
+									<note xml:id="A798" dur="semibrevis" pname="f" oct="3"/>
+									<note xml:id="A799" dur="semibrevis" pname="g" oct="3"/>
+								</ligature>
+								<note xml:id="A800" facs="#symbol_127374" dur="semibrevis" pname="c" oct="3">
+									<verse n="1">
+										<syl>3r.jpg, p1, s3</syl>
+									</verse>
+								</note>
+								<note xml:id="A801" facs="#symbol_127375" dur="semibrevis" dots="1" pname="g" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A802" facs="#symbol_127378" dur="semibrevis" pname="d" oct="3"/>
+								<note xml:id="A803" facs="#symbol_127379" dur="minima" pname="b" oct="3" accid="f"/>
+								<note xml:id="A804" facs="#symbol_127381" dur="minima" pname="b" oct="3" accid.ges="f"/>
+								<note xml:id="A805" facs="#symbol_127382" dur="minima" pname="b" oct="3" accid.ges="f"/>
+								<note xml:id="A806" facs="#symbol_127383" dur="semibrevis" pname="a" oct="3"/>
+								<note xml:id="A807" facs="#symbol_127385" dur="minima" pname="d" oct="3"/>
+								<note xml:id="A808" facs="#symbol_127386" dur="minima" dots="1" pname="f" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A809" facs="#symbol_127389" dur="semiminima" pname="e" oct="3"/>
+								<note xml:id="A810" facs="#symbol_127393" dur="minima" pname="d" oct="3">
+									<verse n="1">
+										<syl>3r.jpg, p1, s4</syl>
+									</verse>
+								</note>
+								<note xml:id="A811" facs="#symbol_127394" dur="semibrevis" pname="c" oct="3"/>
+								<note xml:id="A812" facs="#symbol_127395" dur="semibrevis" pname="g" oct="3"/>
+								<rest xml:id="A813" facs="#symbol_127396" dur="minima" loc="2"/>
+								<note xml:id="A814" facs="#symbol_127397" dur="minima" pname="d" oct="3"/>
+								<note xml:id="A815" facs="#symbol_127398" dur="minima" dots="1" stem.dir="up" pname="a" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A816" facs="#symbol_127400" dur="semiminima" pname="g" oct="3"/>
+								<note xml:id="A817" facs="#symbol_127401" dur="semiminima" pname="f" oct="3"/>
+								<note xml:id="A818" facs="#symbol_127402" dur="semiminima" pname="e" oct="3"/>
+								<note xml:id="A819" facs="#symbol_127403" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A820" facs="#symbol_127404" dur="semibrevis" pname="c" oct="3"/>
+								<note xml:id="A821" facs="#symbol_127405" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A822" facs="#symbol_127406" dur="minima" dots="1" pname="d" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A823" facs="#symbol_127408" dur="semiminima" pname="e" oct="3"/>
+								<note xml:id="A824" facs="#symbol_127410" dur="semibrevis" pname="f" oct="3"/>
+								<note xml:id="A825" facs="#symbol_127412" dur="minima" pname="c" oct="3"/>
+								<note xml:id="A826" facs="#symbol_127413" dur="minima" dots="1" pname="c" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A827" facs="#symbol_127415" dur="semiminima" pname="d" oct="3"/>
+								<note xml:id="A828" facs="#symbol_127416" dur="semiminima" pname="e" oct="3"/>
+								<note xml:id="A829" facs="#symbol_127417" dur="semiminima" pname="f" oct="3"/>
+								<note xml:id="A830" facs="#symbol_127420" dur="semibrevis" pname="g" oct="3">
+									<verse n="1">
+										<syl>3r.jpg, p1, s5</syl>
+									</verse>
+								</note>
+								<ligature xml:id="A831" form="recta">
+									<note xml:id="A832" dur="semibrevis" pname="c" oct="3"/>
+									<note xml:id="A833" dur="semibrevis" pname="d" oct="3"/>
+								</ligature>
+								<note xml:id="A834" facs="#symbol_127422" dur="brevis" pname="g" oct="3"/>
+								<barLine form="end" facs="#symbol_127423"/>
+								<mensur mensur.sign="C" facs="#symbol_127746"/>
+								<note xml:id="A835" facs="#symbol_127747" dur="semibrevis" pname="a" oct="3">
+									<verse n="1">
+										<syl>4r.jpg, p1, s5</syl>
+									</verse>
+								</note>
+								<note xml:id="A836" facs="#symbol_127748" dur="semibrevis" pname="d" oct="3"/>
+								<note xml:id="A837" facs="#symbol_127749" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A838" facs="#symbol_127750" dur="semibrevis" pname="c" oct="3"/>
+								<note xml:id="A839" facs="#symbol_127751" dur="semibrevis" dots="1" pname="g" oct="3"/>
+								<dot form="aug"/>
+								<note xml:id="A840" facs="#symbol_127754" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A841" facs="#symbol_127756" dur="semibrevis" pname="d" oct="3"/>
+								<note xml:id="A842" facs="#symbol_127757" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A843" facs="#symbol_127758" dur="minima" pname="d" oct="3"/>
+								<note xml:id="A844" facs="#symbol_127759" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A845" facs="#symbol_127760" dur="minima" dots="1" pname="d" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A846" facs="#symbol_127762" dur="semiminima" pname="e" oct="4"/>
+								<note xml:id="A847" facs="#symbol_127764" dur="semibrevis" pname="f" oct="4"/>
+								<note xml:id="A848" facs="#symbol_127765" dur="semibrevis" pname="e" oct="4"/>
+								<note xml:id="A849" facs="#symbol_127769" dur="brevis" pname="d" oct="4">
+									<verse n="1">
+										<syl>4r.jpg, p1, s6</syl>
+									</verse>
+								</note>
+								<note xml:id="A850" facs="#symbol_127770" dur="semibrevis" pname="g" oct="3"/>
+								<rest xml:id="A851" facs="#symbol_127771" dur="minima" loc="0"/>
+								<note xml:id="A852" facs="#symbol_127772" dur="minima" pname="d" oct="3"/>
+								<note xml:id="A853" facs="#symbol_127773" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A854" facs="#symbol_127774" dur="minima" pname="c" oct="3"/>
+								<note xml:id="A855" facs="#symbol_127776" dur="brevis" pname="d" oct="3"/>
+								<note xml:id="A856" facs="#symbol_127777" dur="brevis" dots="1" pname="a" oct="3"/>
+								<dot form="aug"/>
+								<rest xml:id="A857" facs="#symbol_127779" dur="brevis" loc="4"/>
+								<note xml:id="A858" facs="#symbol_127780" dur="semibrevis" pname="a" oct="3"/>
+								<note xml:id="A859" facs="#symbol_127781" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A860" facs="#symbol_127782" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A861" facs="#symbol_127783" dur="brevis" pname="a" oct="3"/>
+								<note xml:id="A862" facs="#symbol_127784" dur="minima" pname="d" oct="3"/>
+								<note xml:id="A863" facs="#symbol_127785" dur="minima" dots="1" pname="d" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A864" facs="#symbol_127787" dur="semiminima" pname="c" oct="4"/>
+								<note xml:id="A865" facs="#symbol_127788" dur="semiminima" pname="b" oct="3"/>
+								<note xml:id="A866" facs="#symbol_127789" dur="semiminima" stem.dir="down" pname="a" oct="3"/>
+								<note xml:id="A867" facs="#symbol_127792" dur="minima" pname="g" oct="3">
+									<verse n="1">
+										<syl>4r.jpg, p1, s7</syl>
+									</verse>
+								</note>
+								<note xml:id="A868" facs="#symbol_127793" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A869" facs="#symbol_127794" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A870" facs="#symbol_127795" dur="minima" pname="b" oct="3" accid="f"/>
+								<note xml:id="A871" facs="#symbol_127798" dur="semibrevis" pname="a" oct="3"/>
+								<note xml:id="A872" facs="#symbol_127799" dur="minima" pname="d" oct="3"/>
+								<note xml:id="A873" facs="#symbol_127800" dur="semibrevis" pname="d" oct="4"/>
+								<note xml:id="A874" facs="#symbol_127801" dur="minima" pname="d" oct="4"/>
+								<note xml:id="A875" facs="#symbol_127802" dur="minima" dots="1" pname="e" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="A876" facs="#symbol_127804" dur="semiminima" pname="d" oct="4"/>
+								<note xml:id="A877" facs="#symbol_127805" dur="minima" pname="c" oct="4"/>
+								<note xml:id="A878" facs="#symbol_127806" dur="minima" pname="c" oct="4"/>
+								<note xml:id="A879" facs="#symbol_127807" dur="semibrevis" pname="b" oct="3">
+									<accid accid="n" func="caution" enclose="paren"/>
+								</note>
+								<note xml:id="A880" facs="#symbol_127808" dur="semibrevis" pname="a" oct="3"/>
+								<rest xml:id="A881" facs="#symbol_127809" dur="brevis" loc="2"/>
+								<rest xml:id="A882" facs="#symbol_127810" dur="minima" loc="2"/>
+								<note xml:id="A883" facs="#symbol_127811" dur="semibrevis" pname="g" oct="3"/>
+								<note xml:id="A884" facs="#symbol_127812" dur="minima" pname="g" oct="3"/>
+								<note xml:id="A885" facs="#symbol_127820" dur="minima" dots="1" stem.dir="up" pname="a" oct="3">
+									<verse n="1">
+										<syl>4r.jpg, p1, s8</syl>
+									</verse>
+								</note>
+								<dot form="aug"/>
+								<note xml:id="A886" facs="#symbol_127822" dur="semiminima" pname="g" oct="3"/>
+								<note xml:id="A887" facs="#symbol_127823" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A888" facs="#symbol_127825" dur="minima" pname="f" oct="3"/>
+								<note xml:id="A889" facs="#symbol_127826" dur="semibrevis" pname="e" oct="3"/>
+								<note xml:id="A890" facs="#symbol_127827" dur="brevis" pname="d" oct="3"/>
+								<ligature xml:id="A891" form="recta">
+									<note xml:id="A892" dur="semibrevis" pname="e" oct="3"/>
+									<note xml:id="A893" dur="semibrevis" pname="c" oct="3"/>
+								</ligature>
+								<note xml:id="A894" facs="#symbol_127829" dur="brevis" pname="g" oct="3"/>
+								<barLine form="end" facs="#symbol_127830"/>
+							</layer>
+						</staff>
+					</section>
+				</score>
+			</mdiv>
+		</body>
+	</music>
+</mei>

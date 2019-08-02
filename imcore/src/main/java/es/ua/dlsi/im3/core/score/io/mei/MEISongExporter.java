@@ -650,6 +650,10 @@ public class MEISongExporter implements ISongExporter {
 				params.add("mensur.dot");
 				params.add("true");
 				break;
+			case "es.ua.dlsi.im3.core.score.mensural.meters.ProportioDupla":
+				params.add("num");
+				params.add("2");
+				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.ProportioTripla":
 				params.add("num");
 				params.add("3");
@@ -1040,6 +1044,16 @@ public class MEISongExporter implements ISongExporter {
 								throw new ExportException("Element " + slr + " does not have time set");
 							}
 							if (segment == null || segment.contains(slr.getTime())) {
+								if (slr instanceof Custos) {
+									processCustos(tabs + 2, (Custos) slr);
+								} else if (slr instanceof TimeSignature) {
+									//TODO ¿habrá que mejor coger el TimeSignature por el @sign...
+									processTimeSignature(tabs + 2, (TimeSignature) slr);
+								} else if (slr instanceof MarkBarline) {
+									processBarLine(sb, tabs + 2, (MarkBarline) slr, staff);
+									previousAccidentals.clear();
+								}
+
 								if (segment == null) {
 									exportPageSystemBreaks(staffContainer, sb, tabs + 2, slr.getTime());
 								}
@@ -1049,20 +1063,10 @@ public class MEISongExporter implements ISongExporter {
 									processClefChange((Clef) slr, params);
 									XMLExporterHelper.startEnd(sb, tabs + 2, "clef", params);
 									lastClef.put(staff, (Clef) slr);
-								} else if (slr instanceof Custos) {
-									processCustos(tabs + 2, (Custos) slr);
-								} else if (slr instanceof TimeSignature) {
-									//TODO ¿habrá que mejor coger el TimeSignature por el @sign...
-									processTimeSignature(tabs + 2, (TimeSignature) slr);
 								} else if (slr instanceof KeySignature) {
 									throw new UnsupportedOperationException("TO-DO Key change");
 								} else if (slr instanceof Atom) {
 									processAtom(scorePart, tabs + 2, (Atom) slr, staff);
-								} else if (slr instanceof MarkBarline) {
-									processBarLine(sb, tabs + 2, (MarkBarline) slr, staff);
-									previousAccidentals.clear();
-								} else {
-									throw new ExportException("Unsupported symbol type for export: '" + slr.getClass() + "'");
 								}
 
 								first = false;
@@ -1467,7 +1471,9 @@ public class MEISongExporter implements ISongExporter {
                             XMLExporterHelper.end(sb, tabs+2, "verse");
                         }
                     }
-					XMLExporterHelper.add(sb, tabs+2, accidElement.toString());
+				    if (accidElement != null) {
+						XMLExporterHelper.add(sb, tabs + 2, accidElement.toString());
+					}
                     XMLExporterHelper.end(sb, tabs+1, "note");
                 }
             }

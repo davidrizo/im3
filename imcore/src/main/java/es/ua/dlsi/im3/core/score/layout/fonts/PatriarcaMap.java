@@ -14,13 +14,16 @@ public class PatriarcaMap implements IFontMap {
     public static final String NOTE_HEAD_WIDTH_CODEPOINT = "mensuralWhiteMinima";
     public static final String CUSTOS = "mensuralCustosUp";
 
+    private static final HashMap<Figures, String> UNICODES_WITHOUT_STEM = new HashMap<>();
+    {
+        UNICODES_WITHOUT_STEM.put(Figures.MAXIMA, "mensuralWhiteMaxima");
+        UNICODES_WITHOUT_STEM.put(Figures.LONGA, "mensuralWhiteLonga");
+        UNICODES_WITHOUT_STEM.put(Figures.BREVE, "mensuralWhiteBrevis");
+        UNICODES_WITHOUT_STEM.put(Figures.SEMIBREVE, "mensuralBlackSemibrevisVoid");
+    }
 
-    // TODO: 7/2/18 UP OR DOWN
     private static final HashMap<Figures, String> UNICODES_STEM_UP = new HashMap<>();
     {
-        //TODO Mensural
-        // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
-        UNICODES_STEM_UP.put(Figures.SEMIBREVE, "mensuralBlackSemibrevisVoid");
         UNICODES_STEM_UP.put(Figures.MINIM, "mensuralWhiteMinima");
         UNICODES_STEM_UP.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
         // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
@@ -36,6 +39,7 @@ public class PatriarcaMap implements IFontMap {
     {
         //TODO Mensural
         // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
+        UNICODES_STEM_DOWN.put(Figures.BREVE, "mensuralBlackSemibrevisVoid"); //TODO
         UNICODES_STEM_DOWN.put(Figures.SEMIBREVE, "mensuralBlackSemibrevisVoid");
         UNICODES_STEM_DOWN.put(Figures.MINIM, "mensuralWhiteMinimaDown");
         UNICODES_STEM_DOWN.put(Figures.SEMIMINIM, "mensuralWhiteSemiminimaDown"); //TODO Ver esto - ¿igual en proporción ternaria?
@@ -74,13 +78,17 @@ public class PatriarcaMap implements IFontMap {
 
 
     @Override
-    public String getUnicode(Figures figure, boolean stemUp) throws IM3Exception {
+    public String getUnicode(Figures figure, boolean stemUp, boolean colored) throws IM3Exception {
         HashMap<Figures, String> unicodes;
 
-        if (stemUp) {
-            unicodes = UNICODES_STEM_UP;
+        if (figure.usesStem()) {
+            if (stemUp) {
+                unicodes = UNICODES_STEM_UP;
+            } else {
+                unicodes = UNICODES_STEM_DOWN;
+            }
         } else {
-            unicodes = UNICODES_STEM_DOWN;
+            unicodes = UNICODES_WITHOUT_STEM;
         }
 
         String result = unicodes.get(figure);
@@ -92,7 +100,7 @@ public class PatriarcaMap implements IFontMap {
     }
 
     @Override
-    public String getUnicodeWihoutFlag(Figures figure, boolean stemUp) throws IM3Exception {
+    public String getUnicodeWihoutFlag(Figures figure, boolean stemUp, boolean colored) throws IM3Exception {
         HashMap<Figures, String> unicodes;
 
         if (stemUp) {
@@ -129,5 +137,15 @@ public class PatriarcaMap implements IFontMap {
     @Override
     public String getCustosCodePoint() {
         return CUSTOS;
+    }
+
+    @Override
+    public String getUnicodeFlag(Figures figures, boolean stemUp) throws IM3Exception {
+        return null;
+    }
+
+    @Override
+    public String getUnicodeStemAndFlag(Figures figures, boolean stemUp) throws IM3Exception {
+        return null;
     }
 }

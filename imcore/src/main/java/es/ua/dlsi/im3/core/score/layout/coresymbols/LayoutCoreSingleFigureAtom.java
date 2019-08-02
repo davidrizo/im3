@@ -65,19 +65,37 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
                     new CoordinateComponent(position.getX()),
                     null
             );
-            stem = new Stem(this, stemPosition, stemUp);
-            group.add(stem.getGraphics());
 
-            if (coreSymbol.getAtomFigure().getFigure().usesFlag()) {
-                Coordinate flagPosition = stem.getLineEnd();
+            if (coreSymbol.getAtomFigure().getFigure().usesCombinedStemAndFlag()) {
+                if (stemUp) {
+                    stemXDisplacement = headWidth / 2;
+                    stemPosition.setDisplacementX(stemXDisplacement-1);
+                } else {
+                    stemPosition.setDisplacementX(1);
+                }
+
+                stem = new Stem(this, stemPosition, stemUp);
+                Coordinate flagPosition = stem.getPosition(); // just used for computing the position
                 flag = new Flag(layoutFont, this, coreSymbol.getAtomFigure().getFigure(), flagPosition, stemUp);
                 group.add(flag.getGraphics());
+            } else {
+                if (stemUp) {
+                    stemXDisplacement = headWidth;
+                    stemPosition.setDisplacementX(stemXDisplacement-1);
+                } else {
+                    stemPosition.setDisplacementX(1);
+                }
+
+                stem = new Stem(this, stemPosition, stemUp);
+                group.add(stem.getGraphics()); // if combined flag, the stem is just used to locate the flag position
+
+                if (coreSymbol.getAtomFigure().getFigure().usesFlag()) {
+                    Coordinate flagPosition = stem.getLineEnd();
+                    flag = new Flag(layoutFont, this, coreSymbol.getAtomFigure().getFigure(), flagPosition, stemUp);
+                    group.add(flag.getGraphics());
+                }
             }
 
-            if (stemUp) {
-                stemXDisplacement = headWidth;
-                stem.setXDisplacement(stemXDisplacement);
-            }
         }
     }
 

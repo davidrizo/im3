@@ -7,6 +7,9 @@ import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
 import es.ua.dlsi.im3.core.score.layout.graphics.Shape;
 
+/**
+ * @deprecated
+ */
 public class LayoutCoreSimpleLigature extends LayoutCoreSymbol<LigaturaBinaria> {
 
     public LayoutCoreSimpleLigature(LayoutFont layoutFont, LigaturaBinaria coreSymbol) {

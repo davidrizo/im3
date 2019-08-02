@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.layout.coresymbols.*;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.Component;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.connectors.LayoutSlur;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.components.NotePitch;
+import es.ua.dlsi.im3.core.score.layout.fonts.LayoutFonts;
 import es.ua.dlsi.im3.core.score.layout.graphics.Canvas;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
 import es.ua.dlsi.im3.core.score.layout.graphics.Pictogram;
@@ -51,12 +52,28 @@ public abstract class ScoreLayout {
      * @throws IM3Exception
      */
     public ScoreLayout(ScoreSong song, Collection<Staff> staves) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+        this(song, staves, FontFactory.getInstance().getFontsForScoreSong(song));
+    }
+
+    public ScoreLayout(ScoreSong song, Collection<Staff> staves, HashMap<Staff, LayoutFont> layoutFonts) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
         topMargin = LayoutConstants.TOP_MARGIN;
         this.scoreSong = song;
-        layoutFonts = FontFactory.getInstance().getFontsForScoreSong(scoreSong);
+        this.layoutFonts = layoutFonts;
         initStaves(staves);
         init();
     }
+
+    public ScoreLayout(ScoreSong song, Collection<Staff> staves, LayoutFonts layoutFontForAllStaves) throws IM3Exception { //TODO ¿y si tenemos que sacar sólo unos pentagramas?
+        topMargin = LayoutConstants.TOP_MARGIN;
+        this.scoreSong = song;
+        this.layoutFonts = new HashMap<>();
+        for (Staff staff: song.getStaves()) {
+            this.layoutFonts.put(staff, FontFactory.getInstance().getFont(layoutFontForAllStaves));
+        }
+        initStaves(staves);
+        init();
+    }
+
 
     public double getTopMargin() {
         return topMargin;
@@ -197,7 +214,7 @@ public abstract class ScoreLayout {
 
     private void createLayoutSymbol(ArrayList<LayoutCoreSymbolInStaff> coreSymbolsInStaff, ITimedElementInStaff symbol) throws IM3Exception {
         if (!skipSymbol(symbol)) {
-            if (symbol instanceof CompoundAtom) {
+            if (symbol instanceof CompoundAtom && !(symbol instanceof Ligature)) {
                 for (Atom subatom : ((CompoundAtom) symbol).getAtoms()) {
                     createLayoutSymbol(coreSymbolsInStaff, subatom);
                 }

@@ -7,7 +7,10 @@ import es.ua.dlsi.im3.core.score.clefs.ClefF4;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongExporter;
 import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfectaDiminutum;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
+import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
 import java.io.File;
@@ -65,11 +68,17 @@ public class MensuralToModern {
             modernSong.addStaff(modernPentagram);
             ScoreLayer modernLayer = modernPart.addScoreLayer(modernPentagram);
 
-            // TODO: 16/10/17 Que se calcule en función de la teoría musical - además, para las claves, esto no vale por si hay cambios de clave
-            if (istaff >= modernClefs.length) {
-                throw new IM3Exception("Number of staves != clef mapping");
+            Clef modernClef;
+            if (modernClefs != null) {
+                // TODO: 16/10/17 Que se calcule en función de la teoría musical - además, para las claves, esto no vale por si hay cambios de clave
+                if (istaff >= modernClefs.length) {
+                    throw new IM3Exception("Number of staves != clef mapping");
+                }
+                modernClef = modernClefs[istaff];
+            } else {
+                modernClef = mensuralStaff.getClefAtTime(Time.TIME_ZERO);
             }
-            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer, transposition, modernClefs[istaff]);
+            convertIntoStaff(mensuralStaff, modernPentagram, modernLayer, transposition, modernClef);
             istaff++;
         }
         return modernSong;
@@ -171,8 +180,10 @@ public class MensuralToModern {
     private TimeSignature convert(TimeSignature symbol) throws IM3Exception {
         // TODO: 6/10/17 ¿Cómo convertimos?
         TimeSignature modernTimeSignature;
-        if (symbol instanceof TimeSignatureCommonTime) {
+        if (symbol instanceof TimeSignatureCommonTime || symbol instanceof TempusImperfectumCumProlationeImperfecta) {
             modernTimeSignature = new TimeSignatureCommonTime();
+        } else if (symbol instanceof TimeSignatureCutTime || symbol instanceof TempusImperfectumCumProlationeImperfectaDiminutum) {
+            modernTimeSignature = new TimeSignatureCutTime();
         } else {
             throw new IM3Exception("Unsupported time signature " + symbol);
         }
@@ -188,76 +199,80 @@ public class MensuralToModern {
 
     // TODO: 6/10/17 Ligatures....
     private void convert(Staff modernStaff, ScoreLayer modernLayer, Atom atom, Interval transposition) throws IM3Exception {
-        if (!(atom instanceof SingleFigureAtom)) {
+        if (atom instanceof Ligature) {
+            for (Atom subatom: ((Ligature)atom).getAtoms()) {
+                convert(modernStaff, modernLayer, subatom, transposition);
+            }
+        } else if (!(atom instanceof SingleFigureAtom)) {
             throw new IM3Exception("Unsupported atom type " + atom.getClass());
-        }
-
-        if (pendingMensureDuration == null) {
-            throw new IM3Exception("No time signature has found before the atom at time " + atom.getTime());
-        }
-        SingleFigureAtom singleFigureAtom = (SingleFigureAtom) atom;
-
-        //int dots = singleFigureAtom.getAtomFigure().getDots();
-        //Figures figure = singleFigureAtom.getAtomFigure().getFigure();
-        Time pendingDuration = singleFigureAtom.getAtomFigure().getDuration();
-
-        modernLayer.setDurationEvaluator(new DurationEvaluator()); // TODO - it does not use the evaluator of the MensuralSong
-
-        // TODO: 6/10/17 ¿Puede cambiar el compás por enmedio?
-        AtomPitch lastAtomPitch = null;
-        while (!pendingDuration.isZero()) {
-            if (pendingMensureDuration.isNegative()) {
-                throw new IM3RuntimeException("Cannot have a negative pending measure duration: " + pendingMensureDuration);
+        } else {
+            if (pendingMensureDuration == null) {
+                throw new IM3Exception("No time signature has found before the atom at time " + atom.getTime());
             }
-            if (pendingMensureDuration.isNegative()) {
-                throw new IM3RuntimeException("Cannot have a negative pending duration: " + pendingDuration);
-            }
+            SingleFigureAtom singleFigureAtom = (SingleFigureAtom) atom;
 
-            Time outputFigureDuration = Time.min(pendingMensureDuration, pendingDuration);
-            List<FigureAndDots> outputFiguresAndDots;
-            try {
-                outputFiguresAndDots = RhythmUtils.findRhythmForDuration(NotationType.eModern, outputFigureDuration);
-            } catch (IM3Exception e) {
-                throw new IM3Exception("Error translating pending duration " + pendingDuration + " for figure " + singleFigureAtom, e);
-            }
+            //int dots = singleFigureAtom.getAtomFigure().getDots();
+            //Figures figure = singleFigureAtom.getAtomFigure().getFigure();
+            Time pendingDuration = singleFigureAtom.getAtomFigure().getDuration();
 
-            SimpleNote prevNote = null;
-            for (FigureAndDots outputFigureAndDots: outputFiguresAndDots) {
-                SingleFigureAtom outputAtom = null;
-                if (singleFigureAtom instanceof SimpleRest) {
-                    outputAtom = new SimpleRest(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots());
-                } else if (singleFigureAtom instanceof SimpleNote) {
-                    SimpleNote note = new SimpleNote(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots(),
-                            convertPitch(((SimpleNote)singleFigureAtom).getPitch(), transposition));
-                    outputAtom = note;
+            modernLayer.setDurationEvaluator(new DurationEvaluator()); // TODO - it does not use the evaluator of the MensuralSong
 
-                    if (lastAtomPitch != null) {
-                        lastAtomPitch.setTiedToNext(note.getAtomPitch());
-                    }
-
-                    lastAtomPitch = note.getAtomPitch();
-
-                    if (prevNote != null) {
-                        note.getAtomPitch().setTiedFromPrevious(prevNote.getAtomPitch());
-                    }
-                    prevNote = note;
-                } else {
-                    throw new IM3Exception("Unsupported single figure atom type: " + singleFigureAtom.getClass());
+            // TODO: 6/10/17 ¿Puede cambiar el compás por enmedio?
+            AtomPitch lastAtomPitch = null;
+            while (!pendingDuration.isZero()) {
+                if (pendingMensureDuration.isNegative()) {
+                    throw new IM3RuntimeException("Cannot have a negative pending measure duration: " + pendingMensureDuration);
                 }
-                modernLayer.add(outputAtom);
-                //220522 modernStaff.addTimedElement(outputAtom);
-            }
-            pendingDuration = pendingDuration.substract(outputFigureDuration);
-            pendingMensureDuration = pendingMensureDuration.substract(outputFigureDuration);
-
-            if (pendingMensureDuration.isZero()) {
-                Time time = modernLayer.getDuration();
-                if (modernStaff.getScoreSong().getMeasureWithOnset(time) == null) {
-                    currentMeasure.setEndTime(time);
-                    currentMeasure = new Measure(modernStaff.getScoreSong());
-                    modernStaff.getScoreSong().addMeasure(time, currentMeasure);
+                if (pendingMensureDuration.isNegative()) {
+                    throw new IM3RuntimeException("Cannot have a negative pending duration: " + pendingDuration);
                 }
-                pendingMensureDuration = activeTimeSignature.getDuration();
+
+                Time outputFigureDuration = Time.min(pendingMensureDuration, pendingDuration);
+                List<FigureAndDots> outputFiguresAndDots;
+                try {
+                    outputFiguresAndDots = RhythmUtils.findRhythmForDuration(NotationType.eModern, outputFigureDuration);
+                } catch (IM3Exception e) {
+                    throw new IM3Exception("Error translating pending duration " + pendingDuration + " for figure " + singleFigureAtom, e);
+                }
+
+                SimpleNote prevNote = null;
+                for (FigureAndDots outputFigureAndDots : outputFiguresAndDots) {
+                    SingleFigureAtom outputAtom = null;
+                    if (singleFigureAtom instanceof SimpleRest) {
+                        outputAtom = new SimpleRest(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots());
+                    } else if (singleFigureAtom instanceof SimpleNote) {
+                        SimpleNote note = new SimpleNote(outputFigureAndDots.getFigure(), outputFigureAndDots.getDots(),
+                                convertPitch(((SimpleNote) singleFigureAtom).getPitch(), transposition));
+                        outputAtom = note;
+
+                        if (lastAtomPitch != null) {
+                            lastAtomPitch.setTiedToNext(note.getAtomPitch());
+                        }
+
+                        lastAtomPitch = note.getAtomPitch();
+
+                        if (prevNote != null) {
+                            note.getAtomPitch().setTiedFromPrevious(prevNote.getAtomPitch());
+                        }
+                        prevNote = note;
+                    } else {
+                        throw new IM3Exception("Unsupported single figure atom type: " + singleFigureAtom.getClass());
+                    }
+                    modernLayer.add(outputAtom);
+                    //220522 modernStaff.addTimedElement(outputAtom);
+                }
+                pendingDuration = pendingDuration.substract(outputFigureDuration);
+                pendingMensureDuration = pendingMensureDuration.substract(outputFigureDuration);
+
+                if (pendingMensureDuration.isZero()) {
+                    Time time = modernLayer.getDuration();
+                    if (modernStaff.getScoreSong().getMeasureWithOnset(time) == null) {
+                        currentMeasure.setEndTime(time);
+                        currentMeasure = new Measure(modernStaff.getScoreSong());
+                        modernStaff.getScoreSong().addMeasure(time, currentMeasure);
+                    }
+                    pendingMensureDuration = activeTimeSignature.getDuration();
+                }
             }
         }
     }

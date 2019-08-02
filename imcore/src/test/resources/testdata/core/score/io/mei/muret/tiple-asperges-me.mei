@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.music-encoding.org/ns/mei" meiversion="4.0.0">
+	<meiHead>
+		<fileDesc>
+			<titleStmt>
+				<title>1 Asperges me</title>
+			</titleStmt>
+			<pubStmt/>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application>
+					<name>IM3 Java Library © David Rizo</name>
+				</application>
+			</appInfo>
+		</encodingDesc>
+	</meiHead>
+	<music>
+		<body>
+			<mdiv>
+				<score>
+					<scoreDef mensur.sign="C">
+						<staffGrp>
+							<staffDef n="1" clef.line="2" clef.shape="G" facs="#symbol_116997" lines="5" label="Tiple" notationtype="mensural.white"/>
+						</staffGrp>
+					</scoreDef>
+					<section>
+						<staff n="1">
+							<layer n="1">
+								<pb/>
+								<sb/>
+								<ligature xml:id="PART0_A200" form="recta">
+									<note xml:id="PART0_A3" dur="semibrevis" pname="d" oct="5"/>
+									<note xml:id="PART0_A4" dur="semibrevis" pname="e" oct="5"/>
+								</ligature>
+								<note xml:id="PART0_A5" facs="#symbol_117001" dur="semibrevis" pname="f" oct="5" accid="s"/>
+								<note xml:id="PART0_A6" facs="#symbol_117005" dur="semibrevis" pname="g" oct="5"/>
+								<note xml:id="PART0_A7" facs="#symbol_117083" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="PART0_A8" facs="#symbol_117084" dur="semibrevis" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A9" facs="#symbol_117087" dur="minima" pname="c" oct="5"/>
+								<note xml:id="PART0_A10" facs="#symbol_117088" dur="semibrevis" pname="b" oct="4"/>
+								<note xml:id="PART0_A11" facs="#symbol_117089" dur="semibrevis" pname="c" oct="5"/>
+								<ligature xml:id="PART0_A201" form="recta">
+									<note xml:id="PART0_A12" dur="semibrevis" pname="d" oct="5"/>
+									<note xml:id="PART0_A13" dur="semibrevis" pname="g" oct="4"/>
+								</ligature>
+								<ligature xml:id="PART0_A202" form="recta">
+									<note xml:id="PART0_A14" dur="semibrevis" pname="a" oct="4"/>
+									<note xml:id="PART0_A15" dur="semibrevis" pname="b" oct="4"/>
+								</ligature>
+								<rest xml:id="PART0_A16" facs="#symbol_117096" dur="semibrevis" loc="2"/>
+								<note xml:id="PART0_A17" facs="#symbol_117097" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="PART0_A18" facs="#symbol_117099" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A19" facs="#symbol_117100" dur="semibrevis" pname="c" oct="5"/>
+								<custos pname="b" oct="4" facs="#symbol_117102"/>
+								<sb/>
+								<note xml:id="PART0_A20" facs="#symbol_117131" dur="minima" dots="1" stem.dir="down" pname="b" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A21" facs="#symbol_117130" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="PART0_A22" facs="#symbol_117117" dur="minima" pname="d" oct="5"/>
+								<note xml:id="PART0_A23" facs="#symbol_117119" dur="minima" pname="g" oct="4"/>
+								<note xml:id="PART0_A24" facs="#symbol_117121" dur="semibrevis" pname="a" oct="4"/>
+								<note xml:id="PART0_A25" facs="#symbol_117125" dur="brevis" pname="g" oct="4"/>
+								<rest xml:id="PART0_A26" facs="#symbol_117126" dur="minima" loc="4"/>
+								<note xml:id="PART0_A27" facs="#symbol_117128" dur="semibrevis" pname="g" oct="5"/>
+								<note xml:id="PART0_A28" facs="#symbol_117138" dur="semibrevis" pname="f" oct="5" accid="n"/>
+								<note xml:id="PART0_A29" facs="#symbol_117140" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A30" facs="#symbol_117142" dur="minima" pname="f" oct="5"/>
+								<note xml:id="PART0_A31" facs="#symbol_117148" dur="minima" pname="g" oct="5"/>
+								<note xml:id="PART0_A32" facs="#symbol_117153" dur="semiminima" pname="f" oct="5"/>
+								<note xml:id="PART0_A33" facs="#symbol_117155" dur="semiminima" pname="e" oct="5"/>
+								<note xml:id="PART0_A34" facs="#symbol_117536" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="PART0_A35" facs="#symbol_117537" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="PART0_A36" facs="#symbol_117538" dur="minima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="PART0_A37" facs="#symbol_117539" dur="minima" dots="1" pname="a" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A38" facs="#symbol_117540" dur="semiminima" pname="g" oct="4"/>
+								<note xml:id="PART0_A39" facs="#symbol_117542" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="PART0_A40" facs="#symbol_117543" dur="minima" pname="f" oct="4"/>
+								<note xml:id="PART0_A41" facs="#symbol_117544" dur="semibrevis" pname="g" oct="4"/>
+								<custos pname="g" oct="4" facs="#symbol_117545"/>
+								<sb/>
+								<rest xml:id="PART0_A42" facs="#symbol_117548" dur="brevis" loc="4"/>
+								<ligature xml:id="PART0_A203" form="recta">
+									<note xml:id="PART0_A43" dur="semibrevis" pname="g" oct="4"/>
+									<note xml:id="PART0_A44" dur="semibrevis" pname="a" oct="4"/>
+								</ligature>
+								<ligature xml:id="PART0_A204" form="recta">
+									<note xml:id="PART0_A45" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="PART0_A46" dur="semibrevis" pname="b" oct="4"/>
+								</ligature>
+								<note xml:id="PART0_A47" facs="#symbol_117551" dur="brevis" pname="c" oct="5"/>
+								<note xml:id="PART0_A48" facs="#symbol_117552" dur="semibrevis" pname="d" oct="5"/>
+								<ligature xml:id="PART0_A205" form="recta">
+									<note xml:id="PART0_A49" dur="brevis" pname="d" oct="5"/>
+									<note xml:id="PART0_A50" dur="brevis" pname="e" oct="5"/>
+								</ligature>
+								<note xml:id="PART0_A51" facs="#symbol_117554" dur="semibrevis" dots="1" pname="f" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A52" facs="#symbol_117556" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A53" facs="#symbol_117557" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A54" facs="#symbol_117558" dur="semibrevis" pname="c" oct="5"/>
+								<rest xml:id="PART0_A55" facs="#symbol_117559" dur="brevis" loc="4"/>
+								<rest xml:id="PART0_A56" facs="#symbol_117560" dur="minima" loc="6"/>
+								<note xml:id="PART0_A57" facs="#symbol_117561" dur="minima" pname="g" oct="5"/>
+								<note xml:id="PART0_A58" facs="#symbol_117562" dur="minima" pname="g" oct="5"/>
+								<note xml:id="PART0_A59" facs="#symbol_117563" dur="minima" pname="g" oct="5"/>
+								<note xml:id="PART0_A60" facs="#symbol_117564" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A61" facs="#symbol_117565" dur="minima" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A62" facs="#symbol_117567" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="PART0_A63" facs="#symbol_117568" dur="minima" pname="e" oct="5"/>
+								<custos pname="f" oct="5" facs="#symbol_117569"/>
+								<sb/>
+								<note xml:id="PART0_A64" facs="#symbol_117571" dur="semibrevis" dots="1" pname="f" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A65" facs="#symbol_117573" dur="semiminima" pname="e" oct="5"/>
+								<note xml:id="PART0_A66" facs="#symbol_117574" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="PART0_A67" facs="#symbol_117575" dur="minima" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A68" facs="#symbol_117577" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="PART0_A69" facs="#symbol_117578" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A70" facs="#symbol_117579" dur="minima" pname="a" oct="4"/>
+								<note xml:id="PART0_A71" facs="#symbol_117580" dur="minima" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="PART0_A72" facs="#symbol_117581" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A73" facs="#symbol_117582" dur="minima" dots="1" pname="a" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A74" facs="#symbol_117584" dur="semiminima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="PART0_A75" facs="#symbol_117585" dur="minima" pname="c" oct="5"/>
+								<note xml:id="PART0_A76" facs="#symbol_117586" dur="semibrevis" pname="d" oct="5"/>
+								<rest xml:id="PART0_A77" facs="#symbol_117587" dur="minima" loc="6"/>
+								<note xml:id="PART0_A78" facs="#symbol_117588" dur="minima" pname="g" oct="5"/>
+								<note xml:id="PART0_A79" facs="#symbol_117589" dur="minima" pname="g" oct="5"/>
+								<note xml:id="PART0_A80" facs="#symbol_117590" dur="minima" pname="g" oct="5"/>
+								<note xml:id="PART0_A81" facs="#symbol_117591" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A82" facs="#symbol_117592" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="PART0_A83" facs="#symbol_117593" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="PART0_A84" facs="#symbol_117594" dur="semiminima" pname="e" oct="5"/>
+								<note xml:id="PART0_A85" facs="#symbol_117595" dur="semiminima" pname="f" oct="5"/>
+								<custos pname="g" oct="5" facs="#symbol_117596"/>
+								<sb/>
+								<note xml:id="PART0_A86" facs="#symbol_117598" dur="minima" dots="1" pname="g" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A87" facs="#symbol_117600" dur="fusa" pname="f" oct="5"/>
+								<note xml:id="PART0_A88" facs="#symbol_117601" dur="fusa" pname="e" oct="5"/>
+								<note xml:id="PART0_A89" facs="#symbol_117602" dur="minima" pname="f" oct="5"/>
+								<note xml:id="PART0_A90" facs="#symbol_117603" dur="minima" dots="1" pname="g" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A91" facs="#symbol_117605" dur="semiminima" pname="f" oct="5"/>
+								<note xml:id="PART0_A92" facs="#symbol_117606" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="PART0_A93" facs="#symbol_117607" dur="brevis" pname="d" oct="5"/>
+								<rest xml:id="PART0_A94" facs="#symbol_117608" dur="minima" loc="6"/>
+								<note xml:id="PART0_A95" facs="#symbol_117612" dur="minima" pname="f" oct="5"/>
+								<note xml:id="PART0_A96" facs="#symbol_117613" dur="minima" pname="f" oct="5"/>
+								<note xml:id="PART0_A97" facs="#symbol_117615" dur="minima" pname="f" oct="5"/>
+								<note xml:id="PART0_A98" facs="#symbol_117619" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A99" facs="#symbol_117620" dur="minima" dots="1" pname="e" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A100" facs="#symbol_117622" dur="fusa" pname="d" oct="5"/>
+								<note xml:id="PART0_A101" facs="#symbol_117623" dur="fusa" pname="c" oct="5"/>
+								<note xml:id="PART0_A102" facs="#symbol_117624" dur="semiminima" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="PART0_A103" facs="#symbol_117625" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="PART0_A104" facs="#symbol_117627" dur="minima" pname="d" oct="5"/>
+								<note xml:id="PART0_A105" facs="#symbol_117628" dur="minima" pname="a" oct="4"/>
+								<note xml:id="PART0_A106" facs="#symbol_117629" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A107" facs="#symbol_117630" dur="brevis" pname="b" oct="4"/>
+								<barLine form="end" facs="#symbol_117631"/>
+								<pb/>
+								<sb/>
+								<mensur mensur.sign="C" facs="#symbol_127241"/>
+								<rest xml:id="PART0_A108" facs="#symbol_127242" dur="semibrevis" loc="2"/>
+								<ligature xml:id="PART0_A206" form="recta">
+									<note xml:id="PART0_A109" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="PART0_A110" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="PART0_A111" facs="#symbol_127247" dur="semibrevis" pname="b" oct="4"/>
+								<note xml:id="PART0_A112" facs="#symbol_127249" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="PART0_A113" facs="#symbol_127251" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A114" facs="#symbol_127253" dur="minima" pname="c" oct="5"/>
+								<note xml:id="PART0_A115" facs="#symbol_127254" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A116" facs="#symbol_127255" dur="semibrevis" pname="f" oct="5"/>
+								<note xml:id="PART0_A117" facs="#symbol_127256" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A118" facs="#symbol_127257" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A119" facs="#symbol_127258" dur="semibrevis" pname="c" oct="5"/>
+								<note xml:id="PART0_A120" facs="#symbol_127259" dur="minima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="PART0_A121" facs="#symbol_127260" dur="minima" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A122" facs="#symbol_127262" dur="semiminima" pname="e" oct="5"/>
+								<custos pname="f" oct="5" facs="#symbol_127263"/>
+								<sb/>
+								<note xml:id="PART0_A123" facs="#symbol_118195" dur="minima" pname="f" oct="5"/>
+								<note xml:id="PART0_A124" facs="#symbol_118196" dur="minima" pname="f" oct="5"/>
+								<note xml:id="PART0_A125" facs="#symbol_118197" dur="minima" pname="f" oct="5"/>
+								<note xml:id="PART0_A126" facs="#symbol_118198" dur="minima" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A127" facs="#symbol_118201" dur="fusa" pname="c" oct="5"/>
+								<note xml:id="PART0_A128" facs="#symbol_118202" dur="fusa" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="PART0_A129" facs="#symbol_118204" dur="minima" pname="c" oct="5"/>
+								<note xml:id="PART0_A130" facs="#symbol_118205" dur="minima" pname="d" oct="5"/>
+								<note xml:id="PART0_A131" facs="#symbol_127264" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="PART0_A132" facs="#symbol_127265" dur="semiminima" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="PART0_A133" facs="#symbol_127266" dur="minima" pname="c" oct="5"/>
+								<note xml:id="PART0_A134" facs="#symbol_127267" dur="minima" pname="d" oct="5"/>
+								<note xml:id="PART0_A135" facs="#symbol_127268" dur="semibrevis" pname="g" oct="4"/>
+								<rest xml:id="PART0_A136" facs="#symbol_127269" dur="minima" loc="4"/>
+								<note xml:id="PART0_A137" facs="#symbol_127270" dur="minima" pname="d" oct="5"/>
+								<note xml:id="PART0_A138" facs="#symbol_127271" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A139" facs="#symbol_127272" dur="semibrevis" pname="e" oct="5"/>
+								<note xml:id="PART0_A140" facs="#symbol_127273" dur="semibrevis" dots="1" pname="f" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A141" facs="#symbol_127275" dur="minima" pname="e" oct="5"/>
+								<ligature xml:id="PART0_A207" form="obliqua">
+									<note xml:id="PART0_A142" dur="brevis" pname="d" oct="5"/>
+									<note xml:id="PART0_A143" dur="brevis" pname="c" oct="5"/>
+								</ligature>
+								<custos pname="c" oct="5" facs="#symbol_127277"/>
+								<sb/>
+								<note xml:id="PART0_A144" facs="#symbol_126790" dur="semibrevis" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A145" facs="#symbol_126792" dur="minima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="PART0_A146" facs="#symbol_126793" dur="minima" pname="a" oct="4"/>
+								<note xml:id="PART0_A147" facs="#symbol_126794" dur="semibrevis" pname="g" oct="4"/>
+								<note xml:id="PART0_A148" facs="#symbol_126796" dur="minima" pname="f" oct="4" accid="s"/>
+								<note xml:id="PART0_A149" facs="#symbol_126797" dur="brevis" pname="g" oct="4"/>
+								<barLine form="end" facs="#symbol_126798"/>
+								<pb/>
+								<sb/>
+								<mensur mensur.sign="C" facs="#symbol_127426"/>
+								<ligature xml:id="PART0_A208" form="recta">
+									<note xml:id="PART0_A150" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="PART0_A151" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="PART0_A152" facs="#symbol_127428" dur="semibrevis" pname="b" oct="4"/>
+								<ligature xml:id="PART0_A209" form="recta">
+									<note xml:id="PART0_A153" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="PART0_A154" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="PART0_A155" facs="#symbol_127431" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A156" facs="#symbol_127432" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A157" facs="#symbol_127433" dur="semibrevis" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A158" facs="#symbol_127435" dur="minima" pname="d" oct="5"/>
+								<note xml:id="PART0_A159" facs="#symbol_127436" dur="minima" pname="d" oct="5"/>
+								<note xml:id="PART0_A160" facs="#symbol_127437" dur="minima" pname="d" oct="5"/>
+								<note xml:id="PART0_A161" facs="#symbol_127438" dur="semibrevis" pname="d" oct="5"/>
+								<rest xml:id="PART0_A162" facs="#symbol_127439" dur="semibrevis" loc="2"/>
+								<note xml:id="PART0_A163" facs="#symbol_127440" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A164" facs="#symbol_127442" dur="semibrevis" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A165" facs="#symbol_127444" dur="minima" pname="e" oct="5"/>
+								<note xml:id="PART0_A166" facs="#symbol_127445" dur="semibrevis" dots="1" pname="f" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A167" facs="#symbol_127452" dur="semibrevis" pname="e" oct="5"/>
+								<custos pname="d" oct="5" facs="#symbol_127453"/>
+								<sb/>
+								<note xml:id="PART0_A168" facs="#symbol_127455" dur="semiminima" pname="d" oct="5"/>
+								<note xml:id="PART0_A169" facs="#symbol_127456" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="PART0_A170" facs="#symbol_127457" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A171" facs="#symbol_127458" dur="brevis" pname="e" oct="5"/>
+								<ligature xml:id="PART0_A210" form="recta">
+									<note xml:id="PART0_A172" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="PART0_A173" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="PART0_A174" facs="#symbol_127460" dur="semibrevis" pname="b" oct="4"/>
+								<ligature xml:id="PART0_A211" form="recta">
+									<note xml:id="PART0_A175" dur="semibrevis" pname="c" oct="5"/>
+									<note xml:id="PART0_A176" dur="semibrevis" pname="d" oct="5"/>
+								</ligature>
+								<note xml:id="PART0_A177" facs="#symbol_127462" dur="semibrevis" dots="1" pname="d" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A178" facs="#symbol_127464" dur="semiminima" pname="c" oct="5"/>
+								<note xml:id="PART0_A179" facs="#symbol_127465" dur="semiminima" stem.dir="down" pname="b" oct="4"/>
+								<note xml:id="PART0_A180" facs="#symbol_127466" dur="minima" pname="c" oct="5"/>
+								<note xml:id="PART0_A181" facs="#symbol_127467" dur="minima" pname="c" oct="5" accid="s"/>
+								<note xml:id="PART0_A182" facs="#symbol_127470" dur="brevis" pname="d" oct="5"/>
+								<rest xml:id="PART0_A183" facs="#symbol_127471" dur="semibrevis" loc="4"/>
+								<ligature xml:id="PART0_A212" form="recta">
+									<note xml:id="PART0_A184" dur="semibrevis" pname="d" oct="5"/>
+									<note xml:id="PART0_A185" dur="semibrevis" pname="e" oct="5"/>
+									<note xml:id="PART0_A186" dur="brevis" pname="f" oct="5"/>
+								</ligature>
+								<note xml:id="PART0_A187" facs="#symbol_127473" dur="brevis" pname="e" oct="5"/>
+								<custos pname="d" oct="5" facs="#symbol_127474"/>
+								<sb/>
+								<note xml:id="PART0_A188" facs="#symbol_127476" dur="semibrevis" pname="d" oct="5"/>
+								<note xml:id="PART0_A189" facs="#symbol_127477" dur="brevis" pname="c" oct="5" accid="n"/>
+								<note xml:id="PART0_A190" facs="#symbol_127478" dur="semibrevis" dots="1" pname="c" oct="5"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A191" facs="#symbol_127483" dur="semiminima" stem.dir="up" pname="b" oct="4"/>
+								<note xml:id="PART0_A192" facs="#symbol_127484" dur="semiminima" pname="a" oct="4"/>
+								<note xml:id="PART0_A193" facs="#symbol_127485" dur="semibrevis" pname="b" oct="4"/>
+								<note xml:id="PART0_A194" facs="#symbol_127486" dur="brevis" pname="a" oct="4"/>
+								<note xml:id="PART0_A195" facs="#symbol_127489" dur="semibrevis" dots="1" pname="g" oct="4"/>
+								<dot form="aug"/>
+								<note xml:id="PART0_A196" facs="#symbol_127491" dur="semiminima" pname="f" oct="4"/>
+								<note xml:id="PART0_A197" facs="#symbol_127492" dur="semiminima" pname="e" oct="4"/>
+								<note xml:id="PART0_A198" facs="#symbol_127493" dur="semibrevis" pname="f" oct="4" accid="s"/>
+								<note xml:id="PART0_A199" facs="#symbol_127495" dur="brevis" pname="g" oct="4"/>
+								<barLine form="end" facs="#symbol_127496"/>
+							</layer>
+						</staff>
+					</section>
+				</score>
+			</mdiv>
+		</body>
+	</music>
+</mei>

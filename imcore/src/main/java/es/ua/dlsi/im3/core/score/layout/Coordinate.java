@@ -50,6 +50,14 @@ public class Coordinate {
     }
 
     /**
+     * It sets the reference, not the x itself
+     * @param x
+     */
+    public void setReferenceX(CoordinateComponent x) {
+        this.x.setReference(x);
+    }
+
+    /**
      * It sets the reference, not the y itself
      * @param y
      */
@@ -97,4 +105,5 @@ public class Coordinate {
     public double getDisplacementY() {
         return y.getDisplacement();
     }
+
 }
