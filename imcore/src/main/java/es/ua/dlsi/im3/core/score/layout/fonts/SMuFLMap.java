@@ -80,18 +80,20 @@ public class SMuFLMap implements IFontMap {
     private static final HashMap<Figures, String> UNICODES_STEM_AND_FLAG_UP = new HashMap<>();
     {
         UNICODES_STEM_AND_FLAG_UP.put(Figures.MINIM, "mensuralCombStemUp");
-        UNICODES_STEM_AND_FLAG_UP.put(Figures.SEMIMINIM, "mensuralCombStemUpFlagSemiminima"); // we don't use it, it should have void head
+        //UNICODES_STEM_AND_FLAG_UP.put(Figures.SEMIMINIM, "mensuralCombStemUpFlagSemiminima"); // we don't use it, it should have void head
         UNICODES_STEM_AND_FLAG_UP.put(Figures.SEMIMINIM, "mensuralCombStemDown");
-        UNICODES_STEM_AND_FLAG_UP.put(Figures.FUSA, "mensuralCombStemUpFlagFusa");
+        //UNICODES_STEM_AND_FLAG_UP.put(Figures.FUSA, "mensuralCombStemUpFlagFusa"); // used in black mensural
+        UNICODES_STEM_AND_FLAG_UP.put(Figures.FUSA, "mensuralCombStemUpFlagSemiminima");
     }
 
 
     private static final HashMap<Figures, String> UNICODES_STEM_AND_FLAG_DOWN = new HashMap<>();
     {
         UNICODES_STEM_AND_FLAG_DOWN.put(Figures.MINIM, "mensuralCombStemDown");
-        //UNICODES_STEM_AND_FLAG_DOWN.put(Figures.SEMIMINIM, "mensuralCombStemDownFlagSemiminima");
-        UNICODES_STEM_AND_FLAG_DOWN.put(Figures.SEMIMINIM, "mensuralCombStemUp"); // we don't use it, it should have void head
-        UNICODES_STEM_AND_FLAG_DOWN.put(Figures.FUSA, "mensuralCombStemDownFlagFusa");
+        //UNICODES_STEM_AND_FLAG_DOWN.put(Figures.SEMIMINIM, "mensuralCombStemDownFlagSemiminima"); // we don't use it, it should have void head
+        UNICODES_STEM_AND_FLAG_DOWN.put(Figures.SEMIMINIM, "mensuralCombStemUp");
+        //UNICODES_STEM_AND_FLAG_DOWN.put(Figures.FUSA, "mensuralCombStemDownFlagFusa"); // used in black mensural
+        UNICODES_STEM_AND_FLAG_DOWN.put(Figures.FUSA, "mensuralCombStemDownFlagSemiminima");
     }
 
     @Override
