@@ -28,6 +28,7 @@ import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * It encodes a ScoreSong into both agnostic and semantic encodings
@@ -67,6 +68,10 @@ public class Encoder {
 
     private void addVerticalSeparator() {
         agnosticEncoding.add(verticalSeparator);
+    }
+
+    private void addHorizontalSeparator() {
+        agnosticEncoding.add(horizontalSeparator);
     }
 
     public void encode(Staff staff, Segment segment) throws IM3Exception {
@@ -194,7 +199,10 @@ public class Encoder {
                 PositionInStaff [] positionInStaffs = new PositionInStaff[chord.getAtomPitches().size()];
                 int i=0;
                 boolean tiedFromPreviousGenerated = false;
-                for (AtomPitch atomPitch: chord.getAtomPitches()) {
+                TreeSet<AtomPitch> sortedPitches = new TreeSet<>();
+                sortedPitches.addAll(chord.getAtomPitches());
+
+                for (AtomPitch atomPitch: sortedPitches.descendingSet()) {
                     positionInStaffs[i] = symbol.getStaff().computePositionInStaff(chord.getTime(),
                             atomPitch.getScientificPitch().getPitchClass().getNoteName(), atomPitch.getScientificPitch().getOctave());
 
@@ -222,8 +230,8 @@ public class Encoder {
 
                 i=0;
                 boolean accdidentalsGenerated = false;
-                for (AtomPitch atomPitch: chord.getAtomPitches()) {
-                    Accidentals accidentalToDraw = drawnAccidentals.get(atomPitch.getScientificPitch());
+                for (AtomPitch atomPitch: sortedPitches.descendingSet()) {
+                    Accidentals accidentalToDraw = drawnAccidentals.get(atomPitch);
                     if (accidentalToDraw != null) {
                         es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(accidentalToDraw);
                         for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
@@ -298,7 +306,7 @@ public class Encoder {
                         } else {
                             dotPositionInStaff = positionInStaffs[i];
                         }
-                        convertDots(chord.getAtomFigure(), dotPositionInStaff);
+                        agnosticEncoding.add(new AgnosticSymbol(version, dot, dotPositionInStaff));
                     }
                     agnosticEncoding.add(horizontalSeparator);
                 }
@@ -574,7 +582,7 @@ public class Encoder {
             int cardinality = simpleTuplet.getCardinality();
 
             PositionInStaff tupletPositionInStaff = computePositionInStaff(simpleTuplet);
-
+            boolean tupleDigitAboveStaff = tupletPositionInStaff.compareTo(PositionsInStaff.LINE_3) > 0;
             tupletNumber = simpleTuplet.getCardinality();
             //if (simpleTuplet.getEachFigure().getMeterUnit() <= Figures.QUARTER.getMeterUnit()) {
             boolean inBeam = false;
@@ -584,34 +592,81 @@ public class Encoder {
                 throw new IM3Exception("Unsupported compound tuplets");
             }
 
+            int i;
+            int middle;
+            int end;
+
+            if (tupleDigitAboveStaff) {
+                i = 0;
+                middle = cardinality / 2;
+                end = cardinality-1;
+            } else {
+                convert(simpleTuplet.getAtoms().get(0), drawnAccidentals, tupletNumber);
+                i = 1;
+                middle = cardinality / 2 + 1;
+                end = cardinality;
+            }
+
             if (!inBeam) {
-                // if quarter, half,.... or eighth without beam
+                // if quarter, half,.... or eighth without beam - it prints brackets
+                if (!tupleDigitAboveStaff) {
+                    agnosticEncoding.removeLastSymbolIfSeparator();
+                }
                 agnosticEncoding.add(new AgnosticSymbol(version, new Bracket(StartEnd.start), tupletPositionInStaff));
-                addVerticalSeparator();
-                int i;
-                for (i=0; i<cardinality / 2; i++) {
+
+                if (!tupleDigitAboveStaff) {
+                    addHorizontalSeparator();
+                }
+
+                for (; i< middle ; i++) {
                     convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
                 }
-                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(cardinality), tupletPositionInStaff));
-                addVerticalSeparator();
 
-                for (; i<cardinality-1; i++) {
+                if (!tupleDigitAboveStaff) {
+                    agnosticEncoding.removeLastSymbolIfSeparator();
+                }
+
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(cardinality), tupletPositionInStaff));
+
+                if (!tupleDigitAboveStaff) {
+                    addHorizontalSeparator();
+                }
+
+                for (; i<end; i++) {
                     convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
+                }
+
+                if (!tupleDigitAboveStaff) {
+                    agnosticEncoding.removeLastSymbolIfSeparator();
                 }
 
                 agnosticEncoding.add(new AgnosticSymbol(version, new Bracket(StartEnd.end), tupletPositionInStaff));
-                addVerticalSeparator();
-                convert(simpleTuplet.getAtoms().get(cardinality-1), drawnAccidentals, tupletNumber);
+
+                if (!tupleDigitAboveStaff) {
+                    addHorizontalSeparator();
+                }
+
+                if (tupleDigitAboveStaff) {
+                    addVerticalSeparator();
+                    convert(simpleTuplet.getAtoms().get(cardinality - 1), drawnAccidentals, tupletNumber);
+                }
 
                 //TODO SEMANTIC
             } else {
-                // if 8th, 16th...
-                int i;
-                for (i=0; i<cardinality / 2; i++) {
+                // if 8th, 16th... - it does not print brackets
+                for (; i<middle; i++) {
                     convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
                 }
+
+                if (!tupleDigitAboveStaff) {
+                    agnosticEncoding.removeLastSymbolIfSeparator();
+                }
                 agnosticEncoding.add(new AgnosticSymbol(version, new Digit(cardinality), tupletPositionInStaff));
-                agnosticEncoding.add(horizontalSeparator);
+
+                if (!tupleDigitAboveStaff) {
+                    addHorizontalSeparator();
+                }
+
                 for (; i<cardinality; i++) {
                     convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
                 }
@@ -621,6 +676,7 @@ public class Encoder {
 
         }
     }
+
 
     private void encodeClef(es.ua.dlsi.im3.core.score.Clef clef) throws IM3Exception {
         PositionInStaff positionInStaff = PositionInStaff.fromLine(clef.getLine());
@@ -718,8 +774,10 @@ public class Encoder {
             PositionInStaff positionInStaff = atomPitch.getStaff().computePositionInStaff(atomPitch.getTime(),
                     atomPitch.getScientificPitch().getPitchClass().getNoteName(), atomPitch.getScientificPitch().getOctave());
             averageLineSpace += positionInStaff.getLineSpace();
+            count++;
         }
 
+        averageLineSpace /= count;
         int line3 = PositionsInStaff.LINE_3.getLineSpace();
         if (averageLineSpace >= line3) {
             return PositionsInStaff.SPACE_MINUS_1;

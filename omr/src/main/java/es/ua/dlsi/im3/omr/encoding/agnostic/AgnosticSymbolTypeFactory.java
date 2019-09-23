@@ -29,10 +29,15 @@ public class AgnosticSymbolTypeFactory {
         }
 
         String className;
-        if (tokens[0].equals("metersign")) {
-            className = "MeterSign";
-        } else {
-            className = tokens[0].substring(0, 1).toUpperCase() + tokens[0].substring(1);
+        switch (tokens[0]) {
+            case "metersign":
+                className = "MeterSign";
+                break;
+            case "gracenote":
+                className = "GraceNote";
+                break;
+            default:
+                className = tokens[0].substring(0, 1).toUpperCase() + tokens[0].substring(1);
         }
 
         String qualifiedclassName = "es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols." + className;

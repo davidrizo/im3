@@ -15,8 +15,10 @@ public class AgnosticExporter extends Exporter<AgnosticToken> {
         this(AgnosticVersion.v2);
     }
     public AgnosticExporter(AgnosticVersion agnosticVersion) {
-        super();
         this.agnosticVersion = agnosticVersion;
+        if (agnosticVersion == AgnosticVersion.v3_advance) {
+            this.separateTokensWithSpace = true;
+        }
     }
 
     @Override

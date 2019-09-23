@@ -13,10 +13,12 @@ import java.io.PrintStream;
 public abstract class Exporter<SymbolType> {
     private static final char SEP = ' ';
     private static final char SEPVERTICALPOS = '-';
+    private static final String SPACE = " ";
     private StringBuilder sb;
     private Sequence<SymbolType> encoding;
     protected char separator;
     boolean endWithSeparator = false;
+    protected boolean separateTokensWithSpace = false;
 
     public Exporter() {
         separator = SEP;
@@ -61,10 +63,20 @@ public abstract class Exporter<SymbolType> {
             throw new IM3RuntimeException("Encoding symbols are null");
         }
         int size = encoding.getSymbols().size();
+
         for (int i=0; i<size; i++) {
             SymbolType symbol = encoding.getSymbols().get(i);
-            sb.append(export(symbol));
-            if (i<size-1 && requiresSeparator(symbol)) {
+
+            String exported = export(symbol).trim();
+            if (!exported.isEmpty() && separateTokensWithSpace && i>0) {
+                sb.append(' ');
+            }
+
+            sb.append(exported);
+
+            if (separateTokensWithSpace && i<size-1) {
+                //sb.append(' ');
+            } else if (i<size-1 && requiresSeparator(symbol)) {
                 sb.append(separator);
             }
         }
