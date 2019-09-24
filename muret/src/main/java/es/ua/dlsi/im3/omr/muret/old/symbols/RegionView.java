@@ -16,9 +16,10 @@ import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.GrayscaleImageData;
 import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.SymbolImageAndPointsPrototype;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Defect;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Smudge;
+import es.ua.dlsi.im3.omr.encoding.enums.Defects;
 import es.ua.dlsi.im3.omr.model.entities.Strokes;
 import es.ua.dlsi.im3.omr.muret.old.ImageBasedAbstractController;
 import es.ua.dlsi.im3.omr.muret.old.OMRApp;
@@ -340,7 +341,7 @@ public class RegionView extends BoundingBoxBasedView<OMRRegion> {
         }
 
         if (agnosticSymbol == null) {
-            agnosticSymbol = new AgnosticSymbol(AgnosticVersion.v2, new Smudge(), PositionInStaff.fromLine(3)); //TODO Version
+            agnosticSymbol = new AgnosticSymbol(AgnosticVersion.v2, new Defect(Defects.smudge), PositionInStaff.fromLine(3)); //TODO Version
         }
         try {
             OMRSymbol omrSymbol = new OMRSymbol(owner, agnosticSymbol, x, y, width, height);

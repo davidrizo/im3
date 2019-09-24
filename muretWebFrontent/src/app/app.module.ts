@@ -1,10 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {ErrorHandler, Injectable, NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ProjectsComponent } from './projects/projects.component';
 
-import {HTTP_INTERCEPTORS, HttpClientModule, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {AppRoutingModule} from './app-routing.module';
 import {UiModule} from './ui/ui.module';
 
@@ -31,14 +31,8 @@ import { FormsModule } from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 
-/* import { LightboxModule } from 'ngx-lightbox';*/
-// Auth
-import {
-  OktaAuthModule,
-  OktaCallbackComponent,
-} from '@okta/okta-angular';
 import {RouterModule} from '@angular/router';
-import {Im3wsService} from './im3ws.service';
+import {Im3wsService} from './services/im3ws.service';
 import {LoginComponent} from './login/login.component';
 
 import {LoggerModule, NGXLogger, NgxLoggerLevel} from 'ngx-logger';
@@ -54,13 +48,6 @@ import { DevComponent } from './dev/dev.component';
 import { StateComponent } from './state/state.component';
 import { InlineEditComponent } from './inline-edit/inline-edit.component';
 import { TrainingSetsComponent } from './training-sets/training-sets.component';
-
-// TODO Ver Keepass
-/*const config = {
-  issuer: 'https://dev-775794.oktapreview.com/oauth2/default',
-  redirectUri: 'http://localhost:{port}/implicit/callback',
-  clientId: '{clientId}'
-}*/
 
 @NgModule({
   declarations: [
@@ -100,7 +87,6 @@ import { TrainingSetsComponent } from './training-sets/training-sets.component';
     SVGDrawingToolModule,
     // LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
     LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.ERROR})
-    //    LightboxModule
   ],
   providers: [Im3wsService, NGXLogger, GlobalErrorHandlerService,
     { provide: ErrorHandler, useClass: GlobalErrorHandlerService },

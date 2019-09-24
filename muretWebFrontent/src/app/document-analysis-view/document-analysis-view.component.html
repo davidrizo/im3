@@ -1,7 +1,7 @@
 <div id="documentAnalysisTools" class="btn-group-justified" role="group" aria-label="Region types">
   <input type="checkbox" [checked]="showLabels" disabled/> Show labels
 
-  <button *ngFor="let regionType of regionTypes" type="button" class="btn btn-secondary"
+  <button *ngFor="let regionType of regionTypes; trackBy: trackByRegionTypeFn" type="button" class="btn btn-secondary"
           (click)="changeRegionType(regionType)">
     {{regionType.name}}
   </button>

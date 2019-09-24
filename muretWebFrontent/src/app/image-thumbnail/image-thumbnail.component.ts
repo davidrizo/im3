@@ -4,7 +4,7 @@ import {ProjectURLS} from '../model/project-urls';
 import {NGXLogger} from 'ngx-logger';
 import {Router} from '@angular/router';
 import {SessionDataService} from '../session-data.service';
-import {Im3wsService} from '../im3ws.service';
+import {Im3wsService} from '../services/im3ws.service';
 
 @Component({
   selector: 'app-image-thumbnail',
@@ -26,7 +26,7 @@ export class ImageThumbnailComponent implements OnInit {
     this.logger.debug('Opening image ' + image.id + ' in URL ' + this.projectURLs);
 
     // this call retrieves the whole image data (the current image does not contain all lazy relations)
-    this.im3wsService.getImage$(image.id).
+    this.im3wsService.imageService.getImage$(image.id).
       subscribe(serviceImage => {
         this.sessionDataService.currentImageMastersURL = this.projectURLs.masters;
         this.sessionDataService.currentImage = serviceImage;

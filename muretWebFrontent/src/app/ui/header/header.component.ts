@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Im3wsService} from '../../im3ws.service';
+import {Im3wsService} from '../../services/im3ws.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -16,7 +16,7 @@ export class HeaderComponent {
   constructor(private im3WSService: Im3wsService, private router: Router) {
   }
   authenticated(): boolean {
-    return this.im3WSService.authenticated();
+    return this.im3WSService.authService.authenticated();
   }
 
   hideLogo(): boolean {
@@ -24,8 +24,8 @@ export class HeaderComponent {
   }
 
   getUserName(): string {
-    if (this.im3WSService.authenticated()) {
-      return this.im3WSService.getUser().username;
+    if (this.im3WSService.authService.authenticated()) {
+      return this.im3WSService.authService.getUser().username;
     } else {
       return '';
     }

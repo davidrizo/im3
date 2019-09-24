@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import {ActivatedRoute} from '@angular/router';
 import {Project} from '../model/project';
-import {Im3wsService} from '../im3ws.service';
+import {Im3wsService} from '../services/im3ws.service';
 import {NGXLogger} from 'ngx-logger';
 import {ConfigurationService} from '../configuration.service';
 
@@ -18,7 +18,7 @@ export class UploadImagesComponent implements OnInit {
   public hasBaseDropZoneOver = true;
   public hasAnotherDropZoneOver = false;
 
-  constructor(private projectService: Im3wsService, private route: ActivatedRoute, private logger: NGXLogger,
+  constructor(private im3wsService: Im3wsService, private route: ActivatedRoute, private logger: NGXLogger,
               private configurationService: ConfigurationService) {
   }
 
@@ -29,7 +29,7 @@ export class UploadImagesComponent implements OnInit {
 
     const routeParams = this.route.snapshot.params;
 
-    this.projectService.getProject$(routeParams.id)
+    this.im3wsService.projectService.getProject$(routeParams.id)
       .subscribe(serviceProject => this.project = serviceProject).add(teardown => {
       this.logger.debug('UploadImagesComponent' + this.project.name + ' with #' + this.project.images.length + ' images');
     });

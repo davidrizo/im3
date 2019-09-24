@@ -335,4 +335,8 @@ export class SVGCanvasComponent implements OnInit {
     this.defaultStrokeWidth = strokeWidth;
     this.defaultStrokeColor = strokeColor;
   }
+
+  trackByShapeFn(index, item: ShapeComponent) {
+    return index; // TODO ¿mejor un ID?
+  }
 }

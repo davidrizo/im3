@@ -25,12 +25,11 @@ const routes: Routes = [
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard]},
   { path: 'newproject', component: NewProjectFormComponent, canActivate: [AuthGuard]},
   { path: 'project/:id', component: ProjectComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
-//  { path: 'image/:id/:projectURLs', component: ImageComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
-//  { path: 'symbols/:id/:projectURLs', component: SymbolsComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
   { path: 'image', component: ImageComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
   { path: 'symbols', component: SymbolsComponent, canActivate: [AuthGuard], canDeactivate: [AuthGuard]},
   { path: 'uploadimages/:id', component: UploadImagesComponent, canActivate: [AuthGuard]},
   { path: 'export', component: TrainingSetsComponent, canActivate: [AuthGuard]},
+
   // usado para desarrollo //TODO Quitar
   { path: 'dev', component: DevComponent},
   { path: '', pathMatch: 'full', redirectTo: 'startup'}

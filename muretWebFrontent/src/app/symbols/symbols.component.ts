@@ -1,13 +1,11 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Im3wsService} from '../im3ws.service';
+import {Im3wsService} from '../services/im3ws.service';
 import {ActivatedRoute} from '@angular/router';
 import {Image} from '../model/image';
-import {Page} from '../model/page';
 import {Symbol} from '../model/symbol';
-import {BoundingBox} from '../model/bounding-box';
 import {Stroke} from '../model/stroke';
 import {NGXLogger} from 'ngx-logger';
-import {ResizedEvent} from 'angular-resize-event/resized-event';
+// import {ResizedEvent} from 'angular-resize-event/resized-event';
 import {Region} from '../model/region';
 import {AgnosticSymbolSVGPath} from './agnostic-symbol-svgpath';
 import {Project} from '../model/project';
@@ -120,8 +118,13 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
     this.documentAnalysisView.activateSelectMode();
   }
 
+  // TODO - usado en el *nfFor con keyvalue, ver si podemos coger el id del símbolo mejor - lo hacemos en dos sitios
+  trackByFn(index, item) {
+    return index;
+  }
+
   private loadSVGSet() {
-    this.im3wsService.setSVGSet$(this.project.notationType, this.project.manuscriptType).
+    this.im3wsService.agnosticService.setSVGSet$(this.project.notationType, this.project.manuscriptType).
     subscribe(next => {
         this.agnosticSVGScaleX = next.x;
         this.agnosticSVGScaleY = next.y;
@@ -180,13 +183,14 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   public ngOnDestroy() {
   }
 
-  onResized(event: ResizedEvent): void {
-    /* this.logger.debug('Resized');
+  /*onResized(event: ResizedEvent): void {
+    this.logger.debug('Resized');
     if (this.imageSurface) {
       this.scale = this.domImage.nativeElement.width / this.domImage.nativeElement.naturalWidth;
       this.drawBoundingBoxes();
-    } // else it is invoked before ngAfterViewInit */
+    } // else it is invoked before ngAfterViewInit
   }
+*/
 
   private doSelectRegion(region: Region) {
     this.staffSelected = true;
@@ -388,7 +392,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
 
       const prevCursor = this.selectedStaffCursor;
       this.selectedStaffCursor = 'wait';
-      this.im3wsService.createSymbolFromBoundingBox(this.selectedRegion, fromX, fromY,
+      this.im3wsService.imageService.createSymbolFromBoundingBox(this.selectedRegion, fromX, fromY,
         toX, toY).subscribe(next => {
           this.selectedStaffCursor = prevCursor;
           this.logger.debug('New symbol created ' + next.id);
@@ -436,7 +440,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
       // generate strokes
       const prevCursor = this.selectedStaffCursor;
       this.selectedStaffCursor = 'wait';
-      this.im3wsService.createSymbolFromStrokes(this.selectedRegion, this.currentStrokes).subscribe(next => {
+      this.im3wsService.imageService.createSymbolFromStrokes(this.selectedRegion, this.currentStrokes).subscribe(next => {
         this.selectedStaffCursor = prevCursor;
         this.logger.debug('New symbol created ' + next.id);
 
@@ -537,7 +541,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
 
   deleteSelectedSymbol() {
     if (this.selectedSymbol != null) {
-      this.im3wsService.deleteSymbol(this.selectedRegion.id, this.selectedSymbol.id).subscribe(() => {
+      this.im3wsService.imageService.deleteSymbol(this.selectedRegion.id, this.selectedSymbol.id).subscribe(() => {
         this.agnosticSymbols.delete(this.selectedSymbol.id);
         this.agnosticSymbolSVGs.delete(this.selectedSymbol.id);
         this.svgCanvas.remove(this.svgCanvas.selectedComponent);
@@ -556,7 +560,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
 
   movePitchSelectedSymbol(upOrDown: string) {
     if (this.selectedSymbol != null) {
-      this.im3wsService.changeAgnosticPositionInStaffUpOrDown(this.selectedSymbol.id, upOrDown).subscribe( next => {
+      this.im3wsService.symbolService.changeAgnosticPositionInStaffUpOrDown(this.selectedSymbol.id, upOrDown).subscribe( next => {
         this.selectedSymbol.positionInStaff = next.positionInStaff;
         const newY = this.computeAgnosticStaffSymbolY(this.selectedRegion, this.selectedSymbol);
         const svgPath = this.agnosticSymbolSVGs.get(this.selectedSymbol.id);
@@ -578,7 +582,7 @@ export class SymbolsComponent extends ComponentCanDeactivate implements OnInit, 
   }
 
   changeAgnosticType(type: string) {
-    this.im3wsService.changeAgnosticSymbolType(this.selectedSymbol.id, type).subscribe( next => {
+    this.im3wsService.symbolService.changeAgnosticSymbolType(this.selectedSymbol.id, type).subscribe( next => {
       this.selectedSymbol.positionInStaff = next.positionInStaff;
       const svgPath = this.agnosticSymbolSVGs.get(this.selectedSymbol.id);
       if (!svgPath) {

@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.score.layout.fonts.PatriarcaFont;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.*;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
+import es.ua.dlsi.im3.omr.encoding.enums.Defects;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 
 /**
@@ -96,8 +97,8 @@ public class MensuralAgnosticSymbolFont extends AgnosticSymbolFont {
         add(new Note(new Beam(BeamType.left, 2), Directions.up), "beamedLeft2");
         add(new Note(new Beam(BeamType.left, 2), Directions.down), "beamedLeft2Down");
 
-        add(new Smudge(), "smudge");
-        add(new InkBlot(), "inkBlot");
-        add(new PaperHole(), "paperHole");
+        add(new Defect(Defects.smudge), "smudge");
+        add(new Defect(Defects.inkBlot), "inkBlot");
+        add(new Defect(Defects.paperHole), "paperHole");
     }
 }

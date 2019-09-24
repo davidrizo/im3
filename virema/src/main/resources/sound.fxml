@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+
+<BorderPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.easda.virema.SoundController">
+   <top>
+      <ToolBar BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <items>
+            <Button mnemonicParsing="false" onAction="#handleOpenWav" text="Open 16 Bits  WAV File" />
+            <ToggleButton fx:id="btnPlay" mnemonicParsing="false" text="Play" />
+            <Label text="Black threshold">
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </Label>
+            <Slider fx:id="sliderThreshold" majorTickUnit="15.0" max="75.0" prefHeight="38.0" prefWidth="815.0" showTickLabels="true" showTickMarks="true" value="10.0" />
+            <Label fx:id="labelThreshold" text="Threshold" />
+         </items>
+      </ToolBar>
+   </top>
+   <center>
+      <ScrollPane fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <content>
+            <VBox>
+               <children>
+                  <StackPane fx:id="stackPane" alignment="TOP_LEFT">
+                     <children>
+                        <Canvas fx:id="spectrogramCanvas" height="200.0" width="200.0" />
+                        <Line fx:id="playLine" endY="10.0" stroke="#28c322" />
+                     </children>
+                  </StackPane>
+                  <Canvas fx:id="patternsCanvas" height="200.0" width="200.0" />
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+   <bottom>
+      <Slider fx:id="sliderZoomHorizontal" value="50.0" BorderPane.alignment="CENTER" />
+   </bottom>
+   <right>
+      <Slider fx:id="sliderZoomVertical" orientation="VERTICAL" value="50.0" BorderPane.alignment="CENTER" />
+   </right>
+</BorderPane>

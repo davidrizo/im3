@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import {Im3wsService} from '../im3ws.service';
+import {Im3wsService} from '../services/im3ws.service';
 import {Router} from '@angular/router';
 
 // import { ImageCropperModule } from 'ngx-image-cropper';
@@ -39,7 +39,7 @@ export class NewProjectFormComponent implements OnInit {
 
   onSubmit() {
     this.logger.debug('Submitting new project');
-    this.projectService.newProject$(this.newProjectForm.controls['name'].value,
+    this.projectService.projectService.newProject$(this.newProjectForm.controls['name'].value,
       this.newProjectForm.controls['composer'].value,
       this.newProjectForm.controls['notationType'].value,
       this.newProjectForm.controls['manuscriptType'].value,

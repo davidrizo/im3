@@ -406,7 +406,7 @@ public class CMMESongImporter implements IScoreSongImporter {
     private SimpleNote addNote(Staff staff, ScoreLayer layer, NoteEvent event, Figures figure, ScientificPitch pitch, int dots, Time actualDuration, Time expectedDurationGivenFigure, boolean colored) throws IM3Exception {
         SimpleNote note = new SimpleNote(figure, dots, pitch);
         if (event.getPitchOffset().optional) {
-            note.getAtomPitch().setOptionalAccidental(true);
+            note.getAtomPitch().setEditorialAccidental(true);
         }
         if (!actualDuration.equals(expectedDurationGivenFigure)) {
             note.setDuration(actualDuration);
@@ -416,7 +416,8 @@ public class CMMESongImporter implements IScoreSongImporter {
         note.getAtomFigure().setColored(colored);
 
         if (sectionTime != null && sectionTime.compareTo(layer.getDuration()) > 0) {
-            layer.add(sectionTime, note);
+            note.setTime(sectionTime);
+            // 20190924 layer.add(sectionTime, note);
         } else {
             layer.add(note);
         }
@@ -431,9 +432,9 @@ public class CMMESongImporter implements IScoreSongImporter {
             case MensSignElement.MENS_SIGN_C:
                 if (!event.getMainSign().dotted && event.getMainSign().number == null) {
                     if (event.getMainSign().stroke) {
-                        ts = new TimeSignatureCutTime(NotationType.eMensural);
+                        ts = new TimeSignatureCutTime();
                     } else {
-                        ts = new TimeSignatureCommonTime(NotationType.eMensural);
+                        ts = new TimeSignatureCommonTime();
                     }
                 }
                 break;
@@ -442,12 +443,13 @@ public class CMMESongImporter implements IScoreSongImporter {
         if (ts == null) {
             System.out.println("TO-DO COMPAS:");
             event.prettyprint();
-            ts = TimeSignatureMensuralFactory.getInstance().create(
+            /*ts = TimeSignatureMensuralFactory.getInstance().create(
                     Perfection.getPerfection(event.getMensInfo().modus_maior),
                     Perfection.getPerfection(event.getMensInfo().modus_minor),
                     Perfection.getPerfection(event.getMensInfo().tempus),
-                    Perfection.getPerfection(event.getMensInfo().prolatio)
-            );
+                    Perfection.getPerfection(event.getMensInfo().prolatio),
+                    mensurSign);*/
+            // TODO 20190924
         }
 
         ts.setTime(layer.getDuration());

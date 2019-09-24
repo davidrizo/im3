@@ -522,6 +522,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 								//TODO mensural black
 								throw new ImportException("Unsupported notation type import: " + notationType);
 							}
+						} else {
+							lastStaff.setNotationType(NotationType.eModern); // by default
 						}
 						String meterCount = getOptionalAttribute(attributesMap, "meter.count");
 						String meterUnit = getOptionalAttribute(attributesMap, "meter.unit");

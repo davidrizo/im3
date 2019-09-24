@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
-import {Im3wsService} from '../im3ws.service';
+import {Im3wsService} from '../services/im3ws.service';
 import {SessionDataService} from '../session-data.service';
+import {NGXLogger} from 'ngx-logger';
 
 @Component({
   selector: 'app-dev',
@@ -21,15 +22,16 @@ export class DevComponent implements OnInit {
   path = 'b-59-850';
 
   constructor(private im3wsService: Im3wsService, private router: Router,
-              private sessionDataService: SessionDataService) {
-    console.warn('¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ DEV!!!!!!!!!!!!!!!!!!!!!!');
-    this.im3wsService.login('davidrizo', 'nose').subscribe(
+              private sessionDataService: SessionDataService,
+              private logger: NGXLogger) {
+    this.logger.warn('¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ DEV!!!!!!!!!!!!!!!!!!!!!!');
+    this.im3wsService.authService.login('davidrizo', 'nose').subscribe(
       next => {
         if (next) {
-          this.im3wsService.setUser(next);
+          this.im3wsService.authService.setUser(next);
           this.router.navigate(['/project/' + this.projectID])
             .then(value => {
-              this.im3wsService.getImage$(this.imageID).
+              this.im3wsService.imageService.getImage$(this.imageID).
               subscribe(serviceImage => {
                 this.sessionDataService.currentImageMastersURL
                   = 'http://localhost:8888/muret/' + this.path + '/masters/';

@@ -14,15 +14,11 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import org.apache.fontbox.ttf.OTFParser;
 import org.apache.fontbox.ttf.OpenTypeFont;
@@ -215,7 +211,7 @@ public class Controller implements Initializable {
         //createControlSymbols();
 
         JSONGlyphNamesReader mapping = new JSONGlyphNamesReader(jsonFile);
-        HashMap<String, String> map = mapping.readCodepointToGlyphMap();
+        HashMap<String, String> map = mapping.readCodepointToOrderedGlyphMap();
         for (Map.Entry<String, String> entry: map.entrySet()) {
             Symbol symbol = new Symbol(entry.getValue(), entry.getKey());
             symbols.add(symbol);

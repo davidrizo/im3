@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="677.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.easda.virema.HCL.NoHarmonicsController">
+   <bottom>
+      <ScrollPane prefHeight="116.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
+         <content>
+            <HBox fx:id="hboxNotes" prefHeight="60.0" prefWidth="1200.0" spacing="2.0" />
+         </content>
+      </ScrollPane>
+   </bottom>
+   <top>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <Button mnemonicParsing="false" onAction="#handleOpenMusicXML" text="Open MusicXML" />
+            <Label text="Time width multiplier" />
+            <Slider fx:id="widthSlider" max="300.0" min="10.0" showTickLabels="true" value="75.0" />
+            <CheckBox fx:id="cbPatternColors" mnemonicParsing="false" onAction="#handlePatternColorsChanged" text="Pattern colors" />
+            <Label text="Pattern size" />
+            <Slider fx:id="sliderPatternSize" blockIncrement="1.0" majorTickUnit="9.0" max="50.0" min="1.0" minorTickCount="1" prefHeight="38.0" prefWidth="391.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+            <CheckBox fx:id="cbRegularPattern" mnemonicParsing="false" onAction="#handleOnRegularPatternChange" text="Regular pattern" />
+        </items>
+      </ToolBar>
+   </top>
+   <center>
+      <ScrollPane prefHeight="544.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
+         <content>
+            <HBox fx:id="hboxChords" prefHeight="500.0" prefWidth="3000.0" />
+         </content>
+      </ScrollPane>
+   </center>
+</BorderPane>

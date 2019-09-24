@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NGXLogger} from 'ngx-logger';
-import {ResizedEvent} from 'angular-resize-event/resized-event';
+// import {ResizedEvent} from 'angular-resize-event/resized-event';
 import {ComponentCanDeactivate} from '../component-can-deactivate';
 import {ImageToolBarService} from '../image-tool-bar/image-tool-bar.service';
 import {DocumentAnalysisViewComponent} from '../document-analysis-view/document-analysis-view.component';
@@ -71,15 +71,6 @@ export class ImageComponent extends ComponentCanDeactivate implements OnInit, Af
     this.logger.debug('Setting image ' + serviceImage + ' ' + this.image.filename);
     this.imageURL = this.projectURLs + '/' + this.image.filename;
   } */
-
-  onResized(event: ResizedEvent): void {
-    /*this.logger.debug('Resized');
-    if (this.imageSurface) {
-      this.scale = this.domImage.nativeElement.width / this.domImage.nativeElement.naturalWidth;
-      this.drawBoundingBoxes();
-    } // else it is invoked before ngAfterViewInit*/
-  }
-
 
   canDeactivate(): boolean {
     return false; // TODO

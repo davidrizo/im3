@@ -15,7 +15,8 @@ export const environment = {
   // PRODUCTION
   // important not to finish the URL with slash
   // apiEndpoint: 'https://muret.dlsi.ua.es/rest' // production
-  apiEndpoint: 'http://localhost:8080',
+  // apiEndpoint: 'https://muret.dlsi.ua.es/rest/muretapi' // production
+  apiEndpoint: 'http://localhost:8080/muretapi',
   // RECALL CHANGE the baseHRef in index.html
 
 };

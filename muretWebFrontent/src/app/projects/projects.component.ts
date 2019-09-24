@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Project} from '../model/project';
-import {Im3wsService} from '../im3ws.service';
+import {Im3wsService} from '../services/im3ws.service';
 import {NGXLogger} from 'ngx-logger';
 import {Permissions} from '../model/permissions';
 
@@ -18,8 +18,8 @@ export class ProjectsComponent implements OnInit {
 
   ngOnInit() {
     // this.getProjects();
-    this.myProjects = this.im3wsService.getUser().projectsCreated;
-    this.permissions = this.im3wsService.getUser().permissions;
+    this.myProjects = this.im3wsService.authService.getUser().projectsCreated;
+    this.permissions = this.im3wsService.authService.getUser().permissions;
 
     /*this.myProjects = new Array<Project>();
     this.im3wsService.getUser().projectsCreated.forEach(project => {
@@ -40,4 +40,12 @@ export class ProjectsComponent implements OnInit {
     this.im3wsService.getProjects$().
       subscribe(serviceProjects => this.projects = serviceProjects);
   }*/
+
+  trackByProjectFn(index, item: Project) {
+    return item.id; // unique id corresponding to the item
+  }
+
+  trackByPermissionFn(index, item: Permissions) {
+    return item.id; // unique id corresponding to the item
+  }
 }

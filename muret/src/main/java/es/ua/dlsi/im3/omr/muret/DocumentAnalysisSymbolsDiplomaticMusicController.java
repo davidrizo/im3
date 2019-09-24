@@ -37,9 +37,10 @@ import es.ua.dlsi.im3.omr.classifiers.symbolrecognition.*;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbol;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticToken;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
+import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Defect;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Directions;
 import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note;
-import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Smudge;
+import es.ua.dlsi.im3.omr.encoding.enums.Defects;
 import es.ua.dlsi.im3.omr.language.OMRTransduction;
 import es.ua.dlsi.im3.omr.language.mensural.GraphicalMensuralSymbolsAutomaton;
 import es.ua.dlsi.im3.omr.model.entities.Region;
@@ -463,7 +464,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
         }
 
         if (agnosticSymbol == null) {
-            agnosticSymbol = new AgnosticSymbol(AgnosticVersion.v2, new Smudge(), PositionInStaff.fromLine(3)); //TODO Version
+            agnosticSymbol = new AgnosticSymbol(AgnosticVersion.v2, new Defect(Defects.smudge), PositionInStaff.fromLine(3)); //TODO Version
         }
         try {
             OMRSymbol omrSymbol = new OMRSymbol(selectedRegionView.getOwner(), agnosticSymbol, x, y, width, height);
@@ -936,7 +937,7 @@ public class DocumentAnalysisSymbolsDiplomaticMusicController extends MuRETBaseC
 
         ToggleGroup toggleGroup = new ToggleGroup();
 
-        ToggleButton clefTB = new ToggleButton("Clef");
+        ToggleButton clefTB = new ToggleButton("SemanticClef");
         toggleGroup.getToggles().add(clefTB);
         symbolCorrectionPane.getChildren().add(clefTB);
 

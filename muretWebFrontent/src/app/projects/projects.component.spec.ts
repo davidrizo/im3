@@ -6,7 +6,7 @@ import {
   HttpTestingController
 } from '@angular/common/http/testing';
 
-import { Im3wsService } from '../im3ws.service';
+import { Im3wsService } from '../services/im3ws.service';
 
 describe('ProjectService', () => {
   beforeEach(() => {

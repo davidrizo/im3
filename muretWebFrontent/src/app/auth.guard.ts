@@ -7,7 +7,7 @@ import {
   NavigationExtras,
   CanLoad, Route, CanDeactivate
 } from '@angular/router';
-import {Im3wsService} from './im3ws.service';
+import {Im3wsService} from './services/im3ws.service';
 import {NGXLogger} from 'ngx-logger';
 import {SessionDataService} from './session-data.service';
 import {Observable} from 'rxjs';
@@ -38,7 +38,7 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad, CanDea
   }
 
   checkLogin(url: string): boolean {
-    if (this.im3WSService.authenticated()) {
+    if (this.im3WSService.authService.authenticated()) {
       this.logger.debug('Can activate ' + url);
       return true;
     }

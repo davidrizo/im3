@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  * It uses JsonView to filter JSON results. When using findAll it just returns the fields in the entity object annotated with @JsonView(JSONFilteredDataViews.ObjectWithoutRelations.class).
- * The method findOne returns all objects and relationships. Note that SpringBoot + JPA ignore the LAZY or EAGER JPA annotations
+ * The method findOne returns all objects and relationships. SemanticNote that SpringBoot + JPA ignore the LAZY or EAGER JPA annotations
  * @author drizo
  */
 @CrossOrigin("${angular.url}")

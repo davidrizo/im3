@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router,
   NavigationExtras } from '@angular/router';
-import {Im3wsService} from '../im3ws.service';
+import {Im3wsService} from '../services/im3ws.service';
 import {NGXLogger} from 'ngx-logger';
 
 @Component({
@@ -33,11 +33,11 @@ export class LoginComponent {
     this.logger.debug('Loging in');
     this.message = 'Trying to log in ...';
 
-    this.im3WSService.login(this.model.username, this.model.password).subscribe(next => {
-      this.im3WSService.setUser(next);
+    this.im3WSService.authService.login(this.model.username, this.model.password).subscribe(next => {
+      this.im3WSService.authService.setUser(next);
 
       this.setMessage();
-      if (this.im3WSService.authenticated()) {
+      if (this.im3WSService.authService.authenticated()) {
         const redirect = 'startup';
         // Redirect the user
         this.router.navigate([redirect]);
@@ -47,12 +47,12 @@ export class LoginComponent {
 
   logout() {
     this.logger.debug('Logging out');
-    this.im3WSService.logout();
+    this.im3WSService.authService.logout();
     this.setMessage();
   }
 
   isLoggedIn(): boolean {
-    return this.im3WSService.authenticated();
+    return this.im3WSService.authService.authenticated();
   }
 }
 

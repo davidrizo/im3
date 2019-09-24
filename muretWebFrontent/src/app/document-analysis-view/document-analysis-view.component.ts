@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {Im3wsService} from '../im3ws.service';
+import {Im3wsService} from '../services/im3ws.service';
 import {ActivatedRoute} from '@angular/router';
 import {Image} from '../model/image';
 import {Page} from '../model/page';
 import {BoundingBox} from '../model/bounding-box';
 import {NGXLogger} from 'ngx-logger';
-import {ResizedEvent} from 'angular-resize-event/resized-event';
+// import {ResizedEvent} from 'angular-resize-event/resized-event';
 import {Region} from '../model/region';
 import {Project} from '../model/project';
 import {SessionDataService} from '../session-data.service';
@@ -66,11 +66,11 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     this.logger.debug('Working with image ' + this.imageURL);
 
     if (!sessionDataService.regionTypes) {
-      im3wsService.getRegionTypes().subscribe(value => {
+      im3wsService.regionService.getRegionTypes().subscribe(value => {
         sessionDataService.regionTypes = value;
         this.logger.debug('Fetched #' + sessionDataService.regionTypes.length + ' region types');
         this.regionTypes = value;
-      });
+      }).unsubscribe();
     } else {
       this.regionTypes = sessionDataService.regionTypes;
     }
@@ -102,14 +102,6 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     this.drawBoundingBoxes();
   }
 
-  onResized(event: ResizedEvent): void {
-    /*this.logger.debug('Resized');
-    if (this.imageSurface) {
-      this.scale = this.domImage.nativeElement.width / this.domImage.nativeElement.naturalWidth;
-      this.drawBoundingBoxes();
-    } // else it is invoked before ngAfterViewInit*/
-  }
-
   private drawBoundingBox(objectType: string, objectID: number, boundingBox: BoundingBox, targetScale: number,
                           strokeColor: string, strokeWidth: number, label: string) {
 
@@ -137,7 +129,7 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     const prevCursor = this.canvasCursor;
     this.canvasCursor = 'wait';
     try {
-      this.im3wsService.splitPage(this.image.id, imageX).subscribe(next => {
+      this.im3wsService.imageService.splitPage(this.image.id, imageX).subscribe(next => {
         this.image.pages = next;
         this.drawImagePages();
         this.canvasCursor = prevCursor;
@@ -154,7 +146,7 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     const prevCursor = this.canvasCursor;
     this.canvasCursor = 'wait';
     try {
-      this.im3wsService.splitRegion(this.image.id, imageX, imageY).subscribe(next => {
+      this.im3wsService.imageService.splitRegion(this.image.id, imageX, imageY).subscribe(next => {
         this.image.pages = next;
         this.drawImagePages();
         this.canvasCursor = prevCursor;
@@ -167,7 +159,7 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
   }
 
   clearDocumentAnalysis() {
-    this.im3wsService.clearDocumentAnalysis(this.image.id).subscribe(next => {
+    this.im3wsService.imageService.clearDocumentAnalysis(this.image.id).subscribe(next => {
       this.image.pages = next;
       this.drawImagePages();
       this.clearInteractiveLines();
@@ -268,12 +260,12 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     if ($event.shape instanceof Rectangle) {
       // TODO Si da error la actualización que se repinte
       if ($event.modelObjectType === 'Region') {
-        this.im3wsService.updateRegionBoundingBox($event.modelObjectID,
+        this.im3wsService.imageService.updateRegionBoundingBox($event.modelObjectID,
           $event.shape.originX / this.scale, $event.shape.originY / this.scale,
           ($event.shape.originX + $event.shape.width)  / this.scale,
           ($event.shape.originX + $event.shape.height) / this.scale);
       } else if ($event.modelObjectType === 'Page') {
-        this.im3wsService.updatePageBoundingBox($event.modelObjectID,
+        this.im3wsService.imageService.updatePageBoundingBox($event.modelObjectID,
           $event.shape.originX / this.scale, $event.shape.originY / this.scale,
           ($event.shape.originX + $event.shape.width)  / this.scale,
           ($event.shape.originX + $event.shape.height) / this.scale);
@@ -317,7 +309,7 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
     if (this.selectedRegion != null) {
       const region = this.findRegionID(this.selectedRegion.modelObjectID);
       if (region) {
-        this.im3wsService.updateRegionType(region.id, regionType).subscribe(next => {
+        this.im3wsService.imageService.updateRegionType(region.id, regionType).subscribe(next => {
           if (this.selectedRegion instanceof RectangleComponent) {
             region.regionType = regionType;
             this.selectedRegion.label = regionType.name;
@@ -325,5 +317,9 @@ export class DocumentAnalysisViewComponent implements OnInit, AfterViewInit {
         });
       }
     }
+  }
+
+  trackByRegionTypeFn(index, item: RegionType) {
+    return item.id; // unique id corresponding to the item
   }
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.easda.virema.munsell.MunsellTreeController">
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="37.0" prefWidth="600.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#handleClear" text="Clear" />
+            <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <content>
+            <FlowPane fx:id="floxpane" hgap="10.0" prefHeight="1500.0" prefWidth="1500.0" prefWrapLength="300.0" vgap="10.0" />
+         </content>
+      </ScrollPane>
+   </center>
+   <top>
+      <BorderPane fx:id="borderPaneDissonances" prefHeight="553.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+         <top>
+            <Label text="Consonance / Dissonance" BorderPane.alignment="CENTER" />
+         </top>
+         <bottom>
+            <ToolBar BorderPane.alignment="CENTER">
+               <items>
+                  <Label text="Click on colors below to add them here" />
+                  <Button mnemonicParsing="false" onAction="#handleReset" text="Reset" />
+                  <Button mnemonicParsing="false" onAction="#handleResizeDissonance" text="Resize according to dissonance" />
+                  <Button mnemonicParsing="false" onAction="#handleResetDissonancesSizes" text="Reset sizes" />
+                  <Button fx:id="btnAddSizedArea" mnemonicParsing="false" onAction="#handleAddArea" text="Add sized area (resize according... must be used first)" translateX="50.0" />
+               </items>
+            </ToolBar>
+         </bottom>
+         <center>
+            <ScrollPane fx:id="scrollPaneDissonances" prefHeight="162.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+               <content>
+                  <HBox fx:id="hboxDissonances" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" />
+               </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
+   </top>
+</BorderPane>

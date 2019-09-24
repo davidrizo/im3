@@ -2,7 +2,6 @@ package es.ua.dlsi.im3.cmme;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.TestFileUtils;
-import es.ua.dlsi.im3.core.io.ImportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.clefs.ClefC1;
 import es.ua.dlsi.im3.core.score.clefs.ClefC3;
@@ -66,11 +65,11 @@ public class CMMESongImporterTest {
 
         List<Atom> altusAtoms = scoreSong.getParts().get(1).getAtomsSortedByTime();
         assertEquals("Flat in altus note pitch", PitchClasses.B_FLAT.getPitchClass(), ((SimpleNote) altusAtoms.get(185)).getPitch().getPitchClass());
-        assertFalse("Non optional accidental", ((SimpleNote) altusAtoms.get(185)).getAtomPitch().isOptionalAccidental());
+        assertFalse("Non optional accidental", ((SimpleNote) altusAtoms.get(185)).getAtomPitch().isEditorialAccidental());
 
         SimpleNote lastAltusNote = (SimpleNote) altusAtoms.get(altusAtoms.size()-1);
         assertEquals("Pitch of last altus note", PitchClasses.C_SHARP.getPitchClass(), lastAltusNote.getPitch().getPitchClass());
-        assertTrue("Optional accidental", lastAltusNote.getAtomPitch().isOptionalAccidental());
+        assertTrue("Optional accidental", lastAltusNote.getAtomPitch().isEditorialAccidental());
 
         //TODO Editorial accidentals
 
