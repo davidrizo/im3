@@ -76,7 +76,12 @@ public class Semantic2IMCore {
         if (notationType == NotationType.eModern) {
             // if not closed by an ending line
             if (!song.getLastMeasure().hasEndTime()) {
-                song.getLastMeasure().setEndTime(song.getSongDuration());
+                if (song.getSongDuration().equals(song.getLastMeasure().getTime())) {
+                    // if last measure is empty delete it
+                    song.removeLastMeasure();
+                } else {
+                    song.getLastMeasure().setEndTime(song.getSongDuration());
+                }
             }
         }
         return song;

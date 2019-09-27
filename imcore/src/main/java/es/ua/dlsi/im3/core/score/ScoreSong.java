@@ -965,6 +965,13 @@ public class ScoreSong implements IStaffContainer {
 	    this.measures.remove(m);
     }
 
+	public void removeLastMeasure() throws IM3Exception {
+		if (this.measures.isEmpty()) {
+			throw new IM3Exception("There are no measures");
+		}
+		this.measures.remove(this.measures.getLastValue());
+	}
+
 	/**
 	 * It creates the symbols only used for notation, such as staves and clefs
 	 */
@@ -1928,6 +1935,7 @@ public class ScoreSong implements IStaffContainer {
 	public void setFacsimile(Facsimile facsimile) {
 		this.facsimile = facsimile;
 	}
+
 }
 /*else { //TODO ¿Cómo se coordina esto con lo de arriba de la imperfección? - con este else?
         TimeSignature meter = currentSpine.staff.getRunningTimeSignatureAt(lastTime);

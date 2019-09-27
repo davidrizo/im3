@@ -148,6 +148,9 @@ public class MensImporter {
                 case "C5":
                     clef = new ClefC5();
                     break;
+                case "G3":
+                    clef = new ClefG3();
+                    break;
                 case "G1":
                     clef = new ClefG1();
                     break;
