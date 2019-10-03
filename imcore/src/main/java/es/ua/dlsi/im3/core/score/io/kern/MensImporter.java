@@ -495,11 +495,7 @@ public class MensImporter {
         private void handlePerfectionColoration(SingleFigureAtom simpleFigureAtom) {
             simpleFigureAtom.getAtomFigure().setColored(lastColoured);
             if (lastPerfection != null) {
-                try {
-                    simpleFigureAtom.getAtomFigure().setExplicitMensuralPerfection(lastPerfection);
-                } catch (IM3Exception e) {
-                    throw new GrammarParseRuntimeException("Cannot set perfection: " + e.toString());
-                }
+                simpleFigureAtom.getAtomFigure().setExplicitMensuralPerfection(lastPerfection);
             }
         }
 

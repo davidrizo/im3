@@ -19,4 +19,13 @@ public class ScientificPitchTest {
         assertEquals("A5", 880, new ScientificPitch(PitchClasses.A, 5).computeFrequency(), 0.0001);
         assertEquals("C4", 261.6, new ScientificPitch(PitchClasses.C, 4).computeFrequency(), 0.1);
     }
+
+    @Test
+    public void parse() {
+        assertEquals("A4", new ScientificPitch(PitchClasses.A, 4), ScientificPitch.parse("A4"));
+        assertEquals("C#3", new ScientificPitch(PitchClasses.C_SHARP, 3), ScientificPitch.parse("C#3"));
+        assertEquals("Bb5", new ScientificPitch(PitchClasses.B_FLAT, 5), ScientificPitch.parse("Bb5"));
+        assertEquals("Gx2", new ScientificPitch(PitchClasses.G_DSHARP, 2), ScientificPitch.parse("Gx2"));
+        assertEquals("Cbb1", new ScientificPitch(PitchClasses.C_DFLAT, 1), ScientificPitch.parse("Cbb1"));
+    }
 }

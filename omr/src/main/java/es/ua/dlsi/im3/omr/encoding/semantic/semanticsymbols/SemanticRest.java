@@ -30,6 +30,20 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
         this.fermata = fermata; //TODO Tuplet y fermata en el CoreSymbol
     }
 
+    /**
+     *
+     * @param figures
+     * @param dots
+     * @param fermata
+     * @param perfect Used in mensural
+     */
+    public SemanticRest(Figures figures, int dots, boolean fermata, boolean perfect) throws IM3Exception {
+        super(new SimpleRest(figures, dots));
+        this.fermata = fermata; //TODO Tuplet y fermata en el CoreSymbol
+        this.coreSymbol.getAtomFigure().setExplicitMensuralPerfection(perfect ? Perfection.perfectum : Perfection.imperfectum);
+    }
+
+
     public SemanticRest(SimpleRest coreSymbol) {
         super(coreSymbol.clone());
         this.fermata = coreSymbol.getAtomFigure().getFermata() != null;
@@ -45,7 +59,7 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
     }
 
     @Override
-    public String toSemanticString() throws IM3Exception {
+    public String toSemanticString() {
         StringBuilder sb = new StringBuilder(SEMANTIC);
 
         Figures figures = coreSymbol.getAtomFigure().getFigure();

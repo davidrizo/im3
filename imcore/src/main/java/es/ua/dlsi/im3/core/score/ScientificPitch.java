@@ -193,4 +193,28 @@ public class ScientificPitch implements Comparable<ScientificPitch>, Cloneable {
                 base40 = octave * 40 + base40Chroma;
             }
 	}*/
+
+	/**
+	 * Format: A#3, C4, Cb3, Cbb3, Cx5
+	 * @return
+	 */
+	public static ScientificPitch parse(String string) {
+		String diatonicPitch = string.substring(0, 1);
+		String right = string.substring(1);
+
+		Accidentals accidental = null;
+		for (Accidentals accidentals: Accidentals.values()) {
+			if (right.startsWith(accidentals.getAbbrName())) {
+				accidental = accidentals;
+				right = right.substring(accidental.getAbbrName().length());
+				break;
+			}
+		}
+
+		String octave = right;
+
+		return new ScientificPitch(DiatonicPitch.valueOf(diatonicPitch),
+				accidental,
+				Integer.parseInt(octave));
+	}
 }

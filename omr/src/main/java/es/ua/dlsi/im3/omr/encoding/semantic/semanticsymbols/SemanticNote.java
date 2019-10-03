@@ -32,7 +32,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
      * @param scientificPitch It contains the actual accidental, the one that must be played
      * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
      */
-    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored) {
+    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, Perfection perfection)  {
         super(new SimpleNote(figures, dots, scientificPitch));
         this.fermata = fermata;
         this.trill = trill;
@@ -41,7 +41,18 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
             this.coreSymbol.setWrittenExplicitAccidental(visualAccidental);
         }
         this.coreSymbol.getAtomFigure().setColored(colored);
+
+        this.coreSymbol.getAtomFigure().setExplicitMensuralPerfection(perfection);
         //TODO Tuplet y fermata en el CoreSymbol
+    }
+
+    /**
+     * tupletNumber If null, it is not a tuplet
+     * @param scientificPitch It contains the actual accidental, the one that must be played
+     * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
+     */
+    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored) {
+        this(graceNote, scientificPitch, visualAccidental, figures, dots, fermata, trill, tupletNumber, colored, null);
     }
 
     public SemanticNote(SimpleNote simpleNote) {
@@ -52,7 +63,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
     }
 
     @Override
-    public String toSemanticString() throws IM3Exception {
+    public String toSemanticString()  {
         StringBuilder sb = new StringBuilder();
         if (coreSymbol.isGrace()) {
             sb.append(SEMANTIC_GRACENOTE);

@@ -330,11 +330,11 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         }*/
     }
 
-    public void setExplicitMensuralPerfection(Perfection perfection) throws IM3Exception {
+    public void setExplicitMensuralPerfection(Perfection perfection)  {
         setMensuralPerfection(true, perfection);
     }
 
-    public void setComputedMensuralPerfection(Perfection perfection, String perfectionRuleApplied) throws IM3Exception {
+    public void setComputedMensuralPerfection(Perfection perfection, String perfectionRuleApplied)  {
         setMensuralPerfection(false, perfection);
         this.perfectionRuleApplied = perfectionRuleApplied;
     }
