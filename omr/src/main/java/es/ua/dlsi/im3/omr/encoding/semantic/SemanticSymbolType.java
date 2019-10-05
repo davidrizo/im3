@@ -68,9 +68,11 @@ public abstract class SemanticSymbolType<IMCoreSymbolType extends ITimedElementI
     }
 
     public void setAgnosticIDs(List<Long> ids) {
-        this.agnosticIDs = new Long[ids.size()];
-        for (int i=0; i<ids.size(); i++) {
-            this.agnosticIDs[i] = ids.get(i);
+        if (ids != null) {
+            this.agnosticIDs = new Long[ids.size()];
+            for (int i = 0; i < ids.size(); i++) {
+                this.agnosticIDs[i] = ids.get(i);
+            }
         }
     }
 

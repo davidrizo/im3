@@ -528,14 +528,6 @@ public class KernExporter {
         } else {
             throw new ExportException("Unsupported notation type " + figure.getNotationType());
         }
-        if (atomFigure.isFollowedByMensuralDivisionDot()) {
-            sb.append(':');
-        } else {
-            for (int i = 0; i < dots; i++) {
-                sb.append('.');
-            }
-        }
-
         if (atomFigure.isExplicitMensuralPerfection()) {
             Perfection perfection = atomFigure.getMensuralPerfection();
             if (perfection != null) {
@@ -551,6 +543,13 @@ public class KernExporter {
                 }
             } else {
                 throw new ExportException("Expected a perfection");
+            }
+        }
+        if (atomFigure.isFollowedByMensuralDivisionDot()) {
+            sb.append(':');
+        } else {
+            for (int i = 0; i < dots; i++) {
+                sb.append('.');
             }
         }
         return sb.toString();

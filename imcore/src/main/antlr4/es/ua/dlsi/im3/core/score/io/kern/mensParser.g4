@@ -24,7 +24,7 @@ options { tokenVocab=mensLexer; } // use tokens from mensLexer.g4
 start: header (eol record)+ eol? EOF;
 
 // used in OMR
-anystart: header? record (eol record)+ eol? EOF;
+anystart: (header eol)? record (eol record)+ eol? EOF;
 
 eol: FREE_TEXT_EOL | EOL;
 

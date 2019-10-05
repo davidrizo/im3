@@ -45,9 +45,13 @@ public class SemanticLigature extends SemanticCompoundAtom<Ligature> {
             stringBuilder.append(KernExporter.encodeAtom(atoms.get(i)));
             if (i == atoms.size() - 1) {
                 stringBuilder.append(close);
-                stringBuilder.append(suffix);
+                if (suffix != null) {
+                    stringBuilder.append(suffix);
+                }
             } else {
-                stringBuilder.append(suffix);
+                if (suffix != null) {
+                    stringBuilder.append(suffix);
+                }
                 stringBuilder.append('\n');
             }
         }

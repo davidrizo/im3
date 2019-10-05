@@ -26,4 +26,8 @@ public class SemanticSymbol extends Token<SemanticSymbolType> {
         return symbol.toKernSemanticString() + suffix;
     }
 
+    @Override
+    public String toString() {
+        return "SemanticSymbol of class " + this.getClass().getName();
+    }
 }

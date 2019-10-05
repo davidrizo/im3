@@ -18,6 +18,8 @@ public enum MeterSigns {
         // migration V2a to V2b
         if (string.equals("C")) {
             return C;
+        } else if (string.equals("C/") || string.equals("C|") ) {
+            return Ccut;
         }
 
         for (MeterSigns meterSigns: MeterSigns.values()) {
