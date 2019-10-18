@@ -1115,10 +1115,13 @@ public class MEISongExporter implements ISongExporter {
 
 	private void processBarLine(StringBuilder sb, int tabs, MarkBarline slr, Staff staff) {
 		ArrayList<String> params = new ArrayList<>();
-		if (slr.isEndBarline()) {
+		if (slr.getBarlineType() == BarlineType.ending) {
 			params.add("form");
 			params.add("end");
-		}
+		} if (slr.getBarlineType() == BarlineType.double_thin) {
+			params.add("form");
+			params.add("dbl");
+		} //TODO See
 		generateFacsimileReference(slr, params);
         XMLExporterHelper.startEnd(sb, tabs, "barLine", params);
     }

@@ -11,7 +11,7 @@ import java.util.Objects;
 public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSetter, IStaffElementWithoutLayer {
     Staff staff;
     Time time;
-    boolean endBarline;
+    BarlineType barlineType;
     String facsimileElementID;
     String ID;
 
@@ -24,7 +24,7 @@ public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSette
 
     public MarkBarline(MarkBarline markBarline) {
         this.staff = markBarline.staff;
-        this.endBarline = markBarline.endBarline;
+        this.barlineType = markBarline.barlineType;
     }
 
     public MarkBarline clone() {
@@ -78,12 +78,12 @@ public class MarkBarline implements ITimedElementInStaff, ITimedElementWithSette
         this.time = time;
     }
 
-    public boolean isEndBarline() {
-        return endBarline;
+    public BarlineType getBarlineType() {
+        return barlineType;
     }
 
-    public void setEndBarline(boolean endBarline) {
-        this.endBarline = endBarline;
+    public void setBarlineType(BarlineType barlineType) {
+        this.barlineType = barlineType;
     }
 
     @Override

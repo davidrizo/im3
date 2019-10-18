@@ -360,8 +360,12 @@ public class MensImporter {
             super.exitBarLine(ctx);
             if (ctx.barlineProperties() == null || ctx.barlineProperties().MINUS() == null) {
                 MarkBarline markBarLine = new MarkBarline(); //TODO repetitions .... - ver || vs ==
-                if (ctx.getText().equals("==")) {
-                    markBarLine.setEndBarline(true);
+                if (ctx.getText().startsWith("==")) {
+                    markBarLine.setBarlineType(BarlineType.ending);
+                } else if (ctx.getText().endsWith("||")) {
+                    markBarLine.setBarlineType(BarlineType.double_thin);
+                } else {
+                    markBarLine.setBarlineType(BarlineType.single); // TODO Other barline types
                 }
                 humdrumMatrix.addItemToCurrentRow(ctx.getText(), markBarLine);
             } // if minus present it is hidden
