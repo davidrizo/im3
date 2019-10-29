@@ -4,7 +4,6 @@ import es.ua.dlsi.im3.core.TestFileUtils;
 import org.apache.commons.math3.fraction.Fraction;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -43,7 +42,9 @@ public class DeterministicProbabilisticAutomatonTest {
         automaton.normalizeProbabilities();
         automaton.writeDot(TestFileUtils.createTempFile("pa.dot"));
         List<Token<StringSymbolType>> sequence = Arrays.asList(new Token<>(new StringSymbolType("a")), new Token<>(new StringSymbolType("b")));
-        assertEquals(1, automaton.probabilityOf(sequence, new SingleTransductionFactory()).getProbability().getNumeratorAsLong());
+        Transduction okTransduction = automaton.probabilityOf(sequence, new SingleTransductionFactory());
+        assertEquals(1, okTransduction.getProbability().getNumeratorAsLong());
+        assertEquals(2, okTransduction.getAcceptedTokensCount());
 
         List<Token<StringSymbolType>> incorrectSequence = Arrays.asList(new Token<>(new StringSymbolType("a")),
                 new Token<>(new StringSymbolType("c")),
@@ -51,6 +52,9 @@ public class DeterministicProbabilisticAutomatonTest {
 
         Transduction incorrectTransduction = automaton.probabilityOf(incorrectSequence, new SingleTransductionFactory());
         assertEquals("Incorrect transduction p", 0, incorrectTransduction.getProbability().getNumeratorAsLong());
+        System.out.println(incorrectTransduction.getErrorMessage());
+        assertEquals(1, incorrectTransduction.getAcceptedTokensCount());
+
     }
 
 

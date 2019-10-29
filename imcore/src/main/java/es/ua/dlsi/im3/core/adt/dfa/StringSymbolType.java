@@ -19,4 +19,9 @@ public class StringSymbolType implements IAlphabetSymbolType {
     public String getString() {
         return string;
     }
+
+    @Override
+    public String toString() {
+        return string;
+    }
 }

@@ -41,7 +41,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
      * @throws IM3Exception
      */
     public TransductionType probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, ITransductionFactory<TransductionType> transductionFactory) throws IM3Exception {
-        BigFraction best = BigFraction.ZERO;
+        BigFraction best = null;
 
         TransductionType bestTransduction = null;
 
@@ -85,6 +85,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
             if (debug) {
                 logger.info("Start state " + startState + " with probability 0");
             }
+            transduction.setErrorMessage("Cannot find start state with probability > 0");
             return transduction; // don't need to go on
         }
 
@@ -94,10 +95,13 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 if (debug) {
                     logger.info("No transition from " + currentState + " with token " + sequence.get(i).getSymbol());
                 }
+                transduction.setErrorMessage("No transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType());
                 transduction.setProbability(BigFraction.ZERO); //TODO smoothing
                 return transduction;
 
             } else if (transitions.size() > 1) {
+                transduction.setErrorMessage("Non deterministic automaton: there are " + transitions.size() + " from state " + currentState + " with input " + sequence.get(i).getSymbol().getType());
+
                 throw new IM3Exception("This automaton is not deterministic, there are " + transitions.size() +
                         " transitions from state " + currentState + " with token " + sequence.get(i));
             } else {
@@ -109,6 +113,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 }
 
                 if (transitionProb == null) {
+                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is null");
                     transduction.setProbability(BigFraction.ZERO);
                     return transduction; // don't need to go on
                 } else {
@@ -120,20 +125,25 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                     logger.info("Exiting state " + currentState + " with transduction probability "+ transduction.getProbability());
                 }
                 if (transduction.getProbability().getNumeratorAsLong() == 0) {
+                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is 0 after exiting state");
+
                     return transduction; // don't need to go on
                 }
                 transition.getTo().onEnter(sequence.get(i), currentState, transduction);
                 logger.info("Entering state " + currentState + " with transduction probability "+ transduction.getProbability());
                 if (transduction.getProbability().getNumeratorAsLong() == 0) {
+                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is 0 after entering again to new state " + currentState);
                     return transduction; // don't need to go on
                 }
                 currentState = transition.getTo();
             }
+            transduction.incrementAcceptedTokens();
         }
 
         currentState.onExit(null, true, transduction);
         logger.info("Exiting state " + currentState + " with transduction probability "+ transduction.getProbability());
         if (transduction.getProbability().getNumeratorAsLong() == 0) {
+            transduction.setErrorMessage("Transduction probability is 0 when exiting state after the sequence is fully consumed");
             return transduction; // don't need to go on
         }
 
