@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
@@ -42,7 +43,13 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
         }
         this.coreSymbol.getAtomFigure().setColored(colored);
 
-        this.coreSymbol.getAtomFigure().setExplicitMensuralPerfection(perfection);
+        if (perfection != null) {
+            try {
+                this.coreSymbol.getAtomFigure().setExplicitMensuralPerfection(perfection);
+            } catch (IM3Exception e) {
+                throw new IM3RuntimeException(e); // this should never happen
+            }
+        }
         //TODO Tuplet y fermata en el CoreSymbol
     }
 

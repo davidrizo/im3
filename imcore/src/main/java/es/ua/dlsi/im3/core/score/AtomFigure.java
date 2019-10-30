@@ -313,8 +313,11 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         return minDur;
     }
 
-    private void setMensuralPerfection(boolean explicit, Perfection perfection)  {
+    private void setMensuralPerfection(boolean explicit, Perfection perfection) throws IM3Exception {
         this.explicitMensuralPerfection = explicit;
+        if (explicit && perfection == null) {
+        	throw new IM3Exception("Cannot set an explicit perfection when perfection parameter is null");
+		}
         this.mensuralPerfection = perfection;
         /*durationBeforePerfection = duration;
         if (perfection == Perfection.perfectum) {
@@ -330,11 +333,11 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         }*/
     }
 
-    public void setExplicitMensuralPerfection(Perfection perfection)  {
+    public void setExplicitMensuralPerfection(Perfection perfection) throws IM3Exception {
         setMensuralPerfection(true, perfection);
     }
 
-    public void setComputedMensuralPerfection(Perfection perfection, String perfectionRuleApplied)  {
+    public void setComputedMensuralPerfection(Perfection perfection, String perfectionRuleApplied) throws IM3Exception {
         setMensuralPerfection(false, perfection);
         this.perfectionRuleApplied = perfectionRuleApplied;
     }

@@ -95,12 +95,12 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 if (debug) {
                     logger.info("No transition from " + currentState + " with token " + sequence.get(i).getSymbol());
                 }
-                transduction.setErrorMessage("No transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType());
+                transduction.setErrorMessage("No transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " at position #" + i);
                 transduction.setProbability(BigFraction.ZERO); //TODO smoothing
                 return transduction;
 
             } else if (transitions.size() > 1) {
-                transduction.setErrorMessage("Non deterministic automaton: there are " + transitions.size() + " from state " + currentState + " with input " + sequence.get(i).getSymbol().getType());
+                transduction.setErrorMessage("Non deterministic automaton: there are " + transitions.size() + " from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " at position #" + i);
 
                 throw new IM3Exception("This automaton is not deterministic, there are " + transitions.size() +
                         " transitions from state " + currentState + " with token " + sequence.get(i));
@@ -113,7 +113,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 }
 
                 if (transitionProb == null) {
-                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is null");
+                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is null" + " at position #" + i);
                     transduction.setProbability(BigFraction.ZERO);
                     return transduction; // don't need to go on
                 } else {
@@ -125,14 +125,14 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                     logger.info("Exiting state " + currentState + " with transduction probability "+ transduction.getProbability());
                 }
                 if (transduction.getProbability().getNumeratorAsLong() == 0) {
-                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is 0 after exiting state");
+                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is 0 after exiting state" + " at position #" + i);
 
                     return transduction; // don't need to go on
                 }
                 transition.getTo().onEnter(sequence.get(i), currentState, transduction);
                 logger.info("Entering state " + currentState + " with transduction probability "+ transduction.getProbability());
                 if (transduction.getProbability().getNumeratorAsLong() == 0) {
-                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is 0 after entering again to new state " + currentState);
+                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType()  + " at position #" + i + " is 0 after entering again to new state " + currentState);
                     return transduction; // don't need to go on
                 }
                 currentState = transition.getTo();

@@ -1,6 +1,7 @@
 package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 
 import es.ua.dlsi.im3.core.IM3Exception;
+import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
@@ -27,11 +28,16 @@ public class SemanticBarline extends SemanticSymbolType<MarkBarline> {
     }
 
     @Override
-    public String toKernSemanticString() {
-        if (coreSymbol.isEndBarline()) {
-            return "==";
-        } else {
-            return "=";
+    public String toKernSemanticString() throws IM3Exception {
+        switch (coreSymbol.getBarlineType()) {
+            case ending:
+                return "==";
+            case single:
+                return "=";
+            case double_thin:
+                return "=||";
+            default:
+                throw new IM3Exception("Unsupported barline type:"  + coreSymbol.getBarlineType());
         }
     }
 }

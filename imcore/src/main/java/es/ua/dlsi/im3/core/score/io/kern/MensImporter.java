@@ -492,11 +492,15 @@ public class MensImporter {
             SimpleRest rest = new SimpleRest(lastFigure, lastAgumentationDots);
             rest.setLinePosition(lastRestLinePosition); // it can be null
             rest.getAtomFigure().setFollowedByMensuralDivisionDot(lastHasSeparationDot);
-            handlePerfectionColoration(rest);
+            try {
+                handlePerfectionColoration(rest);
+            } catch (IM3Exception e) {
+                throw new GrammarParseRuntimeException(e);
+            }
             humdrumMatrix.addItemToCurrentRow(ctx.getText(), rest);
         }
 
-        private void handlePerfectionColoration(SingleFigureAtom simpleFigureAtom) {
+        private void handlePerfectionColoration(SingleFigureAtom simpleFigureAtom) throws IM3Exception {
             simpleFigureAtom.getAtomFigure().setColored(lastColoured);
             if (lastPerfection != null) {
                 simpleFigureAtom.getAtomFigure().setExplicitMensuralPerfection(lastPerfection);
@@ -624,7 +628,11 @@ public class MensImporter {
                 }
             }
 
-            handlePerfectionColoration(note);
+            try {
+                handlePerfectionColoration(note);
+            } catch (IM3Exception e) {
+                throw new GrammarParseRuntimeException(e);
+            }
 
             /*if (ctx.afterNote().ligatureType() != null && ctx.afterNote().ligatureType().size() > 0) {
                 String str = ctx.afterNote().ligatureType().get(0).getText();
