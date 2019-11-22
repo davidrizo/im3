@@ -85,4 +85,12 @@ public abstract class Exporter<SymbolType> {
     protected abstract boolean requiresSeparator(SymbolType symbol);
 
     protected abstract String export(SymbolType symbol) throws IM3Exception;
+
+    public boolean isSeparateTokensWithSpace() {
+        return separateTokensWithSpace;
+    }
+
+    public void setSeparateTokensWithSpace(boolean separateTokensWithSpace) {
+        this.separateTokensWithSpace = separateTokensWithSpace;
+    }
 }

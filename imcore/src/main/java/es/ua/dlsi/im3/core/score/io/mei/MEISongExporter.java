@@ -22,10 +22,7 @@ import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.io.kern.HarmExporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
-import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
-import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
-import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
@@ -567,14 +564,17 @@ public class MEISongExporter implements ISongExporter {
 					params.add("label");
 					params.add(staff.getName());
 				}
-				
+
+				TimeSignature staffDefTS; // either individual or common (just for mensural tempus, prolatio...)
 				TimeSignature staffTS;
 				if (commonStartTimeSignature == null) {
 					staffTS = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
+					staffDefTS = staffTS;
 				} else {
 					staffTS = null; // do not repeat
+					staffDefTS = commonStartTimeSignature;
 				}
-				
+
 				KeySignature staffKS;
 				if (commonStartKeySignature == null) {
 					staffKS = staff.getKeySignatureWithOnset(Time.TIME_ZERO);
@@ -594,10 +594,13 @@ public class MEISongExporter implements ISongExporter {
 				if (staff.getNotationType() == NotationType.eMensural) {
 				    params.add("notationtype");
                     params.add("mensural.white");
-                }
+
+					processMensuralTimeSignatureForStaffDef(staffDefTS, params);
+				}
 				XMLExporterHelper.startEnd(sb, tabs+1, "staffDef", params);
 			}
 		}
+
 		XMLExporterHelper.end(sb, tabs, "staffGrp");
 	}
 		
@@ -661,8 +664,14 @@ public class MEISongExporter implements ISongExporter {
 			default:
 				throw new ExportException("Unsupported proportion sign:" + mm.getClass());
 		}
+	}
 
-		/*if (mm.getModusMaior() != null) {
+	private void processMensuralTimeSignatureForStaffDef(TimeSignature meter, ArrayList<String> params)  {
+		//lastTimeSignature = meter;
+		if (meter instanceof TimeSignatureMensural) {
+			TimeSignatureMensural mm = (TimeSignatureMensural) meter;
+
+			if (mm.getModusMaior() != null) {
 				params.add("modusmaior");
 				params.add(mensuralTimeSignaturePerfectionToNumber(mm.getModusMaior()));
 			}
@@ -678,9 +687,8 @@ public class MEISongExporter implements ISongExporter {
 				params.add("prolatio");
 				params.add(mensuralTimeSignaturePerfectionToNumber(mm.getProlatio()));
 			}
-		}*/
+		}
 	}
-
 	private String mensuralTimeSignaturePerfectionToNumber(Perfection p) {
 		if (p == Perfection.imperfectum) {
 			return "2";

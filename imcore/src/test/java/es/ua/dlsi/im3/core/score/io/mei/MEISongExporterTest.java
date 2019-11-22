@@ -6,6 +6,7 @@ import es.ua.dlsi.im3.core.score.clefs.ClefG2;
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureCumPropietateEtCumPerfectione;
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureCumPropietateEtSinePerfectione;
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureFactory;
+import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import org.junit.Test;
@@ -53,5 +54,19 @@ public class MEISongExporterTest {
         String mei = exporter.exportSong(song);
         System.out.println(mei);
         assertTrue("Contains ligature", mei.indexOf("<ligature")>0);
+    }
+
+    @Test
+    public void exportMensuralScoreDefProlatioEtAl() throws IM3Exception {
+        ScoreSong song = ScoreSong.createEmptyOneVoiceEmptySong(NotationType.eMensural);
+        Staff staff = song.getStaves().get(0);
+        ScoreLayer layer = staff.getLayers().get(0);
+        staff.addElementWithoutLayer(new ClefG2());
+        staff.addElementWithoutLayer(new TempusImperfectumCumProlationeImperfecta());
+
+        MEISongExporter exporter = new MEISongExporter();
+        String mei = exporter.exportSong(song);
+        System.out.println(mei);
+        assertTrue("Contains tempus", mei.indexOf("tempus")>0);
     }
 }
