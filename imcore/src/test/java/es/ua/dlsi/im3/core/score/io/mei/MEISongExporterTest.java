@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureCumPropietateEtCumPer
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureCumPropietateEtSinePerfectione;
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureFactory;
 import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
+import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensuralFactory;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import org.junit.Test;
@@ -36,12 +37,31 @@ public class MEISongExporterTest {
     }
 
     @Test
+    public void exportMensuralAugmentationDotTest() throws IM3Exception {
+        ScoreSong song = ScoreSong.createEmptyOneVoiceEmptySong(NotationType.eMensural);
+        Staff staff = song.getStaves().get(0);
+        ScoreLayer layer = staff.getLayers().get(0);
+        staff.addElementWithoutLayer(new ClefG2());
+        staff.addElementWithoutLayer(new TempusImperfectumCumProlationeImperfecta());
+
+        SimpleNote note = new SimpleNote(Figures.MINIM, 1, new ScientificPitch(PitchClasses.A, 4));
+        layer.add(note);
+
+        MEISongExporter exporter = new MEISongExporter();
+        String mei = exporter.exportSong(song);
+        //System.out.println(mei);
+        assertTrue("Contains dot", mei.indexOf("<dot form=\"aug\"/>")>0);
+        assertTrue("Contains num=2", mei.indexOf("num=\"2\"")>0);
+        assertTrue("Contains numbase=3", mei.indexOf("numbase=\"3\"")>0);
+    }
+
+    @Test
     public void exportLigatureBinaria() throws IM3Exception {
         ScoreSong song = ScoreSong.createEmptyOneVoiceEmptySong(NotationType.eMensural);
         Staff staff = song.getStaves().get(0);
         ScoreLayer layer = staff.getLayers().get(0);
         staff.addElementWithoutLayer(new ClefG2());
-        staff.addElementWithoutLayer(new TimeSignatureCommonTime());
+        staff.addElementWithoutLayer(new TempusImperfectumCumProlationeImperfecta());
 
         SimpleNote brevis = new SimpleNote(Figures.BREVE, 0, new ScientificPitch(PitchClasses.C, 4));
         SimpleNote longa = new SimpleNote(Figures.LONGA, 0, new ScientificPitch(PitchClasses.D, 4));

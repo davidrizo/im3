@@ -1243,17 +1243,24 @@ public class MEISongExporter implements ISongExporter {
 		}
 		params.add(getFigureMEIDur(atomFigure.getFigure()));
 
-		if (atomFigure.getDots() > 0) {
-			params.add("dots");
-			params.add(Integer.toString(atomFigure.getDots()));
-		}
-		if (atomFigure.getIrregularGroupActualFigures() != null) {
+		if (atomFigure.getStaff().getNotationType() == NotationType.eMensural && atomFigure.getDots() > 0) {
 			params.add("num");
-			params.add(atomFigure.getIrregularGroupActualFigures().toString());
-		}
-		if (atomFigure.getIrregularGroupInSpaceOfFigures() != null) {
+			params.add("2");
 			params.add("numbase");
-			params.add(atomFigure.getIrregularGroupInSpaceOfFigures().toString());
+			params.add("3"); //TODO Comprobar que esto es siempre (sale https://github.com/HISPAMUS/muret/issues/65)
+		} else {
+			if (atomFigure.getDots() > 0) {
+				params.add("dots");
+				params.add(Integer.toString(atomFigure.getDots()));
+			}
+			if (atomFigure.getIrregularGroupActualFigures() != null) {
+				params.add("num");
+				params.add(atomFigure.getIrregularGroupActualFigures().toString());
+			}
+			if (atomFigure.getIrregularGroupInSpaceOfFigures() != null) {
+				params.add("numbase");
+				params.add(atomFigure.getIrregularGroupInSpaceOfFigures().toString());
+			}
 		}
 
 		if (atomFigure.hasColoration() && atomFigure.isColored()) {
