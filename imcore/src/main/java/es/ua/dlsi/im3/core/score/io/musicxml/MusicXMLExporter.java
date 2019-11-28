@@ -18,6 +18,7 @@ import static es.ua.dlsi.im3.core.score.io.XMLExporterHelper.*;
 
 /**
  * @author pierre
+ * @author drizo
  */
 public class MusicXMLExporter implements ISongExporter {
     protected ScoreSong scoreSong;
@@ -61,6 +62,10 @@ public class MusicXMLExporter implements ISongExporter {
 
     private int multiMeasureRestRemaining =0;
     private boolean lastMeasure=false;
+    /**
+     * MusicXML numbers the staves for each part, numbered from top (#1) to bottom, not as an absolute value as we do
+     */
+    private HashMap<Staff, String> partStaffNumbers = new HashMap<>();
 
     /**
      * @return the printRomanNumberAnalysis
@@ -146,6 +151,7 @@ public class MusicXMLExporter implements ISongExporter {
         this.scoreSong = song;
         sb = new StringBuilder();
 
+        createStaffNumberMap();
         PrintStream ps = null;
         try {
             ps = new PrintStream(file, "UTF-8");
@@ -156,6 +162,23 @@ public class MusicXMLExporter implements ISongExporter {
         if (ps != null) {
             ps.close();
         }
+    }
+
+    private void createStaffNumberMap() {
+        for (ScorePart scorePart: this.scoreSong.getParts()) {
+            int n = 1;
+            for (Staff staff: scorePart.getStaves()) { //TODO ¿order?
+                this.partStaffNumbers.put(staff, new Integer(n++).toString());
+            }
+        }
+    }
+
+    private String getStaffNumber(Staff staff) throws IM3Exception {
+        String number = this.partStaffNumbers.get(staff);
+        if (staff == null) {
+            throw new IM3Exception("Cannot find staff " + staff);
+        }
+        return number;
     }
 
     /**
@@ -370,7 +393,7 @@ public class MusicXMLExporter implements ISongExporter {
         }
     }
 
-    private void exportNoteOrRest(Atom atom, boolean inChord, CompoundAtom tuplet) {
+    private void exportNoteOrRest(Atom atom, boolean inChord, CompoundAtom tuplet) throws IM3Exception {
         boolean needsBackup = false;
         start(sb, 3, "note");
         if (inChord) {
@@ -441,7 +464,7 @@ public class MusicXMLExporter implements ISongExporter {
 
 
         if (atom.getAtomSpecificStaff() != atom.getLayer().getStaff()) {
-            startEndTextContentSingleLine(sb, 5, "staff", String.valueOf(atom.getStaff().getNumberIdentifier()));
+            startEndTextContentSingleLine(sb, 5, "staff", getStaffNumber(atom.getStaff()));
         }
 
         // Beams and lyrics
@@ -599,7 +622,7 @@ public class MusicXMLExporter implements ISongExporter {
             for (Staff s : part.getStaves()) {
                 Clef newClef = s.getClefAtTime(measure.getTime());
                 if (newClef != null) {
-                    start(sb, 4, "clef", "number", String.valueOf(s.getNumberIdentifier()));
+                    start(sb, 4, "clef", "number", getStaffNumber(s));
                     startEndTextContentSingleLine(sb, 5, "sign", s.getRunningClefAt(measure.getTime()).getNote().toString());
                     startEndTextContentSingleLine(sb, 5, "line", String.valueOf(s.getRunningClefAt(measure.getTime()).getLine()));
                     end(sb, 4, "clef");
