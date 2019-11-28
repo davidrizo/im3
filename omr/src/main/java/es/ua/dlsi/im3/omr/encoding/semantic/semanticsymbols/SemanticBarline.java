@@ -29,15 +29,19 @@ public class SemanticBarline extends SemanticSymbolType<MarkBarline> {
 
     @Override
     public String toKernSemanticString() throws IM3Exception {
-        switch (coreSymbol.getBarlineType()) {
-            case ending:
-                return "==";
-            case single:
-                return "=";
-            case double_thin:
-                return "=||";
-            default:
-                throw new IM3Exception("Unsupported barline type:"  + coreSymbol.getBarlineType());
+        if (coreSymbol == null || coreSymbol.getBarlineType() == null) {
+            return "=";
+        } else {
+            switch (coreSymbol.getBarlineType()) {
+                case ending:
+                    return "==";
+                case single:
+                    return "=";
+                case double_thin:
+                    return "=||";
+                default:
+                    throw new IM3Exception("Unsupported barline type:" + coreSymbol.getBarlineType());
+            }
         }
     }
 }
