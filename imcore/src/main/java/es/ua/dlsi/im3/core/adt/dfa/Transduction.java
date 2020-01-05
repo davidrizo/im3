@@ -50,4 +50,12 @@ public class Transduction {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    public void addErrorMessage(String s) {
+        if (errorMessage != null) {
+            this.errorMessage += ("\n" + s);
+        } else {
+            this.errorMessage = s;
+        }
+    }
 }

@@ -10,12 +10,24 @@ import java.util.logging.Logger;
 // TODO: 3/10/17 Llamarle transductor. Quizás esto debería ir en ProbabilisticAutomaton
 public class DeterministicProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType, TransductionType extends Transduction>  extends ProbabilisticAutomaton<StateType, AlphabetSymbolType> {
     private boolean debug;
+    /**
+     * If true, when a transition is not found for a given symbol, it is skipped, the error is reported but the traversal is not stopped
+     */
+    private boolean skipUnknownSymbols = false;
     private static Logger logger = Logger.getLogger(DeterministicProbabilisticAutomaton.class.getName());
 
     public DeterministicProbabilisticAutomaton(Set<StateType> states, StateType startState, HashMap<StateType, Fraction> endProbabilities, Alphabet<AlphabetSymbolType> alphabet, Collection<Transition<StateType, AlphabetSymbolType>> transitions) throws IM3Exception {
         super(states, new HashMap<>(), endProbabilities, alphabet, transitions); // FIXME: 2/10/17 Start state
         startProbabilities.put(startState, BigFraction.ONE);
         checkDeterminism();
+    }
+
+    public boolean isSkipUnknownSymbols() {
+        return skipUnknownSymbols;
+    }
+
+    public void setSkipUnknownSymbols(boolean skipUnknownSymbols) {
+        this.skipUnknownSymbols = skipUnknownSymbols;
     }
 
     /**
@@ -95,10 +107,16 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 if (debug) {
                     logger.info("No transition from " + currentState + " with token " + sequence.get(i).getSymbol());
                 }
-                transduction.setErrorMessage("No transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " at position #" + i);
+                transduction.addErrorMessage(
+                        "No transition from state " +
+                                currentState + " with input " +
+                                sequence.get(i).getSymbol().getType() + " at position #" + i);
                 transduction.setProbability(BigFraction.ZERO); //TODO smoothing
-                return transduction;
-
+                if (!skipUnknownSymbols) {
+                    return transduction;
+                } else {
+                    transduction.incrementAcceptedTokens();
+                }
             } else if (transitions.size() > 1) {
                 transduction.setErrorMessage("Non deterministic automaton: there are " + transitions.size() + " from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " at position #" + i);
 
@@ -113,9 +131,13 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 }
 
                 if (transitionProb == null) {
-                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is null" + " at position #" + i);
+                    transduction.addErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is null" + " at position #" + i);
                     transduction.setProbability(BigFraction.ZERO);
-                    return transduction; // don't need to go on
+                    if (!skipUnknownSymbols) {
+                        return transduction; // don't need to go on
+                    } else {
+                        transduction.incrementAcceptedTokens();
+                    }
                 } else {
                     p = p.multiply(transitionProb);
                     transduction.setProbability(p);
@@ -125,9 +147,13 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                     logger.info("Exiting state " + currentState + " with transduction probability "+ transduction.getProbability());
                 }
                 if (transduction.getProbability().getNumeratorAsLong() == 0) {
-                    transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is 0 after exiting state" + " at position #" + i);
+                    transduction.addErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is 0 after exiting state" + " at position #" + i);
 
-                    return transduction; // don't need to go on
+                    if (!skipUnknownSymbols) {
+                        return transduction; // don't need to go on
+                    } else {
+                        transduction.incrementAcceptedTokens();
+                    }
                 }
                 transition.getTo().onEnter(sequence.get(i), currentState, transduction);
                 logger.info("Entering state " + currentState + " with transduction probability "+ transduction.getProbability());
