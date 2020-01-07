@@ -119,7 +119,10 @@ public class MensuralToModern {
                 if (modernClef == null) {
                     modernStaff.addElementWithoutLayer(convert((Clef) symbol)); // TODO: 16/10/17 Convertir las claves según alguna regla
                 } else {
-                    modernStaff.addElementWithoutLayer(modernClef);
+                    // TODO parche para que no dé error cuando ya existe la clave
+                    if (!modernStaff.contains(modernClef)) {
+                        modernStaff.addElementWithoutLayer(modernClef);
+                    }
                 }
             } else if (symbol instanceof TimeSignature) {
                 activeTimeSignature = convert((TimeSignature) symbol);
