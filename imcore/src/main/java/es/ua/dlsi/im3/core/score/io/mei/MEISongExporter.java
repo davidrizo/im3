@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.adt.dfa.Alphabet;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.facsimile.Graphic;
@@ -413,8 +412,8 @@ public class MEISongExporter implements ISongExporter {
 		} else {
 			staffContainer = scorePart;
 		}
-		commonStartTimeSignature = findFirstTimeSignature(staffContainer);
-		commonStartKeySignature = findFirstKeySignature(staffContainer);
+		commonStartTimeSignature = findTimeSignatureAtTimeZero(staffContainer);
+		commonStartKeySignature = findKeySignatureAtTimeZero(staffContainer);
 
 		ArrayList<String> params = new ArrayList<>();
 		Key commonKey;
@@ -437,7 +436,7 @@ public class MEISongExporter implements ISongExporter {
 	 * 
 	 * @return null if two different key signatures
 	 */
-	private KeySignature findFirstKeySignature(IStaffContainer songOrPart) {
+	private KeySignature findKeySignatureAtTimeZero(IStaffContainer songOrPart) {
 		KeySignature ks = null;
 		for (Staff staff: songOrPart.getStaves()) {
 			KeySignature staffKS = staff.getKeySignatureWithOnset(Time.TIME_ZERO);
@@ -451,7 +450,7 @@ public class MEISongExporter implements ISongExporter {
 		return ks;
 	}
 
-	private TimeSignature findFirstTimeSignature(IStaffContainer songOrPart) {
+	private TimeSignature findTimeSignatureAtTimeZero(IStaffContainer songOrPart) {
 		TimeSignature ks = null;
 		for (Staff staff: songOrPart.getStaves()) {
 			TimeSignature staffKS = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
@@ -474,7 +473,7 @@ public class MEISongExporter implements ISongExporter {
 				params.add("meter.unit");
 				params.add(Integer.toString(fm.getDenominator()));
 			} else if (ts instanceof TimeSignatureMensural) {
-				processMensuralTimeSignature(ts, params);				
+				processMensuralTimeSignature(ts, params, true);
 			} else if (ts instanceof TimeSignatureCommonTime) {
 				params.add("meter.sym");
 				params.add("common");
@@ -604,13 +603,25 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.end(sb, tabs, "staffGrp");
 	}
 		
-	private void processMensuralTimeSignature(TimeSignature meter, ArrayList<String> params) throws ExportException {
+	private void processMensuralTimeSignature(TimeSignature meter, ArrayList<String> params, boolean useMensurPrefix) throws ExportException {
 		//lastTimeSignature = meter;
 		TimeSignatureMensural mm = (TimeSignatureMensural) meter;
 
+		String mensurSign;
+		String mensurSlash;
+		String mensurDot;
+		if (useMensurPrefix) {
+			mensurSign = "mensur.sign";
+			mensurSlash = "mensur.slash";
+			mensurDot = "mensur.dot";
+		} else {
+			mensurSign = "sign";
+			mensurSlash = "slash";
+			mensurDot = "dot";
+		}
 		switch (mm.getClass().getName()) {
 			case "es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor":
-				params.add("mensur.sign");
+				params.add(mensurSign);
 				params.add("C");
 				params.add("proport.num");
 				params.add("3");
@@ -620,7 +631,7 @@ public class MEISongExporter implements ISongExporter {
 				params.add("1");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor":
-				params.add("mensur.sign");
+				params.add(mensurSign);
 				params.add("C");
 				params.add("proport.num");
 				params.add("3");
@@ -628,29 +639,29 @@ public class MEISongExporter implements ISongExporter {
 				params.add("2");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta":
-				params.add("mensur.sign");
+				params.add(mensurSign);
 				params.add("C");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfectaDiminutum":
-				params.add("mensur.slash");
-				params.add("1");
-				params.add("mensur.sign");
+				params.add(mensurSign);
 				params.add("C");
+				params.add(mensurSlash);
+				params.add("1");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationePerfecta":
-				params.add("mensur.sign");
+				params.add(mensurSign);
 				params.add("C");
-				params.add("mensur.dot");
+				params.add(mensurDot);
 				params.add("true");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusPerfectumCumProlationeImperfecta":
-				params.add("mensur.sign");
+				params.add(mensurSign);
 				params.add("O");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusPerfectumCumProlationePerfecta":
-				params.add("mensur.sign");
+				params.add(mensurSign);
 				params.add("O");
-				params.add("mensur.dot");
+				params.add(mensurDot);
 				params.add("true");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.ProportioDupla":
@@ -1019,12 +1030,14 @@ public class MEISongExporter implements ISongExporter {
 						}
 					}
 					for (TimeSignature ts: staff.getTimeSignatures()) {
-						if (commonStartTimeSignature != null && !ts.getTime().isZero() && (segment == null || !ts.getTime().equals(segment.getFrom()))) {
+						//if (commonStartTimeSignature != null && !ts.getTime().isZero() && (segment == null || !ts.getTime().equals(segment.getFrom()))) {
+						if (commonStartTimeSignature == null || commonStartTimeSignature != ts || segment != null && !ts.getTime().equals(segment.getFrom())) {
 							staffSymbols.add(ts); // the first one is exported in staffDef or scoreDef
 						}
 					}
 					for (KeySignature ks: staff.getKeySignatures()) {
-						if (commonStartKeySignature != null && !ks.getTime().isZero() && (segment == null || !ks.getTime().equals(segment.getFrom()))) {
+						//if (commonStartKeySignature != null && !ks.getTime().isZero() && (segment == null || !ks.getTime().equals(segment.getFrom()))) {
+						if (commonStartKeySignature == null || commonStartKeySignature != ks || segment != null && !ks.getTime().equals(segment.getFrom())) {
 							staffSymbols.add(ks); // the first one is exported in staffDef or scoreDef
 						}
 					}
@@ -1056,7 +1069,7 @@ public class MEISongExporter implements ISongExporter {
 									processCustos(tabs + 2, (Custos) slr);
 								} else if (slr instanceof TimeSignature) {
 									//TODO ¿habrá que mejor coger el TimeSignature por el @sign...
-									processTimeSignature(tabs + 2, (TimeSignature) slr);
+									processTimeSignature(tabs + 2, (TimeSignature) slr, false);
 								} else if (slr instanceof MarkBarline) {
 									processBarLine(sb, tabs + 2, (MarkBarline) slr, staff);
 									previousAccidentals.clear();
@@ -1146,10 +1159,10 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 
-	private void processTimeSignature(int tabs, TimeSignature timeSignature) throws ExportException {
+	private void processTimeSignature(int tabs, TimeSignature timeSignature, boolean useMensurPrefix) throws ExportException {
 		if (timeSignature instanceof TimeSignatureMensural) {
 			ArrayList<String> params = new ArrayList<>();
-			processMensuralTimeSignature(timeSignature, params);
+			processMensuralTimeSignature(timeSignature, params, useMensurPrefix);
 			generateFacsimileReference(timeSignature, params);
 			XMLExporterHelper.startEnd(sb, tabs, "mensur", params);
 		} else {
