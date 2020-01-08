@@ -479,7 +479,11 @@ public class KernExporter {
             suffix = "";
         }
 
-        return prefix + duration + generatePitch(atomPitch) + suffix;
+        String coloration = "";
+        if (atomPitch.getAtomFigure().isColored()) {
+            coloration = "~";
+        }
+        return prefix + duration + coloration + generatePitch(atomPitch) + suffix;
     }
 
     // See http://www.humdrum.org/humextra/rhythm/#extensions-to-recip-and-kern-rhythms
