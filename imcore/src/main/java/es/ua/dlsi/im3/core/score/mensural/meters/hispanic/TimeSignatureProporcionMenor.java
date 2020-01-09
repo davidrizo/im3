@@ -34,7 +34,7 @@ import java.util.List;
 public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
 
     public TimeSignatureProporcionMenor() {
-    		super(Perfection.perfectum, Perfection.imperfectum);
+    		super(Perfection.imperfectum, Perfection.imperfectum, Perfection.perfectum, Perfection.imperfectum);
     }
 
     @Override

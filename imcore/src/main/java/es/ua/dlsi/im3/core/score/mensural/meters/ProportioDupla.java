@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ProportioDupla extends TimeSignatureMensural {
     public ProportioDupla() {
-        super(Perfection.imperfectum, Perfection.imperfectum);
+        super(Perfection.imperfectum, Perfection.imperfectum, Perfection.imperfectum, Perfection.imperfectum);
     }
 
     @Override

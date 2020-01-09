@@ -25,12 +25,6 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
     Time longaDuration;
     Time semibreveDuration;
 
-	public TimeSignatureMensural(Perfection tempus, Perfection prolatio) {
-		this(null, null, tempus, prolatio);
-	}
-	
-	//TODO Comprobar con Antonio Ezquerro la duración del compás - tests unitarios con obras
-
 	/**
 	 * 
 	 * @param modusMaior When null it is taken as imperfect

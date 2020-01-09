@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class TempusPerfectumCumProlationePerfecta extends TimeSignatureMensural {
     public TempusPerfectumCumProlationePerfecta() {
-        super(Perfection.perfectum, Perfection.perfectum);
+        super(Perfection.imperfectum, Perfection.imperfectum, Perfection.perfectum, Perfection.perfectum);
     }
 
     @Override

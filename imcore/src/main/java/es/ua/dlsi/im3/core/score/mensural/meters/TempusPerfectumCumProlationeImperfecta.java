@@ -13,7 +13,7 @@ import java.util.TreeSet;
  */
 public class TempusPerfectumCumProlationeImperfecta extends TimeSignatureMensural {
     public TempusPerfectumCumProlationeImperfecta() {
-        super(Perfection.perfectum, Perfection.imperfectum);
+        super(Perfection.imperfectum, Perfection.imperfectum, Perfection.perfectum, Perfection.imperfectum);
     }
 
     @Override

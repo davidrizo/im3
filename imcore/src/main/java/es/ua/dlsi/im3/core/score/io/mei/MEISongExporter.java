@@ -1,5 +1,6 @@
 package es.ua.dlsi.im3.core.score.io.mei;
 
+
 import java.io.File;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
@@ -29,13 +30,13 @@ import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.metadata.Person;
 /**
- * 
+ *
  * @author drizo
  *
  */
 public class MEISongExporter implements ISongExporter {
 
-    protected ScoreSong song;
+	protected ScoreSong song;
 	protected StringBuilder sb;
 	//private KeySignature lastKeySignature;
 	//private TimeSignature lastTimeSignature;
@@ -47,23 +48,23 @@ public class MEISongExporter implements ISongExporter {
 	//private ArrayList<ConnectorWithLayer> barConnectors;
 	//private HashMap<Measure, HashMap<Staff, ArrayList<Attachment>>> attachmentsPerBar;
 	private KeySignature commonStartKeySignature;
-    private HarmExporter harmExporter;
+	private HarmExporter harmExporter;
 
-    /**
-     * Accidentals in a previous note in the measure (key = diatonic pitch+ octave*7)
-     */
-    private HashMap<Integer, Accidentals> previousAccidentals;
+	/**
+	 * Accidentals in a previous note in the measure (key = diatonic pitch+ octave*7)
+	 */
+	private HashMap<Integer, Accidentals> previousAccidentals;
 
-    /**
-     * If true, we add @type attribute to the harm element
-     */
-    boolean useHarmTypes;
-    public static final String VERSION = "4.0.0";
-    public static final String HARM_TYPE_KEY = "key";
-    public static final String HARM_TYPE_DEGREE = "degree";
-    public static final String HARM_TYPE_TONAL_FUNCTION = "tonalFunction";
-    private int skipMeasures;
-    private BeamGroup lastBeam;
+	/**
+	 * If true, we add @type attribute to the harm element
+	 */
+	boolean useHarmTypes;
+	public static final String VERSION = "4.0.0";
+	public static final String HARM_TYPE_KEY = "key";
+	public static final String HARM_TYPE_DEGREE = "degree";
+	public static final String HARM_TYPE_TONAL_FUNCTION = "tonalFunction";
+	private int skipMeasures;
+	private BeamGroup lastBeam;
 	private HashSet<IFacsimile> exportedSystemOrPageBreaks = new HashSet<>();
 
 	/*FRACCIONES class ConnectorWithLayer {
@@ -80,9 +81,9 @@ public class MEISongExporter implements ISongExporter {
 		public ScoreLayer getLayer() {
 			return layer;
 		}
-		
+
 	}*/
-	
+
 	@Override
 	public void exportSong(File file, ScoreSong song) throws ExportException {
 		PrintStream ps = null;
@@ -151,41 +152,41 @@ public class MEISongExporter implements ISongExporter {
 		}
 	}
 
-    private int generatePreviousAccidentalMapKey(DiatonicPitch noteName, int octave) {
-        return noteName.getOrder() + octave * 7;
-    }
+	private int generatePreviousAccidentalMapKey(DiatonicPitch noteName, int octave) {
+		return noteName.getOrder() + octave * 7;
+	}
 
 
 	protected void preprocess() throws IM3Exception {
-	    generateMissingIDs();
+		generateMissingIDs();
 
-        this.marksPerBar = new HashMap<>();
-        this.lastBeam = null;
-        this.lastClef = null;
-        this.previousAccidentals = new HashMap<>();
+		this.marksPerBar = new HashMap<>();
+		this.lastBeam = null;
+		this.lastClef = null;
+		this.previousAccidentals = new HashMap<>();
 		if (song.getStaves() != null) {
 			for (Staff staff: song.getStaves()) {
 				if (!(staff instanceof AnalysisStaff)) {
 					for (StaffMark mark: staff.getMarks()) {
-					    if (song.hasMeasures()) {
-                            Measure bar = song.getMeasureActiveAtTime(mark.getTime());
-                            HashMap<Staff, ArrayList<StaffMark>> barStaves = marksPerBar.get(bar);
-                            if (barStaves == null) {
-                                barStaves = new HashMap<>();
-                                marksPerBar.put(bar, barStaves);
-                            }
-                            ArrayList<StaffMark> marks = barStaves.get(staff);
-                            if (marks == null) {
-                                marks = new ArrayList<>();
-                                barStaves.put(staff, marks);
-                            }
-                            marks.add(mark);
-                        }
+						if (song.hasMeasures()) {
+							Measure bar = song.getMeasureActiveAtTime(mark.getTime());
+							HashMap<Staff, ArrayList<StaffMark>> barStaves = marksPerBar.get(bar);
+							if (barStaves == null) {
+								barStaves = new HashMap<>();
+								marksPerBar.put(bar, barStaves);
+							}
+							ArrayList<StaffMark> marks = barStaves.get(staff);
+							if (marks == null) {
+								marks = new ArrayList<>();
+								barStaves.put(staff, marks);
+							}
+							marks.add(mark);
+						}
 					}
 				}
 			}
 		}
-		
+
 		/*attachmentsPerBar = new HashMap<>();
 		if (song.getStaves() != null) {
 			for (Staff staff: song.getStaves()) {
@@ -208,28 +209,28 @@ public class MEISongExporter implements ISongExporter {
 		}		*/
 	}
 
-    private void generateMissingIDs() {
-        // TODO: 22/3/18 Hacerlo para todos los elementos - ahora lo hacemos para bars y atoms
-        for (Measure measure: song.getMeasures()) {
-            if (measure.__getID() == null) {
-                this.generateID(null, measure, false);
-            }
-        }
+	private void generateMissingIDs() {
+		// TODO: 22/3/18 Hacerlo para todos los elementos - ahora lo hacemos para bars y atoms
+		for (Measure measure: song.getMeasures()) {
+			if (measure.__getID() == null) {
+				this.generateID(null, measure, false);
+			}
+		}
 
-        for (AtomFigure atomFigure: song.getAtomFiguresSortedByTime()) {
-            if (atomFigure.getAtom().__getID() == null) {
-                this.generateID(null, atomFigure.getAtom(), false);
-            }
-        }
-    }
+		for (AtomFigure atomFigure: song.getAtomFiguresSortedByTime()) {
+			if (atomFigure.getAtom().__getID() == null) {
+				this.generateID(null, atomFigure.getAtom(), false);
+			}
+		}
+	}
 
-    public boolean isUseHarmTypes() {
-        return useHarmTypes;
-    }
+	public boolean isUseHarmTypes() {
+		return useHarmTypes;
+	}
 
-    public void setUseHarmTypes(boolean useHarmTypes) {
-        this.useHarmTypes = useHarmTypes;
-    }
+	public void setUseHarmTypes(boolean useHarmTypes) {
+		this.useHarmTypes = useHarmTypes;
+	}
 
 	/**
 	 * @param song
@@ -237,10 +238,10 @@ public class MEISongExporter implements ISongExporter {
 	 * @throws IM3Exception
 	 * @throws ExportException
 	 */
-    public String exportSong(ScoreSong song) throws IM3Exception, ExportException {
-    		this.song = song;
-    		return exportSong();
-    }
+	public String exportSong(ScoreSong song) throws IM3Exception, ExportException {
+		this.song = song;
+		return exportSong();
+	}
 
 	/**
 	 *
@@ -249,7 +250,7 @@ public class MEISongExporter implements ISongExporter {
 	 * @throws IM3Exception
 	 * @throws ExportException
 	 */
-    public String exportSong(List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
+	public String exportSong(List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
 		sb = new StringBuilder();
 
 		exportHeader(sb);
@@ -267,7 +268,7 @@ public class MEISongExporter implements ISongExporter {
 		sb.append("<mei xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.music-encoding.org/ns/mei\" meiversion=\""+VERSION+"\">\n");
 	}
 
-	protected void processBeforeMusic(int tabs) throws ExportException {		
+	protected void processBeforeMusic(int tabs) throws ExportException {
 	}
 
 	private void processHead(int tabs) {
@@ -277,7 +278,7 @@ public class MEISongExporter implements ISongExporter {
 		processWorkDesc(tabs+1);
 		XMLExporterHelper.end(sb, tabs, "meiHead");
 	}
-	
+
 
 	private void processFileDesc(int tabs) {
 		XMLExporterHelper.start(sb, tabs, "fileDesc");
@@ -285,10 +286,10 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.text(sb, tabs+2, "title", song.getTitle());
 		XMLExporterHelper.end(sb, tabs+1, "titleStmt");
 		XMLExporterHelper.startEnd(sb, tabs+1, "pubStmt");
-		XMLExporterHelper.end(sb, tabs, "fileDesc");		
+		XMLExporterHelper.end(sb, tabs, "fileDesc");
 	}
 
-	
+
 	private void processEncodingDesc(int tabs) {
 		XMLExporterHelper.start(sb, tabs, "encodingDesc");
 		XMLExporterHelper.start(sb, tabs+1, "appInfo");
@@ -296,7 +297,7 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.text(sb, tabs+3, "name", "IM3 Java Library © David Rizo");
 		XMLExporterHelper.end(sb, tabs+2, "application");
 		XMLExporterHelper.end(sb, tabs+1, "appInfo");
-		XMLExporterHelper.end(sb, tabs, "encodingDesc");		
+		XMLExporterHelper.end(sb, tabs, "encodingDesc");
 	}
 
 	private void processWorkDesc(int tabs) {
@@ -316,7 +317,7 @@ public class MEISongExporter implements ISongExporter {
 			XMLExporterHelper.end(sb, tabs, "workDesc");
 		}
 	}
-	
+
 	private void processMusic(int tabs, List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
 		XMLExporterHelper.start(sb, tabs, "music");
 
@@ -373,7 +374,7 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void exportFacsimile(StringBuilder sb, int tabs) {
-    	if (song.getFacsimile() != null) {
+		if (song.getFacsimile() != null) {
 			XMLExporterHelper.start(sb, tabs, "facsimile");
 
 			for (Surface surface: song.getFacsimile().getSurfaceList()) {
@@ -412,8 +413,14 @@ public class MEISongExporter implements ISongExporter {
 		} else {
 			staffContainer = scorePart;
 		}
-		commonStartTimeSignature = findTimeSignatureAtTimeZero(staffContainer);
-		commonStartKeySignature = findKeySignatureAtTimeZero(staffContainer);
+		Time from;
+		if (segment == null) {
+			from = Time.TIME_ZERO;
+		} else {
+			from = segment.getFrom();
+		}
+		commonStartTimeSignature = findCommonRunningTimeSignatureAtTime(staffContainer, from);
+		commonStartKeySignature = findCommonRunningKeySignatureAtTime(staffContainer, from);
 
 		ArrayList<String> params = new ArrayList<>();
 		Key commonKey;
@@ -433,27 +440,27 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return null if two different key signatures
 	 */
-	private KeySignature findKeySignatureAtTimeZero(IStaffContainer songOrPart) {
+	private KeySignature findCommonRunningKeySignatureAtTime(IStaffContainer songOrPart, Time from)  {
 		KeySignature ks = null;
 		for (Staff staff: songOrPart.getStaves()) {
-			KeySignature staffKS = staff.getKeySignatureWithOnset(Time.TIME_ZERO);
+			KeySignature staffKS = staff.getRunningKeySignatureOrNullAt(from);
 			if (ks == null) {
 				ks = staffKS;
 			} else if (staffKS != null && (ks.getAccidentals() != null && staffKS.getAccidentals() != null && !ks.getAccidentals().equals(staffKS.getAccidentals()) ||
-                    ks.getInstrumentKey() != null && staffKS.getInstrumentKey() != null && ks.getInstrumentKey().getMode() != staffKS.getInstrumentKey().getMode())) {
+					ks.getInstrumentKey() != null && staffKS.getInstrumentKey() != null && ks.getInstrumentKey().getMode() != staffKS.getInstrumentKey().getMode())) {
 				return null;
 			}
 		}
 		return ks;
 	}
 
-	private TimeSignature findTimeSignatureAtTimeZero(IStaffContainer songOrPart) {
+	private TimeSignature findCommonRunningTimeSignatureAtTime(IStaffContainer songOrPart, Time from)  {
 		TimeSignature ks = null;
 		for (Staff staff: songOrPart.getStaves()) {
-			TimeSignature staffKS = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
+			TimeSignature staffKS = staff.getRunningTimeSignatureOrNullAt(from);
 			if (ks == null) {
 				ks = staffKS;
 			} else if (staffKS != null && !ks.equals(staffKS)) {
@@ -496,11 +503,11 @@ public class MEISongExporter implements ISongExporter {
 				throw new ExportException("Unsupported key accidental: " + key.getAccidental());
 			}
 			if (key.getMode() != Mode.UNKNOWN) {
-                params.add("key.mode");
-                params.add(key.getMode().name().toLowerCase());
-            }
-		}		
-		
+				params.add("key.mode");
+				params.add(key.getMode().name().toLowerCase());
+			}
+		}
+
 		if (transpositionInterval != null) {
 			params.add("trans.diat");
 			params.add(Integer.toString(-(transpositionInterval.getName()-1)));
@@ -518,7 +525,7 @@ public class MEISongExporter implements ISongExporter {
 	private void processFirstClef(Clef clef, ArrayList<String> params) {
 		processClef(clef, params, "clef.");
 	}
-	
+
 	private void processClefChange(Clef clef, ArrayList<String> params) {
 		processClef(clef, params, "");
 	}
@@ -526,25 +533,25 @@ public class MEISongExporter implements ISongExporter {
 	private void processClef(Clef clef, ArrayList<String> params, String prefix) {
 		if (clef == null) {
 			//throw new ExportException("Clef is null");
-            Logger.getLogger(MEISongExporter.class.getName()).log(Level.WARNING, "Clef is null");
-        } else {
-            params.add(prefix + "line");
-            params.add(Integer.toString(clef.getLine()));
-            params.add(prefix + "shape");
-            params.add(clef.getNote().name().toUpperCase()); //TODO percusion, tabs
-            if (clef.getOctaveChange() != 0) {
-                params.add(prefix + "dis");
-                params.add(Integer.toString(Math.abs(clef.getOctaveChange() * 8)));
-                params.add(prefix + "dis.place");
-                if (clef.getOctaveChange() < 0) {
-                    params.add("below");
-                } else {
-                    params.add("above");
-                }
-            }
+			Logger.getLogger(es.ua.dlsi.im3.core.score.io.mei.MEISongExporter.class.getName()).log(Level.WARNING, "Clef is null");
+		} else {
+			params.add(prefix + "line");
+			params.add(Integer.toString(clef.getLine()));
+			params.add(prefix + "shape");
+			params.add(clef.getNote().name().toUpperCase()); //TODO percusion, tabs
+			if (clef.getOctaveChange() != 0) {
+				params.add(prefix + "dis");
+				params.add(Integer.toString(Math.abs(clef.getOctaveChange() * 8)));
+				params.add(prefix + "dis.place");
+				if (clef.getOctaveChange() < 0) {
+					params.add("below");
+				} else {
+					params.add("above");
+				}
+			}
 
 			generateFacsimileReference(clef, params);
-        }
+		}
 	}
 	private void processStaffDef(int tabs, IStaffContainer staffContainer) throws ExportException, IM3Exception {
 		lastClef = new HashMap<>();
@@ -580,7 +587,7 @@ public class MEISongExporter implements ISongExporter {
 				} else {
 					staffKS = null;
 				}
-				
+
 				if (staffTS != null || staffKS != null) {
 					if (staffKS != null) {
 						processScoreDef(params, staffTS, staffKS.getInstrumentKey(), staffKS.getTranspositionInterval());
@@ -588,13 +595,13 @@ public class MEISongExporter implements ISongExporter {
 						processScoreDef(params, staffTS, null, null);
 					}
 					//XMLExporterHelper.startEnd(sb, tabs, "scoreDef", scoreDefParams);
-				} 
+				}
 
 				if (staff.getNotationType() == NotationType.eMensural) {
-				    params.add("notationtype");
-                    params.add("mensural.white");
+					params.add("notationtype");
+					params.add("mensural.white");
 
-					processMensuralTimeSignatureForStaffDef(staffDefTS, params);
+					//// processMensuralTimeSignatureForStaffDef(staffDefTS, params);
 				}
 				XMLExporterHelper.startEnd(sb, tabs+1, "staffDef", params);
 			}
@@ -602,66 +609,63 @@ public class MEISongExporter implements ISongExporter {
 
 		XMLExporterHelper.end(sb, tabs, "staffGrp");
 	}
-		
+
 	private void processMensuralTimeSignature(TimeSignature meter, ArrayList<String> params, boolean useMensurPrefix) throws ExportException {
 		//lastTimeSignature = meter;
 		TimeSignatureMensural mm = (TimeSignatureMensural) meter;
 
-		String mensurSign;
-		String mensurSlash;
-		String mensurDot;
+		String mensur;
+		String proport;
 		if (useMensurPrefix) {
-			mensurSign = "mensur.sign";
-			mensurSlash = "mensur.slash";
-			mensurDot = "mensur.dot";
+			mensur = "mensur.";
+			proport = "proport.";
 		} else {
-			mensurSign = "sign";
-			mensurSlash = "slash";
-			mensurDot = "dot";
+			mensur = "";
+			proport = "";
 		}
 		switch (mm.getClass().getName()) {
 			case "es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor":
-				params.add(mensurSign);
+				params.add(mensur + "sign");
 				params.add("C");
-				params.add("proport.num");
+				params.add(proport + "num");
 				params.add("3");
-				params.add("proport.numbase");
+				params.add(proport + "numbase");
 				params.add("2");
-				params.add("mensur.slash");
+				params.add(mensur + "slash");
 				params.add("1");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor":
-				params.add(mensurSign);
+				params.add(mensur + "sign");
 				params.add("C");
-				params.add("proport.num");
+				params.add(proport + "num");
 				params.add("3");
-				params.add("proport.numbase");
+				params.add(proport + "numbase");
 				params.add("2");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta":
-				params.add(mensurSign);
+				params.add(mensur + "sign");
 				params.add("C");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfectaDiminutum":
-				params.add(mensurSign);
+				params.add(mensur + "sign");
 				params.add("C");
-				params.add(mensurSlash);
+				params.add(mensur + "slash");
 				params.add("1");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationePerfecta":
-				params.add(mensurSign);
+				params.add(mensur + "sign");
 				params.add("C");
-				params.add(mensurDot);
+				params.add(mensur + "dot");
 				params.add("true");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusPerfectumCumProlationeImperfecta":
-				params.add(mensurSign);
+				params.add(mensur + "sign");
 				params.add("O");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.TempusPerfectumCumProlationePerfecta":
-				params.add(mensurSign);
+				params.add(mensur + "sign");
 				params.add("O");
-				params.add(mensurDot);
+				params.add(mensur + "dot");
 				params.add("true");
 				break;
 			case "es.ua.dlsi.im3.core.score.mensural.meters.ProportioDupla":
@@ -675,31 +679,48 @@ public class MEISongExporter implements ISongExporter {
 			default:
 				throw new ExportException("Unsupported proportion sign:" + mm.getClass());
 		}
-	}
 
-	private void processMensuralTimeSignatureForStaffDef(TimeSignature meter, ArrayList<String> params)  {
-		//lastTimeSignature = meter;
-		if (meter instanceof TimeSignatureMensural) {
-			TimeSignatureMensural mm = (TimeSignatureMensural) meter;
-
-			if (mm.getModusMaior() != null) {
-				params.add("modusmaior");
-				params.add(mensuralTimeSignaturePerfectionToNumber(mm.getModusMaior()));
-			}
-			if (mm.getModusMinor() != null) {
-				params.add("modusminor");
-				params.add(mensuralTimeSignaturePerfectionToNumber(mm.getModusMinor()));
-			}
-			if (mm.getTempus() != null) {
-				params.add("tempus");
-				params.add(mensuralTimeSignaturePerfectionToNumber(mm.getTempus()));
-			}
-			if (mm.getProlatio() != null) {
-				params.add("prolatio");
-				params.add(mensuralTimeSignaturePerfectionToNumber(mm.getProlatio()));
-			}
+		if (mm.getModusMaior() != null) {
+			params.add("modusmaior");
+			params.add(mensuralTimeSignaturePerfectionToNumber(mm.getModusMaior()));
+		}
+		if (mm.getModusMinor() != null) {
+			params.add("modusminor");
+			params.add(mensuralTimeSignaturePerfectionToNumber(mm.getModusMinor()));
+		}
+		if (mm.getTempus() != null) {
+			params.add("tempus");
+			params.add(mensuralTimeSignaturePerfectionToNumber(mm.getTempus()));
+		}
+		if (mm.getProlatio() != null) {
+			params.add("prolatio");
+			params.add(mensuralTimeSignaturePerfectionToNumber(mm.getProlatio()));
 		}
 	}
+
+	/*private void processMensuralTimeSignatureForStaffDef(TimeSignature meter, ArrayList<String> params)  {
+        //lastTimeSignature = meter;
+        if (meter instanceof TimeSignatureMensural) {
+            TimeSignatureMensural mm = (TimeSignatureMensural) meter;
+
+            if (mm.getModusMaior() != null) {
+                params.add("modusmaior");
+                params.add(mensuralTimeSignaturePerfectionToNumber(mm.getModusMaior()));
+            }
+            if (mm.getModusMinor() != null) {
+                params.add("modusminor");
+                params.add(mensuralTimeSignaturePerfectionToNumber(mm.getModusMinor()));
+            }
+            if (mm.getTempus() != null) {
+                params.add("tempus");
+                params.add(mensuralTimeSignaturePerfectionToNumber(mm.getTempus()));
+            }
+            if (mm.getProlatio() != null) {
+                params.add("prolatio");
+                params.add(mensuralTimeSignaturePerfectionToNumber(mm.getProlatio()));
+            }
+        }
+    }*/
 	private String mensuralTimeSignaturePerfectionToNumber(Perfection p) {
 		if (p == Perfection.imperfectum) {
 			return "2";
@@ -712,18 +733,18 @@ public class MEISongExporter implements ISongExporter {
 
 	/*class SymbolsInStavesAndLayers {
 		HashMap<Staff, HashMap<ScoreLayer, ArrayList<LayeredCoreSymbol>>> symbols;
-		
+
 		public SymbolsInStavesAndLayers() {
 			symbols = new HashMap<>();
 		}
-		
+
 		private ArrayList<LayeredCoreSymbol> getSymbolsInLayer(HashMap<ScoreLayer, ArrayList<LayeredCoreSymbol>> map, ScoreLayer layer) {
 			ArrayList<LayeredCoreSymbol> result = map.get(layer);
 			if (result == null) {
 				result = new ArrayList<>();
 				map.put(layer, result);
 			}
-			return result;			
+			return result;
 		}
 		public ArrayList<LayeredCoreSymbol> getSymbolsInLayer(Staff staff, ScoreLayer layer) {
 			HashMap<ScoreLayer, ArrayList<LayeredCoreSymbol>> map = symbols.get(staff);
@@ -731,14 +752,14 @@ public class MEISongExporter implements ISongExporter {
 				map = new HashMap<>();
 				symbols.put(staff, map);
 			}
-			return getSymbolsInLayer(map, layer);			
+			return getSymbolsInLayer(map, layer);
 		}
 
 		public HashMap<Staff, HashMap<ScoreLayer, ArrayList<LayeredCoreSymbol>>> getSymbols() {
 			return symbols;
 		}
 	}
-	
+
 	private int indexOfBarAtTime(Time time) throws ExportException, IM3Exception {
 		Measure bar = song.getBarActiveAtTime(time);
 		if (bar == null) {
@@ -746,7 +767,7 @@ public class MEISongExporter implements ISongExporter {
 		}
 		return bar.getNumber();
 	}*/
-	
+
 	private void processMeasures(ScorePart scorePart, int tabs, IStaffContainer staffContainer, Segment segment) throws IM3Exception, ExportException {
 		if (song.hasMeasures()) {
 			ArrayList<Measure> bars = song.getMeasuresSortedAsArray();
@@ -755,7 +776,7 @@ public class MEISongExporter implements ISongExporter {
 			TimeSignature lastTimeSignature = null;
 			boolean firstMeasure = true;
 			Harm lastHarm = null;
-            skipMeasures = 0; // used for multimeasure rests
+			skipMeasures = 0; // used for multimeasure rests
 			Time maxDuration;
 			if (scorePart == null) {
 				maxDuration = song.getSongDuration();
@@ -893,45 +914,45 @@ public class MEISongExporter implements ISongExporter {
 
 	private void processBar(int tabs, Measure bar, Staff staff) throws IM3Exception, ExportException {
 		// now add all marks
-        if (marksPerBar != null) {
-            HashMap<Staff, ArrayList<StaffMark>> mpb = marksPerBar.get(bar);
-            if (mpb != null) { // not all bars have marks
-                ArrayList<StaffMark> marks = mpb.get(staff);
-                if (marks != null) {
-                    for (StaffMark staffMark : marks) {
-                        if (staffMark instanceof Fermate) {
-                            Fermate fermate = (Fermate) staffMark;
-                            for (Fermata fermata : fermate.getFermate().values()) {
-                                if (fermata.getPosition() != PositionAboveBelow.UNDEFINED) {
-                                    XMLExporterHelper.startEnd(sb, tabs, "fermata", "place", fermata.getPosition().name().toLowerCase(),
-                                            "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
-                                } else {
-                                    XMLExporterHelper.startEnd(sb, tabs, "fermata",
-                                            "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+		if (marksPerBar != null) {
+			HashMap<Staff, ArrayList<StaffMark>> mpb = marksPerBar.get(bar);
+			if (mpb != null) { // not all bars have marks
+				ArrayList<StaffMark> marks = mpb.get(staff);
+				if (marks != null) {
+					for (StaffMark staffMark : marks) {
+						if (staffMark instanceof Fermate) {
+							Fermate fermate = (Fermate) staffMark;
+							for (Fermata fermata : fermate.getFermate().values()) {
+								if (fermata.getPosition() != PositionAboveBelow.UNDEFINED) {
+									XMLExporterHelper.startEnd(sb, tabs, "fermata", "place", fermata.getPosition().name().toLowerCase(),
+											"staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+								} else {
+									XMLExporterHelper.startEnd(sb, tabs, "fermata",
+											"staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
 
-                                }
-                            }
-                        } else 	if (staffMark instanceof Trill) {
-                            Trill trill = (Trill) staffMark;
-                            if (trill.getPosition() != PositionAboveBelow.UNDEFINED) {
-                                XMLExporterHelper.startEnd(sb, tabs, "trill", "place", trill.getPosition().name().toLowerCase(),
-                                        "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
-                            } else {
-                                XMLExporterHelper.startEnd(sb, tabs, "trill",
-                                        "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+								}
+							}
+						} else 	if (staffMark instanceof Trill) {
+							Trill trill = (Trill) staffMark;
+							if (trill.getPosition() != PositionAboveBelow.UNDEFINED) {
+								XMLExporterHelper.startEnd(sb, tabs, "trill", "place", trill.getPosition().name().toLowerCase(),
+										"staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+							} else {
+								XMLExporterHelper.startEnd(sb, tabs, "trill",
+										"staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
 
-                            }
-                        } else 	if (staffMark instanceof DynamicMark) {
-                            XMLExporterHelper.text(sb, tabs, "dynam", ((DynamicMark) staffMark).getText(), "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
-                        }
-                    }
-                }
-            }
-            //barConnectors
-        }
+							}
+						} else 	if (staffMark instanceof DynamicMark) {
+							XMLExporterHelper.text(sb, tabs, "dynam", ((DynamicMark) staffMark).getText(), "staff", getNumber(staff), "tstamp", generateTStamp(bar, staffMark.getTime()));
+						}
+					}
+				}
+			}
+			//barConnectors
+		}
 	}
 
-	
+
 	private String getNumber(Staff staff) {
 		return Integer.toString(staff.getNumberIdentifier());
 	}
@@ -939,7 +960,7 @@ public class MEISongExporter implements ISongExporter {
 	private String getNumber(ScoreLayer layer) {
 		return Integer.toString(layer.getNumber());
 	}
-	
+
 	/*FRACCIONES private void generateConnector(int tabs, Measure bar, Connector<?,?> connector, Staff staff, ScoreLayer layer) throws ExportException, IM3Exception {
 		if (connector instanceof Slur) {
 			if (!(connector.getFrom() instanceof ITimedElement)) {
@@ -974,7 +995,7 @@ public class MEISongExporter implements ISongExporter {
 			params.add("staff");
 			params.add(getNumber(staff));
 			params.add("layer");
-			params.add(getNumber(layer));			
+			params.add(getNumber(layer));
 			params.add("tstamp");
 			params.add(tstamp);
 			params.add("tstamp2");
@@ -988,19 +1009,19 @@ public class MEISongExporter implements ISongExporter {
 				throw new ExportException("Cannot export class: " + connector.getClass());
 			}
 			XMLExporterHelper.startEnd(sb, tabs, "hairpin", params);
-			
+
 		} else if (!(connector instanceof Beam)) {
 			throw new UnsupportedOperationException("Unsupported exporting " + connector.getClass());
-		} 
+		}
 	}*/
 
-    /**
-     * @param scorePart If null, the whole score is exported, if not null, one or all scoreParts are exported and xml:id must be prepended a prefix
+	/**
+	 * @param scorePart If null, the whole score is exported, if not null, one or all scoreParts are exported and xml:id must be prepended a prefix
 	 *                  to avoid ID collisions in different parts
-     * @param symbol
-     * @param reference If true an # is added
-     * @return
-     */
+	 * @param symbol
+	 * @param reference If true an # is added
+	 * @return
+	 */
 	private String generateID(ScorePart scorePart, IUniqueIDObject symbol, boolean reference) {
 		StringBuilder stringBuilder = new StringBuilder();
 		if (scorePart != null) {
@@ -1013,14 +1034,14 @@ public class MEISongExporter implements ISongExporter {
 		stringBuilder.append(song.getIdManager().getID(symbol));
 		return stringBuilder.toString();
 	}
-	
+
 	private void processSongWithoutBars(ScorePart scorePart, int tabs, IStaffContainer staffContainer, Segment segment) throws ExportException, IM3Exception {
-		// order notes, key changes and meter changes, then process them		
+		// order notes, key changes and meter changes, then process them
 		for (int il=0; il<staffContainer.getStaves().size(); il++) {
-            previousAccidentals = new HashMap<>();
+			previousAccidentals = new HashMap<>();
 			Staff staff = staffContainer.getStaves().get(il);
 			//TODO En processWithBars hemos preguntado por si el staff está entre los staves del bar
-			if (staff.getNotationType() == NotationType.eMensural) { 
+			if (staff.getNotationType() == NotationType.eMensural) {
 				boolean firstLayer = true;
 				if (!(staff instanceof AnalysisStaff)) {
 					List<ITimedElementInStaff> staffSymbols = new ArrayList<>();
@@ -1031,21 +1052,21 @@ public class MEISongExporter implements ISongExporter {
 					}
 					for (TimeSignature ts: staff.getTimeSignatures()) {
 						//if (commonStartTimeSignature != null && !ts.getTime().isZero() && (segment == null || !ts.getTime().equals(segment.getFrom()))) {
-						if (commonStartTimeSignature == null || commonStartTimeSignature != ts || segment != null && !ts.getTime().equals(segment.getFrom())) {
+						if (commonStartTimeSignature == null || !commonStartTimeSignature.equals(ts) || segment != null && !ts.getTime().equals(segment.getFrom())) {
 							staffSymbols.add(ts); // the first one is exported in staffDef or scoreDef
 						}
 					}
 					for (KeySignature ks: staff.getKeySignatures()) {
 						//if (commonStartKeySignature != null && !ks.getTime().isZero() && (segment == null || !ks.getTime().equals(segment.getFrom()))) {
-						if (commonStartKeySignature == null || commonStartKeySignature != ks || segment != null && !ks.getTime().equals(segment.getFrom())) {
+						if (commonStartKeySignature == null || !commonStartKeySignature.equals(ks) || segment != null && !ks.getTime().equals(segment.getFrom())) {
 							staffSymbols.add(ks); // the first one is exported in staffDef or scoreDef
 						}
 					}
 					for (MarkBarline markBarline: staff.getMarkBarLines()) {
-                        staffSymbols.add(markBarline);
-                    }
+						staffSymbols.add(markBarline);
+					}
 					staffSymbols.addAll(staff.getCustos());
-					
+
 					XMLExporterHelper.start(sb, tabs, "staff", "n", getNumber(staff));
 					for (ScoreLayer layer: staff.getLayers()) {
 						List<ITimedElementInStaff> symbols = new ArrayList<>();
@@ -1053,12 +1074,12 @@ public class MEISongExporter implements ISongExporter {
 							symbols.add(layer.getAtom(i));
 						}
 						XMLExporterHelper.start(sb, tabs+1, "layer", "n", getNumber(layer));
-						if (firstLayer) { 
+						if (firstLayer) {
 							firstLayer = false;
 							symbols.addAll(staffSymbols);
-						}					
+						}
 						//Collections.sort(symbols, ITimedElementInStaff.TIMED_ELEMENT_COMPARATOR);
-                        SymbolsOrderer.sortList(symbols);
+						SymbolsOrderer.sortList(symbols);
 						boolean first = true;
 						for (ITimedElementInStaff slr : symbols) {
 							if (slr.getTime() == null) {
@@ -1093,9 +1114,9 @@ public class MEISongExporter implements ISongExporter {
 								first = false;
 							}
 						}
-                        if (lastBeam != null) {
-                            closeBeam(tabs);
-                        }
+						if (lastBeam != null) {
+							closeBeam(tabs);
+						}
 						XMLExporterHelper.end(sb, tabs+1, "layer");
 					}
 					XMLExporterHelper.end(sb, tabs, "staff");
@@ -1144,8 +1165,8 @@ public class MEISongExporter implements ISongExporter {
 			params.add("dbl");
 		} //TODO See
 		generateFacsimileReference(slr, params);
-        XMLExporterHelper.startEnd(sb, tabs, "barLine", params);
-    }
+		XMLExporterHelper.startEnd(sb, tabs, "barLine", params);
+	}
 
 	private void processCustos(int tabs, Custos custos) {
 		ScientificPitch scorePitch = custos.getScientificPitch();
@@ -1166,8 +1187,8 @@ public class MEISongExporter implements ISongExporter {
 			generateFacsimileReference(timeSignature, params);
 			XMLExporterHelper.startEnd(sb, tabs, "mensur", params);
 		} else {
-            System.err.println("TO-DO MEI Export !!!!!!!!!!!Modern meter change!!!!!!!!!!!!!!!!!!!!");
-            //throw new UnsupportedOperationException("TO-DO Modern meter change");
+			System.err.println("TO-DO MEI Export !!!!!!!!!!!Modern meter change!!!!!!!!!!!!!!!!!!!!");
+			//throw new UnsupportedOperationException("TO-DO Modern meter change");
 		}
 	}
 
@@ -1178,12 +1199,12 @@ public class MEISongExporter implements ISongExporter {
 			Clef clefForSymbol = staff.getRunningClefAtOrNull(atom.getTime());
 			if (clefForSymbol != null && !lastClef.get(staff).equals(clefForSymbol)) {
 				ArrayList<String> params = new ArrayList<>();
-				processClefChange(clefForSymbol, params);					
+				processClefChange(clefForSymbol, params);
 				//double timeStamp = (double) (bar.getTime() - clefForSymbol.getTime()) / (double) AbstractSong.DEFAULT_RESOLUTION;
 				params.add("tstamp");
 				params.add(generateTStamp(bar, clefForSymbol.getTime()));
 				XMLExporterHelper.startEnd(sb, tabs, "clef", params);
-				
+
 				lastClef.put(staff, clefForSymbol);
 			}
 			processAtom(scorePart, tabs, atom, staff); //TODO ¿Siempre vale?
@@ -1198,7 +1219,7 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	public static String generateTStamp(Measure bar, Time time) throws IM3Exception, ExportException {
-		double tstamp = time.substract(bar.getTime()).getComputedTime(); 
+		double tstamp = time.substract(bar.getTime()).getComputedTime();
 		if (tstamp < 0) {
 			throw new ExportException("Invalid negative tstamp: " + tstamp + ", from time=" + time + " in bar " + bar + " of time " + bar.getTime());
 		}
@@ -1225,7 +1246,7 @@ public class MEISongExporter implements ISongExporter {
 	private String getFigureMEIDur(Figures figure) throws ExportException {
 		switch (figure) {
 			case MAXIMA: return "maxima";
-			case LONGA: return "longa"; 
+			case LONGA: return "longa";
 			case BREVE: return "brevis";
 			case SEMIBREVE: return "semibrevis";
 			case MINIM: return "minima";
@@ -1242,13 +1263,13 @@ public class MEISongExporter implements ISongExporter {
 			case THIRTY_SECOND: return "32";
 			case SIXTY_FOURTH: return "64";
 			case TWO_HUNDRED_FIFTY_SIX: return "128";
-			default: 
+			default:
 				throw new ExportException("Unsupported figure: " + figure);
-			
+
 		}
 	}
-	
-	
+
+
 	private void fillDurationParams(AtomFigure atomFigure, ArrayList<String> params) throws ExportException {
 		params.add("dur");
 		if (atomFigure.getFigure() == null) {
@@ -1278,7 +1299,7 @@ public class MEISongExporter implements ISongExporter {
 
 		if (atomFigure.hasColoration() && atomFigure.isColored()) {
 			params.add("colored");
-			params.add(Boolean.toString(atomFigure.isColored()));			
+			params.add(Boolean.toString(atomFigure.isColored()));
 		}
         /*if (atomFigure.getFermata() != null) {
 		    params.add("fermata");
@@ -1296,12 +1317,12 @@ public class MEISongExporter implements ISongExporter {
 
         }*/
 	}
-	
+
 	private void processAtom(ScorePart scorePart, int tabs, Atom atom, Staff defaultStaff) throws ExportException, IM3Exception {
 		ArrayList<String> params = new ArrayList<>();
 		params.add("xml:id");
 		params.add(generateID(scorePart, atom, false));
-		
+
 		if (defaultStaff == null) {
 			throw new IM3RuntimeException("The defaultStaff is null");
 		}
@@ -1314,21 +1335,21 @@ public class MEISongExporter implements ISongExporter {
 		}
 
 		if (atom instanceof SingleFigureAtom) {
-            SingleFigureAtom sfatom = (SingleFigureAtom) atom;
+			SingleFigureAtom sfatom = (SingleFigureAtom) atom;
 
-            if (sfatom.getBelongsToBeam() != lastBeam) {
-                if (lastBeam != null) {
-                    // close previous beam, just export if not computed
-                    closeBeam(tabs);
-                }
+			if (sfatom.getBelongsToBeam() != lastBeam) {
+				if (lastBeam != null) {
+					// close previous beam, just export if not computed
+					closeBeam(tabs);
+				}
 
-                // open new beam, just export if not computed
-                lastBeam = sfatom.getBelongsToBeam();
-                if (lastBeam != null) {
-                    XMLExporterHelper.start(sb, tabs, "beam"); //TODO ID, ¿staff?
-                }
+				// open new beam, just export if not computed
+				lastBeam = sfatom.getBelongsToBeam();
+				if (lastBeam != null) {
+					XMLExporterHelper.start(sb, tabs, "beam"); //TODO ID, ¿staff?
+				}
 
-            } // else it is the same beam (on no one), no-op
+			} // else it is the same beam (on no one), no-op
 			generateFacsimileReference(atom, params);
 			if (atom instanceof SimpleMeasureRest) {
 				SimpleMeasureRest mrest = (SimpleMeasureRest) atom;
@@ -1338,18 +1359,18 @@ public class MEISongExporter implements ISongExporter {
 				}
 				XMLExporterHelper.startEnd(sb, tabs, "mRest", params);
 			} else if (atom instanceof SimpleMultiMeasureRest) {
-                SimpleMultiMeasureRest mrest = (SimpleMultiMeasureRest) atom; //TODO ID
-                params.add("num");
+				SimpleMultiMeasureRest mrest = (SimpleMultiMeasureRest) atom; //TODO ID
+				params.add("num");
 				params.add(Integer.toString(mrest.getNumMeasures()));
 				XMLExporterHelper.startEnd(sb, tabs, "multiRest", params);
-                skipMeasures = mrest.getNumMeasures();
+				skipMeasures = mrest.getNumMeasures();
 			} else {
 				fillDurationParams(sfatom.getAtomFigure(), params);
 
 				if (sfatom.getExplicitStemDirection() != null) {
-                    params.add("stem.dir");
-                    params.add(sfatom.getExplicitStemDirection().name().toLowerCase());
-                }
+					params.add("stem.dir");
+					params.add(sfatom.getExplicitStemDirection().name().toLowerCase());
+				}
 
 				if (atom instanceof SimpleRest) {
 					SimpleRest rest = (SimpleRest) atom;
@@ -1357,7 +1378,7 @@ public class MEISongExporter implements ISongExporter {
 						params.add("loc");
 						params.add(restLinePositionToLoc(rest));
 					}
-					XMLExporterHelper.startEnd(sb, tabs, "rest", params); 
+					XMLExporterHelper.startEnd(sb, tabs, "rest", params);
 				} else if (atom instanceof SimpleChord) {
 					XMLExporterHelper.start(sb, tabs, "chord", params);
 					processPitches(scorePart, sb, tabs, sfatom.getAtomFigure(), atom.getAtomPitches(), params);
@@ -1404,10 +1425,10 @@ public class MEISongExporter implements ISongExporter {
 		} else {
 			throw new UnsupportedOperationException("Unsupported yet: " + atom.getClass());
 		}
-		
+
 		//TODO Beams...
 
-		
+
 	}
 
 	private String restLinePositionToLoc(SimpleRest rest) {
@@ -1450,13 +1471,13 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void closeBeam(int tabs) {
-        if (!lastBeam.isComputed()) {
-            XMLExporterHelper.end(sb, tabs, "beam");
-        }
-        lastBeam = null;
-    }
+		if (!lastBeam.isComputed()) {
+			XMLExporterHelper.end(sb, tabs, "beam");
+		}
+		lastBeam = null;
+	}
 
-    private void processPitches(ScorePart scorePart, StringBuilder sb, int tabs, AtomFigure atomFigure, List<AtomPitch> atomPitches, ArrayList<String> params) throws IM3Exception {
+	private void processPitches(ScorePart scorePart, StringBuilder sb, int tabs, AtomFigure atomFigure, List<AtomPitch> atomPitches, ArrayList<String> params) throws IM3Exception {
 		if (atomPitches != null) {
 			boolean multiplePitches = atomPitches.size() > 1;
 			for (AtomPitch atomPitch: atomPitches) {
@@ -1471,43 +1492,43 @@ public class MEISongExporter implements ISongExporter {
 						noteParams.add(params.get(i+1));
 					}
 				}
-				
+
 				/*if (!multiplePitches) {
 					fillDurationParams(atomFigure, noteParams);
 				}*/
 				StringBuilder accidElement = processPitchesParams(atomPitch, noteParams, atomFigure.getLayer());
 
-                if (atomPitch.getAtomFigure().getAtom() instanceof SimpleNote) {
-                    if (((SimpleNote) atomPitch.getAtomFigure().getAtom()).isGrace()) { //TODO Other types
-                        noteParams.add("grace");
-                        noteParams.add("unacc");
-                    }
-                }
+				if (atomPitch.getAtomFigure().getAtom() instanceof SimpleNote) {
+					if (((SimpleNote) atomPitch.getAtomFigure().getAtom()).isGrace()) { //TODO Other types
+						noteParams.add("grace");
+						noteParams.add("unacc");
+					}
+				}
 
-                if (accidElement == null && (atomPitch.getLyrics() == null || atomPitch.getLyrics().isEmpty())) {
-                    XMLExporterHelper.startEnd(sb, tabs+1, "note", noteParams);
-                } else {
-				    XMLExporterHelper.start(sb, tabs+1, "note", noteParams);
+				if (accidElement == null && (atomPitch.getLyrics() == null || atomPitch.getLyrics().isEmpty())) {
+					XMLExporterHelper.startEnd(sb, tabs+1, "note", noteParams);
+				} else {
+					XMLExporterHelper.start(sb, tabs+1, "note", noteParams);
 
-				    if (atomPitch.getLyrics() != null && !atomPitch.getLyrics().isEmpty()) {
-                        for (ScoreLyric scoreLyric : atomPitch.getLyrics().values()) {
-                            XMLExporterHelper.start(sb, tabs+2, "verse", "n", scoreLyric.getVerse().toString()); //TODO ID
+					if (atomPitch.getLyrics() != null && !atomPitch.getLyrics().isEmpty()) {
+						for (ScoreLyric scoreLyric : atomPitch.getLyrics().values()) {
+							XMLExporterHelper.start(sb, tabs+2, "verse", "n", scoreLyric.getVerse().toString()); //TODO ID
 
-                            if (scoreLyric.getSyllabic() != null && scoreLyric.getSyllabic() != Syllabic.single) {
-                                XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText(), "wordpos", syllabic2WordPos(scoreLyric.getSyllabic()));
-                            } else {
-                                XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText());    
-                            }
+							if (scoreLyric.getSyllabic() != null && scoreLyric.getSyllabic() != Syllabic.single) {
+								XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText(), "wordpos", syllabic2WordPos(scoreLyric.getSyllabic()));
+							} else {
+								XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText());
+							}
 
-                            XMLExporterHelper.end(sb, tabs+2, "verse");
-                        }
-                    }
-				    if (accidElement != null) {
+							XMLExporterHelper.end(sb, tabs+2, "verse");
+						}
+					}
+					if (accidElement != null) {
 						XMLExporterHelper.add(sb, tabs + 2, accidElement.toString());
 					}
-                    XMLExporterHelper.end(sb, tabs+1, "note");
-                }
-            }
+					XMLExporterHelper.end(sb, tabs+1, "note");
+				}
+			}
 		}
 		/*if (atomPitches.getContinuationPitches() != null) {
 			for (AtomContinuationPitch atomContPitch: atomPitches.getContinuationPitches()) {
@@ -1516,26 +1537,26 @@ public class MEISongExporter implements ISongExporter {
 				noteParams.add(generateID(atomContPitch));
 				if (generateDurations) {
 					fillDurationParams(atomPitches, noteParams);
-				}				
+				}
 				processPitchesParams(atomContPitch.getFromPitch(), false, true, noteParams, atomPitches.getLayer());
-				XMLExporterHelper.startEnd(sb, tabs+1, "note", noteParams);				
+				XMLExporterHelper.startEnd(sb, tabs+1, "note", noteParams);
 			}
 		}
-		addConnectors(atomPitches, atomPitches.getLayer()); //TODO*/ 
+		addConnectors(atomPitches, atomPitches.getLayer()); //TODO*/
 	}
 
-    private String syllabic2WordPos(Syllabic syllabic) throws ExportException {
-	    switch (syllabic) {
-            case begin:
-                return "i";
-            case middle:
-                return "m";
-            case end:
-                return "t";
-            default:
-                throw new ExportException("Unsupported syllabic: " + syllabic);
-        }
-    }
+	private String syllabic2WordPos(Syllabic syllabic) throws ExportException {
+		switch (syllabic) {
+			case begin:
+				return "i";
+			case middle:
+				return "m";
+			case end:
+				return "t";
+			default:
+				throw new ExportException("Unsupported syllabic: " + syllabic);
+		}
+	}
 
 	/*FRACTIONS private void addNoteTies(AtomFigure note, ArrayList<String> params) {
 		//TODO esto es con los acordes, con las notas estamos repitiendo lo mismo (ver processPitchesParams)
@@ -1544,7 +1565,7 @@ public class MEISongExporter implements ISongExporter {
 			params.add("i");
 		} else if (note.getTiedFrom() != null) {
 			params.add("tie");
-			params.add("t"); //TO-DO from + to --> "m"			
+			params.add("t"); //TO-DO from + to --> "m"
 		}
 	}*/
 
@@ -1553,12 +1574,12 @@ public class MEISongExporter implements ISongExporter {
 		/*FRACCIONES if (symbol.getConnectors() != null) {
 			for (Connector<?,?> connector: symbol.getConnectors()) {
 				//System.out.println("\t" + connector.getClass());
-				if (connector.getFrom() == symbol) {				
+				if (connector.getFrom() == symbol) {
 					barConnectors.add(new ConnectorWithLayer(connector, layer));
 				}
 			}
 		}*/
-		
+
 	}
 
 	/**
@@ -1577,7 +1598,7 @@ public class MEISongExporter implements ISongExporter {
 			params.add("staff");
 			params.add(getNumber(atomPitch.getStaffChange()));
 		}
-		
+
 		ScientificPitch scorePitch = atomPitch.getScientificPitch();
 		params.add("pname");
 		params.add(scorePitch.getPitchClass().getNoteName().name().toLowerCase());
@@ -1585,22 +1606,22 @@ public class MEISongExporter implements ISongExporter {
 		params.add(Integer.toString(scorePitch.getOctave()));
 
 		int prevAccMapKey = generatePreviousAccidentalMapKey(
-		        scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave());
+				scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave());
 
 		Accidentals pitchAccidental = scorePitch.getPitchClass().getAccidental();
 		Accidentals previousAccidental = previousAccidentals.get(prevAccMapKey);
 		if (previousAccidental == null) {
-            KeySignature ks = atomPitch.getStaff().getRunningKeySignatureOrNullAt(atomPitch.getTime());
-            if (ks != null) {
-                previousAccidental = ks.getAccidentalOf(scorePitch.getPitchClass().getNoteName());
-            }
-        }
+			KeySignature ks = atomPitch.getStaff().getRunningKeySignatureOrNullAt(atomPitch.getTime());
+			if (ks != null) {
+				previousAccidental = ks.getAccidentalOf(scorePitch.getPitchClass().getNoteName());
+			}
+		}
 
         /*if ("m-537".equals(atomPitch.getAtomFigure().getAtom().__getID())) {
             System.out.println("Aqui");
         }*/
-        boolean addToPreviousAccidentals = false;
-        // TODO ver con tests unitarios
+		boolean addToPreviousAccidentals = false;
+		// TODO ver con tests unitarios
 		if (atomPitch.isFictaAccidental()) {
 			outputAccidElement = new StringBuilder();
 			ArrayList<String> aparams = new ArrayList<>();
@@ -1624,33 +1645,33 @@ public class MEISongExporter implements ISongExporter {
 			XMLExporterHelper.startEnd(outputAccidElement, 0, "accid", aparams);
 			addToPreviousAccidentals = false;
 		} else if (atomPitch.getWrittenExplicitAccidental() != null) {
-            params.add("accid");
-            params.add(generateAccidental(atomPitch.getWrittenExplicitAccidental()));
+			params.add("accid");
+			params.add(generateAccidental(atomPitch.getWrittenExplicitAccidental()));
 
-            if (atomPitch.getWrittenExplicitAccidental() != previousAccidental) {
-                params.add("accid.ges");
-                params.add(generateAccidental(pitchAccidental));
-            }
-            addToPreviousAccidentals = true;
-        } else if (pitchAccidental != previousAccidental && !(pitchAccidental == null && previousAccidental == Accidentals.NATURAL || pitchAccidental == Accidentals.NATURAL && previousAccidental == null)) {
-            if (atomPitch.isHideAccidental()) {
-                params.add("accid.ges");
-            } else {
-                params.add("accid");
-            }
-            params.add(generateAccidental(pitchAccidental));
-            addToPreviousAccidentals = true;
-        } else if (pitchAccidental != Accidentals.NATURAL) {
-            params.add("accid.ges");
-            params.add(generateAccidental(pitchAccidental));
-            addToPreviousAccidentals = true;
-        }
+			if (atomPitch.getWrittenExplicitAccidental() != previousAccidental) {
+				params.add("accid.ges");
+				params.add(generateAccidental(pitchAccidental));
+			}
+			addToPreviousAccidentals = true;
+		} else if (pitchAccidental != previousAccidental && !(pitchAccidental == null && previousAccidental == Accidentals.NATURAL || pitchAccidental == Accidentals.NATURAL && previousAccidental == null)) {
+			if (atomPitch.isHideAccidental()) {
+				params.add("accid.ges");
+			} else {
+				params.add("accid");
+			}
+			params.add(generateAccidental(pitchAccidental));
+			addToPreviousAccidentals = true;
+		} else if (pitchAccidental != Accidentals.NATURAL) {
+			params.add("accid.ges");
+			params.add(generateAccidental(pitchAccidental));
+			addToPreviousAccidentals = true;
+		}
 
 
-        if (addToPreviousAccidentals) {
-            previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
-                    pitchAccidental);
-        }
+		if (addToPreviousAccidentals) {
+			previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
+					pitchAccidental);
+		}
 
         /*if (atomPitch.getWrittenExplicitAccidental() != null || previousAccidental != pitchAccidental && !(previousAccidental == null && pitchAccidental == Accidentals.NATURAL)) {
             String accid;
@@ -1687,7 +1708,7 @@ public class MEISongExporter implements ISongExporter {
             previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
                     scorePitch.getPitchClass().getAccidental());
         }
-		
+
 		if (atomPitch.getWrittenExplicitAccidental() != null) {
 			String accid = generateAccidental(atomPitch.getWrittenExplicitAccidental());
             previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
@@ -1702,13 +1723,13 @@ public class MEISongExporter implements ISongExporter {
 		//TODO esto es con los acordes, con las notas estamos repitiendo lo mismo ? ¿Lo dejamos así?
 		if (atomPitch.isTiedToNext() && atomPitch.isTiedFromPrevious()) {
 			params.add("tie");
-			params.add("m");			
+			params.add("m");
 		} else if (atomPitch.isTiedToNext()) {
 			params.add("tie");
 			params.add("i");
 		} else if (atomPitch.isTiedFromPrevious()) {
 			params.add("tie");
-			params.add("t"); //TO-DO from + to --> "m"			
+			params.add("t"); //TO-DO from + to --> "m"
 		}
 
 		if (atomPitch.getMelodicFunction() != null) {
@@ -1720,19 +1741,19 @@ public class MEISongExporter implements ISongExporter {
 
 	private String generateAccidental(Accidentals accidental) throws ExportException {
 		switch (accidental) {
-		case DOUBLE_FLAT: 
-			return "ff"; 
-		case FLAT: 
-			return "f";
-		case NATURAL: 
-			return "n"; 
-		case SHARP:
-			return "s";
-		case DOUBLE_SHARP:
-			return "ss";
-		case TRIPLE_FLAT:
-			return "tf";
-		default:
+			case DOUBLE_FLAT:
+				return "ff";
+			case FLAT:
+				return "f";
+			case NATURAL:
+				return "n";
+			case SHARP:
+				return "s";
+			case DOUBLE_SHARP:
+				return "ss";
+			case TRIPLE_FLAT:
+				return "tf";
+			default:
 				throw new ExportException("Unsupported accidental: "+ accidental);
 		}
 	}
@@ -1741,6 +1762,7 @@ public class MEISongExporter implements ISongExporter {
 		return song;
 	}
 
-	
+
 
 }
+
