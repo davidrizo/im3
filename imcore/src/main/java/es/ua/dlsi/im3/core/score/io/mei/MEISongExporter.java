@@ -1282,6 +1282,30 @@ public class MEISongExporter implements ISongExporter {
 			params.add("2");
 			params.add("numbase");
 			params.add("3"); //TODO Comprobar que esto es siempre (sale https://github.com/HISPAMUS/muret/issues/65)
+		} else if (atomFigure.getStaff().getNotationType() == NotationType.eMensural && atomFigure.getMensuralPerfection() != null) {
+			// issue MuRET #108
+			switch (atomFigure.getMensuralPerfection()) {
+				case perfectum:
+					params.add("dur.quality");
+					params.add("p");
+					break;
+				case alteratio:
+					params.add("num"); // will be eliminated in future MEI versions
+					params.add("1");
+					params.add("numbase");
+					params.add("2");
+					params.add("dur.quality");
+					params.add("a");
+					break;
+				case imperfectum:
+					params.add("num"); // will be eliminated in future MEI versions
+					params.add("3");
+					params.add("numbase");
+					params.add("2");
+					params.add("dur.quality");
+					params.add("i");
+					break;
+			}
 		} else {
 			if (atomFigure.getDots() > 0) {
 				params.add("dots");
