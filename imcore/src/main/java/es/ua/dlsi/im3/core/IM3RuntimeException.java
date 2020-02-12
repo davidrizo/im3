@@ -26,4 +26,13 @@ public class IM3RuntimeException extends RuntimeException {
 		super(cause);
 	}
 
+
+	@Override
+	public String getMessage() {
+		if (this.getCause() != null) {
+			return super.getMessage() + '\n' + this.getCause().getMessage();
+		} else {
+			return super.getMessage();
+		}
+	}
 }

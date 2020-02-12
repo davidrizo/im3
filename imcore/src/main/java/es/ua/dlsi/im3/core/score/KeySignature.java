@@ -63,7 +63,8 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 		this.notationType = notationType;
 		this.concertPitchKey = key;
 		this.instrumentKey = key;
-		this.time = new Time();
+		//this.time = new Time();
+		this.time = null; // it must be null in order to be detected that must be computed
 		init();
 	}
 

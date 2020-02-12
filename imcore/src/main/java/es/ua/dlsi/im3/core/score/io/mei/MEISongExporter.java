@@ -492,22 +492,26 @@ public class MEISongExporter implements ISongExporter {
 			}
 		}
 		if (key != null) {
-			params.add("key.sig");
-			if (key.getAccidental() == Accidentals.FLAT) {
-				params.add((-key.getFifths()) + "f"); //TODO ¿b o f?
-			} else if (key.getAccidental() == Accidentals.SHARP) {
-				params.add(key.getFifths() + "s");
-			} else if (key.getAccidental() == null || key.getAccidental() == Accidentals.NATURAL) {
-				params.add("0");
-			} else {
-				throw new ExportException("Unsupported key accidental: " + key.getAccidental());
-			}
-			if (key.getMode() != Mode.UNKNOWN) {
-				params.add("key.mode");
-				params.add(key.getMode().name().toLowerCase());
-			}
+			processKey(key, transpositionInterval, "key.sig", params);
 		}
+	}
 
+	private void processKey(Key key, Interval transpositionInterval, String attributeName, List<String> params) throws IM3Exception {
+		params.add(attributeName);
+
+		if (key.getAccidental() == Accidentals.FLAT) {
+			params.add((-key.getFifths()) + "f");
+		} else if (key.getAccidental() == Accidentals.SHARP) {
+			params.add(key.getFifths() + "s");
+		} else if (key.getAccidental() == null || key.getAccidental() == Accidentals.NATURAL) {
+			params.add("0");
+		} else {
+			throw new ExportException("Unsupported key accidental: " + key.getAccidental());
+		}
+		if (key.getMode() != Mode.UNKNOWN) {
+			params.add("key.mode");
+			params.add(key.getMode().name().toLowerCase());
+		}
 		if (transpositionInterval != null) {
 			params.add("trans.diat");
 			params.add(Integer.toString(-(transpositionInterval.getName()-1)));
@@ -1106,7 +1110,7 @@ public class MEISongExporter implements ISongExporter {
 									XMLExporterHelper.startEnd(sb, tabs + 2, "clef", params);
 									lastClef.put(staff, (Clef) slr);
 								} else if (slr instanceof KeySignature) {
-									throw new UnsupportedOperationException("TO-DO Key change");
+									processKeySignature(tabs + 2, (KeySignature) slr);
 								} else if (slr instanceof Atom) {
 									processAtom(scorePart, tabs + 2, (Atom) slr, staff);
 								}
@@ -1177,6 +1181,17 @@ public class MEISongExporter implements ISongExporter {
 		params.add(Integer.toString(scorePitch.getOctave()));
 		generateFacsimileReference(custos, params);
 		XMLExporterHelper.startEnd(sb, tabs, "custos", params);
+	}
+
+
+	private void processKeySignature(int tabs, KeySignature slr) throws IM3Exception {
+		ArrayList<String> params = new ArrayList<>();
+		params.add("sig.showchange");
+		params.add("true");
+
+		processKey(slr.getInstrumentKey(), slr.getTranspositionInterval(), "sig", params);
+
+		XMLExporterHelper.startEnd(sb, tabs, "keySig", params);
 	}
 
 
@@ -1358,7 +1373,18 @@ public class MEISongExporter implements ISongExporter {
 			params.add(getNumber(atom.getStaff()));
 		}
 
-		if (atom instanceof SingleFigureAtom) {
+		if (atom instanceof Space) {
+			params.add("num");
+			params.add(Double.toString(atom.getQuarterRatioDuration()));
+
+			XMLExporterHelper.startEnd(sb, tabs, "space", params);
+		} else if (atom instanceof PlainChant) {
+			XMLExporterHelper.addComment(sb, tabs, "--- Start plain chant ---");
+			for (Atom plainChantAtom: atom.getAtoms()) {
+				processAtom(scorePart, tabs+1, plainChantAtom, defaultStaff);
+			}
+			XMLExporterHelper.addComment(sb, tabs, "--- End plain chant ---");
+		} else if (atom instanceof SingleFigureAtom) {
 			SingleFigureAtom sfatom = (SingleFigureAtom) atom;
 
 			if (sfatom.getBelongsToBeam() != lastBeam) {

@@ -34,4 +34,12 @@ public class IM3Exception extends Exception {
 		super(message, cause);
 	}
 
+	@Override
+	public String getMessage() {
+		if (this.getCause() != null) {
+			return super.getMessage() + '\n' + this.getCause().getMessage();
+		} else {
+			return super.getMessage();
+		}
+	}
 }

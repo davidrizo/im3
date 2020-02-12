@@ -139,4 +139,12 @@ public class XMLExporterHelper {
 		}
 	}
 
+	public static void addComment(StringBuilder sb, int tabs, String comment) {
+		for (int i=0; i<tabs; i++) {
+			sb.append('\t');
+		}
+		sb.append("<!--");
+		sb.append(comment);
+		sb.append("-->\n");
+	}
 }

@@ -468,7 +468,11 @@ public class KernImporter implements IScoreSongImporter {
             harmSpine.harmSpine = true;
             harmSpine.staff = analysisStaff;
             harmSpine.layer.setStaff(analysisStaff);
-            analysisStaff.addLayer(harmSpine.layer);
+            try {
+                analysisStaff.addLayer(harmSpine.layer);
+            } catch (IM3Exception e) {
+                throw new GrammarParseRuntimeException(e);
+            }
             Logger.getLogger(KernImporter.class.getName()).log(Level.FINE, "Setting harm spine in {0}", harmSpine);
         }
 
@@ -479,8 +483,12 @@ public class KernImporter implements IScoreSongImporter {
             rootSpine.rootSpine = true;
             rootSpine.staff = analysisStaff;
             rootSpine.layer.setStaff(analysisStaff);
-            analysisStaff.addLayer(rootSpine.layer);
-			/*
+            try {
+                analysisStaff.addLayer(rootSpine.layer);
+            } catch (IM3Exception e) {
+                throw new GrammarParseRuntimeException(e);
+            }
+            /*
 			 * Logger.getLogger(KernImporter.class.getName()).log(Level.FINEST,
 			 * "Root {0}", ctx.getText()); if (rootSpine != -1) { throw new
 			 * GrammarParseRuntimeException(
@@ -1717,7 +1725,11 @@ public class KernImporter implements IScoreSongImporter {
             newSpine.notationType = currentSpine.notationType;
             newSpine.splittedFrom = currentSpine;
             newSpine.splittedInto = newSpine;
-            currentSpine.staff.addLayer(newSpine.layer);
+            try {
+                currentSpine.staff.addLayer(newSpine.layer);
+            } catch (IM3Exception e) {
+                throw new GrammarParseRuntimeException(e);
+            }
             Logger.getLogger(KernImporter.class.getName()).log(Level.INFO, "Adding spine #" + currentSpineIndex);
             currentSpineIndex++; // important when a sequence of *^ is found
             // add a spine in a new layer

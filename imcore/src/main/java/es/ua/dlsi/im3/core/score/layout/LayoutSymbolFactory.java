@@ -5,6 +5,7 @@ import es.ua.dlsi.im3.core.score.ITimedElementInStaff;
 import es.ua.dlsi.im3.core.score.layout.coresymbols.LayoutStaff;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * It creates a core symbol object based on the name. E.g. given an object of class XYZ it creates a core symbol object
@@ -41,7 +42,12 @@ public class LayoutSymbolFactory {
             LayoutCoreSymbol result = constructor.newInstance(layoutFont, coreSymbol);
             return  result;
         } catch (Exception e) {
-            throw new IM3Exception("Cannot instantiate the layout object using layout font " + layoutFont.getName() + ": " + e.getMessage(), e);
+            if (e instanceof InvocationTargetException) {
+                throw new IM3Exception("Cannot instantiate the layout object using layout font " + layoutFont.getName() + ": " + ((InvocationTargetException)e).getTargetException().getMessage(), e);
+            } else {
+                throw new IM3Exception("Cannot instantiate the layout object using layout font " + layoutFont.getName() + ": " + e.getMessage(), e);
+            }
+
         }
     }
 }

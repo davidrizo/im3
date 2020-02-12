@@ -726,20 +726,35 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		this.ossia = ossia;
 	}
 
-	public void addLayer(ScoreLayer layer) {
+	public void addLayer(ScoreLayer layer) throws IM3Exception {
 		if (!this.layers.contains(layer)) {
 			this.layers.add(layer);
 			layer.setStaff(this);
+			checkPlainChants(layer);
 		}
 	}
 
-	public void addLayer(int index, ScoreLayer layer) {
+	/**
+	 * Look for each plain chant and insert spaces
+	 * @param layer
+	 */
+	private void checkPlainChants(ScoreLayer layer) throws IM3Exception {
+		for (PlainChantSegment plainChantSegment: getScoreSong().getPlainChantSegments().getOrderedValues()) {
+			PlainChantSpaces plainChantSpaces = new PlainChantSpaces(plainChantSegment.getPlainChant());
+			layer.add(plainChantSpaces);
+			plainChantSegment.addPlainChantSpaces(this, plainChantSpaces);
+		}
+	}
+
+
+	public void addLayer(int index, ScoreLayer layer) throws IM3Exception {
 		if (layer == null) {
 			throw new IM3RuntimeException("Cannot insert a null layer");
 		}
 		if (!this.layers.contains(layer)) {
 			this.layers.add(index, layer);
 			layer.setStaff(this);
+			checkPlainChants(layer);
 		}
 	}
 
@@ -1119,5 +1134,40 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
     		max = Time.max(max, layer.getDuration());
 		}
     	return max;
+	}
+
+	private <T extends ITimedElement> TreeMap<Time, T> move(TreeMap<Time, T> newSet, TreeMap<Time, T> set, Time fromTime, Time offset) throws IM3Exception {
+		for (T t: set.values()) {
+			if (fromTime.compareTo(t.getTime()) <= 0) {
+				t.move(offset);
+				newSet.put(t.getTime(), t);
+			}
+		}
+		return newSet;
+	}
+	/**
+	 * It moves all timed elements the given offset
+	 * @param offset
+	 */
+	public void moveAll(Time fromTime, Time offset) throws IM3Exception {
+		for (ITimedElementInStaff coreSymbol: coreSymbols) {
+			if (fromTime.compareTo(coreSymbol.getTime()) <= 0) {
+				coreSymbol.move(offset);
+			}
+		}
+
+		clefs = move(new TreeMap<>(), clefs, fromTime, offset);
+		custos = move(new TreeMap<>(), custos, fromTime, offset);
+		keySignatures = move(new TreeMap<>(), keySignatures, fromTime, offset);
+		timeSignatures = move(new TreeMap<>(), timeSignatures, fromTime, offset);
+		markBarlines = move(new TreeMap<>(), markBarlines, fromTime, offset);
+		fermate = move(new TreeMap<>(), fermate, fromTime, offset);
+	}
+
+	public ScoreLayer getFirstLayer() throws IM3Exception {
+		if (layers.isEmpty()) {
+			throw new IM3Exception("No layers found");
+		}
+		return layers.get(0);
 	}
 }

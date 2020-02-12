@@ -127,7 +127,9 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
 		return atom.getEndTime();
 	}
 
+
 	//TODO test unitario
+	//TODO ¿hay que hacer moveAll?
 	/**
 	 * It inserts here in the layer and in the owner staff
 	 * @param time
@@ -690,5 +692,4 @@ public class ScoreLayer implements Comparable<ScoreLayer>, IUniqueIDObject {
         result.addAll(getAtomFiguresWithOnsetWithin(measure.getTime(),measure.getEndTime()));
         return result;
     }
-
 }

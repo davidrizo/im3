@@ -187,6 +187,13 @@ public class ImageUtils {
         }
     }
 
+    public BufferedImage crop(BufferedImage inputImage, int fromX, int fromY, int toX, int toY) {
+        fromX = Math.max(0, fromX);
+        fromY = Math.max(0, fromY);
+        toX = Math.min(inputImage.getWidth(), toX);
+        toY = Math.min(inputImage.getWidth(), toY);
 
+        return inputImage.getSubimage(fromX, fromY, toX - fromX, toY - fromY);
+    }
 
 }

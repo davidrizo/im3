@@ -9,10 +9,8 @@ import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.TimedElementCollection;
 import es.ua.dlsi.im3.core.metadata.*;
-import es.ua.dlsi.im3.core.score.clefs.ClefNone;
 import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
-import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureCumPropietateEtSinePerfectione;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
@@ -88,6 +86,8 @@ public class ScoreSong implements IStaffContainer {
 	 */
 	PageSystemBeginnings pageSystemBeginnings;
 
+	TimedElementCollection<PlainChantSegment> plainChantSegments;
+
     //FRACTIONS private final String PART_ID_PREFIX = "P";
 
     public ScoreSong(DurationEvaluator durationEvaluator) {
@@ -102,6 +102,7 @@ public class ScoreSong implements IStaffContainer {
         staves = new ArrayList<>();
         staffGroups = new ArrayList<StaffGroup>();
 		pageSystemBeginnings = new PageSystemBeginnings();
+		plainChantSegments = new TimedElementCollection<>();
 		/*connectors = new TreeSet<>(new Comparator<Connector<?,?>>() {
 
 			@Override
@@ -1653,7 +1654,6 @@ public class ScoreSong implements IStaffContainer {
 
 	/**
 	 * It returns the common time signature for all staves at that time when possible
-	 * @param time
 	 * @return null if not found
 	 * @exception IM3Exception If several time signatures are found for the same time in different staves
 	 */
@@ -1936,6 +1936,38 @@ public class ScoreSong implements IStaffContainer {
 		this.facsimile = facsimile;
 	}
 
+	// TODO Tests unitarios
+	public void addPlainChant(Staff staff, Time fromTime, PlainChant plainChant) throws IM3Exception {
+    	// check there are no overlaps of the new plain chant
+		Time toTime = fromTime.add(plainChant.getDuration());
+		ArrayList<PlainChantSegment> previousPlainChants = this.plainChantSegments.getOrderedValuesWithOnsetInRange(fromTime, toTime);
+		if (!previousPlainChants.isEmpty()) {
+			throw new IM3Exception("There is already a plain chant from time " + fromTime + " to " + toTime);
+		}
+
+		// now make space for the plain chant
+		plainChant.setTime(fromTime);
+
+		PlainChantSegment plainChantSegment = new PlainChantSegment(plainChant);
+		Time plainChantDuration = plainChant.getDuration();
+		for (Staff s: staves) {
+			s.moveAll(fromTime, plainChantDuration);
+			if (s == staff) {
+				s.getFirstLayer().add(plainChant);
+			} else {
+				PlainChantSpaces plainChantSpaces = new PlainChantSpaces(plainChant);
+				s.getFirstLayer().add(plainChantSpaces);
+				plainChantSegment.addPlainChantSpaces(s, plainChantSpaces);
+			}
+		}
+		if (staff.getLayers() == null || staff.getLayers().isEmpty()) {
+			throw new IM3Exception("The staff has not any layer yet");
+		}
+	}
+
+	public TimedElementCollection<PlainChantSegment> getPlainChantSegments() {
+		return plainChantSegments;
+	}
 }
 /*else { //TODO ¿Cómo se coordina esto con lo de arriba de la imperfección? - con este else?
         TimeSignature meter = currentSpine.staff.getRunningTimeSignatureAt(lastTime);
