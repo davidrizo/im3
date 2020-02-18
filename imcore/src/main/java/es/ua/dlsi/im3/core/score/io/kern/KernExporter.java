@@ -479,11 +479,7 @@ public class KernExporter {
             suffix = "";
         }
 
-        String coloration = "";
-        if (atomPitch.getAtomFigure().isColored()) {
-            coloration = "~";
-        }
-        return prefix + duration + coloration + generatePitch(atomPitch) + suffix;
+        return prefix + duration + generatePitch(atomPitch) + suffix;
     }
 
     // See http://www.humdrum.org/humextra/rhythm/#extensions-to-recip-and-kern-rhythms
@@ -549,6 +545,11 @@ public class KernExporter {
                 throw new ExportException("Expected a perfection");
             }
         }
+
+        if (atomFigure.isColored()) {
+            sb.append('~');
+        }
+
         if (atomFigure.isFollowedByMensuralDivisionDot()) {
             sb.append(':');
         } else {
