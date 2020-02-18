@@ -61,10 +61,14 @@ public class Pictogram extends GraphicsElement {
 
     @Override
     protected void doRepaint() throws IM3Exception {
-        glyph = layoutFont.getGlyph(getCodePoint());
-        path.setContent(glyph.getPath());
-        width = path.getLayoutBounds().getWidth() * layoutFont.getScaleX();
-        height = path.getLayoutBounds().getHeight() * layoutFont.getScaleY(); // 20181110
+        try {
+            glyph = layoutFont.getGlyph(getCodePoint());
+            path.setContent(glyph.getPath());
+            width = path.getLayoutBounds().getWidth() * layoutFont.getScaleX();
+            height = path.getLayoutBounds().getHeight() * layoutFont.getScaleY(); // 20181110
+        } catch (IM3Exception e) {
+            throw new IM3Exception("Cannot repaint pictogram for " + this.getNotationSymbol().toString(), e);
+        }
     }
 
     public String getCodePoint() {

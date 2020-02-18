@@ -13,15 +13,23 @@ import java.util.HashMap;
 
 public class Flag extends Component<LayoutCoreSingleFigureAtom> {
     Pictogram pictogram;
+    private final Figures figure;
+    private final boolean stemUp;
+    private final String codepoint;
 
     public Flag(LayoutFont layoutFont, LayoutCoreSingleFigureAtom parent, Figures figure, Coordinate position, boolean stemUp) throws IM3Exception {
         super(null, parent, position);
 
-        String codepoint;
+        this.stemUp = stemUp;
+        this.figure = figure;
+
         if (figure.usesCombinedStemAndFlag()) {
             codepoint = layoutFont.getFontMap().getUnicodeStemAndFlag(figure, stemUp);
         } else {
             codepoint = layoutFont.getFontMap().getUnicodeFlag(figure, stemUp);
+        }
+        if (codepoint == null) {
+            throw new IM3Exception("Cannot find a codepoint for flag of figure " + figure + " and stem up?" + stemUp + " using combined stem and flag?" + figure.usesCombinedStemAndFlag());
         }
         pictogram = new Pictogram(this, InteractionElementType.flag, layoutFont, codepoint, position);//TODO IDS
     }
@@ -34,5 +42,10 @@ public class Flag extends Component<LayoutCoreSingleFigureAtom> {
     @Override
     protected void doLayout() {
         throw new UnsupportedOperationException("doLayout at " + this.getClass().getName());
+    }
+
+    @Override
+    public String toString() {
+        return "Flag for figure " + figure + " and stemUp? " + stemUp + " with codepoint " + codepoint;
     }
 }

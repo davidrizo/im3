@@ -270,9 +270,10 @@ public class KeySignature implements INotationTypeDependant, ITimedElementInStaf
 	        throw new IM3Exception("Cannot compute the positions of accidentals for a key signature not in a staff");
         }
 
-        Clef clef = staff.getClefAtTime(this.getTime());
+		Clef clef = staff.getRunningClefAt(this.getTime());
+        // Clef clef = staff.getClefAtTime(this.getTime());
         if (clef == null) {
-            throw new IM3Exception("Cannot compute positions of accidentals without a clef at time " + this.getTime());
+            throw new IM3Exception("Cannot compute positions of accidentals without a running clef at time " + this.getTime());
         }
 
         PositionInStaff [] result;

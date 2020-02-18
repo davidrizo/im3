@@ -24,6 +24,7 @@ public class PatriarcaMap implements IFontMap {
 
     private static final HashMap<Figures, String> UNICODES_STEM_UP = new HashMap<>();
     {
+        UNICODES_STEM_UP.put(Figures.LONGA, "mensuralWhiteLonga"); //TODO ¿ésta?
         UNICODES_STEM_UP.put(Figures.MINIM, "mensuralWhiteMinima");
         UNICODES_STEM_UP.put(Figures.SEMIMINIM, "mensuralWhiteSemiminima"); //TODO Ver esto - ¿igual en proporción ternaria?
         // TODO: 26/9/17  IM3 - debemos tener distintas versiones de glifos - cojo las duraciones del sXVII - https://en.wikipedia.org/wiki/Mensural_notation
@@ -39,6 +40,7 @@ public class PatriarcaMap implements IFontMap {
     {
         //TODO Mensural
         // TODO: 21/9/17 Para Mensural se debe saber si es blanca o ennegrecida
+        UNICODES_STEM_DOWN.put(Figures.LONGA, "mensuralWhiteLonga"); //TODO ¿ésta?
         UNICODES_STEM_DOWN.put(Figures.BREVE, "mensuralBlackSemibrevisVoid"); //TODO
         UNICODES_STEM_DOWN.put(Figures.SEMIBREVE, "mensuralBlackSemibrevisVoid");
         UNICODES_STEM_DOWN.put(Figures.MINIM, "mensuralWhiteMinimaDown");
@@ -93,7 +95,12 @@ public class PatriarcaMap implements IFontMap {
 
         String result = unicodes.get(figure);
         if (result == null) {
-            throw new IM3Exception("Cannot find an unicode for " + figure + " and stemUp = " + stemUp);
+            if (figure.usesStem()) {
+                throw new IM3Exception("Cannot find an unicode for " + figure + " and stemUp = " + stemUp);
+            } else {
+                throw new IM3Exception("Cannot find an unicode for " + figure + " without stem");
+            }
+
         }
 
         return result;
@@ -140,12 +147,20 @@ public class PatriarcaMap implements IFontMap {
     }
 
     @Override
-    public String getUnicodeFlag(Figures figures, boolean stemUp) throws IM3Exception {
-        return null;
+    public String getUnicodeFlag(Figures figures, boolean stemUp)  {
+        if (stemUp) {
+            return UNICODES_WITHOUT_FLAG_STEM_UP.get(figures);
+        } else {
+            return UNICODES_WITHOUT_FLAG_STEM_DOWN.get(figures);
+        }
     }
 
     @Override
-    public String getUnicodeStemAndFlag(Figures figures, boolean stemUp) throws IM3Exception {
-        return null;
+    public String getUnicodeStemAndFlag(Figures figures, boolean stemUp)  {
+        if (stemUp) {
+            return UNICODES_STEM_UP.get(figures);
+        } else {
+            return UNICODES_STEM_DOWN.get(figures);
+        }
     }
 }
