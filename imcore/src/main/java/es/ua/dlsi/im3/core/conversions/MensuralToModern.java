@@ -9,6 +9,9 @@ import es.ua.dlsi.im3.core.score.io.mei.MEISongImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfecta;
 import es.ua.dlsi.im3.core.score.mensural.meters.TempusImperfectumCumProlationeImperfectaDiminutum;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
+import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
@@ -187,6 +190,10 @@ public class MensuralToModern {
             modernTimeSignature = new TimeSignatureCommonTime();
         } else if (symbol instanceof TimeSignatureCutTime || symbol instanceof TempusImperfectumCumProlationeImperfectaDiminutum) {
             modernTimeSignature = new TimeSignatureCutTime();
+        } else if (symbol instanceof TimeSignatureProporcionMenor) {
+            modernTimeSignature = new FractionalTimeSignature(3, 2);
+        } else if (symbol instanceof TimeSignatureProporcionMayor) {
+            modernTimeSignature = new FractionalTimeSignature(3, 1);
         } else {
             throw new IM3Exception("Unsupported time signature " + symbol);
         }
