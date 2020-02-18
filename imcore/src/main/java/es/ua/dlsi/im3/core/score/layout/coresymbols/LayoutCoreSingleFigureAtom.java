@@ -77,7 +77,7 @@ public class LayoutCoreSingleFigureAtom extends LayoutCoreSymbolWithDuration<Sin
                 stem = new Stem(this, stemPosition, stemUp);
                 Coordinate flagPosition = stem.getPosition(); // just used for computing the position
                 flag = new Flag(layoutFont, this, coreSymbol.getAtomFigure().getFigure(), flagPosition, stemUp);
-                group.add(flag.getGraphics());
+                //// group.add(flag.getGraphics()); // TODO ¿por qué - si no lo quito me lo pinta dos veces?
             } else {
                 if (stemUp) {
                     stemXDisplacement = headWidth;
