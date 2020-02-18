@@ -18,6 +18,8 @@ import es.ua.dlsi.im3.core.score.staves.Pentagram;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MensuralToModern {
     private final Clef[] modernClefs;
@@ -214,7 +216,11 @@ public class MensuralToModern {
                 convert(modernStaff, modernLayer, subatom, transposition);
             }
         } else if (!(atom instanceof SingleFigureAtom)) {
-            throw new IM3Exception("Unsupported atom type " + atom.getClass());
+            if (atom instanceof PlainChant) {
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Plain chant conversion not supported yet");
+            } else {
+                throw new IM3Exception("Unsupported atom type " + atom.getClass());
+            }
         } else {
             if (pendingMensureDuration == null) {
                 throw new IM3Exception("No time signature has found before the atom at time " + atom.getTime());

@@ -22,8 +22,8 @@
     },
     "timeSigCommon": {
         "codepoint": "U+E08A"
-    },        
-    "timeSigCutTime": {
+    },
+    "timeSigCutCommon": {
         "codepoint": "U+E08B"
     },
     "timeSigProporcionMenor": {

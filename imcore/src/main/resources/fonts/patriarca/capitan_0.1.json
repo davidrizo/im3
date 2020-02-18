@@ -20,7 +20,7 @@
     "timeSigCommon": {
         "codepoint": "U+0049"
     },        
-    "timeSigCutTime": {
+    "timeSigCutCommon": {
         "codepoint": "U+004b"
     },    
     "calderonArriba": {
