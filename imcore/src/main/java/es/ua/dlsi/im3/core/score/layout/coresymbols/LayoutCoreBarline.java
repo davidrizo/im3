@@ -8,8 +8,11 @@ import es.ua.dlsi.im3.core.score.layout.Coordinate;
 import es.ua.dlsi.im3.core.score.layout.CoordinateComponent;
 import es.ua.dlsi.im3.core.score.layout.LayoutCoreSymbol;
 import es.ua.dlsi.im3.core.score.layout.LayoutFont;
+import es.ua.dlsi.im3.core.score.layout.coresymbols.components.LayoutText;
 import es.ua.dlsi.im3.core.score.layout.graphics.GraphicsElement;
+import es.ua.dlsi.im3.core.score.layout.graphics.Group;
 import es.ua.dlsi.im3.core.score.layout.graphics.Line;
+import es.ua.dlsi.im3.core.score.layout.graphics.Text;
 
 /**
  * If may be a system barline
@@ -20,6 +23,7 @@ public class LayoutCoreBarline extends LayoutCoreSymbol<Measure>  {
     private final Staff staff;
     Line line;
     Time time;
+    Group group;
 
     public LayoutCoreBarline(Staff staff, LayoutFont layoutFont, Measure measure) throws IM3Exception {
         super(layoutFont, measure);
@@ -32,6 +36,13 @@ public class LayoutCoreBarline extends LayoutCoreSymbol<Measure>  {
 
         line = new Line(this, InteractionElementType.barline, from, to);//TODO IDS
 
+        group = new Group(this, InteractionElementType.barline);
+
+        //TODO Ahora pongo el nº de compás, debería ser opcional
+        LayoutText layoutText = new LayoutText(this, layoutFont, to, "" + measure.getNumber());
+        this.addComponent(layoutText);
+        group.add(layoutText.getGraphics());
+        group.add(line);
     }
 
     public Staff getStaff() {
@@ -54,7 +65,7 @@ public class LayoutCoreBarline extends LayoutCoreSymbol<Measure>  {
 
     @Override
     public GraphicsElement getGraphics() {
-        return line;
+        return group;
     }
 
     @Override
