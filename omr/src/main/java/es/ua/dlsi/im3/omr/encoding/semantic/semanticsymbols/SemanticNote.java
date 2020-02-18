@@ -91,9 +91,6 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
 
         sb.append(figures.name().toLowerCase()); //TODO ¿Para moderno y mensural?
 
-        for (int i=0; i<dots; i++) {
-            sb.append('.');
-        }
 
         /*TODO if (tupletNumber != null) {
             sb.append(SEPVALUES);
@@ -113,6 +110,10 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
 
         if (coreSymbol.getAtomFigure().isColored()) {
             sb.append('~');
+        }
+
+        for (int i=0; i<dots; i++) {
+            sb.append('.');
         }
 
         /*//TODO código copiado en SemanticRest
