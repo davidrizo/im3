@@ -238,6 +238,10 @@
     "digit.9" : {
       "defaultPositionInStaff": "L3",
         "codepoint": "U+E089"
+    },
+    "breath" : {
+      "defaultPositionInStaff": "S5",
+      "codepoint": "U+E4CE"
     }
 }
 

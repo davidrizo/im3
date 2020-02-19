@@ -1,5 +1,5 @@
 {
-.appVersion = "1268";
+.appVersion = "1286";
 customParameters = (
 {
 name = glyphOrder;
@@ -114,7 +114,8 @@ uniF091,
 uniF092,
 uniF093,
 uniF963,
-uniF962
+uniF962,
+uniE4CE
 );
 }
 );
@@ -10326,6 +10327,84 @@ width = 547;
 );
 note = uniE961;
 unicode = F962;
+},
+{
+glyphname = uniE4CE;
+lastChange = "2020-02-19 12:58:25 +0000";
+layers = (
+{
+hints = (
+{
+horizontal = 1;
+place = "{0, 275}";
+type = Stem;
+},
+{
+place = "{83, 65}";
+type = Stem;
+}
+);
+layerId = "02376AAC-77FF-49DA-9399-294AF7A35492";
+paths = (
+{
+closed = 1;
+nodes = (
+"108 14 OFFCURVE",
+"121 33 OFFCURVE",
+"130 54 CURVE SMOOTH",
+"143 84 OFFCURVE",
+"148 114 OFFCURVE",
+"148 145 CURVE SMOOTH",
+"148 165 OFFCURVE",
+"146 184 OFFCURVE",
+"143 204 CURVE SMOOTH",
+"139 234 OFFCURVE",
+"119 255 OFFCURVE",
+"97 271 CURVE SMOOTH",
+"93 274 OFFCURVE",
+"89 275 OFFCURVE",
+"85 275 CURVE SMOOTH",
+"73 275 OFFCURVE",
+"59 267 OFFCURVE",
+"47 265 CURVE",
+"42 265 OFFCURVE",
+"37 265 OFFCURVE",
+"32 263 CURVE SMOOTH",
+"8 256 OFFCURVE",
+"0 248 OFFCURVE",
+"0 228 CURVE SMOOTH",
+"0 224 OFFCURVE",
+"1 220 OFFCURVE",
+"1 216 CURVE SMOOTH",
+"3 191 OFFCURVE",
+"15 169 OFFCURVE",
+"21 146 CURVE SMOOTH",
+"27 124 OFFCURVE",
+"32 116 OFFCURVE",
+"46 116 CURVE SMOOTH",
+"51 116 OFFCURVE",
+"57 117 OFFCURVE",
+"65 119 CURVE SMOOTH",
+"76 121 OFFCURVE",
+"86 125 OFFCURVE",
+"99 125 CURVE SMOOTH",
+"103 125 OFFCURVE",
+"107 125 OFFCURVE",
+"111 124 CURVE",
+"86 101 OFFCURVE",
+"83 74 OFFCURVE",
+"83 46 CURVE SMOOTH",
+"83 31 OFFCURVE",
+"84 16 OFFCURVE",
+"83 0 CURVE"
+);
+}
+);
+width = 148;
+}
+);
+note = uniE4CE;
+unicode = E4CE;
 }
 );
 instances = (

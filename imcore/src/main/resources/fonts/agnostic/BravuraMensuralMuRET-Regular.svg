@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
 <metadata>
-Created by FontForge 20190317 at Thu Oct 17 21:32:46 2019
+Created by FontForge 20190317 at Wed Feb 19 15:03:05 2020
  By David Rizo Valero
 copyright missing
 </metadata>
@@ -333,5 +333,8 @@ c15 -18 27 -28 27 -19z" />
     <glyph glyph-name="uniF962" unicode="&#xf962;" horiz-adv-x="547" 
 d="M486 915c16 2 61 2 61 -3c0 -3 -45 -52 -107 -118c51 -99 104 -223 104 -243c0 -13 -29 -64 -86 -64c-25 0 23 15 23 42c0 14 -69 150 -105 197c-5 -7 -10 -12 -17 -18c1 -250 4 -634 4 -634c0 -102 -151 -204 -254 -204c-83 0 -109 35 -109 97c0 82 111 186 289 186
 c1 0 3 271 3 484c-97 -102 -187 -192 -189 -192s-2 42 2 47c7 7 96 110 187 212v181c0 13 61 32 66 32c9 0 31 -32 56 -76c39 44 67 74 72 74z" />
+    <glyph glyph-name="uniE4CE" unicode="&#xe4ce;" horiz-adv-x="148" 
+d="M83 0c1 16 0 31 0 46c0 28 3 55 28 78c-4 1 -8 1 -12 1c-13 0 -23 -4 -34 -6c-8 -2 -14 -3 -19 -3c-14 0 -19 8 -25 30c-6 23 -18 45 -20 70c0 4 -1 8 -1 12c0 20 8 28 32 35c5 2 10 2 15 2c12 2 26 10 38 10c4 0 8 -1 12 -4c22 -16 42 -37 46 -67c3 -20 5 -39 5 -59
+c0 -31 -5 -61 -18 -91c-9 -21 -22 -40 -47 -54z" />
   </font>
 </defs></svg>
