@@ -11,6 +11,7 @@ public class GraphicalSymbolAlphabet extends Alphabet<AgnosticSymbolType> {
         add(new Clef());
         add(new Accidental());
         add(new Custos());
+        add(new Breath());
         add(new DalSengno());
         add(new Digit());
         add(new Dot());
