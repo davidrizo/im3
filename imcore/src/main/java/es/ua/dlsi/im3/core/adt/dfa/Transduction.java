@@ -2,6 +2,8 @@ package es.ua.dlsi.im3.core.adt.dfa;
 
 import org.apache.commons.math3.fraction.BigFraction;
 
+import java.util.Properties;
+
 public class Transduction {
     BigFraction probability;
     /**
@@ -14,9 +16,15 @@ public class Transduction {
      */
     String errorMessage;
 
+    /**
+     * Used to carry some payload from the states traversal
+     */
+    Properties payload;
+
     public Transduction(BigFraction initialProbability) {
         this.probability = initialProbability;
         this.acceptedTokensCount = 0;
+        this.payload = new Properties();
     }
 
     public BigFraction getProbability() {
@@ -57,5 +65,9 @@ public class Transduction {
         } else {
             this.errorMessage = s;
         }
+    }
+
+    public Properties getPayload() {
+        return payload;
     }
 }

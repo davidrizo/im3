@@ -24,9 +24,16 @@ package es.ua.dlsi.im3.core.score;
 public class Fermata {
     PositionAboveBelow position;
     Fermate fermate;
+
     public Fermata(Fermate fermate, PositionAboveBelow position) {
     		this.position = position;
     		this.fermate = fermate;
+    }
+
+    /**
+     * No information about position or owner fermata is given
+     */
+    public Fermata() {
     }
 
     public PositionAboveBelow getPosition() {

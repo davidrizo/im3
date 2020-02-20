@@ -28,6 +28,9 @@ public class SimpleNote extends SingleFigureAtom {
 		this(simpleNote.getAtomFigure().getFigure(), simpleNote.getAtomFigure().getDots(), simpleNote.getDuration(), simpleNote.getPitch());
 		this.setGrace(simpleNote.isGrace());
 		this.getAtomFigure().setColored(simpleNote.getAtomFigure().getColored());
+		if (simpleNote.getAtomFigure().getFermata() != null) {
+			this.getAtomFigure().setFermata(new Fermata());
+		}
 		if (simpleNote.getAtomFigure().isExplicitMensuralPerfection()) {
 			this.getAtomFigure().setExplicitMensuralPerfection(simpleNote.getAtomFigure().getMensuralPerfection());
 		} else {

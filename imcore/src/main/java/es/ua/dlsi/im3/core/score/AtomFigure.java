@@ -286,10 +286,6 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         return addedDuration;
     }
 
-    public void setFermata(Fermata fermata) {
-        this.fermata = fermata;
-    }
-
     /**
      * @return null if not a fermata found
      */
@@ -297,7 +293,12 @@ public class AtomFigure implements ITimedElement, Comparable<AtomFigure> {
         return fermata;
     }
 
-    /**
+	public void setFermata(Fermata fermata) {
+    	this.fermata = fermata;
+    	// NOTE this fermata can be removed and replace for other when it is added to the staff
+	}
+
+	/**
      * If figure does not have dots, the result is the duration of the figure, if has a dot, it is the duration of the dot if it has 2 dots, the duration of the second dot
      * @return
      */

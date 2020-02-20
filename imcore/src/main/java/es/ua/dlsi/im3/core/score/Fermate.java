@@ -92,4 +92,7 @@ public class Fermate extends StaffMark implements INotationTypeDependant {
 	    this.setTime(newTime);
     }
 
+	public HashSet<AtomFigure> getAssociatedDurationalSymbols() {
+		return associatedDurationalSymbols;
+	}
 }

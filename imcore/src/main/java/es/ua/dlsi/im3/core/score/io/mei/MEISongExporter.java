@@ -1124,6 +1124,25 @@ public class MEISongExporter implements ISongExporter {
 						XMLExporterHelper.end(sb, tabs+1, "layer");
 					}
 					XMLExporterHelper.end(sb, tabs, "staff");
+					ArrayList<StaffMark> marks = staff.getMarksOrderedByTime();
+					if (marks != null) {
+						for (StaffMark staffMark : marks) {
+							if (staffMark instanceof Fermate) {
+								Fermate fermate = (Fermate) staffMark;
+								for (Fermata fermata : fermate.getFermate().values()) {
+									String startIDValue = generateID(scorePart, fermate.getAssociatedDurationalSymbols().iterator().next().getAtom(), true);
+									if (fermata.getPosition() != PositionAboveBelow.UNDEFINED) {
+										XMLExporterHelper.startEnd(sb, tabs, "fermata", "place", fermata.getPosition().name().toLowerCase(),
+												"staff", getNumber(staff), "startid", startIDValue);
+									} else {
+										XMLExporterHelper.startEnd(sb, tabs, "fermata",
+												"staff", getNumber(staff), "startid", startIDValue);
+
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}

@@ -515,9 +515,20 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 * This must be used from this class
 	 * @param atom
 	 */
-	private void addElementFromLayer(IStaffElementInLayer atom) {
+	private void addElementFromLayer(IStaffElementInLayer atom) throws IM3Exception {
 		this.coreSymbols.add(atom);
+
+		// TODO Este if no me gusta aquí
+		if (atom instanceof SingleFigureAtom) {
+			SingleFigureAtom singleFigureAtom = (SingleFigureAtom)atom;
+			if (singleFigureAtom.getAtomFigure().getFermata() != null) {
+				// remove previous fermata
+				singleFigureAtom.getAtomFigure().setFermata(null);
+				this.addFermata(singleFigureAtom.getAtomFigure());
+			}
+		}
 	}
+
 
 	/**
 	 * Package visibility because the timed elements with duration must be added to the layer, and the layer will add it here
