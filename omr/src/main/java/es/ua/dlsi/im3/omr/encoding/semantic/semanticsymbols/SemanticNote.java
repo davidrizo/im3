@@ -35,7 +35,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
      */
     public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, Perfection perfection)  {
         super(new SimpleNote(figures, dots, scientificPitch));
-        this.fermata = fermata;
+        this.setFermata(fermata);
         this.trill = trill;
         this.coreSymbol.setGrace(graceNote);
         if (visualAccidental != null) {
@@ -50,7 +50,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
                 throw new IM3RuntimeException(e); // this should never happen
             }
         }
-        //TODO Tuplet y fermata en el CoreSymbol
+        //TODO Tuplet en el CoreSymbol
     }
 
     /**
@@ -146,7 +146,19 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
         return tied;
     }
 
-    /*@Override
+    public boolean isFermata() {
+        return fermata;
+    }
+
+    public void setFermata(boolean fermata) {
+        this.fermata = fermata;
+        if (fermata) {
+            this.coreSymbol.getAtomFigure().setFermata(new Fermata());
+        } else {
+            this.coreSymbol.getAtomFigure().setFermata(null);
+        }
+    }
+/*@Override
     public void semantic2IMCore(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception {
         //TODO tuplets, fermata, trill, stems, beams ...
         SimpleNote note = new SimpleNote(figures, dots, scientificPitch);

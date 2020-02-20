@@ -27,7 +27,8 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
 
     public SemanticRest(Figures figures, int dots, boolean fermata, Integer tupletNumber) {
         super(new SimpleRest(figures, dots));
-        this.fermata = fermata; //TODO Tuplet y fermata en el CoreSymbol
+        this.fermata = fermata; //TODO Tuplet en el CoreSymbol
+        this.setFermata(fermata);
     }
 
     /**
@@ -39,8 +40,9 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
      */
     public SemanticRest(Figures figures, int dots, boolean fermata, boolean perfect) throws IM3Exception {
         super(new SimpleRest(figures, dots));
-        this.fermata = fermata; //TODO Tuplet y fermata en el CoreSymbol
+        this.setFermata(fermata); //TODO Tuplet en el CoreSymbol
         this.coreSymbol.getAtomFigure().setExplicitMensuralPerfection(perfect ? Perfection.perfectum : Perfection.imperfectum);
+        this.coreSymbol.getAtomFigure().setFermata(new Fermata());
     }
 
 
@@ -100,4 +102,18 @@ public class SemanticRest extends SemanticAtom<SimpleRest> {
         }*/
         return sb.toString();
     }
+
+    public boolean isFermata() {
+        return fermata;
+    }
+
+    public void setFermata(boolean fermata) {
+        this.fermata = fermata;
+        if (fermata) {
+            this.coreSymbol.getAtomFigure().setFermata(new Fermata());
+        } else {
+            this.coreSymbol.getAtomFigure().setFermata(null);
+        }
+    }
+
 }
