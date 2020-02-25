@@ -1,8 +1,6 @@
 package es.ua.dlsi.im3.omr.primus.distorter;
 
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import org.gm4java.engine.GMException;
-import org.gm4java.engine.GMServiceException;
 import org.im4java.core.*;
 import org.im4java.process.ProcessStarter;
 
@@ -15,8 +13,7 @@ import java.util.Random;
 
 /**
  * It takes an image and distorts it as if it where taken from a mobile phone camera.
- * OLD: We use the ImageMagick library to do it
- * NOW: We use GraphicsMagick because it is much faster
+ * We use the ImageMagick library to do it
  * @autor drizo
  */
 public class CameraSimulator {
