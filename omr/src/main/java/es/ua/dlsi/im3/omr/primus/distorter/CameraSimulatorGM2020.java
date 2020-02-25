@@ -5,6 +5,7 @@ import org.gm4java.engine.support.GMConnectionPoolConfig;
 import org.gm4java.engine.support.PooledGMService;
 import org.gm4java.im4java.GMBatchCommand;
 import org.gm4java.im4java.GMOperation;
+import org.im4java.core.GMOps;
 import org.im4java.core.IM4JavaException;
 
 import java.io.File;
@@ -51,6 +52,7 @@ public class CameraSimulatorGM2020 {
 
         this.magicGraphicsBinPath = magicGraphicsBinPath;
         gmConnectionPoolConfig = new GMConnectionPoolConfig();
+        gmConnectionPoolConfig.setLifo(false);
         gmService = new PooledGMService(gmConnectionPoolConfig);
 
         /// gmConnectionPoolConfig.setMaxActive(100);
@@ -145,22 +147,19 @@ public class CameraSimulatorGM2020 {
     }
 
     private void randomEffects(String image, String output, File distortionDescriptionOutputFile) throws InterruptedException, IOException, IM4JavaException {
-        GMBatchCommand command = new GMBatchCommand(gmService, "convert");
-
         StringBuilder effects = new StringBuilder();
         GMOperation op = new GMOperation();
         op.addImage(image);
-        // first apply ImageMagic filters
-        //IMOperation imop = new IMOperation();
-        //imop.addImage(image);
 
         File tmpFile = File.createTempFile(FileUtils.getFileWithoutPathOrExtension(image), "_dist.jpg");
         tmpFile.deleteOnExit();
 
+        GMOps gmOps = op;
+
         if (randomImplode.nextGaussian() < 1) {
             double var1 = randDouble(randomImplodeVar1, 0, 0.07);
             log(effects,"Implode", var1);
-            op.implode(var1);
+            gmOps = gmOps.implode(var1);
         }
 
         if (randomChop.nextGaussian() < 1) {
@@ -169,7 +168,7 @@ public class CameraSimulatorGM2020 {
             int var4 = randInt(randomChopVar3, 1, 300);
             int var3 = randInt(randomChopVar4, 1, 50);
 
-            op.chop(var1,  var2,
+            gmOps = gmOps.chop(var1,  var2,
                     var4-var3, // corta izq
                     var3); // separa pentagrama diferente
 
@@ -179,57 +178,57 @@ public class CameraSimulatorGM2020 {
         if (randomSwirl.nextGaussian() < 1) {
             double var1 = randDouble(randomSwirlVar1, -3.0, 3.0);
             log(effects,"Swirl", var1);
-            op.swirl(var1);
+            gmOps = gmOps.swirl(var1);
         }
 
         if (randomSpreadVerticalArtifacts.nextGaussian() < 1) {
             log(effects,"Spread negative - vertical artifacts");
-            op.spread(-2);
+            gmOps = gmOps.spread(-2);
         }
 
         if (randomShear.nextGaussian() < 1) {
             double var1 = randDouble(randomShearVar1, -5.0, 5.0);
             double var2 = randDouble(randomShearVar2, -1.5, 1.5);
             log(effects,"Shear", var1, var2);
-            op.shear(var1, var2);
+            gmOps = gmOps.shear(var1, var2);
         }
 
         if (randomShade.nextGaussian() < 1) {
             double var1 = randDouble(randomShadeVar1, 0, 120);
             double var2 = randDouble(randomShadeVar2, 80, 110);
             log(effects,"Shade", var1, var2);
-            op.p_shade(var1, var2);
+            gmOps = gmOps.p_shade(var1, var2);
         }
 
         if (randomWave.nextGaussian() < 1) {
             double var1 = randDouble(randomWaveVar1, 0, 0.5);
             double var2 = randDouble(randomWaveVar2, 0, 0.4);
             log(effects,"Wave", var1, var2);
-            op.wave(var1, var2);
+            gmOps = gmOps.wave(var1, var2);
         }
 
         if (randomSpread.nextGaussian() < 1) {
             log(effects,"Spread");
-            op.spread(1);
+            gmOps = gmOps.spread(1);
         }
 
         if (randomRotate.nextGaussian() < 1) {
             double var1 = randDouble(randomRotateVar1, 0, 0.3);
             log(effects,"Rotate", var1);
-            op.rotate(var1);
+            gmOps = gmOps.rotate(var1);
         }
 
         if (randomNoise.nextGaussian() < 1) {
             double var1 = randDouble(randomNoiseVar1, 0, 1.2);
             log(effects,"Noise", var1);
-            op.noise(var1);
+            gmOps = gmOps.noise(var1);
         }
 
         if (randomWave.nextGaussian() < 1) {
             double var1 = randDouble(randomWaveVar1, 0, 0.5);
             double var2 = randDouble(randomWaveVar2, 0, 0.4);
             log(effects,"Wave", var1, var2);
-            op.wave(var1, var2);
+            gmOps = gmOps.wave(var1, var2);
         }
 
         if (randomMotionBlur.nextGaussian() < 1) {
@@ -237,21 +236,22 @@ public class CameraSimulatorGM2020 {
             double var2 = randDouble(randomMotionBlurVar2, -7, 7);
             double var3 = randDouble(randomMotionBlurVar3, -7, 6);
             log(effects,"Motion blur", var1, var2, var3);
-            op.motionBlur(var1, var2, var3);
+            gmOps = gmOps.motionBlur(var1, var2, var3);
         }
 
 
         if (randomMedian.nextGaussian() < 1) {
             double var1 = randDouble(randomMedianVar1, 0, 1.1);
             log(effects,"Median", var1);
-            op.median(var1);
+            gmOps = gmOps.median(var1);
         }
 
         //System.out.println(effects.toString());
-
-        op.addImage(output);
+        gmOps.addImage(output);
+        //op.addImage(output);
         // execute the operation
-        command.run(op);
+        GMBatchCommand command = new GMBatchCommand(gmService, "convert");
+        command.run(gmOps);
 
         if (distortionDescriptionOutputFile != null) {
             PrintStream ps = new PrintStream(distortionDescriptionOutputFile);
@@ -290,7 +290,7 @@ public class CameraSimulatorGM2020 {
                         //System.out.println("----- " + inputFile.getName() + "-------");
                         boolean notGenerated = true;
                         int retries = 0;
-                        while (notGenerated && retries < 1) {
+                        while (notGenerated && retries < 5) {
                             try {
                                 randomEffects(inputFile.getAbsolutePath(), output.getAbsolutePath(), outputDescription);
                                 notGenerated = false;
@@ -298,12 +298,12 @@ public class CameraSimulatorGM2020 {
                                 System.err.println("Cannot generate because of " + e.getMessage());
                                 System.exit(1);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                               // e.printStackTrace();
                                 System.err.println("Regenerating because of " + e.getMessage());
                             }
                             retries++;
                         }
-                        if (retries == 10) {
+                        if (retries == 5) {
                             System.err.println("NOT GENERATED, too many retries");
                         }
                     }
@@ -312,7 +312,7 @@ public class CameraSimulatorGM2020 {
             };
             callables.add(callable);
         }
-        AtomicInteger pending = new AtomicInteger(n);
+        AtomicInteger pending = new AtomicInteger(n-1);
         executor.invokeAll(callables)
                 .stream()
                 .map(future -> {
@@ -331,13 +331,13 @@ public class CameraSimulatorGM2020 {
 
 
     public static final void main(String [] args) throws Exception {
-        new CameraSimulatorGM2020("/usr/local/bin/gm").run("/tmp/xx/imagenes");
+        //new CameraSimulatorGM2020("/usr/local/bin/gm").run("/tmp/xx/imagenes");
 
         if (args.length != 2) {
             System.err.println("Usage: <GraphicsMagick bin path of executable (usually /usr/local/bin/gm) > <images folder>");
             return;
         }
 
-        // new CameraSimulatorGM2020(args[0]).run(args[1]);
+        new CameraSimulatorGM2020(args[0]).run(args[1]);
     }
 }
