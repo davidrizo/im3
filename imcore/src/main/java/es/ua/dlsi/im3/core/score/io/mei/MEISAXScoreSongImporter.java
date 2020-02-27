@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxXY;
 import es.ua.dlsi.im3.core.score.*;
+import es.ua.dlsi.im3.core.score.dynamics.*;
 import es.ua.dlsi.im3.core.score.facsimile.Graphic;
 import es.ua.dlsi.im3.core.score.facsimile.Surface;
 import es.ua.dlsi.im3.core.score.facsimile.Zone;
@@ -30,6 +31,7 @@ import es.ua.dlsi.im3.core.score.harmony.Harm;
 import es.ua.dlsi.im3.core.score.io.XMLSAXScoreSongImporter;
 import es.ua.dlsi.im3.core.score.io.kern.KernImporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.marks.DynamicBreathMark;
 import es.ua.dlsi.im3.core.score.mensural.ligature.LigatureFactory;
 import es.ua.dlsi.im3.core.score.mensural.meters.*;
 import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMayor;
@@ -38,14 +40,6 @@ import org.apache.commons.lang3.math.Fraction;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
-import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkForte;
-import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkFortePossible;
-import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkFortissimo;
-import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkMezzoForte;
-import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkMezzoPiano;
-import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkPianissimo;
-import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkPiano;
-import es.ua.dlsi.im3.core.score.dynamics.DynamicMarkPianoPossible;
 import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.score.staves.PercussionStaff;
@@ -1056,7 +1050,7 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 						if (element.equals("hairpin")) {
 							pendingConnectorOrMark.content = getAttribute(attributesMap, "form");
 						} else if (element.equals("fermata")) {
-							pendingConnectorOrMark.content = getAttribute(attributesMap, "place");
+							pendingConnectorOrMark.content = getOptionalAttribute(attributesMap, "place");
 						}
 						if (pendingConnectorOrMarks.contains(pendingConnectorOrMark)) {
 							throw new ImportException("Duplicating pending connector: " + pendingConnectorOrMark);
@@ -1191,9 +1185,9 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                 default:
                     throw new ImportException("Unknown fermata position: '" + fermata + "'");
             }
-            lastStaff.addFermata(atomFigure, positionAboveBelow);
-        }
-        
+        } else {
+			lastStaff.addFermata(atomFigure, PositionAboveBelow.UNDEFINED);
+		}
     }
 
     private Syllabic wordpos2Syllabic(String sylType) throws ImportException {
@@ -1770,8 +1764,8 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
         }
     }
 
-    private void addDynamics(Staff staff, String amdynamics, Time time) throws IM3Exception, ImportException {
-		DynamicMark m;
+    private void addDynamics(Staff staff, String amdynamics, Time time)  {
+		StaffMark m = null;
 		switch (amdynamics) { 
 		case "fff":
 			m = new DynamicMarkFortePossible(staff, time);
@@ -1796,11 +1790,17 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 			break;
 		case "ppp": 
 			m = new DynamicMarkPianoPossible(staff, time);
-			break;		
-			default:
-				throw new ImportException("Unsupported dynamics: "  +  amdynamics);
+			break;
+		case ",":
+			m = new DynamicBreathMark(staff, time);
+			break;
+		default:
+			Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Unsupported dynamics: "  +  amdynamics);
 		}
-		staff.addMark(m);
+		//TODO ¿añadimos texto?
+		if (m != null) {
+			staff.addMark(m);
+		}
 	}	
 	
 	@Override
