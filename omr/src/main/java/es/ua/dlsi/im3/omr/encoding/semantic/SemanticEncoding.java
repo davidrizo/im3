@@ -12,9 +12,9 @@ public class SemanticEncoding extends Sequence<SemanticSymbol> {
     public String generateKernSemanticString(NotationType notationType) throws IM3Exception {
         StringBuilder stringBuilder = new StringBuilder();
         if (notationType == NotationType.eMensural) {
-            stringBuilder.append("**mens\n");
+            stringBuilder.append("**smens\n");
         } else if (notationType == NotationType.eModern) {
-            stringBuilder.append("**kern\n");
+            stringBuilder.append("**skern\n");
         } else {
             throw new ExportException("Cannot write other than mensural or modern kern files: " + notationType);
         }
