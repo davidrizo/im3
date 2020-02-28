@@ -86,7 +86,17 @@ public class Encoder {
         Time lastEndTime = null;
         boolean newSystem = false;
         boolean firstSystem = true;
+
         for (ITimedElementInStaff symbol : coreSymbolsOrdered) {
+            if (processSystemBreaks) {
+                if (staff.getParts().get(0).getPageSystemBeginnings().hasSystemBeginning(symbol.getTime())) {
+                    // remove the system beginning
+                    staff.getParts().get(0).getPageSystemBeginnings().removeSystemBeginning(symbol.getTime());
+                    agnosticEncoding.add(agnosticSystemBreak);
+                    semanticEncoding.add(semanticSystemBreak);
+                }
+            }
+
             if (segment.contains(symbol.getTime())) {
                 if (processSystemBreaks && symbol instanceof SystemBreak) {
                     semanticEncoding.add(new SemanticBarline());

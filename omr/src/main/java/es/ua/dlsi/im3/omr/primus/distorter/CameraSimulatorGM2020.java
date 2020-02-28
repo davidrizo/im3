@@ -299,7 +299,7 @@ public class CameraSimulatorGM2020 {
                                 System.exit(1);
                             } catch (Exception e) {
                                // e.printStackTrace();
-                                System.err.println("Regenerating because of " + e.getMessage());
+                                System.err.println("Regenerating (retry #" + (retries + 1) + ") because of " + e.getMessage());
                             }
                             retries++;
                         }

@@ -82,4 +82,8 @@ public class PageSystemBeginnings {
         }
     }
 
+    public void removeSystemBeginning(Time time) {
+        systemBeginnings.remove(time);
+    }
+
 }
