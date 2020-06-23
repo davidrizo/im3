@@ -33,7 +33,7 @@ public class Semantic2ScoreSongTest {
         //SemanticConversionContext semanticConversionContext = new SemanticConversionContext(NotationType.eModern); //NOT used
 
         SemanticEncoding semanticEncoding = encoder.getSemanticEncoding();
-        ScoreSong decodedFromSemantic = semantic2ScoreSong.convertToSingleVoicedSong(NotationType.eModern, semanticEncoding);
+        ScoreSong decodedFromSemantic = semantic2ScoreSong.convertToSingleVoicedSong(NotationType.eModern, null, semanticEncoding);
 
         System.out.println(meiSongImported.getAtomPitches().size());
 
