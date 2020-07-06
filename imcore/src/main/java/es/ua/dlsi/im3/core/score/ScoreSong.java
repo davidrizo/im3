@@ -142,6 +142,10 @@ public class ScoreSong implements IStaffContainer {
 		return song;
     }
 
+    @Deprecated
+	/**
+	 * @deprecated Use the getPageSystemBeginnings from ScorePart
+	 */
     @Override
 	public PageSystemBeginnings getPageSystemBeginnings() {
 		return pageSystemBeginnings;
