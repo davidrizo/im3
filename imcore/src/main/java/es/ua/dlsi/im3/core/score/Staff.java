@@ -267,6 +267,9 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	public Clef getRunningClefAt(Time time) throws IM3Exception {
 		// The treeset with all clefs ordered by onsets is built after
 		// computeOnsets
+		if (this.clefs == null) {
+			throw new IM3Exception("There are no clefs");
+		}
 		Map.Entry<Time, Clef> c = this.clefs.floorEntry(time);
 		if (c == null) {
 			throw new IM3Exception("There is no clef set at time  " + time);
