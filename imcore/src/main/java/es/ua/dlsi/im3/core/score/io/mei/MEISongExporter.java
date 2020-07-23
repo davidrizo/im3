@@ -64,6 +64,7 @@ public class MEISongExporter implements ISongExporter {
 	private int skipMeasures;
 	private BeamGroup lastBeam;
 	private HashSet<IFacsimile> exportedSystemOrPageBreaks = new HashSet<>();
+	private boolean includesFacsimile = false;
 
 	/*FRACCIONES class ConnectorWithLayer {
 		Connector<?,?> connector;
@@ -374,6 +375,7 @@ public class MEISongExporter implements ISongExporter {
 
 	private void exportFacsimile(StringBuilder sb, int tabs) {
 		if (song.getFacsimile() != null) {
+			this.includesFacsimile = true;
 			XMLExporterHelper.start(sb, tabs, "facsimile");
 
 			for (Surface surface: song.getFacsimile().getSurfaceList()) {
@@ -1153,7 +1155,7 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void generateFacsimileReference(IFacsimile facsimile, ArrayList<String> attrs) {
-		if (facsimile.getFacsimileElementID() != null) {
+		if (includesFacsimile && facsimile.getFacsimileElementID() != null) {
 			attrs.add("facs");
 			attrs.add("#"+ facsimile.getFacsimileElementID());
 		}
