@@ -581,8 +581,13 @@ public class MEISongExporter implements ISongExporter {
 					params.add("label");
 					params.add(staff.getName());
 				}
-				XMLExporterHelper.start(sb, tabs+1, "staffDef", params);
+				if (staff.getParentSystem() != null && staff.getParentSystem().getNotationType() == NotationType.eMensural || staff.getNotationType() == NotationType.eMensural) {
+					params.add("notationtype");
+					params.add("mensural.white");
 
+					//// processMensuralTimeSignatureForStaffDef(staffDefTS, params);
+				}
+				XMLExporterHelper.start(sb, tabs+1, "staffDef", params);
 				Clef clef = staff.getClefAtTime(Time.TIME_ZERO);
 				lastClef.put(staff, clef);
 				processClef(clef, tabs+1, null);
@@ -600,12 +605,7 @@ public class MEISongExporter implements ISongExporter {
 					//XMLExporterHelper.startEnd(sb, tabs, "scoreDef", scoreDefParams);
 				}
 
-				if (staff.getNotationType() == NotationType.eMensural) {
-					params.add("notationtype");
-					params.add("mensural.white");
 
-					//// processMensuralTimeSignatureForStaffDef(staffDefTS, params);
-				}
 				XMLExporterHelper.end(sb, tabs+1, "staffDef");
 			}
 		}
