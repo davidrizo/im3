@@ -22,7 +22,9 @@ public class TempusImperfectumCumProlationePerfecta extends TimeSignatureMensura
 
     @Override
     public SignTimeSignature clone() {
-        return new TempusImperfectumCumProlationePerfecta();
+        TempusImperfectumCumProlationePerfecta timeSignatureMensural = new TempusImperfectumCumProlationePerfecta();
+        timeSignatureMensural.cloneValues(this);
+        return this;
     }
 
     @Override

@@ -23,4 +23,9 @@ public enum Perfection {
         }
         throw new IM3Exception("Cannot find Perfection for " + divisions + " divisions");
     }
+
+    public static Perfection getPerfection(String divisions) throws IM3Exception {
+	    return getPerfection(Integer.parseInt(divisions));
+    }
+
 }

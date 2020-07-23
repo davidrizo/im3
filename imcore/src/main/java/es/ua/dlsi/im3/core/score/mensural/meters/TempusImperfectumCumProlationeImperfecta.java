@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.mensural.meters;
 
 import es.ua.dlsi.im3.core.score.AtomFigure;
 import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 
 import java.util.List;
@@ -22,7 +23,9 @@ public class TempusImperfectumCumProlationeImperfecta extends TimeSignatureMensu
 
     @Override
     public SignTimeSignature clone() {
-        return new TempusImperfectumCumProlationeImperfecta();
+        TempusImperfectumCumProlationeImperfecta timeSignatureMensural = new TempusImperfectumCumProlationeImperfecta();
+        timeSignatureMensural.cloneValues(this);
+        return this;
     }
 
     @Override

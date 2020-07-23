@@ -2,6 +2,7 @@ package es.ua.dlsi.im3.core.score.mensural.meters;
 
 import es.ua.dlsi.im3.core.score.AtomFigure;
 import es.ua.dlsi.im3.core.score.Time;
+import es.ua.dlsi.im3.core.score.mensural.meters.hispanic.TimeSignatureProporcionMenor;
 import es.ua.dlsi.im3.core.score.meters.SignTimeSignature;
 
 import java.util.List;
@@ -18,7 +19,9 @@ public class ProportioTripla extends TimeSignatureMensural {
 
     @Override
     public SignTimeSignature clone() {
-        return new ProportioTripla();
+        ProportioTripla timeSignatureMensural = new ProportioTripla();
+        timeSignatureMensural.cloneValues(this);
+        return this;
     }
 
     @Override

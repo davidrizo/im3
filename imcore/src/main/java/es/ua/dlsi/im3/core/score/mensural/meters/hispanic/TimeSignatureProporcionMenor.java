@@ -60,7 +60,9 @@ public class TimeSignatureProporcionMenor extends TimeSignatureMensural {
 
 	@Override
 	public SignTimeSignature clone() {
-		return new TimeSignatureProporcionMenor();
+		TimeSignatureProporcionMenor timeSignatureMensural = new TimeSignatureProporcionMenor();
+		timeSignatureMensural.cloneValues(this);
+		return this;
 	}
 
 	@Override

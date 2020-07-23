@@ -42,6 +42,14 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
         initDurations();
     }
 
+    protected void cloneValues(TimeSignatureMensural other) {
+		this.prolatio = other.prolatio;
+		this.tempus = other.tempus;
+		this.modusMinor = other.modusMinor;
+		this.modusMaior = other.modusMaior;
+		initDurations();
+	}
+
     private void initDurations() {
         semibreveDuration = Figures.MINIM.getDuration().multiplyBy(Fraction.getFraction(
                 prolatio == null ? 2 : prolatio.getDivisions(),
@@ -176,6 +184,16 @@ public abstract class TimeSignatureMensural extends SignTimeSignature {
         this.modusMinor = modusMinor;
         initDurations();
     }
+
+	public void setProlatio(Perfection prolatio) {
+		this.prolatio = prolatio;
+		initDurations();
+	}
+
+	public void setTempus(Perfection tempus) {
+		this.tempus = tempus;
+		initDurations();
+	}
 
 	@Override
 	public boolean isCompound() {

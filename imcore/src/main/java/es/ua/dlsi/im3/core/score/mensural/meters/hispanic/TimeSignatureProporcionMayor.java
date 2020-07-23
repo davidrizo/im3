@@ -61,7 +61,9 @@ public class TimeSignatureProporcionMayor extends TimeSignatureMensural {
 
 	@Override
 	public SignTimeSignature clone() {
-		return new TimeSignatureProporcionMayor();
+		TimeSignatureProporcionMayor timeSignatureMensural = new TimeSignatureProporcionMayor();
+		timeSignatureMensural.cloneValues(this);
+		return this;
 	}
 
 	@Override
