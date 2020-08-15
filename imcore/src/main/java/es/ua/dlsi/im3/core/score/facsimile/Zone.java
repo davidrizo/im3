@@ -10,6 +10,7 @@ public class Zone {
     private String ID;
     private BoundingBox boundingBox;
     private String type;
+    private String label;
 
     public String getID() {
         return ID;
@@ -33,5 +34,13 @@ public class Zone {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
