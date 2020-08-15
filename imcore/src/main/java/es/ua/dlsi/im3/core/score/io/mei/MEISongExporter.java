@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.metadata.PersonRoles;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.facsimile.Graphic;
 import es.ua.dlsi.im3.core.score.facsimile.Surface;
@@ -284,6 +285,22 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.start(sb, tabs, "fileDesc");
 		XMLExporterHelper.start(sb, tabs+1, "titleStmt");
 		XMLExporterHelper.text(sb, tabs+2, "title", song.getTitle());
+
+		if (song.getComposer() != null) {
+			XMLExporterHelper.text(sb, tabs+2, "composer", song.getComposer());
+		}
+
+		List<Person> persons = song.getPersons();
+		if (persons != null && !persons.isEmpty()) {
+			XMLExporterHelper.start(sb, tabs + 2, "respStmt");
+			for (Person person : persons) {
+				if (!Objects.equals(person.getRole(), PersonRoles.COMPOSER.getTitle())) {
+					XMLExporterHelper.text(sb, tabs + 3, "persName", person.getName(), "role", person.getRole().toLowerCase());
+				}
+			}
+			XMLExporterHelper.end(sb, tabs + 2, "respStmt");
+		}
+
 		XMLExporterHelper.end(sb, tabs+1, "titleStmt");
 		XMLExporterHelper.startEnd(sb, tabs+1, "pubStmt");
 		XMLExporterHelper.end(sb, tabs, "fileDesc");
@@ -301,21 +318,14 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void processWorkDesc(int tabs) {
-		List<Person> persons = song.getPersons();
-		if (persons != null && !persons.isEmpty()) {
-			XMLExporterHelper.start(sb, tabs, "workDesc");
+			/*XMLExporterHelper.start(sb, tabs, "workDesc");
 			XMLExporterHelper.start(sb, tabs+1, "work");
 			XMLExporterHelper.start(sb, tabs+1, "titleStmt");
 			XMLExporterHelper.text(sb, tabs+2, "title", song.getTitle());
-			XMLExporterHelper.start(sb, tabs+2, "respStmt");
-			for (Person person: persons) {
-				XMLExporterHelper.text(sb, tabs+3, "persName", person.getName(), "role", person.getRole());
-			}
 			XMLExporterHelper.end(sb, tabs+2, "respStmt");
 			XMLExporterHelper.end(sb, tabs+1, "titleStmt");
 			XMLExporterHelper.end(sb, tabs+1, "work");
-			XMLExporterHelper.end(sb, tabs, "workDesc");
-		}
+			XMLExporterHelper.end(sb, tabs, "workDesc");*/
 	}
 
 	private void processMusic(int tabs, List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
