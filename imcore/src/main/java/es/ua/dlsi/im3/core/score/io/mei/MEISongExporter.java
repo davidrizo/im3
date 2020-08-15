@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import es.ua.dlsi.im3.core.IDGenerator;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
@@ -329,21 +330,21 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void processMusic(int tabs, List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
-		XMLExporterHelper.start(sb, tabs, "music");
+		XMLExporterHelper.start(sb, tabs, "music", "xml:id", "music_" + IDGenerator.getID());
 
 		exportFacsimile(sb, tabs+1);
 
-		XMLExporterHelper.start(sb, tabs+1, "body");
-		XMLExporterHelper.start(sb, tabs+2, "mdiv");
+		XMLExporterHelper.start(sb, tabs+1, "body", "xml:id", "body_" + IDGenerator.getID());
+		XMLExporterHelper.start(sb, tabs+2, "mdiv", "xml:id", "mdiv_" + IDGenerator.getID());
 
 		if (scoreParts != null && scoreParts.size() > 1) {
-			XMLExporterHelper.start(sb, tabs+3, "parts");
+			XMLExporterHelper.start(sb, tabs+3, "parts", "xml:id", "parts_" + IDGenerator.getID());
 
 			for (ScorePart scorePart: scoreParts) {
 				if (scorePart.getName() != null) {
-					XMLExporterHelper.start(sb, tabs + 4, "part", "label", scorePart.getName());
+					XMLExporterHelper.start(sb, tabs + 4, "part", "label", scorePart.getName(), "xml:id", "part_" + IDGenerator.getID());
 				} else {
-					XMLExporterHelper.start(sb, tabs + 4, "part");
+					XMLExporterHelper.start(sb, tabs + 4, "part", "xml:id", "part_" + IDGenerator.getID());
 				}
 				processScoreOrPart(tabs+1, scorePart, segment, true);
 				XMLExporterHelper.end(sb, tabs+4, "part");
@@ -352,7 +353,7 @@ public class MEISongExporter implements ISongExporter {
 			XMLExporterHelper.end(sb, tabs+3, "parts");
 
 		} else {
-			XMLExporterHelper.start(sb, tabs+3, "score");
+			XMLExporterHelper.start(sb, tabs+3, "score", "xml:id", "score_" + IDGenerator.getID());
 			if (scoreParts != null && !scoreParts.isEmpty()) {
 				processScoreOrPart(tabs, scoreParts.get(0), segment, false); // just one score
 			} else {
@@ -386,14 +387,14 @@ public class MEISongExporter implements ISongExporter {
 	private void exportFacsimile(StringBuilder sb, int tabs) {
 		if (song.getFacsimile() != null) {
 			this.includesFacsimile = true;
-			XMLExporterHelper.start(sb, tabs, "facsimile");
+			XMLExporterHelper.start(sb, tabs, "facsimile", "xml:id", "facsimile_" + IDGenerator.getID());
 
 			for (Surface surface: song.getFacsimile().getSurfaceList()) {
 				ArrayList<String> surfaceParameters = boundingBoxParameters(surface.getID(), surface.getBoundingBox());
 				XMLExporterHelper.start(sb, tabs+1, "surface", surfaceParameters);
 
 				for (Graphic graphic: surface.getGraphicList()) {
-					XMLExporterHelper.startEnd(sb, tabs+2, "graphic", "target", graphic.getTarget());
+					XMLExporterHelper.startEnd(sb, tabs+2, "graphic", "target", graphic.getTarget(), "xml:id", "dot_" + IDGenerator.getID());
 				}
 
 				for (Zone zone: surface.getZoneList()) {
@@ -434,6 +435,8 @@ public class MEISongExporter implements ISongExporter {
 		ArrayList<String> params = new ArrayList<>();
 		Key commonKey;
 		// nuevo
+		params.add("xml:id");
+		params.add("scoreDef_" + IDGenerator.getID());
 		XMLExporterHelper.start(sb, tabs+4, "scoreDef", params);
 		processStaffDef(tabs+5, staffContainer);
 		XMLExporterHelper.end(sb, tabs+4, "scoreDef");
@@ -544,7 +547,7 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 	private void processSections(ScorePart scorePart, int tabs, IStaffContainer staffContainer, Segment segment, boolean addClefsOnSystemBeginning) throws IM3Exception, ExportException {
-		XMLExporterHelper.start(sb, tabs, "section");
+		XMLExporterHelper.start(sb, tabs, "section", "xml:id", "section_" + IDGenerator.getID());
 		processSongWithoutBars(scorePart, tabs+1, staffContainer, segment, addClefsOnSystemBeginning); // e.g. mensural
 		processMeasures(scorePart, tabs+1, staffContainer, segment, addClefsOnSystemBeginning); // CWMN
 		XMLExporterHelper.end(sb, tabs, "section");
@@ -574,12 +577,14 @@ public class MEISongExporter implements ISongExporter {
 			}
 
 			generateFacsimileReference(clef, params);
+			params.add("xml:id");
+			params.add("clef_" + IDGenerator.getID());
 			XMLExporterHelper.startEnd(sb, tabs + 1, "clef", params);
 		}
 	}
 	private void processStaffDef(int tabs, IStaffContainer staffContainer) throws ExportException, IM3Exception {
 		lastClef = new HashMap<>();
-		XMLExporterHelper.start(sb, tabs, "staffGrp");
+		XMLExporterHelper.start(sb, tabs, "staffGrp", "xml:id", "staffGrp_" + IDGenerator.getID());
 		for (Staff staff: staffContainer.getStaves()) {
 			if (!(staff instanceof AnalysisStaff)) {
 				ArrayList<String> params = new ArrayList<>();
@@ -597,6 +602,8 @@ public class MEISongExporter implements ISongExporter {
 
 					//// processMensuralTimeSignatureForStaffDef(staffDefTS, params);
 				}
+				params.add("xml:id");
+				params.add("staffDef_" + IDGenerator.getID());
 				XMLExporterHelper.start(sb, tabs+1, "staffDef", params);
 				Clef clef = staff.getClefAtTime(Time.TIME_ZERO);
 				lastClef.put(staff, clef);
@@ -702,6 +709,8 @@ public class MEISongExporter implements ISongExporter {
 			params.add(mensuralTimeSignaturePerfectionToNumber(mm.getProlatio()));
 		}
 		generateFacsimileReference(mm, params);
+		params.add("xml:id");
+		params.add("mensur_" + IDGenerator.getID());
 		XMLExporterHelper.startEnd(sb, tabs+1, "mensur", params);
 	}
 
@@ -860,9 +869,9 @@ public class MEISongExporter implements ISongExporter {
 						for (Staff staff : staffContainer.getStaves()) {
 							previousAccidentals = new HashMap<>();
 							if (!(staff instanceof AnalysisStaff) && staff.getNotationType() == NotationType.eModern) { // && bar.contains(staff)) {
-								XMLExporterHelper.start(sb, tabs + 1, "staff", "n", getNumber(staff));
+								XMLExporterHelper.start(sb, tabs + 1, "staff", "n", getNumber(staff), "xml:id", "staff_" + IDGenerator.getID());
 								for (ScoreLayer layer : staff.getLayers()) {
-									XMLExporterHelper.start(sb, tabs + 2, "layer", "n", getNumber(layer));
+									XMLExporterHelper.start(sb, tabs + 2, "layer", "n", getNumber(layer), "xml:id", "layer_" + IDGenerator.getID());
 									processBarLayer(scorePart, tabs + 3, bar, staff, layer); //TODO que no salga si en la capa no hay nada
 									if (lastBeam != null) {
 										closeBeam(tabs);
@@ -1072,13 +1081,13 @@ public class MEISongExporter implements ISongExporter {
 					}
 					staffSymbols.addAll(staff.getCustos());
 
-					XMLExporterHelper.start(sb, tabs, "staff", "n", getNumber(staff));
+					XMLExporterHelper.start(sb, tabs, "staff", "n", getNumber(staff), "xml:id", "staff_" + IDGenerator.getID());
 					for (ScoreLayer layer: staff.getLayers()) {
 						List<ITimedElementInStaff> symbols = new ArrayList<>();
 						for (int i=0; i<layer.size(); i++) {
 							symbols.add(layer.getAtom(i));
 						}
-						XMLExporterHelper.start(sb, tabs+1, "layer", "n", getNumber(layer));
+						XMLExporterHelper.start(sb, tabs+1, "layer", "n", getNumber(layer), "xml:id", "layer_" + IDGenerator.getID());
 						if (firstLayer) {
 							firstLayer = false;
 							symbols.addAll(staffSymbols);
@@ -1182,9 +1191,11 @@ public class MEISongExporter implements ISongExporter {
 		if (!exportedSystemOrPageBreaks.contains(facsimile)) {
 			exportedSystemOrPageBreaks.add(facsimile);
 			ArrayList<String> attrs = new ArrayList<>();
+			attrs.add("xml:id");
 			if (facsimile.__getID() != null) {
-				attrs.add("xml:id");
 				attrs.add(facsimile.__getID());
+			} else {
+				attrs.add("spb_" + IDGenerator.getID());
 			}
 			generateFacsimileReference(facsimile, attrs);
 
@@ -1216,6 +1227,8 @@ public class MEISongExporter implements ISongExporter {
 		params.add("oct");
 		params.add(Integer.toString(scorePitch.getOctave()));
 		generateFacsimileReference(custos, params);
+		params.add("xml:id");
+		params.add("custos_" + IDGenerator.getID());
 		XMLExporterHelper.startEnd(sb, tabs, "custos", params);
 	}
 
@@ -1540,12 +1553,12 @@ public class MEISongExporter implements ISongExporter {
 		if (atom.getStaff().getNotationType() == NotationType.eMensural) {
 			if (atomFigure.getDots() > 0) {
 				for (int i=0; i<atomFigure.getDots(); i++) {
-					XMLExporterHelper.startEnd(sb, tabs, "dot", "form", "aug"); // it must be added to be printed
+					XMLExporterHelper.startEnd(sb, tabs, "dot", "form", "aug", "xml:id", "dot_" + IDGenerator.getID()); // it must be added to be printed
 				}
 			}
 		}
 		if (atom.getAtomFigure().isFollowedByMensuralDivisionDot()) {
-			XMLExporterHelper.startEnd(sb, tabs, "dot", "form", "div"); // division dot
+			XMLExporterHelper.startEnd(sb, tabs, "dot", "form", "div", "xml:id", "dot_" + IDGenerator.getID()); // division dot
 		}
 	}
 
@@ -1591,12 +1604,11 @@ public class MEISongExporter implements ISongExporter {
 
 					if (atomPitch.getLyrics() != null && !atomPitch.getLyrics().isEmpty()) {
 						for (ScoreLyric scoreLyric : atomPitch.getLyrics().values()) {
-							XMLExporterHelper.start(sb, tabs+2, "verse", "n", scoreLyric.getVerse().toString()); //TODO ID
-
+							XMLExporterHelper.start(sb, tabs+2, "verse", "n", scoreLyric.getVerse().toString(), "xml:id", "verse_" + IDGenerator.getID());
 							if (scoreLyric.getSyllabic() != null && scoreLyric.getSyllabic() != Syllabic.single) {
-								XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText(), "wordpos", syllabic2WordPos(scoreLyric.getSyllabic()));
+								XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText(), "wordpos", syllabic2WordPos(scoreLyric.getSyllabic()), "xml:id", "syl_" + IDGenerator.getID());
 							} else {
-								XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText());
+								XMLExporterHelper.text(sb, tabs+4, "syl", scoreLyric.getText(), "xml:id", "syl_" + IDGenerator.getID());
 							}
 
 							XMLExporterHelper.end(sb, tabs+2, "verse");
