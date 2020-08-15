@@ -406,7 +406,7 @@ public class MEISongExporter implements ISongExporter {
 				XMLExporterHelper.start(sb, tabs+1, "surface", surfaceParameters);
 
 				for (Graphic graphic: surface.getGraphicList()) {
-					XMLExporterHelper.startEnd(sb, tabs+2, "graphic", "target", graphic.getTarget(), "xml:id", "dot_" + IDGenerator.getID());
+					XMLExporterHelper.startEnd(sb, tabs+2, "graphic", "target", graphic.getTarget(), "xml:id", "graphic_" + IDGenerator.getID());
 				}
 
 				for (Zone zone: surface.getZoneList()) {
