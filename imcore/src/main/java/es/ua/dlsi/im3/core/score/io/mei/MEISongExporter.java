@@ -316,6 +316,11 @@ public class MEISongExporter implements ISongExporter {
 
 		XMLExporterHelper.end(sb, tabs+1, "titleStmt");
 		XMLExporterHelper.startEnd(sb, tabs+1, "pubStmt");
+		if (song.getMetadata().getSource() != null) {
+			XMLExporterHelper.start(sb, tabs+1, "sourceDesc");
+			XMLExporterHelper.startEnd(sb, tabs+2, "source", "target", song.getMetadata().getSource());
+			XMLExporterHelper.end(sb, tabs+1, "sourceDesc");
+		}
 		XMLExporterHelper.end(sb, tabs, "fileDesc");
 	}
 

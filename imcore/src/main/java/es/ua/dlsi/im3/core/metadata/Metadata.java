@@ -23,6 +23,7 @@ package es.ua.dlsi.im3.core.metadata;
 public class Metadata {
     FileDescription description;    
     EncodingDescription encodingDescription;
+    String source;
 
     public FileDescription getDescription() {
 	return description;
@@ -37,10 +38,14 @@ public class Metadata {
     }
 
     public void setEncodingDescription(EncodingDescription encodingDescription) {
-	this.encodingDescription = encodingDescription;
+	    this.encodingDescription = encodingDescription;
     }
-    
-    
-    
-    
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
 }
