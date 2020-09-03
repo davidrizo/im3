@@ -356,7 +356,6 @@ public class MEISongExporter implements ISongExporter {
 
 		if (scoreParts != null && scoreParts.size() > 1) {
 			XMLExporterHelper.start(sb, tabs+3, "parts", "xml:id", "parts_" + IDGenerator.getID());
-
 			for (ScorePart scorePart: scoreParts) {
 				if (scorePart.getName() != null) {
 					XMLExporterHelper.start(sb, tabs + 4, "part", "label", scorePart.getName(), "xml:id", "part_" + IDGenerator.getID());
@@ -626,24 +625,25 @@ public class MEISongExporter implements ISongExporter {
 				params.add("xml:id");
 				params.add("staffDef_" + IDGenerator.getID());
 				XMLExporterHelper.start(sb, tabs+1, "staffDef", params);
-				Clef clef = staff.getClefAtTime(Time.TIME_ZERO);
-				lastClef.put(staff, clef);
-				processClef(clef, tabs+1, null);
 
-				TimeSignature staffTS = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
-				KeySignature staffKS = staff.getKeySignatureWithOnset(Time.TIME_ZERO);
+				if (!includesFacsimile) { // when exporting facsimile, the clefs, key signatures, and time signatures (or mensurations), are exported as individual elements in order to be referenced to the graphical zones
+					Clef clef = staff.getClefAtTime(Time.TIME_ZERO);
+					lastClef.put(staff, clef);
+					processClef(clef, tabs + 1, null);
 
-				if (staffTS != null || staffKS != null) {
-					if (staffKS != null) {
-						processTransposition(staffKS.getTranspositionInterval(), params);
-						processStaffDeffChildren(tabs+1, staffTS, staffKS.getInstrumentKey());
-					} else {
-						processStaffDeffChildren(tabs+1, staffTS, null);
+					TimeSignature staffTS = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
+					KeySignature staffKS = staff.getKeySignatureWithOnset(Time.TIME_ZERO);
+
+					if (staffTS != null || staffKS != null) {
+						if (staffKS != null) {
+							processTransposition(staffKS.getTranspositionInterval(), params);
+							processStaffDeffChildren(tabs + 1, staffTS, staffKS.getInstrumentKey());
+						} else {
+							processStaffDeffChildren(tabs + 1, staffTS, null);
+						}
+						//XMLExporterHelper.startEnd(sb, tabs, "scoreDef", scoreDefParams);
 					}
-					//XMLExporterHelper.startEnd(sb, tabs, "scoreDef", scoreDefParams);
 				}
-
-
 				XMLExporterHelper.end(sb, tabs+1, "staffDef");
 			}
 		}
@@ -1081,20 +1081,20 @@ public class MEISongExporter implements ISongExporter {
 				if (!(staff instanceof AnalysisStaff)) {
 					List<ITimedElementInStaff> staffSymbols = new ArrayList<>();
 					for (Clef clef: staff.getClefs()) {
-						if (!clef.getTime().isZero() && (segment == null || !clef.getTime().equals(segment.getFrom()))) {
-							staffSymbols.add(clef);
+						if (!(!includesFacsimile && clef.getTime().isZero()) && (segment == null || !clef.getTime().equals(segment.getFrom()))) {
+							staffSymbols.add(clef); // when not using facsimile, the first one is exported in staffDef or scoreDef
 						}
 					}
 					for (TimeSignature ts: staff.getTimeSignatures()) {
 						//if (commonStartTimeSignature != null && !ts.getTime().isZero() && (segment == null || !ts.getTime().equals(segment.getFrom()))) {
-						if (segment != null && !ts.getTime().equals(segment.getFrom())) {
-							staffSymbols.add(ts); // the first one is exported in staffDef or scoreDef
+						if (includesFacsimile || segment != null && !ts.getTime().equals(segment.getFrom())) {
+							staffSymbols.add(ts); // when not using facsimile, the first one is exported in staffDef or scoreDef
 						}
 					}
 					for (KeySignature ks: staff.getKeySignatures()) {
 						//if (commonStartKeySignature != null && !ks.getTime().isZero() && (segment == null || !ks.getTime().equals(segment.getFrom()))) {
-						if (segment != null && !ks.getTime().equals(segment.getFrom())) {
-							staffSymbols.add(ks); // the first one is exported in staffDef or scoreDef
+						if (includesFacsimile || segment != null && !ks.getTime().equals(segment.getFrom())) {
+							staffSymbols.add(ks); // when not using facsimile, the first one is exported in staffDef or scoreDef
 						}
 					}
 					for (MarkBarline markBarline: staff.getMarkBarLines()) {
