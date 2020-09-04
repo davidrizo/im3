@@ -626,24 +626,28 @@ public class MEISongExporter implements ISongExporter {
 				params.add("staffDef_" + IDGenerator.getID());
 				XMLExporterHelper.start(sb, tabs+1, "staffDef", params);
 
+				KeySignature staffKS = null;
 				if (!includesFacsimile) { // when exporting facsimile, the clefs, key signatures, and time signatures (or mensurations), are exported as individual elements in order to be referenced to the graphical zones
 					Clef clef = staff.getClefAtTime(Time.TIME_ZERO);
 					lastClef.put(staff, clef);
 					processClef(clef, tabs + 1, null);
 
-					TimeSignature staffTS = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
-					KeySignature staffKS = staff.getKeySignatureWithOnset(Time.TIME_ZERO);
-
-					if (staffTS != null || staffKS != null) {
-						if (staffKS != null) {
-							processTransposition(staffKS.getTranspositionInterval(), params);
-							processStaffDeffChildren(tabs + 1, staffTS, staffKS.getInstrumentKey());
-						} else {
-							processStaffDeffChildren(tabs + 1, staffTS, null);
-						}
-						//XMLExporterHelper.startEnd(sb, tabs, "scoreDef", scoreDefParams);
-					}
+					staffKS = staff.getKeySignatureWithOnset(Time.TIME_ZERO);
 				}
+				TimeSignature staffTS = staff.getTimeSignatureWithOnset(Time.TIME_ZERO);
+				// See https://github.com/HISPAMUS/muret/issues/172
+				// Clef and key signatures are moved to the layer because they are usually repeated for each new system break
+				// Mensuration signs are usually established in the beginning of the work, and they don't need to be written after each new break, then, we maintain them inside the staffDef element
+				if (staffTS != null || staffKS != null) {
+					if (staffKS != null) {
+						processTransposition(staffKS.getTranspositionInterval(), params);
+						processStaffDeffChildren(tabs + 1, staffTS, staffKS.getInstrumentKey());
+					} else {
+						processStaffDeffChildren(tabs + 1, staffTS, null);
+					}
+					//XMLExporterHelper.startEnd(sb, tabs, "scoreDef", scoreDefParams);
+				}
+
 				XMLExporterHelper.end(sb, tabs+1, "staffDef");
 			}
 		}
@@ -1081,13 +1085,16 @@ public class MEISongExporter implements ISongExporter {
 				if (!(staff instanceof AnalysisStaff)) {
 					List<ITimedElementInStaff> staffSymbols = new ArrayList<>();
 					for (Clef clef: staff.getClefs()) {
+						// See https://github.com/HISPAMUS/muret/issues/172
+						// Clef and key signatures are moved to the layer because they are usually repeated for each new system break
+						// Mensuration signs are usually established in the beginning of the work, and they don't need to be written after each new break, then, we maintain them inside the staffDef element
 						if (!(!includesFacsimile && clef.getTime().isZero()) && (segment == null || !clef.getTime().equals(segment.getFrom()))) {
 							staffSymbols.add(clef); // when not using facsimile, the first one is exported in staffDef or scoreDef
 						}
 					}
 					for (TimeSignature ts: staff.getTimeSignatures()) {
 						//if (commonStartTimeSignature != null && !ts.getTime().isZero() && (segment == null || !ts.getTime().equals(segment.getFrom()))) {
-						if (includesFacsimile || segment != null && !ts.getTime().equals(segment.getFrom())) {
+						if (segment != null && !ts.getTime().equals(segment.getFrom())) {
 							staffSymbols.add(ts); // when not using facsimile, the first one is exported in staffDef or scoreDef
 						}
 					}
