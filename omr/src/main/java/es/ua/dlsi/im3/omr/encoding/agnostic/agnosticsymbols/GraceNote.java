@@ -28,7 +28,16 @@ public class GraceNote extends AgnosticSymbolType {
 
     @Override
     public void setSubtype(String string) throws IM3Exception {
-        durationSpecification = NoteDurationSpecificationFactory.parseString(string);
+        //TODO Código repetido en Note
+        String [] tokens = string.split(SEPPROPERTIES);
+        if (tokens.length == 1) {
+            durationSpecification = NoteDurationSpecificationFactory.parseString(string);
+        } else if (tokens.length == 2) {
+            durationSpecification = NoteDurationSpecificationFactory.parseString(tokens[0]);
+            this.stemDirection = Directions.parseAgnosticString(tokens[1]);
+        } else {
+            throw new IM3Exception("Expected 1 or 2 tokens, and found " + tokens.length);
+        }
     }
 
     public INoteDurationSpecification getDurationSpecification() {

@@ -36,6 +36,7 @@ public class Note extends AgnosticSymbolType {
 
     @Override
     public void setSubtype(String string) throws IM3Exception {
+        //TODO Código repetido en GraceNote
         String [] tokens = string.split(SEPPROPERTIES);
         if (tokens.length == 1) {
             durationSpecification = NoteDurationSpecificationFactory.parseString(string);

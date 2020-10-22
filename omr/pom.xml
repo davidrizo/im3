@@ -40,7 +40,7 @@
             <version>2.7.0</version>
         </dependency>
         
-	<!-- im4java used to link to imageMagick in Primus Distorions (not used in execution, but used in compilation)-->
+	<!-- im4java used to link to imageMagick in Primus Distortions (not used in execution, but used in compilation)-->
         <!-- https://mvnrepository.com/artifact/org.im4java/im4java -->
         <dependency>
             <groupId>org.im4java</groupId>
