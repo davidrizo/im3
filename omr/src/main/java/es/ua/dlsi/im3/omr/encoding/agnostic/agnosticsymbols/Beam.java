@@ -22,7 +22,12 @@ public class Beam implements INoteDurationSpecification {
         for (BeamType bt: BeamType.values()) {
             if (string.startsWith(bt.toAgnosticString())) {
                 String beamsStr = string.substring(bt.toAgnosticString().length());
-                return new Beam(bt, Integer.parseInt(beamsStr));
+                try {
+                    int beams = Integer.parseInt(beamsStr);
+                    return new Beam(bt, beams);
+                } catch (Throwable t) {
+                    throw new IM3Exception(t);
+                }
             }
         }
         throw new IM3Exception("Cannot parse '" + string + "' as a beam");
