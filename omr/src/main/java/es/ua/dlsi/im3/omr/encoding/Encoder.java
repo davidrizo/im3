@@ -25,10 +25,7 @@ import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbol;
 import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.*;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * It encodes a ScoreSong into both agnostic and semantic encodings
@@ -206,13 +203,14 @@ public class Encoder {
             } else {
                 SimpleChord chord = (SimpleChord) symbol;
 
-                PositionInStaff [] positionInStaffs = new PositionInStaff[chord.getAtomPitches().size()];
                 int i=0;
                 boolean tiedFromPreviousGenerated = false;
                 TreeSet<AtomPitch> sortedPitches = new TreeSet<>();
                 sortedPitches.addAll(chord.getAtomPitches());
 
-                for (AtomPitch atomPitch: sortedPitches.descendingSet()) {
+                Set<AtomPitch> sortedPitchesSet = sortedPitches.descendingSet();
+                PositionInStaff [] positionInStaffs = new PositionInStaff[sortedPitchesSet.size()];
+                for (AtomPitch atomPitch: sortedPitchesSet) {
                     positionInStaffs[i] = symbol.getStaff().computePositionInStaff(chord.getTime(),
                             atomPitch.getScientificPitch().getPitchClass().getNoteName(), atomPitch.getScientificPitch().getOctave());
 

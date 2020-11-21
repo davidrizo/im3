@@ -7,12 +7,18 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
 public class Note extends AgnosticSymbolType {
     private static final String NOTE = "note" + SEPSYMBOL;
+    public static final String CONTEXT_SEP = "@";
 
     INoteDurationSpecification durationSpecification;
     /**
      * v2
      */
     Directions stemDirection;
+
+    /**
+     * Used for some special translation methods (used in Worms'21 special issue)
+     */
+    String agnosticContext = null;
 
     public Note(INoteDurationSpecification durationSpecification) {
         this.durationSpecification = durationSpecification;
@@ -58,14 +64,27 @@ public class Note extends AgnosticSymbolType {
 
     @Override
     public String toAgnosticString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(NOTE);
         if (durationSpecification != null) {
-            if (stemDirection == null) {
-                return NOTE + durationSpecification.toAgnosticString();
-            } else {
-                return NOTE + durationSpecification.toAgnosticString() + SEPPROPERTIES + stemDirection;
+            stringBuilder.append(durationSpecification.toAgnosticString());
+            if (stemDirection != null) {
+                stringBuilder.append(SEPPROPERTIES);
+                stringBuilder.append(stemDirection);
             }
-        } else {
-            return NOTE;
         }
+        if (this.agnosticContext != null) {
+            stringBuilder.append(CONTEXT_SEP);
+            stringBuilder.append(this.agnosticContext);
+        }
+        return stringBuilder.toString();
+    }
+
+    public String getAgnosticContext() {
+        return agnosticContext;
+    }
+
+    public void setAgnosticContext(String agnosticContext) {
+        this.agnosticContext = agnosticContext;
     }
 }
