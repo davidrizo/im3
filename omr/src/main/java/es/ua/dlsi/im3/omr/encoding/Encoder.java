@@ -726,7 +726,17 @@ public class Encoder {
             semanticEncoding.add(new SemanticMeterSignTimeSignature((SignTimeSignature) symbol));
         } else if (symbol instanceof FractionalTimeSignature) {
             FractionalTimeSignature ts = (FractionalTimeSignature) symbol;
-            agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getNumerator()), PositionsInStaff.LINE_4));
+            if (ts.getNumerator() > 10) {
+                if (ts.getNumerator() > 100) {
+                    throw new IM3Exception("Unsupported meter: " + ts);
+                }
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getNumerator() / 10), PositionsInStaff.LINE_4));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getNumerator() % 10), PositionsInStaff.LINE_4));
+
+            } else {
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getNumerator()), PositionsInStaff.LINE_4));
+            }
+
             addVerticalSeparator();
             agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getDenominator()), PositionsInStaff.LINE_2));
             agnosticEncoding.add(horizontalSeparator);
