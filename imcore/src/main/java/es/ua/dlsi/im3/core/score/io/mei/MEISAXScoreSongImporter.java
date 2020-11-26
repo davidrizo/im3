@@ -44,6 +44,7 @@ import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.score.staves.PercussionStaff;
 import es.ua.dlsi.im3.core.io.ImportException;
+import sun.rmi.runtime.Log;
 
 //TODO fillMissingElements
 //TODO Contexts - no so hard-coded!!
@@ -55,10 +56,18 @@ import es.ua.dlsi.im3.core.io.ImportException;
 public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
     DurationEvaluator durationEvaluator;
     private ArrayList<SimpleNote> ligatureElements;
+	/**
+	 * If true, errors such as trying to tie two notes of different pitches are reported as warnings and let the import continue
+	 */
+	private boolean allowErrors = false;
 
 	public MEISAXScoreSongImporter(DurationEvaluator durationEvaluator) {
         this.durationEvaluator = durationEvaluator;
     }
+
+    public void setAllowErrors(boolean allowErrors) {
+		this.allowErrors = allowErrors;
+	}
 
     class PendingConnectorOrMark {
 		Measure measure;
@@ -1831,8 +1840,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 					wholeNonTupletDuration = wholeNonTupletDuration.add(atom.getDuration());
 				}				
 				Time wholeTupletDuration = wholeNonTupletDuration.divide(tupletNum).multiply(tupletNumBase);
-				
-				Figures eachFigure = Figures.findDuration(wholeTupletDuration.divideBy(Fraction.getFraction(tupletNumBase, 1)), NotationType.eModern); // no tuplets in non modern
+
+				Figures eachFigure = null;
+				try {
+					eachFigure = Figures.findDuration(wholeTupletDuration.divideBy(Fraction.getFraction(tupletNumBase, 1)), NotationType.eModern); // no tuplets in non modern
+				} catch (IM3Exception e) {
+					throw new IM3Exception("Cannot find duration for tupleNum = " + tupletNum + " and numBase = " + tupletNumBase + " with total duration " + wholeTupletDuration + " taken from #" + tupletElements.size() + " elements");
+				}
 				
 				SimpleTuplet tuplet = new SimpleTuplet(tupletNum, tupletNumBase, eachFigure, tupletElements);
 				tupletElements = null;
@@ -1944,11 +1958,23 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                         setCurrentTime(mm.getStaff(), mm.getLayer(), mm.getOffset());
                     }
 				} else {
-					currentMeasure.setEndTime(maximumVoicesTime);
+					try {
+						currentMeasure.setEndTime(maximumVoicesTime);
+					} catch (IM3Exception e) {
+						if (this.allowErrors) {
+							Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot set end time of measure", e);
+						} else {
+							throw e;
+						}
+					}
 				}
 
                 //lastMeasureEndTime = maximumVoicesTime;
-				lastMeasureEndTime = currentMeasure.getEndTime();
+				if (currentMeasure.hasEndTime()) {
+					lastMeasureEndTime = currentMeasure.getEndTime();
+				} else {
+					lastMeasureEndTime = currentMeasure.getTime(); //TODO PARCHE - ver el catch de arriba ("Cannot set end time of measure")
+				}
 				maximumVoicesTime = lastMeasureEndTime;
                 //currentMeasure.setEndTime(maximumVoicesTime);
 				//updateTimesGivenMeasure(measure);
@@ -2257,7 +2283,13 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
                     }
 
 					if (fromPitch.getTiedToNext() == null) {
-						fromPitch.setTiedToNext(toPitch);
+						try {
+							fromPitch.setTiedToNext(toPitch);
+						} catch (IM3Exception e) {
+							if (allowErrors) {
+								Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot tie pitches", e);
+							}
+						}
 						// TODO ¿Es necesaria la representación gráfica ahora del tie?
 						/*AMTie tie = new AMTie(from); 
 						tie.setTo(to);

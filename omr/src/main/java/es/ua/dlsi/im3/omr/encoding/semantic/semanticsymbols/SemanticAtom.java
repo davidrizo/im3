@@ -15,6 +15,10 @@ public abstract class SemanticAtom<AtomType extends Atom> extends SemanticSymbol
 
     @Override
     public String toKernSemanticString() throws IM3Exception {
-        return KernExporter.encodeAtom(coreSymbol);
+        try {
+            return KernExporter.encodeAtom(coreSymbol);
+        } catch (Throwable t) {
+            throw new IM3Exception("Cannot encode into kern the atom '" + coreSymbol.toString() +  "'", t);
+        }
     }
 }

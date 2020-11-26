@@ -377,73 +377,78 @@ public class KernExporter {
     }
 
     public static String encodeAtom(Atom atom) throws ExportException {
-        if (atom instanceof SingleFigureAtom) {
-            Fraction multiplier;
-            if (atom.getParentAtom() != null && atom.getParentAtom() instanceof SimpleTuplet) {
-                SimpleTuplet parent = (SimpleTuplet) atom.getParentAtom();
-                multiplier = Fraction.getFraction(parent.getInSpaceOfAtoms(), parent.getCardinality());
-            } else {
-                multiplier = Fraction.ONE;
-            }
-            String duration = generateDuration(((SingleFigureAtom) atom).getAtomFigure(), multiplier);
-
-            if (atom instanceof SimpleNote) {
-                SimpleNote sn = (SimpleNote) atom;
-                String noteStr = generateNote(sn.getAtomPitch(), duration);
-
-                if (sn.getExplicitStemDirection() != null) {
-                    switch (sn.getExplicitStemDirection()) {
-                        case down:
-                            noteStr += "\\";
-                            break;
-                        case up:
-                            noteStr += "/";
-                            break;
-                    }
-                }
-
-                if (sn.getAtomFigure().getFermata() != null) {
-                    noteStr += ";";
-                }
-                return noteStr;
-            } else if (atom instanceof SimpleRest) {
-                SimpleRest rest = (SimpleRest) atom;
-                String restResult;
-                if (rest.getAtomFigure().getFermata() != null) {
-                    restResult = duration + "r;";
+        try {
+            if (atom instanceof SingleFigureAtom) {
+                Fraction multiplier;
+                if (atom.getParentAtom() != null && atom.getParentAtom() instanceof SimpleTuplet) {
+                    SimpleTuplet parent = (SimpleTuplet) atom.getParentAtom();
+                    multiplier = Fraction.getFraction(parent.getInSpaceOfAtoms(), parent.getCardinality());
                 } else {
-                    restResult = duration + "r";
+                    multiplier = Fraction.ONE;
                 }
 
-                if (rest.getLinePosition() != null) {
-                    restResult += "_" + rest.getLinePosition();
-                }
-                return restResult;
+                String duration = generateDuration(((SingleFigureAtom) atom).getAtomFigure(), multiplier);
 
-            } else if (atom instanceof SimpleChord) {
-                StringBuilder cb = new StringBuilder();
-                SimpleChord sc = (SimpleChord) atom;
-                for (AtomPitch atomPitch : sc.getAtomPitches()) {
-                    if (cb.length() > 0) {
-                        cb.append(' ');
+                if (atom instanceof SimpleNote) {
+                    SimpleNote sn = (SimpleNote) atom;
+                    String noteStr = generateNote(sn.getAtomPitch(), duration);
+
+                    if (sn.getExplicitStemDirection() != null) {
+                        switch (sn.getExplicitStemDirection()) {
+                            case down:
+                                noteStr += "\\";
+                                break;
+                            case up:
+                                noteStr += "/";
+                                break;
+                        }
                     }
-                    cb.append(generateNote(atomPitch, duration));
+
+                    if (sn.getAtomFigure().getFermata() != null) {
+                        noteStr += ";";
+                    }
+                    return noteStr;
+                } else if (atom instanceof SimpleRest) {
+                    SimpleRest rest = (SimpleRest) atom;
+                    String restResult;
+                    if (rest.getAtomFigure().getFermata() != null) {
+                        restResult = duration + "r;";
+                    } else {
+                        restResult = duration + "r";
+                    }
+
+                    if (rest.getLinePosition() != null) {
+                        restResult += "_" + rest.getLinePosition();
+                    }
+                    return restResult;
+
+                } else if (atom instanceof SimpleChord) {
+                    StringBuilder cb = new StringBuilder();
+                    SimpleChord sc = (SimpleChord) atom;
+                    for (AtomPitch atomPitch : sc.getAtomPitches()) {
+                        if (cb.length() > 0) {
+                            cb.append(' ');
+                        }
+                        cb.append(generateNote(atomPitch, duration));
+                    }
+                    if (sc.getAtomFigure().getFermata() != null) {
+                        cb.append(';');
+                    }
+                    return cb.toString();
+                } else {
+                    throw new ExportException("Unsupported atom type: " + atom.getClass().getName());
                 }
-                if (sc.getAtomFigure().getFermata() != null) {
-                    cb.append(';');
+            } /*else if (atom instanceof SimpleTuplet) {
+                // TODO tuplets of tuplets and tuplets of chords
+                SimpleTuplet tuplet = (SimpleTuplet) atom;
+                for (Atom tupletAtom: tuplet.getAtoms()) {
+                    encodeAtom(record, tupletAtom, Fraction.getFraction(tuplet.getInSpaceOfAtoms(), tuplet.getCardinality()));
                 }
-                return cb.toString();
-            } else {
-                throw new ExportException("Unsupported atom type: " + atom.getClass().getName());
+            } */ else {
+                throw new ExportException("Unsupported exporting of class " + atom.getClass());
             }
-        } /*else if (atom instanceof SimpleTuplet) {
-            // TODO tuplets of tuplets and tuplets of chords
-            SimpleTuplet tuplet = (SimpleTuplet) atom;
-            for (Atom tupletAtom: tuplet.getAtoms()) {
-                encodeAtom(record, tupletAtom, Fraction.getFraction(tuplet.getInSpaceOfAtoms(), tuplet.getCardinality()));
-            }
-        } */ else  {
-            throw new ExportException("Unsupported exporting of class " + atom.getClass());
+        } catch (Throwable t) {
+            throw new ExportException("Cannot export atom: '" + atom.toString() + "'", t);
         }
     }
 
@@ -488,12 +493,16 @@ public class KernExporter {
 
         //TODO Test unitario - sobre todo de mensural
         if (figure.getNotationType() == NotationType.eModern) {
-            Fraction divider = Fraction.getFraction(1, figure.getMeterUnit()).multiplyBy(multipler);
-            Fraction durationValue = Fraction.ONE.divideBy(divider).reduce();
-            if (durationValue.getDenominator() != 1) {
-                throw new ExportException("Cannot export figure " + figure + " with multiplier " + multipler + " that produce a fraction: " + durationValue);
+            if (figure == Figures.DOUBLE_WHOLE) {
+                sb.append('0');
+            } else {
+                Fraction divider = Fraction.getFraction(1, figure.getMeterUnit()).multiplyBy(multipler);
+                Fraction durationValue = Fraction.ONE.divideBy(divider).reduce();
+                if (durationValue.getDenominator() != 1) {
+                    throw new ExportException("Cannot export figure " + figure + " with multiplier " + multipler + " that produce a fraction: " + durationValue);
+                }
+                sb.append(durationValue.getNumerator());
             }
-            sb.append(durationValue.getNumerator());
         } else if (figure.getNotationType() == NotationType.eMensural) {
             char car;
             switch (figure) {

@@ -640,7 +640,7 @@ public class Encoder {
                     addHorizontalSeparator();
                 }
 
-                for (; i<end; i++) {
+                for (; i<simpleTuplet.getAtoms().size(); i++) {
                     convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
                 }
 
@@ -738,7 +738,15 @@ public class Encoder {
             }
 
             addVerticalSeparator();
-            agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getDenominator()), PositionsInStaff.LINE_2));
+            if (ts.getDenominator() > 10) {
+                if (ts.getDenominator() > 100) {
+                    throw new IM3Exception("Unsupported meter: " + ts);
+                }
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getDenominator() / 10), PositionsInStaff.LINE_2));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getDenominator() % 10), PositionsInStaff.LINE_2));
+            } else {
+                agnosticEncoding.add(new AgnosticSymbol(version, new Digit(ts.getDenominator()), PositionsInStaff.LINE_2));
+            }
             agnosticEncoding.add(horizontalSeparator);
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getNumerator()), PositionsInStaff.LINE_4));
             //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.digit, Integer.toString(ts.getDenominator()), PositionsInStaff.LINE_2));

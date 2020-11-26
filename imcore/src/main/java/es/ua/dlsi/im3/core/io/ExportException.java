@@ -31,4 +31,7 @@ public class ExportException extends IM3Exception {
 		super(msg);
 	}
 
+	public ExportException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

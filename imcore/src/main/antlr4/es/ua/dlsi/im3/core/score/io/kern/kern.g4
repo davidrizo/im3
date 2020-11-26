@@ -378,4 +378,3 @@ fragment TEXT: ~[\t\n\r]+ ;
 // Pag. 382 Octave transposition
 // TODO Comprobar que todos los barlines - meter - key  ..... estanáalineados, eso lo podemos hacer con una regla de repeticion
 
- 

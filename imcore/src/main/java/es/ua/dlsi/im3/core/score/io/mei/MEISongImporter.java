@@ -22,6 +22,13 @@ public class MEISongImporter implements IScoreSongImporter {
 		importer = new MEISAXScoreSongImporter(new DurationEvaluator());
 	}
 
+	/**
+	 * @param allowErrors If true, errors such as trying to tie two notes of different pitches are reported as warnings and let the import continue
+	 */
+	public void setAllowErrors(boolean allowErrors) {
+		importer.setAllowErrors(allowErrors);
+	}
+
     /**
      *
      * @param durationEvaluator If null, the basic DurationEvaluator() is used
