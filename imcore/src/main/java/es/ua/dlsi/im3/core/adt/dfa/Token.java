@@ -8,8 +8,18 @@ public class Token<AlphabetSymbolType extends IAlphabetSymbolType> implements Co
      */
     protected AlphabetSymbolType symbol;
 
+    private Long id;
+
     public Token(AlphabetSymbolType symbol) {
         this.symbol = symbol;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public AlphabetSymbolType getSymbol() {

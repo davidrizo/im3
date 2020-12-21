@@ -598,7 +598,10 @@ public class MEISongExporter implements ISongExporter {
 
 			generateFacsimileReference(clef, params);
 			params.add("xml:id");
-			params.add("clef_" + IDGenerator.getID());
+			if (clef.__getID() == null) {
+				clef.__setID("clef_" + IDGenerator.getID());
+			}
+			params.add(clef.__getID());
 			XMLExporterHelper.startEnd(sb, tabs + 1, "clef", params);
 		}
 	}
@@ -735,7 +738,10 @@ public class MEISongExporter implements ISongExporter {
 		}
 		generateFacsimileReference(mm, params);
 		params.add("xml:id");
-		params.add("mensur_" + IDGenerator.getID());
+		if (mm.__getID() == null) {
+			mm.__setID("mensur_" + IDGenerator.getID());
+		}
+		params.add(mm.__getID());
 		XMLExporterHelper.startEnd(sb, tabs+1, "mensur", params);
 	}
 

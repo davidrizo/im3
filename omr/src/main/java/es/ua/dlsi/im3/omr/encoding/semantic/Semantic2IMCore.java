@@ -10,8 +10,10 @@ import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.SemanticNote;
 import java.util.LinkedList;
 import java.util.List;
 
+//TODO La generación de IDs sólo va para **mens / **kern monofonico!!!
 /**
- * It converts the semantic encoding to a ScoreSong
+ * It converts the semantic encoding to a ScoreSong.
+ * It assigns each core symbol an ID prepended by an L
  */
 public class Semantic2IMCore {
 
@@ -22,7 +24,13 @@ public class Semantic2IMCore {
         semanticConversionContext.setCurrentTimeSignature(lastTimeSignature);*/
         List<Pair<SemanticSymbol, ITimedElementInStaff>> conversion = new LinkedList<>();
         SimpleNote pendingTiePreviousSymbol = null; //TODO para acordes
+        long nextSemanticSymbolID = 0L;
         for (SemanticSymbol semanticSymbol: semanticEncoding.getSymbols()) {
+            semanticSymbol.setId(nextSemanticSymbolID);
+            if (semanticSymbol.getSymbol() != null && semanticSymbol.getSymbol().getCoreSymbol() != null) {
+                semanticSymbol.getSymbol().getCoreSymbol().__setID("L" + nextSemanticSymbolID);
+            }
+            nextSemanticSymbolID++;
             conversion.add(new Pair<>(semanticSymbol, semanticSymbol.getSymbol().getCoreSymbol()));
             if (semanticSymbol.getSymbol() instanceof SemanticNote) {
                 SemanticNote semanticNote = (SemanticNote) semanticSymbol.getSymbol();
