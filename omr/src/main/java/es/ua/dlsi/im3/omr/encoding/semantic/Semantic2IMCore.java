@@ -13,7 +13,7 @@ import java.util.List;
 //TODO La generación de IDs sólo va para **mens / **kern monofonico!!!
 /**
  * It converts the semantic encoding to a ScoreSong.
- * It assigns each core symbol an ID prepended by an L
+ * It assigns each core symbol an ID prepended by an L (used in notation.component.ts)
  */
 public class Semantic2IMCore {
 
@@ -28,9 +28,18 @@ public class Semantic2IMCore {
         for (SemanticSymbol semanticSymbol: semanticEncoding.getSymbols()) {
             semanticSymbol.setId(nextSemanticSymbolID);
             if (semanticSymbol.getSymbol() != null && semanticSymbol.getSymbol().getCoreSymbol() != null) {
-                semanticSymbol.getSymbol().getCoreSymbol().__setID("L" + nextSemanticSymbolID);
+                if (semanticSymbol.getSymbol().getCoreSymbol() instanceof CompoundAtom) {
+                    CompoundAtom compoundAtom = (CompoundAtom)semanticSymbol.getSymbol().getCoreSymbol();
+                    for (Atom atom: compoundAtom.getAtoms()) {
+                        atom.__setID("L" + semanticSymbol.getId());
+                        nextSemanticSymbolID++;
+                    }
+                } else {
+                    semanticSymbol.getSymbol().getCoreSymbol().__setID("L" + semanticSymbol.getId());
+                    nextSemanticSymbolID++;
+                }
             }
-            nextSemanticSymbolID++;
+
             conversion.add(new Pair<>(semanticSymbol, semanticSymbol.getSymbol().getCoreSymbol()));
             if (semanticSymbol.getSymbol() instanceof SemanticNote) {
                 SemanticNote semanticNote = (SemanticNote) semanticSymbol.getSymbol();
