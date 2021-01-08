@@ -59,7 +59,6 @@ public class MEISongExporter implements ISongExporter {
 	 * If true, we add @type attribute to the harm element
 	 */
 	boolean useHarmTypes;
-	public static final String VERSION = "4.0.0";
 	public static final String HARM_TYPE_KEY = "key";
 	public static final String HARM_TYPE_DEGREE = "degree";
 	public static final String HARM_TYPE_TONAL_FUNCTION = "tonalFunction";
@@ -277,9 +276,9 @@ public class MEISongExporter implements ISongExporter {
 
 	private void exportHeader(StringBuilder sb) {
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		sb.append("<?xml-model href=\"http://music-encoding.org/schema/4.0.0/mei-all.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?>\n");
-		sb.append("<?xml-model href=\"http://music-encoding.org/schema/4.0.0/mei-all.rng\" type=\"application/xml\" schematypens=\"http://purl.oclc.org/dsdl/schematron\"?>\n");
-		sb.append("<mei xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.music-encoding.org/ns/mei\" meiversion=\""+VERSION+"\">\n");
+		sb.append("<?xml-model href=\"http://music-encoding.org/schema/dev/mei-all.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?>\n");
+		sb.append("<?xml-model href=\"http://music-encoding.org/schema/dev/mei-all.rng\" type=\"application/xml\" schematypens=\"http://purl.oclc.org/dsdl/schematron\"?>\n");
+		sb.append("<mei xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.music-encoding.org/ns/mei\" meiversion=\"5.0.0-dev\">\n");
 	}
 
 	protected void processBeforeMusic(int tabs) throws ExportException {
