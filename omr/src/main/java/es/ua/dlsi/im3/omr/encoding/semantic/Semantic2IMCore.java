@@ -31,7 +31,7 @@ public class Semantic2IMCore {
                 if (semanticSymbol.getSymbol().getCoreSymbol() instanceof CompoundAtom) {
                     CompoundAtom compoundAtom = (CompoundAtom)semanticSymbol.getSymbol().getCoreSymbol();
                     for (Atom atom: compoundAtom.getAtoms()) {
-                        atom.__setID("L" + semanticSymbol.getId());
+                        atom.__setID("L" + nextSemanticSymbolID);
                         nextSemanticSymbolID++;
                     }
                 } else {
