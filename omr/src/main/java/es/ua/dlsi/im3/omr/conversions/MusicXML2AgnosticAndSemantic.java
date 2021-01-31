@@ -50,7 +50,7 @@ public class MusicXML2AgnosticAndSemantic {
                 convertToMensural(song);
             }
 
-            Encoder encoder = new Encoder(AgnosticVersion.v2, true);
+            Encoder encoder = new Encoder(AgnosticVersion.v2, true, true, true);
             SemanticExporter semanticExporter = new SemanticExporter();
             AgnosticExporter agnosticExporter = new AgnosticExporter();
             encoder.encode(song);

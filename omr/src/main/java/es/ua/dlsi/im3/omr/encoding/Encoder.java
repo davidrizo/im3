@@ -26,6 +26,8 @@ import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.*;
 
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * It encodes a ScoreSong into both agnostic and semantic encodings
@@ -40,6 +42,8 @@ public class Encoder {
     private static SemanticSystemBreak semanticSystemBreak;
     private static Dot dot = new Dot();
     private final AgnosticVersion version;
+    private final boolean propagateClef;
+    private final boolean propagateKeySignature;
 
     AgnosticEncoding agnosticEncoding;
     SemanticEncoding semanticEncoding;
@@ -48,8 +52,16 @@ public class Encoder {
     private static final JuxtapositionSeparator juxtapositionSeparator = new JuxtapositionSeparator();
     private final HorizontalSeparator horizontalSeparator;
     private boolean processSystemBreaks;
+    SemanticNote pendingTieFrom = null;
 
-    public Encoder(AgnosticVersion version, boolean processSystemBreaks) {
+    /**
+     *
+     * @param version
+     * @param processSystemBreaks
+     * @param propagateClef Propagate from previous staves above it
+     * @param propagateKeySignature  Propagate from previous staves above it
+     */
+    public Encoder(AgnosticVersion version, boolean processSystemBreaks, boolean propagateClef, boolean propagateKeySignature) {
         this.version = version;
         this.processSystemBreaks = processSystemBreaks;
         horizontalSeparator = new HorizontalSeparator(version);
@@ -57,10 +69,12 @@ public class Encoder {
         verticalSeparator = new VerticalSeparator(version);
         agnosticSystemBreak = new AgnosticSystemBreak();
         semanticSystemBreak = new SemanticSystemBreak();
+        this.propagateClef = propagateClef;
+        this.propagateKeySignature = propagateKeySignature;
     }
 
-    public Encoder(boolean processSystemBreaks) {
-        this(AgnosticVersion.v2, processSystemBreaks);
+    public Encoder(boolean processSystemBreaks, boolean propagateClef, boolean propagateKeySignature) {
+        this(AgnosticVersion.v2, processSystemBreaks, propagateClef, propagateKeySignature);
     }
 
     private void addVerticalSeparator() {
@@ -81,59 +95,64 @@ public class Encoder {
         Measure lastMeasure = null;
         List<ITimedElementInStaff> coreSymbolsOrdered = staff.getCoreSymbolsOrdered();
         Time lastEndTime = null;
-        boolean newSystem = false;
-        boolean firstSystem = true;
 
+        boolean first = true;
+        boolean newSystem = false;
         for (ITimedElementInStaff symbol : coreSymbolsOrdered) {
             if (processSystemBreaks) {
                 if (staff.getParts().get(0).getPageSystemBeginnings().hasSystemBeginning(symbol.getTime())) {
+                    newSystem = true;
                     // remove the system beginning
                     staff.getParts().get(0).getPageSystemBeginnings().removeSystemBeginning(symbol.getTime());
                     agnosticEncoding.add(agnosticSystemBreak);
                     semanticEncoding.add(semanticSystemBreak);
+
+                    if (!first) {
+                        // agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1)); // added twice
+                        semanticEncoding.add(new SemanticBarline());
+                    } else {
+                        first = false;
+                    }
+
+                    if (this.propagateClef && !symbol.getTime().isZero()) {
+                        es.ua.dlsi.im3.core.score.Clef lastClef = staff.getRunningClefAt(symbol);
+                        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Propagating clef " + lastClef);
+                        encodeClef(lastClef, true, true);
+                    }
+
+                    if (this.propagateKeySignature && !symbol.getTime().isZero()) {
+                        KeySignature lastKeySignature = staff.getRunningKeySignatureAt(symbol);
+                        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Propagating key signature " + lastKeySignature);
+                        encodeKeySignature(lastKeySignature, true, true);
+                    }
+
                 }
             }
 
             if (segment.contains(symbol.getTime())) {
-                if (processSystemBreaks && symbol instanceof SystemBreak) {
-                    semanticEncoding.add(new SemanticBarline());
-                    agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
-                    agnosticEncoding.add(agnosticSystemBreak);
-                    semanticEncoding.add(semanticSystemBreak);
-                    newSystem = true;
-                } else {
-                    Measure measure = null;
-                    if (scoreSong.hasMeasures()) {
-                        measure = scoreSong.getMeasureActiveAtTime(symbol.getTime());
-                    }
-
-                    if (newSystem && processSystemBreaks) {
-                        es.ua.dlsi.im3.core.score.Clef lastClef = staff.getRunningClefAt(symbol);
-                        encodeClef(lastClef);
-
-                        KeySignature lastKeySignature = staff.getRunningKeySignatureAt(symbol);
-                        encodeKeySignature(lastKeySignature);
-                        newSystem = false;
-                        //TODO slurs
-                    } else {
-                        if (measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
-                            agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
-                            agnosticEncoding.add(horizontalSeparator);
-                            //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
-                            semanticEncoding.add(new SemanticBarline());
-                            ////semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
-                        }
-                    }
-
-                    convert(symbol, drawnAccidentals, null);
-
-                    if (symbol instanceof Atom) {
-                        lastEndTime = ((Atom) symbol).getOffset();
-                    }
-
-                    lastMeasure = measure;
+                Measure measure = null;
+                if (scoreSong.hasMeasures()) {
+                    measure = scoreSong.getMeasureActiveAtTime(symbol.getTime());
                 }
+
+
+                if (!newSystem && measure != lastMeasure && lastMeasure != null) { // lastMeasure != null for not drawing the last bar line
+                    agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1));
+                    agnosticEncoding.add(horizontalSeparator);
+                    //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.barline, null, PositionsInStaff.LINE_1));
+                    semanticEncoding.add(new SemanticBarline());
+                    ////semanticTokens.add(new SemanticToken(SemanticSymbol.barline));
+                }
+
+                convert(symbol, drawnAccidentals, null);
+
+                if (symbol instanceof Atom) {
+                    lastEndTime = ((Atom) symbol).getOffset();
+                }
+
+                lastMeasure = measure;
             }
+            newSystem = false;
         }
 
         if (lastEndTime == null) {
@@ -416,7 +435,7 @@ public class Encoder {
             }
 
             Directions directions = null;
-            if (note.getDuration().getComputedTime() <= Figures.HALF.getDuration().getComputedTime()) {
+            if (note.getDuration().getComputedTime() < Figures.WHOLE.getDuration().getComputedTime()) {
                 if (note.getExplicitStemDirection() != null && note.getExplicitStemDirection() != StemDirection.computed && note.getExplicitStemDirection() != StemDirection.none) {
                     if (note.getExplicitStemDirection() == StemDirection.down) {
                         directions = Directions.down;
@@ -485,8 +504,18 @@ public class Encoder {
                 semanticEncoding.add(new SemanticTie(null)));
                 //semanticTokens.add(new SemanticToken(SemanticSymbol.tie));
             }*/
-            //TODO ties
-            semanticEncoding.add(new SemanticNote(note));
+            // Ties are bound at the end
+            SemanticNote semanticNote = new SemanticNote(note); // when creating the semantic note, ties are not cloned
+            if (pendingTieFrom != null) {
+                semanticNote.getCoreSymbol().tieFromPrevious(pendingTieFrom.getCoreSymbol());
+                pendingTieFrom = null;
+            }
+
+            if (note.getAtomPitch().isTiedToNext()) {
+                pendingTieFrom = semanticNote;
+            }
+
+            semanticEncoding.add(semanticNote);
 
         } else if (symbol instanceof SimpleMultiMeasureRest) {
             SimpleMultiMeasureRest multiMeasureRest = (SimpleMultiMeasureRest) symbol;
@@ -685,8 +714,11 @@ public class Encoder {
         }
     }
 
-
     private void encodeClef(es.ua.dlsi.im3.core.score.Clef clef) throws IM3Exception {
+        this.encodeClef(clef, true, true);
+    }
+
+    private void encodeClef(es.ua.dlsi.im3.core.score.Clef clef, boolean addAgnostic, boolean addSemantic) throws IM3Exception {
         PositionInStaff positionInStaff = PositionInStaff.fromLine(clef.getLine());
         if (clef.getOctaveChange() != 0) {
             throw new IM3Exception("Unsupported octave changes: " + clef);
@@ -705,12 +737,16 @@ public class Encoder {
             // TODO: 23/2/18 Octava bassa, alta....
             default: throw new IM3Exception("Invalid clef note: " + clef.getNote());
         }
-        agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef(clefNote), positionInStaff));
-        agnosticEncoding.add(horizontalSeparator);
+        if (addAgnostic) {
+            agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Clef(clefNote), positionInStaff));
+            agnosticEncoding.add(horizontalSeparator);
+        }
         //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.clef, clef.getNote().name(), positionInStaff));
         //semanticTokens.add(new SemanticToken(SemanticSymbol.clef, clef.getNote() + "" + clef.getLine()));
         //semanticEncoding.add(new SemanticClef(clefNote, clef.getLine())));
-        semanticEncoding.add(new SemanticClef(clef));
+        if (addSemantic) {
+            semanticEncoding.add(new SemanticClef(clef));
+        }
     }
 
     private void encodeTimeSignature(TimeSignature symbol) throws IM3Exception {
@@ -766,16 +802,22 @@ public class Encoder {
     }
 
     private void encodeKeySignature(KeySignature ks) throws IM3Exception {
-        PositionInStaff[] positions = ks.computePositionsOfAccidentals();
-        if (positions != null) {
-            boolean first = true;
-            for (PositionInStaff position : positions) {
-                es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(ks.getAccidental());
-                for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc: accs) {
-                    agnosticEncoding.add(new AgnosticSymbol(version, new Accidental(acc), position));
-                    agnosticEncoding.add(horizontalSeparator);
+        this.encodeKeySignature(ks, true, true);
+    }
+
+    private void encodeKeySignature(KeySignature ks, boolean addAgnostic, boolean addSemantic) throws IM3Exception {
+        if (addAgnostic) {
+            PositionInStaff[] positions = ks.computePositionsOfAccidentals();
+            if (positions != null) {
+                boolean first = true;
+                for (PositionInStaff position : positions) {
+                    es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals[] accs = convert(ks.getAccidental());
+                    for (es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals acc : accs) {
+                        agnosticEncoding.add(new AgnosticSymbol(version, new Accidental(acc), position));
+                        agnosticEncoding.add(horizontalSeparator);
+                    }
+                    //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, ks.getAccidental().name().toLowerCase(), position));
                 }
-                //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.accidental, ks.getAccidental().name().toLowerCase(), position));
             }
         }
             /*StringBuilder sb = new StringBuilder();
@@ -789,7 +831,9 @@ public class Encoder {
                 ks.getConcertPitchKey().getPitchClass().getAccidental(),
                 convert(ks.getConcertPitchKey().getMode()))));*/
         //semanticTokens.add(new SemanticToken(SemanticSymbol.keySignature, sb.toString()));
-        semanticEncoding.add(new SemanticKeySignature(ks));
+        if (addSemantic) {
+            semanticEncoding.add(new SemanticKeySignature(ks));
+        }
     }
 
     private PositionInStaff computePositionInStaff(SimpleTuplet simpleTuplet) throws IM3Exception {

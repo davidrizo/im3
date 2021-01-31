@@ -404,7 +404,7 @@ public class KernExporter {
                         }
                     }
 
-                    if (sn.getAtomFigure().getFermata() != null) {
+                    if (sn.getAtomFigure().getFermata() != null && sn.getAtomFigure().getFermata().getFermate() != null) {
                         noteStr += ";";
                     }
                     return noteStr;

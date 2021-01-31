@@ -37,7 +37,7 @@ public class PrIMuSGenerator {
         try {
             //fw = new FileWriter(outputFile);
             //BufferedWriter bw = new BufferedWriter(fw);
-            Encoder encoder = new Encoder(AgnosticVersion.v1, false);
+            Encoder encoder = new Encoder(AgnosticVersion.v1, false, false, false);
             encoder.encode(scoreSong);
             SemanticExporter exporter = new SemanticExporter();
             exporter.export(encoder.getSemanticEncoding(), outputFile);
@@ -65,7 +65,7 @@ public class PrIMuSGenerator {
             //MEISongImporter importer = new MEISongImporter();
             ScoreSongImporter importer = new ScoreSongImporter();
             //ScoreGraphicalDescriptionWriter writer = new ScoreGraphicalDescriptionWriter();
-            Encoder encoder = new Encoder(agnosticVersion, false);
+            Encoder encoder = new Encoder(agnosticVersion, false, false, false);
             AgnosticExporter agnosticExporter = new AgnosticExporter();
             SemanticExporter semanticExporter = new SemanticExporter();
             try {

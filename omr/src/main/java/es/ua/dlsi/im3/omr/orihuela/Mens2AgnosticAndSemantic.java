@@ -68,7 +68,7 @@ public class Mens2AgnosticAndSemantic {
             lilypondExporterPart.exportPart(lilypondPart, part);
         }
 
-        Encoder encoder = new Encoder(AgnosticVersion.v2, true);
+        Encoder encoder = new Encoder(AgnosticVersion.v2, true, true, true);
         encoder.encode(scoreSong);
         Exporter agnosticExporter = new AgnosticExporter(AgnosticVersion.v2);
         agnosticExporter.export(encoder.getAgnosticEncoding(), new File(outputFolder, "out.agnostic"));

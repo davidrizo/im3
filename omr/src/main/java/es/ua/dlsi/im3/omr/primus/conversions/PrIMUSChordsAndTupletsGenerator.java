@@ -61,7 +61,7 @@ public class PrIMUSChordsAndTupletsGenerator {
 
         System.out.println("Generating " + agnostic.getAbsolutePath());
 
-        Encoder encoder = new Encoder(AgnosticVersion.v3_advance, true);
+        Encoder encoder = new Encoder(AgnosticVersion.v3_advance, true, false, false);
         encoder.encode(song);
         AgnosticExporter agnosticExporter = new AgnosticExporter(AgnosticVersion.v3_advance);
         agnosticExporter.export(encoder.getAgnosticEncoding(), agnostic);
