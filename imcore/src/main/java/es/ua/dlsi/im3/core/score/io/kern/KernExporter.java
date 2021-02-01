@@ -438,6 +438,8 @@ public class KernExporter {
                 } else {
                     throw new ExportException("Unsupported atom type: " + atom.getClass().getName());
                 }
+            } else if (atom instanceof SimpleMultiMeasureRest) {
+                return "rr" + ((SimpleMultiMeasureRest)atom).getNumMeasures();
             } /*else if (atom instanceof SimpleTuplet) {
                 // TODO tuplets of tuplets and tuplets of chords
                 SimpleTuplet tuplet = (SimpleTuplet) atom;
