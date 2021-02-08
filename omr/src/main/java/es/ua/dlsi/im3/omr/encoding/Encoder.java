@@ -104,6 +104,13 @@ public class Encoder {
                     newSystem = true;
                     // remove the system beginning
                     staff.getParts().get(0).getPageSystemBeginnings().removeSystemBeginning(symbol.getTime());
+
+                    if (!first) {
+                        // bar line at the end of the staff
+                        agnosticEncoding.add(new AgnosticSymbol(version, barline, PositionsInStaff.LINE_1)); // added twice
+                        semanticEncoding.add(new SemanticBarline());
+                    }
+
                     agnosticEncoding.add(agnosticSystemBreak);
                     semanticEncoding.add(semanticSystemBreak);
 
@@ -397,8 +404,6 @@ public class Encoder {
                 //graphicalTokens.add(new GraphicalToken(GraphicalSymbol.fermata, "above", PositionsInStaff.SPACE_6));
             }
 
-
-
             Accidentals accidentalToDraw = drawnAccidentals.get(note.getAtomPitch());
             if (accidentalToDraw != null) {
                 es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Accidentals [] accs = convert(accidentalToDraw);
@@ -669,11 +674,12 @@ public class Encoder {
                     addHorizontalSeparator();
                 }
 
-                for (; i<simpleTuplet.getAtoms().size(); i++) {
+                for (; i<simpleTuplet.getAtoms().size()-1; i++) {
                     convert(simpleTuplet.getAtoms().get(i), drawnAccidentals, tupletNumber);
                 }
 
                 if (!tupleDigitAboveStaff) {
+                    convert(simpleTuplet.getAtoms().get(cardinality - 1), drawnAccidentals, tupletNumber);
                     agnosticEncoding.removeLastSymbolIfSeparator();
                 }
 

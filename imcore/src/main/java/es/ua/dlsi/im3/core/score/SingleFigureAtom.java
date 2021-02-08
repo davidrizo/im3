@@ -21,6 +21,21 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
 
     private StemDirection explicitStemDirection;
 
+    //TO-DO PATCH for Worms'21 - just for importing FMT
+    Integer inTuplet=null;
+
+    /**
+     * @deprecated TO-DO Quitar - puesto para Worms'21
+     * @return
+     */
+    public Integer getInTuplet() {
+        return inTuplet;
+    }
+
+    public void setInTuplet(Integer inTuplet) {
+        this.inTuplet = inTuplet;
+    }
+
     public SingleFigureAtom(Figures figure, int dots) {
 		atomFigure = new AtomFigure(this, figure, dots);
 		addDuration(atomFigure.getDuration());

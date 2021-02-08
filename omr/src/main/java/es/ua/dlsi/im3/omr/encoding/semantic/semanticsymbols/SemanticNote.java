@@ -16,6 +16,7 @@ import java.util.List;
 public class SemanticNote extends SemanticAtom<SimpleNote> {
     private static final String SEMANTIC_NOTE = "note" + SEPSYMBOL;
     private static final String SEMANTIC_GRACENOTE = "gracenote" + SEPSYMBOL;
+    private Integer tupletNumber;
 
     private boolean trill;
     private boolean tied;
@@ -33,8 +34,9 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
      * @param scientificPitch It contains the actual accidental, the one that must be played
      * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
      */
-    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, Perfection perfection)  {
+    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, Perfection perfection) throws IM3Exception {
         super(new SimpleNote(figures, dots, scientificPitch));
+        setTuplet(tupletNumber);
         this.setFermata(fermata);
         this.trill = trill;
         this.coreSymbol.setGrace(graceNote);
@@ -50,7 +52,14 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
                 throw new IM3RuntimeException(e); // this should never happen
             }
         }
-        //TODO Tuplet en el CoreSymbol
+        this.tupletNumber = tupletNumber;
+    }
+
+    private void setTuplet(Integer tupletNumber) throws IM3Exception {
+        this.tupletNumber = tupletNumber;
+        if (tupletNumber != null) {
+            ((SimpleNote)coreSymbol).setInTuplet(tupletNumber);
+        }
     }
 
     /**
@@ -58,15 +67,23 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
      * @param scientificPitch It contains the actual accidental, the one that must be played
      * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
      */
-    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored) {
+    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored) throws IM3Exception {
         this(graceNote, scientificPitch, visualAccidental, figures, dots, fermata, trill, tupletNumber, colored, null);
+        if (tupletNumber != null) {
+            setTuplet(tupletNumber);
+        }
     }
 
-    public SemanticNote(SimpleNote simpleNote) {
+
+    public SemanticNote(SimpleNote simpleNote) throws IM3Exception {
         super(simpleNote.clone());
         this.trill = simpleNote.hasTrill();
         this.tied = simpleNote.getAtomPitch().isTiedToNext();
         this.fermata = simpleNote.getAtomFigure().getFermata() != null;
+        if (simpleNote.getParentAtom() != null && simpleNote.getParentAtom() instanceof SimpleTuplet) {
+            SimpleTuplet parent = (SimpleTuplet) simpleNote.getParentAtom();
+            setTuplet(parent.getCardinality());
+        }
     }
 
     @Override

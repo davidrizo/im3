@@ -23,7 +23,8 @@ public class SemanticEncoding extends Sequence<SemanticSymbol> {
             if (semanticSymbol.getSymbol() == null) {
                 throw new IM3Exception("Cannot export because symbol in semantic is null: " + semanticSymbol);
             }
-            stringBuilder.append(semanticSymbol.getSymbol().toKernSemanticString());
+            SemanticSymbolType symbol = semanticSymbol.getSymbol();
+            stringBuilder.append(symbol.toKernSemanticString());
             stringBuilder.append('\n');
         }
         return stringBuilder.toString();

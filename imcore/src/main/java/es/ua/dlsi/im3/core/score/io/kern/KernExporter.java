@@ -387,10 +387,18 @@ public class KernExporter {
                     multiplier = Fraction.ONE;
                 }
 
-                String duration = generateDuration(((SingleFigureAtom) atom).getAtomFigure(), multiplier);
+
+                //TODO Worms'21 Parche
+                if (((SingleFigureAtom)atom).getInTuplet() != null) {
+                    multiplier = Fraction.getFraction(2, ((SingleFigureAtom)atom).getInTuplet());
+                }
+
+
+                String duration = generateDuration(((SingleFigureAtom)atom).getAtomFigure(), multiplier);
 
                 if (atom instanceof SimpleNote) {
                     SimpleNote sn = (SimpleNote) atom;
+
                     String noteStr = generateNote(sn.getAtomPitch(), duration);
 
                     if (sn.getExplicitStemDirection() != null) {
