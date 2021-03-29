@@ -1,5 +1,9 @@
 {
 .appVersion = "1286";
+DisplayStrings = (
+"",
+""
+);
 customParameters = (
 {
 name = glyphOrder;
@@ -66,7 +70,8 @@ uniE086,
 uniE087,
 uniE088,
 uniE089,
-uniE4CE
+uniE4CE,
+uniE4EE
 );
 }
 );
@@ -3689,20 +3694,9 @@ unicode = E043;
 },
 {
 glyphname = uniE1FC;
-lastChange = "2019-03-27 08:43:13 +0000";
+lastChange = "2021-03-27 19:58:01 +0000";
 layers = (
 {
-hints = (
-{
-horizontal = 1;
-place = "{-50, 100}";
-type = Stem;
-},
-{
-place = "{0, 100}";
-type = Stem;
-}
-);
 layerId = "02376AAC-77FF-49DA-9399-294AF7A35492";
 paths = (
 {
@@ -3726,8 +3720,7 @@ nodes = (
 width = 100;
 }
 );
-note = uniE1E7;
-unicode = E1E7;
+unicode = E1FC;
 },
 {
 glyphname = uniE4C0;
@@ -7167,6 +7160,72 @@ width = 153;
 );
 note = uniE4CE;
 unicode = E4CE;
+},
+{
+glyphname = uniE4EE;
+lastChange = "2021-03-27 19:38:25 +0000";
+layers = (
+{
+hints = (
+{
+horizontal = 1;
+place = "{-105, 200}";
+type = Stem;
+},
+{
+place = "{0, 32}";
+type = Stem;
+},
+{
+place = "{750, 32}";
+type = Stem;
+}
+);
+layerId = "02376AAC-77FF-49DA-9399-294AF7A35492";
+paths = (
+{
+closed = 1;
+nodes = (
+"0 -255 LINE SMOOTH",
+"0 -264 OFFCURVE",
+"7 -271 OFFCURVE",
+"16 -271 CURVE SMOOTH",
+"25 -271 OFFCURVE",
+"32 -264 OFFCURVE",
+"32 -255 CURVE SMOOTH",
+"32 -105 LINE",
+"750 -105 LINE",
+"750 -255 LINE SMOOTH",
+"750 -264 OFFCURVE",
+"757 -271 OFFCURVE",
+"766 -271 CURVE SMOOTH",
+"775 -271 OFFCURVE",
+"782 -264 OFFCURVE",
+"782 -255 CURVE SMOOTH",
+"782 245 LINE SMOOTH",
+"782 254 OFFCURVE",
+"775 261 OFFCURVE",
+"766 261 CURVE SMOOTH",
+"757 261 OFFCURVE",
+"750 254 OFFCURVE",
+"750 245 CURVE SMOOTH",
+"750 95 LINE",
+"32 95 LINE",
+"32 245 LINE SMOOTH",
+"32 254 OFFCURVE",
+"25 261 OFFCURVE",
+"16 261 CURVE SMOOTH",
+"7 261 OFFCURVE",
+"0 254 OFFCURVE",
+"0 245 CURVE SMOOTH"
+);
+}
+);
+width = 784;
+}
+);
+note = uniE4EE;
+unicode = E4EE;
 }
 );
 instances = (

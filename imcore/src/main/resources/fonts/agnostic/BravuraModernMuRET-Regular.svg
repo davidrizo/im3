@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
 <metadata>
-Created by FontForge 20190317 at Wed Feb 19 19:09:51 2020
+Created by FontForge 20190317 at Sat Mar 27 21:58:13 2021
  By David Rizo Valero
 copyright missing
 </metadata>
@@ -135,7 +135,7 @@ c5 5 23 7 41 7c17 0 33 -2 37 -7s7 -23 7 -40c0 -16 -2 -31 -7 -36c-7 -6 -22 -10 -3
 d="M0 0v1000h36v-1000h-36z" />
     <glyph glyph-name="uniE043" unicode="&#xe043;" horiz-adv-x="91" 
 d="M91 93c0 -25 -20 -46 -45 -46c-26 0 -46 21 -46 46s20 46 46 46c25 0 45 -21 45 -46zM91 -123c0 -25 -20 -46 -45 -46c-26 0 -46 21 -46 46s20 46 46 46c25 0 45 -21 45 -46z" />
-    <glyph glyph-name="uniE1FC" unicode="&#xe1e7;" horiz-adv-x="100" 
+    <glyph glyph-name="uniE1FC" unicode="&#xe1fc;" horiz-adv-x="100" 
 d="M100 0c0 -28 -22 -50 -50 -50s-50 22 -50 50s22 50 50 50s50 -22 50 -50z" />
     <glyph glyph-name="uniE4C0" unicode="&#xe4c0;" horiz-adv-x="602" 
 d="M299 221c-206 0 -251 -153 -263 -194c-1 -4 -2 -8 -3 -9c-6 -14 -11 -21 -20 -21c-8 0 -13 3 -13 13c0 3 0 7 1 11c61 306 268 308 300 308c29 0 238 -2 300 -308c1 -4 1 -7 1 -10c0 -10 -5 -14 -14 -14c-10 0 -14 7 -21 21c-1 1 -1 4 -2 7c-10 38 -53 196 -266 196z
@@ -246,5 +246,7 @@ c36 29 86 36 131 36c25 0 55 -3 80 -14c39 -17 73 -58 94 -96c22 -40 30 -92 31 -138
 c32 0 58 50 58 112s-26 112 -58 112s-59 -50 -59 -112s27 -112 59 -112z" />
     <glyph glyph-name="uniE4CE" unicode="&#xe4ce;" horiz-adv-x="153" 
 d="M72 251c18 0 37 -6 52 -17c16 -12 28 -32 28 -61v-7c0 -29 -6 -64 -26 -95c-16 -25 -67 -69 -100 -69c-3 0 -6 2 -7 8c0 1 -1 2 -1 3c0 5 4 7 8 9c2 2 28 17 45 39c9 12 16 25 16 39c0 4 -1 7 -2 11c0 0 -3 21 -28 21c-33 0 -56 22 -56 56c0 35 28 63 71 63z" />
+    <glyph glyph-name="uniE4EE" unicode="&#xe4ee;" horiz-adv-x="784" 
+d="M0 245c0 9 7 16 16 16s16 -7 16 -16v-150h718v150c0 9 7 16 16 16s16 -7 16 -16v-500c0 -9 -7 -16 -16 -16s-16 7 -16 16v150h-718v-150c0 -9 -7 -16 -16 -16s-16 7 -16 16v500z" />
   </font>
 </defs></svg>

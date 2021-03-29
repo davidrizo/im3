@@ -71,6 +71,10 @@
 		"defaultPositionInStaff": "L3",
         "codepoint": "U+E1DB"
     },
+    "multirest" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E4EE"
+    },
    "rest.whole" : {
 		"defaultPositionInStaff": "L3",
         "codepoint": "U+E4E3"
@@ -114,7 +118,7 @@
     "verticalLine" : {
       "defaultPositionInStaff": "L1",
         "codepoint": "U+E030"
-    }
+    },
     "colon" : {
       "defaultPositionInStaff": "L3",
         "codepoint": "U+E043"

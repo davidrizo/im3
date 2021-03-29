@@ -412,6 +412,10 @@ public class KernExporter {
                         }
                     }
 
+                    if (sn.isGrace()) {
+                        noteStr += "q";
+                    }
+
                     if (sn.getAtomFigure().getFermata() != null && sn.getAtomFigure().getFermata().getFermate() != null) {
                         noteStr += ";";
                     }
@@ -430,6 +434,11 @@ public class KernExporter {
                     if (rest.getLinePosition() != null) {
                         restResult += "_" + rest.getLinePosition();
                     }
+
+                    if (rest.isGrace()) {
+                        restResult += "q";
+                    }
+
                     return restResult;
 
                 } else if (atom instanceof SimpleChord) {

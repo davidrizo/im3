@@ -97,6 +97,12 @@ public class PositionInStaff implements Comparable<PositionInStaff> {
 
     public static PositionInStaff parseString(String val) throws IM3Exception {
         try {
+            //TODO Parche quitarlo - PossitionInStaff imcore3 #MuRET - remove /digit:4 or similar
+            int barra = val.indexOf("/");
+            if (barra != -1) {
+                System.err.println("Removing incorrect token from position in staff: " + val);
+                val = val.substring(0, barra);
+            }
             if (val.startsWith(LINE_STR)) {
                 int line = Integer.parseInt(val.substring(1));
                 return fromLine(line);
