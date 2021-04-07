@@ -32,7 +32,7 @@ public class PrIMuSSemanticAgnosticExporterTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile(filename);
         ScoreSong song = importer.importSong(file);
-        Encoder encoder = new Encoder(agnosticVersion, false);
+        Encoder encoder = new Encoder(agnosticVersion, false, false, false);
         encoder.encode(song);
 
         String agnosticStringFormat = new AgnosticExporter(agnosticVersion).export(encoder.getAgnosticEncoding());

@@ -55,23 +55,23 @@
 		"defaultPositionInStaff": "L3",
         "codepoint": "U+E560"
     },
-    "note.eighthCut_down" : {
+    "gracenote.eighth_down" : {
       "defaultPositionInStaff": "L3",
       "codepoint": "U+E561"
     },
-    "note.eighthCut_up" : {
+    "gracenote.eighth_up" : {
       "defaultPositionInStaff": "L3",
       "codepoint": "U+E560"
     },
-  "note.appoggiatura_down" : {
-    "defaultPositionInStaff": "L3",
-    "codepoint": "U+E562"
-  },
-  "note.appoggiatura_up" : {
-    "defaultPositionInStaff": "L3",
-    "codepoint": "U+E563"
-  },
-  "note.sixteenth_down" : {
+    "appoggiatura.eighth_down" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E562"
+    },
+    "appoggiatura.eighth_up" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E563"
+    },
+    "note.sixteenth_down" : {
 		"defaultPositionInStaff": "L3",
         "codepoint": "U+E1DA"
     },

@@ -314,7 +314,7 @@ public class Encoder {
                         addVerticalSeparator();
                     }
                     if (chord.isGrace()) {
-                        agnosticEncoding.add(new AgnosticSymbol(version, new GraceNote(figureString), positionInStaffs[i]));
+                        agnosticEncoding.add(new AgnosticSymbol(version, new Acciaccatura(figureString), positionInStaffs[i]));
                     } else {
                         agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaffs[i]));
                     }
@@ -457,7 +457,7 @@ public class Encoder {
             }
 
             if (note.isGrace()) {
-                agnosticEncoding.add(new AgnosticSymbol(version, new GraceNote(noteDurationSpecification, directions), positionInStaff));
+                agnosticEncoding.add(new AgnosticSymbol(version, new Acciaccatura(noteDurationSpecification, directions), positionInStaff));
             } else {
                 agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(noteDurationSpecification, directions), positionInStaff));
             }

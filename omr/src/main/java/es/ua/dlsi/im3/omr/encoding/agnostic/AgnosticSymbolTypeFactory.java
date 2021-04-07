@@ -34,7 +34,7 @@ public class AgnosticSymbolTypeFactory {
                 className = "MeterSign";
                 break;
             case "gracenote":
-                className = "GraceNote";
+                className = "Acciaccatura";
                 break;
             default:
                 className = tokens[0].substring(0, 1).toUpperCase() + tokens[0].substring(1);

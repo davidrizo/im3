@@ -20,7 +20,7 @@ public class AgnosticV3Tests {
     File file = TestFileUtils.getFile("/testdata/agnosticv3", meiFileName);
     MEISongImporter importer = new MEISongImporter();
     ScoreSong song = importer.importSong(file);
-    Encoder encoder = new Encoder(AgnosticVersion.v3_advance, false);
+    Encoder encoder = new Encoder(AgnosticVersion.v3_advance, false, false, false);
     encoder.encode(song);
 
     String agnosticStringFormat = new AgnosticExporter(AgnosticVersion.v3_advance).export(encoder.getAgnosticEncoding());

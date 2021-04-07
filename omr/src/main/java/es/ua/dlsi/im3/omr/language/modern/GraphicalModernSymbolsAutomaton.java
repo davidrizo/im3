@@ -141,10 +141,14 @@ public class GraphicalModernSymbolsAutomaton extends GraphicalSymbolsAutomaton {
         transitions.add(new Transition<>(timesig, new Trill(), trill));
         transitions.add(new Transition<>(noteacc,new Trill(), trill));
 
-        transitions.add(new Transition<>(timesig, new GraceNote(), gracenote));
-        transitions.add(new Transition<>(notes, new GraceNote(), gracenote));
-        transitions.add(new Transition<>(rest, new GraceNote(), gracenote));
-        transitions.add(new Transition<>(endbar, new GraceNote(), gracenote));
+        transitions.add(new Transition<>(timesig, new Appoggiatura(), gracenote));
+        transitions.add(new Transition<>(notes, new Appoggiatura(), gracenote));
+        transitions.add(new Transition<>(rest, new Appoggiatura(), gracenote));
+        transitions.add(new Transition<>(endbar, new Appoggiatura(), gracenote));
+        transitions.add(new Transition<>(timesig, new Acciaccatura(), gracenote));
+        transitions.add(new Transition<>(notes, new Acciaccatura(), gracenote));
+        transitions.add(new Transition<>(rest, new Acciaccatura(), gracenote));
+        transitions.add(new Transition<>(endbar, new Acciaccatura(), gracenote));
         transitions.add(new Transition<>(gracenote, new Note(), notes ));
 
         transitions.add(new Transition<>(endbar, new Rest(), rest));

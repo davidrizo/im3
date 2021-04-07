@@ -20,7 +20,7 @@ public class GraphicalModernSymbolsAutomatonTest {
         MusicXMLImporter importer = new MusicXMLImporter();
         ScoreSong song = importer.importSong(file);
 
-        Encoder encoder = new Encoder(AgnosticVersion.v1, false);
+        Encoder encoder = new Encoder(AgnosticVersion.v1, false, false, false);
         encoder.encode(song);
         AgnosticEncoding scoreGraphicalDescription = encoder.getAgnosticEncoding();
         //List<GraphicalToken> graphicalSymbols = scoreGraphicalDescription.getTokens();

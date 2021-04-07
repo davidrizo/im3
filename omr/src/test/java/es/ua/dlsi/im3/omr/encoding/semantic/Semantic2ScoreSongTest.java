@@ -25,7 +25,7 @@ public class Semantic2ScoreSongTest {
         MEISongImporter importer = new MEISongImporter();
         File file = TestFileUtils.getFile("/testdata/primus/000051759-1_1_1/000051759-1_1_1.mei");
         ScoreSong meiSongImported = importer.importSong(file);
-        Encoder encoder = new Encoder(AgnosticVersion.v2, false);
+        Encoder encoder = new Encoder(AgnosticVersion.v2, false, false, false);
         encoder.encode(meiSongImported);
 
         //TODO Hacer esto mismo con agnostic 2 semantic
