@@ -32,6 +32,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 //TODO ¿Esto debería estar en otro sitio junto a la font ttf?
+//TODO Cambiar Google JSON Simple por org.json
 /**
  *
  * @author drizo

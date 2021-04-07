@@ -179,7 +179,7 @@ public class ImportFactories {
 				case "cut":
 				case "Ccut":
 					if (notationType == NotationType.eModern) {
-						ts = new TimeSignatureCommonTime();
+						ts = new TimeSignatureCutTime();
 					} else if (notationType == NotationType.eMensural) {
 						ts = new TempusImperfectumCumProlationeImperfectaDiminutum();
 					} else {

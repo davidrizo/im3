@@ -55,7 +55,23 @@
 		"defaultPositionInStaff": "L3",
         "codepoint": "U+E560"
     },
-	"note.sixteenth_down" : {
+    "note.eighthCut_down" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E561"
+    },
+    "note.eighthCut_up" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E560"
+    },
+  "note.appoggiatura_down" : {
+    "defaultPositionInStaff": "L3",
+    "codepoint": "U+E562"
+  },
+  "note.appoggiatura_up" : {
+    "defaultPositionInStaff": "L3",
+    "codepoint": "U+E563"
+  },
+  "note.sixteenth_down" : {
 		"defaultPositionInStaff": "L3",
         "codepoint": "U+E1DA"
     },
@@ -202,6 +218,30 @@
     "note.beamedBoth2_down" : {
       "defaultPositionInStaff": "L3",
         "codepoint": "U+F0B5"
+    },
+    "note.beamedRight3_up" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+F0B8"
+    },
+    "note.beamedRight3_down" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+F0B7"
+    },
+    "note.beamedLeft3_up" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+E1F6"
+    },
+    "note.beamedLeft3_down" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+F0B6"
+    },
+    "note.beamedBoth3_up" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+F0C0"
+    },
+    "note.beamedBoth3_down" : {
+      "defaultPositionInStaff": "L3",
+      "codepoint": "U+F0B9"
     },
     "digit.0" : {
       "defaultPositionInStaff": "L3",

@@ -33,7 +33,7 @@ public class TimeSignatureCutTime extends SignTimeSignature {
     }
 
 	@Override
-	public SignTimeSignature clone() {
+	public TimeSignatureCutTime clone() {
 		return new TimeSignatureCutTime();
 	}
 
