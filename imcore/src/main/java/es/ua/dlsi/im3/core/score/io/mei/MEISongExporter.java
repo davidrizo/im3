@@ -1811,7 +1811,7 @@ public class MEISongExporter implements ISongExporter {
 		}
 
 
-		if (addToPreviousAccidentals) {
+		if (addToPreviousAccidentals && layer.getStaff().getNotationType() != NotationType.eMensural) { // in mensural we don't keep track of previous accidentals
 			previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),
 					pitchAccidental);
 		}
