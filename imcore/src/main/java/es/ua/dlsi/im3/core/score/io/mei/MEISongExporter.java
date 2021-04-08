@@ -345,7 +345,7 @@ public class MEISongExporter implements ISongExporter {
 			XMLExporterHelper.end(sb, tabs, "workDesc");*/
 	}
 
-	private void processMusic(int tabs, List<ScorePart> scoreParts, Segment segment) throws IM3Exception, ExportException {
+	private void processMusic(int tabs, List<ScorePart> scoreParts, Segment segment) throws IM3Exception {
 		XMLExporterHelper.start(sb, tabs, "music", "xml:id", "music_" + IDGenerator.getID());
 
 		exportFacsimile(sb, tabs+1);
@@ -1255,13 +1255,19 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.startEnd(sb, tabs, "barLine", params);
 	}
 
-	private void processCustos(int tabs, Custos custos) {
+	private void processCustos(int tabs, Custos custos) throws ExportException {
 		ScientificPitch scorePitch = custos.getScientificPitch();
 		ArrayList<String> params = new ArrayList<>();
 		params.add("pname");
 		params.add(scorePitch.getPitchClass().getNoteName().name().toLowerCase());
 		params.add("oct");
 		params.add(Integer.toString(scorePitch.getOctave()));
+
+		if (custos.getScientificPitch().getPitchClass().getAccidental() != null) {
+			params.add("accid");
+			params.add(generateAccidental(custos.getScientificPitch().getPitchClass().getAccidental()));
+		}
+
 		generateFacsimileReference(custos, params);
 		params.add("xml:id");
 		params.add("custos_" + IDGenerator.getID());
