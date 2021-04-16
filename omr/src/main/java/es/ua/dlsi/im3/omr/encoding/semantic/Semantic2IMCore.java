@@ -75,6 +75,7 @@ public class Semantic2IMCore {
         }
 
         BeamGroup beamGroup = null;
+        SemanticNote lastNote = null;
         for (Pair<SemanticSymbol, ITimedElementInStaff> pair: conversion) {
             ITimedElementInStaff timedElementInStaff = pair.getY();
             if (notationType == NotationType.eModern && timedElementInStaff instanceof MarkBarline ) {
@@ -112,6 +113,11 @@ public class Semantic2IMCore {
                                     beamGroup = null;
                             }
                         }
+
+                        if (lastNote != null && lastNote.isTiedToNext()) {
+                            lastNote.getCoreSymbol().tieToNext(semanticNote.getCoreSymbol());
+                        }
+                        lastNote = semanticNote;
                     }
                     singleLayer.add((Atom) timedElementInStaff);
                 } else {

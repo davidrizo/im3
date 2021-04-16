@@ -3,12 +3,7 @@ package es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.*;
-import es.ua.dlsi.im3.core.score.io.kern.KernExporter;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
-import es.ua.dlsi.im3.omr.encoding.semantic.SemanticConversionContext;
-import org.apache.commons.lang3.math.Fraction;
-
-import java.util.List;
 
 /**
  * @autor drizo
@@ -19,7 +14,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
     private Integer tupletNumber;
 
     private boolean trill;
-    private boolean tied;
+    private boolean tiedToNext;
     private boolean fermata;
     private SemanticBeamType semanticBeamType;
 
@@ -57,6 +52,10 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
         this.tupletNumber = tupletNumber;
     }
 
+    public void setTiedToNext(boolean tiedToNext) {
+        this.tiedToNext = tiedToNext;
+    }
+
     private void setTuplet(Integer tupletNumber) throws IM3Exception {
         this.tupletNumber = tupletNumber;
         if (tupletNumber != null) {
@@ -80,7 +79,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
     public SemanticNote(SimpleNote simpleNote) throws IM3Exception {
         super(simpleNote.clone());
         this.trill = simpleNote.hasTrill();
-        this.tied = simpleNote.getAtomPitch().isTiedToNext();
+        this.tiedToNext = simpleNote.getAtomPitch().isTiedToNext();
         this.fermata = simpleNote.getAtomFigure().getFermata() != null;
         BeamGroup beamGroup = simpleNote.getBelongsToBeam();
         if (beamGroup != null) {
@@ -172,7 +171,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
             }
         }*/
 
-        if (tied) {
+        if (tiedToNext) {
             sb.append(' '); //TODO it was other symbol - ' ' is a symbol separator
             sb.append("tie");
         }
@@ -180,7 +179,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
     }
 
     public boolean isTiedToNext() {
-        return tied;
+        return tiedToNext;
     }
 
     public boolean isFermata() {
