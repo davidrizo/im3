@@ -62,7 +62,7 @@ public class MEISongExporter implements ISongExporter {
 	public static final String HARM_TYPE_KEY = "key";
 	public static final String HARM_TYPE_DEGREE = "degree";
 	public static final String HARM_TYPE_TONAL_FUNCTION = "tonalFunction";
-	private int skipMeasures;
+	//private int skipMeasures;
 	private BeamGroup lastBeam;
 	private HashSet<IFacsimile> exportedSystemOrPageBreaks = new HashSet<>();
 	private boolean includesFacsimile = false;
@@ -822,7 +822,7 @@ public class MEISongExporter implements ISongExporter {
 			TimeSignature lastTimeSignature = null;
 			boolean firstMeasure = true;
 			Harm lastHarm = null;
-			skipMeasures = 0; // used for multimeasure rests
+			//skipMeasures = 0; // used for multimeasure rests -- we don't need it because the multimeasure rest spans just one measure
 			Time maxDuration;
 			if (scorePart == null) {
 				maxDuration = song.getSongDuration();
@@ -835,10 +835,11 @@ public class MEISongExporter implements ISongExporter {
 					if (segment == null) {
 						exportPageSystemBreaks(staffContainer, tabs + 1, bar.getTime(), addClefsOnSystemBeginning);
 					}
-					if (skipMeasures > 0) {
+					/*if (skipMeasures > 0) {
 						skipMeasures--;
-					}
-					if (skipMeasures == 0) {
+					}*/
+					//if (skipMeasures == 0)
+					{
 						//TODO xmlid
 						boolean processScoreDef = false;
 
@@ -1487,19 +1488,19 @@ public class MEISongExporter implements ISongExporter {
 
 			} // else it is the same beam (on no one), no-op
 			generateFacsimileReference(atom, params);
-			if (atom instanceof SimpleMeasureRest) {
+			if (atom instanceof SimpleMultiMeasureRest) {
+				SimpleMultiMeasureRest mrest = (SimpleMultiMeasureRest) atom; //TODO ID
+				params.add("num");
+				params.add(Integer.toString(mrest.getNumMeasures()));
+				XMLExporterHelper.startEnd(sb, tabs, "multiRest", params);
+				//skipMeasures = mrest.getNumMeasures();
+			} else if (atom instanceof SimpleMeasureRest) {
 				SimpleMeasureRest mrest = (SimpleMeasureRest) atom;
 				if (mrest.getAtomFigure().getFigure() != Figures.WHOLE) { // e.g. for anacrusis
 					//SingleFigureAtom sfatom = (SingleFigureAtom) atom;
 					fillDurationParams(sfatom.getAtomFigure(), params);
 				}
 				XMLExporterHelper.startEnd(sb, tabs, "mRest", params);
-			} else if (atom instanceof SimpleMultiMeasureRest) {
-				SimpleMultiMeasureRest mrest = (SimpleMultiMeasureRest) atom; //TODO ID
-				params.add("num");
-				params.add(Integer.toString(mrest.getNumMeasures()));
-				XMLExporterHelper.startEnd(sb, tabs, "multiRest", params);
-				skipMeasures = mrest.getNumMeasures();
 			} else {
 				fillDurationParams(sfatom.getAtomFigure(), params);
 
@@ -1765,20 +1766,16 @@ public class MEISongExporter implements ISongExporter {
         }*/
 		boolean addToPreviousAccidentals = false;
 		// TODO ver con tests unitarios
+		ArrayList<String> aparams = new ArrayList<>();
 		if (atomPitch.isFictaAccidental()) {
-			outputAccidElement = new StringBuilder();
-			ArrayList<String> aparams = new ArrayList<>();
 			aparams.add("accid");
 			aparams.add(generateAccidental(pitchAccidental));
 			aparams.add("func");
 			aparams.add("edit");
 			aparams.add("enclose");
 			aparams.add("brack");
-			XMLExporterHelper.startEnd(outputAccidElement, 0, "accid", aparams);
 			addToPreviousAccidentals = false;
 		} else if (atomPitch.isCautionaryAccidental()) {
-			outputAccidElement = new StringBuilder();
-			ArrayList<String> aparams = new ArrayList<>();
 			aparams.add("accid");
 			aparams.add(generateAccidental(pitchAccidental));
 			aparams.add("func");
@@ -1788,28 +1785,32 @@ public class MEISongExporter implements ISongExporter {
 			XMLExporterHelper.startEnd(outputAccidElement, 0, "accid", aparams);
 			addToPreviousAccidentals = false;
 		} else if (atomPitch.getWrittenExplicitAccidental() != null) {
-			params.add("accid");
-			params.add(generateAccidental(atomPitch.getWrittenExplicitAccidental()));
+			aparams.add("accid");
+			aparams.add(generateAccidental(atomPitch.getWrittenExplicitAccidental()));
 
 			if (atomPitch.getWrittenExplicitAccidental() != previousAccidental) {
-				params.add("accid.ges");
-				params.add(generateAccidental(pitchAccidental));
+				aparams.add("accid.ges");
+				aparams.add(generateAccidental(pitchAccidental));
 			}
 			addToPreviousAccidentals = true;
 		} else if (pitchAccidental != previousAccidental && !(pitchAccidental == null && previousAccidental == Accidentals.NATURAL || pitchAccidental == Accidentals.NATURAL && previousAccidental == null)) {
 			if (atomPitch.isHideAccidental()) {
-				params.add("accid.ges");
+				aparams.add("accid.ges");
 			} else {
-				params.add("accid");
+				aparams.add("accid");
 			}
-			params.add(generateAccidental(pitchAccidental));
+			aparams.add(generateAccidental(pitchAccidental));
 			addToPreviousAccidentals = true;
 		} else if (pitchAccidental != Accidentals.NATURAL) {
-			params.add("accid.ges");
-			params.add(generateAccidental(pitchAccidental));
+			aparams.add("accid.ges");
+			aparams.add(generateAccidental(pitchAccidental));
 			addToPreviousAccidentals = true;
 		}
 
+		if (!aparams.isEmpty()) {
+			outputAccidElement = new StringBuilder();
+			XMLExporterHelper.startEnd(outputAccidElement, 0, "accid", aparams);
+		}
 
 		if (addToPreviousAccidentals && layer.getStaff().getNotationType() != NotationType.eMensural) { // in mensural we don't keep track of previous accidentals
 			previousAccidentals.put(generatePreviousAccidentalMapKey(scorePitch.getPitchClass().getNoteName(), scorePitch.getOctave()),

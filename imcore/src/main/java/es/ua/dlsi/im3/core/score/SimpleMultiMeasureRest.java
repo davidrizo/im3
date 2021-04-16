@@ -29,6 +29,11 @@ public class SimpleMultiMeasureRest extends SimpleRest {
 		this.numMeasures = simpleMultiMeasureRest.getNumMeasures();
 	}
 
+	@Override
+	public Time getOffset() {
+		return super.getOffset();
+	}
+
 	public SimpleMultiMeasureRest clone() {
 		return new SimpleMultiMeasureRest(this);
 	}

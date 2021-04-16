@@ -93,4 +93,8 @@ public abstract class Exporter<SymbolType> {
     public void setSeparateTokensWithSpace(boolean separateTokensWithSpace) {
         this.separateTokensWithSpace = separateTokensWithSpace;
     }
+
+    public void setSeparator(char separator) {
+        this.separator = separator;
+    }
 }
