@@ -74,6 +74,7 @@ public class Semantic2IMCore {
             song.addMeasure(Time.TIME_ZERO, measure); // first measure
         }
 
+        BeamGroup beamGroup = null;
         for (Pair<SemanticSymbol, ITimedElementInStaff> pair: conversion) {
             ITimedElementInStaff timedElementInStaff = pair.getY();
             if (notationType == NotationType.eModern && timedElementInStaff instanceof MarkBarline ) {
@@ -87,7 +88,31 @@ public class Semantic2IMCore {
                     staff.getScoreSong().addMeasure(lastMeasure.getEndTime(), measure);
                 }
             } else {
+                // add beams
                 if (timedElementInStaff instanceof Atom) {
+                    if (pair.getX().getSymbol() instanceof SemanticNote) {
+                        SemanticNote semanticNote = (SemanticNote) pair.getX().getSymbol();
+                        if (semanticNote.getSemanticBeamType() != null) {
+                            switch (semanticNote.getSemanticBeamType()) {
+                                case start:
+                                    beamGroup = new BeamGroup(false);
+                                    beamGroup.add(semanticNote.getCoreSymbol());
+                                    break;
+                                case inner:
+                                    if (beamGroup == null) {
+                                        throw new IM3Exception("Missing start beam");
+                                    }
+                                    beamGroup.add(semanticNote.getCoreSymbol());
+                                    break;
+                                case end:
+                                    if (beamGroup == null) {
+                                        throw new IM3Exception("Missing start beam");
+                                    }
+                                    beamGroup.add(semanticNote.getCoreSymbol());
+                                    beamGroup = null;
+                            }
+                        }
+                    }
                     singleLayer.add((Atom) timedElementInStaff);
                 } else {
                     staff.addElementWithoutLayer((IStaffElementWithoutLayer) timedElementInStaff);

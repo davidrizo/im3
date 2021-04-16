@@ -15,12 +15,10 @@ import es.ua.dlsi.im3.core.IM3RuntimeException;
 public class SimpleNote extends SingleFigureAtom {
 	AtomPitch atomPitch;
 
-
 	public SimpleNote(Figures figure, int dots, ScientificPitch pitch) {
 		super(figure, dots);
 		atomPitch = new AtomPitch(this.atomFigure, pitch);
 	}
-
 
 	/**
 	 * Note it does not copy ties, marks and connectors
@@ -48,7 +46,7 @@ public class SimpleNote extends SingleFigureAtom {
 	}
 
 	/**
-	 * Note it does not clone ties and connectors
+	 * Note it does not clone ties, beams and connectors
 	 * @return
 	 */
 	public SimpleNote clone() {

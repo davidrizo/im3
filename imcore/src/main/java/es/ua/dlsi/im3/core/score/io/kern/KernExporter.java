@@ -412,6 +412,17 @@ public class KernExporter {
                         }
                     }
 
+                    BeamGroup beamGroup = sn.getBelongsToBeam();
+                    if (beamGroup != null) {
+                        if (beamGroup.getFirstFigure() == sn) {
+                            noteStr += "L";
+                        }
+
+                        if (beamGroup.getLastFigure() == sn) {
+                            noteStr += "J";
+                        }
+                    }
+
                     if (sn.isGrace()) {
                         noteStr += "q";
                     }

@@ -21,6 +21,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
     private boolean trill;
     private boolean tied;
     private boolean fermata;
+    private SemanticBeamType semanticBeamType;
 
     /*
     protected static final String TUPLET = "tuplet";
@@ -34,10 +35,11 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
      * @param scientificPitch It contains the actual accidental, the one that must be played
      * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
      */
-    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, Perfection perfection) throws IM3Exception {
+    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, Perfection perfection, SemanticBeamType semanticBeamType) throws IM3Exception {
         super(new SimpleNote(figures, dots, scientificPitch));
         setTuplet(tupletNumber);
         this.setFermata(fermata);
+        this.semanticBeamType = semanticBeamType;
         this.trill = trill;
         this.coreSymbol.setGrace(graceNote);
         if (visualAccidental != null) {
@@ -67,8 +69,8 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
      * @param scientificPitch It contains the actual accidental, the one that must be played
      * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
      */
-    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored) throws IM3Exception {
-        this(graceNote, scientificPitch, visualAccidental, figures, dots, fermata, trill, tupletNumber, colored, null);
+    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, SemanticBeamType semanticBeamType) throws IM3Exception {
+        this(graceNote, scientificPitch, visualAccidental, figures, dots, fermata, trill, tupletNumber, colored, null, semanticBeamType);
         if (tupletNumber != null) {
             setTuplet(tupletNumber);
         }
@@ -80,10 +82,28 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
         this.trill = simpleNote.hasTrill();
         this.tied = simpleNote.getAtomPitch().isTiedToNext();
         this.fermata = simpleNote.getAtomFigure().getFermata() != null;
+        BeamGroup beamGroup = simpleNote.getBelongsToBeam();
+        if (beamGroup != null) {
+            if (beamGroup.getFirstFigure() == simpleNote) {
+                this.semanticBeamType = SemanticBeamType.start;
+            } else if (beamGroup.getLastFigure() == simpleNote) {
+                this.semanticBeamType = SemanticBeamType.end;
+            } else {
+                this.semanticBeamType = SemanticBeamType.inner;
+            }
+        }
         if (simpleNote.getParentAtom() != null && simpleNote.getParentAtom() instanceof SimpleTuplet) {
             SimpleTuplet parent = (SimpleTuplet) simpleNote.getParentAtom();
             setTuplet(parent.getCardinality());
         }
+    }
+
+    public SemanticBeamType getSemanticBeamType() {
+        return semanticBeamType;
+    }
+
+    public void setSemanticBeamType(SemanticBeamType semanticBeamType) {
+        this.semanticBeamType = semanticBeamType;
     }
 
     @Override
@@ -175,7 +195,9 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
             this.coreSymbol.getAtomFigure().setFermata(null);
         }
     }
-/*@Override
+
+
+    /*@Override
     public void semantic2IMCore(SemanticConversionContext semanticConversionContext, List<ITimedElementInStaff> conversionResult) throws IM3Exception {
         //TODO tuplets, fermata, trill, stems, beams ...
         SimpleNote note = new SimpleNote(figures, dots, scientificPitch);
