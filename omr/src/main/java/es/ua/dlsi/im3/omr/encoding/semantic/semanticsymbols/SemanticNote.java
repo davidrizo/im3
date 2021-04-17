@@ -105,6 +105,10 @@ public class SemanticNote extends SemanticAtom<SimpleNote>  {
         this.semanticBeamType = semanticBeamType;
     }
 
+    public Integer getTupletNumber() {
+        return tupletNumber;
+    }
+
     @Override
     public String toSemanticString()  {
         StringBuilder sb = new StringBuilder();

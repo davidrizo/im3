@@ -7,6 +7,7 @@ import es.ua.dlsi.im3.core.score.layout.MarkBarline;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.SemanticNote;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -76,6 +77,8 @@ public class Semantic2IMCore {
 
         BeamGroup beamGroup = null;
         SemanticNote lastNote = null;
+        ArrayList<Atom> tupletAtoms = new ArrayList<>();
+        boolean skipAtom = false;
         for (Pair<SemanticSymbol, ITimedElementInStaff> pair: conversion) {
             ITimedElementInStaff timedElementInStaff = pair.getY();
             if (notationType == NotationType.eModern && timedElementInStaff instanceof MarkBarline ) {
@@ -117,9 +120,51 @@ public class Semantic2IMCore {
                         if (lastNote != null && lastNote.isTiedToNext()) {
                             lastNote.getCoreSymbol().tieToNext(semanticNote.getCoreSymbol());
                         }
+
+                        if (semanticNote.getTupletNumber() != null) {
+                            skipAtom = true;
+                            if (tupletAtoms == null) {
+                                tupletAtoms = new ArrayList<>();
+                            }
+                            
+                            if (tupletAtoms.size() < semanticNote.getTupletNumber()) {
+                                if (!tupletAtoms.isEmpty() && !tupletAtoms.get(0).getAtomFigures().get(0).getFigure().equals(semanticNote.getCoreSymbol().getAtomFigure().getFigure())) {
+                                    throw new IM3Exception("Unsupported mixed duration tuplets");
+                                }
+                                tupletAtoms.add(semanticNote.getCoreSymbol());
+                            } 
+                            
+                            if (tupletAtoms.size() == semanticNote.getTupletNumber()) {
+                                //TODO Generalize
+                                int inSpaceOfAtoms;
+                                switch (semanticNote.getTupletNumber()) {
+                                    case 2:
+                                        inSpaceOfAtoms = 3;
+                                        break;
+                                    case 3:
+                                        inSpaceOfAtoms = 2;
+                                        break;
+                                    case 5:
+                                    case 6:
+                                    case 7:
+                                        inSpaceOfAtoms = 4;
+                                        break;
+                                    default:
+                                        throw new IM3Exception("Unsupported tuplet number " + semanticNote.getTupletNumber());
+                                }
+                                SimpleTuplet simpleTuplet = new SimpleTuplet(semanticNote.getTupletNumber(), inSpaceOfAtoms, tupletAtoms.get(0).getAtomFigures().get(0).getFigure(), tupletAtoms);
+                                singleLayer.add(simpleTuplet);
+                                tupletAtoms = null;
+                            }
+                        } else {
+                            skipAtom = false;
+                        }
+
                         lastNote = semanticNote;
                     }
-                    singleLayer.add((Atom) timedElementInStaff);
+                    if (!skipAtom) {
+                        singleLayer.add((Atom) timedElementInStaff);
+                    }
                 } else {
                     staff.addElementWithoutLayer((IStaffElementWithoutLayer) timedElementInStaff);
                 }
