@@ -21,7 +21,6 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Slur;
 import es.ua.dlsi.im3.omr.encoding.enums.ClefNote;
 import es.ua.dlsi.im3.omr.encoding.enums.MeterSigns;
 import es.ua.dlsi.im3.omr.encoding.semantic.SemanticEncoding;
-import es.ua.dlsi.im3.omr.encoding.semantic.SemanticSymbol;
 import es.ua.dlsi.im3.omr.encoding.semantic.semanticsymbols.*;
 
 
@@ -313,7 +312,8 @@ public class Encoder {
                     if (i>0) {
                         addVerticalSeparator();
                     }
-                    if (chord.isGrace()) {
+                    if (chord.isGraceNote()) {
+                        //TODO Tipos
                         agnosticEncoding.add(new AgnosticSymbol(version, new Acciaccatura(figureString), positionInStaffs[i]));
                     } else {
                         agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(figureString), positionInStaffs[i]));
@@ -456,7 +456,8 @@ public class Encoder {
                 }
             }
 
-            if (note.isGrace()) {
+            if (note.isGraceNote()) {
+                //TODO Tipos
                 agnosticEncoding.add(new AgnosticSymbol(version, new Acciaccatura(noteDurationSpecification, directions), positionInStaff));
             } else {
                 agnosticEncoding.add(new AgnosticSymbol(version, new es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols.Note(noteDurationSpecification, directions), positionInStaff));

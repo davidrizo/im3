@@ -8,7 +8,7 @@ import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 /**
  * @autor drizo
  */
-public class SemanticNote extends SemanticAtom<SimpleNote> {
+public class SemanticNote extends SemanticAtom<SimpleNote>  {
     private static final String SEMANTIC_NOTE = "note" + SEPSYMBOL;
     private static final String SEMANTIC_GRACENOTE = "gracenote" + SEPSYMBOL;
     private Integer tupletNumber;
@@ -30,13 +30,13 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
      * @param scientificPitch It contains the actual accidental, the one that must be played
      * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
      */
-    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, Perfection perfection, SemanticBeamType semanticBeamType) throws IM3Exception {
+    public SemanticNote(GraceNoteType graceNoteType, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, Perfection perfection, SemanticBeamType semanticBeamType) throws IM3Exception {
         super(new SimpleNote(figures, dots, scientificPitch));
         setTuplet(tupletNumber);
         this.setFermata(fermata);
         this.semanticBeamType = semanticBeamType;
         this.trill = trill;
-        this.coreSymbol.setGrace(graceNote);
+        this.coreSymbol.setGraceNoteType(graceNoteType);
         if (visualAccidental != null) {
             this.coreSymbol.setWrittenExplicitAccidental(visualAccidental);
         }
@@ -68,8 +68,8 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
      * @param scientificPitch It contains the actual accidental, the one that must be played
      * @param visualAccidental It contains the drawn one (e.g. null if B flat in F major, or sharp in a mensural F major)
      */
-    public SemanticNote(boolean graceNote, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, SemanticBeamType semanticBeamType) throws IM3Exception {
-        this(graceNote, scientificPitch, visualAccidental, figures, dots, fermata, trill, tupletNumber, colored, null, semanticBeamType);
+    public SemanticNote(GraceNoteType graceNoteType, ScientificPitch scientificPitch, Accidentals visualAccidental, Figures figures, int dots, boolean fermata, boolean trill, Integer tupletNumber, Boolean colored, SemanticBeamType semanticBeamType) throws IM3Exception {
+        this(graceNoteType, scientificPitch, visualAccidental, figures, dots, fermata, trill, tupletNumber, colored, null, semanticBeamType);
         if (tupletNumber != null) {
             setTuplet(tupletNumber);
         }
@@ -108,7 +108,7 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
     @Override
     public String toSemanticString()  {
         StringBuilder sb = new StringBuilder();
-        if (coreSymbol.isGrace()) {
+        if (coreSymbol.isGraceNote()) {
             sb.append(SEMANTIC_GRACENOTE);
         } else {
             sb.append(SEMANTIC_NOTE);
@@ -194,6 +194,8 @@ public class SemanticNote extends SemanticAtom<SimpleNote> {
             this.coreSymbol.getAtomFigure().setFermata(null);
         }
     }
+
+
 
 
     /*@Override

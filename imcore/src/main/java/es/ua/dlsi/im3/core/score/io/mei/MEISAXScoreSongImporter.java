@@ -44,7 +44,6 @@ import es.ua.dlsi.im3.core.score.io.ImportFactories;
 import es.ua.dlsi.im3.core.score.staves.Pentagram;
 import es.ua.dlsi.im3.core.score.staves.PercussionStaff;
 import es.ua.dlsi.im3.core.io.ImportException;
-import sun.rmi.runtime.Log;
 
 //TODO fillMissingElements
 //TODO Contexts - no so hard-coded!!
@@ -814,8 +813,21 @@ public class MEISAXScoreSongImporter extends XMLSAXScoreSongImporter {
 							lastAtomPitch = currentNote.getAtomPitch();
 							horizontalOrderInStaff++;
 							String grace = getOptionalAttribute(attributesMap, "grace");
+							GraceNoteType graceNoteType = null;
 							// TODO: 18/10/17 acc, unacc, unknown - de quién quita la nota el valor
-							currentNote.setGrace(grace != null);
+							if (grace != null) {
+								switch (grace) {
+									case "acc":
+										graceNoteType = GraceNoteType.appoggiatura;
+										break;
+									case "unacc":
+										graceNoteType = GraceNoteType.acciaccatura;
+										break;
+									default:
+										throw new ImportException("Unsupported grace note type: " + grace);
+								}
+							}
+							currentNote.setGraceNoteType(graceNoteType);
 
 						/*if (elementStaff != lastStaff) {
 							lastAtomPitch.setStaffChange(elementStaff);							

@@ -5,7 +5,7 @@ import es.ua.dlsi.im3.core.score.StemDirection;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticVersion;
 
-public class Note extends AgnosticSymbolType {
+public class Note extends AgnosticSymbolType implements IAgnosticNote {
     private static final String NOTE = "note" + SEPSYMBOL;
     public static final String CONTEXT_SEP = "@";
 
@@ -32,6 +32,7 @@ public class Note extends AgnosticSymbolType {
     public Note() {
     }
 
+    @Override
     public Directions getStemDirection() {
         return stemDirection;
     }
@@ -54,6 +55,7 @@ public class Note extends AgnosticSymbolType {
         }
     }
 
+    @Override
     public INoteDurationSpecification getDurationSpecification() {
         return durationSpecification;
     }

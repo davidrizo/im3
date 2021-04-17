@@ -3,7 +3,7 @@ package es.ua.dlsi.im3.omr.encoding.agnostic.agnosticsymbols;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 
-public abstract class GraceNote extends AgnosticSymbolType {
+public abstract class GraceNote extends AgnosticSymbolType implements IAgnosticNote {
     private static final String GRACENOTE = "gracenote" + SEPSYMBOL;
 
     INoteDurationSpecification durationSpecification;
@@ -27,6 +27,11 @@ public abstract class GraceNote extends AgnosticSymbolType {
     }
 
     @Override
+    public Directions getStemDirection() {
+        return stemDirection;
+    }
+
+    @Override
     public void setSubtype(String string) throws IM3Exception {
         //TODO Código repetido en Note
         String [] tokens = string.split(SEPPROPERTIES);
@@ -40,6 +45,7 @@ public abstract class GraceNote extends AgnosticSymbolType {
         }
     }
 
+    @Override
     public INoteDurationSpecification getDurationSpecification() {
         return durationSpecification;
     }

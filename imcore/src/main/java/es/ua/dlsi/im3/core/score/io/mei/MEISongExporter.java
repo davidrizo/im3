@@ -1644,9 +1644,14 @@ public class MEISongExporter implements ISongExporter {
 				StringBuilder accidElement = processPitchesParams(atomPitch, noteParams, atomFigure.getLayer());
 
 				if (atomPitch.getAtomFigure().getAtom() instanceof SimpleNote) {
-					if (((SimpleNote) atomPitch.getAtomFigure().getAtom()).isGrace()) { //TODO Other types
+					SimpleNote simpleNote = (SimpleNote) atomPitch.getAtomFigure().getAtom();
+					if (simpleNote.isGraceNote()) {
 						noteParams.add("grace");
-						noteParams.add("unacc");
+						if (simpleNote.getGraceNoteType() == GraceNoteType.acciaccatura) {
+							noteParams.add("unacc");
+						} if (simpleNote.getGraceNoteType() == GraceNoteType.appoggiatura) {
+							noteParams.add("acc");
+						}
 					}
 				}
 

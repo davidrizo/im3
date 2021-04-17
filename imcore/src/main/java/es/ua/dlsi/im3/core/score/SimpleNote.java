@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.math.Fraction;
-
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 
@@ -26,7 +24,7 @@ public class SimpleNote extends SingleFigureAtom {
 	 */
 	public SimpleNote(SimpleNote simpleNote) throws IM3Exception {
 		this(simpleNote.getAtomFigure().getFigure(), simpleNote.getAtomFigure().getDots(), simpleNote.getDuration(), simpleNote.getPitch());
-		this.setGrace(simpleNote.isGrace());
+		this.setGraceNoteType(simpleNote.getGraceNoteType());
 		this.getAtomFigure().setColored(simpleNote.getAtomFigure().getColored());
 		if (simpleNote.getAtomFigure().getFermata() != null) {
 			this.getAtomFigure().setFermata(new Fermata());

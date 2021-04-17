@@ -376,6 +376,16 @@ public class KernExporter {
         }
     }
 
+    private static String graceNoteSuffix(GraceNoteType graceNoteType) throws IM3Exception {
+        switch (graceNoteType) {
+            case acciaccatura:
+                return "q";
+            case appoggiatura:
+                return "qq";
+            default:
+                throw new IM3Exception("Unsupported grace note type: " + graceNoteType);
+        }
+    }
     public static String encodeAtom(Atom atom) throws ExportException {
         try {
             if (atom instanceof SingleFigureAtom) {
@@ -423,8 +433,8 @@ public class KernExporter {
                         }
                     }
 
-                    if (sn.isGrace()) {
-                        noteStr += "q";
+                    if (sn.isGraceNote()) {
+                        noteStr += graceNoteSuffix(sn.getGraceNoteType());
                     }
 
                     if (sn.getAtomFigure().getFermata() != null && sn.getAtomFigure().getFermata().getFermate() != null) {
@@ -446,8 +456,8 @@ public class KernExporter {
                         restResult += "_" + rest.getLinePosition();
                     }
 
-                    if (rest.isGrace()) {
-                        restResult += "q";
+                    if (rest.isGraceNote()) {
+                        restResult += graceNoteSuffix(rest.getGraceNoteType());
                     }
 
                     return restResult;

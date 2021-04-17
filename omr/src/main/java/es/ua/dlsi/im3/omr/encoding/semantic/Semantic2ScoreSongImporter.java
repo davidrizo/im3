@@ -161,7 +161,7 @@ public class Semantic2ScoreSongImporter implements IScoreSongImporter {
 
                 SimpleNote simpleNote = new SimpleNote(figures, dots, scientificPitch);
                 if (ctx.GRACENOTE() != null) {
-                    simpleNote.setGrace(true);
+                    simpleNote.setGraceNoteType(GraceNoteType.acciaccatura); //TODO Tipos
                 }
                 scoreSong.getStaves().get(0).getLayers().get(0).add(simpleNote);
                 //scoreSong.getStaves().get(0).addElementWithoutLayer(simpleNote);

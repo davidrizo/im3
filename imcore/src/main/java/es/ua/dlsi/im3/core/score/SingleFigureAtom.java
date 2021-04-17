@@ -15,7 +15,7 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
     /**
      * True if it is a grace note
      */
-    private boolean grace;
+    private GraceNoteType graceNoteType;
 
     private HashSet<StaffMark> marks;
 
@@ -141,16 +141,21 @@ public abstract class SingleFigureAtom extends Atom implements ITimedSymbolWithC
         }
     }
 
-    public void setGrace(boolean grace) {
-        this.grace = grace;
-        if (grace) {
+    public void setGraceNoteType(GraceNoteType graceNoteType) {
+        this.graceNoteType = graceNoteType;
+        if (graceNoteType != null) {
             this.setDuration(Time.TIME_ZERO);
         }
     }
 
-    public boolean isGrace() {
-        return grace;
+    public boolean isGraceNote() {
+        return graceNoteType != null;
     }
+
+    public GraceNoteType getGraceNoteType() {
+        return graceNoteType;
+    }
+
 
     public void addMark(StaffMark mark) {
 	    if (this.marks == null) {
