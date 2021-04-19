@@ -1264,7 +1264,8 @@ public class MEISongExporter implements ISongExporter {
 		params.add("oct");
 		params.add(Integer.toString(scorePitch.getOctave()));
 
-		if (custos.getScientificPitch().getPitchClass().getAccidental() != null) {
+		//TODO ¿Y si necesita el becuadro?
+		if (custos.getScientificPitch().getPitchClass().getAccidental() != null && !custos.getScientificPitch().getPitchClass().getAccidental().equals(Accidentals.NATURAL)) {
 			params.add("accid");
 			params.add(generateAccidental(custos.getScientificPitch().getPitchClass().getAccidental()));
 		}
