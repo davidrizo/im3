@@ -1,10 +1,12 @@
 package es.ua.dlsi.im3.core.adt.dfa;
 
+import es.ua.dlsi.im3.core.IM3RuntimeException;
 import org.apache.commons.math3.fraction.BigFraction;
 
+import java.util.Enumeration;
 import java.util.Properties;
 
-public class Transduction {
+public class Transduction implements Cloneable {
     BigFraction probability;
     /**
      * Number of accepted tokens so far
@@ -25,6 +27,20 @@ public class Transduction {
         this.probability = initialProbability;
         this.acceptedTokensCount = 0;
         this.payload = new Properties();
+    }
+
+    /**
+     * The properties should be cloneable
+     * @param probability
+     * @param acceptedTokensCount
+     * @param errorMessage
+     * @param payload
+     */
+    protected Transduction(BigFraction probability, int acceptedTokensCount, String errorMessage, Properties payload) {
+        this.probability = probability;
+        this.acceptedTokensCount = acceptedTokensCount;
+        this.errorMessage = errorMessage;
+        this.payload = (Properties) payload.clone();
     }
 
     public BigFraction getProbability() {
@@ -69,5 +85,10 @@ public class Transduction {
 
     public Properties getPayload() {
         return payload;
+    }
+
+    @Override
+    public Transduction clone() {
+        return new Transduction(probability, acceptedTokensCount, errorMessage, payload);
     }
 }

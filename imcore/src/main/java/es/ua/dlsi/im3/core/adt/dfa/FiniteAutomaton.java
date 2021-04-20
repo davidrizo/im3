@@ -13,7 +13,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  * Deterministic finite automaton
  * @author drizo
  */
-public abstract class DFA<AlphabetType extends Comparable<AlphabetType>, StateType extends State> {
+public abstract class FiniteAutomaton<AlphabetType extends Comparable<AlphabetType>, StateType extends State> {
 	Set<StateType> states;
 	Set<AlphabetType> alphabet;
 	StateType startState;
@@ -22,7 +22,7 @@ public abstract class DFA<AlphabetType extends Comparable<AlphabetType>, StateTy
 	
 	protected abstract StateType delta(StateType from, AlphabetType alphabetSymbol);
 
-	public DFA(Set<StateType> states, StateType startState, Set<StateType> acceptStates, Set<AlphabetType> alphabet) {
+	public FiniteAutomaton(Set<StateType> states, StateType startState, Set<StateType> acceptStates, Set<AlphabetType> alphabet) {
 		super();
 		this.states = states;
 		this.startState = startState;

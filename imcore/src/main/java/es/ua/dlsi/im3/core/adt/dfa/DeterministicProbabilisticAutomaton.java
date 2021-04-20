@@ -8,26 +8,11 @@ import java.util.*;
 import java.util.logging.Logger;
 
 // TODO: 3/10/17 Llamarle transductor. Quizás esto debería ir en ProbabilisticAutomaton
-public class DeterministicProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType, TransductionType extends Transduction>  extends ProbabilisticAutomaton<StateType, AlphabetSymbolType> {
-    private boolean debug;
-    /**
-     * If true, when a transition is not found for a given symbol, it is skipped, the error is reported but the traversal is not stopped
-     */
-    private boolean skipUnknownSymbols = false;
-    private static Logger logger = Logger.getLogger(DeterministicProbabilisticAutomaton.class.getName());
-
+public class DeterministicProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType, TransductionType extends Transduction>  extends ProbabilisticAutomaton<StateType, AlphabetSymbolType, TransductionType> {
     public DeterministicProbabilisticAutomaton(Set<StateType> states, StateType startState, HashMap<StateType, Fraction> endProbabilities, Alphabet<AlphabetSymbolType> alphabet, Collection<Transition<StateType, AlphabetSymbolType>> transitions) throws IM3Exception {
         super(states, new HashMap<>(), endProbabilities, alphabet, transitions); // FIXME: 2/10/17 Start state
         startProbabilities.put(startState, BigFraction.ONE);
         checkDeterminism();
-    }
-
-    public boolean isSkipUnknownSymbols() {
-        return skipUnknownSymbols;
-    }
-
-    public void setSkipUnknownSymbols(boolean skipUnknownSymbols) {
-        this.skipUnknownSymbols = skipUnknownSymbols;
     }
 
     /**
@@ -46,56 +31,27 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
         }
     }
 
+    // TODO: 4/10/17 Output list - tokens
     /**
-     *
      * @param sequence
-     * @return
+     * @param startState
+     * @param transductionFactory
+     * @return As it is deterministic, it will return just one
      * @throws IM3Exception
      */
-    public TransductionType probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, ITransductionFactory<TransductionType> transductionFactory) throws IM3Exception {
-        BigFraction best = null;
-
-        TransductionType bestTransduction = null;
-
-        for (Map.Entry<StateType, BigFraction> entry: startProbabilities.entrySet()) {
-            if (debug) { // TODO: 5/10/17 Mejor niveles de log
-                logger.info("----- New automaton traversal ----");
-            }
-
-            ArrayList outputTokensFromThisState = new ArrayList();
-            if (entry.getValue().getNumeratorAsLong() != 0) {
-                TransductionType transduction = probabilityOf(sequence, entry.getKey(), transductionFactory);
-
-                BigFraction p = transduction.getProbability().multiply(entry.getValue());
-                transduction.setProbability(p);
-                if (best == null || p.compareTo(best) > 0) {
-                    best = p;
-                    bestTransduction = transduction;
-                }
-            }
-        }
-
-        if (bestTransduction == null) {
-            return transductionFactory.create(BigFraction.ZERO);
-        } else {
-            return bestTransduction;
-        }
-    }
-
-    // TODO: 4/10/17 Output list - tokens
-    private TransductionType probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, StateType startState, ITransductionFactory<TransductionType> transductionFactory) throws IM3Exception {
+    protected TransductionType deterministicProbabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, StateType startState, ITransductionFactory<TransductionType> transductionFactory) throws IM3Exception {
         BigFraction p = BigFraction.ONE;
         TransductionType transduction = transductionFactory.create(BigFraction.ONE);
         StateType currentState = startState;
 
         if (debug) { // TODO: 5/10/17 Mejor niveles de log
-            logger.info("Trying with start state " + startState);
+            Logger.getLogger(this.getClass().getName()).info("Trying with start state " + startState);
         }
 
         currentState.onEnter(sequence.get(0), null, transduction);
         if (transduction.getProbability().getNumeratorAsLong() == 0) {
             if (debug) {
-                logger.info("Start state " + startState + " with probability 0");
+                Logger.getLogger(this.getClass().getName()).info("Start state " + startState + " with probability 0");
             }
             transduction.setErrorMessage("Cannot find start state with probability > 0");
             return transduction; // don't need to go on
@@ -105,7 +61,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
             Set<Transition<StateType, AlphabetSymbolType>> transitions = delta(currentState, sequence.get(i).getSymbol());
             if (transitions.size() == 0) {
                 if (debug) {
-                    logger.info("No transition from " + currentState + " with token " + sequence.get(i).getSymbol());
+                    Logger.getLogger(this.getClass().getName()).info("No transition from " + currentState + " with token " + sequence.get(i).getSymbol());
                 }
                 transduction.addErrorMessage(
                         "No transition from state " +
@@ -126,7 +82,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 Transition<StateType, AlphabetSymbolType> transition = transitions.iterator().next();
                 BigFraction transitionProb = transition.getProbability();
                 if (debug) {
-                    logger.info("Transition from " + currentState + " with token " + sequence.get(i).getSymbol() + " to " + transition.getTo()
+                    Logger.getLogger(this.getClass().getName()).info("Transition from " + currentState + " with token " + sequence.get(i).getSymbol() + " to " + transition.getTo()
                     + " with probability " + transitionProb);
                 }
 
@@ -144,7 +100,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                 }
                 currentState.onExit(transition.getTo(), !currentState.equals(transition.getTo()), transduction);
                 if (debug) {
-                    logger.info("Exiting state " + currentState + " with transduction probability "+ transduction.getProbability());
+                    Logger.getLogger(this.getClass().getName()).info("Exiting state " + currentState + " with transduction probability "+ transduction.getProbability());
                 }
                 if (transduction.getProbability().getNumeratorAsLong() == 0) {
                     transduction.addErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType() + " is 0 after exiting state" + " at position #" + i);
@@ -156,7 +112,7 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
                     }
                 }
                 transition.getTo().onEnter(sequence.get(i), currentState, transduction);
-                logger.info("Entering state " + currentState + " with transduction probability "+ transduction.getProbability());
+                Logger.getLogger(this.getClass().getName()).info("Entering state " + currentState + " with transduction probability "+ transduction.getProbability());
                 if (transduction.getProbability().getNumeratorAsLong() == 0) {
                     transduction.setErrorMessage("Transition from state " + currentState + " with input " + sequence.get(i).getSymbol().getType()  + " at position #" + i + " is 0 after entering again to new state " + currentState);
                     return transduction; // don't need to go on
@@ -167,14 +123,14 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
         }
 
         currentState.onExit(null, true, transduction);
-        logger.info("Exiting state " + currentState + " with transduction probability "+ transduction.getProbability());
+        Logger.getLogger(this.getClass().getName()).info("Exiting state " + currentState + " with transduction probability "+ transduction.getProbability());
         if (transduction.getProbability().getNumeratorAsLong() == 0) {
             transduction.setErrorMessage("Transduction probability is 0 when exiting state after the sequence is fully consumed");
             return transduction; // don't need to go on
         }
 
         BigFraction fraction = endProbabilities.get(currentState);
-        logger.info("End (accept final) probability " + currentState + " with probability "+ fraction);
+        Logger.getLogger(this.getClass().getName()).info("End (accept final) probability " + currentState + " with probability "+ fraction);
         if (fraction == null) {
             p = BigFraction.ZERO;
         } else {
@@ -184,11 +140,11 @@ public class DeterministicProbabilisticAutomaton<StateType extends State, Alphab
         return transduction;
     }
 
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
+    @Override
+    protected Set<TransductionType> probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, StateType startState, ITransductionFactory<TransductionType> transductionFactory) throws IM3Exception {
+        HashSet<TransductionType> result = new HashSet<>();
+        result.add(deterministicProbabilityOf(sequence, startState, transductionFactory));
+        return result;
 
-    public boolean isDebug() {
-        return debug;
     }
 }

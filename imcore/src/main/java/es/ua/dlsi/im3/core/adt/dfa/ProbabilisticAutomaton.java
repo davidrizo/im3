@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.*;
+import java.util.logging.Logger;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
@@ -16,28 +17,20 @@ import org.apache.commons.math3.fraction.Fraction;
  * Probabilistic automaton. Use BigFraction for probabilities to avoid problems with underflows
  * @author drizo
  */
-public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType> {
+public abstract class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType extends IAlphabetSymbolType, TransductionType extends Transduction> {
 	Set<StateType> states;
     Alphabet<AlphabetSymbolType> alphabet;
 	HashMap<StateType, BigFraction> startProbabilities;
     HashMap<StateType, BigFraction> endProbabilities;
     HashSetValuedHashMap<DeltaInput<StateType, AlphabetSymbolType>, Transition<StateType, AlphabetSymbolType>> deltas;
 
-	/**
-	 * @param from
-	 * @param alphabetSymbol
-	 * @return Probabilities
-	 * @throws IM3Exception
-	 */
-	protected Set<Transition<StateType, AlphabetSymbolType>> delta(StateType from, AlphabetSymbolType alphabetSymbol) throws IM3Exception {
-        DeltaInput input = new DeltaInput(from, alphabetSymbol);
-        Set<Transition<StateType, AlphabetSymbolType>> result = deltas.get(input);
-        if (result == null) {
-            throw new IM3Exception("Cannot find this combination: " + input); // TODO: 2/10/17 Deberíamos hacer smoothing al principio
-        }
-        return result;
-    }
-	
+    protected boolean debug;
+    /**
+     * If true, when a transition is not found for a given symbol, it is skipped, the error is reported but the traversal is not stopped
+     */
+    protected boolean skipUnknownSymbols = false;
+
+
 	public ProbabilisticAutomaton(Set<StateType> states, HashMap<StateType, BigFraction> startProbabilities, HashMap<StateType, Fraction> endProbabilities,
                                   Alphabet<AlphabetSymbolType> alphabet, Collection<Transition<StateType, AlphabetSymbolType>> transitions) throws IM3Exception {
 		super();
@@ -66,10 +59,42 @@ public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType 
     }
 
     /**
+     * @param from
+     * @param alphabetSymbol
+     * @return Probabilities
+     * @throws IM3Exception
+     */
+    protected Set<Transition<StateType, AlphabetSymbolType>> delta(StateType from, AlphabetSymbolType alphabetSymbol) throws IM3Exception {
+        DeltaInput input = new DeltaInput(from, alphabetSymbol);
+        Set<Transition<StateType, AlphabetSymbolType>> result = deltas.get(input);
+        if (result == null) {
+            throw new IM3Exception("Cannot find this combination: " + input); // TODO: 2/10/17 Deberíamos hacer smoothing al principio
+        }
+        return result;
+    }
+
+    /**
      * Check probabilities are correct
      */
     private void checkProbabilities() {
         System.err.println("TO-DO Comprobar sumas de probabilidades = 1"); // TODO: 2/10/17 Comprobar sumas de probabilidades = 1
+    }
+
+    public boolean isSkipUnknownSymbols() {
+        return skipUnknownSymbols;
+    }
+
+    public void setSkipUnknownSymbols(boolean skipUnknownSymbols) {
+        this.skipUnknownSymbols = skipUnknownSymbols;
+    }
+
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 
     public void writeDot(File file) throws FileNotFoundException, IM3Exception {
@@ -159,4 +184,51 @@ public class ProbabilisticAutomaton<StateType extends State, AlphabetSymbolType 
             }
         }
     }
+
+    /**
+     *
+     * @param sequence
+     * @return
+     * @throws IM3Exception
+     */
+    public TransductionType probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, ITransductionFactory<TransductionType> transductionFactory) throws IM3Exception {
+        BigFraction best = null;
+        int bestNumberOfAcceptedSymbols = -1; // first we order by the number of accepted symbols, then by probability
+
+        TransductionType bestTransduction = null;
+
+        for (Map.Entry<StateType, BigFraction> entry: startProbabilities.entrySet()) {
+            if (debug) { // TODO: 5/10/17 Mejor niveles de log
+                Logger.getLogger(this.getClass().getName()).info("----- New automaton traversal ----");
+            }
+
+            //ArrayList outputTokensFromThisState = new ArrayList();
+            if (entry.getValue().getNumeratorAsLong() != 0) {
+                Set<TransductionType> possibleTransductions = probabilityOf(sequence, entry.getKey(), transductionFactory);
+
+                for (TransductionType transduction: possibleTransductions) {
+                    BigFraction p = transduction.getProbability().multiply(entry.getValue());
+                    transduction.setProbability(p);
+                    if (transduction.getAcceptedTokensCount() > bestNumberOfAcceptedSymbols) {
+                        bestNumberOfAcceptedSymbols = transduction.getAcceptedTokensCount();
+                        bestTransduction = transduction;
+                        best = p;
+                    } else if (transduction.getAcceptedTokensCount() == bestNumberOfAcceptedSymbols) {
+                        if (best == null || p.compareTo(best) > 0) {
+                            best = p;
+                            bestTransduction = transduction;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (bestTransduction == null) {
+            return transductionFactory.create(BigFraction.ZERO);
+        } else {
+            return bestTransduction;
+        }
+    }
+
+    protected abstract Set<TransductionType> probabilityOf(List<? extends Token<AlphabetSymbolType>> sequence, StateType startState, ITransductionFactory<TransductionType> transductionFactory) throws IM3Exception;
 }

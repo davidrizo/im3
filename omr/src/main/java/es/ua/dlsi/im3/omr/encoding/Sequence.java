@@ -7,7 +7,7 @@ import java.util.List;
  * @author drizo
  * @param <SymbolType>
  */
-public class Sequence<SymbolType> {
+public class Sequence<SymbolType> implements Cloneable {
     protected List<SymbolType> symbols;
 
     public Sequence() {
@@ -28,5 +28,12 @@ public class Sequence<SymbolType> {
 
     public List<SymbolType> getSymbols() {
         return symbols;
+    }
+
+    @Override
+    protected Sequence<SymbolType> clone() throws CloneNotSupportedException {
+        Sequence<SymbolType> result = new Sequence<>();
+        symbols.forEach(s -> result.add(s));
+        return result;
     }
 }

@@ -5,10 +5,15 @@ import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.score.NotationType;
 import es.ua.dlsi.im3.omr.encoding.Sequence;
 
+import java.util.List;
+
 /**
  * @author drizo
  */
 public class SemanticEncoding extends Sequence<SemanticSymbol> {
+    public SemanticEncoding() {
+    }
+
     public String generateKernSemanticString(NotationType notationType) throws IM3Exception {
         StringBuilder stringBuilder = new StringBuilder();
         if (notationType == NotationType.eMensural) {
@@ -32,5 +37,12 @@ public class SemanticEncoding extends Sequence<SemanticSymbol> {
 
     public void add(SemanticSymbolType semanticSymbolType) {
         add(new SemanticSymbol(semanticSymbolType));
+    }
+
+    @Override
+    public SemanticEncoding clone() {
+        SemanticEncoding result = new SemanticEncoding();
+        symbols.forEach(s -> result.add(s));
+        return result;
     }
 }
