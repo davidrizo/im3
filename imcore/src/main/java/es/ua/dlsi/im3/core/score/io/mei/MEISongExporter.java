@@ -317,7 +317,14 @@ public class MEISongExporter implements ISongExporter {
 		XMLExporterHelper.startEnd(sb, tabs+1, "pubStmt");
 		if (song.getMetadata() != null && song.getMetadata().getSource() != null) {
 			XMLExporterHelper.start(sb, tabs+1, "sourceDesc");
-			XMLExporterHelper.startEnd(sb, tabs+2, "source", "target", song.getMetadata().getSource());
+			ArrayList<String> sourceParams = new ArrayList<>();
+			sourceParams.add("target");
+			sourceParams.add(song.getMetadata().getSource());
+			if (song.getMetadata().getTargetType() != null) {
+				sourceParams.add("targettype");
+				sourceParams.add(song.getMetadata().getTargetType());
+			}
+			XMLExporterHelper.startEnd(sb, tabs+2, "source", sourceParams);
 			XMLExporterHelper.end(sb, tabs+1, "sourceDesc");
 		}
 		XMLExporterHelper.end(sb, tabs, "fileDesc");
@@ -1100,7 +1107,7 @@ public class MEISongExporter implements ISongExporter {
 					}
 					for (TimeSignature ts: staff.getTimeSignatures()) {
 						//if (commonStartTimeSignature != null && !ts.getTime().isZero() && (segment == null || !ts.getTime().equals(segment.getFrom()))) {
-						if (segment != null && !ts.getTime().equals(segment.getFrom())) {
+						if (!ts.getTime().isZero() && (segment == null || !ts.getTime().equals(segment.getFrom()))) {
 							staffSymbols.add(ts); // when not using facsimile, the first one is exported in staffDef or scoreDef
 						}
 					}
