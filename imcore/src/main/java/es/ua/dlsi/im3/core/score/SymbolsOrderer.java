@@ -32,18 +32,18 @@ import es.ua.dlsi.im3.core.score.layout.MarkBarline;
  */
 public class SymbolsOrderer {
 	private static int getClassOrder(ITimedElement o) {
-        if (o instanceof MarkBarline) {
-            return 1;
+		if (o instanceof Custos) {
+			return 1;
+		} else if (o instanceof MarkBarline) {
+            return 2;
         } else if (o instanceof Clef) {
-			return 2;
-		} else if (o instanceof KeySignature) {
 			return 3;
-		} else if (o instanceof TimeSignature) {
+		} else if (o instanceof KeySignature) {
 			return 4;
+		} else if (o instanceof TimeSignature) {
+			return 5;
 		} else if (o instanceof StaffTimedPlaceHolder) {
-            return 5;
-		} else if (o instanceof Custos) {
-			return 6;
+            return 6;
 		} else {
 			return 7;
 		}
