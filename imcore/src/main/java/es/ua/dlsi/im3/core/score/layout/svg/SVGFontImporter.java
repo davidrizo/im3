@@ -50,6 +50,7 @@ public class SVGFontImporter extends XMLSAXImporter {
                         if (horiz_adv_x != null) {
                             glyph.setDefaultHorizontalAdvance(Integer.parseInt(horiz_adv_x));
                         }
+
                         svgFont.add(glyph);
                     }
                 }

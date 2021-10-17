@@ -1135,7 +1135,9 @@ public class MEISongExporter implements ISongExporter {
 						}
 						//Collections.sort(symbols, ITimedElementInStaff.TIMED_ELEMENT_COMPARATOR);
 						SymbolsOrderer.sortList(symbols);
-						boolean first = true;
+						//boolean first = true;
+						TimeSignature lastTimeSignature = null;
+						KeySignature lastKeySignature = null;
 						for (ITimedElementInStaff slr : symbols) {
 							if (slr.getTime() == null) {
 								throw new ExportException("Element " + slr + " does not have time set");
@@ -1145,7 +1147,10 @@ public class MEISongExporter implements ISongExporter {
 									processCustos(tabs + 2, (Custos) slr);
 								} else if (slr instanceof TimeSignature) {
 									//TODO ¿habrá que mejor coger el TimeSignature por el @sign...
-									processTimeSignature(tabs + 2, (TimeSignature) slr);
+									if (lastTimeSignature == null || !lastTimeSignature.equals(slr)) {
+										processTimeSignature(tabs+1, (TimeSignature) slr);
+										lastTimeSignature = (TimeSignature) slr;
+									}
 								} else if (slr instanceof MarkBarline) {
 									processBarLine(sb, tabs + 2, (MarkBarline) slr, staff);
 									previousAccidentals.clear();
@@ -1159,12 +1164,15 @@ public class MEISongExporter implements ISongExporter {
 									processClef((Clef) slr, tabs+1, null);
 									lastClef.put(staff, (Clef) slr);
 								} else if (slr instanceof KeySignature) {
-									processKeySignature(tabs + 2, (KeySignature) slr);
+									if (lastKeySignature == null || !lastKeySignature.equals(slr)) {
+										processKeySignature(tabs, (KeySignature) slr, lastKeySignature != null);
+										lastKeySignature = (KeySignature) slr;
+									}
 								} else if (slr instanceof Atom) {
 									processAtom(scorePart, tabs + 2, (Atom) slr, staff);
 								}
 
-								first = false;
+								//first = false;
 							}
 						}
 						if (lastBeam != null) {
@@ -1284,11 +1292,11 @@ public class MEISongExporter implements ISongExporter {
 	}
 
 
-	private void processKeySignature(int tabs, KeySignature slr) throws IM3Exception {
-		ArrayList<String> params = new ArrayList<>();
-		processKey(slr.getInstrumentKey(), tabs+1, true);
+	private void processKeySignature(int tabs, KeySignature slr, boolean showChange) throws IM3Exception {
+		// ArrayList<String> params = new ArrayList<>();
+		processKey(slr.getInstrumentKey(), tabs+1, showChange);
 
-		XMLExporterHelper.startEnd(sb, tabs, "keySig", params);
+		// it was duplicated in processKey XMLExporterHelper.startEnd(sb, tabs, "keySig", params);
 	}
 
 
@@ -1576,6 +1584,11 @@ public class MEISongExporter implements ISongExporter {
 
 	}
 
+	/**
+	 * We encode the rest line position in a different of that used by MEI
+	 * @param rest
+	 * @return
+	 */
 	private String restLinePositionToLoc(SimpleRest rest) {
 		int loc;
 		switch (rest.getAtomFigure().getFigure()) {
@@ -1584,7 +1597,7 @@ public class MEISongExporter implements ISongExporter {
 				loc = (rest.getLinePosition()-1) * 2;
 				break;
 			case SEMIBREVE:
-				loc = (rest.getLinePosition()-1) * 2 - 4;
+				loc = (rest.getLinePosition()-1) * 2 - 2;
 				break;
 			case LONGA:
 				loc = (rest.getLinePosition()-1) * 2 + 2;
@@ -1592,8 +1605,10 @@ public class MEISongExporter implements ISongExporter {
 			case MAXIMA:
 				loc = (rest.getLinePosition()-1) * 2 + 4;
 				break;
-			//case FUSA:
-			//case SEMIMINIM:
+			case SEMIMINIM:
+			case FUSA:
+				loc = rest.getLinePosition() * 2 - 2;
+				break;
 			default:
 				loc = rest.getLinePosition() * 2;
 				break;

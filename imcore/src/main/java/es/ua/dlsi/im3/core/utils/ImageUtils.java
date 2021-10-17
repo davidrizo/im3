@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
@@ -121,6 +122,29 @@ public class ImageUtils {
         return scaledImage;
     }
 
+    public BufferedImage createImageFromIntArray(int[] imageData, int width, int height)
+    {
+        BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+        byte [] newData = ((DataBufferByte) newImage.getRaster().getDataBuffer()).getData();
+
+        for (int i = 0; i < imageData.length; i++)
+        {
+            newData[i] = (byte) imageData[i];
+        }
+        return newImage;
+    }
+
+    public BufferedImage createImageFromDoubleArray(double[] imageData, int width, int height)
+    {
+        BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+        byte [] newData = ((DataBufferByte) newImage.getRaster().getDataBuffer()).getData();
+
+        for (int i = 0; i < imageData.length; i++)
+        {
+            newData[i] = (byte) imageData[i];
+        }
+        return newImage;
+    }
 
     public int[][] readGrayScaleImage(BufferedImage bufferedImage, BoundingBox boundingBox) throws IM3Exception {
         return readGrayScaleImage(bufferedImage,
@@ -141,22 +165,13 @@ public class ImageUtils {
         return bufferedImage;
     }
 
-    public BufferedImage generateBufferedImage(File imageFile, BoundingBox boundingBox) throws IM3Exception {
+    public BufferedImage extractBufferedImage(File imageFile, BoundingBox boundingBox) throws IM3Exception {
         BufferedImage subimage = null;
         String imgWidth="image not read";
         String imgHeight="image not read";
         try {
             BufferedImage fullImage = ImageIO.read(imageFile);
-            imgWidth = new Integer(fullImage.getWidth()).toString();
-            imgHeight = new Integer(fullImage.getHeight()).toString();
-
-            int maxWidth = fullImage.getWidth() - (int)boundingBox.getFromX();
-            int maxHeight = fullImage.getHeight() - (int)boundingBox.getFromY();
-
-            subimage = fullImage.getSubimage((int)boundingBox.getFromX(),
-                    (int)boundingBox.getFromY(),
-                    (int)Math.min(maxWidth, boundingBox.getWidth()),
-                    (int)Math.min(maxHeight, boundingBox.getHeight()));
+            return extractBufferedImage(fullImage, boundingBox);
         } catch (Throwable e) {
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Cannot read image {0} of size {1}x{2}, extracting subimage fromX={3}, fromY={4}, width={5}, height={6}",
                     new Object[]{imageFile.getAbsolutePath(),
@@ -164,9 +179,34 @@ public class ImageUtils {
                         (int)boundingBox.getFromX(), (int)boundingBox.getFromY(), (int)boundingBox.getWidth(), (int)boundingBox.getHeight()});
             throw new IM3Exception("Cannot read image '" + imageFile.getAbsolutePath() + "'", e);
         }
+    }
+
+    public BufferedImage extractBufferedImage(BufferedImage fullImage, BoundingBox boundingBox) throws IM3Exception {
+        BufferedImage subimage = null;
+        String imgWidth="image not read";
+        String imgHeight="image not read";
+        try {
+            imgWidth = new Integer(fullImage.getWidth()).toString();
+            imgHeight = new Integer(fullImage.getHeight()).toString();
+
+            int maxWidth = fullImage.getWidth() - (int)boundingBox.getFromX();
+            int maxHeight = fullImage.getHeight() - (int)boundingBox.getFromY();
+
+            int x = (int)boundingBox.getFromX();
+            int y = (int)boundingBox.getFromY();
+            int w = (int)Math.min(maxWidth, boundingBox.getWidth());
+            int h = (int)Math.min(maxHeight, boundingBox.getHeight());
+            subimage = fullImage.getSubimage(x,
+                    y,
+                    w,
+                    h);
+
+        } catch (Throwable e) {
+            throw new IM3Exception("Cannot extract buffered image", e);
+        }
         return subimage;
     }
-    
+
     public void scaleToFitHeight(File inputImage, File outputImage, int height) throws IM3Exception {
         Image scaledImage = null;
         String extension = FileUtils.getExtension(outputImage);

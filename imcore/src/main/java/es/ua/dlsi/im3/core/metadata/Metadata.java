@@ -24,6 +24,7 @@ public class Metadata {
     FileDescription description;    
     EncodingDescription encodingDescription;
     String source;
+    String targetType;
 
     public FileDescription getDescription() {
 	return description;
@@ -47,5 +48,13 @@ public class Metadata {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
     }
 }
