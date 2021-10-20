@@ -16,7 +16,7 @@
  */
 
 package es.ua.dlsi.im3.core.score;
-
+import es.ua.dlsi.im3.core.IM3Exception;
 
 /**
  *
@@ -40,7 +40,7 @@ public abstract class StaffMark implements ITimedElement, ISymbolInStaff {
     }
 
     @Override
-    public void move(Time offset) {
+    public void move(Time offset) throws IM3Exception {
         this.time = time.add(offset);
     }
     @Override

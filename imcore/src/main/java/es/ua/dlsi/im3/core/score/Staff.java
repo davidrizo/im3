@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.SignumCongruentiaeMark;
 import es.ua.dlsi.im3.core.utils.CollectionsUtils;
 
 //TODO This should be changed to LinearStaff (i.e. All staves in different systems belonging to the same instrument are the same staff)
@@ -59,6 +60,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 	 */
 	TreeMap<Time, TimeSignature> timeSignatures;
     TreeMap<Time, MarkBarline> markBarlines;
+	TreeMap<Time, SignumCongruentiaeMark> signumCongruentiaeMarks;
 	
 	/**
 	 * Notes, rests, chords, time signatures, instrumentKey signatures, clefs, barlines 
@@ -131,6 +133,7 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 		this.timeSignatures = new TreeMap<>();
 		this.keySignatures = new TreeMap<>();
 		this.markBarlines = new TreeMap<>();
+		this.signumCongruentiaeMarks = new TreeMap<>();
         this.systemBreaks = new HashMap<>();
         this.pageBreaks = new HashMap<>();
         this.custos = new TreeMap<>();
@@ -308,6 +311,10 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         return this.markBarlines.values();
     }
 
+	public Collection<SignumCongruentiaeMark> getSignumCongruentiaeMarks() {
+		return this.signumCongruentiaeMarks.values();
+	}
+
 	/**
 	 * @param time
 	 * @return null if none
@@ -466,6 +473,12 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
         this.markBarlines.put(ts.getTime(), ts);
 	}
 
+	private void addSignumConguntriae(SignumCongruentiaeMark ts) throws IM3Exception {
+		this.signumCongruentiaeMarks.put(ts.getTime(), ts);
+		ts.setStaff(this);
+		this.marks.add(ts);
+	}
+
 	private void addCustos(Custos custos) {
 		this.custos.put(custos.getTime(), custos);
 		custos.setStaff(this);
@@ -487,6 +500,10 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 
 		if (element instanceof Custos) {
 			addCustos((Custos) element);
+		}
+
+		if (element instanceof SignumCongruentiaeMark) {
+			addSignumConguntriae((SignumCongruentiaeMark) element);
 		}
 
 		if (element instanceof KeySignature) {
@@ -1183,5 +1200,21 @@ public abstract class Staff extends VerticalScoreDivision implements ISymbolWith
 			throw new IM3Exception("No layers found");
 		}
 		return layers.get(0);
+	}
+
+	/**
+	 * It returns the first atom in the staff with the given time
+	 * @param time
+	 * @throws IM3Exception
+	 */
+	public Atom findAtomWithTime(Time time) throws IM3Exception {
+		for (ScoreLayer layer: layers) {
+			for (Atom atom: layer.getAtoms()) {
+				if (atom.getTime().equals(time)) {
+					return atom;
+				}
+			}
+		}
+		throw new IM3Exception("Cannot find any atom with time = " + time);
 	}
 }

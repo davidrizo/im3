@@ -157,7 +157,7 @@ public class CameraSimulatorGM2020 {
         GMOps gmOps = op;
 
         if (randomImplode.nextGaussian() < 1) {
-            double var1 = randDouble(randomImplodeVar1, 0, 0.07);
+            double var1 = randDouble(randomImplodeVar1, 0, 0.09);
             log(effects,"Implode", var1);
             gmOps = gmOps.implode(var1);
         }

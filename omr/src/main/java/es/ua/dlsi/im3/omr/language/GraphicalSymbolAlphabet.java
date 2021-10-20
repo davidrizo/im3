@@ -26,5 +26,6 @@ public class GraphicalSymbolAlphabet extends Alphabet<AgnosticSymbolType> {
         add(new Trill());
         add(new ThickBarline());
         add(new VerticalLine());
+        add(new SignumCongruentiae());
     }
 }

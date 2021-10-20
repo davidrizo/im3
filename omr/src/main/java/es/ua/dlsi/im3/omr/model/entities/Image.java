@@ -123,7 +123,7 @@ public class Image implements Comparable<Image> {
      */
     public int[] getGrayscaleImagePixelsNormalized(File fileImagesFolder, BoundingBox boundingBox) throws IM3Exception {
         File imageFile = new File(fileImagesFolder, imageRelativeFileName);
-        BufferedImage subimage = ImageUtils.getInstance().generateBufferedImage(imageFile, boundingBox);
+        BufferedImage subimage = ImageUtils.getInstance().extractBufferedImage(imageFile, boundingBox);
         BufferedImage scaledImage = ImageUtils.getInstance().rescaleToGray(subimage, Image.RESIZE_W, Image.RESIZE_H);
         int[][] imagePixels = ImageUtils.getInstance().readGrayScaleImage(scaledImage);
 
@@ -152,7 +152,7 @@ public class Image implements Comparable<Image> {
      */
     public int[][] getGrayscaleImagePixels(File fileImagesFolder, BoundingBox boundingBox) throws IM3Exception {
         File imageFile = new File(fileImagesFolder, imageRelativeFileName);
-        BufferedImage subimage = ImageUtils.getInstance().generateBufferedImage(imageFile, boundingBox);
+        BufferedImage subimage = ImageUtils.getInstance().extractBufferedImage(imageFile, boundingBox);
         int[][] imagePixels = ImageUtils.getInstance().readGrayScaleImage(subimage);
         return imagePixels;
     }

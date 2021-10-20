@@ -23,6 +23,7 @@ import es.ua.dlsi.im3.core.score.io.ISongExporter;
 import es.ua.dlsi.im3.core.score.io.XMLExporterHelper;
 import es.ua.dlsi.im3.core.score.io.kern.HarmExporter;
 import es.ua.dlsi.im3.core.score.layout.MarkBarline;
+import es.ua.dlsi.im3.core.score.mensural.SignumCongruentiaeMark;
 import es.ua.dlsi.im3.core.score.mensural.meters.Perfection;
 import es.ua.dlsi.im3.core.score.mensural.meters.TimeSignatureMensural;
 import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
@@ -31,6 +32,7 @@ import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
 import es.ua.dlsi.im3.core.io.ExportException;
 import es.ua.dlsi.im3.core.metadata.Person;
+import es.ua.dlsi.im3.core.score.Syllabic;
 /**
  *
  * @author drizo
@@ -70,6 +72,19 @@ public class MEISongExporter implements ISongExporter {
 	 * If false the numbase, quality, ... are not exported in mensural notation (used by the Measuring Polyphony project)
 	 */
 	private boolean includeRhythm = true;
+
+	/**
+	 * It adds a measure that wraps all the content in mensural - used to work with "dir" element in mensural
+	 */
+	private boolean addSingleMeasureToMensural = false;
+
+	public boolean isAddSingleMeasureToMensural() {
+		return addSingleMeasureToMensural;
+	}
+
+	public void setAddSingleMeasureToMensural(boolean addSingleMeasureToMensural) {
+		this.addSingleMeasureToMensural = addSingleMeasureToMensural;
+	}
 
 	/*FRACCIONES class ConnectorWithLayer {
 		Connector<?,?> connector;
@@ -574,7 +589,15 @@ public class MEISongExporter implements ISongExporter {
 
 	private void processSections(ScorePart scorePart, int tabs, IStaffContainer staffContainer, Segment segment, boolean addClefsOnSystemBeginning) throws IM3Exception, ExportException {
 		XMLExporterHelper.start(sb, tabs, "section", "xml:id", "section_" + IDGenerator.getID());
-		processSongWithoutBars(scorePart, tabs+1, staffContainer, segment, addClefsOnSystemBeginning); // e.g. mensural
+		int tabsValue = tabs;
+		if (addSingleMeasureToMensural) {
+			tabsValue = tabs+1;
+			XMLExporterHelper.start(sb, tabs, "measure", "n", "1");
+		}
+		processSongWithoutBars(scorePart, tabsValue+1, staffContainer, segment, addClefsOnSystemBeginning); // e.g. mensural
+		if (addSingleMeasureToMensural) {
+			XMLExporterHelper.end(sb, tabs, "measure");
+		}
 		processMeasures(scorePart, tabs+1, staffContainer, segment, addClefsOnSystemBeginning); // CWMN
 		XMLExporterHelper.end(sb, tabs, "section");
 	}
@@ -1092,6 +1115,15 @@ public class MEISongExporter implements ISongExporter {
 		for (int il=0; il<staffContainer.getStaves().size(); il++) {
 			previousAccidentals = new HashMap<>();
 			Staff staff = staffContainer.getStaves().get(il);
+			//TODO Used for adding Signum as lyrics - remove when Verovio is ready for having dir as a child of staff
+			Collection<SignumCongruentiaeMark> sgMarks = staff.getSignumCongruentiaeMarks();
+			for (SignumCongruentiaeMark signumCongruentiaeMark: sgMarks) {
+				Atom atom = staff.findAtomWithTime(signumCongruentiaeMark.getTime());
+				if (atom != null && atom instanceof SimpleNote) {
+					SimpleNote note = (SimpleNote) atom;
+					note.getAtomPitch().addLyric(1, "S.C.", Syllabic.single);
+				}
+			}
 			//TODO En processWithBars hemos preguntado por si el staff está entre los staves del bar
 			if (staff.getNotationType() == NotationType.eMensural) {
 				boolean firstLayer = true;
@@ -1121,6 +1153,7 @@ public class MEISongExporter implements ISongExporter {
 						staffSymbols.add(markBarline);
 					}
 					staffSymbols.addAll(staff.getCustos());
+					staffSymbols.addAll(staff.getSignumCongruentiaeMarks());
 
 					XMLExporterHelper.start(sb, tabs, "staff", "n", getNumber(staff), "xml:id", "staff_" + IDGenerator.getID());
 					for (ScoreLayer layer: staff.getLayers()) {
@@ -1197,6 +1230,15 @@ public class MEISongExporter implements ISongExporter {
 
 									}
 								}
+							} else if (staffMark instanceof SignumCongruentiaeMark) {
+								Atom atom = staff.findAtomWithTime(staffMark.getTime());
+								String startIDValue = generateID(scorePart, atom, true);
+								ArrayList<String> params = new ArrayList<>();
+								// TO-DO look for comment Signum in this file
+								XMLExporterHelper.start(sb, tabs, "dir", "place", "above",
+										"staff", getNumber(staff), "startid", startIDValue);
+								XMLExporterHelper.startEndTextContent(sb, tabs+1, "rend", "&#x1D10B;", "halign", "right");
+								XMLExporterHelper.end(sb, tabs, "dir");
 							}
 						}
 					}

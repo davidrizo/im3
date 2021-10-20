@@ -18,7 +18,15 @@ import java.util.List;
  */
 public class Semantic2IMCore {
 
-    public List<Pair<SemanticSymbol, ITimedElementInStaff>> convert(NotationType notationType, SemanticEncoding semanticEncoding) throws IM3Exception {
+    /**
+     *
+     * @param notationType
+     * @param semanticEncoding
+     * @param addStaffSyncLine True just for semantic encoding in MuRET
+     * @return
+     * @throws IM3Exception
+     */
+    public List<Pair<SemanticSymbol, ITimedElementInStaff>> convert(NotationType notationType, SemanticEncoding semanticEncoding, boolean addStaffSyncLine) throws IM3Exception {
     //public List<Pair<SemanticSymbol, ITimedElementInStaff>> convert(NotationType notationType, TimeSignature lastTimeSignature, KeySignature lastKeySignature, SemanticEncoding semanticEncoding) throws IM3Exception {
         /*SemanticConversionContext semanticConversionContext = new SemanticConversionContext(notationType);
         semanticConversionContext.setCurrentKeySignature(lastKeySignature);
@@ -27,19 +35,22 @@ public class Semantic2IMCore {
         SimpleNote pendingTiePreviousSymbol = null; //TODO para acordes
         long nextSemanticSymbolID = 0L;
         for (SemanticSymbol semanticSymbol: semanticEncoding.getSymbols()) {
-            semanticSymbol.setId(nextSemanticSymbolID);
-            if (semanticSymbol.getSymbol() != null && semanticSymbol.getSymbol().getCoreSymbol() != null) {
-                if (semanticSymbol.getSymbol().getCoreSymbol() instanceof CompoundAtom) {
-                    CompoundAtom compoundAtom = (CompoundAtom)semanticSymbol.getSymbol().getCoreSymbol();
-                    for (Atom atom: compoundAtom.getAtoms()) {
-                        atom.__setID("L" + nextSemanticSymbolID);
+            if (addStaffSyncLine) {
+                semanticSymbol.setId(nextSemanticSymbolID);
+                if (semanticSymbol.getSymbol() != null && semanticSymbol.getSymbol().getCoreSymbol() != null) {
+                    if (semanticSymbol.getSymbol().getCoreSymbol() instanceof CompoundAtom) {
+                        CompoundAtom compoundAtom = (CompoundAtom) semanticSymbol.getSymbol().getCoreSymbol();
+                        for (Atom atom : compoundAtom.getAtoms()) {
+                            atom.__setID("L" + nextSemanticSymbolID);
+                            nextSemanticSymbolID++;
+                        }
+                    } else {
+                        semanticSymbol.getSymbol().getCoreSymbol().__setID("L" + semanticSymbol.getId());
                         nextSemanticSymbolID++;
                     }
-                } else {
-                    semanticSymbol.getSymbol().getCoreSymbol().__setID("L" + semanticSymbol.getId());
-                    nextSemanticSymbolID++;
                 }
             }
+
 
             conversion.add(new Pair<>(semanticSymbol, semanticSymbol.getSymbol().getCoreSymbol()));
             if (semanticSymbol.getSymbol() instanceof SemanticNote) {
@@ -56,9 +67,9 @@ public class Semantic2IMCore {
         return conversion;
     }
 
-    public ScoreSong convertToSingleVoicedSong(NotationType notationType, SemanticEncoding semanticEncoding) throws IM3Exception {
+    public ScoreSong convertToSingleVoicedSong(NotationType notationType, SemanticEncoding semanticEncoding, boolean addStaffSyncLine) throws IM3Exception {
         //List<Pair<SemanticSymbol, ITimedElementInStaff>> conversion = convert(notationType, null, null, semanticEncoding);
-        List<Pair<SemanticSymbol, ITimedElementInStaff>> conversion = convert(notationType, semanticEncoding);
+        List<Pair<SemanticSymbol, ITimedElementInStaff>> conversion = convert(notationType, semanticEncoding, addStaffSyncLine);
 
         ScoreSong song = new ScoreSong();
         Staff staff = new Pentagram(song, "1", 1); //TODO
