@@ -1,18 +1,14 @@
 package es.grfia.hmm.utils;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-
-import org.opencv.core.CvType;
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
+/*import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-
+*/
 public class Utils {
-	private static final double kInk = 0.0;	// Black
+	/*private static final double kInk = 0.0;	// Black
 	private static final double kBackground = 255.0; // White
 	
 	public static boolean isInk(double v) {
@@ -117,5 +113,5 @@ public class Utils {
 		
 		return output;
 	}
-
+*/
 }

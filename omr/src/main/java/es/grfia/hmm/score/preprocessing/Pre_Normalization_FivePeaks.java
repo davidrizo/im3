@@ -1,17 +1,16 @@
 package es.grfia.hmm.score.preprocessing;
 
-import org.opencv.core.Mat;
+/*import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-
-import es.grfia.hmm.utils.Utils;
-
+*/
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 /**
  * Slightly changed from the Jorge Calvo's one (removed parameter input)
  */
 public class Pre_Normalization_FivePeaks {
 	public static final double REF_HEIGHT = 250.0;
-
+/*
 	public Mat run(Mat original) {
 		int [] wHist = new int[original.rows()];
 		
@@ -55,5 +54,5 @@ public class Pre_Normalization_FivePeaks {
 		Imgproc.resize(output,resized,new Size(0,0),sfactor,sfactor,Imgproc.INTER_CUBIC);
 			
 		return resized;	
-	}
+	}*/
 }

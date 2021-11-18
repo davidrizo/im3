@@ -1,8 +1,8 @@
 package es.ua.dlsi.im3.core.score;
 
-import java.util.HashMap;
-
 import es.ua.dlsi.im3.core.IDGenerator;
+
+import java.util.HashMap;
 
 
 /**
@@ -11,7 +11,7 @@ import es.ua.dlsi.im3.core.IDGenerator;
 @date 03/06/2011
  **/
 public class Segment implements Cloneable {
-	long ID;
+	String ID;
 	Time from;
 	/**
 	 * Not included
@@ -147,11 +147,11 @@ public class Segment implements Cloneable {
 		return this.to.substract(this.from);
 	}
 	
-	public long getID() {
+	public String getID() {
 		return ID;
 	}
 	
-	public void setID(long id) {
+	public void setID(String id) {
 		this.ID = id;
 	}
 	

@@ -3,7 +3,6 @@ package es.ua.dlsi.im3.omr.model.entities;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBoxYX;
-import org.opencv.core.Mat;
 
 import java.util.LinkedList;
 import java.util.List;

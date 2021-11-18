@@ -1,18 +1,12 @@
 package es.grfia.hmm.score.preprocessing;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
+//import org.opencv.core.Mat;
+//import org.opencv.core.Point;
+//import org.opencv.core.Scalar;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-
-
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 public class Pre_Straight_StablePaths {
-	public static int kRIGHT = 15;
+	/*public static int kRIGHT = 15;
 	public static int kLEFT = 15;
 	
 	public static class StablePath {
@@ -104,5 +98,5 @@ public class Pre_Straight_StablePaths {
 		
 		
 		return stablePaths;	
-	}
+	}*/
 }

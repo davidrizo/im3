@@ -1,13 +1,10 @@
 package es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation;
 
-import java.io.File;
-import java.util.List;
-
-import es.ua.dlsi.im3.core.IM3Exception;
-import org.opencv.core.Core;
+/*import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Imgproc;*/
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 
 /**
  * Modified by drizo
@@ -36,7 +33,7 @@ public class PageSplitting {
      * @param score
      * @return Return the column where the page is to be splitted
      */
-	public int run(Mat score) {
+	/*public int run(Mat score) {
 		double hit = 255.0;	
 		
 		Mat binary = new Mat(score.rows(),score.cols(),score.type());
@@ -91,14 +88,14 @@ public class PageSplitting {
 		}
 		
 		return p1 + (p2-p1)/2;
-	}
+	}*/
 
     /**
      * It returns two imagesold
      * @param original
      * @return
      */
-    public Mat[] splitIntoPages(Mat original) {
+    /*public Mat[] splitIntoPages(Mat original) {
         Mat [] result;
         int point = run(original);
         if (point == 0 || point >= original.cols()-1) {
@@ -113,5 +110,5 @@ public class PageSplitting {
         //Highgui.imwrite("/home/jcalvo/Escritorio/_"+0+".png", original.colRange(0,point));
         //Highgui.imwrite("/home/jcalvo/Escritorio/_"+1+".png", original.colRange(point,original.cols()));
 
-    }
+    }*/
 }

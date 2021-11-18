@@ -3,19 +3,19 @@
  */
 package es.ua.dlsi.im3.core.adt.tree;
 
+import es.ua.dlsi.im3.core.IDGenerator;
+import es.ua.dlsi.im3.core.adt.IADT;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import es.ua.dlsi.im3.core.adt.IADT;
-import es.ua.dlsi.im3.core.IDGenerator;
 
 /**
  * @author david
  * @param <LabelType>
  */
 public class Tree<LabelType extends ITreeLabel> implements ITree<LabelType>, Comparable<Tree<LabelType>>, IADT {
-	private long ID;
+	private String ID;
 	/**
 	 * @return the nextNodeNumber
 	 */
@@ -176,7 +176,7 @@ public class Tree<LabelType extends ITreeLabel> implements ITree<LabelType>, Com
 		ID = IDGenerator.getID();
 	}
 	
-	public long getID() {
+	public String getID() {
 		return ID;
 	}
 

@@ -1,14 +1,11 @@
 package es.grfia.hmm.score.features;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import org.opencv.core.Core;
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
+/*import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
-
-import es.grfia.hmm.utils.Utils;
+*/
 
 public class StaffFocus {
 
@@ -20,7 +17,7 @@ public class StaffFocus {
 	 * @param span Width of the span in each direction
 	 * @return The image after cropping.
 	 */
-	public Mat crop(Mat original, int span) {
+	/*public Mat crop(Mat original, int span) {
 		int [] hist = new int[original.rows()];
 		
 		for(int i = 0; i < original.rows(); i++) {
@@ -38,6 +35,6 @@ public class StaffFocus {
 
 	private Mat cropFromReference(Mat original, int span, int reference) {
 		return original.rowRange(reference-span,reference+span);
-	}
+	}*/
 	
 }

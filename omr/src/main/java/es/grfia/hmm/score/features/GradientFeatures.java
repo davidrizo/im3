@@ -1,9 +1,10 @@
 package es.grfia.hmm.score.features;
 
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-
+//import org.opencv.core.Core;
+//import org.opencv.core.Mat;
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 public class GradientFeatures implements FeatureExtraction {
+	/*
 	@Override
 	public double [][] getFeatures(Mat input) {
 		int imageRow = input.rows();
@@ -31,6 +32,6 @@ public class GradientFeatures implements FeatureExtraction {
 		
 		
 		return features;
-	}
+	}*/
 
 }

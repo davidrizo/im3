@@ -1,13 +1,9 @@
 package es.ua.dlsi.im3.omr.imageprocessing;
 
-import es.ua.dlsi.im3.core.IM3Exception;
-import org.opencv.core.Mat;
-import org.opencv.imgcodecs.Imgcodecs;
+//import org.opencv.core.Mat;
+//import org.opencv.imgcodecs.Imgcodecs;
 
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 /**
  * It loads OpenCV library and process imagesold
  * @autor drizo
@@ -15,7 +11,7 @@ import java.util.logging.Logger;
 public class OpenCVImageReader {
     private static boolean libraryLoaded = false;
 
-    public Mat readGrayImage(File imageFile) throws IM3Exception {
+   /* public Mat readGrayImage(File imageFile) throws IM3Exception {
         synchronized (OpenCVImageReader.class) {
             if (!libraryLoaded) {
                 // OpenCV 3.2 Resources downloaded from http://www.magicandlove.com/blog/2017/03/02/opencv-3-2-java-build/
@@ -39,5 +35,5 @@ public class OpenCVImageReader {
                     new Object[] {imageFile, mat.width(), mat.height()});
         }
         return mat;
-    }
+    }*/
 }

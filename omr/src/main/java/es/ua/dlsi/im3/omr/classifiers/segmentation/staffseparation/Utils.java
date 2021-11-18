@@ -1,16 +1,11 @@
 package es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-
-import org.opencv.core.Core;
+/*import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Imgproc;*/
 
 /**
  * Modified by drizo
@@ -40,7 +35,7 @@ public class Utils {
 		
 		Highgui.imwrite("/home/jcalvo/Escritorio/perfect-staff.png",mInput);
 		
-	}*/
+	}
 	
 	private static final double kInk = 0.0;	// Black
 	private static final double kBackground = 255.0; // White
@@ -146,6 +141,6 @@ public class Utils {
 		Imgproc.warpPerspective(input, output, M, output.size());
 		
 		return output;
-	}
+	}*/
 
 }

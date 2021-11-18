@@ -1,17 +1,16 @@
 package es.grfia.hmm.score.features;
 
-import java.util.ArrayList;
-
-import org.opencv.core.Core;
+/*import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Range;
 import org.opencv.core.Rect;
-import es.grfia.hmm.utils.Utils;
+import es.grfia.hmm.utils.Utils;*/
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 
 public class PuginExtraction implements FeatureExtraction {
-	private Mat getStaffMap(Mat staff) {
+	/*private Mat getStaffMap(Mat staff) {
 		Mat mask = new Mat(staff.rows(),staff.cols(),CvType.CV_8S);
 		
 		final int windowSpan = 45;
@@ -246,5 +245,5 @@ public class PuginExtraction implements FeatureExtraction {
 		
 		return new Rect(xi, yi, xf-xi+1, yf-yi+1);
 	}
-
+*/
 }

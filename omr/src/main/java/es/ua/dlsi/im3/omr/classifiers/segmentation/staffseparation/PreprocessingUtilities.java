@@ -1,14 +1,14 @@
 package es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation;
 
-import org.opencv.core.Mat;
+//import org.opencv.core.Mat;
 
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 /**
  * Modified by drizo
  * @author jcalvo
  */
-
 public class PreprocessingUtilities {
-	public static class StaffParams {
+	/*public static class StaffParams {
 		public int thickness;
 		public int spacing;
 		
@@ -80,5 +80,5 @@ public class PreprocessingUtilities {
 		}
 		
 		return new StaffParams(maxInk, maxBack);
-	}
+	}*/
 }

@@ -1,17 +1,17 @@
 package es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+/*
 import org.opencv.core.Core;
 import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Imgproc;*/
 
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 /**
+ *
  * Modified by drizo
  * @author jcalvo
  */
@@ -31,7 +31,7 @@ public class Preprocessing {
 	}
 	*/
 
-	public class StaffSegment {
+	/*public class StaffSegment {
 		public int start;
 		public int end;
 		
@@ -284,5 +284,5 @@ public class Preprocessing {
 		}
 		
 		return template;
-	}
+	}*/
 }

@@ -1,13 +1,11 @@
 package es.grfia.hmm.score.features;
 
 
-import org.opencv.core.Mat;
+//import org.opencv.core.Mat;
 
-import es.grfia.hmm.utils.Utils;
-
-
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 public class MartiBunkeExtractor implements FeatureExtraction {
-	@Override
+	/*@Override
 	public double[][] getFeatures(Mat image) {		
 		double [][] features = new double[image.cols()][9];
 		
@@ -124,5 +122,5 @@ public class MartiBunkeExtractor implements FeatureExtraction {
 				
 		
 		return features;
-	}
+	}*/
 }

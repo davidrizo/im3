@@ -1,7 +1,6 @@
 package es.grfia.hmm.score.features;
 
-import org.opencv.core.Mat;
-
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
 public interface FeatureExtraction {
-	double [][] getFeatures(Mat image);
+	//double [][] getFeatures(Mat image);
 }

@@ -57,11 +57,11 @@
         </dependency>
 
         <!-- Document / staff separation. This library loads the native dynamic libraries as well -->
-        <dependency>
+        <!--<dependency> removed for avoiding interactions with Keras in MuRET
             <groupId>org.openpnp</groupId>
             <artifactId>opencv</artifactId>
             <version>3.2.0-1</version>
-        </dependency>
+        </dependency>-->
 
         <!-- Fast Levenhstein distance -->
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->

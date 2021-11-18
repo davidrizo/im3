@@ -10,7 +10,6 @@ import es.ua.dlsi.im3.omr.encoding.agnostic.AgnosticSymbolType;
 import es.ua.dlsi.im3.omr.model.entities.Point;
 import es.ua.dlsi.im3.omr.model.entities.Stroke;
 import es.ua.dlsi.im3.omr.model.entities.Strokes;
-import org.opencv.core.Mat;
 
 import java.util.ArrayList;
 

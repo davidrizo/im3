@@ -1,17 +1,17 @@
 package es.ua.dlsi.im3.omr.imageprocessing;
 
-import es.grfia.hmm.score.preprocessing.Pre_Normalization_FivePeaks;
+//import es.grfia.hmm.score.preprocessing.Pre_Normalization_FivePeaks;
 import es.grfia.hmm.score.preprocessing.Pre_Straight_StablePaths;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.utils.CommandLine;
 import es.ua.dlsi.im3.core.utils.FileUtils;
-import org.opencv.core.Core;
+/*import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.CLAHE;
-import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Imgproc;*/
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.util.List;
 public class JCalvoStaffNormalizer implements IStaffNormalizer {
     @Override
     public void normalize(File inputImageFile, File outputImageFile) throws IM3Exception, IOException {
-        OpenCVImageReader imageReader = new OpenCVImageReader();
+        /*OpenCVImageReader imageReader = new OpenCVImageReader();
         Mat imageMat = imageReader.readGrayImage(inputImageFile);
 
         List<Mat> channels = new LinkedList();
@@ -62,7 +62,7 @@ public class JCalvoStaffNormalizer implements IStaffNormalizer {
         Pre_Normalization_FivePeaks pre_normalization_fivePeaks = new Pre_Normalization_FivePeaks();
         Mat fivePeaks = pre_normalization_fivePeaks.run(mat);
 
-        Imgcodecs.imwrite(outputImageFile.getAbsolutePath(), fivePeaks);
+        Imgcodecs.imwrite(outputImageFile.getAbsolutePath(), fivePeaks);*/
 
     }
 }

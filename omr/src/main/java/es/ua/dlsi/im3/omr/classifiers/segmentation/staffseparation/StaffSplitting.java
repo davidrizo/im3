@@ -1,13 +1,9 @@
 package es.ua.dlsi.im3.omr.classifiers.segmentation.staffseparation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
+// Removed for avoiding interactions of this OpenCV with Keras in MuRET
+//import org.opencv.core.Mat;
+//import org.opencv.core.Size;
+//import org.opencv.imgproc.Imgproc;
 
 /**
  * Modified by drizo
@@ -48,7 +44,7 @@ public class StaffSplitting {
 		}
 	}*/
 
-	public List<Integer> run(Mat score) {
+	/*public List<Integer> run(Mat score) {
 		int T = (score.cols()/5);
 		double hit = 255.0;				
 		
@@ -60,17 +56,17 @@ public class StaffSplitting {
 		
 		Imgproc.threshold(score, binary, 128, hit, Imgproc.THRESH_BINARY_INV);
 		
-//		/* */ Highgui.imwrite("/home/jcalvo/Escritorio/1.jpg", binary);
+//		 Highgui.imwrite("/home/jcalvo/Escritorio/1.jpg", binary);
 		
 		Mat kernel_1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(10,1) );		
 		Imgproc.erode(binary, binary, kernel_1);
 		
-//		/* */ Highgui.imwrite("/home/jcalvo/Escritorio/2.jpg", binary);
+//		 Highgui.imwrite("/home/jcalvo/Escritorio/2.jpg", binary);
 				
 		Mat kernel_2 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1,50) );
 		Imgproc.dilate(binary, binary, kernel_2);
 		
-//		/* */ Highgui.imwrite("/home/jcalvo/Escritorio/3.jpg", binary);
+//		Highgui.imwrite("/home/jcalvo/Escritorio/3.jpg", binary);
 		
 		// horizontal histogram
 		int [] hhist = new int[binary.rows()];
@@ -118,5 +114,5 @@ public class StaffSplitting {
 
         Logger.getLogger(StaffSplitting.class.getName()).log(Level.INFO, "Found {0} staves", points.size());
 		return points;
-	}
+	}*/
 }

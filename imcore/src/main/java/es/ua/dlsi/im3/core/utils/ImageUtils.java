@@ -233,7 +233,7 @@ public class ImageUtils {
         fromX = Math.max(0, fromX);
         fromY = Math.max(0, fromY);
         toX = Math.min(inputImage.getWidth(), toX);
-        toY = Math.min(inputImage.getWidth(), toY);
+        toY = Math.min(inputImage.getHeight(), toY);
 
         return inputImage.getSubimage(fromX, fromY, toX - fromX, toY - fromY);
     }

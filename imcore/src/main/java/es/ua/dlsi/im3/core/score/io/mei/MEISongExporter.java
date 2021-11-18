@@ -1,18 +1,12 @@
 package es.ua.dlsi.im3.core.score.io.mei;
 
 
-import java.io.File;
-import java.io.PrintStream;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import es.ua.dlsi.im3.core.IDGenerator;
 import es.ua.dlsi.im3.core.IM3Exception;
 import es.ua.dlsi.im3.core.IM3RuntimeException;
 import es.ua.dlsi.im3.core.adt.graphics.BoundingBox;
+import es.ua.dlsi.im3.core.io.ExportException;
+import es.ua.dlsi.im3.core.metadata.Person;
 import es.ua.dlsi.im3.core.metadata.PersonRoles;
 import es.ua.dlsi.im3.core.score.*;
 import es.ua.dlsi.im3.core.score.facsimile.Graphic;
@@ -30,9 +24,14 @@ import es.ua.dlsi.im3.core.score.meters.FractionalTimeSignature;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCommonTime;
 import es.ua.dlsi.im3.core.score.meters.TimeSignatureCutTime;
 import es.ua.dlsi.im3.core.score.staves.AnalysisStaff;
-import es.ua.dlsi.im3.core.io.ExportException;
-import es.ua.dlsi.im3.core.metadata.Person;
-import es.ua.dlsi.im3.core.score.Syllabic;
+
+import java.io.File;
+import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author drizo
@@ -1863,7 +1862,8 @@ public class MEISongExporter implements ISongExporter {
 				aparams.add(generateAccidental(pitchAccidental));
 			}
 			addToPreviousAccidentals = true;
-		} else if (pitchAccidental != previousAccidental && !(pitchAccidental == null && previousAccidental == Accidentals.NATURAL || pitchAccidental == Accidentals.NATURAL && previousAccidental == null)) {
+		} else if (!(layer.getStaff().getNotationType() == NotationType.eMensural && (pitchAccidental == null || pitchAccidental == Accidentals.NATURAL))// TODO parche - en mensural no añadimos becuadros
+				&& pitchAccidental != previousAccidental && !(pitchAccidental == null && previousAccidental == Accidentals.NATURAL || pitchAccidental == Accidentals.NATURAL && previousAccidental == null)) {
 			if (atomPitch.isHideAccidental()) {
 				aparams.add("accid.ges");
 			} else {

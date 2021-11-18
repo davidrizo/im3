@@ -17,6 +17,7 @@
 package es.ua.dlsi.im3.core.score;
 
 import java.util.TreeMap;
+import java.util.UUID;
 
 import es.ua.dlsi.im3.core.IM3Exception;
 
@@ -25,6 +26,7 @@ import es.ua.dlsi.im3.core.IM3Exception;
  * @author drizo
  */
 public class IDManager {
+	private boolean useRandomUUID;
 	private int nextID;
 	TreeMap<String, IUniqueIDObject> usedIDs;
 
@@ -32,6 +34,10 @@ public class IDManager {
 	IDManager(ScoreSong song) {
 		nextID = 0;
 		usedIDs = new TreeMap<>();
+	}
+
+	public void setUseRandomUUID(boolean useRandomUUID) {
+		this.useRandomUUID = useRandomUUID;
 	}
 
 	/* Avoid using the same id manager for all songs because several songs simultaneously charged by have the same IDS
@@ -57,7 +63,11 @@ public class IDManager {
 
 			StringBuilder sb = new StringBuilder();
 			sb.append(object.__getIDPrefix());
-			sb.append(nextID++);
+			if (useRandomUUID) {
+				sb.append(UUID.randomUUID().toString());
+			} else {
+				sb.append(nextID++);
+			}
 			String r = sb.toString();
 			if (!usedIDs.containsKey(r)) {
 				usedIDs.put(r, object);

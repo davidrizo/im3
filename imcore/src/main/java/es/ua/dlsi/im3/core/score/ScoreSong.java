@@ -124,6 +124,9 @@ public class ScoreSong implements IStaffContainer {
         this(new DurationEvaluator());
 	}
 
+	public void setUseRandomUUID(boolean useRandomUUID) {
+		this.idManager.setUseRandomUUID(useRandomUUID);
+	}
 	/**
 	 * It creates a song with one pentagram, one part, one layer
 	 * @return
