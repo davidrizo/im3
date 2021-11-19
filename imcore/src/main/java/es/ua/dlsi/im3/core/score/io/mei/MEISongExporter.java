@@ -1602,12 +1602,14 @@ public class MEISongExporter implements ISongExporter {
 		} else if (atom instanceof Ligature) {
 			Ligature ligatura = (Ligature) atom;
 			params.add("form");
-			if (ligatura.getLigatureType() == LigatureType.recta) {
-				params.add("recta");
-			} else if (ligatura.getLigatureType() == LigatureType.obliqua) {
-				params.add("obliqua");
-			} else {
-				throw new ExportException("Cannot export ligature type: " + ligatura.getLigatureType());
+			if (ligatura.getLigatureType() != null) {
+				if (ligatura.getLigatureType() == LigatureType.recta) {
+					params.add("recta");
+				} else if (ligatura.getLigatureType() == LigatureType.obliqua) {
+					params.add("obliqua");
+				} else {
+					throw new ExportException("Cannot export ligature type: " + ligatura.getLigatureType());
+				}
 			}
 			generateFacsimileReference(ligatura, params);
 			XMLExporterHelper.start(sb, tabs, "ligature", params);
@@ -1862,8 +1864,8 @@ public class MEISongExporter implements ISongExporter {
 				aparams.add(generateAccidental(pitchAccidental));
 			}
 			addToPreviousAccidentals = true;
-		} else if (!(layer.getStaff().getNotationType() == NotationType.eMensural && (pitchAccidental == null || pitchAccidental == Accidentals.NATURAL))// TODO parche - en mensural no añadimos becuadros
-				&& pitchAccidental != previousAccidental && !(pitchAccidental == null && previousAccidental == Accidentals.NATURAL || pitchAccidental == Accidentals.NATURAL && previousAccidental == null)) {
+		} else if (//!(layer.getStaff().getNotationType() == NotationType.eMensural && (pitchAccidental == null || pitchAccidental == Accidentals.NATURAL)) && // TODO parche - en mensural no añadimos becuadros
+				pitchAccidental != previousAccidental && !(pitchAccidental == null && previousAccidental == Accidentals.NATURAL || pitchAccidental == Accidentals.NATURAL && previousAccidental == null)) {
 			if (atomPitch.isHideAccidental()) {
 				aparams.add("accid.ges");
 			} else {
